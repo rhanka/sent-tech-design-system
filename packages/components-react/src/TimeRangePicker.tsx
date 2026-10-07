@@ -65,8 +65,22 @@ export type TimeRangePickerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "o
    * outside click emit nothing.
    */
   customExtra?: React.ReactNode;
+  /**
+   * Optional consumer controls rendered at the TOP of the Custom tab, above
+   * the calendars (e.g. a "document date / acquisition date" choice). Same
+   * draft contract as `customExtra`; rendered only in the Custom tab and
+   * only when provided. Included in the focus trap and tab order.
+   */
+  customHeader?: React.ReactNode;
   /** Fires whenever the panel opens (`true`) or closes (`false`). */
   onOpenChange?: (open: boolean) => void;
+  /** Fired with the committed value on Apply (in addition to `onChange`). */
+  onApply?: (value: TimeRange) => void;
+  /**
+   * Fired when the panel closes WITHOUT Apply and without a preset
+   * selection (Cancel button, Escape, outside click, trigger re-click).
+   */
+  onCancel?: () => void;
 };
 
 const FOCUSABLE_SELECTOR = [
@@ -156,7 +170,10 @@ export function TimeRangePicker({
   formatRange,
   formatPresetLabel: formatPresetLabelProp,
   customExtra,
+  customHeader,
   onOpenChange,
+  onApply: onApplyProp,
+  onCancel: onCancelProp,
   ...rest
 }: TimeRangePickerProps) {
   const isFr = isFrLocale(locale);
@@ -177,6 +194,12 @@ export function TimeRangePicker({
     if (!isControlled) setInternalValue(next);
     onChange?.(next);
   }
+
+  // True when the pending close comes from Apply or a preset selection (a
+  // committed value): the close transition must NOT fire `onCancel`. Every
+  // other close path (Cancel button, Escape, outside click, trigger
+  // re-click) leaves it false so `onCancel` fires exactly once per dismissal.
+  const committedCloseRef = React.useRef(false);
 
   const triggerLabel = formatRange ? formatRange(current, locale) : defaultFormatTriggerLabel(current, locale);
 
@@ -224,6 +247,7 @@ export function TimeRangePicker({
     const resolved = resolvePresetEntry(preset, Date.now());
     if (!resolved) return;
     commit(resolved);
+    committedCloseRef.current = true;
     setOpen(false);
   }
 
@@ -274,8 +298,16 @@ export function TimeRangePicker({
     setLeftMonth((prev) => (prev >= next ? monthOf(next, -1) : prev));
   }
 
+  const onCancelRef = React.useRef(onCancelProp);
+  onCancelRef.current = onCancelProp;
+  // Guards the close branch below against the effect's initial run (which
+  // observes `open === false` before anything ever opened).
+  const everOpenedRef = React.useRef(false);
+
   React.useEffect(() => {
     if (open) {
+      everOpenedRef.current = true;
+      committedCloseRef.current = false;
       setActiveTab(current.mode);
       setDraft(draftFromValue(current));
       const split = splitAbsolute(current.from, current.to);
@@ -285,6 +317,14 @@ export function TimeRangePicker({
       previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       focusFirstInPanel();
     } else {
+      if (!everOpenedRef.current) return;
+      // A close without Apply or a preset selection (Cancel, Escape, outside
+      // click, trigger re-click) notifies `onCancel`.
+      if (committedCloseRef.current) {
+        committedCloseRef.current = false;
+      } else {
+        onCancelRef.current?.();
+      }
       const el = previousFocusRef.current;
       previousFocusRef.current = null;
       el?.focus();
@@ -419,7 +459,10 @@ export function TimeRangePicker({
 
   function onApply() {
     if (!composedDraft) return;
-    commit({ mode: "absolute", from: composedDraft.from, to: composedDraft.to });
+    const next: TimeRange = { mode: "absolute", from: composedDraft.from, to: composedDraft.to };
+    commit(next);
+    onApplyProp(next);
+    committedCloseRef.current = true;
     setOpen(false);
   }
   function onCancel() {
@@ -498,6 +541,9 @@ export function TimeRangePicker({
               </SelectableList>
             ) : (
               <div className="st-timeRangePicker__custom">
+                {customHeader != null && customHeader !== false ? (
+                  <div className="st-timeRangePicker__customHeader">{customHeader}</div>
+                ) : null}
                 <div className="st-timeRangePicker__calendars">
                   <Calendar
                     range

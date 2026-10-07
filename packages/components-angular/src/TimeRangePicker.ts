@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input as NgInput, Output, inject } from "@angular/core";
 
 import { Button } from "./Button.js";
 import { Calendar } from "./Calendar.js";
@@ -135,6 +135,9 @@ function presetDurationMs(preset: TimeRangePreset): number | null {
                    would bubble to the host and reach a consumer's "(change)"
                    binding, which Angular also uses for the committed range
                    output: contain them here so only Apply reaches "(change)". -->
+              <div class="st-timeRangePicker__customHeader" (change)="$event.stopPropagation()">
+                <ng-content select="[slot=customHeader]"></ng-content>
+              </div>
               <div class="st-timeRangePicker__customExtra" (change)="$event.stopPropagation()">
                 <ng-content select="[slot=customExtra]"></ng-content>
               </div>
@@ -236,14 +239,37 @@ export class TimeRangePicker {
    * edits as a DRAFT: reseed it on `openChange(true)` and commit it on
    * `change` when the emitted value has `mode: "absolute"` (that emit only
    * happens on Apply). Cancel / Escape / outside click emit nothing.
+   *
+   * Slot `[slot=customHeader]`: optional consumer controls projected at the
+   * TOP of the Custom tab, above the calendars (e.g. a "document date /
+   * acquisition date" choice). Same draft contract as `[slot=customExtra]`.
    */
   @Output() openChange = new EventEmitter<boolean>();
+
+  /**
+   * Called with the committed value when the consumer clicks Apply (in
+   * addition to the `change` output).
+   */
+  @NgInput() onApply?: (value: TimeRange) => void;
+  /**
+   * Called when the panel closes WITHOUT Apply and without a preset
+   * selection (Cancel button, Escape, outside click, trigger re-click).
+   */
+  @NgInput() onCancel?: () => void;
 
   open = false;
   activeTab: TimeRangeMode = "relative";
   draft: AbsoluteDraft = { fromTime: "00:00", toTime: "23:59" };
   leftMonth = "";
   rightMonth = "";
+
+  /**
+   * True when the pending close comes from Apply or a preset selection (a
+   * committed value): the close must NOT call `onCancel`. Every other close
+   * path (Cancel button, Escape, outside click, trigger re-click) leaves it
+   * false so `onCancel` fires exactly once per dismissal.
+   */
+  private committedClose = false;
 
   /** Uncontrolled fallback, seeded on first read from `defaultValue`. */
   private internalValue?: TimeRange;
@@ -369,9 +395,31 @@ export class TimeRangePicker {
 
   // ── interaction ─────────────────────────────────────────────────────────
 
+  private readonly host = inject(ElementRef);
+
   toggle(): void {
     if (this.disabled) return;
     this.open ? this.close() : this.openPanel();
+  }
+
+  /** An outside pointerdown closes the panel without emitting. */
+  @HostListener("document:pointerdown", ["$event"])
+  onDocumentPointerDown(event: PointerEvent): void {
+    if (!this.open) return;
+    const target = event.target as Node | null;
+    const root: HTMLElement = this.host.nativeElement;
+    if (target && root.contains(target)) return;
+    this.close();
+  }
+
+  /** Escape closes the panel without emitting. */
+  @HostListener("document:keydown", ["$event"])
+  onDocumentKeyDown(event: KeyboardEvent): void {
+    if (!this.open) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.close();
+    }
   }
 
   openPanel(): void {
@@ -384,6 +432,7 @@ export class TimeRangePicker {
     this.leftMonth = seeded.left;
     this.rightMonth = seeded.right;
     if (this.open) return;
+    this.committedClose = false;
     this.open = true;
     this.openChange.emit(true);
   }
@@ -402,6 +451,13 @@ export class TimeRangePicker {
     if (!this.open) return;
     this.open = false;
     this.openChange.emit(false);
+    // A close without Apply or a preset selection (Cancel button, Escape,
+    // outside click, trigger re-click) notifies `onCancel`.
+    if (this.committedClose) {
+      this.committedClose = false;
+    } else {
+      this.onCancel?.();
+    }
   }
 
   /** Cancel discards the draft and emits nothing. */
@@ -435,6 +491,7 @@ export class TimeRangePicker {
   selectPreset(token: string): void {
     const resolved = this.resolveToken(token);
     this.commit(resolved);
+    this.committedClose = true;
     this.close();
   }
 
@@ -444,7 +501,10 @@ export class TimeRangePicker {
     if (!composed) return;
     const from = this.min !== undefined ? Math.max(composed.from, this.min) : composed.from;
     const to = this.max !== undefined ? Math.min(composed.to, this.max) : composed.to;
-    this.commit({ mode: "absolute", from, to });
+    const next: TimeRange = { mode: "absolute", from, to };
+    this.commit(next);
+    this.onApply?.(next);
+    this.committedClose = true;
     this.close();
   }
 
