@@ -7,7 +7,7 @@
 // SFC n'est requis : on construit l'arbre directement avec `h`.
 
 import type { NodeSpec } from "./examples.js";
-import { isComponentNode, isElementNode } from "./examples.js";
+import { isComponentNode, isElementNode, usesDataviz } from "./examples.js";
 import type { IslandHandle } from "./react-island.js";
 
 export type { IslandHandle } from "./react-island.js";
@@ -16,19 +16,30 @@ export async function mountVueIsland(
   container: HTMLElement,
   nodes: NodeSpec[]
 ): Promise<IslandHandle> {
-  const [{ createApp, h, defineComponent }, dsVue] = await Promise.all([
+  const needDataviz = usesDataviz(nodes);
+  const [{ createApp, h, defineComponent }, dsVue, dvVue] = await Promise.all([
     import("vue"),
-    import("@sentropic/design-system-vue")
+    import("@sentropic/design-system-vue"),
+    needDataviz ? import("@sentropic/dataviz-vue") : Promise.resolve(null)
   ]);
 
-  const components = dsVue as unknown as Record<string, unknown>;
+  const dsComponents = dsVue as unknown as Record<string, unknown>;
+  const dvComponents = (dvVue ?? {}) as unknown as Record<string, unknown>;
 
   function toVNode(node: NodeSpec): unknown {
     if (typeof node === "string") {
       return node;
     }
     if (isComponentNode(node)) {
-      const Comp = components[node.comp];
+      const pack = node.library === "dataviz" ? dvComponents : dsComponents;
+      const Comp = pack[node.comp];
+      if (!Comp) {
+        return h(
+          "div",
+          { class: "angular-island-unavailable", role: "status" },
+          `Vue adapter missing: ${node.comp}`
+        );
+      }
       const children = (node.children ?? []).map(toVNode);
       return h(
         Comp as never,
