@@ -381,7 +381,12 @@ test("all four tabs render on the built site (Chromium)", async (t) => {
             // helper paragraph (the exact "?dash=…" query string) inside the
             // same stage, so a stage-wide emptiness check would fail on live
             // scaffolding rather than on the component.
-            await page.waitForSelector(".tex__render .chart-wrapper", { timeout: 20000 });
+            // "attached", not the default "visible": an empty wrapper has no box,
+            // so Playwright reports it hidden even once hydration mounted it.
+            await page.waitForSelector(".tex__render .chart-wrapper", {
+              state: "attached",
+              timeout: 20000
+            });
             const text = await page.$eval(".tex__render .chart-wrapper", (el) => el.textContent ?? "");
             assert.equal(text.trim(), "", `${slug}/${framework}: expected an empty component wrapper`);
           } else if (typeof expected === "string") {
