@@ -425,13 +425,17 @@ describe("angular island (dataviz)", () => {
     handle.unmount();
   });
 
-  it("states the missing ScoreCard adapter instead of staying empty", async () => {
+  // dataviz-angular ships ScoreCard since #134 (hand-written adapter): the
+  // island must render the aggregated card, not the missing-component block.
+  it("renders ScoreCard from a real store", async () => {
     const el = host();
     const handle = await mountAngularIsland(
       el,
-      scoreCardStoreDemoNodes(newStore(), { measure: "revenue" })
+      scoreCardStoreDemoNodes(newStore(), { viewId: "sc", measure: "revenue", label: "Revenue" })
     );
-    expect(el.textContent).toContain("Angular component missing: ScoreCard");
+    expect(el.textContent).toContain("Revenue");
+    expect(el.textContent).toContain("200");
+    expect(el.textContent).not.toContain("Angular component missing");
     handle.unmount();
   });
 
