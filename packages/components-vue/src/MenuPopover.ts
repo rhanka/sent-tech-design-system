@@ -41,6 +41,14 @@ function menuPopoverIsWithin(event: Event, node: Element | null | undefined): bo
   return Boolean(target && node.contains(target));
 }
 
+function effectivePlacement(placement: MenuPopoverPlacement, flipped: boolean): MenuPopoverPlacement {
+  if (!flipped) return placement;
+  if (placement === "bottom-start") return "top-start";
+  if (placement === "bottom-end") return "top-end";
+  if (placement === "top-start") return "bottom-start";
+  return "bottom-end";
+}
+
 export const MenuPopover = defineComponent({
   name: "MenuPopover",
   props: {
@@ -64,6 +72,10 @@ export const MenuPopover = defineComponent({
     const maxHeight = ref(0);
     const alignEnd = ref(false);
     const alignCenter = ref(false);
+    // True once the requested vertical side no longer fits and the panel is
+    // shown on the opposite side (flip). The placement class follows so the
+    // existing translate transforms keep working.
+    const flipped = ref(false);
 
     const isOpen = () => (props.open !== undefined ? props.open : localOpen.value);
     const setOpen = (value: boolean) => {
@@ -74,6 +86,10 @@ export const MenuPopover = defineComponent({
     function computePosition() {
       const trigger = props.trigger;
       if (!trigger) return;
+      // Viewport coordinates (getBoundingClientRect) with `position: fixed`:
+      // no scroll offsets — the old document coordinates were wrong inside
+      // any positioned ancestor and the panel was clipped by overflow
+      // containers.
       const rect = trigger.getBoundingClientRect();
       const verticalUp = props.placement === "top-start" || props.placement === "top-end";
       const horizontalEnd = props.placement === "bottom-end" || props.placement === "top-end";
@@ -82,13 +98,26 @@ export const MenuPopover = defineComponent({
       alignEnd.value = resolvedAlign === "end";
       alignCenter.value = resolvedAlign === "center";
 
-      if (verticalUp) {
+      const panelHeight = panelRef.value?.offsetHeight ?? 0;
+      const panelWidth = panelRef.value?.offsetWidth ?? 0;
+      const need = panelHeight > 0 ? panelHeight : MENU_POPOVER_MIN_HEIGHT;
+      const spaceBelow = window.innerHeight - rect.bottom - MENU_POPOVER_GAP;
+      const spaceAbove = rect.top - MENU_POPOVER_GAP;
+
+      // Flip when the requested side cannot fit the panel and the other side
+      // offers more room.
+      let showUp = verticalUp;
+      if (!verticalUp && spaceBelow < need && spaceAbove > spaceBelow) showUp = true;
+      else if (verticalUp && spaceAbove < need && spaceBelow > spaceAbove) showUp = false;
+      flipped.value = showUp !== verticalUp;
+
+      if (showUp) {
         // Panel bottom edge sits above the trigger (transform handles the
         // flip); available space is what's ABOVE the trigger.
-        top.value = rect.top + window.scrollY - MENU_POPOVER_GAP;
+        top.value = rect.top - MENU_POPOVER_GAP;
         maxHeight.value = Math.max(rect.top - MENU_POPOVER_GAP - MENU_POPOVER_VIEWPORT_MARGIN, MENU_POPOVER_MIN_HEIGHT);
       } else {
-        top.value = rect.bottom + window.scrollY + MENU_POPOVER_GAP;
+        top.value = rect.bottom + MENU_POPOVER_GAP;
         // Space actually available BELOW the trigger — `max-height: 100vh`
         // alone ignores the panel's offset and overflows past the bottom edge.
         maxHeight.value = Math.max(
@@ -97,12 +126,61 @@ export const MenuPopover = defineComponent({
         );
       }
 
+      // Reclamp horizontally so the measured panel stays inside the viewport.
       if (resolvedAlign === "end") {
-        left.value = rect.right + window.scrollX;
+        left.value = rect.right;
+        if (panelWidth > 0) {
+          left.value = Math.min(
+            Math.max(left.value, panelWidth + MENU_POPOVER_VIEWPORT_MARGIN),
+            window.innerWidth - MENU_POPOVER_VIEWPORT_MARGIN,
+          );
+        }
       } else if (resolvedAlign === "center") {
-        left.value = rect.left + window.scrollX + rect.width / 2;
+        left.value = rect.left + rect.width / 2;
+        if (panelWidth > 0) {
+          left.value = Math.min(
+            Math.max(left.value, panelWidth / 2 + MENU_POPOVER_VIEWPORT_MARGIN),
+            window.innerWidth - panelWidth / 2 - MENU_POPOVER_VIEWPORT_MARGIN,
+          );
+        }
       } else {
-        left.value = rect.left + window.scrollX;
+        left.value = rect.left;
+        if (panelWidth > 0) {
+          left.value = Math.min(
+            Math.max(left.value, MENU_POPOVER_VIEWPORT_MARGIN),
+            window.innerWidth - panelWidth - MENU_POPOVER_VIEWPORT_MARGIN,
+          );
+        }
+      }
+    }
+
+    // Top layer: the element stays in place in the DOM (no portal to <body>)
+    // so it keeps inheriting the theme's `--st-*` custom properties; the
+    // Popover API only lifts rendering into the top layer, above overflow
+    // clipping. Where the API is missing (jsdom), plain `position: fixed`
+    // still applies.
+    let popoverShown = false;
+
+    function showTopLayer() {
+      const el = panelRef.value as (HTMLElement & { showPopover?: () => void }) | null;
+      if (!el || popoverShown) return;
+      if (typeof el.showPopover !== "function") return;
+      try {
+        el.showPopover();
+        popoverShown = true;
+      } catch {
+        // Already open or not ready — fixed positioning still applies.
+      }
+    }
+
+    function hideTopLayer() {
+      const el = panelRef.value as (HTMLElement & { hidePopover?: () => void }) | null;
+      popoverShown = false;
+      if (!el || typeof el.hidePopover !== "function") return;
+      try {
+        el.hidePopover();
+      } catch {
+        // Already hidden — nothing to do.
       }
     }
 
@@ -110,6 +188,7 @@ export const MenuPopover = defineComponent({
     let stopCloseHandlers: (() => void) | null = null;
 
     const teardown = () => {
+      hideTopLayer();
       stopPositionTracking?.();
       stopPositionTracking = null;
       stopCloseHandlers?.();
@@ -123,6 +202,13 @@ export const MenuPopover = defineComponent({
         if (!openNow) return;
 
         computePosition();
+        showTopLayer();
+        // Re-measure once the panel is laid out (size known for flip/clamp).
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(() => {
+            if (isOpen()) computePosition();
+          });
+        }
         const onScroll = () => computePosition();
         const onResize = () => computePosition();
         window.addEventListener("scroll", onScroll, true);
@@ -170,9 +256,12 @@ export const MenuPopover = defineComponent({
           ref: panelRef,
           role: "dialog",
           "aria-label": props.label,
+          // Top-layer rendering without moving the node (theme custom
+          // properties keep inheriting); inert where unsupported.
+          popover: "manual",
           class: classNames(
             "st-menuPopover",
-            `st-menuPopover--${props.placement}`,
+            `st-menuPopover--${effectivePlacement(props.placement, flipped.value)}`,
             alignEnd.value ? "st-menuPopover--alignEnd" : null,
             alignCenter.value ? "st-menuPopover--alignCenter" : null,
             props.class,
