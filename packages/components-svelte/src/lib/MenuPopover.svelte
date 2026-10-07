@@ -126,10 +126,15 @@
     const el = panel as (HTMLDivElement & { showPopover?: () => void }) | undefined;
     if (!el || popoverShown) return;
     if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in markup): environments
+    // without the API (jsdom) hide every [popover] element via the UA rule, so
+    // a static attribute would force display:none under test.
+    el.setAttribute("popover", "manual");
     try {
       el.showPopover();
       popoverShown = true;
     } catch {
+      el.removeAttribute("popover");
       // Already open or not ready — fixed positioning still applies.
     }
   }
@@ -142,6 +147,8 @@
       el.hidePopover();
     } catch {
       // Already hidden — nothing to do.
+    } finally {
+      el.removeAttribute("popover");
     }
   }
 
@@ -206,15 +213,14 @@
 <svelte:window onpointerdown={onWindowPointerDown} onkeydown={onWindowKeyDown} />
 
 {#if open}
-  <!-- popover="manual": top-layer rendering without moving the node (theme
-       custom properties keep inheriting); inert where unsupported. -->
+  <!-- No static popover attribute: it is set imperatively by showTopLayer()
+       only where the Popover API exists (see above). -->
   <div
     {...rest}
     bind:this={panel}
     class={classes()}
     role="dialog"
     aria-label={label}
-    popover="manual"
     style={`top: ${top}px; left: ${left}px;${maxHeight ? ` max-height: ${maxHeight}px;` : ""}`}
   >
     {@render children?.()}
