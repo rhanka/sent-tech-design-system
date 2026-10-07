@@ -114,9 +114,14 @@
     outline-offset: 1px;
   }
 
+  /* Indicateur d'état non-chromatique : la pastille blanche sur piste claire
+     (~1.05:1) ne suffit pas (WCAG 1.4.11). L'anneau intérieur sur la bordure
+     interactive mesure >= 3:1 contre la piste sur tous les thèmes mesurés. */
   .st-contentSwitcher__option--selected {
     background: var(--st-semantic-surface-default);
-    box-shadow: var(--st-shadow-subtle);
+    box-shadow:
+      inset 0 0 0 1px var(--st-semantic-border-interactive),
+      var(--st-shadow-subtle);
     color: var(--st-semantic-text-primary);
   }
 
