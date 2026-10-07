@@ -461,7 +461,7 @@ export function TimeRangePicker({
     if (!composedDraft) return;
     const next: TimeRange = { mode: "absolute", from: composedDraft.from, to: composedDraft.to };
     commit(next);
-    onApplyProp(next);
+    onApplyProp?.(next);
     committedCloseRef.current = true;
     setOpen(false);
   }

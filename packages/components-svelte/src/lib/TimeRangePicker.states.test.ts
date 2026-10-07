@@ -1,13 +1,19 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import { createRawSnippet, tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import Calendar from "./Calendar.svelte";
 import ContentSwitcher from "./ContentSwitcher.svelte";
 import MenuPopover from "./MenuPopover.svelte";
 import RadioGroup from "./RadioGroup.svelte";
 import TimeRangePicker from "./TimeRangePicker.svelte";
 import type { TimeRange } from "./TimeRangePicker.svelte";
-import radioGroupSrc from "./RadioGroup.svelte?raw";
+
+// Pin the component source entry point as text (svelte-check cannot resolve
+// `?raw` component imports, so read the file directly; vitest runs with the
+// package directory as cwd).
+const radioGroupSrc = readFileSync(resolve("src/lib/RadioGroup.svelte"), "utf8");
 
 function triggerButton(container: HTMLElement): HTMLButtonElement {
   return container.querySelector(".st-timeRangePicker__trigger") as HTMLButtonElement;
