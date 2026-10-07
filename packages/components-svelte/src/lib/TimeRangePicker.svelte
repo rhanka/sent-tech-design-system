@@ -434,7 +434,7 @@
     if (!composedDraft) return;
     const next: TimeRange = { mode: "absolute", from: composedDraft.from, to: composedDraft.to };
     commit(next);
-    onApplyProp(next);
+    onApplyProp?.(next);
     committedClose = true;
     panelOpen = false;
   }
