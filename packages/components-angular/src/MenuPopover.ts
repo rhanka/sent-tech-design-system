@@ -169,16 +169,14 @@ export type MenuPopoverProps = {
   styles: [":host { display: contents; }"],
   template: `
     @if (open) {
-      <!-- popover="manual": top-layer rendering without moving the node
-           (theme custom properties keep inheriting); inert where
-           unsupported. -->
+      <!-- No static popover attribute: set imperatively by showTopLayer()
+           only where the Popover API exists. -->
       <div
         #panel
         [attr.data-st-component]="componentName"
         [class]="hostClass"
         role="dialog"
         [attr.aria-label]="label"
-        popover="manual"
         [style]="panelStyle"
       >
         @if (items && items.length) {
@@ -311,10 +309,15 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
       | undefined;
     if (!el || this.popoverShown) return;
     if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in the template):
+    // environments without the API hide every [popover] element via the UA
+    // rule, so a static attribute would force display:none.
+    el.setAttribute("popover", "manual");
     try {
       el.showPopover();
       this.popoverShown = true;
     } catch {
+      el.removeAttribute("popover");
       // Already open or not ready — fixed positioning still applies.
     }
   }
@@ -329,6 +332,8 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
       el.hidePopover();
     } catch {
       // Already hidden — nothing to do.
+    } finally {
+      el.removeAttribute("popover");
     }
   }
 
