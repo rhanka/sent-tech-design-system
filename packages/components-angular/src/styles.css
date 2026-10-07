@@ -8805,7 +8805,15 @@
 }
 
 .st-calendar__day--inRange {
-  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+  background: var(
+    --st-component-calendar-rangeBackground,
+    color-mix(
+      in srgb,
+      var(--st-semantic-action-primary) 32%,
+      var(--st-component-popover-background, var(--st-semantic-surface-raised))
+    )
+  );
+  color: var(--st-component-popover-text, var(--st-semantic-text-primary));
 }
 
 .st-calendar__day--selected {

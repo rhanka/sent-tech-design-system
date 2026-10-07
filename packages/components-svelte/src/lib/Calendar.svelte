@@ -599,8 +599,20 @@
     box-shadow: inset 0 0 0 1px var(--st-semantic-border-interactive);
   }
 
+  /* Plage : teinte dérivée de la primaire (suit chaque thème), avec point
+     d'entrée de personnalisation. Le texte repasse en couleur primaire :
+     les jours hors-mois (.st-calendar__day--outside, texte atténué) resteraient
+     sinon sous 4.5:1 sur ce fond dans plusieurs thèmes. */
   .st-calendar__day--inRange {
-    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+    background: var(
+      --st-component-calendar-rangeBackground,
+      color-mix(
+        in srgb,
+        var(--st-semantic-action-primary) 32%,
+        var(--st-component-popover-background, var(--st-semantic-surface-raised))
+      )
+    );
+    color: var(--st-component-popover-text, var(--st-semantic-text-primary));
   }
 
   .st-calendar__day--selected {
