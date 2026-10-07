@@ -6178,6 +6178,13 @@ export type CalendarProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
   locale?: string;
   /** Mois affiché ("YYYY-MM"), contrôlable de l'extérieur. */
   month?: string;
+  /**
+   * Appelé avec le nouveau mois affiché ("YYYY-MM") quand il change par une
+   * navigation interne (boutons précédent/suivant, clavier qui franchit un
+   * mois, PageUp/PageDown). Jamais émis quand c'est le parent qui change la
+   * prop `month` (pas de boucle).
+   */
+  onMonthChange?: (month: string) => void;
   className?: string;
   previousMonthLabel?: string;
   nextMonthLabel?: string;
@@ -6213,6 +6220,7 @@ export function Calendar({
   weekStartsOn = 1,
   locale = "fr-FR",
   month,
+  onMonthChange,
   className,
   previousMonthLabel,
   nextMonthLabel,
@@ -6366,6 +6374,10 @@ export function Calendar({
     btn?.focus();
   }
 
+  function monthId(year: number, m: number): string {
+    return `${year}-${String(m + 1).padStart(2, "0")}`;
+  }
+
   function moveFocus(deltaDays: number) {
     const next = calStartOfDay(new Date(focusDate));
     next.setDate(next.getDate() + deltaDays);
@@ -6374,6 +6386,7 @@ export function Calendar({
     if (next.getFullYear() !== viewYear || next.getMonth() !== viewMonth) {
       nextYear = next.getFullYear();
       nextMonth = next.getMonth();
+      onMonthChange?.(monthId(nextYear, nextMonth));
       if (nextMonth > viewMonth || nextYear > viewYear) {
         // Next month
         if (viewMonth === 11) {
@@ -6401,6 +6414,7 @@ export function Calendar({
     const targetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
     setViewMonth(targetMonth);
     setViewYear(targetYear);
+    onMonthChange?.(monthId(targetYear, targetMonth));
     // focusDate will be re-clamped by the viewYear/viewMonth effect
   }
 
@@ -6409,6 +6423,7 @@ export function Calendar({
     const targetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
     setViewMonth(targetMonth);
     setViewYear(targetYear);
+    onMonthChange?.(monthId(targetYear, targetMonth));
   }
 
   function pickDate(date: Date) {
