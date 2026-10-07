@@ -295,7 +295,8 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
   catégorie `data` avec démos quatre frameworks via `TabbedExample` (store
   réel `createDashboardStore`), table de props adaptateur, couverture par
   framework énoncée (dont `UrlSync` sans composant Vue, `TimeSeriesLineChart`
-  React-only, Angular absent des six). Infra : discriminateur `library`
+  React-only, Angular absent de cinq des six : `ScoreCard` a son adaptateur
+  Angular depuis #134, porté sur `main` pendant le lot). Infra : discriminateur `library`
   ds/dataviz sur `NodeSpec`, `DatavizSvelteNode` chargé paresseusement,
   constructeurs dans `examples.ts`, libellés `i18n.ts`. Poids du bundle
   (exigé §6 du cadrage) — AVANT : `apps/docs/build` = 67 916 572 octets

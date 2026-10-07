@@ -246,7 +246,7 @@ const BROWSER_MATRIX = {
     svelte: "480",
     react: "480",
     vue: "480",
-    angular: "Angular component missing: ScoreCard"
+    angular: "480"
   },
   "dataviz-data-image": {
     svelte: ["img", "alt", "Product chart for Atlas"],
