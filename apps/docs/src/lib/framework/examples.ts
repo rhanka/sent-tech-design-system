@@ -215,6 +215,9 @@ export type ComponentName =
   | "Drawer"
   | "ErrorSummary"
   | "DashboardGrid"
+  | "UrlSync"
+  | "WebFrame"
+  | "TimeSeriesLineChart"
   | "DataGrid"
   | "PieChart"
   | "Icon"
@@ -225,6 +228,14 @@ export type ComponentName =
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
+  /**
+   * Owning package family. `ds` (default) resolves the component from the
+   * `@sentropic/design-system-*` packages; `dataviz` resolves it from the
+   * `@sentropic/dataviz-*` store-driven adapters. The discriminator exists
+   * because homonyms (`AreaChart`, `ScoreCard`, …) live in both families with
+   * different contracts (props by value vs props derived from a store).
+   */
+  library?: "ds" | "dataviz";
   props?: Record<string, unknown>;
   children?: NodeSpec[];
 }
@@ -12932,4 +12943,94 @@ export class DemoComponent {
 
 export function getExample(id: string): FrameworkExample | undefined {
   return EXAMPLES[id];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Store-driven dataviz demos (GD-DATAVIZ-DOCS, lot 1).
+//
+// Builders stay pure: the page owns the real `DashboardStore` (built with
+// `createDashboardStore` from `@sentropic/dataviz-core` — never a mock) and
+// passes it in. Builders only shape the shared NodeSpec tree, so the four
+// islands render the same demo from the same store instance.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** True when at least one component node resolves from a dataviz adapter. */
+export function usesDataviz(nodes: NodeSpec[]): boolean {
+  for (const node of nodes) {
+    if (typeof node === "string") continue;
+    if (isComponentNode(node)) {
+      if (node.library === "dataviz") return true;
+      if (node.children && usesDataviz(node.children)) return true;
+    } else if (isElementNode(node)) {
+      if (node.children && usesDataviz(node.children)) return true;
+    }
+  }
+  return false;
+}
+
+export interface DatavizDemo {
+  nodes: NodeSpec[];
+}
+
+/** Wrap dataviz demo nodes in the standard full-width docs wrapper. */
+const dvWrap = (children: NodeSpec[]): NodeSpec[] => [
+  { el: "div", props: { class: "chart-wrapper" }, children }
+];
+
+/** `<UrlSync store>`: declarative deep-linking, renders nothing by design. */
+export function urlSyncDemoNodes(store: unknown): NodeSpec[] {
+  return dvWrap([{ comp: "UrlSync", library: "dataviz", props: { store } }]);
+}
+
+/** `<WebFrame frame>`: sandboxed iframe for an allow-listed embed. */
+export function webFrameDemoNodes(frame: unknown): NodeSpec[] {
+  return dvWrap([{ comp: "WebFrame", library: "dataviz", props: { frame } }]);
+}
+
+/** `<TimeSeriesLineChart store …>`: react-only continuous time series. */
+export function timeSeriesDemoNodes(
+  store: unknown,
+  opts: { viewId: string; time: string; measure: string; label: string }
+): NodeSpec[] {
+  return dvWrap([
+    {
+      comp: "TimeSeriesLineChart",
+      library: "dataviz",
+      props: { store, viewId: opts.viewId, time: opts.time, measure: opts.measure, label: opts.label }
+    }
+  ]);
+}
+
+/** `<ScoreCard store …>`: KPI card derived from the shared store. */
+export function scoreCardStoreDemoNodes(
+  store: unknown,
+  opts: { viewId?: string; measure: string; label?: string }
+): NodeSpec[] {
+  return dvWrap([
+    {
+      comp: "ScoreCard",
+      library: "dataviz",
+      props: { store, viewId: opts.viewId, measure: opts.measure, label: opts.label }
+    }
+  ]);
+}
+
+/** `<DataImage image row>`: resolved illustration for a store row. */
+export function dataImageDemoNodes(image: unknown, row?: unknown): NodeSpec[] {
+  const props: Record<string, unknown> = { image };
+  if (row !== undefined) props.row = row;
+  return dvWrap([{ comp: "DataImage", library: "dataviz", props }]);
+}
+
+/** `<DashboardGrid layout …>`: serializable dashboard panel layout. */
+export function dashboardGridDemoNodes(layout: unknown): NodeSpec[] {
+  return dvWrap([{ comp: "DashboardGrid", library: "dataviz", props: { layout } }]);
+}
+
+/** Generic store-driven chart demo (homonym `piloté par store` sections). */
+export function storeChartDemoNodes(
+  comp: ComponentName,
+  props: Record<string, unknown>
+): NodeSpec[] {
+  return dvWrap([{ comp, library: "dataviz", props }]);
 }

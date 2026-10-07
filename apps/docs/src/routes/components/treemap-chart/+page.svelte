@@ -2,7 +2,8 @@
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
   const demoNodes = $derived<NodeSpec[]>([
     {
@@ -54,6 +55,33 @@
       ]
     }
   ]);
+
+  // Version adaptateur : les rectangles sont dérivés d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [
+      { id: "region", label: "Région", type: "discrete" },
+      { id: "product", label: "Produit", type: "discrete" }
+    ],
+    measures: [{ id: "revenue", label: "Revenu", aggregation: "sum" }]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { region: "Nord", product: "Atlas", revenue: 120 },
+      { region: "Nord", product: "Beacon", revenue: 80 },
+      { region: "Sud", product: "Atlas", revenue: 60 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("TreemapChart", {
+      store,
+      viewId: "store",
+      hierarchy: ["region", "product"],
+      measure: "revenue",
+      label: locale.value === "fr" ? "Revenu par région (store)" : "Revenue by region (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -191,6 +219,49 @@
         </tr>
       </tbody>
     </table>
+  </section>
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive les
+        rectangles d’un <code>DashboardStore</code> partagé : <code>hierarchy</code> et
+        <code>measure</code> désignent les canaux.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the
+        rectangles from a shared <code>DashboardStore</code>: <code>hierarchy</code>
+        and <code>measure</code> name the channels.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Revenu par région (store)" : "Revenue by region (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>hierarchy</code></td><td><code>string[]</code></td><td>requis</td></tr>
+        <tr><td><code>measure</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>showLabels</code></td><td><code>boolean</code></td><td>natif</td></tr>
+        <tr><td><code>legend</code></td><td><code>boolean</code></td><td>natif</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td>natif</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if locale.value === "fr"}
+        Props du natif non reprises par la version store : <code>data</code> (dérivé
+        du store via <code>hierarchy</code> / <code>measure</code>) et
+        <code>tiling</code> (non exposé : le défaut du natif s’applique).
+      {:else}
+        Native props not carried by the store version: <code>data</code> (derived
+        from the store through <code>hierarchy</code> / <code>measure</code>) and
+        <code>tiling</code> (not exposed: the native default applies).
+      {/if}
+    </p>
   </section>
 </div>
 

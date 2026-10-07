@@ -34,6 +34,7 @@
   import type { NodeSpec } from "./examples";
   import type { IslandHandle } from "./react-island";
   import { nodeToCode } from "./nodeToCode";
+  import { usesDataviz } from "./examples";
   import SvelteNode from "./SvelteNode.svelte";
   import { ContentSwitcher } from "@sentropic/design-system-svelte";
 
@@ -52,6 +53,11 @@
   // Onglet actif = état global unique (route-backed). Pas de copie locale.
   const active = $derived(framework.value);
   const note = $derived(notes?.[active]);
+
+  // Démo pilotée par store : le rendu Svelte passe par les adaptateurs
+  // `@sentropic/dataviz-svelte`, chargés paresseusement pour ne pas gonfler
+  // le chunk partagé des pages DS (cf. DatavizSvelteNode).
+  const dv = $derived(usesDataviz(nodes));
 
   const fwLabel = (id: FrameworkId) =>
     FRAMEWORKS.find((entry) => entry.id === id)?.label ?? id;
@@ -134,9 +140,17 @@
     {/if}
     {#if active === "svelte"}
       <div class="tex__render">
-        {#each nodes as node, i (i)}
-          <SvelteNode {node} />
-        {/each}
+        {#if dv}
+          {#await import("./DatavizSvelteNode.svelte") then { default: DvNode }}
+            {#each nodes as node, i (i)}
+              <DvNode {node} />
+            {/each}
+          {/await}
+        {:else}
+          {#each nodes as node, i (i)}
+            <SvelteNode {node} />
+          {/each}
+        {/if}
       </div>
     {:else}
       <!-- Hôte d'île non-Svelte : rempli côté client uniquement. -->
