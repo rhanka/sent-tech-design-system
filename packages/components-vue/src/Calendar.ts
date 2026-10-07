@@ -27,6 +27,13 @@ export type CalendarProps = {
   locale?: string;
   /** Mois affiché ("YYYY-MM"), contrôlable de l'extérieur. */
   month?: string;
+  /**
+   * Appelé avec le nouveau mois affiché ("YYYY-MM") quand il change par une
+   * navigation interne (boutons précédent/suivant, clavier qui franchit un
+   * mois, PageUp/PageDown). Écouter `@month-change`. Jamais émis quand c'est
+   * le parent qui change la prop `month` (pas de boucle).
+   */
+  onMonthChange?: (month: string) => void;
   class?: string;
   previousMonthLabel?: string;
   nextMonthLabel?: string;
@@ -87,11 +94,15 @@ export const Calendar = defineComponent({
     weekStartsOn: { type: Number as () => 0 | 1, default: 1 },
     locale: { type: String, default: "fr-FR" },
     month: { type: String, default: undefined },
+    onMonthChange: {
+      type: Function as unknown as () => (month: string) => void,
+      default: undefined,
+    },
     class: { type: String, default: undefined },
     previousMonthLabel: { type: String, default: undefined },
     nextMonthLabel: { type: String, default: undefined },
   },
-  emits: ["change", "update:modelValue"],
+  emits: ["change", "update:modelValue", "monthChange"],
   setup(props, { emit, attrs }) {
     const internal = ref<CalendarValue>(props.value ?? null);
 
@@ -217,6 +228,16 @@ export const Calendar = defineComponent({
       btn?.focus();
     }
 
+    const monthId = (y: number, m: number): string =>
+      `${y}-${String(m + 1).padStart(2, "0")}`;
+
+    // `emit("monthChange")` already routes to an `onMonthChange` handler prop
+    // (same routing as `change` → `onChange` above), so never call
+    // `props.onMonthChange` directly here — that would fire twice.
+    const notifyMonth = (y: number, m: number) => {
+      emit("monthChange", monthId(y, m));
+    };
+
     const previousMonth = () => {
       const minDate = calParseISO(props.min);
       const maxDate = calParseISO(props.max);
@@ -226,6 +247,7 @@ export const Calendar = defineComponent({
       viewYear.value = targetYear;
       const clamped = clampToMonth(focusDate.value, targetYear, targetMonth, minDate, maxDate);
       if (clamped) focusDate.value = clamped;
+      notifyMonth(targetYear, targetMonth);
     };
 
     const nextMonth = () => {
@@ -237,6 +259,7 @@ export const Calendar = defineComponent({
       viewYear.value = targetYear;
       const clamped = clampToMonth(focusDate.value, targetYear, targetMonth, minDate, maxDate);
       if (clamped) focusDate.value = clamped;
+      notifyMonth(targetYear, targetMonth);
     };
 
     function moveFocus(deltaDays: number) {
@@ -245,6 +268,7 @@ export const Calendar = defineComponent({
       if (next.getFullYear() !== viewYear.value || next.getMonth() !== viewMonth.value) {
         viewYear.value = next.getFullYear();
         viewMonth.value = next.getMonth();
+        notifyMonth(viewYear.value, viewMonth.value);
       }
       focusDate.value = calStartOfDay(next);
       nextTick(focusActiveCell);

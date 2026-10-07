@@ -27,6 +27,13 @@
     locale?: string;
     /** Mois affiché ("YYYY-MM"), contrôlable de l'extérieur. */
     month?: string;
+    /**
+     * Appelé avec le nouveau mois affiché ("YYYY-MM") quand il change par une
+     * navigation interne (boutons précédent/suivant, clavier qui franchit un
+     * mois, PageUp/PageDown). Jamais émis quand c'est le parent qui change la
+     * prop `month` (pas de boucle).
+     */
+    onMonthChange?: (month: string) => void;
     class?: string;
     previousMonthLabel?: string;
     nextMonthLabel?: string;
@@ -41,6 +48,7 @@
     weekStartsOn = 1,
     locale = "fr-FR",
     month,
+    onMonthChange,
     class: className,
     previousMonthLabel,
     nextMonthLabel,
@@ -204,6 +212,10 @@
     return null;
   }
 
+  function currentMonthId(): string {
+    return `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}`;
+  }
+
   function previousMonth() {
     const targetMonth = viewMonth === 0 ? 11 : viewMonth - 1;
     const targetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
@@ -213,6 +225,7 @@
     if (clamped) focusDate = clamped;
     // Si clamped === null, le mois est entièrement hors-bornes : focusDate garde
     // l'ancienne valeur — aucune cellule ne sera tabindex=0 car toutes sont disabled.
+    onMonthChange?.(currentMonthId());
   }
 
   function nextMonth() {
@@ -223,6 +236,7 @@
     const clamped = clampToMonth(focusDate, targetYear, targetMonth);
     if (clamped) focusDate = clamped;
     // Si clamped === null, le mois est entièrement hors-bornes : idem.
+    onMonthChange?.(currentMonthId());
   }
 
   function pickDate(date: Date) {
@@ -322,6 +336,7 @@
     if (next.getFullYear() !== viewYear || next.getMonth() !== viewMonth) {
       viewYear = next.getFullYear();
       viewMonth = next.getMonth();
+      onMonthChange?.(currentMonthId());
     }
     focusDate = startOfDay(next);
     // Focus après rendu.

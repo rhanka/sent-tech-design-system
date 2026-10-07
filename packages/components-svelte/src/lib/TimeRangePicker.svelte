@@ -196,6 +196,19 @@
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
   }
 
+  // --- Couplage des deux mois (mode deux calendriers) -----------------------
+  // Invariant : droite > gauche, toujours. La comparaison lexicographique
+  // vaut l'ordre chronologique pour des "YYYY-MM" à mois rembourrés.
+  function onLeftMonthChange(next: string) {
+    leftMonth = next;
+    if (rightMonth <= next) rightMonth = monthOf(next, 1);
+  }
+
+  function onRightMonthChange(next: string) {
+    rightMonth = next;
+    if (leftMonth >= next) leftMonth = monthOf(next, -1);
+  }
+
   let leftMonth = $state<string>("");
   let rightMonth = $state<string>("");
 
@@ -214,7 +227,10 @@
       toText: `${split.toDate} ${split.toTime}`
     };
     leftMonth = monthOf(split.fromDate, 0);
-    rightMonth = monthOf(split.fromDate, 1);
+    // Droite = mois de la fin quand il est après la gauche, sinon gauche + 1 :
+    // les deux bornes deviennent visibles dès l'ouverture.
+    const endMonth = monthOf(split.toDate, 0);
+    rightMonth = endMonth > leftMonth ? endMonth : monthOf(leftMonth, 1);
   }
 
   let previousFocus: HTMLElement | null = null;
@@ -454,6 +470,7 @@
               range
               value={calendarValue}
               onChange={onCalendarChange}
+              onMonthChange={onLeftMonthChange}
               min={calendarMinIso}
               max={calendarMaxIso}
               {locale}
@@ -464,6 +481,7 @@
                 range
                 value={calendarValue}
                 onChange={onCalendarChange}
+                onMonthChange={onRightMonthChange}
                 min={calendarMinIso}
                 max={calendarMaxIso}
                 {locale}
