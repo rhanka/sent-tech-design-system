@@ -28,10 +28,10 @@
 
   const image: DataImageConfig = {
     srcTemplate:
-      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23eef2f7'/%3E%3Cpath d='M42 144h236L214 71l-46 54-32-37z' fill='%234e79a7'/%3E%3Ccircle cx='92' cy='66' r='20' fill='%23f28e2b'/%3E%3Ctext x='16' y='182' font-family='sans-serif' font-size='20' fill='%230f172a'%3E{{product}}%3C/text%3E%3C/svg%3E",
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='200' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23eef2f7'/%3E%3Cpath d='M42 144h236L214 71l-46 54-32-37z' fill='%234e79a7'/%3E%3Ccircle cx='92' cy='66' r='20' fill='%23f28e2b'/%3E%3Ctext x='16' y='182' font-family='sans-serif' font-size='20' fill='%230f172a'%3E{{product}}%3C/text%3E%3C/svg%3E",
     altTemplate: "Product chart for {{product}}",
     fallbackSrc:
-      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23eef2f7'/%3E%3C/svg%3E"
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='200' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23eef2f7'/%3E%3C/svg%3E"
   };
 
   const demo = $derived<NodeSpec[]>(dataImageDemoNodes(image, row));
