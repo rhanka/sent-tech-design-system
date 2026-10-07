@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input as NgInput, Output, inject } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input as NgInput, Output } from "@angular/core";
 
 import { Button } from "./Button.js";
 import { Calendar } from "./Calendar.js";
@@ -395,7 +395,10 @@ export class TimeRangePicker {
 
   // ── interaction ─────────────────────────────────────────────────────────
 
-  private readonly host = inject(ElementRef);
+  // Optional so direct `new TimeRangePicker()` (unit tests) keeps working;
+  // the TestBed always provides the real host element (package idiom, as in
+  // PanelStack/SelectableList, but optional here).
+  constructor(private readonly host?: ElementRef<HTMLElement>) {}
 
   toggle(): void {
     if (this.disabled) return;
@@ -406,9 +409,13 @@ export class TimeRangePicker {
   @HostListener("document:pointerdown", ["$event"])
   onDocumentPointerDown(event: PointerEvent): void {
     if (!this.open) return;
-    const target = event.target as Node | null;
-    const root: HTMLElement = this.host.nativeElement;
-    if (target && root.contains(target)) return;
+    const root = this.host?.nativeElement as HTMLElement | undefined;
+    // Without a host (direct unit-test instantiation) there is no inside to
+    // protect: any pointerdown counts as outside.
+    if (root) {
+      const target = event.target as Node | null;
+      if (target && root.contains(target)) return;
+    }
     this.close();
   }
 

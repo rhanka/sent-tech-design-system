@@ -3758,29 +3758,46 @@ export function MenuPopover({
     const el = panelRef.current as (HTMLDivElement & { showPopover?: () => void }) | null;
     if (!el || popoverShownRef.current) return;
     if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in markup):
+    // environments without the API (jsdom) hide every [popover] element via
+    // the UA rule, so a static attribute would force display:none under test.
+    el.setAttribute("popover", "manual");
     try {
       el.showPopover();
       popoverShownRef.current = true;
     } catch {
+      el.removeAttribute("popover");
       // Already open or not ready — fixed positioning still applies.
     }
   }, []);
 
-  const hideTopLayer = React.useCallback(() => {
-    const el = panelRef.current as (HTMLDivElement & { hidePopover?: () => void }) | null;
-    popoverShownRef.current = false;
-    if (!el || typeof el.hidePopover !== "function") return;
-    try {
-      el.hidePopover();
-    } catch {
-      // Already hidden — nothing to do.
-    }
-  }, []);
+  const hideTopLayer = React.useCallback(
+    (elOverride?: (HTMLDivElement & { hidePopover?: () => void }) | null) => {
+      // The ref may already be detached when the cleanup runs (unmount or
+      // close re-render): callers pass the element captured while open.
+      const el = (elOverride ?? panelRef.current) as
+        | (HTMLDivElement & { hidePopover?: () => void })
+        | null;
+      popoverShownRef.current = false;
+      if (!el || typeof el.hidePopover !== "function") return;
+      try {
+        el.hidePopover();
+      } catch {
+        // Already hidden — nothing to do.
+      } finally {
+        el.removeAttribute("popover");
+      }
+    },
+    []
+  );
 
   React.useEffect(() => {
     if (!open) return;
     computePosition();
     showTopLayer();
+    // Capture the node while the ref is set: by cleanup time React may have
+    // detached it already.
+    const shownEl = panelRef.current;
     // Re-measure once the panel is laid out (size known for flip/clamp).
     let raf = 0;
     if (typeof requestAnimationFrame === "function") {
@@ -3794,7 +3811,7 @@ export function MenuPopover({
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
-      hideTopLayer();
+      hideTopLayer(shownEl);
     };
   }, [open, computePosition, showTopLayer, hideTopLayer]);
 
@@ -3839,9 +3856,8 @@ export function MenuPopover({
       )}
       role="dialog"
       aria-label={label}
-      // Top-layer rendering without moving the node (theme custom properties
-      // keep inheriting); inert where unsupported.
-      popover="manual"
+      // No static popover attribute: set imperatively by showTopLayer() only
+      // where the Popover API exists.
       style={style}
     >
       {items.length ? <Menu items={items} role="presentation" /> : children}

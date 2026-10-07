@@ -1,4 +1,4 @@
-import { defineComponent, h, onUnmounted, ref, watch } from "vue";
+import { defineComponent, h, nextTick, onUnmounted, ref, watch } from "vue";
 import { classNames } from "./classNames.js";
 import { Menu } from "./Menu.js";
 import type { MenuItem } from "./Menu.js";
@@ -160,27 +160,39 @@ export const MenuPopover = defineComponent({
     // clipping. Where the API is missing (jsdom), plain `position: fixed`
     // still applies.
     let popoverShown = false;
+    // The node captured while open: the ref may already be unset when the
+    // teardown runs (unmount), while this still points at the shown element.
+    let shownEl: (HTMLElement & { hidePopover?: () => void }) | null = null;
 
     function showTopLayer() {
       const el = panelRef.value as (HTMLElement & { showPopover?: () => void }) | null;
       if (!el || popoverShown) return;
       if (typeof el.showPopover !== "function") return;
+      // The attribute is set ONLY here (never statically in markup):
+      // environments without the API (jsdom) hide every [popover] element
+      // via the UA rule, so a static attribute would force display:none.
+      el.setAttribute("popover", "manual");
       try {
         el.showPopover();
         popoverShown = true;
+        shownEl = el;
       } catch {
+        el.removeAttribute("popover");
         // Already open or not ready — fixed positioning still applies.
       }
     }
 
     function hideTopLayer() {
-      const el = panelRef.value as (HTMLElement & { hidePopover?: () => void }) | null;
+      const el = shownEl ?? (panelRef.value as (HTMLElement & { hidePopover?: () => void }) | null);
+      shownEl = null;
       popoverShown = false;
       if (!el || typeof el.hidePopover !== "function") return;
       try {
         el.hidePopover();
       } catch {
         // Already hidden — nothing to do.
+      } finally {
+        el.removeAttribute("popover");
       }
     }
 
@@ -202,7 +214,13 @@ export const MenuPopover = defineComponent({
         if (!openNow) return;
 
         computePosition();
-        showTopLayer();
+        // The panel node only exists after render (the immediate watch fires
+        // during setup): show + re-measure on the next tick, once laid out.
+        nextTick(() => {
+          if (!isOpen()) return;
+          computePosition();
+          showTopLayer();
+        });
         // Re-measure once the panel is laid out (size known for flip/clamp).
         if (typeof requestAnimationFrame === "function") {
           requestAnimationFrame(() => {
@@ -256,9 +274,8 @@ export const MenuPopover = defineComponent({
           ref: panelRef,
           role: "dialog",
           "aria-label": props.label,
-          // Top-layer rendering without moving the node (theme custom
-          // properties keep inheriting); inert where unsupported.
-          popover: "manual",
+          // No static popover attribute: set imperatively by showTopLayer()
+          // only where the Popover API exists.
           class: classNames(
             "st-menuPopover",
             `st-menuPopover--${effectivePlacement(props.placement, flipped.value)}`,
