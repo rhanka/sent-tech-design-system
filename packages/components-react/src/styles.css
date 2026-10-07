@@ -4085,7 +4085,9 @@
     max-height: calc(100vh - 2rem);
     overflow: auto;
     padding: 0;
-    position: absolute;
+    /* Viewport coordinates from getBoundingClientRect: fixed, never absolute
+       (absolute + document coords broke inside any positioned ancestor). */
+    position: fixed;
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
@@ -8118,7 +8120,7 @@
 
 .st-radioGroup__legend {
   color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
-  font-size: 0.9375rem;
+  font-size: var(--st-component-selection-legendFontSize, 0.9375rem);
   font-weight: 650;
   line-height: 1.3;
   padding: 0;
