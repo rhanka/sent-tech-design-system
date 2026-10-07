@@ -7,23 +7,44 @@
 // framework ou à la destruction du composant.
 
 import type { NodeSpec } from "./examples.js";
-import { isComponentNode, isElementNode } from "./examples.js";
+import { isComponentNode, isElementNode, usesDataviz } from "./examples.js";
 
 export interface IslandHandle {
   unmount(): void;
+}
+
+/** Fallback when a framework ships no adapter for the demoed component. */
+function unavailable(
+  React: typeof import("react"),
+  key: string,
+  componentName: string
+): React.ReactNode {
+  return React.createElement(
+    "div",
+    { key, className: "angular-island-unavailable", role: "status" },
+    `React adapter missing: ${componentName}`
+  );
 }
 
 export async function mountReactIsland(
   container: HTMLElement,
   nodes: NodeSpec[]
 ): Promise<IslandHandle> {
-  const [React, { createRoot }, dsReact] = await Promise.all([
+  const needDataviz = usesDataviz(nodes);
+  const [React, { createRoot }, dsReact, dvReact] = await Promise.all([
     import("react"),
     import("react-dom/client"),
-    import("@sentropic/design-system-react")
+    import("@sentropic/design-system-react"),
+    needDataviz
+      ? import("@sentropic/dataviz-react")
+      : Promise.resolve(null)
   ]);
 
-  const components = dsReact as unknown as Record<
+  const dsComponents = dsReact as unknown as Record<
+    string,
+    React.ComponentType<Record<string, unknown>>
+  >;
+  const dvComponents = (dvReact ?? {}) as unknown as Record<
     string,
     React.ComponentType<Record<string, unknown>>
   >;
@@ -35,7 +56,9 @@ export async function mountReactIsland(
     }
     const k = `n${key++}`;
     if (isComponentNode(node)) {
-      const Comp = components[node.comp];
+      const pack = node.library === "dataviz" ? dvComponents : dsComponents;
+      const Comp = pack[node.comp];
+      if (!Comp) return unavailable(React, k, node.comp);
       const children = (node.children ?? []).map(toElement);
       return React.createElement(
         Comp,

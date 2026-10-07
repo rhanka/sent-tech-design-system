@@ -179,3 +179,36 @@ jobs:
       - name: pack-smoke
         if: matrix.task == 'pack-smoke'
         run: node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"
+
+      # Three tests in scripts/verify-dataviz-docs-lot1.test.mjs read a BUILT
+      # docs site. Nothing built one: the unsharded `licensing` job runs the
+      # guards after a bare `npm ci`, and the shards above build package dists
+      # only. The gate therefore reported `not ok` there on a false precondition
+      # — the instrument's gap charged to the pages — and it now reports those
+      # three as NOT RUN instead. But a gate that never measures anywhere is the
+      # defect the guards step existed to remove, so it has to run where the
+      # site CAN be built.
+      #
+      # Here, in the shard that already selected apps/docs, rather than in a
+      # dedicated job: the build cost is paid only when apps/docs is actually
+      # affected, and the gate runs exactly when it is relevant. `contains()` on
+      # the comma-separated workspace list is unambiguous — `design-system-docs`
+      # is the only workspace name holding the substring (measured). Guarded on
+      # the `test` task so the build happens once per shard, not again under
+      # `check`/`pack-smoke`.
+      #
+      # `npm run docs:build` runs apps/docs' `prebuild` (ensure-theme-dists),
+      # which needs every theme dist because the docs app imports them all; the
+      # `Restore built dists` cache above is what keeps that affordable.
+      - name: Build the docs site (precondition of the dataviz lot gate)
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-docs')
+        run: npm run docs:build
+
+      # Runs the whole file, not a subset: the source-level assertions are cheap
+      # and re-running them here costs nothing. The four-tab browser case keeps
+      # its OWN skip and stays reported as skipped with its reason named — these
+      # runners install no Chromium, and "7 pass, 1 skipped (no runnable
+      # browser)" is usable where a silent "8 pass" would not be.
+      - name: Dataviz docs lot gate (over the built site)
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-docs')
+        run: node --test scripts/verify-dataviz-docs-lot1.test.mjs
