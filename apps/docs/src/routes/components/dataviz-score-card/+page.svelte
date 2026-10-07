@@ -30,12 +30,6 @@
     })
   );
 
-  const notes = $derived({
-    angular: fr
-      ? "Aucun adaptateur ScoreCard côté Angular."
-      : "No ScoreCard adapter in Angular."
-  });
-
   const storeCode = `import { createDashboardStore } from "@sentropic/dataviz-core";
 import { ScoreCard } from "@sentropic/dataviz-svelte";
 
@@ -98,7 +92,7 @@ const store = createDashboardStore({
         </tr>
         <tr>
           <td><code>Angular</code></td>
-          <td>{fr ? "Absent : aucun adaptateur." : "Missing: no adapter."}</td>
+          <td>{fr ? "Composant st-dataviz-score-card (démo live ci-dessous)." : "st-dataviz-score-card component (live demo below)."}</td>
         </tr>
       </tbody>
     </table>
@@ -117,7 +111,6 @@ const store = createDashboardStore({
     </p>
     <TabbedExample
       nodes={demo}
-      {notes}
       title={fr ? "Revenu trimestriel" : "Quarterly revenue"}
     />
     <p>
