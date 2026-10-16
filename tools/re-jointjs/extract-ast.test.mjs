@@ -52,6 +52,56 @@ test('comment-only event example is not an observable event', () => {
   assert.ok(!set.has('event\0expand'), 'Events.mjs doc-header trigger(expand) must stay excluded');
 });
 
+test('round 2: checker-derived paper options include the sibling interfaces', () => {
+  const set = keys();
+  for (const ck of [
+    'paper-option\0cellVisibility',
+    'paper-option\0viewport',
+    'paper-option\0beforeRender',
+    'paper-option\0afterRender',
+  ]) assert.ok(set.has(ck), `expected AST key ${ck.replace('\0', '/')}`);
+});
+
+test('round 2: package surfaces follow the real entry points', () => {
+  const set = keys();
+  for (const ck of [
+    'package-api\0@joint/router-avoid:InitAvoidOptions',
+    'package-api\0@joint/router-avoid:TrackLinkCallback',
+    'package-api\0@joint/router-avoid:RouteOrigin',
+    'package-api\0@joint/layout-msagl:Options',
+    'package-api\0@joint/layout-msagl:LayoutResult',
+    'package-api\0@joint/decorators:ModelOptions',
+    'package-api\0@joint/react/internal:MapElementToAttributes',
+    'package-api\0@joint/shapes-general:Table.data',
+    'package-api\0@joint/shapes-general:Table.dividerX',
+    'mvc\0Events',
+    'mvc\0TriggeredEvent',
+    'mvc\0views',
+    'mvc\0View.addThemeClassName',
+    'util\0addClassNamePrefix',
+    'util\0wrappers',
+    'dia-api\0sortingTypes',
+  ]) assert.ok(set.has(ck), `expected AST key ${ck.replace('\0', '/')}`);
+  for (const ck of [
+    'package-api\0@joint/router-avoid:RouterServiceOptions',
+    'package-api\0@joint/router-avoid:RouteAttributes',
+    'package-api\0@joint/router-avoid:FallbackRouteAttributes',
+    'link-anchor\0resolveRef',
+  ]) assert.ok(!set.has(ck), `unexpected AST key ${ck.replace('\0', '/')}`);
+});
+
+test('round 2: extractor shares no whitelist literal with the generator', () => {
+  // The guard extractor must derive these surfaces from the sources; the
+  // literal item names below belong to the generator side only.
+  const extractSrc = readFileSync(join(here, 'extract-ast.mjs'), 'utf8');
+  for (const literal of [
+    'sortingTypes', 'InitAvoidOptions', 'TrackLinkCallback', 'ModelOptions',
+    'addClassNamePrefix', 'magnetSelector', 'RouterServiceEventMap',
+    'RightAngleDirections', 'use-no-break-space', 'normalizeWheel',
+  ]) assert.ok(!extractSrc.includes(literal), `extract-ast.mjs must not restate ${literal}`);
+  assert.ok(!/if \(false\)\s*\{[^}]*\}\s*else/.test(extractSrc), 'no dead branch may remain');
+});
+
 test('guard is non-tautological and passes on the stored inventory', () => {
   const verifySrc = readFileSync(join(here, 'verify.mjs'), 'utf8');
   assert.ok(!verifySrc.includes("from './enumerate.mjs'"), 'verify.mjs must not import enumerate.mjs');

@@ -9,6 +9,11 @@
  * bidirectionally with the stored inventory:
  *   - expected (AST) minus inventory  => missing entries (guard fails);
  *   - inventory minus expected (AST)  => phantom/hallucinated entries.
+ * For every matched pair it also compares the detail, not only the
+ * identifier: the stored source pointer (path and line) must equal the
+ * anchored declaration, the stored name must equal the derived label,
+ * type-only rows must be type-only on both sides, and a stored signature
+ * must equal the derived declaration header when both sides carry one.
  * It also checks ids, required fields, allowed values, that every source
  * and proof path:line resolves, that behaviour/acceptance are
  * entry-specific (the former generic templates are rejected), and that
@@ -107,6 +112,11 @@ for (const e of entries) {
   if (!TARGETS.has(e.target)) fail(`${e.id}: invalid target ${e.target}`);
   if (!PRIORITIES.has(e.priority)) fail(`${e.id}: invalid priority ${e.priority}`);
   if (typeof e.behaviour === 'string' && GENERIC_BEHAVIOUR.test(e.behaviour)) fail(`${e.id}: generic tautological behaviour text must state the entry contract (signature/defaults)`);
+  if (typeof e.behaviour === 'string' && e.behaviour.includes('{@link')) fail(`${e.id}: behaviour carries a raw JSDoc link tag; the link target must be resolved into the sentence`);
+  if (e.family === 'presentation-attribute' && !['evalAttributes', 'evalAttribute'].includes(e.name)
+    && typeof e.behaviour === 'string' && e.behaviour.includes('through the calc evaluator')) {
+    fail(`${e.id}: behaviour claims calc(...) evaluation for an attribute outside the calc list`);
+  }
   if (typeof e.behaviour === 'string' && e.behaviour.length < 60) fail(`${e.id}: behaviour too short to state a contract (${e.behaviour.length} chars)`);
   if (typeof e.acceptance === 'string' && e.acceptance.length < 60) fail(`${e.id}: acceptance too short to state an oracle (${e.acceptance.length} chars)`);
   if (!e.proof || !e.proof.path || !Number.isInteger(e.proof.line)) fail(`${e.id}: proof must carry path and integer line`);
@@ -132,6 +142,32 @@ for (const e of entries) {
   const ck = inventoryKey(e);
   if (seenKeys.has(ck)) fail(`${e.id}: duplicate expected key ${ck.replace('\0', '/')}`);
   seenKeys.add(ck);
+}
+
+// Detail comparison for matched pairs: source pointer, name, type-ness
+// and signature header must agree with the anchored declaration.
+const expectedByKey = new Map();
+for (const item of expected.values()) expectedByKey.set(expectedKey(item), item);
+const normSig = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+let detailChecked = 0;
+for (const e of entries) {
+  const ck = inventoryKey(e);
+  const item = expectedByKey.get(ck);
+  if (!item) continue; // phantom case, reported by the set comparison below
+  detailChecked++;
+  const wantSource = `${item.file}:${item.at}`;
+  if (e.source !== wantSource) fail(`${e.id}: source ${e.source} != anchored declaration ${wantSource}`);
+  if (item.label !== undefined && e.name !== item.label) fail(`${e.id}: name ${JSON.stringify(e.name)} != derived label ${JSON.stringify(item.label)}`);
+  const entryIsType = e.kind === 'type';
+  const itemIsType = item.kind === 'type';
+  if ((entryIsType !== itemIsType) && (e.kind !== undefined || item.kind !== undefined)) {
+    fail(`${e.id}: kind ${JSON.stringify(e.kind)} vs derived ${JSON.stringify(item.kind)} (type-only mismatch)`);
+  } else if (item.kind !== undefined && e.kind !== undefined && item.kind !== e.kind) {
+    fail(`${e.id}: kind ${JSON.stringify(e.kind)} != derived kind ${JSON.stringify(item.kind)}`);
+  }
+  if (item.signature && e.signature && normSig(item.signature) !== normSig(e.signature)) {
+    fail(`${e.id}: signature ${JSON.stringify(e.signature)} != derived header ${JSON.stringify(item.signature)}`);
+  }
 }
 
 // Bidirectional set comparison: the core non-tautological check.
@@ -184,7 +220,7 @@ if (failures.length) {
   if (failures.length > 80) console.error(`  ... and ${failures.length - 80} more`);
   process.exit(1);
 }
-console.log(`OK: ${entries.length} entries; AST guard holds (expected ${expected.size} items, 0 missing, 0 phantom).`);
+console.log(`OK: ${entries.length} entries; AST guard holds (expected ${expected.size} items, 0 missing, 0 phantom, ${detailChecked} detail comparisons).`);
 console.log(`byStatus: covered=${byStatus.covered} partial=${byStatus.partial} missing=${byStatus.missing}`);
 console.log(`parity: ${parity.length} entries (covered=${parityByStatus.covered} partial=${parityByStatus.partial} missing=${parityByStatus.missing}); demoPlusTracked=${demoPlus} excluded from parity`);
 for (const [k, v] of Object.entries(byFamilyInv).sort((a, b) => b[1] - a[1])) console.log(`  ${k}: ${v}`);
