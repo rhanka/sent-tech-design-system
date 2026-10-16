@@ -439,6 +439,10 @@ export function extractRaw() {
     for (const f of walk(join(coreRoot, 'src'), (p) => p.endsWith('.mjs'))) {
       const ls = readLines(f);
       for (let i = 0; i < ls.length; i++) {
+        // Comment-only trigger examples (e.g. the Events mixin doc header)
+        // are not observable events and must not be enumerated.
+        const trimmed = ls[i].trim();
+        if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) continue;
         for (const m of ls[i].matchAll(/trigger\(\s*'([^']+)'/g)) {
           add('event', m[1], m[1], f, i + 1, { origin: 'trigger-literal' });
         }
