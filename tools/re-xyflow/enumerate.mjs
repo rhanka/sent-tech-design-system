@@ -76,6 +76,25 @@ const EXTRA_ROOTS = [
   "packages/svelte/src/lib/container/SvelteFlow/types.ts",
   "packages/svelte/src/lib/hooks/useSvelteFlow.svelte.ts",
   "packages/svelte/src/lib/store/types.ts",
+  "packages/svelte/src/lib/types/events.ts",
+  "packages/svelte/src/lib/plugins/Controls/types.ts",
+  "packages/svelte/src/lib/plugins/Background/types.ts",
+  "packages/svelte/src/lib/plugins/Minimap/types.ts",
+  "packages/svelte/src/lib/plugins/NodeToolbar/types.ts",
+  "packages/svelte/src/lib/plugins/EdgeToolbar/types.ts",
+  "packages/svelte/src/lib/plugins/NodeResizer/types.ts",
+  "packages/svelte/src/lib/components/EdgeLabel/types.ts",
+  "packages/svelte/src/lib/components/EdgeReconnectAnchor/types.ts",
+  "packages/svelte/src/lib/components/Handle/types.ts",
+  "packages/svelte/src/lib/components/ViewportPortal/types.ts",
+  "packages/react/src/additional-components/Background/types.ts",
+  "packages/react/src/additional-components/Controls/types.ts",
+  "packages/react/src/additional-components/MiniMap/types.ts",
+  "packages/react/src/additional-components/NodeToolbar/types.ts",
+  "packages/react/src/additional-components/NodeResizer/types.ts",
+  "packages/react/src/additional-components/EdgeToolbar/types.ts",
+  "packages/react/src/components/Panel/index.tsx",
+  "packages/react/src/components/Handle/index.tsx",
 ].map((p) => join(SOURCE, p));
 const program = ts.createProgram([sysEntry, reactEntry, svelteEntry, ...EXTRA_ROOTS], {
   target: ts.ScriptTarget.ESNext,
@@ -246,7 +265,7 @@ function coverageFor(family, name) {
   if (/pointtorendererpoint|rendererpointtopoint/.test(k)) return part(P.transform(), "diagram-canvas worldToView implements the affine core with the opposite camera convention (SPEC §camera conversion); the xyflow [tx,ty,zoom] API shape is still to build.");
   if (/applynodechanges|applyedgechanges/.test(k)) return part(P.commands(), "diagram-core has transactional commands with inverses; the xyflow change-array protocol is not implemented.");
   if (family === "model") {
-    if (/^(nodebase|edgebase|node|edge)\.(id|type|data|source|target|sourcehandle|targethandle)$/.test(k)) {
+    if (/^(nodebase|edgebase|node|edge)\.(id|type|data|source|target|sourcehandle|targethandle)$/.test(bare.toLowerCase())) {
       return part(P.entity(), "diagram-core Entity/Relation already carry identity, type and attributes/endpoints; the xyflow field semantics (handles, markers) are still to map.");
     }
     return miss("No flow-document field with this semantics in diagram-core/diagram-canvas yet; transient and geometry fields are specified on the view/store side, never on SemanticDocument (SPEC §model contract).");
@@ -522,7 +541,7 @@ const INTERACTIONS = [
   ["pan-by-drag", "packages/system/src/xypanzoom/XYPanZoom.ts", "XYPanZoom", "Pointer drag on the pane translates the viewport (subject to panOnDrag, translateExtent, min/max zoom)."],
   ["pan-on-scroll", "packages/system/src/xypanzoom/eventhandler.ts", "panOnScroll", "Wheel scroll pans when panOnScroll is set; mode (vertical/horizontal/free) constrains the axis."],
   ["zoom-on-scroll-and-pinch", "packages/system/src/xypanzoom/XYPanZoom.ts", "scaleTo", "Wheel / pinch zooms around the pointer, clamped to minZoom/maxZoom, emitting onMove*."],
-  ["zoom-on-double-click", "packages/system/src/xypanzoom/eventhandler.ts", "zoomOnDoubleClick", "Double-click zooms in (or out with the documented modifier) when zoomOnDoubleClick is set."],
+  ["zoom-on-double-click", "packages/system/src/xypanzoom/XYPanZoom.ts", "zoomOnDoubleClick", "Double-click zooms in (or out with the documented modifier) when zoomOnDoubleClick is set."],
   ["node-drag", "packages/system/src/xydrag/XYDrag.ts", "XYDrag", "Dragging a draggable node emits position changes (dragging flag), honours nodeExtent, snap grid and parent extent."],
   ["multi-node-drag", "packages/system/src/xydrag/XYDrag.ts", "getDragItems", "Dragging one selected node moves the whole selection by the same delta."],
   ["snap-to-grid", "packages/system/src/xydrag/utils.ts", "snap", "When snapToGrid is set, positions round to snapGrid [x,y] during drag and keyboard move."],
