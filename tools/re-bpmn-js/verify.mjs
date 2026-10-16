@@ -1,15 +1,25 @@
 #!/usr/bin/env node
 /**
- * verify.mjs — completeness guard for docs/re/bpmn-js-inventory.json.
+ * verify.mjs — NON-TAUTOLOGICAL completeness guard for
+ * docs/re/bpmn-js-inventory.json.
  *
- * Re-runs the mechanical extraction (enumerate.mjs: extractAll) and asserts:
- *  1. bijection: every extracted (family, key) has exactly one inventory entry
- *     and every inventory entry corresponds to an extracted item;
+ * The inventory is produced by enumerate.mjs (line/regex extraction). This
+ * guard compares it against a SECOND, independent enumeration produced by
+ * extract-ast.mjs (TypeScript compiler API, AST visitors, no shared code
+ * with enumerate.mjs). It asserts:
+ *  1. bijection: every AST-extracted (family, key) has exactly one inventory
+ *     entry and every inventory entry corresponds to an AST-extracted item.
+ *     Both directions are listed on failure, so an omission in either
+ *     extractor fails the guard instead of being confirmed by construction;
  *  2. schema: every entry carries id/family/source(path:line)/behaviour/
  *     acceptance/target/status/proof/priority with allowed vocabularies;
  *  3. sources: every source path exists and its line is inside the file;
  *  4. proofs: every proof path exists in this worktree (line inside file);
  *  5. ids are unique and stable (`RE.<family>.<slug>`).
+ *
+ * "100 %" may only be quoted when this guard passes: 100 % of the surface
+ * two independent extractors agree on, under the conventions of
+ * SPEC_RE_BPMN_JS_PARITY.md section 3.1.
  *
  * Exit 0 = guard passes. Any failure prints the offending keys and exits 1.
  * Usage: node tools/re-bpmn-js/verify.mjs [path/to/inventory.json]
@@ -17,7 +27,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { extractAll } from './enumerate.mjs';
+import { extractAstAll } from './extract-ast.mjs';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const wtRoot = resolve(scriptDir, '..', '..');
@@ -36,7 +46,7 @@ function lineCount(abs) {
 }
 
 const failures = [];
-const raw = extractAll();
+const raw = extractAstAll();
 const rawKeys = new Map(); // "family\0key" -> item
 for (const [family, items] of Object.entries(raw)) {
   for (const it of items) rawKeys.set(`${family}\0${it.key}`, it);
@@ -80,13 +90,17 @@ for (const e of entries) {
   }
 }
 
-// Bijection.
+// Bijection against the independent AST extraction (both directions).
+const onlyAst = [];
 for (const k of rawKeys.keys()) {
-  if (!seenKeys.has(k)) failures.push(`UNCOVERED extracted item: ${k.replace('\0', ' / ')}`);
+  if (!seenKeys.has(k)) onlyAst.push(k.replace('\0', ' / '));
 }
+const onlyInventory = [];
 for (const k of seenKeys) {
-  if (!rawKeys.has(k)) failures.push(`STALE inventory entry (not extracted): ${k.replace('\0', ' / ')}`);
+  if (!rawKeys.has(k)) onlyInventory.push(k.replace('\0', ' / '));
 }
+for (const k of onlyAst) failures.push(`ONLY-IN-AST (missing from inventory): ${k}`);
+for (const k of onlyInventory) failures.push(`ONLY-IN-INVENTORY (not found by AST extractor): ${k}`);
 
 // Summary consistency.
 const total = entries.length;
@@ -94,12 +108,16 @@ if (inventory.summary && inventory.summary.total !== total) failures.push(`summa
 
 const byFamily = {};
 for (const e of entries) byFamily[e.family] = (byFamily[e.family] || 0) + 1;
+const astByFamily = {};
+for (const [family, items] of Object.entries(raw)) astByFamily[family] = items.length;
 
 if (failures.length) {
   console.error(`COMPLETENESS GUARD: FAIL (${failures.length})`);
-  for (const f of failures.slice(0, 100)) console.error(` - ${f}`);
-  if (failures.length > 100) console.error(` - … and ${failures.length - 100} more`);
+  console.error(`entries=${total} astExtracted=${rawKeys.size} onlyInAst=${onlyAst.length} onlyInInventory=${onlyInventory.length}`);
+  for (const f of failures.slice(0, 200)) console.error(` - ${f}`);
+  if (failures.length > 200) console.error(` - … and ${failures.length - 200} more`);
   process.exit(1);
 }
-console.log(`COMPLETENESS GUARD: PASS entries=${total} extracted=${rawKeys.size} bijection=exact`);
+console.log(`COMPLETENESS GUARD: PASS entries=${total} astExtracted=${rawKeys.size} bijection=exact`);
 console.log('byFamily=' + JSON.stringify(byFamily));
+console.log('astByFamily=' + JSON.stringify(astByFamily));
