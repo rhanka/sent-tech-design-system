@@ -3655,6 +3655,17 @@ export type MenuPopoverProps = Omit<React.HTMLAttributes<HTMLDivElement>, "class
   /** Convenience (not in the Svelte contract): renders a <Menu> from `items` instead of `children`. */
   items?: MenuItem[];
 };
+function menuPopoverEffectivePlacement(
+  placement: MenuPopoverPlacement,
+  flipped: boolean
+): MenuPopoverPlacement {
+  if (!flipped) return placement;
+  if (placement === "bottom-start") return "top-start";
+  if (placement === "bottom-end") return "top-end";
+  if (placement === "top-start") return "bottom-start";
+  return "bottom-end";
+}
+
 export function MenuPopover({
   open: controlledOpen,
   defaultOpen = false,
@@ -3672,10 +3683,14 @@ export function MenuPopover({
 }: MenuPopoverProps) {
   const [open, setOpen] = useControlled(controlledOpen, defaultOpen, onOpenChange);
   const panelRef = React.useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = React.useState({ top: 0, left: 0, maxHeight: 0, alignEnd: false, alignCenter: false });
+  const [pos, setPos] = React.useState({ top: 0, left: 0, maxHeight: 0, alignEnd: false, alignCenter: false, flipped: false });
+  const popoverShownRef = React.useRef(false);
 
   const computePosition = React.useCallback(() => {
     if (!trigger) return;
+    // Viewport coordinates (getBoundingClientRect) with `position: fixed`:
+    // no scroll offsets — the old document coordinates were wrong inside any
+    // positioned ancestor and the panel was clipped by overflow containers.
     const rect = trigger.getBoundingClientRect();
     const verticalUp = placement === "top-start" || placement === "top-end";
     const horizontalEnd = placement === "bottom-end" || placement === "top-end";
@@ -3683,15 +3698,28 @@ export function MenuPopover({
     const alignEnd = resolvedAlign === "end";
     const alignCenter = resolvedAlign === "center";
 
+    const panelHeight = panelRef.current?.offsetHeight ?? 0;
+    const panelWidth = panelRef.current?.offsetWidth ?? 0;
+    const need = panelHeight > 0 ? panelHeight : MENU_POPOVER_MIN_HEIGHT;
+    const spaceBelow = window.innerHeight - rect.bottom - MENU_POPOVER_GAP;
+    const spaceAbove = rect.top - MENU_POPOVER_GAP;
+
+    // Flip when the requested side cannot fit the panel and the other side
+    // offers more room.
+    let showUp = verticalUp;
+    if (!verticalUp && spaceBelow < need && spaceAbove > spaceBelow) showUp = true;
+    else if (verticalUp && spaceAbove < need && spaceBelow > spaceAbove) showUp = false;
+    const flipped = showUp !== verticalUp;
+
     let top: number;
     let maxHeight: number;
-    if (verticalUp) {
+    if (showUp) {
       // Panel bottom edge sits above the trigger (transform handles the flip);
       // available space is what's ABOVE the trigger.
-      top = rect.top + window.scrollY - MENU_POPOVER_GAP;
+      top = rect.top - MENU_POPOVER_GAP;
       maxHeight = Math.max(rect.top - MENU_POPOVER_GAP - MENU_POPOVER_VIEWPORT_MARGIN, MENU_POPOVER_MIN_HEIGHT);
     } else {
-      top = rect.bottom + window.scrollY + MENU_POPOVER_GAP;
+      top = rect.bottom + MENU_POPOVER_GAP;
       // Space actually available BELOW the trigger — `max-height: 100vh` alone
       // ignores the panel's offset and overflows past the bottom edge.
       maxHeight = Math.max(
@@ -3700,30 +3728,92 @@ export function MenuPopover({
       );
     }
 
+    // Reclamp horizontally so the measured panel stays inside the viewport.
     let left: number;
     if (resolvedAlign === "end") {
-      left = rect.right + window.scrollX;
+      left = rect.right;
+      if (panelWidth > 0) left = Math.min(Math.max(left, panelWidth + MENU_POPOVER_VIEWPORT_MARGIN), window.innerWidth - MENU_POPOVER_VIEWPORT_MARGIN);
     } else if (resolvedAlign === "center") {
-      left = rect.left + window.scrollX + rect.width / 2;
+      left = rect.left + rect.width / 2;
+      if (panelWidth > 0) {
+        left = Math.min(
+          Math.max(left, panelWidth / 2 + MENU_POPOVER_VIEWPORT_MARGIN),
+          window.innerWidth - panelWidth / 2 - MENU_POPOVER_VIEWPORT_MARGIN
+        );
+      }
     } else {
-      left = rect.left + window.scrollX;
+      left = rect.left;
+      if (panelWidth > 0) left = Math.min(Math.max(left, MENU_POPOVER_VIEWPORT_MARGIN), window.innerWidth - panelWidth - MENU_POPOVER_VIEWPORT_MARGIN);
     }
 
-    setPos({ top, left, maxHeight, alignEnd, alignCenter });
+    setPos({ top, left, maxHeight, alignEnd, alignCenter, flipped });
   }, [trigger, placement, align]);
+
+  // Top layer: the element stays in place in the DOM (no portal to <body>)
+  // so it keeps inheriting the theme's `--st-*` custom properties; the
+  // Popover API only lifts rendering into the top layer, above overflow
+  // clipping. Where the API is missing (jsdom), plain `position: fixed`
+  // still applies.
+  const showTopLayer = React.useCallback(() => {
+    const el = panelRef.current as (HTMLDivElement & { showPopover?: () => void }) | null;
+    if (!el || popoverShownRef.current) return;
+    if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in markup):
+    // environments without the API (jsdom) hide every [popover] element via
+    // the UA rule, so a static attribute would force display:none under test.
+    el.setAttribute("popover", "manual");
+    try {
+      el.showPopover();
+      popoverShownRef.current = true;
+    } catch {
+      el.removeAttribute("popover");
+      // Already open or not ready — fixed positioning still applies.
+    }
+  }, []);
+
+  const hideTopLayer = React.useCallback(
+    (elOverride?: (HTMLDivElement & { hidePopover?: () => void }) | null) => {
+      // The ref may already be detached when the cleanup runs (unmount or
+      // close re-render): callers pass the element captured while open.
+      const el = (elOverride ?? panelRef.current) as
+        | (HTMLDivElement & { hidePopover?: () => void })
+        | null;
+      popoverShownRef.current = false;
+      if (!el || typeof el.hidePopover !== "function") return;
+      try {
+        el.hidePopover();
+      } catch {
+        // Already hidden — nothing to do.
+      } finally {
+        el.removeAttribute("popover");
+      }
+    },
+    []
+  );
 
   React.useEffect(() => {
     if (!open) return;
     computePosition();
+    showTopLayer();
+    // Capture the node while the ref is set: by cleanup time React may have
+    // detached it already.
+    const shownEl = panelRef.current;
+    // Re-measure once the panel is laid out (size known for flip/clamp).
+    let raf = 0;
+    if (typeof requestAnimationFrame === "function") {
+      raf = requestAnimationFrame(() => computePosition());
+    }
     const onScroll = () => computePosition();
     const onResize = () => computePosition();
     window.addEventListener("scroll", onScroll, true);
     window.addEventListener("resize", onResize);
     return () => {
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
+      hideTopLayer(shownEl);
     };
-  }, [open, computePosition]);
+  }, [open, computePosition, showTopLayer, hideTopLayer]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -3759,13 +3849,15 @@ export function MenuPopover({
       ref={panelRef}
       className={classNames(
         "st-menuPopover",
-        `st-menuPopover--${placement}`,
+        `st-menuPopover--${menuPopoverEffectivePlacement(placement, pos.flipped)}`,
         pos.alignEnd ? "st-menuPopover--alignEnd" : null,
         pos.alignCenter ? "st-menuPopover--alignCenter" : null,
         className
       )}
       role="dialog"
       aria-label={label}
+      // No static popover attribute: set imperatively by showTopLayer() only
+      // where the Popover API exists.
       style={style}
     >
       {items.length ? <Menu items={items} role="presentation" /> : children}
@@ -6178,6 +6270,13 @@ export type CalendarProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
   locale?: string;
   /** Mois affiché ("YYYY-MM"), contrôlable de l'extérieur. */
   month?: string;
+  /**
+   * Appelé avec le nouveau mois affiché ("YYYY-MM") quand il change par une
+   * navigation interne (boutons précédent/suivant, clavier qui franchit un
+   * mois, PageUp/PageDown). Jamais émis quand c'est le parent qui change la
+   * prop `month` (pas de boucle).
+   */
+  onMonthChange?: (month: string) => void;
   className?: string;
   previousMonthLabel?: string;
   nextMonthLabel?: string;
@@ -6213,6 +6312,7 @@ export function Calendar({
   weekStartsOn = 1,
   locale = "fr-FR",
   month,
+  onMonthChange,
   className,
   previousMonthLabel,
   nextMonthLabel,
@@ -6366,6 +6466,10 @@ export function Calendar({
     btn?.focus();
   }
 
+  function monthId(year: number, m: number): string {
+    return `${year}-${String(m + 1).padStart(2, "0")}`;
+  }
+
   function moveFocus(deltaDays: number) {
     const next = calStartOfDay(new Date(focusDate));
     next.setDate(next.getDate() + deltaDays);
@@ -6374,6 +6478,7 @@ export function Calendar({
     if (next.getFullYear() !== viewYear || next.getMonth() !== viewMonth) {
       nextYear = next.getFullYear();
       nextMonth = next.getMonth();
+      onMonthChange?.(monthId(nextYear, nextMonth));
       if (nextMonth > viewMonth || nextYear > viewYear) {
         // Next month
         if (viewMonth === 11) {
@@ -6401,6 +6506,7 @@ export function Calendar({
     const targetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
     setViewMonth(targetMonth);
     setViewYear(targetYear);
+    onMonthChange?.(monthId(targetYear, targetMonth));
     // focusDate will be re-clamped by the viewYear/viewMonth effect
   }
 
@@ -6409,6 +6515,7 @@ export function Calendar({
     const targetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
     setViewMonth(targetMonth);
     setViewYear(targetYear);
+    onMonthChange?.(monthId(targetYear, targetMonth));
   }
 
   function pickDate(date: Date) {

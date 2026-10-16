@@ -33,6 +33,10 @@
   let maxHeight = $state(0);
   let alignmentRight = $state(false);
   let alignmentCenter = $state(false);
+  // True once the requested vertical side no longer fits and the panel is
+  // shown on the opposite side (flip). The placement class follows so the
+  // existing translate transforms keep working.
+  let flipped = $state(false);
 
   const GAP = 4;
   // Marge anti-débordement entre le panneau et le bord du viewport.
@@ -41,8 +45,19 @@
   // plutôt qu'un menu écrasé (cas rare d'un déclencheur collé au bord).
   const MIN_HEIGHT = 160;
 
+  function effectivePlacement(): "bottom-start" | "bottom-end" | "top-start" | "top-end" {
+    if (!flipped) return placement;
+    if (placement === "bottom-start") return "top-start";
+    if (placement === "bottom-end") return "top-end";
+    if (placement === "top-start") return "bottom-start";
+    return "bottom-end";
+  }
+
   function computePosition() {
     if (!trigger) return;
+    // Viewport coordinates (getBoundingClientRect) with `position: fixed`:
+    // no scroll offsets — the old document coordinates were wrong inside any
+    // positioned ancestor and the panel was clipped by overflow containers.
     const rect = trigger.getBoundingClientRect();
     const verticalUp = placement === "top-start" || placement === "top-end";
     const horizontalEnd = placement === "bottom-end" || placement === "top-end";
@@ -54,15 +69,26 @@
     alignmentRight = resolvedAlign === "end";
     alignmentCenter = resolvedAlign === "center";
 
-    if (verticalUp) {
-      // We don't know the panel height yet on first frame; position the panel's
-      // bottom edge above the trigger using transform.
-      top = rect.top + window.scrollY - GAP;
-      // Espace réellement disponible AU-DESSUS du déclencheur (le panneau est
-      // remonté de 100% de sa hauteur), borné pour rester dans le viewport.
+    const panelHeight = panel?.offsetHeight ?? 0;
+    const panelWidth = panel?.offsetWidth ?? 0;
+    const need = panelHeight > 0 ? panelHeight : MIN_HEIGHT;
+    const spaceBelow = window.innerHeight - rect.bottom - GAP;
+    const spaceAbove = rect.top - GAP;
+
+    // Flip when the requested side cannot fit the panel and the other side
+    // offers more room.
+    let showUp = verticalUp;
+    if (!verticalUp && spaceBelow < need && spaceAbove > spaceBelow) showUp = true;
+    else if (verticalUp && spaceAbove < need && spaceBelow > spaceAbove) showUp = false;
+    flipped = showUp !== verticalUp;
+
+    if (showUp) {
+      // The panel's bottom edge sits above the trigger (transform handles the
+      // flip); available space is what's ABOVE the trigger.
+      top = rect.top - GAP;
       maxHeight = Math.max(rect.top - GAP - VIEWPORT_MARGIN, MIN_HEIGHT);
     } else {
-      top = rect.bottom + window.scrollY + GAP;
+      top = rect.bottom + GAP;
       // Espace réellement disponible SOUS le déclencheur : c'est ce qui manquait —
       // `max-height: 100vh` ignorait l'offset du panneau et débordait par le bas.
       maxHeight = Math.max(
@@ -71,18 +97,71 @@
       );
     }
 
+    // Reclamp horizontally so the measured panel stays inside the viewport.
     if (resolvedAlign === "end") {
-      left = rect.right + window.scrollX;
+      left = rect.right;
+      if (panelWidth > 0) left = Math.min(Math.max(left, panelWidth + VIEWPORT_MARGIN), window.innerWidth - VIEWPORT_MARGIN);
     } else if (resolvedAlign === "center") {
-      left = rect.left + window.scrollX + rect.width / 2;
+      left = rect.left + rect.width / 2;
+      if (panelWidth > 0) {
+        left = Math.min(
+          Math.max(left, panelWidth / 2 + VIEWPORT_MARGIN),
+          window.innerWidth - panelWidth / 2 - VIEWPORT_MARGIN
+        );
+      }
     } else {
-      left = rect.left + window.scrollX;
+      left = rect.left;
+      if (panelWidth > 0) left = Math.min(Math.max(left, VIEWPORT_MARGIN), window.innerWidth - panelWidth - VIEWPORT_MARGIN);
+    }
+  }
+
+  // --- Top layer -----------------------------------------------------------
+  // The element stays in place in the DOM (no portal to <body>) so it keeps
+  // inheriting the theme's `--st-*` custom properties; the Popover API only
+  // lifts rendering into the top layer, above overflow clipping. Where the
+  // API is missing (jsdom), plain `position: fixed` still applies.
+  let popoverShown = false;
+
+  function showTopLayer() {
+    const el = panel as (HTMLDivElement & { showPopover?: () => void }) | undefined;
+    if (!el || popoverShown) return;
+    if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in markup): environments
+    // without the API (jsdom) hide every [popover] element via the UA rule, so
+    // a static attribute would force display:none under test.
+    el.setAttribute("popover", "manual");
+    try {
+      el.showPopover();
+      popoverShown = true;
+    } catch {
+      el.removeAttribute("popover");
+      // Already open or not ready — fixed positioning still applies.
+    }
+  }
+
+  function hideTopLayer() {
+    const el = panel as (HTMLDivElement & { hidePopover?: () => void }) | undefined;
+    popoverShown = false;
+    if (!el || typeof el.hidePopover !== "function") return;
+    try {
+      el.hidePopover();
+    } catch {
+      // Already hidden — nothing to do.
+    } finally {
+      el.removeAttribute("popover");
     }
   }
 
   $effect(() => {
     if (!open) return;
     computePosition();
+    showTopLayer();
+    // Re-measure once the panel is laid out (size known for flip/clamp).
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => {
+        if (open) computePosition();
+      });
+    }
     const onScroll = () => computePosition();
     const onResize = () => computePosition();
     window.addEventListener("scroll", onScroll, true);
@@ -90,6 +169,7 @@
     return () => {
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
+      hideTopLayer();
     };
   });
 
@@ -121,7 +201,7 @@
   const classes = () =>
     [
       "st-menuPopover",
-      `st-menuPopover--${placement}`,
+      `st-menuPopover--${effectivePlacement()}`,
       alignmentRight ? "st-menuPopover--alignEnd" : null,
       alignmentCenter ? "st-menuPopover--alignCenter" : null,
       className
@@ -133,6 +213,8 @@
 <svelte:window onpointerdown={onWindowPointerDown} onkeydown={onWindowKeyDown} />
 
 {#if open}
+  <!-- No static popover attribute: it is set imperatively by showTopLayer()
+       only where the Popover API exists (see above). -->
   <div
     {...rest}
     bind:this={panel}
@@ -160,7 +242,14 @@
     max-height: calc(100vh - 2rem);
     overflow: auto;
     padding: 0;
-    position: absolute;
+    /* The Popover API UA sheet gives [popover] `inset: 0; margin: auto`: without
+       this reset the top-layer panel is re-centred between its top/left and the
+       viewport edges instead of sitting on the trigger. Inline top/left win. */
+    inset: auto;
+    margin: 0;
+    /* Viewport coordinates from getBoundingClientRect: fixed, never absolute
+       (absolute + document coords broke inside any positioned ancestor). */
+    position: fixed;
     z-index: var(--st-component-popover-zIndex, 80);
   }
 

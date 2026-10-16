@@ -17,7 +17,7 @@ function fakeTrigger(rect: Partial<MenuPopoverRect>): HTMLElement {
   return { getBoundingClientRect: () => full } as unknown as HTMLElement;
 }
 
-const VIEWPORT: MenuPopoverViewport = { height: 600, scrollX: 0, scrollY: 0 };
+const VIEWPORT: MenuPopoverViewport = { width: 1024, height: 600 };
 
 describe("computeMenuPopoverPosition (angular)", () => {
   it("computes a viewport-aware max-height below the trigger (not a flat max-height:100vh)", () => {
@@ -35,14 +35,29 @@ describe("computeMenuPopoverPosition (angular)", () => {
     expect(pos.alignCenter).toBe(false);
   });
 
-  it("floors the computed max-height at MIN_HEIGHT when the trigger is glued to the viewport edge", () => {
+  it("flips above when the trigger is glued to the bottom edge and room sits above", () => {
     const pos = computeMenuPopoverPosition(
       { top: 590, bottom: 590, left: 0, right: 0, width: 0 },
       "bottom-start",
       undefined,
       VIEWPORT,
     );
-    // available space = 600 - 590 - 4 - 8 = -2 -> floored to MIN_HEIGHT (160)
+    // Below: 600 - 590 - 4 = 6 < MIN_HEIGHT(160); above (586) wins -> flip.
+    expect(pos.flipped).toBe(true);
+    expect(pos.effectivePlacement).toBe("top-start");
+    expect(pos.maxHeight).toBe(590 - 4 - 8);
+  });
+
+  it("floors the computed max-height at MIN_HEIGHT when neither side fits", () => {
+    const pos = computeMenuPopoverPosition(
+      { top: 100, bottom: 100, left: 0, right: 0, width: 0 },
+      "bottom-start",
+      undefined,
+      { width: 1024, height: 200 },
+    );
+    // Below: 200 - 100 - 4 - 8 = 88 -> floored to MIN_HEIGHT (160); above is
+    // no larger, so no flip.
+    expect(pos.flipped).toBe(false);
     expect(pos.maxHeight).toBe(160);
   });
 
@@ -90,15 +105,53 @@ describe("computeMenuPopoverPosition (angular)", () => {
     expect(pos.left).toBe(50); // left(10) + width/2(40)
   });
 
-  it("adds window scroll offsets to top/left", () => {
+  it("uses viewport coordinates: no scroll offsets are added", () => {
     const pos = computeMenuPopoverPosition(
       { top: 40, bottom: 200, left: 10, right: 10, width: 0 },
       "bottom-start",
       undefined,
-      { height: 600, scrollX: 5, scrollY: 100 },
+      VIEWPORT,
     );
-    expect(pos.top).toBe(200 + 100 + 4);
-    expect(pos.left).toBe(10 + 5);
+    expect(pos.top).toBe(200 + 4);
+    expect(pos.left).toBe(10);
+    expect(pos.flipped).toBe(false);
+    expect(pos.effectivePlacement).toBe("bottom-start");
+  });
+
+  it("flips to the side with room when the requested side does not fit", () => {
+    const pos = computeMenuPopoverPosition(
+      { top: 500, bottom: 540, left: 10, right: 110, width: 100 },
+      "bottom-start",
+      undefined,
+      VIEWPORT,
+    );
+    // Below: 600 - 540 - 4 = 56 < MIN_HEIGHT(160); above wins.
+    expect(pos.flipped).toBe(true);
+    expect(pos.effectivePlacement).toBe("top-start");
+    expect(pos.top).toBe(500 - 4);
+  });
+
+  it("does not flip a top placement that fits above", () => {
+    const pos = computeMenuPopoverPosition(
+      { top: 300, bottom: 340, left: 10, right: 50, width: 40 },
+      "top-start",
+      undefined,
+      VIEWPORT,
+    );
+    expect(pos.flipped).toBe(false);
+    expect(pos.effectivePlacement).toBe("top-start");
+  });
+
+  it("reclamps a measured panel inside the viewport horizontally", () => {
+    const pos = computeMenuPopoverPosition(
+      { top: 40, bottom: 80, left: 900, right: 950, width: 50 },
+      "bottom-start",
+      undefined,
+      VIEWPORT,
+      { width: 300, height: 200 },
+    );
+    // 900 + 300 > 1024 -> clamped to 1024 - 300 - 8 = 716.
+    expect(pos.left).toBe(716);
   });
 });
 
@@ -156,7 +209,7 @@ describe("MenuPopover (angular)", () => {
   });
 
   it("computePosition derives top/left/maxHeight/alignment from the trigger rect", () => {
-    vi.stubGlobal("window", { innerHeight: 600, scrollX: 0, scrollY: 0 });
+    vi.stubGlobal("window", { innerWidth: 1024, innerHeight: 600, scrollX: 0, scrollY: 0 });
     const c = new MenuPopover();
     c.placement = "bottom-end";
     c.trigger = fakeTrigger({ top: 40, bottom: 200, left: 10, right: 90, width: 80 });
@@ -165,6 +218,45 @@ describe("MenuPopover (angular)", () => {
     expect(c.left).toBe(90);
     expect(c.maxHeight).toBe(388);
     expect(c.alignEnd).toBe(true);
+    expect(c.flipped).toBe(false);
+  });
+
+  it("showTopLayer sets popover=manual and calls showPopover where the API exists; hideTopLayer reverts", () => {
+    // No DOM in this file's node env: a minimal attribute bag stands in for
+    // the panel element.
+    const attrs = new Map<string, string>();
+    const showPopover = vi.fn();
+    const hidePopover = vi.fn();
+    const el = {
+      setAttribute: (k: string, v: string) => void attrs.set(k, v),
+      getAttribute: (k: string) => attrs.get(k) ?? null,
+      hasAttribute: (k: string) => attrs.has(k),
+      removeAttribute: (k: string) => void attrs.delete(k),
+      showPopover,
+      hidePopover
+    };
+    const c = new MenuPopover();
+    (c as unknown as { panel: { nativeElement: unknown } }).panel = { nativeElement: el };
+    c.showTopLayer();
+    expect(showPopover).toHaveBeenCalledTimes(1);
+    expect(el.getAttribute("popover")).toBe("manual");
+    c.hideTopLayer();
+    expect(hidePopover).toHaveBeenCalledTimes(1);
+    expect(el.hasAttribute("popover")).toBe(false);
+  });
+
+  it("showTopLayer is a no-op without the API (plain fixed positioning applies)", () => {
+    const attrs = new Map<string, string>();
+    const el = {
+      setAttribute: (k: string, v: string) => void attrs.set(k, v),
+      getAttribute: (k: string) => attrs.get(k) ?? null,
+      hasAttribute: (k: string) => attrs.has(k),
+      removeAttribute: (k: string) => void attrs.delete(k)
+    };
+    const c = new MenuPopover();
+    (c as unknown as { panel: { nativeElement: unknown } }).panel = { nativeElement: el };
+    expect(() => c.showTopLayer()).not.toThrow();
+    expect(el.hasAttribute("popover")).toBe(false);
   });
 
   it("computePosition is a no-op without a trigger", () => {

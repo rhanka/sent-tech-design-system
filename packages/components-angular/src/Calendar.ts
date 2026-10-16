@@ -122,11 +122,20 @@ export class Calendar implements OnInit, OnChanges {
   @NgInput() weekStartsOn?: 0 | 1;
   @NgInput() locale?: string;
   @NgInput() month?: string;
+  /**
+   * Appelé avec le nouveau mois affiché ("YYYY-MM") quand il change par une
+   * navigation interne (boutons précédent/suivant, clavier qui franchit un
+   * mois, PageUp/PageDown). Jamais émis quand c'est le parent qui change
+   * l'entrée `month` (pas de boucle).
+   */
+  @NgInput() onMonthChange?: (month: string) => void;
   @NgInput("class") classInput?: string;
   @NgInput() previousMonthLabel?: string;
   @NgInput() nextMonthLabel?: string;
 
   @Output() readonly valueChange = new EventEmitter<CalendarValue>();
+  /** Émis avec le nouveau mois affiché ("YYYY-MM") lors d'une navigation interne. */
+  @Output() readonly monthChange = new EventEmitter<string>();
 
   @ViewChild("gridEl") gridEl?: ElementRef<HTMLElement>;
 
@@ -381,6 +390,16 @@ export class Calendar implements OnInit, OnChanges {
     return this.isActive(cell.date) && !this.isOutOfBounds(cell.date) ? 0 : -1;
   }
 
+  private monthId(year: number, month: number): string {
+    return `${year}-${String(month + 1).padStart(2, "0")}`;
+  }
+
+  private notifyMonth(year: number, month: number): void {
+    const id = this.monthId(year, month);
+    this.onMonthChange?.(id);
+    this.monthChange.emit(id);
+  }
+
   // --- Navigation ----------------------------------------------------------
   previousMonth(): void {
     const targetMonth = this.viewMonth === 0 ? 11 : this.viewMonth - 1;
@@ -389,6 +408,7 @@ export class Calendar implements OnInit, OnChanges {
     this.viewYear = targetYear;
     const clamped = this.clampToMonth(this.focusDate, targetYear, targetMonth);
     if (clamped) this.focusDate = clamped;
+    this.notifyMonth(targetYear, targetMonth);
   }
 
   nextMonth(): void {
@@ -398,6 +418,7 @@ export class Calendar implements OnInit, OnChanges {
     this.viewYear = targetYear;
     const clamped = this.clampToMonth(this.focusDate, targetYear, targetMonth);
     if (clamped) this.focusDate = clamped;
+    this.notifyMonth(targetYear, targetMonth);
   }
 
   private pickDate(date: Date): void {
@@ -446,6 +467,7 @@ export class Calendar implements OnInit, OnChanges {
     if (next.getFullYear() !== this.viewYear || next.getMonth() !== this.viewMonth) {
       this.viewYear = next.getFullYear();
       this.viewMonth = next.getMonth();
+      this.notifyMonth(this.viewYear, this.viewMonth);
     }
     this.focusDate = this.startOfDay(next);
     setTimeout(() => this.focusActiveCell(), 0);

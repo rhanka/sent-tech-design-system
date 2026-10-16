@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input as NgInput, Output } from "@angular/core";
 
 import { Button } from "./Button.js";
 import { Calendar } from "./Calendar.js";
@@ -52,6 +52,22 @@ type ResolvedPreset = {
   label: string;
   disabled: boolean;
 };
+
+function monthOf(iso: string, offsetMonths: number): string {
+  const [y, m] = iso.split("-").map(Number);
+  const d = new Date(y, m - 1 + offsetMonths, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+// Month coupling (two-calendar mode). Invariant: right > left, always.
+// Lexicographic comparison orders padded "YYYY-MM" chronologically.
+function seedMonths(fromDate: string, toDate: string): { left: string; right: string } {
+  const left = monthOf(fromDate, 0);
+  // Right = end month when it is after the left one, else left + 1: both
+  // bounds are visible as soon as the panel opens.
+  const endMonth = monthOf(toDate, 0);
+  return { left, right: endMonth > left ? endMonth : monthOf(left, 1) };
+}
 
 /** Normalize a preset (string token or object form) to `{token, label?, durationMs?}`. */
 function presetToken(preset: TimeRangePreset): string {
@@ -143,15 +159,32 @@ function presetDurationMs(preset: TimeRangePreset): number | null {
                 </div>
               </div>
 
-              <st-calendar
-                class="st-timeRangePicker__calendar"
-                [range]="true"
-                [value]="calendarValue"
-                [min]="minDay ?? undefined"
-                [max]="maxDay ?? undefined"
-                [locale]="locale ?? 'fr-FR'"
-                [onChange]="onCalendarChange"
-              ></st-calendar>
+              <div class="st-timeRangePicker__calendars">
+                <st-calendar
+                  class="st-timeRangePicker__calendar"
+                  [range]="true"
+                  [value]="calendarValue"
+                  [min]="minDay ?? undefined"
+                  [max]="maxDay ?? undefined"
+                  [locale]="locale ?? 'fr-FR'"
+                  [month]="leftMonth"
+                  [onChange]="onCalendarChange"
+                  [onMonthChange]="onLeftMonthChange"
+                ></st-calendar>
+                @if ((calendarMonths ?? 2) === 2) {
+                  <st-calendar
+                    class="st-timeRangePicker__calendar"
+                    [range]="true"
+                    [value]="calendarValue"
+                    [min]="minDay ?? undefined"
+                    [max]="maxDay ?? undefined"
+                    [locale]="locale ?? 'fr-FR'"
+                    [month]="rightMonth"
+                    [onChange]="onCalendarChange"
+                    [onMonthChange]="onRightMonthChange"
+                  ></st-calendar>
+                }
+              </div>
 
               @if (errorText) {
                 <p class="st-timeRangePicker__error" role="alert">{{ errorText }}</p>
@@ -209,6 +242,8 @@ export class TimeRangePicker {
   open = false;
   activeTab: TimeRangeMode = "relative";
   draft: AbsoluteDraft = { fromTime: "00:00", toTime: "23:59" };
+  leftMonth = "";
+  rightMonth = "";
 
   /** Uncontrolled fallback, seeded on first read from `defaultValue`. */
   private internalValue?: TimeRange;
@@ -334,9 +369,38 @@ export class TimeRangePicker {
 
   // ── interaction ─────────────────────────────────────────────────────────
 
+  // Optional so direct `new TimeRangePicker()` (unit tests) keeps working;
+  // the TestBed always provides the real host element (package idiom, as in
+  // PanelStack/SelectableList, but optional here).
+  constructor(private readonly host?: ElementRef<HTMLElement>) {}
+
   toggle(): void {
     if (this.disabled) return;
     this.open ? this.close() : this.openPanel();
+  }
+
+  /** An outside pointerdown closes the panel without emitting. */
+  @HostListener("document:pointerdown", ["$event"])
+  onDocumentPointerDown(event: PointerEvent): void {
+    if (!this.open) return;
+    const root = this.host?.nativeElement as HTMLElement | undefined;
+    // Without a host (direct unit-test instantiation) there is no inside to
+    // protect: any pointerdown counts as outside.
+    if (root) {
+      const target = event.target as Node | null;
+      if (target && root.contains(target)) return;
+    }
+    this.close();
+  }
+
+  /** Escape closes the panel without emitting. */
+  @HostListener("document:keydown", ["$event"])
+  onDocumentKeyDown(event: KeyboardEvent): void {
+    if (!this.open) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.close();
+    }
   }
 
   openPanel(): void {
@@ -345,10 +409,23 @@ export class TimeRangePicker {
     // Seed the custom draft from the concretely resolved current window, even in
     // relative mode, so switching to Custom starts from what the user sees.
     this.draft = splitAbsolute(v.from, v.to);
+    const seeded = seedMonths(this.draft.fromDate ?? "", this.draft.toDate ?? "");
+    this.leftMonth = seeded.left;
+    this.rightMonth = seeded.right;
     if (this.open) return;
     this.open = true;
     this.openChange.emit(true);
   }
+
+  onLeftMonthChange = (next: string): void => {
+    this.leftMonth = next;
+    if (this.rightMonth <= next) this.rightMonth = monthOf(next, 1);
+  };
+
+  onRightMonthChange = (next: string): void => {
+    this.rightMonth = next;
+    if (this.leftMonth >= next) this.leftMonth = monthOf(next, -1);
+  };
 
   close(): void {
     if (!this.open) return;

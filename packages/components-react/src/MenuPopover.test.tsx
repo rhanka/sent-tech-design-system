@@ -103,7 +103,7 @@ describe("MenuPopover", () => {
     }
   });
 
-  it("floors the computed max-height at MIN_HEIGHT when the trigger is glued to the viewport edge", () => {
+  it("flips above when the trigger is glued to the bottom edge and room sits above", () => {
     const trigger = document.createElement("button");
     document.body.appendChild(trigger);
     vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue({
@@ -123,8 +123,10 @@ describe("MenuPopover", () => {
     try {
       const { container } = render(<MenuPopover open label="Menu" trigger={trigger} />);
       const panel = container.querySelector(".st-menuPopover") as HTMLElement;
-      // available space = 600 - 590 - 4 - 8 = -2 -> floored to MIN_HEIGHT (160)
-      expect(panel.style.maxHeight).toBe("160px");
+      // Below: 600 - 590 - 4 = 6 < MIN_HEIGHT(160); above (586) wins -> flip,
+      // so max-height measures the space above, not the floor.
+      expect(panel.classList.contains("st-menuPopover--top-start")).toBe(true);
+      expect(panel.style.maxHeight).toBe("578px");
     } finally {
       Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
       document.body.removeChild(trigger);
