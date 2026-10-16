@@ -1,7 +1,7 @@
 # SPEC EVOL — DS-JSON-RENDER: one JSON in, one design-system component out, in any MCP Apps host (option E)
 
 **Status**: specification and traceability only. No implementation, no package, no workflow in this PR.
-**Date**: 2026-10-15. **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor.
+**Date**: 2026-10-15, amended 2026-10-16. **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4 and the `track focus --format json` annex).
 **Base measured**: `origin/main` = `30c13318` (DS). Other revisions read: h2a `origin/main` = `61ddcec9`;
 bpmn-canvas `origin/main` = `62ec95f` and local, **unpushed** branch `workbench/functions-20261004` = `e9f5f89`;
 A2UI repository pinned at commit `3b0e0373`.
@@ -15,7 +15,9 @@ in the conductor's session scratchpad (`…/scratchpad/canvas-std/`); the older 
 rests on the ledger alone is marked as such.
 **Owner decisions as relayed**: the conductor's brief of 2026-10-15 (decisions 1–6 of §1.1, including D2 = A,
 D4 = A and the D7 revision with elkjs and xyflow), and the conductor's follow-up of the same day carrying the owner's
-answers to Q-1, Q-2 and Q-3 (§17).
+answers to Q-1, Q-2 and Q-3 (§17). The owner's answers of 2026-10-16 to H-1, H-3 and H-4, plus the `track focus
+--format json` annex point, were relayed by h-cond after the Astra + Opus double study and are rendered in §§1.1b, 8,
+9, 11.2, 14, 15 and 17 (source for each: owner via h-cond, 2026-10-16).
 **Glossary**: `d2d-cond` = the conductor session of the d2d repository (`airbus-genair-d2d`); `h-cond` = the
 conductor session of h2a. Both relay owner rules; neither is a repository.
 **Related**: [GD-BPMN-MODDLE (A′), PR #164](https://github.com/rhanka/sent-tech-design-system/pull/164) (open);
@@ -64,13 +66,33 @@ before relying on them.
    `SENTROPIC_BPMN_WATERMARK_LICENSE`, in a `.env` or a secrets manager, never in a repository, a log or a rendering;
    renewal is in the owner's hands, rotation `unknown`. Consequence: **its value never reaches the browser** (§13.3).
 4. **Focus decision-dossier schema** (`DecisionDossierDocument`): **h2a defines it, the DS renders it.** The DS
-   consumes a pinned version of the h2a schema. A `focus` skill exposes the whole.
+   consumes a pinned version of the h2a schema (refined by H-1 in §1.1b: `@sentropic/focus` ≥ 0.4.0). A `focus` skill
+   exposes the whole (carrier decided by H-3 in §1.1b: `@sentropic/focus`).
 5. **BPMN input** is moddle JSON in the F1 form. F1 **keeps** unknown extensions (content of `extensionElements`,
    foreign attributes, unregistered `xmlns`, `xsi`) instead of refusing them, as bpmn-moddle does. This is an F1 lot on
    the `bpmn-canvas` side, coordinated with d2d-cond; its status is `unknown` until it is published. A′ (`diagram-core` covering
    bpmn-moddle) is specified in PR #164.
 6. Decisions also recorded in Track by this PR (§18): **E** (commitment), **D2 = A**, **D4 = A-now** (option A
    amended by the owner), **D7′** (revision of D7=A).
+
+### 1.1b Owner choices (2026-10-16, relayed by h-cond)
+
+After the Astra + Opus double study, the owner decides (source for each: owner via h-cond, 2026-10-16):
+
+1. **H-1 — Focus schema carrier.** The versioned JSON Schema of `DecisionDossierDocument` and its validator are
+   published by **`@sentropic/focus`**, in a next minor version **≥ 0.4.0**, under a dedicated schema subpath. The
+   validator depends on no track function. Versioning rule: versioned `$id` `v1`, package semver, and the DS pins the
+   version. **Status: to build**; the exact version stays `unknown` until publication. This refines decision 4 of
+   §1.1: h2a still defines the schema and the DS still renders a pinned version of it.
+2. **H-3 — `focus` skill carrier.** The **`focus`** skill also lives in **`@sentropic/focus`**. This is an owner
+   decision, against both study proposals. It is installed with the other skills. **Status: to build.**
+3. **H-4 — MCP carrier.** The MCP server that serves the `ui://` resources is a **module of `@sentropic/h2a`**,
+   mounted on the existing single MCP endpoint, with the DS content vendored by fingerprint. This fulfils the L3
+   entry condition and the G1 criterion on the L3 carrier (§14, §15).
+4. **Annex — `track focus` JSON output.** h2a adds a `track focus --format json` output so the render input is fed
+   without reinterpreting HTML. **Status: to build**; `unknown` until publication. It is a precondition of L6 (§14).
+
+H-2 needs no change here: it is already integrated (confidential Camunda license, property of the owner, §13.2).
 
 The owner's original requests (2026-10-04 and 2026-10-06), verbatim from the dossier:
 - « un standard pour permettre de render dans n'importe quelle UI (gemini, claude etc) mes composants de façon simple
@@ -219,10 +241,16 @@ component, which may itself be a composition such as the decision dossier; Gemin
 - **What is missing is a versioned JSON Schema** (h-cond, 2026-10-15, consistent with the measurement above): the
   owner's format rule is a document, not a schema (`docs/focus/decision-dossier-format.md`, also on h2a branch
   `docs/dossier-diagrammes` at `f76f46df`); the schema is **to be created on the h2a side from `@sentropic/focus`**,
-  status `unknown` until it is versioned; the DS consumes a pinned version.
+  status `unknown` until it is versioned; the DS consumes a pinned version. Owner decision H-1 (owner via h-cond,
+  2026-10-16): the schema and its validator are published by **`@sentropic/focus`** in a next minor **≥ 0.4.0**
+  under a dedicated schema subpath; the validator depends on no track function; versioning rule: versioned `$id`
+  `v1`, package semver, DS pins the version. **Status: to build**; the exact version stays `unknown` until
+  publication (§§11.2, 14, 17).
 - **No skill named `focus`** exists (h2a `packages/*/skills`, `~/.claude/skills`, `~/.claude/plugins`); the closest
   existing skill is `present-decision` (`H2A:packages/track/skills/present-decision/SKILL.md`), beside
-  `branch-lifecycle`, `propose-workpackages`, `track-operation` and the harness skills.
+  `branch-lifecycle`, `propose-workpackages`, `track-operation` and the harness skills. Owner decision H-3 (owner
+  via h-cond, 2026-10-16, against both study proposals): the **`focus`** skill lives in **`@sentropic/focus`** and
+  is installed with the other skills. **Status: to build** (§§9, 14, 17).
 - The `decision-focus*.html` files are self-contained HTML written by agents following the format document, through
   per-repository build chains copied from repository to repository, **not** by a shared h2a generator:
   `kc/docs/kc-decision/decision-focus.html` (1 419 787 bytes, data schema `kc-decision-map/v1`, input = Mermaid blocks
@@ -278,8 +306,8 @@ the renderer would load.
    [JUDGMENT]: the producer is an AI that benefits from a correction loop, unlike `SiteConfig`, whose
    ignore-unknown-keys rule serves human-authored forward compatibility.
 2. **Semantics**: properties whose validity a JSON Schema cannot express are validated by the owning runtime, which
-   stays authoritative: `diagram-core` validation for a `SemanticDocument`, F1 `hydrate` for BPMN, the pinned h2a
-   validator for a `DecisionDossierDocument` once h2a ships one.
+   stays authoritative: `diagram-core` validation for a `SemanticDocument`, F1 `hydrate` for BPMN, the pinned
+   `@sentropic/focus` validator (H-1) for a `DecisionDossierDocument` once h2a ships it.
 3. **Size**: the serialized envelope (UTF-8) is at most **1 MiB** [JUDGMENT]; beyond it, `payload-too-large`.
 
 ### 4.4 Versioning
@@ -339,8 +367,8 @@ stays local). A callback with no mapping is excluded from the element and listed
   tool is needed; the candidate is `ts-json-schema-generator` (MIT), as a **devDependency** of the elements package.
   Its version and license are qualified in L1; it never enters a runtime manifest.
 - Semantic documents reuse their owners' types: `SemanticDocument`, `ViewDocument` and `Transaction` from
-  `diagram-core` (schemas generated in L8), `DecisionDossierDocument` from the pinned h2a schema (§11.2), F1 as a
-  structural envelope (`$type` required) whose real validation is `hydrate` (§4.3).
+  `diagram-core` (schemas generated in L8), `DecisionDossierDocument` from the pinned `@sentropic/focus` ≥ 0.4.0
+  schema (H-1, §11.2), F1 as a structural envelope (`$type` required) whose real validation is `hydrate` (§4.3).
 - **Parity across the four frameworks**: a guard compares, for each catalogued component, the names and JSON types of
   the catalogued props against the public types of the React, Vue and Angular packages. A mismatch fails the guard, or
   is recorded in `x-sentropic.parity` with a reason. The catalogue never claims parity from types alone (the
@@ -534,10 +562,12 @@ browser.** It therefore never carries the Camunda license value; a `bpmn.waterma
 
 ## 8. MCP server in h2a
 
-Cross-repository. This section is the **contract the h2a MCP server must meet**; it does not choose the h2a package
-or server that carries it. Today no h2a MCP server serves a `ui://` resource and no package is designated to carry
-one (§3.5; h-cond, 2026-10-15): **carrier `unknown`**, decided by the owner on the h2a side (H-4). The DS supplies the
-elements package (bundled from the lockfile before publication, from npm after) and the catalogue.
+Cross-repository. This section is the **contract the h2a MCP module must meet (L3)**. Carrier designated by
+owner decision H-4 (owner via h-cond, 2026-10-16): a **module of `@sentropic/h2a`**, mounted on the existing single
+MCP endpoint, with the DS content vendored by fingerprint. On 2026-10-15 no h2a MCP server served a `ui://` resource
+and no package was designated (§3.5; h-cond, 2026-10-15). The L3 entry condition and the G1 criterion on the carrier
+(§14, §15) are therefore **fulfilled**; Track recording follows. The DS supplies the elements package (bundled from
+the lockfile before publication, from npm after) and the catalogue.
 
 ### 8.1 Capability
 
@@ -566,8 +596,9 @@ allows it; otherwise it carries `{ envelopeSha256, diagnostics }` and the app ke
 
 ### 8.3 Resource
 
-- `ui://sentropic/render/v1`, `text/html;profile=mcp-app`. The HTML is built by the server from the pinned elements
-  package: the core runtime, the elements, and host configuration (§6.5). The app reads the envelope from
+- `ui://sentropic/render/v1`, `text/html;profile=mcp-app`. The HTML is built by the `@sentropic/h2a` module
+  (H-4) from the pinned elements package vendored by fingerprint: the core runtime, the elements, and host
+  configuration (§6.5). The app reads the envelope from
   `ui/notifications/tool-input`, renders, then refines with `ui/notifications/tool-result` (validated envelope and
   diagnostics). `tool-input-partial` is ignored until `mode: "preview"` exists (§10.3).
 - **Pilot mode (before publication)**: scripts and styles inlined; `ui.csp.resourceDomains` limited to jsDelivr for
@@ -605,11 +636,11 @@ written in the server and covered by a test with an oversize case.
   4. never write component code, never add markup or style beyond the template, never set host configuration
      (theme, watermark).
 - **`focus`** (to create; it does not exist, §3.5). It wraps `sentropic-render` for `DecisionDossier`, explains how
-  to obtain a `DecisionDossierDocument` from a Track decision (`track focus`, §3.5), and how to render it in a host or
-  as a standalone file without a Claude session (`H2A:docs/focus/decision-dossier-format.md:3-5`). **Carrier
-  `unknown`**: proposed h2a [JUDGMENT], because h2a owns the schema (decision 4), `track focus` and
-  `present-decision`; the DS supplies `sentropic-render` and the element. Open as H-3 (h2a runs a double study,
-  then the owner decides).
+  to obtain a `DecisionDossierDocument` from a Track decision (`track focus --format json`, once h2a publishes it,
+  §11.2), and how to render it in a host or as a standalone file without a Claude session
+  (`H2A:docs/focus/decision-dossier-format.md:3-5`). **Carrier decided by H-3** (owner via h-cond, 2026-10-16,
+  against both study proposals): the skill lives in **`@sentropic/focus`** and is installed with the other skills.
+  **Status: to build.** The DS supplies `sentropic-render` and the element.
 - Measurable skill check (L4) [JUDGMENT]: on 10 fixed prompts per pilot component, at least 8 produce a valid envelope
   on the first attempt and 10 after the correction loop; the prompts and results are committed.
 
@@ -683,18 +714,21 @@ Criteria:
 
 ### 11.2 P-FOCUS: `<st-decision-dossier>`
 
-Renders a `DecisionDossierDocument` against the **h2a schema pinned by version** (decision 4).
+Renders a `DecisionDossierDocument` against the **`@sentropic/focus` schema pinned by version** (decision 4 as
+refined by H-1, §1.1b).
 
-Preconditions (h2a, status `unknown`): h2a **creates** a JSON Schema for `DecisionDossierDocument` from
-`@sentropic/focus` and publishes it inside a versioned artefact (proposal [JUDGMENT]:
-`@sentropic/focus/schema/decision-dossier.v1.json` in a new `@sentropic/focus` release), with a validator; the DS
-pins that exact version and records the schema's sha256. Until then the catalogue entry `DecisionDossier` carries
-`x-sentropic.status: "unknown"` and L6 cannot start.
+Preconditions (h2a, status `unknown` until publication): (a) `@sentropic/focus` **≥ 0.4.0** published with the
+versioned JSON Schema of `DecisionDossierDocument` and its validator — owner decision H-1 (owner via h-cond,
+2026-10-16): dedicated schema subpath, validator with no track dependency, versioning rule `$id` `v1` + package
+semver, DS pins the exact version and records the schema's sha256, exact version `unknown` until publication; (b)
+`track focus --format json` published — annex point (owner via h-cond, 2026-10-16) feeding the render input without
+reinterpreting HTML, `unknown` until publication. Until both land, the catalogue entry `DecisionDossier` carries
+`x-sentropic.status: "unknown"` and L6 cannot start (§14).
 
 Criteria:
-1. A dossier produced by `track focus <id>` from this repository's Track renders in Claude Desktop, in VS Code and as
-   a standalone file built from the **local** elements build and opened with the network disabled. The same check on
-   the jsDelivr-pinned build belongs to L7b.
+1. A dossier produced by `track focus <id> --format json` from this repository's Track renders in Claude Desktop, in
+   VS Code and as a standalone file built from the **local** elements build and opened with the network disabled.
+   The same check on the jsDelivr-pinned build belongs to L7b.
 2. Content parity with h2a's `renderHtml` on the same document: same sections in the same order, same option ids and
    titles, same outcome (text comparison of the rendered DOM).
 3. No hard-coded colour: every colour resolves to a `--st-*` token (a test scans computed styles against the token set),
@@ -793,12 +827,12 @@ CDN runs in the browser, and everything in `hostConfig` is readable there, **the
 | lot | repository | content | depends on | entry condition | gate |
 |---|---|---|---|---|---|
 | **L0** | DS | this spec, Track records (§19) | — | — | **G0**: PR reviewed and merged; H-4 and H-5 sent to h2a with a requested date |
-| **L1** | DS | catalogue and schema generator (§5), envelope validator and diagnostics (§4), freshness guard, A2UI SDK acceptance test | L0 | — | **G1**: AC-L1 **and the L3 carrier designated and recorded in Track (H-4, H-5)** |
+| **L1** | DS | catalogue and schema generator (§5), envelope validator and diagnostics (§4), freshness guard, A2UI SDK acceptance test | L0 | — | **G1**: AC-L1 **and the L3 carrier designated and recorded in Track (H-4, H-5) — fulfilled 2026-10-16 (carrier: module of `@sentropic/h2a`; Track recording follows)** |
 | **L2** | DS | elements package, `private: true`: three wrappers, theme, shadow DOM, CSP and size measurements, `sri.json`, Svelte-vs-Lit threshold, json-render comparison, W4 guard | L1 | — | **G2**: AC-L2; the Svelte/Lit outcome recorded in Track |
-| **L3** | h2a (carrier `unknown`, H-4) | MCP extension negotiation, `resources/*`, four tools, `ui://sentropic/render/v1`, fallbacks, bounds, W3/W4 | L2 | **carrier designated (owner + date)** | **G3**: AC-L3 |
-| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (carrier `unknown`, H-3), skill check on the local build | L3 | — | **G4**: AC-L4 |
+| **L3** | h2a (carrier: module of `@sentropic/h2a`, H-4 answered 2026-10-16) | MCP extension negotiation, `resources/*`, four tools, `ui://sentropic/render/v1`, fallbacks, bounds, W3/W4 | L2 | **carrier designated (owner + date) — fulfilled 2026-10-16 (owner via h-cond)** | **G3**: AC-L3 |
+| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (`@sentropic/focus`, H-3 answered 2026-10-16), skill check on the local build | L3 | — | **G4**: AC-L4 |
 | **L5** | DS (+ bpmn-canvas) | pilot P-BPMN | L3 | F1 published with unknown-extension retention | **G5**: §11.1 criteria |
-| **L6** | DS (+ h2a) | pilot P-FOCUS | L3 | h2a schema and validator published | **G6**: §11.2 criteria |
+| **L6** | DS (+ h2a) | pilot P-FOCUS | L3 | `@sentropic/focus` ≥ 0.4.0 with schema + validator published **and** `track focus --format json` published (both `unknown` until publication, §11.2) | **G6**: §11.2 criteria |
 | **L7a** | DS | first publication: `elements-publish.yml`, core + `BarChart` + catalogue + schemas, jsDelivr and SRI check, skill template switched to the CDN | L4 | — | **G7a**: AC-L7a. **Point of no return** |
 | **L7b** | DS | publication of `BpmnCanvas` and `DecisionDossier` (minor release), `diagram-core` made public, W5 | L7a, L5, L6 | — | **G7b**: AC-L7b |
 | **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
@@ -810,12 +844,13 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
 
 - **AC-L1**: `node <generator> --check` exits 0 inside `scripts/run-script-guards.mjs`; `catalog.json` has `$id` equal
   to `catalogId` and three components; each standalone schema agrees with its catalogue entry (test); each component's
-  `example` validates and a mutated example fails with the expected `path` (`DecisionDossier` is exempt while its h2a
-  schema is `unknown`: its `document` property is then `{ "type": "object" }` and the entry carries
-  `x-sentropic.status: "unknown"`); no implicit `any` in the generated schemas, or an inventory of each replacement
-  type; the A2UI SDK test (`@a2ui/web_core`, exact version) loads the catalogue — if it refuses, the refusal is
-  recorded with the SDK's message and U-2 stays open; the four-framework parity guard passes or records each mismatch
-  in `x-sentropic.parity`. G1 also requires the L3 carrier (§14).
+  `example` validates and a mutated example fails with the expected `path` (`DecisionDossier` is exempt while its
+  `@sentropic/focus` schema is `unknown` (H-1, exact version `unknown` until ≥ 0.4.0 publication): its `document`
+  property is then `{ "type": "object" }` and the entry carries `x-sentropic.status: "unknown"`); no implicit `any`
+  in the generated schemas, or an inventory of each replacement type; the A2UI SDK test (`@a2ui/web_core`, exact
+  version) loads the catalogue — if it refuses, the refusal is recorded with the SDK's message and U-2 stays open;
+  the four-framework parity guard passes or records each mismatch in `x-sentropic.parity`. G1 also requires the L3
+  carrier (§14) — fulfilled 2026-10-16 (carrier: module of `@sentropic/h2a`; Track recording follows).
 - **AC-L2**: for each of the three elements, one envelope renders in Chromium with zero console errors and zero CSP
   violations under the MCP Apps default CSP plus the pilot asset rule; computed styles of the element equal the
   Svelte component's on the same input for the checked properties; `sri.json` hashes match `npm pack` output; sizes
@@ -852,7 +887,7 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
 | Gemini stays uncovered because the A2UI trigger is never fired | dated review of §12 at each Track report, deadline 2026-11-15 |
 | hand-written schemas drift from the TS types | schemas generated, freshness guard, no implicit `any` (§5.1) |
 | the elements package is never published | publication is decided (§1.1, decision 3); L7a no longer waits on external preconditions |
-| L3 has no carrier, and L4–L6 wait on it | carrier designation is a G1 criterion and L3's entry condition (§14) |
+| L3 had no carrier, and L4–L6 waited on it | carrier designation is a G1 criterion and L3's entry condition (§14) — fulfilled 2026-10-16 (carrier: module of `@sentropic/h2a`) |
 | the watermark is hidden without a license, or the license leaks to the browser | §13.2–§13.4: visible until Q-1a and Q-5 are answered; value server-side only; canary test (W4) |
 | the F1 or h2a preconditions never land | L5 and L6 are blocked explicitly; L7a ships without them |
 | ChatGPT does not conform to SEP-1865 | VS Code is the second reference host (§8.3), ChatGPT measured (U-13) |
@@ -870,10 +905,10 @@ Unknowns (each measured by the named lot):
 | U-5 | MCP Apps support in Claude Code | L3 (observation only) |
 | U-6 | `bpmn-canvas` fonts and images inside a Claude Code artifact | L5 |
 | U-7 | publication date of an F1 that keeps unknown extensions | external (bpmn-canvas, d2d-cond) |
-| U-8 | creation, versioning and publication of h2a's `DecisionDossierDocument` JSON Schema | external (h2a) |
+| U-8 | publication of `@sentropic/focus` ≥ 0.4.0 with the `DecisionDossierDocument` JSON Schema + validator (carrier and versioning decided by H-1 on 2026-10-16; exact version `unknown` until publication) | external (h2a) |
 | U-9 | `@sentropic/focus` status: README « private » versus manifest public and npm 0.3.0 | external (h2a) |
-| U-10 | the h2a package or server that carries the MCP contract of §8 | external (h2a, owner) |
-| U-11 | the carrier of the `focus` skill | external (h2a, owner) |
+| U-10 | (answered by H-4 on 2026-10-16) the h2a carrier of the MCP contract of §8: module of `@sentropic/h2a` | — |
+| U-11 | (answered by H-3 on 2026-10-16) the carrier of the `focus` skill: `@sentropic/focus` (to build) | — |
 | U-12 | asset loading in the pilot resource: whether each host honours `ui.csp.resourceDomains` for jsDelivr | L3 |
 | U-13 | ChatGPT's conformance to SEP-1865 (extension negotiation, `visibility`, `ui/notifications/*`, `ui.csp`) | L3 |
 | U-14 | the Markdown sanitizer and its cost | L2 |
@@ -881,6 +916,7 @@ Unknowns (each measured by the named lot):
 | U-16 | the effective CSP of a `ui://` document per host, in particular whether `'unsafe-inline'` is kept | L3 |
 | U-17 | F1's canonical ordering, needed by P-BPMN criterion 4 | external (bpmn-canvas) |
 | U-18 | rotation cycle of `SENTROPIC_BPMN_WATERMARK_LICENSE` | owner |
+| U-19 | publication of `track focus --format json` (annex, owner via h-cond, 2026-10-16) | external (h2a) |
 
 Questions for the owner:
 - **Q-1a** (blocking for hiding, not for L1–L4) Is a **non-secret** reference, distinct from the confidential license
@@ -894,15 +930,24 @@ Answered on 2026-10-15 (kept for the record): **Q-1** the license is confidentia
 unless the owner objects: package `@sentropic/design-system-elements`, catalogue domain `design-system.sent-tech.ca`;
 **Q-3** for D4, « publier maintenant » replaces option A's precondition (§18.2).
 
-Questions for h2a (H-1, H-3 and H-4 go through an h2a double study, then the owner; they stay `unknown`):
-- **H-1** Where and in which artefact the `DecisionDossierDocument` JSON Schema and its validator are published, and
-  their versioning rule.
-- **H-3** Who carries the `focus` skill (proposed: h2a), and where.
-- **H-4** Which h2a package or server carries the MCP contract of §8.
-- **H-5** An owner and a date for H-1 and H-4: L3 cannot start, and G1 cannot pass, without the H-4 carrier.
+Questions for h2a (H-1, H-3 and H-4 went through an h2a Astra + Opus double study, then the owner; answered
+2026-10-16, source for each: owner via h-cond):
+- **H-1 — answered.** The versioned JSON Schema of `DecisionDossierDocument` and its validator are published by
+  **`@sentropic/focus`**, in a next minor version **≥ 0.4.0**, under a dedicated schema subpath. The validator
+  depends on no track function. Versioning rule: versioned `$id` `v1`, package semver, DS pins the version.
+  **Status: to build**; the exact version stays `unknown` until publication (U-8, §§11.2, 14).
+- **H-3 — answered.** The **`focus`** skill lives in **`@sentropic/focus`**. Owner decision, against both study
+  proposals. It is installed with the other skills. **Status: to build** (§§9, 14).
+- **H-4 — answered.** The MCP contract of §8 is carried by a **module of `@sentropic/h2a`**, mounted on the existing
+  single MCP endpoint, with the DS content vendored by fingerprint. The L3 entry condition and the G1 criterion on
+  the carrier (§14, §15) are therefore **fulfilled**.
+- **H-5** An owner and a date for H-1 and H-4: L3 cannot start, and G1 cannot pass, without the H-4 carrier —
+  **fulfilled 2026-10-16** (owner via h-cond) for the carrier designation; the two L6 publications (U-8, U-19) stay
+  `unknown` until they land.
 - **H-6** Who provides the accounts and environments for the VS Code and ChatGPT checks of L3.
 
-H-2 is answered by Q-1: h2a does not own the license.
+H-2 is answered by Q-1: h2a does not own the license. Annex (owner via h-cond, 2026-10-16): h2a adds a
+`track focus --format json` output (U-19), a precondition of L6 (§§11.2, 14).
 
 ## 18. Other decisions recorded by this PR
 
@@ -1032,7 +1077,7 @@ being applied or refused. Owner answers that arrived after the review (Q-1, Q-2,
 | F2 — D2/D4 provenance not established | **Refused** (provenance), **applied** (D4 contradiction) | Provenance: the same brief, point 6, reads « D2 : choisir A pour la décision en attente `01M2KK5XPJCP07FDBQBX16TV08`, ou en créer une nouvelle si … » and « D4 : choisir A (publication de dataviz-angular maintenant, avec la matrice des absences), mêmes précautions, décision `01M2KK5XS2SXGMSSQPAVCF2XJ4` ». Contradiction: the owner then answered Q-3 (« publier maintenant » replaces the precondition); the Track record now selects a distinct option `A-now` instead of the unamended `A`. | header, §1.3 C4, §18.1, §18.2, §19 |
 | F3 — Camunda license existence and scope not verified | **Applied** | New blocking Q-5 (scope, products, deployments, verifier). Hiding is blocked until Q-1a and Q-5 are answered; P-BPMN criterion 3 is conditional and reported `not applicable` meanwhile. | §11.1, §13.3, §13.4 W5, §17 |
 | F4 — `d2d-cond`, `h-cond` undefined | **Applied** | Glossary added. | header |
-| F5 / G4 — L3 without carrier on the critical path | **Applied** | Carrier designation is L3's entry condition and a G1 criterion; H-4/H-5 sent at G0; H-5 added. Carrier stays `unknown` (h2a double study, then owner). | §8, §14, §15, §17 |
+| F5 / G4 — L3 without carrier on the critical path | **Applied** | Carrier designation is L3's entry condition and a G1 criterion; H-4/H-5 sent at G0; H-5 added. Carrier stayed `unknown` at PR #168 (h2a double study, then owner); fulfilled 2026-10-16 by H-4 (owner via h-cond): module of `@sentropic/h2a`. | §1.1b, §8, §14, §15, §17 |
 | E1 — grep pattern | **Applied** | `git grep … 30c13318` with the cited pattern → 0 lines (re-run); the `unpkg` note moved to a parenthesis. | §3.1 |
 | E2 — « only `present-decision` exists » | **Applied** | Reworded: closest existing skill, others listed. | §3.5 |
 | E3 — 12 tokens | **Applied** | `kc/docs/kc-decision/focus/chain/style.css` lines 1-6 define 11 distinct `--st-*` properties (re-counted). | §3.5 |
