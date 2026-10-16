@@ -95,6 +95,16 @@ function monthOf(iso: string, offsetMonths: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+// Month coupling (two-calendar mode). Invariant: right > left, always.
+// Lexicographic comparison orders padded "YYYY-MM" chronologically.
+function seedMonths(fromDate: string, toDate: string): { left: string; right: string } {
+  const left = monthOf(fromDate, 0);
+  // Right = end month when it is after the left one, else left + 1: both
+  // bounds are visible as soon as the panel opens.
+  const endMonth = monthOf(toDate, 0);
+  return { left, right: endMonth > left ? endMonth : monthOf(left, 1) };
+}
+
 function parseDateTimeText(text: string): { date: string; time: string } | null {
   const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{1,2}:\d{2})$/.exec(text.trim());
   if (!match) return null;
@@ -254,13 +264,24 @@ export function TimeRangePicker({
   // ONLY on `open` — `current` is read from the render that flipped `open` to
   // true, so a controlled `value` change while the panel stays open does NOT
   // clobber in-progress edits (mirrors the Svelte version's `untrack`).
+  function onLeftMonthChange(next: string) {
+    setLeftMonth(next);
+    setRightMonth((prev) => (prev <= next ? monthOf(next, 1) : prev));
+  }
+
+  function onRightMonthChange(next: string) {
+    setRightMonth(next);
+    setLeftMonth((prev) => (prev >= next ? monthOf(next, -1) : prev));
+  }
+
   React.useEffect(() => {
     if (open) {
       setActiveTab(current.mode);
       setDraft(draftFromValue(current));
       const split = splitAbsolute(current.from, current.to);
-      setLeftMonth(monthOf(split.fromDate, 0));
-      setRightMonth(monthOf(split.fromDate, 1));
+      const seeded = seedMonths(split.fromDate, split.toDate);
+      setLeftMonth(seeded.left);
+      setRightMonth(seeded.right);
       previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       focusFirstInPanel();
     } else {
@@ -482,6 +503,7 @@ export function TimeRangePicker({
                     range
                     value={calendarValue}
                     onChange={onCalendarChange}
+                    onMonthChange={onLeftMonthChange}
                     min={calendarMinIso}
                     max={calendarMaxIso}
                     locale={locale}
@@ -492,6 +514,7 @@ export function TimeRangePicker({
                       range
                       value={calendarValue}
                       onChange={onCalendarChange}
+                      onMonthChange={onRightMonthChange}
                       min={calendarMinIso}
                       max={calendarMaxIso}
                       locale={locale}

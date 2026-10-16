@@ -237,6 +237,20 @@ function onRangeChange(next) {
       </p>
     </div>
     <pre class="docs-codeblock"><code>{customExtraUsage}</code></pre>
+    <p class="section-desc">
+      {#if fr}
+        Les deux mois affichés sont <strong>couplés</strong> : à l'ouverture, la droite s'ouvre
+        sur le mois de la fin quand il suit celui du début (les deux bornes sont visibles
+        d'emblée), puis naviguer à gauche repousse la droite à <code>m + 1</code> et naviguer à
+        droite ramène la gauche à <code>m − 1</code> — la droite reste toujours strictement après
+        la gauche.
+      {:else}
+        The two displayed months are <strong>coupled</strong>: on open, the right one shows the
+        end month when it follows the start month (both bounds visible immediately), then
+        navigating left pushes right to <code>m + 1</code> and navigating right pulls left back
+        to <code>m − 1</code> — right always stays strictly after left.
+      {/if}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -377,7 +391,11 @@ function onRangeChange(next) {
           <td><code>calendarMonths</code></td>
           <td><code>1 | 2</code></td>
           <td><code>2</code></td>
-          <td>{fr ? "Mois affichés côte à côte." : "Months shown side by side."}</td>
+          <td>
+            {fr
+              ? "Mois affichés côte à côte. À 2, les mois sont couplés : la droite reste toujours strictement après la gauche."
+              : "Months shown side by side. At 2, the months are coupled: right always stays strictly after left."}
+          </td>
         </tr>
         <tr>
           <td><code>label</code></td>
