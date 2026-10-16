@@ -24,31 +24,43 @@
  *   entries and distribute-elements entries.
  * - keyboard: editor-action names bound in SHORTCUTS_KEY_BINDINGS (bpmn-js),
  *   diagram-js KeyboardBindings addListener actions (every listener kept in
- *   the detail), every registered EditorActions action, search-pad keys, and
- *   KeyboardUtil key groups.
+ *   the detail), every registered EditorActions action, plus keys handled
+ *   without an editor action (search-pad isKey keys, hand-tool hold key,
+ *   one shared detail for both). KeyboardUtil KEYS_* groups are not
+ *   entries; they enrich the detail of the matching
+ *   copy/cut/duplicate/paste/undo/redo actions.
  * - event: distinct EventBus event names from `fire('…')`, `.on('…')`,
- *   `.on([…])` (arrays may span lines), the InteractionEvents DOM table, the
- *   CommandStack lifecycle qualifiers, and the Dragging helper types.
- *   Dynamic names with a trailing dot (`commandStack.`, `drag.`, `keyboard.`)
- *   are kept verbatim and flagged `dynamicPrefix: true`.
- * - config: fields of BaseViewerOptions + DiagramOptions typedefs plus every
- *   `config.<name>` / `this._config.<name>` first-level read and every
- *   `config.*` didi injection key.
+ *   `.once('…')` and their array forms (arrays may span lines), the `_emit`
+ *   / `_fire` helpers (prefix resolved from each helper definition,
+ *   template literals included), string-constant event names, the
+ *   InteractionEvents DOM table, the CommandStack lifecycle qualifiers,
+ *   and the Dragging helper types. Dynamic names with a trailing dot
+ *   (`commandStack.`, `drag.`, `keyboard.`, `popupMenu.`) are kept
+ *   verbatim and flagged `dynamicPrefix: true`.
+ * - config: fields of BaseViewerOptions + DiagramOptions typedefs, every
+ *   `config.*` didi injection key, and every DI-config read qualified by
+ *   its file's injection (`config.<feature>.<prop>` from `config.<prop>`,
+ *   `this._config.<prop>` and `_config['<prop>']` in that file). Files
+ *   without a `config.*` injection have no DI config and are skipped.
  * - renderer: keys of the BpmnRenderer `handlers` map (including `label`),
  *   the `eventIconRenderers` map and the `taskMarkerRenderers` map.
  * - moddle-type: types AND enumerations of the five JSON descriptors present
  *   in the checkout (bpmn, bpmndi, di, dc, bioc). The `color` package (3 types)
  *   has no JSON in this checkout (external `bpmn-in-color-moddle`, dist not
  *   built) and is recorded as a source-gap in meta, not as entries.
- * - api: public prototype methods of BaseViewer/Viewer/NavigatedViewer/Modeler/
- *   BaseModeler/Modeling/EditorActions services (bpmn-js) and Diagram/Canvas/
- *   Modeling/ElementRegistry/EventBus/CommandStack/Overlays/Selection/
- *   EditorActions (diagram-js), excluding `_private`.
- * - example: top-level example directories of bpmn-js-examples that carry a
- *   README, excluding upstream tombstones (`> Removed as of …`, README only).
+ * - api: public methods of every didi `type` service class plus the
+ *   entry classes defined directly under `lib/`: `Class.prototype.<m>`
+ *   assignments and constructor-style `this.<m> = function/<fn>` assignments
+ *   whose name does not start with `_`. Service classes are resolved from
+ *   the `index.js` registrations (`name: [ 'type', Impl ]` + its import),
+ *   never from a class list.
+ * - example: top-level example directories of bpmn-js-examples whose
+ *   README carries a markdown heading (upstream tombstones carry none);
+ *   the entry detail is that heading.
  *
  * Every raw item must receive exactly one inventory entry; `verify.mjs`
- * re-runs this extraction and asserts the bijection (the completeness guard).
+ * compares the inventory against the independent AST extraction in
+ * `extract-ast.mjs` and asserts the bijection (the completeness guard).
  */
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -151,7 +163,6 @@ const PROOF = {
   skeleton: () => proofIn('packages/diagram-core/src/profiles/skeletons.ts', 'SKELETON. Declared', 'bpmn@1 is a declared skeleton; no BPMN conformance claimed.'),
   skeletonNotes: () => proofIn('packages/diagram-core/src/profiles/skeletons.ts', 'NOT declared', 'Skeleton notes list what BPMN does not declare (DI, rules, event matrix).'),
   scene: () => proofIn('packages/diagram-canvas/src/scene.ts', 'export function buildScene', 'Headless scene from persisted view geometry; no editor interactions.'),
-  hit: () => proofIn('packages/diagram-canvas/src/hit.ts', 'export function hitTest(', 'Point/region hit test only; no drag/connect/edit lifecycle.'),
   transform: () => proofIn('packages/diagram-canvas/src/transform.ts', 'export function worldToDevice', 'Camera transform contract (world -> device) only.'),
   graphRenderer: () => proofIn('packages/graph/src/renderer.ts', 'export function createGraphRenderer', 'Generic graph renderer (WebGL2/Canvas2D); no BPMN glyphs.'),
   graphShapes: () => proofIn('packages/graph/src/shape-geometry.ts', 'export function shapeCode', 'Generic shape codes only (circle/diamond/box/...); no BPMN icons/markers.'),
@@ -170,7 +181,7 @@ function extractModules() {
       const text = readFileSync(f, 'utf8');
       const initLine = firstLineMatching(f, /__init__/);
       const services = [];
-      for (const m of text.matchAll(/^\s{2}([A-Za-z][\w]*):\s*\[/gm)) services.push(m[1]);
+      for (const m of text.matchAll(/^\s{2}([A-Za-z][\w]*)\s*:\s*\[/gm)) services.push(m[1]);
       items.push({
         key: `${label}:${relative(join(root, 'lib'), f).split('\\').join('/')}`,
         sourceAbs: f, line: initLine,
@@ -356,8 +367,21 @@ function extractKeyboard() {
       listenerLines.get(m[1]).push(i + 1);
     }
   });
+  // KeyboardUtil key groups enrich the matching actions; they are not
+  // actions themselves and get no entry of their own.
+  const keyGroups = new Map();
+  const kuFile = join(diagramRoot, 'lib/features/keyboard/KeyboardUtil.js');
+  readLines(kuFile).forEach((l, i) => {
+    const m = l.match(/export var (KEYS_\w+)\s*=\s*\[([^\]]*)\]/);
+    if (m) {
+      const values = [...m[2].matchAll(/'([^']+)'/g)].map((q) => q[1]);
+      keyGroups.set(m[1].replace(/^KEYS_/, '').toLowerCase(), { name: m[1], values, line: i + 1 });
+    }
+  });
   for (const [action, lines] of listenerLines) {
-    push(action, df, lines[0], lines.length > 1 ? `diagram-js default binding (${lines.length} listeners, lines ${lines.join(', ')})` : 'diagram-js default binding (guarded by editorActions.isRegistered)');
+    const base = lines.length > 1 ? `diagram-js default binding (${lines.length} listeners, lines ${lines.join(', ')})` : 'diagram-js default binding (guarded by editorActions.isRegistered)';
+    const group = keyGroups.get(action);
+    push(action, df, lines[0], group ? `${base}; ${group.name} = [${group.values.join(', ')}]` : base);
   }
   // Every registered editor action (bpmn-js _registerAction, diagram-js register).
   for (const f of [join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), join(diagramRoot, 'lib/features/editor-actions/EditorActions.js')]) {
@@ -365,17 +389,18 @@ function extractKeyboard() {
       for (const m of l.matchAll(/(?:_registerAction|register)\(\s*'([^']+)'/g)) push(m[1], f, i + 1, 'registered editor action');
     });
   }
-  // Search-pad keys handled inside the pad (no editor action).
+  // Keys handled inside a feature without an editor action, found by
+  // scanning isKey(...) (single and array forms) in the owning file.
   const sp = join(diagramRoot, 'lib/features/search-pad/SearchPad.js');
   readLines(sp).forEach((l, i) => {
-    for (const m of l.matchAll(/isKey\(\s*'([^']+)'/g)) {
-      if (['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(m[1])) push(`searchPad:${m[1]}`, sp, i + 1, 'search-pad key handling');
+    for (const m of l.matchAll(/isKey\(\s*'([^']+)'/g)) push(`searchPad:${m[1]}`, sp, i + 1, 'key handling without editor action (isKey)');
+    for (const m of l.matchAll(/isKey\(\s*\[([^\]]*)\]/g)) {
+      for (const q of m[1].matchAll(/'([^']+)'/g)) push(`searchPad:${q[1]}`, sp, i + 1, 'key handling without editor action (isKey)');
     }
   });
-  const ku = join(diagramRoot, 'lib/features/keyboard/KeyboardUtil.js');
-  readLines(ku).forEach((l, i) => {
-    const m = l.match(/export (?:var|const) (KEYS_\w+|KEY_\w+)/);
-    if (m) push(m[1], ku, i + 1, 'key-group constant');
+  const ht = join(diagramRoot, 'lib/features/hand-tool/HandTool.js');
+  readLines(ht).forEach((l, i) => {
+    for (const m of l.matchAll(/isKey\(\s*'([^']+)'/g)) push(`handTool:${m[1]}`, ht, i + 1, 'key handling without editor action (isKey)');
   });
   return items;
 }
@@ -386,14 +411,51 @@ function extractEvents() {
   for (const root of [bpmnRoot, diagramRoot]) {
     for (const f of jsFiles(root)) {
       const lines = readLines(f);
+      const codeText = lines.filter((l) => !l.trimStart().startsWith('*')).join('\n');
+      // Per-file string constants, used to resolve identifier event names.
+      const consts = new Map();
+      for (const m of codeText.matchAll(/([A-Z][A-Z\d_]*)\s*=\s*'([^']+)'/g)) consts.set(m[1], m[2]);
+      for (const [name, value] of consts) {
+        if (name.includes('EVENT') && value.includes('.')) add(value, f, firstLineMatching(f, new RegExp(`'${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`)));
+      }
+      const constArrays = new Map();
+      for (const m of codeText.matchAll(/(?:var|const|let)\s+([A-Z][A-Z\d_]*)\s*=\s*\[([\s\S]*?)\]/g)) {
+        constArrays.set(m[1], [...m[2].matchAll(/'([^']+)'/g)].map((q) => q[1]));
+      }
+      // Prefix applied by this file's _emit/_fire helper, if it defines one:
+      // fire(type) applies no prefix, fire('p.' + x) / fire(`p.${x}`) apply 'p.'.
+      let emitPrefix = null;
+      const def = codeText.match(/prototype\._(?:emit|fire)\s*=\s*function\s*\([^)]*\)\s*\{([\s\S]{0,400}?)\n\};/);
+      if (def) {
+        const tpl = def[1].match(/fire\(\s*`([^`$]*)\$\{/);
+        const bin = def[1].match(/fire\(\s*'([^']*)'\s*\+/);
+        emitPrefix = tpl ? tpl[1] : bin ? bin[1] : '';
+      }
       lines.forEach((l, i) => {
         if (l.trimStart().startsWith('*')) return; // JSDoc examples are not behaviour
         for (const m of l.matchAll(/\.fire\(\s*'([^']+)'/g)) add(m[1], f, i + 1);
         for (const m of l.matchAll(/\.on\(\s*'([^']+)'/g)) add(m[1], f, i + 1);
+        for (const m of l.matchAll(/\.once\(\s*'([^']+)'/g)) add(m[1], f, i + 1);
+        for (const m of l.matchAll(/\.fire\(\s*`([^`$]*)\$\{/g)) { if (m[1].endsWith('.')) add(m[1], f, i + 1); }
+        if (emitPrefix !== null) {
+          for (const m of l.matchAll(/\._(?:emit|fire)\(\s*'([^']+)'/g)) add(`${emitPrefix}${m[1]}`, f, i + 1);
+        }
+        if (/\.(?:fire|on|once)\(/.test(l)) {
+          for (const m of l.matchAll(/\b([A-Z][A-Z\d_]{2,})\b/g)) {
+            if (consts.has(m[1])) add(consts.get(m[1]), f, i + 1);
+            if (constArrays.has(m[1])) for (const v of constArrays.get(m[1])) add(v, f, i + 1);
+          }
+          for (const m of l.matchAll(/\b(CLOSE_EVENTS|[A-Z][A-Z\d_]*EVENTS?)\b/g)) {
+            if (constArrays.has(m[1])) for (const v of constArrays.get(m[1])) add(v, f, i + 1);
+          }
+        }
+        const onceId = l.match(/\.once\(\s*([A-Za-z_$][\w$]*)\s*[,)]/);
+        if (onceId && constArrays.has(onceId[1])) for (const v of constArrays.get(onceId[1])) add(v, f, i + 1);
+        const onId = l.match(/\.(?:on|once)\(\s*([A-Za-z_$][\w$]*)\s*[,)]/);
+        if (onId && constArrays.has(onId[1])) for (const v of constArrays.get(onId[1])) add(v, f, i + 1);
       });
-      // .on([ 'a', 'b' ], ...) arrays may span lines: scan the joined code.
-      const codeText = lines.filter((l) => !l.trimStart().startsWith('*')).join('\n');
-      for (const m of codeText.matchAll(/\.on\(\s*\[([\s\S]*?)\]/g)) {
+      // .on/.once([ 'a', 'b' ], ...) arrays may span lines: scan the joined code.
+      for (const m of codeText.matchAll(/\.(?:on|once)\(\s*\[([\s\S]*?)\]/g)) {
         for (const q of m[1].matchAll(/'([^']+)'/g)) add(q[1], f, firstLineMatching(f, new RegExp(`'${q[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`)));
       }
     }
@@ -426,9 +488,20 @@ function extractConfig() {
   const seen = new Set();
   const push = (key, abs, line, detail) => { if (!seen.has(key)) { seen.add(key); items.push({ key, sourceAbs: abs, line, detail }); } };
   const bv = join(bpmnRoot, 'lib/BaseViewer.js');
-  readLines(bv).forEach((l, i) => {
-    const m = l.match(/^\s*\*\s+(width|height|position|container|moddleExtensions|additionalModules)\??:/);
-    if (m) push(`viewer.${m[1]}`, bv, i + 1, 'BaseViewerOptions field');
+  const bvLines = readLines(bv);
+  // Viewer options: fields of the typedef block closed by the
+  // `BaseViewerOptions` name, then any further `options.<prop>` read in
+  // the viewer implementation.
+  const typedefEnd = bvLines.findIndex((l) => /\}\s*&\s*Record<[^>]*>\s*\}\s*BaseViewerOptions/.test(l));
+  if (typedefEnd >= 0) {
+    let typedefStart = typedefEnd;
+    while (typedefStart > 0 && !/@typedef/.test(bvLines[typedefStart])) typedefStart--;
+    for (let i = typedefStart; i < typedefEnd; i++) {
+      const m = bvLines[i].match(/^\s*\*\s+([A-Za-z][\w]*)\??:/);
+      if (m) push(`viewer.${m[1]}`, bv, i + 1, 'BaseViewerOptions field');
+    }
+  }
+  bvLines.forEach((l, i) => {
     const c = l.match(/options\.(\w+)/);
     if (c) push(`viewer.${c[1]}`, bv, i + 1, 'options read in BaseViewer');
   });
@@ -436,17 +509,63 @@ function extractConfig() {
   readLines(dg).forEach((l, i) => {
     if (/modules\?:/.test(l)) push('diagram.modules', dg, i + 1, 'DiagramOptions field');
   });
-  // per-feature config reads: every config.<name> / this._config.<name> access
-  // and every 'config.*' didi injection key (first occurrence per name).
+  // Per-feature config reads, qualified by the didi injection of the same
+  // file: a service injected as 'config.<feature>' receives that sub-object
+  // as its local `config` parameter, so `config.<prop>` in that file means
+  // `config.<feature>.<prop>`. Files without a 'config.*' injection have no
+  // DI config (Text layout defaults, per-tooltip add() options) and are
+  // skipped. Bare `config` reads inside a method that declares its own
+  // non-forwarded `config` parameter (a menu/container descriptor) do not
+  // read DI config and are skipped; `this._config` always does.
   // JSDoc lines are skipped: they document options, they do not read them.
   for (const root of [bpmnRoot, diagramRoot]) {
     for (const f of jsFiles(root)) {
-      readLines(f).forEach((l, i) => {
+      const lines = readLines(f);
+      let feature = null;
+      let featureLine = 1;
+      for (let i = 0; i < lines.length; i++) {
+        const m = lines[i].match(/'config\.([A-Za-z][\w]*)'/);
+        if (m) { feature = m[1]; featureLine = i + 1; break; }
+      }
+      if (!feature) continue;
+      const prefix = `config.${feature}`;
+      push(prefix, f, featureLine, 'didi config injection');
+      const forwarded = new Set();
+      for (const l of lines) {
+        for (const m of l.matchAll(/this\.(\w+)\(\s*config\b/g)) forwarded.add(m[1]);
+      }
+      let bareIsDi = true;
+      lines.forEach((l, i) => {
         if (l.trimStart().startsWith('*')) return;
-        for (const m of l.matchAll(/'config\.([\w.]+)'/g)) push(`config.${m[1]}`, f, i + 1, 'didi config injection');
-        for (const m of l.matchAll(/(?:^|[^\w])config\.(\w+)/g)) push(`config.${m[1]}`, f, i + 1, 'feature config read');
-        for (const m of l.matchAll(/_config\.(\w+)/g)) push(`config.${m[1]}`, f, i + 1, 'feature config read');
+        const ctor = l.match(/export default function\s*\w*\s*\(([^)]*)\)/);
+        const proto = l.match(/prototype\.(\w+)\s*=\s*function\s*\(([^)]*)\)/);
+        const own = l.match(/this\.(\w+)\s*=\s*function\s*\(([^)]*)\)/);
+        const plain = !ctor && !proto && !own ? l.match(/function\s*\w*\s*\(([^)]*)\)/) : null;
+        if (ctor) bareIsDi = true;
+        else if (proto) {
+          const ownsConfig = proto[2].split(',').map((s) => s.trim()).includes('config');
+          bareIsDi = !ownsConfig || forwarded.has(proto[1]);
+        } else if (own) {
+          const ownsConfig = own[2].split(',').map((s) => s.trim()).includes('config');
+          bareIsDi = !ownsConfig || forwarded.has(own[1]);
+        } else if (plain) {
+          const ownsConfig = plain[1].split(',').map((s) => s.trim()).includes('config');
+          if (ownsConfig) bareIsDi = false;
+        }
+        if (bareIsDi) {
+          for (const m of l.matchAll(/(?:^|[^\w])config\.(\w+)/g)) {
+            if (m[1] !== feature) push(`${prefix}.${m[1]}`, f, i + 1, 'feature config read');
+          }
+        }
+        for (const m of l.matchAll(/_config\.(\w+)/g)) push(`${prefix}.${m[1]}`, f, i + 1, 'feature config read');
       });
+      const joined = lines.join('\n');
+      for (const m of joined.matchAll(/_config\[\s*([\s\S]{0,160}?)\]/g)) {
+        for (const q of m[1].matchAll(/'(\w+)'/g)) {
+          const line = joined.slice(0, m.index).split('\n').length;
+          push(`${prefix}.${q[1]}`, f, line, 'feature config read');
+        }
+      }
     }
   }
   return items.sort((a, b) => a.key.localeCompare(b.key));
@@ -492,15 +611,17 @@ function extractModdleTypes() {
     };
     for (const t of doc.types || []) {
       const key = `${prefix}:${t.name}`;
+      const extendsPart = (t.extends || []).length ? `; extends: ${(t.extends || []).join(', ')}` : '';
       items.push({
         key, sourceAbs: abs, line: lineOfName(t.name),
-        detail: `${t.isAbstract ? 'abstract' : 'concrete'}; superClass: ${(t.superClass || []).join(', ') || 'none'}; own properties: ${(t.properties || []).length}`,
+        detail: `${t.isAbstract ? 'abstract' : 'concrete'}; superClass: ${(t.superClass || []).join(', ') || 'none'}${extendsPart}; own properties: ${(t.properties || []).length}`,
         abstract: !!t.isAbstract,
       });
     }
     for (const e of doc.enumerations || []) {
       const key = `${prefix}:${e.name}`;
-      const values = (e.values || []).map((v) => (typeof v === 'string' ? v : v.name)).filter(Boolean);
+      const rawValues = e.literalValues || e.values || [];
+      const values = rawValues.map((v) => (typeof v === 'string' ? v : v && v.name)).filter(Boolean);
       items.push({
         key, sourceAbs: abs, line: lineOfName(e.name),
         detail: `enumeration; values: ${values.join(', ')}`,
@@ -512,36 +633,72 @@ function extractModdleTypes() {
 }
 
 function extractApi() {
-  const targets = [
-    ['bpmn-js', join(bpmnRoot, 'lib/BaseViewer.js'), 'BaseViewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/Viewer.js'), 'Viewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/NavigatedViewer.js'), 'NavigatedViewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/Modeler.js'), 'Modeler'],
-    ['bpmn-js', join(bpmnRoot, 'lib/BaseModeler.js'), 'BaseModeler'],
-    ['bpmn-js', join(bpmnRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
-    ['bpmn-js', join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), 'BpmnEditorActions'],
-    ['diagram-js', join(diagramRoot, 'lib/Diagram.js'), 'Diagram'],
-    ['diagram-js', join(diagramRoot, 'lib/core/Canvas.js'), 'Canvas'],
-    ['diagram-js', join(diagramRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
-    ['diagram-js', join(diagramRoot, 'lib/core/ElementRegistry.js'), 'ElementRegistry'],
-    ['diagram-js', join(diagramRoot, 'lib/core/EventBus.js'), 'EventBus'],
-    ['diagram-js', join(diagramRoot, 'lib/command/CommandStack.js'), 'CommandStack'],
-    ['diagram-js', join(diagramRoot, 'lib/features/overlays/Overlays.js'), 'Overlays'],
-    ['diagram-js', join(diagramRoot, 'lib/features/selection/Selection.js'), 'Selection'],
-    ['diagram-js', join(diagramRoot, 'lib/features/editor-actions/EditorActions.js'), 'EditorActions'],
-  ];
+  // Resolve a didi registration's implementation file from its import
+  // specifier (relative, `bpmn-js/lib/...` or `diagram-js/lib/...`).
+  const resolveImpl = (spec, fromFile) => {
+    let abs;
+    if (spec.startsWith('diagram-js/lib/')) abs = join(diagramRoot, 'lib', spec.slice('diagram-js/lib/'.length));
+    else if (spec.startsWith('bpmn-js/lib/')) abs = join(bpmnRoot, 'lib', spec.slice('bpmn-js/lib/'.length));
+    else abs = resolve(dirname(fromFile), spec);
+    for (const candidate of [abs, `${abs}.js`, join(abs, 'index.js')]) {
+      if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+    }
+    return null;
+  };
+  const classes = new Map(); // "label:Class" -> { label, cls, abs }
+  const noteClass = (label, cls, abs) => {
+    if (cls && abs) classes.set(`${label}:${cls}`, { label, cls, abs });
+  };
+  for (const [label, root] of [['bpmn-js', bpmnRoot], ['diagram-js', diagramRoot]]) {
+    const libDir = join(root, 'lib');
+    // Entry classes: implementation files directly under lib/.
+    for (const name of readdirSync(libDir).sort()) {
+      if (!name.endsWith('.js') || name === 'index.js') continue;
+      const abs = join(libDir, name);
+      readLines(abs).forEach((l) => {
+        const m = l.match(/^([A-Za-z_$][\w$]*)\.prototype\.[A-Za-z]/);
+        if (m) noteClass(label, m[1], abs);
+      });
+    }
+    // Service classes: every `name: [ 'type', Impl ]` registration.
+    for (const idx of walk(libDir, (p) => p.endsWith('index.js'))) {
+      const text = readFileSync(idx, 'utf8');
+      const imports = new Map();
+      for (const m of text.matchAll(/import\s+([A-Za-z_$][\w$]*)\s+from\s+'([^']+)'/g)) {
+        imports.set(m[1], resolveImpl(m[2], idx));
+      }
+      for (const m of text.matchAll(/[A-Za-z][\w]*\s*:\s*\[\s*'type',\s*([A-Za-z_$][\w$]*)\s*\]/g)) {
+        noteClass(label, m[1], imports.get(m[1]));
+      }
+    }
+  }
   const items = [];
-  for (const [label, abs, cls] of targets) {
-    if (!existsSync(abs)) continue;
-    readLines(abs).forEach((l, i) => {
-      const m = l.match(new RegExp(`^${cls}\\.prototype\\.([A-Za-z]\\w*)\\s*=`));
-      if (m && !m[1].startsWith('_')) {
-        const key = `${label}:${cls}.${m[1]}`;
-        if (!items.some((x) => x.key === key)) items.push({ key, sourceAbs: abs, line: i + 1, detail: `public method of ${cls}` });
+  const seen = new Set();
+  for (const { label, cls, abs } of classes.values()) {
+    const lines = readLines(abs);
+    const localFns = new Set();
+    for (const l of lines) {
+      const fm = l.match(/function\s+([A-Za-z_$][\w$]*)\s*\(/);
+      if (fm) localFns.add(fm[1]);
+    }
+    const pushMethod = (method, line) => {
+      if (!method || method.startsWith('_')) return;
+      const key = `${label}:${cls}.${method}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      items.push({ key, sourceAbs: abs, line, detail: `public method of ${cls}` });
+    };
+    lines.forEach((l, i) => {
+      const pm = l.match(new RegExp(`^${cls}\\.prototype\\.([A-Za-z]\\w*)\\s*=`));
+      if (pm) pushMethod(pm[1], i + 1);
+      const tm = l.match(/^\s*this\.([A-Za-z]\w*)\s*=\s*(.+?);?\s*$/);
+      if (tm) {
+        const rhs = tm[2].trim();
+        if (rhs.startsWith('function') || localFns.has(rhs.replace(/;$/, ''))) pushMethod(tm[1], i + 1);
       }
     });
   }
-  return items;
+  return items.sort((a, b) => a.key.localeCompare(b.key));
 }
 
 function extractExamples() {
@@ -551,9 +708,11 @@ function extractExamples() {
     if (!statSync(dir).isDirectory()) continue;
     const readme = join(dir, 'README.md');
     if (!existsSync(readme)) continue;
-    const first = (readFileSync(readme, 'utf8').split(/\r?\n/).find((l) => l.trim().length > 0) || '').trim();
-    if (/^>\s*Removed as of/.test(first)) continue; // upstream tombstone, no behaviour to replay
-    items.push({ key: name, sourceAbs: readme, line: 1, detail: first.slice(0, 120) });
+    // An example is a directory whose README carries a markdown heading;
+    // upstream tombstones (README only, removal note) have none.
+    const heading = readFileSync(readme, 'utf8').match(/^#\s+.+$/m);
+    if (!heading) continue;
+    items.push({ key: name, sourceAbs: readme, line: 1, detail: heading[0].trim().slice(0, 120) });
   }
   return items;
 }
@@ -653,7 +812,8 @@ function coverageFor(family, key, item) {
       return { status: 'missing', target: 'diagram-core', priority: 'P0', proof: PROOF.skeleton() };
     }
     case 'api':
-      if (/Canvas\.(getRootElement|addShape|addConnection|removeShape|removeConnection|viewbox|scroll|zoom)/.test(key)) return { status: 'partial', target: 'diagram-canvas', priority: 'P1', proof: PROOF.hit() };
+      if (/Canvas\.(viewbox|scrollToElement|scroll|zoom)/.test(key)) return { status: 'partial', target: 'diagram-canvas', priority: 'P1', proof: PROOF.transform() };
+      if (/Canvas\.(getRootElements?|addShape|addConnection|removeShape|removeConnection)/.test(key)) return { status: 'partial', target: 'diagram-canvas', priority: 'P1', proof: PROOF.scene() };
       if (/Modeling\./.test(key)) return { status: 'missing', target: 'diagram-core', priority: 'P0', proof: PROOF.commands() };
       if (/CommandStack\.(execute|undo|redo|canUndo|canRedo)/.test(key)) return { status: 'partial', target: 'diagram-core', priority: 'P1', proof: PROOF.commands() };
       if (/Selection\.|Overlays\./.test(key)) return { status: 'missing', target: 'diagram-canvas', priority: 'P1', proof: PROOF.canvasReadmeGap() };
@@ -672,11 +832,17 @@ const BEHAVIOUR = {
     ? 'Command `element.setColor` executed through CommandStack.execute with undo/redo; SetColorHandler postExecute writes background-color/border-color, the legacy bioc stroke/fill aliases and BPMNLabel color on the DI element.'
     : `Command \`${k}\` executed through CommandStack.execute with undo/redo (execute/revert); observers see commandStack.* events and a dirty model.`),
   rule: (k) => `Rule \`${k}\`: canExecute gate consulted before the matching modeling operation; returns boolean or a typed result object, and forbids/permits the interaction.`,
-  palette: (k) => `Palette entry \`${k}\`: drag or click starts element creation (create.start) with the entry's BPMN type, or activates the named tool.`,
+  palette: (k) => (k === 'tool-separator'
+    ? 'Palette entry `tool-separator`: visual separator between palette groups (separator: true); it has no action, creates nothing and activates no tool.'
+    : `Palette entry \`${k}\`: drag or click starts element creation (create.start) with the entry's BPMN type, or activates the named tool.`),
   'context-pad': (k) => `Context-pad entry \`${k}\`: shown for the selected element(s); click triggers append/connect/replace/delete or lane actions on that element.`,
   'replace-menu': (k) => `Replace option \`${k}\`: offered by ReplaceMenuProvider for matching elements; activation morphs the selected element in place via BpmnReplace.replaceElement, retaining connections where the rule matrix allows.`,
   'popup-menu': (k, d) => `Popup-menu item \`${k}\` (${d}): a provider registration, header entry or menu entry supplied for its target; opening is gated by popupMenu.open.allowed.`,
-  keyboard: (k, d) => `Keyboard binding \`${k}\` (${d}): key press triggers the editor action of the same name when registered.`,
+  keyboard: (k, d) => (k.startsWith('searchPad:')
+    ? `Search-pad key \`${k}\` (${d}): handled inside the open search pad (navigate, select or close); it triggers no editor action.`
+    : k.startsWith('handTool:')
+      ? `Hand-tool hold key \`${k}\` (${d}): holding the key temporarily activates the hand tool on keyboard.keydown and releases it on keyboard.keyup; it triggers no editor action.`
+      : `Keyboard binding \`${k}\` (${d}): key press triggers the editor action of the same name when registered.`),
   event: (k) => `EventBus event \`${k}\`: emitted/listened across modules; listeners receive the payload described at the source site.`,
   config: (k) => `Configuration \`${k}\`: public option read at construction; changes bootstrap wiring, canvas or feature behaviour.`,
   renderer: (k, d) => `Renderer entry \`${k}\` (${d}): draws the BPMN shape/connection/icon/marker (geometry, markers, icons, label placement) into the SVG graphics element.`,
@@ -690,11 +856,21 @@ const ACCEPTANCE = {
   module: (k) => `Differential: bootstrap both stacks with the equivalent module set; assert the service/behaviour named by ${k} is reachable and initialised.`,
   command: (k) => `Differential: run ${k} on the same fixture in bpmn-js and in the target; compare resulting moddle JSON (F1), DI geometry and emitted commandStack events; then undo and compare again.`,
   rule: (k) => `Differential: probe ${k} with allowed and forbidden source/target pairs from the BPMN matrix; compare boolean/typed verdicts.`,
-  palette: (k) => `Differential: activate palette entry ${k} (drag + click paths); compare created element type, parent and DI bounds.`,
+  palette: (k) => (k === 'tool-separator'
+    ? 'Differential: render the palette; assert tool-separator appears as a non-interactive divider between the tools and creation groups and that activating it creates nothing.'
+    : `Differential: activate palette entry ${k} (drag + click paths); compare created element type, parent and DI bounds.`),
   'context-pad': (k) => `Differential: select each applicable element type, open the context pad, activate ${k}; compare resulting model + DI.`,
   'replace-menu': (k) => `Differential: replace/append to variant ${k} from each source type that offers it; compare new type, retained connections, label and DI.`,
-  'popup-menu': (k) => `Differential: open provider ${k} on representative targets; compare entry ids, order, disabled state and header entries.`,
-  keyboard: (k) => `Differential: dispatch the key chord for ${k} with/without modifiers and with a text input focused; compare triggered action and focus behaviour.`,
+  'popup-menu': (k, d) => (String(d).includes('provider id')
+    ? `Differential: open provider ${k} on representative targets; compare entry ids, order, disabled state and header entries.`
+    : String(d).includes('header entry')
+      ? `Differential: open the owning popup menu and toggle header entry ${k}; compare the toggled model attribute and the refreshed entry state.`
+      : `Differential: open the owning popup menu on a multi-element selection and activate entry ${k}; compare alignment/distribution geometry and model state.`),
+  keyboard: (k) => (k.startsWith('searchPad:')
+    ? `Differential: open the search pad, dispatch ${k}; compare navigation/selection/close behaviour and focus.`
+    : k.startsWith('handTool:')
+      ? `Differential: hold and release the key for ${k}; compare temporary hand-tool activation on keydown and release on keyup.`
+      : `Differential: dispatch the key chord for ${k} with/without modifiers and with a text input focused; compare triggered action and focus behaviour.`),
   event: (k) => `Differential: run the scripted interaction that emits ${k}; compare event name, payload keys and ordering against the reference log.`,
   config: (k) => `Differential: construct with ${k} set/unset; compare bootstrap, rendering and interaction deltas.`,
   renderer: (k) => `Differential: render a fixture containing ${k} at fixed viewport/DPR; compare geometry (bounds, waypoints, marker/icon presence) and, secondarily, pixels within tolerance.`,
@@ -714,7 +890,7 @@ function buildInventory(raw) {
         key: it.key,
         source: { path: rel(it.sourceAbs), line: it.line },
         behaviour: BEHAVIOUR[family](it.key, it.detail),
-        acceptance: ACCEPTANCE[family](it.key),
+        acceptance: ACCEPTANCE[family](it.key, it.detail),
         target: cov.target,
         status: cov.status,
         proof: cov.proof,
