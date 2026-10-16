@@ -2091,7 +2091,7 @@ describe("Vue behavioral parity — batch 4", () => {
       }
     });
 
-    it("floors the computed max-height at MIN_HEIGHT when the trigger is glued to the viewport edge", async () => {
+    it("flips above when the trigger is glued to the bottom edge and room sits above", async () => {
       const originalInnerHeight = window.innerHeight;
       const trigger = document.createElement("button");
       document.body.appendChild(trigger);
@@ -2104,8 +2104,10 @@ describe("Vue behavioral parity — batch 4", () => {
         const wrapper = mount(MenuPopover, { props: { open: true, label: "Menu", trigger } });
         await nextTick();
         const panel = wrapper.find(".st-menuPopover").element as HTMLElement;
-        // available space = 600 - 590 - 4 - 8 = -2 -> floored to MIN_HEIGHT (160)
-        expect(panel.style.maxHeight).toBe("160px");
+        // Below: 600 - 590 - 4 = 6 < MIN_HEIGHT(160); above (586) wins -> flip,
+        // so max-height measures the space above, not the floor.
+        expect(panel.classList.contains("st-menuPopover--top-start")).toBe(true);
+        expect(panel.style.maxHeight).toBe("578px");
         wrapper.unmount();
       } finally {
         Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });

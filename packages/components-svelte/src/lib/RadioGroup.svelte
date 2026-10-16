@@ -82,7 +82,10 @@
 
   .st-radioGroup__legend {
     color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
-    font-size: 0.9375rem;
+    /* Point d'entrée de personnalisation (même modèle que
+       --st-component-selection-choiceLabelFontSize) ; md = rendu actuel.
+       Pas de prop `size` : Checkbox/CheckboxGroup n'en ont aucune. */
+    font-size: var(--st-component-selection-legendFontSize, 0.9375rem);
     font-weight: 650;
     line-height: 1.3;
     padding: 0;
