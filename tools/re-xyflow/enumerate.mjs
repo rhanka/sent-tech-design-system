@@ -308,6 +308,7 @@ function targetFor(family, name) {
     return "composant DS";
   }
   if (family.startsWith("api-")) {
+    if (family === "api-system" && name === "Handle") return "nouveau module";
     if (/^(use|experimental_use)/.test(name)) return "composant DS";
     if (/^(ReactFlow|SvelteFlow|Background|Controls|ControlButton|MiniMap|MiniMapNode|Panel|Handle|NodeToolbar|NodeResizer|NodeResizeControl|EdgeToolbar|EdgeLabelRenderer|EdgeLabel|EdgeReconnectAnchor|ViewportPortal|ReactFlowProvider|SvelteFlowProvider|BezierEdge|StepEdge|SmoothStepEdge|StraightEdge|SimpleBezierEdge|BaseEdge|EdgeText|Attribution)$/.test(name)) return "composant DS";
     if (/getbezier|getsmoothstep|getstraight|getsimplebezier|getedgecenter|getbezieredgecenter|marker|connectionline|bezierpathoptions|smoothsteppathoptions|steppathoptions|edge.*label/.test(k.replace(/[^a-z]/g, "")) || /^(MarkerType|ConnectionLineType|EdgeMarker|EdgeMarkerType)$/.test(name)) return "graph";

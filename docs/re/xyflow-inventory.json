@@ -34,9 +34,9 @@
     "byTarget": {
       "diagram-core": 452,
       "graph": 70,
-      "nouveau module": 295,
+      "nouveau module": 296,
       "diagram-canvas": 73,
-      "composant DS": 708
+      "composant DS": 707
     },
     "byPriority": {
       "P1": 1297,
@@ -1352,7 +1352,7 @@
       "source": ".ds-scrap/re-sources/xyflow/packages/system/src/types/handles.ts:8",
       "behaviour": "Public export `Handle` (type, any) of the package. Observable contract is its type/call signature at the cited definition; consumers import it by this exact name.",
       "acceptance": "Differential harness: run the same fixture + scripted interaction on xyflow and on the sentropic implementation; compare import surface (name resolves, kind matches) plus the behavioural scenario of the owning family. See SPEC_RE_XYFLOW_PARITY.md §differential harness.",
-      "target": "composant DS",
+      "target": "nouveau module",
       "status": "missing",
       "proof": null,
       "coverageNote": "No equivalent found in graph/diagram-core/diagram-canvas corpus (mechanical search at generation time).",
