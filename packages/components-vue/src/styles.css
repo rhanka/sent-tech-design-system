@@ -4077,6 +4077,11 @@
     max-height: calc(100vh - 2rem);
     overflow: auto;
     padding: 0;
+    /* The Popover API UA sheet gives [popover] `inset: 0; margin: auto`: without
+       this reset the top-layer panel is re-centred between its top/left and the
+       viewport edges instead of sitting on the trigger. Inline top/left win. */
+    inset: auto;
+    margin: 0;
     /* Viewport coordinates from getBoundingClientRect: fixed, never absolute
        (absolute + document coords broke inside any positioned ancestor). */
     position: fixed;
