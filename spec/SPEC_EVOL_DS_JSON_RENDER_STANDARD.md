@@ -7,9 +7,17 @@ bpmn-canvas `origin/main` = `62ec95f` and local, **unpushed** branch `workbench/
 A2UI repository pinned at commit `3b0e0373`.
 **Source dossier** (French, not committed): `DOSSIER-contrat-canvas-vs-a2ui-agui.md`, revised 2026-10-15 after the
 muse 1.3 review, sha256 `d476b4fb9fa6f0246ee2322fc150a255fb87e88012321e958de5e0ad3919fdd0`; its source ledger
-`sources.md`, sha256 `1ff064b7ae395779d99ad408d4cdcd46476be1b09975d2355b4c7dcc0e285622`. Identifiers `S-…` (internal) and
+`sources.md`, sha256 `1ff064b7ae395779d99ad408d4cdcd46476be1b09975d2355b4c7dcc0e285622`. Both hashes are of the copies
+in the conductor's session scratchpad (`…/scratchpad/canvas-std/`); the older copy under `.ds-scrap/canvas-std/`
+(dossier sha256 `88a13838…`) predates the 2026-10-15 revision and is not the source. Identifiers `S-…` (internal) and
 `E-…` (external) below refer to that ledger. Every load-bearing fact is also restated here with a primary locator
-(repository path and line, or a URL pinned to a commit), so this spec can be checked without the ledger.
+(repository path and line, or a URL pinned to a commit), so this spec can be checked without the ledger. A fact that
+rests on the ledger alone is marked as such.
+**Owner decisions as relayed**: the conductor's brief of 2026-10-15 (decisions 1–6 of §1.1, including D2 = A,
+D4 = A and the D7 revision with elkjs and xyflow), and the conductor's follow-up of the same day carrying the owner's
+answers to Q-1, Q-2 and Q-3 (§17).
+**Glossary**: `d2d-cond` = the conductor session of the d2d repository (`airbus-genair-d2d`); `h-cond` = the
+conductor session of h2a. Both relay owner rules; neither is a repository.
 **Related**: [GD-BPMN-MODDLE (A′), PR #164](https://github.com/rhanka/sent-tech-design-system/pull/164) (open);
 [decisions](SPEC_DECISIONS_GRAPH_DATAVIZ_REPATRIATION.md); [M2-CANVAS](SPEC_EVOL_GD_M2_CANVAS.md);
 [migration plan](../docs/graph-dataviz-migration-plan.md); [CSP qualification](../docs/a0-csp-dependency-qualification.md).
@@ -49,17 +57,20 @@ before relying on them.
    catalogues become possible there.
 3. **Publication.** The elements package is **public**. It includes `diagram-core` and the Focus renderer, which become
    public, **and `bpmn-canvas`**. The owner revises gate D7 for `bpmn-canvas` and bpmn-js. **bpmn.io watermark**: the
-   bpmn-js license forbids removing it; the owner will supply a **Camunda license reference**. The watermark is hidden
-   only through `bpmn-canvas`'s `watermark: { hidden, license }` option, fed by host configuration. **Never hidden
-   without a license**: publishing anything with the watermark hidden is blocked while the reference is missing (§13).
+   bpmn-js license forbids removing it; the owner holds a **Camunda license**. The watermark can be hidden only through
+   `bpmn-canvas`'s `watermark: { hidden, license }` option, fed by host configuration. **Never hidden without a
+   license**: publishing anything with the watermark hidden is blocked while the conditions of §13 are not met.
+   Owner answer to Q-1 (2026-10-15): the license is **confidential**; it is referenced only by the name of its variable,
+   `SENTROPIC_BPMN_WATERMARK_LICENSE`, in a `.env` or a secrets manager, never in a repository, a log or a rendering;
+   renewal is in the owner's hands, rotation `unknown`. Consequence: **its value never reaches the browser** (§13.3).
 4. **Focus decision-dossier schema** (`DecisionDossierDocument`): **h2a defines it, the DS renders it.** The DS
    consumes a pinned version of the h2a schema. A `focus` skill exposes the whole.
 5. **BPMN input** is moddle JSON in the F1 form. F1 **keeps** unknown extensions (content of `extensionElements`,
    foreign attributes, unregistered `xmlns`, `xsi`) instead of refusing them, as bpmn-moddle does. This is an F1 lot on
-   the `bpmn-canvas` and d2d-cond side; its status is `unknown` until it is published. A′ (`diagram-core` covering
+   the `bpmn-canvas` side, coordinated with d2d-cond; its status is `unknown` until it is published. A′ (`diagram-core` covering
    bpmn-moddle) is specified in PR #164.
-6. Decisions also recorded in Track by this PR (§18): **E** (commitment), **D2 = A**, **D4 = A**, **D7′** (revision of
-   D7=A).
+6. Decisions also recorded in Track by this PR (§18): **E** (commitment), **D2 = A**, **D4 = A-now** (option A
+   amended by the owner), **D7′** (revision of D7=A).
 
 The owner's original requests (2026-10-04 and 2026-10-06), verbatim from the dossier:
 - « un standard pour permettre de render dans n'importe quelle UI (gemini, claude etc) mes composants de façon simple
@@ -89,7 +100,7 @@ Each was measured before being written here. None changes the decision; each cha
 | C1 | "one JSON Schema document per component, `$id` = `catalogId`" | In A2UI v0.9.1 **the catalogue** is one JSON Schema document whose `components` object holds one schema per component; `$id` and `catalogId` are set on that document. `A2UI:specification/v0_9_1/docs/a2ui_protocol.md:316` ("catalog definitions should include both `$id` … and `catalogId` … set to the same URI"); `A2UI:specification/v0_9_1/catalogs/basic/catalog.json` top-level keys `$schema, $id, title, description, catalogId, components, functions, $defs`, 18 components. | §5.2: one catalogue document (A2UI form, authoritative for A2UI tooling) **and** one standalone schema per component (for MCP `inputSchema` and `get_schema`), both generated from one source, with a test that they agree. |
 | C2 | "the spec provides the `watermark: { hidden, license }` option of bpmn-canvas" | The option **already exists** in the published `@sentropic/bpmn-canvas` 0.3.0: `BC:README.md:360-380`, `BC:src/internal/canvas.ts:131-133` (non-blank `license` → `data-bpmn-canvas-watermark="hidden"`; otherwise a `watermark-refused` warning diagnostic and the logo stays). | No `bpmn-canvas` change is needed for the watermark. §13 specifies where the license reference comes from and the gates around it. |
 | C3 | `@sentropic/focus` is private (dossier S-FO2) | `H2A:packages/focus/package.json` has no `private` field and declares `"publishConfig": {"access": "public"}`; `npm view @sentropic/focus version` → `0.3.0`, published 2026-06-23T19:14:50Z. Its README still says « This package is **private** » (`H2A:packages/focus/README.md:8`). | The model package is already on npm. The Focus **renderer** (`<st-decision-dossier>`) is new and becomes public in the elements package (§6). The README contradiction is reported to h2a (§17, U-9). |
-| C4 | D4 = A is « publication de dataviz-angular maintenant, avec la matrice des absences » | Option A in `spec/graph-dataviz-decisions.json` reads « Tranche M3 identique sur 4 frameworks avant public, dette globale visible »; its recommendation text says « publier la matrice des absences ». `@sentropic/dataviz-angular` 0.5.0 is not `private` in its manifest, is wired into `.github/workflows/dataviz-publish.yml:12-14,159`, and `npm view @sentropic/dataviz-angular` returns E404. | Recorded as A with the owner's wording as a precision that prevails over the option text (§18.2). Flagged for owner confirmation (§17, Q-3). |
+| C4 | D4 = A is « publication de dataviz-angular maintenant, avec la matrice des absences » | Option A in `spec/graph-dataviz-decisions.json` reads « Tranche M3 identique sur 4 frameworks avant public, dette globale visible »; its recommendation text says « publier la matrice des absences ». `@sentropic/dataviz-angular` 0.5.0 is not `private` in its manifest, is wired into `.github/workflows/dataviz-publish.yml:12-14,159`, and `npm view @sentropic/dataviz-angular` returns E404. | Owner answer (Q-3, 2026-10-15): « publier maintenant » **replaces** option A's precondition. To keep the Track record consistent, the selected option is a distinct option `A-now` (option A amended: immediate publication with the absence matrix), not the unamended `A` (§18.2). |
 | C5 | run "the guards of `verify.yml` on `spec/` and `.track/`" | `.github/workflows/verify.yml` triggers only on `packages/**`, `apps/docs/**`, `scripts/**`, `tools/**`, `docs/graph-dataviz-*`, `package.json`, `package-lock.json`, `.github/workflows/**`, `.ds-scrap/METHOD-fr-top50.md` (push paths from line 13, pull-request
 paths from line 27). No guard reads `spec/` or `.track/` (`grep -ln "spec/\|\.track" scripts/*.test.mjs` → empty). | No workflow runs on this PR's paths. The guards were run locally anyway (§19.3). |
 
@@ -116,8 +127,9 @@ component, which may itself be a composition such as the decision dossier; Gemin
 - Four framework packages: `packages/components-{svelte,react,vue,angular}`. `packages/components-svelte/src/lib`
   holds 224 `.svelte` files (`ls packages/components-svelte/src/lib/*.svelte | wc -l`).
 - **No custom element and no UMD/IIFE build** anywhere in the repository:
-  `git grep -nIi "customElements.define\|\"umd\"\|iife" 30c13318 -- packages apps tools scripts docs` → no line
-  outside two theme `MAPPING.md` files, which only quote upstream `unpkg` URLs (dossier S-DS2, corrected).
+  `git grep -nIi "customElements.define\|\"umd\"\|iife" 30c13318 -- packages apps tools scripts docs` → no line.
+  (The dossier's pattern also contained `unpkg`, which matches five upstream URLs in two theme `MAPPING.md` files;
+  dossier S-DS2, corrected.)
 - Props mix JSON data and non-JSON values. Example: `DS:packages/components-svelte/src/lib/BarChart.svelte` declares
   `onSelect?: (key: string) => void` (line 91), `onHoverKeyChange` (142), `onSelectKey` (157), closed by
   `}: BarChartProps = $props();` (183). The catalogue therefore carries a **JSON subset** of each component's props
@@ -200,22 +212,24 @@ component, which may itself be a composition such as the decision dossier; Gemin
   (`H2A:packages/focus/src/index.ts:40-43`); `track focus <decision-id> --format terminal|md|html` projects a Track
   decision into that type and renders it (`H2A:packages/track/src/cli/index.ts:1413-1419`). A separate derivation,
   `deriveDecisionDossier` / `DeriveDecisionDossierInput`, lives in `H2A:packages/h2a/src/decision-dossier.ts:50,197`.
-  `@sentropic/focus-interactive` 0.1.0 is private. `h2a focus serve` serves a private SvelteKit app (`apps/focus`,
-  `@sentropic/focus-app` 0.3.1) that depends on `@sentropic/design-system-svelte ^0.34.40`, not on `@sentropic/focus`.
-- **Statement from h2a (h-cond, relayed on 2026-10-15)**, which this spec follows: there is no versioned
-  `DecisionDossierDocument` schema; the owner's format rule is a document, not a schema
-  (`docs/focus/decision-dossier-format.md`, also on h2a branch `docs/dossier-diagrammes` at `f76f46df`); the schema is
-  **to be created on the h2a side from `@sentropic/focus`**, status `unknown` until it is versioned; the DS consumes a
-  pinned version. h-cond's wording « il n'existe pas de type `DecisionDossierDocument` » differs from the measurement
-  above (the TS interface exists); the two agree that **no versioned schema** exists, which is what this spec depends on.
-- **No skill named `focus`** exists (h2a `packages/*/skills`, `~/.claude/skills`, `~/.claude/plugins`); only
-  `present-decision` exists (`H2A:packages/track/skills/present-decision/SKILL.md`).
+  `@sentropic/focus-interactive` 0.1.0 is private. `h2a focus serve` serves a **vendored build** of a private SvelteKit
+  app (`H2A:packages/h2a/src/runtime/focus/serve.ts:16`, `DEFAULT_ASSETS_DIR = <h2a package>/focus-app`), built from
+  `apps/focus` (`@sentropic/focus-app` 0.3.1), which depends on `@sentropic/design-system-svelte ^0.34.40`, not on
+  `@sentropic/focus`.
+- **What is missing is a versioned JSON Schema** (h-cond, 2026-10-15, consistent with the measurement above): the
+  owner's format rule is a document, not a schema (`docs/focus/decision-dossier-format.md`, also on h2a branch
+  `docs/dossier-diagrammes` at `f76f46df`); the schema is **to be created on the h2a side from `@sentropic/focus`**,
+  status `unknown` until it is versioned; the DS consumes a pinned version.
+- **No skill named `focus`** exists (h2a `packages/*/skills`, `~/.claude/skills`, `~/.claude/plugins`); the closest
+  existing skill is `present-decision` (`H2A:packages/track/skills/present-decision/SKILL.md`), beside
+  `branch-lifecycle`, `propose-workpackages`, `track-operation` and the harness skills.
 - The `decision-focus*.html` files are self-contained HTML written by agents following the format document, through
   per-repository build chains copied from repository to repository, **not** by a shared h2a generator:
   `kc/docs/kc-decision/decision-focus.html` (1 419 787 bytes, data schema `kc-decision-map/v1`, input = Mermaid blocks
-  extracted from a Markdown dossier, `@xyflow/svelte` + `dagre-d3-es`, 12 `--st-*` tokens **redefined locally** in
-  `chain/style.css:4`); `airbus-genair-d2d/docs/d2d-decision/decision-focus*.html` (data schema
-  `d2d-progress-decision-map/v1`, 7.4–12 MB). Neither carries a `DecisionDossierDocument`; both work without a Claude
+  extracted from a Markdown dossier, `@xyflow/svelte` + `dagre-d3-es`, 11 `--st-semantic-*` tokens **redefined
+  locally** in `chain/style.css:4`); `airbus-genair-d2d/docs/d2d-decision/decision-focus*.html` (data schema
+  `d2d-progress-decision-map/v1`; 11 978 377 bytes in the working tree on 2026-10-14, 7 432 530 bytes as committed in
+  `6274e11` and checked out under `tmp/*/`). Neither carries a `DecisionDossierDocument`; both work without a Claude
   session. They are the **visual reference** for the Focus pilot, not its data contract.
 
 ---
@@ -244,14 +258,17 @@ the renderer would load.
 }
 ```
 
+- `contract` is the version of the **targeted component's** contract (`x-sentropic.contract` of
+  `catalogue.components[root.component]`), not a catalogue version; the catalogue version is the major in
+  `catalogId` (§4.4).
 - `root` is an **A2UI v0.9.1 component object** — `id`, `component` and the component's properties as siblings
   (`A2UI:specification/v0_9_1/docs/a2ui_protocol.md`, section "The component object") — with `id` fixed to `"root"`.
   This deviates on purpose from the dossier's §4.4 sketch (`{component, contract, props, mode}`): the A2UI adapter
   (§12) then wraps the same object in `createSurface` + `updateComponents` without reshaping it.
 - Data binding (A2UI `DynamicString` paths) is **not** used in v1: every property value is a literal. Child references
   (`ComponentId`, `ChildList`) are not used either: a render shows one component.
-- **Host configuration is not part of the envelope.** Theme id, colour scheme, locale, `assetBase` and the BPMN
-  watermark license (§13) come from the host through a separate channel (§6.5). A property that only a host may set
+- **Host configuration is not part of the envelope.** Theme id, colour scheme, locale, `assetBase` and any BPMN
+  watermark setting (§13; never the license value) come from the host through a separate channel (§6.5). A property that only a host may set
   is absent from every catalogue schema, so an AI cannot set it.
 
 ### 4.3 Validation
@@ -270,9 +287,11 @@ the renderer would load.
 - The catalogue **major** is in `catalogId` (`…/v1/catalog.json`). A breaking change creates `v2` beside `v1`.
 - Each component carries `x-sentropic.contract` (`"1.0"`, `"1.1"`, …). Within a major, changes are additive only, as
   for `SiteConfig`.
-- A renderer accepts an envelope whose `contract` has its major and a minor less than or equal to its own. A higher
-  minor is refused with `unsupported-contract` (never rendered partially), so a newer producer facing an older
-  renderer gets an explicit error.
+- A renderer accepts an envelope whose `contract` has the same major as the targeted component's
+  `x-sentropic.contract` in the renderer's catalogue, and a minor less than or equal to it. Example: envelope `1.1`
+  for a component at `1.0` → refused with `unsupported-contract` (never rendered partially); envelope `1.0` for a
+  component at `1.1` → accepted, since minors are additive. Components evolve their minors independently; the
+  catalogue major changes only with `catalogId`.
 
 ### 4.5 Errors
 
@@ -284,7 +303,9 @@ One diagnostic shape everywhere — element, MCP tool result, skill validation s
 ```
 
 - `path` is a JSON Pointer (RFC 6901) into the envelope, as A2UI's `VALIDATION_FAILED` uses (E-A2-15).
-- Codes: `unknown-component`, `unsupported-contract`, `schema-violation`, `semantic-invalid` (the owning runtime's own
+- Codes: `unknown-component`, `component-unavailable` (the entry exists with `x-sentropic.status: "unknown"`, §5.2),
+  `unsupported-contract`, `unsupported-mode` (`mode: "preview"` until it exists, §10.3), `schema-violation`,
+  `semantic-invalid` (the owning runtime's own
   code is kept in `detail.code`, for example F1's `unsupported-type` or a `diagram-core` diagnostic code),
   `payload-too-large`, `host-capability-missing`, `engine-load-failed`, and the pass-through warning
   `watermark-refused`.
@@ -297,8 +318,12 @@ The component emits events; it never mutates the producer's data by itself.
 
 | event | shape | standalone page | MCP Apps |
 |---|---|---|---|
-| intent | `{ "event": "intent", "name": "select" \| "open" \| "choose-option" \| "comment", "target": "<id>", "context": {} }` | DOM `CustomEvent("st-intent")` | `ui/message` by default; `tools/call` to a named intent tool when the host server declares one (that tool keeps `"app"` in its visibility, `MCPA:401`) |
+| intent | `{ "event": "intent", "name": "select" \| "open" \| "choose-option" \| "comment", "target": "<id>", "context": {} }` | DOM `CustomEvent("st-intent")` | **`tools/call` to a named intent tool** of the same server by default (`submit_intent`, §8.2), whose visibility includes `"app"` (`MCPA:401`); `ui/message` (« Send message content to the host's chat interface », `MCPA:998`) only for a conversational intent (`comment`), since it posts into the chat and triggers follow-ups (`MCPA:1094`); `ui/update-model-context` (`MCPA:1061`) to make a selection known to the model without a chat message |
 | proposal (diagrams only) | `{ "event": "proposal", "transaction": { "commandId", "baseRevision", "commands": [] } }` | `CustomEvent("st-proposal")` | `tools/call` to a server tool that applies it with compare-and-swap; the UI never applies it alone |
+
+Each component's contract module (§5.1) maps its real callbacks to these intents, one row per callback (example,
+`BarChart`: `onSelect(key)` and `onSelectKey(key)` → `select` with `target = key`; `onHoverKeyChange` → no event, hover
+stays local). A callback with no mapping is excluded from the element and listed in the module.
 
 ---
 
@@ -321,7 +346,13 @@ The component emits events; it never mutates the producer's data by itself.
   is recorded in `x-sentropic.parity` with a reason. The catalogue never claims parity from types alone (the
   migration plan's rule A4-A5, `DS:docs/graph-dataviz-migration-plan.md:59-60`).
 - A `--check` mode regenerates in memory and fails on any diff with the committed files (freshness guard, run by
-  `scripts/run-script-guards.mjs`).
+  `scripts/run-script-guards.mjs`). Output is canonically sorted (keys and `$defs`) so that a regeneration without a
+  type change produces no diff.
+- A type the generator cannot convert (advanced utility types, generics, Svelte-specific references) is **never**
+  emitted as an implicit `any`: either the contract module declares an explicit replacement type for that prop, or the
+  component is left out of the catalogue with the reason recorded. The contract module is also where complex unions
+  (for example `BarChart`'s `dataLabels`, boolean or object) are narrowed to their JSON form. JSDoc comments on the
+  props become schema `description`s.
 
 ### 5.2 Format: A2UI v0.9.1
 
@@ -331,13 +362,19 @@ The component emits events; it never mutates the producer's data by itself.
   `https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json` [JUDGMENT: the docs site's domain, so the id
   can also resolve once published; A2UI does not require it to resolve, `a2ui_protocol.md:314`].
 - `components`: one entry per component, keyed by its A2UI name (`BarChart`, `BpmnCanvas`, `DecisionDossier`), in
-  the basic catalogue's form: `allOf` the A2UI `ComponentCommon` reference and a local object with
-  `component: { "const": "<Name>" }`, the props and `required`; `unevaluatedProperties: false`.
+  the basic catalogue's form: `allOf` the two references the basic catalogue uses on each of its 18 entries — A2UI
+  `common_types.json#/$defs/ComponentCommon` and the catalogue's own `#/$defs/CatalogComponentCommon` (which carries
+  `weight`, meaningful only inside A2UI `Row`/`Column`; kept for form compatibility, ignored by the elements) — then a
+  local object with `component: { "const": "<Name>" }`, the props and `required`; `unevaluatedProperties: false`.
 - `functions`: `{}` (none in v1). `$defs`: `anyComponent` (`oneOf` over the components) and `theme`
   (`{ "themeId": string }`).
 - Sentropic extension, per component, under `x-sentropic` (JSON Schema 2020-12 treats an unknown keyword as an
   annotation): `{ "contract", "element": "st-bar-chart", "engine": "core" | "lazy:<chunk>", "events": [...],
-  "fallback": "text" | "svg", "parity": {...}, "schema": "<standalone schema $id>", "example": {...} }`.
+  "fallback": "text" | "svg", "parity": {...}, "schema": "<standalone schema $id>", "example": {...},
+  "status"?: "unknown" }`.
+- Semantics of `x-sentropic.status: "unknown"`: the entry is listed (by `list_components`, with its status) so that
+  producers can discover it, but its schema is a placeholder; the validator and `render` refuse it with
+  `component-unavailable` and render nothing. It is removed when the entry's real schema lands.
 - Whether A2UI SDKs accept a catalogue with `x-` keywords and an empty `functions` is `unknown` (no meta-schema exists
   for v0.9.x: `specification/v0_9{,_1}/json/catalog_definition.json` → HTTP 404 at `3b0e0373`, E-A2-32). L1 tests it
   with `@a2ui/web_core` at an exact version.
@@ -350,10 +387,10 @@ component part of each standalone schema is equivalent, after canonical sorting,
 
 | channel | what | when |
 |---|---|---|
-| npm | `@sentropic/design-system-elements/catalog.json` and `/schemas/*` (package `exports`) | after L7 |
-| jsDelivr | `https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@<exact>/catalog.json` | after L7 |
+| npm | `@sentropic/design-system-elements/catalog.json` and `/schemas/*` (package `exports`) | after L7a |
+| jsDelivr | `https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@<exact>/catalog.json` | after L7a |
 | MCP | tools `list_components`, `get_schema` (§8) | from L3 (inline, before any publication) |
-| MCP resource | `a2ui://sentropic/catalog/v1`, MIME `application/schema+json` [JUDGMENT], for A2UI-over-MCP clients (E-A2-24) | L3, optional |
+| MCP resource | `a2ui://sentropic/catalog/v1`, MIME `application/schema+json` [JUDGMENT], for A2UI-over-MCP clients. The A2UI-over-MCP guide serves UI **templates** (A2UI messages) as `application/a2ui+json` (E-A2-24, ledger only); a catalogue is a JSON Schema document, not a message, hence the schema media type. | L3, optional |
 | skill | component list and examples generated from the catalogue (§9) | L4 |
 
 ### 5.4 Initial content
@@ -387,6 +424,13 @@ existing `st-` class prefix: `<st-bar-chart>`, `<st-bpmn-canvas>`, `<st-decision
   element's shadow root [JUDGMENT, to confirm in L2]. L2 compiles every component that enters the bundle with
   `css: 'injected'` and asserts that each element's computed styles match the framework component's on the same
   input.
+- **Wrapper API** [JUDGMENT]: the envelope is passed through a JS property `element.envelope`, or read from a child
+  `<script type="application/json">` data island when the property is unset. No HTML attribute carries data
+  (attribute size, escaping, and attribute values are visible to any page CSS selector). Host configuration uses the
+  separate channel of §6.5.
+- **No SSR**: custom elements render on the client only. The docs site shows the elements client-side; server-side
+  rendering stays the job of the four framework packages. A page that needs SSR uses a framework package, not an
+  element.
 - **json-render comparison** (dossier §2.4, "other standards"): L2 also renders `BarChart` with
   `@json-render/svelte` and records runtime size, schema form and catalogue mapping, before the wrapper route is
   frozen. json-render is not adopted as the base (0.x, Labs status, its own spec format, a Zod catalogue that would
@@ -410,13 +454,27 @@ existing `st-` class prefix: `<st-bar-chart>`, `<st-bpmn-canvas>`, `<st-decision
 
 | environment | CSP | expectation | status |
 |---|---|---|---|
-| MCP Apps resource, bundle inlined | default `MCPA:276-285` (`'unsafe-inline'` scripts and styles, no external origin) | works with no `ui.csp` declaration | to measure (L3) |
-| MCP Apps resource, engines from jsDelivr | `_meta.ui.csp.resourceDomains: ["https://cdn.jsdelivr.net"]` | lazy chunks load with SRI | after L7 |
+| MCP Apps resource, scripts and styles inlined | default `MCPA:276-285` plus the pilot asset rule below | works; scripts and styles rely on `'unsafe-inline'` only, since a `ui://` document has no network origin for `'self'` to match [JUDGMENT, U-16] | to measure per host (L3) |
+| MCP Apps resource, engines from jsDelivr | `_meta.ui.csp.resourceDomains: ["https://cdn.jsdelivr.net"]` | lazy chunks load with SRI | after L7a |
 | strict page (no `'unsafe-inline'`) | `script-src <cdn>; style-src <cdn> 'nonce-…'` | Svelte's injected `<style>` is blocked; fallback: build-time CSS in a `.css` file adopted through constructable stylesheets, or a nonce | `unknown` (L2) |
-| Claude Code artifact | jsDelivr `/npm/` scripts allowed; external fonts, stylesheets and images blocked (E-H-5) | scripts load; DS fonts and `bpmn-canvas` assets do not | `unknown` (L2, L5) |
+| Claude Code artifact | jsDelivr `/npm/` scripts allowed; external fonts, stylesheets and images blocked, Google Fonts excepted (E-H-5) | scripts load; DS fonts and `bpmn-canvas` assets do not | **accepted degradation** (below); measured in L2, L5 |
+
+- **Pilot asset rule (U-12)** [JUDGMENT]. Under the default MCP Apps CSP, `font-src` falls back to `default-src 'none'`
+  and `img-src` allows only `'self' data:` (`MCPA:276-285`), and a single inlined HTML resource has no sibling files.
+  The DS keeps the `bpmn-canvas` rule « no `data:` URI » (§7). So the pilot resource declares
+  `_meta.ui.csp.resourceDomains: ["https://cdn.jsdelivr.net"]` and loads **only the assets of packages already
+  published** from there: `bpmn-canvas`'s `dist/assets/` through `assetBase` (0.3.0 is on npm). DS text falls back to
+  the theme's system font stack. AC-L2's « zero CSP violation » is measured under that declaration. If a host refuses
+  the declaration, the BPMN pilot on that host is recorded as degraded (no icons), not silently passed.
+- **Artifact route**: the skill's artifact template accepts the degradation — system fonts, and `BpmnCanvas` rendered
+  without its icon font and images — and says so in the rendered page and in the skill. No `data:` exception is made.
 
 - No `eval` and no `new Function` in the bundle: L2 adds a guard that scans the built chunks.
-- Rich text (Markdown in prose nodes) is sanitized by the element before insertion, never injected as raw HTML.
+- Rich text (Markdown in prose nodes) is sanitized by the element before insertion, never injected as raw HTML. The
+  sanitizer is chosen in L2 (U-14); candidate DOMPurify, already in this repository's lockfile at 3.4.15
+  (`package-lock.json`, `node_modules/dompurify`), pinned exactly, its license recorded by `licensing:check`. The
+  Markdown parser and the allowed subset are chosen with the Focus pilot (`@sentropic/focus` leaves Markdown to the
+  host, dossier S-FO1).
 
 ### 6.5 Host configuration channel
 
@@ -425,17 +483,21 @@ The host sets `element.hostConfig` (a JS property, not an attribute) or provides
 
 ```jsonc
 { "theme": "sent-tech", "colorScheme": "light", "locale": "fr",
-  "assetBase": "https://cdn.jsdelivr.net/npm/@sentropic/bpmn-canvas@0.x.y/dist/assets/",
-  "bpmn": { "watermark": { "hidden": true, "license": "<reference supplied by the owner>" } } }
+  "assetBase": "https://cdn.jsdelivr.net/npm/@sentropic/bpmn-canvas@0.x.y/dist/assets/" }
 ```
 
 Only the host writes it: the MCP server when it builds the resource HTML, the page author on a standalone page. The
-skill's artifact template never writes `bpmn.watermark` (§9).
+skill's artifact template never writes `bpmn.watermark` (§9). **Everything in `hostConfig` is readable in the
+browser.** It therefore never carries the Camunda license value; a `bpmn.watermark` entry is allowed only in the form
+§13.3 permits once Q-1a is answered, and is absent until then.
 
 ### 6.6 Weight and lazy engines
 
 - Budgets [JUDGMENT], measured in L2 and reported in `dist/browser/sri.json` with raw, gzip and brotli sizes, as
   `bpmn-canvas` does: core runtime plus `BarChart` ≤ **150 kB gzip**; each engine is its own chunk.
+- Lazy or not [JUDGMENT]: the envelope validator and the error panel are in the **core** (an invalid envelope must
+  render its diagnostics without loading an engine); the Focus renderer, with its Markdown parser and sanitizer, is a
+  **lazy** chunk like `bpmn-canvas`; `BarChart` is in the core.
 - Lazy loading: in the ESM build, an element registers immediately and `import()`s its engine chunk on first
   connection (`bpmn-canvas`, later diagram engines). In the inlined MCP mode, `import()` of a sibling file is not
   available, so the MCP server assembles the resource with the chunks of the requested component only (§8.3).
@@ -447,7 +509,7 @@ skill's artifact template never writes `bpmn.watermark` (§9).
 
 - Public package containing the wrappers, the catalogue, the schemas, and as runtime dependencies at exact
   versions: `@sentropic/design-system-svelte`, `@sentropic/design-system-themes`, `@sentropic/bpmn-canvas` (lazy
-  chunk), `@sentropic/diagram-core` (public from L7, §18.4), and the Focus renderer.
+  chunk), `@sentropic/diagram-core` (public from L7b, §18.4), and the Focus renderer.
 - `npm run licensing:check` applies as soon as the manifest is not `private`: `license`, `LICENSE`,
   `LICENSE.THIRD-PARTY.md` (which then includes the bpmn-js license with its watermark clause) and their presence in
   the tarball (`DS:scripts/verify-publishable-licensing.mjs:10-24`).
@@ -486,13 +548,21 @@ extension, every tool still answers with a text (and, where cheap, SVG image) fa
 
 ### 8.2 Tools
 
-All three keep the default visibility, written explicitly as `["model","app"]` (`MCPA:318-330`).
+`_meta.ui.resourceUri` and `visibility` belong to the **tool definition** returned by `tools/list` (« Tools are
+associated with UI resources through the `_meta.ui` field », `MCPA:318-345`), not to a tool result. The first three
+tools keep the default visibility, written explicitly as `["model","app"]` (`MCPA:324-330`).
 
-| tool | input | result |
+| tool | definition (`tools/list`) | result (`tools/call`) |
 |---|---|---|
-| `list_components` | `{}` | `content`: one line per component (name, summary, contract). `structuredContent`: `{ catalogId, components: [{ name, element, contract, engine, summary }] }`. |
-| `get_schema` | `{ "component": "<Name>" }` | `content`: **the schema and one example as text** — the model must read them, and `structuredContent` is not added to model context (`MCPA:1474`). `structuredContent`: `{ catalogId, schema, example }`. |
-| `render` | `inputSchema` = the envelope schema (`anyComponent` for `root`) | `_meta.ui.resourceUri: "ui://sentropic/render/v1"`. `content`: a text summary (component, counts, validation result). `structuredContent`: `{ envelope, diagnostics }`. `isError: true` when validation fails (§4.5). |
+| `list_components` | `inputSchema`: `{}` | `content`: one line per component (name, summary, contract, status). `structuredContent`: `{ catalogId, components: [{ name, element, contract, engine, summary, status? }] }`. |
+| `get_schema` | `inputSchema`: `{ "component": "<Name>" }` | `content`: **the schema and one example as text** — the model must read them, and `structuredContent` is not added to model context (`MCPA:1474`). `structuredContent`: `{ catalogId, schema, example }`. |
+| `render` | `inputSchema` = the envelope schema (`anyComponent` for `root`); `_meta.ui.resourceUri: "ui://sentropic/render/v1"` | `content`: a text summary (component, counts, validation result). `structuredContent`: `{ envelope, diagnostics }`. `isError: true` when validation fails (§4.5). |
+| `submit_intent` | `inputSchema` = the intent event of §4.6; `visibility: ["app"]` [JUDGMENT: an intent comes from a click, the agent does not need to call it] | `content`: an acknowledgement the host shows to the model on its next turn; the intent is forwarded to the consumer the server is configured with (for Focus, the decision-inject route, wired by h2a later). |
+
+**Output bounds** [JUDGMENT]: `get_schema` `content` ≤ 256 KiB; `render` `content` ≤ 4 KiB; `render`
+`structuredContent` echoes the validated envelope (≤ 1 MiB by the input bound) only while the measured host limit
+allows it; otherwise it carries `{ envelopeSha256, diagnostics }` and the app keeps the envelope it received through
+`tool-input`. L3 measures and fixes the choice.
 
 ### 8.3 Resource
 
@@ -500,9 +570,15 @@ All three keep the default visibility, written explicitly as `["model","app"]` (
   package: the core runtime, the elements, and host configuration (§6.5). The app reads the envelope from
   `ui/notifications/tool-input`, renders, then refines with `ui/notifications/tool-result` (validated envelope and
   diagnostics). `tool-input-partial` is ignored until `mode: "preview"` exists (§10.3).
-- **Pilot mode (before publication)**: everything inlined, no `ui.csp` declaration, default CSP. Size budget for the
-  resource: **≤ 2 MiB** raw [JUDGMENT]; the real host limit is `unknown` (§17 U-1). If the measured resource exceeds a
-  host's limit, the fallback is one resource per component (`ui://sentropic/<id>/v1`) linked from per-component tools.
+- **Pilot mode (before publication)**: scripts and styles inlined; `ui.csp.resourceDomains` limited to jsDelivr for
+  the assets of already-published packages (pilot asset rule, §6.4). Size budget for the resource: **≤ 2 MiB** raw
+  [JUDGMENT]; the real host limit is `unknown` (§17 U-1). If the measured resource exceeds a host's limit, the
+  fallback is one resource per component (`ui://sentropic/<id>/v1`), each linked from the definition of a
+  per-component tool (`render_<id>`).
+- **Hosts**: Claude Desktop is the first reference host and **VS Code the second** (« MCP Apps appear inline when an
+  MCP server supports them », E-H-13). ChatGPT implements MCP Apps for UI returned by an MCP server (E-H-7), but its
+  negotiation of `io.modelcontextprotocol/ui` and its handling of `visibility`, `ui/notifications/*` and `ui.csp` are
+  not documented in the sources read: it is measured in L3 (U-13) and counts as a reference host only if it conforms.
 - **Published mode**: core inlined, engines loaded from jsDelivr with SRI, declared in
   `_meta.ui.csp.resourceDomains: ["https://cdn.jsdelivr.net"]`.
 - Security: the executed code is the pinned DS bundle; the AI supplies only data. This is MCP Apps' equivalent of
@@ -510,8 +586,8 @@ All three keep the default visibility, written explicitly as `["model","app"]` (
 
 ### 8.4 Size bounds
 
-Envelope ≤ 1 MiB (§4.3), resource ≤ 2 MiB in pilot mode (§8.3). Both bounds are written in the server and covered by a
-test with an oversize input.
+Input: envelope ≤ 1 MiB (§4.3). Resource: ≤ 2 MiB in pilot mode (§8.3). Output: the bounds of §8.2. Each bound is
+written in the server and covered by a test with an oversize case.
 
 ---
 
@@ -522,8 +598,9 @@ test with an oversize input.
   generated from the catalogue; the rest is hand-written. It teaches:
   1. produce only the envelope; read `get_schema` first when the MCP server is available;
   2. route by host: MCP `render` when the tool exists; otherwise an artifact or standalone page from the skill's fixed
-     template (exact jsDelivr version, SRI, the envelope in a `<script type="application/json">` data island);
-     otherwise a text answer;
+     template (the envelope in a `<script type="application/json">` data island; the script tag points at the exact
+     jsDelivr version with SRI once L7a has published, and at the locally built IIFE before that — the L4 check runs
+     on the local build); otherwise a text answer;
   3. on `isError`, fix each diagnostic at its `path` and retry, at most twice;
   4. never write component code, never add markup or style beyond the template, never set host configuration
      (theme, watermark).
@@ -531,7 +608,8 @@ test with an oversize input.
   to obtain a `DecisionDossierDocument` from a Track decision (`track focus`, §3.5), and how to render it in a host or
   as a standalone file without a Claude session (`H2A:docs/focus/decision-dossier-format.md:3-5`). **Carrier
   `unknown`**: proposed h2a [JUDGMENT], because h2a owns the schema (decision 4), `track focus` and
-  `present-decision`; the DS supplies `sentropic-render` and the element. Open as H-3.
+  `present-decision`; the DS supplies `sentropic-render` and the element. Open as H-3 (h2a runs a double study,
+  then the owner decides).
 - Measurable skill check (L4) [JUDGMENT]: on 10 fixed prompts per pilot component, at least 8 produce a valid envelope
   on the first attempt and 10 after the correction loop; the prompts and results are committed.
 
@@ -559,7 +637,7 @@ to `diagram-core` is A′ (PR #164) and is not needed for rendering.
 
 `mode: "preview"` is reserved: a non-validating, ephemeral render of a partial document during argument streaming
 (the study's « aperçu éphémère », dossier S-SP4). It is not implemented by any lot of this spec; until it is, a
-`preview` envelope is refused with `unsupported-contract`.
+`preview` envelope is refused with `unsupported-mode`.
 
 ### 10.4 Mapping to external protocols (for the deferred adapters)
 
@@ -579,17 +657,29 @@ Preconditions (external, status `unknown`): a published `bpmn-canvas` that expor
 unknown extensions (decision 5).
 
 Criteria:
-1. One F1 JSON file renders identically (same element count, screenshot diff below 0.1 % of pixels) in Claude
-   Desktop through `render`, in a second MCP Apps host (ChatGPT or VS Code), and in a standalone HTML file.
-2. Without host license configuration the bpmn.io logo is visible (`.bjs-powered-by` present, opacity 1, not
+1. One F1 JSON file renders the **same diagram** in Claude Desktop through `render`, in VS Code through `render`, and
+   in a standalone HTML file: same set of BPMN element ids drawn, each shape's bounding box within 1 CSS px of the
+   standalone reference (read from the DOM). Pixel comparison is per host pair, against that host's own baseline, at
+   0.5 % of pixels, because fonts, anti-aliasing and device pixel ratio differ between hosts. A host where the pilot
+   asset rule is refused (§6.4) is recorded as degraded, not compared.
+2. Without a hiding configuration the bpmn.io logo is visible (`.bjs-powered-by` present, opacity 1, not
    overlapped); a `hidden: true` request without a license yields `watermark-refused` in the diagnostics.
-3. With host configuration carrying a non-blank license, the logo is hidden and no `watermark-refused` appears; the
-   envelope cannot produce either state (a test sends `watermark` inside `root` and gets `schema-violation`).
+3. **Conditional on §13.3 being settled (Q-1a, Q-5)**: with the allowed hiding configuration, the logo is hidden and no
+   `watermark-refused` appears. Unconditional part: the envelope cannot produce either state (a test sends `watermark`
+   inside `root` and gets `schema-violation`). Until §13.3 is settled, criterion 3 is reported `not applicable`, never
+   passed.
 4. An F1 document with an `acme:` extension element, a foreign attribute and an unregistered `xmlns` renders, and the
-   F1 tree read back from the element equals the input (after F1's canonical ordering).
-5. A page that renders no BPMN never requests the `bpmn-canvas` chunk (network log).
-6. Zero CSP violations under the MCP Apps default CSP; keyboard focus reaches the canvas; axe reports no violation of
-   impact `serious` or `critical`.
+   F1 tree read back from the element equals the input after F1's canonical ordering (defined by F1, U-17).
+5. Generic elements kept by F1 (decision 5) open no script vector: an extension element named `script`, an `on*`
+   foreign attribute and a `javascript:` value render as inert data (no element of that name in the DOM, no handler,
+   no navigation).
+6. A page that renders no BPMN never requests the `bpmn-canvas` chunk (network log).
+7. Zero CSP violations under the MCP Apps default CSP plus the pilot asset rule; keyboard focus reaches the canvas;
+   axe reports no violation of impact `serious` or `critical`.
+8. Geometry of the logo and engine sizes re-measured at the versions actually shipped: `@sentropic/bpmn-canvas`
+   0.3.0 depends on bpmn-js `~18.30.1` and diagram-js `~15.27.1` (`npm view @sentropic/bpmn-canvas@0.3.0
+   dependencies`), while the DS qualification measured bpmn-js 18.28.0 and diagram-js 15.26.0
+   (`DS:docs/a0-csp-dependency-qualification.md:25-26,89`).
 
 ### 11.2 P-FOCUS: `<st-decision-dossier>`
 
@@ -602,18 +692,19 @@ pins that exact version and records the schema's sha256. Until then the catalogu
 `x-sentropic.status: "unknown"` and L6 cannot start.
 
 Criteria:
-1. A dossier produced by `track focus <id>` from this repository's Track renders in Claude Desktop, in a second MCP
-   Apps host and as a standalone file opened without network access beyond the pinned CDN.
+1. A dossier produced by `track focus <id>` from this repository's Track renders in Claude Desktop, in VS Code and as
+   a standalone file built from the **local** elements build and opened with the network disabled. The same check on
+   the jsDelivr-pinned build belongs to L7b.
 2. Content parity with h2a's `renderHtml` on the same document: same sections in the same order, same option ids and
    titles, same outcome (text comparison of the rendered DOM).
 3. No hard-coded colour: every colour resolves to a `--st-*` token (a test scans computed styles against the token set),
    unlike the copied chain (§3.5).
-4. Clicking an option emits `intent` `choose-option` with the option id; in MCP Apps it reaches the host as
-   `ui/message` (the h2a `/api/decisions/inject` route is wired in a later h2a item).
+4. Clicking an option emits `intent` `choose-option` with the option id; in MCP Apps it reaches the server as a
+   `tools/call` of `submit_intent` (§8.2), not as a chat message; the h2a decision-inject route is wired by h2a later.
 5. `diagram` nodes render as the fenced fallback (as `@sentropic/focus` does today) until a diagram renderer exists
    (L8).
-6. The four repositories that copy the chain (radar-immobilier, genair-cutter, d2d, kc) are not migrated
-   retroactively; new dossiers use the element.
+6. The repositories that copy the chain are not migrated retroactively: kc and d2d (`docs/`), genair-cutter, and
+   radar-immobilier, whose copies sit under `tmp/`. New dossiers use the element.
 
 ### 11.3 P-DATA: `<st-bar-chart>`
 
@@ -627,7 +718,7 @@ keyboard activation.
 
 | adapter | does | trigger (any one) | review |
 |---|---|---|---|
-| A2UI | wraps `root` in `createSurface` + `updateComponents`; for Gemini Enterprise, projects onto the `basic` or `material` catalogue (DS brand lost by construction, E-A2-33) | the owner confirms a Gemini need; **or** Gemini Enterprise accepts third-party catalogues; **or** A2UI v1.0 is stable **and** Claude or ChatGPT renders A2UI natively | at each Track report, and no later than 2026-11-15 |
+| A2UI | wraps `root` in `createSurface` + `updateComponents`; for Gemini Enterprise, projects onto the `basic` or `material` catalogue (DS brand lost by construction; E-A2-33, ledger only) | the owner confirms a Gemini need; **or** Gemini Enterprise accepts third-party catalogues; **or** A2UI v1.0 is stable **and** Claude or ChatGPT renders A2UI natively | at each Track report, and no later than 2026-11-15 |
 | AG-UI | streams agent ↔ UI state for Focus web or the Sentropic workspace (`STATE_SNAPSHOT`, `STATE_DELTA`, mapping of §10.4) | Focus web or the workspace needs streamed agent ↔ UI state | at each Track report |
 
 ---
@@ -639,31 +730,59 @@ keyboard activation.
 - bpmn-js 18.30.1 license (`/home/antoinefa/src/bpmn-canvas/node_modules/bpmn-js/LICENSE:13-16`): « The source code
   responsible for displaying the bpmn.io project watermark that links back to https://bpmn.io as part of rendered
   diagrams MUST NOT be removed or changed. When this software is being used in a website or application, the
-  watermark must stay fully visible and not visually overlapped by other elements. »
-- `bpmn-canvas` keeps the logo visible by default and hides it only on `watermark: { hidden: true, license }` with a
-  non-blank `license`; « whether hiding the logo is allowed is the host's responsibility » (`BC:README.md:360-380`).
+  watermark must stay fully visible and not visually overlapped by other elements. » The license names no
+  commercial license that would allow hiding it.
+- How `bpmn-canvas` hides it, measured at `BC:` (`62ec95f`): the option is read **in the browser** at canvas
+  creation; `String(options.watermark.license ?? "").trim() !== ""` is the only check
+  (`src/internal/canvas.ts:131-133`); it then sets `data-bpmn-canvas-watermark="hidden"` on the canvas root, and the
+  package stylesheet applies `.bpmn-canvas[data-bpmn-canvas-watermark="hidden"] .bjs-powered-by { display: none
+  !important; }` (`src/styles/canvas.css:21-24`). The value itself is not written to the DOM by `bpmn-canvas`, but it
+  is present in the page's memory and in whatever carried it to the page. « The package does not check the license »
+  (`src/types.ts:112-114`).
+- The logo is a DOM node that bpmn-js adds in the browser (`addProjectLogo()` in `lib/BaseViewer.js`,
+  `DS:docs/a0-csp-dependency-qualification.md:72-74`). The static renderer `renderDiagrams` also uses the bpmn-js
+  Viewer (`BC:src/internal/render.ts:9,19,27`) and « draws no logo » (`BC:README.md:375-378`): that is the export
+  question of Q-4, not a hiding mechanism.
 - Measured in place (bpmn-js 18.28.0): `.bjs-powered-by`, 53 × 23 px, 15 px from the bottom-right corner; the DS
   qualification requires a 100 × 48 px exclusion zone in that corner and forbids hiding through `opacity`,
   `visibility`, `clip-path` or transparent overlap (`DS:docs/a0-csp-dependency-qualification.md:66-81`).
 - Open owner point from the same file (lines 83-87): the logo is a DOM sibling of the SVG, so an SVG, PDF or PNG export
   carries no logo.
 
-### 13.2 Rules
+### 13.2 Owner answer to Q-1 (2026-10-15)
+
+The Camunda license belongs to the owner and is **confidential**. It is referenced only by the name of its variable,
+`SENTROPIC_BPMN_WATERMARK_LICENSE`, in a `.env` or a secrets manager; never in a repository, a log or a rendering.
+Renewal is the owner's; rotation `unknown`. h2a does not own it (this answers H-2). Since an element published on a
+CDN runs in the browser, and everything in `hostConfig` is readable there, **the value must never reach the browser**.
+
+### 13.3 Ways to hide the logo without exposing the value
+
+| way | mechanism | feasibility, measured | open point |
+|---|---|---|---|
+| **(a)** non-secret reference | The serving host holds `SENTROPIC_BPMN_WATERMARK_LICENSE` server-side and checks that it is set. Only then does it pass `bpmn-canvas` a **distinct, non-secret** reference (for example a contract identifier or an attestation id), held in a second variable `SENTROPIC_BPMN_WATERMARK_REFERENCE` [JUDGMENT on the name]. | **Technically feasible today**: `bpmn-canvas` only checks that `license` is non-blank (`canvas.ts:132`) and does not verify it, so any non-blank reference hides the logo. The reference is readable in the browser and may be cached by the host (`MCPA:392`). | Is a non-secret reference, visible to every viewer, acceptable to the owner and compatible with the license terms? → **Q-1a**. |
+| **(b)** server-side hiding, value never sent | The server decides whether to hide and sends the browser nothing derived from the license. | **Not feasible as such for the interactive canvas**: the logo is created and hidden in the browser, and `bpmn-canvas` hides it only when it receives a non-blank `license` string there (`canvas.ts:131-133`, `canvas.css:21-24`). Whatever the server sends to trigger the hiding is visible client-side, so (b) reduces to (a) with an opaque marker. Rendering on the server (`renderDiagrams`) loses interactivity and produces a logo-less export, which is Q-4's open point, not a hiding path. | None beyond (a). |
+
+**Until Q-1a and Q-5 are answered, the logo stays visible everywhere**: no host configuration carries a
+`bpmn.watermark` entry, and P-BPMN criterion 3 is `not applicable`.
+
+### 13.4 Rules
 
 - **W1** Visible by default, for every consumer, in every element and every published artefact.
 - **W2** The AI cannot affect it: `watermark` appears in no catalogue schema; P-BPMN criterion 3 tests it.
-- **W3** Host configuration only (§6.5). For the h2a MCP server, the reference is read from the server's runtime
-  environment, variable **`SENTROPIC_BPMN_WATERMARK_LICENSE`** [JUDGMENT on the name], set in the deployment's
-  `.env` (git-ignored) and **documented by name** in h2a's MCP documentation, with its rotation owner. Absent or blank:
-  the server passes no watermark option.
-- **W4** No license value is committed in any repository. L2 and L3 each add a guard that fails when a tracked file
-  sets `hidden: true` together with a literal non-placeholder `license` string (allowed placeholders:
-  `"<your license reference>"`, `"<reference supplied by the owner>"`).
+- **W3** The license value lives only in the serving host's `.env` or secrets manager, under
+  `SENTROPIC_BPMN_WATERMARK_LICENSE`, documented by name; it is read server-side, never logged, never placed in a
+  resource, a page, `hostConfig`, `structuredContent`, a diagnostic or a test fixture. If (a) is accepted, only
+  `SENTROPIC_BPMN_WATERMARK_REFERENCE` may reach `hostConfig.bpmn.watermark.license`, and only when the license
+  variable is set. Absent or blank: no watermark option is passed.
+- **W4** No license value and no reference value is committed in any repository. L2 and L3 each add a guard that fails
+  when a tracked file sets `hidden: true` together with a literal non-placeholder `license` string (allowed
+  placeholders: `"<your license reference>"`, the one in the `bpmn-canvas` README). The L3 guard also asserts that the
+  server's logs and resource HTML never contain the value of `SENTROPIC_BPMN_WATERMARK_LICENSE` (test with a canary
+  value).
 - **W5** Publication gate: no published artefact (npm tarball defaults, docs-site page, demo, CDN example, MCP default
-  configuration) hides the logo until the owner has supplied the Camunda reference. When supplied, Track records the
-  fact, the date and where the value is held (W3) — never the value.
-- **W6** No exporter: the elements offer no SVG/PDF/PNG export of a bpmn-js rendering until the owner rules on the
-  open point of §13.1.
+  configuration) hides the logo until Q-1a and Q-5 are answered. Track records the answers and the date, never a value.
+- **W6** No exporter: the elements offer no SVG/PDF/PNG export of a bpmn-js rendering until the owner rules on Q-4.
 - **W7** The exclusion zone of §13.1 applies to every DS chrome placed over `<st-bpmn-canvas>` (toolbar, zoom
   controls, error panel).
 
@@ -671,19 +790,21 @@ keyboard activation.
 
 ## 14. Lots, dependencies and gates
 
-| lot | repository | content | depends on | gate |
-|---|---|---|---|---|
-| **L0** | DS | this spec, Track records (§19) | — | **G0**: PR reviewed and merged |
-| **L1** | DS | catalogue and schema generator (§5), envelope validator and diagnostics (§4), freshness guard, A2UI SDK acceptance test | L0 | **G1**: AC-L1 |
-| **L2** | DS | elements package, `private: true`: three wrappers, theme, shadow DOM, CSP and size measurements, `sri.json`, Svelte-vs-Lit threshold, json-render comparison, W4 guard | L1 | **G2**: AC-L2; the Svelte/Lit outcome recorded in Track |
-| **L3** | h2a (carrier `unknown`, H-4) | MCP extension negotiation, `resources/*`, three tools, `ui://sentropic/render/v1` inlined, fallbacks, size bounds, W3/W4 | L2 | **G3**: AC-L3 |
-| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (carrier `unknown`, H-3), skill check | L3 | **G4**: AC-L4 |
-| **L5** | DS (+ bpmn-canvas, d2d-cond) | pilot P-BPMN | L3; external: F1 published with unknown-extension retention | **G5**: §11.1 criteria |
-| **L6** | DS (+ h2a) | pilot P-FOCUS | L3; external: h2a schema and validator published | **G6**: §11.2 criteria |
-| **L7** | DS | publication: `elements-publish.yml`, `diagram-core` made public, first `npm publish`, jsDelivr and SRI check, W5 | L5, L6 | **G7**: AC-L7. **Point of no return** |
-| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events | L2; external: a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
+| lot | repository | content | depends on | entry condition | gate |
+|---|---|---|---|---|---|
+| **L0** | DS | this spec, Track records (§19) | — | — | **G0**: PR reviewed and merged; H-4 and H-5 sent to h2a with a requested date |
+| **L1** | DS | catalogue and schema generator (§5), envelope validator and diagnostics (§4), freshness guard, A2UI SDK acceptance test | L0 | — | **G1**: AC-L1 **and the L3 carrier designated and recorded in Track (H-4, H-5)** |
+| **L2** | DS | elements package, `private: true`: three wrappers, theme, shadow DOM, CSP and size measurements, `sri.json`, Svelte-vs-Lit threshold, json-render comparison, W4 guard | L1 | — | **G2**: AC-L2; the Svelte/Lit outcome recorded in Track |
+| **L3** | h2a (carrier `unknown`, H-4) | MCP extension negotiation, `resources/*`, four tools, `ui://sentropic/render/v1`, fallbacks, bounds, W3/W4 | L2 | **carrier designated (owner + date)** | **G3**: AC-L3 |
+| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (carrier `unknown`, H-3), skill check on the local build | L3 | — | **G4**: AC-L4 |
+| **L5** | DS (+ bpmn-canvas) | pilot P-BPMN | L3 | F1 published with unknown-extension retention | **G5**: §11.1 criteria |
+| **L6** | DS (+ h2a) | pilot P-FOCUS | L3 | h2a schema and validator published | **G6**: §11.2 criteria |
+| **L7a** | DS | first publication: `elements-publish.yml`, core + `BarChart` + catalogue + schemas, jsDelivr and SRI check, skill template switched to the CDN | L4 | — | **G7a**: AC-L7a. **Point of no return** |
+| **L7b** | DS | publication of `BpmnCanvas` and `DecisionDossier` (minor release), `diagram-core` made public, W5 | L7a, L5, L6 | — | **G7b**: AC-L7b |
+| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
 
-The adapters of §12 are not lots until a trigger fires.
+Splitting L7 keeps the value of L2–L4 (`BarChart` end to end, skill, MCP) from waiting on the two external
+preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fires.
 
 ## 15. Acceptance criteria
 
@@ -691,27 +812,34 @@ The adapters of §12 are not lots until a trigger fires.
   to `catalogId` and three components; each standalone schema agrees with its catalogue entry (test); each component's
   `example` validates and a mutated example fails with the expected `path` (`DecisionDossier` is exempt while its h2a
   schema is `unknown`: its `document` property is then `{ "type": "object" }` and the entry carries
-  `x-sentropic.status: "unknown"`); the A2UI SDK test (`@a2ui/web_core`, exact
-  version) loads the catalogue, or its refusal is recorded with the SDK's message; the four-framework parity guard
-  passes or records each mismatch in `x-sentropic.parity`.
+  `x-sentropic.status: "unknown"`); no implicit `any` in the generated schemas, or an inventory of each replacement
+  type; the A2UI SDK test (`@a2ui/web_core`, exact version) loads the catalogue — if it refuses, the refusal is
+  recorded with the SDK's message and U-2 stays open; the four-framework parity guard passes or records each mismatch
+  in `x-sentropic.parity`. G1 also requires the L3 carrier (§14).
 - **AC-L2**: for each of the three elements, one envelope renders in Chromium with zero console errors and zero CSP
-  violations under the MCP Apps default CSP; computed styles of the element equal the Svelte component's on the same
-  input for the checked properties; `sri.json` hashes match `npm pack` output; sizes are reported and the core budget
-  (≤ 150 kB gzip) holds or is re-decided in Track; the strict-CSP and Claude Code artifact rows of §6.4 have a measured
-  status; the no-`eval` and W4 guards run in `scripts/run-script-guards.mjs`.
-- **AC-L3**: **one envelope file renders the same component in Claude Desktop and in a second MCP Apps host**
-  (ChatGPT or VS Code), with screenshots committed; in a client that does not negotiate the extension, `render`
-  returns the text fallback; an oversize envelope returns `payload-too-large`; the resource size is measured against
-  the 2 MiB budget; `get_schema`'s `content` carries the schema text.
-- **AC-L4**: the skill check of §9 meets its thresholds; the skill never writes `watermark` (grep of the produced
-  outputs).
-- **AC-L5** and **AC-L6**: the criteria of §11.1 and §11.2. The P-DATA criteria (§11.3) are part of AC-L2.
-- **AC-L7**: `npm run licensing:check` passes with the elements package and `diagram-core` publishable; the published
-  tarball's `sri.json` matches jsDelivr's served bytes for every browser file; the docs page snippet loads from
-  jsDelivr with `integrity`; no published artefact hides the watermark unless W5 is satisfied; D7′ is recorded (§18.4).
+  violations under the MCP Apps default CSP plus the pilot asset rule; computed styles of the element equal the
+  Svelte component's on the same input for the checked properties; `sri.json` hashes match `npm pack` output; sizes
+  are reported and the core budget (≤ 150 kB gzip) holds or is re-decided in Track; the strict-CSP and artifact rows
+  of §6.4 have a measured status; the no-`eval` and W4 guards run in `scripts/run-script-guards.mjs`; the wrapper API
+  (§6.2) and the callback-to-intent table of each contract module are written; the sanitizer is chosen (U-14); the
+  P-DATA criteria (§11.3) pass.
+- **AC-L3**: **one envelope file renders the same component in Claude Desktop and in VS Code**, with screenshots
+  committed; ChatGPT is measured against the SEP-1865 points of §8.3 (U-13) and added as a reference host only if it
+  conforms; in a client that does not negotiate the extension, `render` returns the text fallback; an oversize
+  envelope returns `payload-too-large`; the resource size is measured against the 2 MiB budget and the effective CSP
+  is recorded per host (U-1, U-16); the output bounds of §8.2 are fixed; `get_schema`'s `content` carries the schema
+  text; the W4 canary test passes.
+- **AC-L4**: the skill check of §9 meets its thresholds on the local build; no produced output contains the string
+  `watermark` (grep of the committed outputs).
+- **AC-L5** and **AC-L6**: the criteria of §11.1 and §11.2.
+- **AC-L7a**: `npm run licensing:check` passes with the elements package publishable; the published tarball's
+  `sri.json` matches jsDelivr's served bytes for every browser file; the docs page snippet loads from jsDelivr with
+  `integrity`; the skill template points at the published exact version; D7′ is recorded (§18.4).
+- **AC-L7b**: the same checks for the `BpmnCanvas` and `DecisionDossier` chunks and for `diagram-core` made public;
+  P-FOCUS criterion 1 repeated on the jsDelivr-pinned build; W5 holds.
 - **AC-L8**: generated schemas for `SemanticDocument`, `ViewDocument` and `Transaction` agree with `diagram-core`'s
   runtime validation on every existing fixture (accepted by both, or refused by both); a proposal event is never
-  applied without the host's compare-and-swap.
+  applied without the host's compare-and-swap; the release that ships `DiagramCanvas` passes the AC-L7a checks.
 
 ## 16. Risks (dossier pre-mortem) and mitigations
 
@@ -720,12 +848,14 @@ The adapters of §12 are not lots until a trigger fires.
 | the elements drift from the four frameworks: a fifth source of bugs | thin wrappers over the Svelte components (§6.2), parity guard (§5.1), style equality test (AC-L2) |
 | Svelte → custom element loses snippets, context or transitions, and the Lit fallback is triggered too late | threshold measured on three elements in L2, outcome recorded at G2 |
 | the bundle weighs megabytes and exceeds an unknown `ui://` limit | budgets (§6.6, §8.3), per-component resource fallback, measurement in L3 |
-| Claude Code still does not render MCP Apps | artifact route through the skill template; text fallback (§8.1) |
+| Claude Code still does not render MCP Apps | artifact route through the skill template, degradation stated (§6.4); text fallback (§8.1) |
 | Gemini stays uncovered because the A2UI trigger is never fired | dated review of §12 at each Track report, deadline 2026-11-15 |
-| hand-written schemas drift from the TS types | schemas generated, freshness guard (§5.1) |
-| the elements package is never published | publication is decided (§1.1, decision 3); L7 is a lot with its own gate |
-| the watermark is hidden without a license | W1–W7 (§13.2) |
-| the F1 or h2a preconditions never land | L5 and L6 are blocked explicitly; L2–L4 still deliver `BarChart` end to end |
+| hand-written schemas drift from the TS types | schemas generated, freshness guard, no implicit `any` (§5.1) |
+| the elements package is never published | publication is decided (§1.1, decision 3); L7a no longer waits on external preconditions |
+| L3 has no carrier, and L4–L6 wait on it | carrier designation is a G1 criterion and L3's entry condition (§14) |
+| the watermark is hidden without a license, or the license leaks to the browser | §13.2–§13.4: visible until Q-1a and Q-5 are answered; value server-side only; canary test (W4) |
+| the F1 or h2a preconditions never land | L5 and L6 are blocked explicitly; L7a ships without them |
+| ChatGPT does not conform to SEP-1865 | VS Code is the second reference host (§8.3), ChatGPT measured (U-13) |
 
 ## 17. Unknowns and open questions
 
@@ -733,7 +863,7 @@ Unknowns (each measured by the named lot):
 
 | id | unknown | lot |
 |---|---|---|
-| U-1 | maximum size of a `ui://` resource in Claude and ChatGPT | L3 |
+| U-1 | maximum size of a `ui://` resource per host | L3 |
 | U-2 | whether A2UI SDKs accept `x-` keywords and an empty `functions` in a v0.9.1 catalogue | L1 |
 | U-3 | elements bundle size | L2 |
 | U-4 | styles of Svelte custom elements under a strict CSP | L2 |
@@ -741,26 +871,38 @@ Unknowns (each measured by the named lot):
 | U-6 | `bpmn-canvas` fonts and images inside a Claude Code artifact | L5 |
 | U-7 | publication date of an F1 that keeps unknown extensions | external (bpmn-canvas, d2d-cond) |
 | U-8 | creation, versioning and publication of h2a's `DecisionDossierDocument` JSON Schema | external (h2a) |
+| U-9 | `@sentropic/focus` status: README « private » versus manifest public and npm 0.3.0 | external (h2a) |
 | U-10 | the h2a package or server that carries the MCP contract of §8 | external (h2a, owner) |
 | U-11 | the carrier of the `focus` skill | external (h2a, owner) |
-| U-9 | `@sentropic/focus` status: README « private » versus manifest public and npm 0.3.0 | external (h2a) |
+| U-12 | asset loading in the pilot resource: whether each host honours `ui.csp.resourceDomains` for jsDelivr | L3 |
+| U-13 | ChatGPT's conformance to SEP-1865 (extension negotiation, `visibility`, `ui/notifications/*`, `ui.csp`) | L3 |
+| U-14 | the Markdown sanitizer and its cost | L2 |
+| U-15 | (closed by §5.2) semantics of `x-sentropic.status: "unknown"` | — |
+| U-16 | the effective CSP of a `ui://` document per host, in particular whether `'unsafe-inline'` is kept | L3 |
+| U-17 | F1's canonical ordering, needed by P-BPMN criterion 4 | external (bpmn-canvas) |
+| U-18 | rotation cycle of `SENTROPIC_BPMN_WATERMARK_LICENSE` | owner |
 
 Questions for the owner:
-- **Q-1** Is the Camunda license reference confidential? If it is, it cannot reach the browser through `hostConfig`
-  (it would be visible in the page), and the hiding decision must be made server-side with only a non-identifying
-  marker passed to `bpmn-canvas`, which needs an explicit owner rule.
-- **Q-2** Confirm the catalogue id domain `design-system.sent-tech.ca` and the package name
-  `@sentropic/design-system-elements`.
-- **Q-3** D4 = A: confirm that « publication maintenant » replaces the option's precondition « tranche M3 identique sur
-  4 frameworks avant public » (§18.2).
+- **Q-1a** (blocking for hiding, not for L1–L4) Is a **non-secret** reference, distinct from the confidential license
+  and readable by every viewer of a rendering, acceptable to pass to `bpmn-canvas` (way (a), §13.3)? If yes, which
+  reference (contract identifier, attestation id)?
 - **Q-4** Exports of bpmn-js renderings (W6): reincorporate the attribution in exports, or no bpmn-js exporter.
+- **Q-5** (blocking for hiding) Scope of the Camunda license: products and versions covered (bpmn-js, diagram-js),
+  deployments covered (MCP resources, public npm/CDN package, docs site), attribution conditions, and who can verify it.
 
-Questions for h2a:
+Answered on 2026-10-15 (kept for the record): **Q-1** the license is confidential (§13.2); **Q-2** defaults retained
+unless the owner objects: package `@sentropic/design-system-elements`, catalogue domain `design-system.sent-tech.ca`;
+**Q-3** for D4, « publier maintenant » replaces option A's precondition (§18.2).
+
+Questions for h2a (H-1, H-3 and H-4 go through an h2a double study, then the owner; they stay `unknown`):
 - **H-1** Where and in which artefact the `DecisionDossierDocument` JSON Schema and its validator are published, and
   their versioning rule.
-- **H-2** The owner of `SENTROPIC_BPMN_WATERMARK_LICENSE` in the MCP deployment, and its rotation cycle.
 - **H-3** Who carries the `focus` skill (proposed: h2a), and where.
-- **H-4** Which h2a package or server carries the MCP contract of §8 (owner decision on the h2a side).
+- **H-4** Which h2a package or server carries the MCP contract of §8.
+- **H-5** An owner and a date for H-1 and H-4: L3 cannot start, and G1 cannot pass, without the H-4 carrier.
+- **H-6** Who provides the accounts and environments for the VS Code and ChatGPT checks of L3.
+
+H-2 is answered by Q-1: h2a does not own the license.
 
 ## 18. Other decisions recorded by this PR
 
@@ -768,14 +910,18 @@ Questions for h2a:
 
 Option A of `spec/graph-dataviz-decisions.json` D2: « graph indépendant ; dataviz lockstep ; DS garde ses familles ».
 It matches what `.github/workflows/dataviz-publish.yml:3-5` already does (five `@sentropic/dataviz-*` packages in
-lockstep on their own version line, independent of `@sentropic/graph`).
+lockstep on their own version line, independent of `@sentropic/graph`). Source of the choice: the conductor's brief of
+2026-10-15, point 6.
 
-### 18.2 D4 = A — dataviz-angular publication threshold
+### 18.2 D4 = A-now — dataviz-angular publication threshold
 
-Option A of D4, with the owner's precision as relayed: « publication de dataviz-angular maintenant, avec la matrice des
-absences ». Measured context: `@sentropic/dataviz-angular` exports 76 components against about 118 for Svelte, React
-and Vue (`DS:docs/dataviz-docs-parity.md:33,42`); never published (E404); first publication goes through the bootstrap
-token path (`.github/workflows/dataviz-publish.yml:12-14`). See C4 and Q-3.
+The owner chose option A and, answering Q-3 on 2026-10-15, stated that « publier maintenant » **replaces** its
+precondition « tranche M3 identique sur 4 frameworks avant public ». Recording the unamended `A` would contradict its
+own text, so the Track record carries the three original options plus **`A-now`** — « option A amendée : publication
+de dataviz-angular maintenant, avec la matrice des absences publiée » — and selects `A-now`; the recommendation stays
+`A`, as the dossier wrote it. Measured context: `@sentropic/dataviz-angular` exports 76 components against about 118
+for Svelte, React and Vue (`DS:docs/dataviz-docs-parity.md:33,42`); never published (E404); first publication goes
+through the bootstrap token path (`.github/workflows/dataviz-publish.yml:12-14`).
 
 ### 18.3 Why new Track records for D2 and D4
 
@@ -793,7 +939,9 @@ no workflow.
 ### 18.4 D7′ — third-party runtimes in published DS manifests (revision of D7=A)
 
 D7=A: « nouveau runtime tiers seulement après décision owner explicite »
-(`DS:docs/a0-csp-dependency-qualification.md:469`). Revised by the owner on 2026-10-15:
+(`DS:docs/a0-csp-dependency-qualification.md:469`). Revised by the owner on 2026-10-15, as relayed in the conductor's
+brief, point 6 (« D7 révisée : elkjs et xyflow autorisés dans les manifestes publiés du DS ; bpmn-js autorisé via
+bpmn-canvas dans le paquet d'éléments, filigrane soumis à la licence Camunda »):
 - **elkjs and xyflow are allowed in published DS manifests.** The qualification conditions of
   `docs/a0-csp-dependency-qualification.md` §2 keep applying (elkjs: exact pin, dedicated adapter package, lazy
   `import()`, never in a DS component barrel nor in `@sentropic/dataviz-*`, no fork).
