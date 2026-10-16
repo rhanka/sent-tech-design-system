@@ -954,49 +954,120 @@ bpmn-canvas dans le paquet d'éléments, filigrane soumis à la licence Camunda 
 
 ### 19.1 Track
 
-Track workspace `streams`, written with the `track` CLI 0.98.0 from this branch, from the worktree root. The CLI
-derives the actor from `git config user.email` (`human:<email>`); the owner decisions were relayed by the
-`design-system` conductor, which each decision's context states. `track validate` → `OK: 1657 events, integrity +
-desync clean` (1604 on `origin/main`, 53 appended). No acceptance run, no waiver and no comprehension record was
-created.
+Track workspace `streams`, written with the `track` CLI 0.98.0 from this branch, from the worktree root, **on top of
+`origin/main` `2aa428eb`** (Track at 1608 events, including PR #167's 4). The first version of this PR wrote its
+records on `30c13318` (1604 events); after the rebase they were **replayed with the CLI**, never merged by hand, which
+assigned the identifiers below. The CLI derives the actor from `git config user.email` (`human:<email>`); the owner
+decisions were relayed by the `design-system` conductor, which each decision's context states, the same convention as
+D1 and D3 on 2026-09-24. `track validate` → `OK: 1666 events, integrity + desync clean` (58 appended);
+`track events-contains --base <origin/main events.jsonl> --candidate .track/events.jsonl` → « OK: candidate contains
+all 1597 base event id(s) ». No acceptance run, no waiver and no comprehension record was created.
 
 | object | Track id |
 |---|---|
-| feature DS-JSON-RENDER (parent: stream S6 · Moteur, Outillage & Release `01KW860ATXPNDVSCVHT92KB6P2`) | `01M519DQZ9HERKFR70BGDVNWWN` |
-| L0 — spec and traceability (in progress) | `01M519E5NPW4C4GZ5EN31YVB2X` |
-| L1 — catalogue and schema generator | `01M519E5VX34GQ7BBFBPYRR328` |
-| L2 — elements package and measurements | `01M519E62VZ92KY3TV4KQTFFST` |
-| L3 — MCP Apps contract on the h2a side | `01M519E690VYDW2FRCYAE65DDT` |
-| L4 — skills | `01M519E6F1SEQSBVHJJTRCD96G` |
-| L5 — pilot bpmn-canvas | `01M519E6MZYCPK2M8SDQJVFT5P` |
-| L6 — pilot Focus | `01M519E6V8PQ27Y5T3YYAAK4FN` |
-| L7 — publication | `01M519E73CVRPKZGGBBEAN9B00` |
-| L8 — canvas exchange envelope | `01M519E7AFC8CJVEHZWTCGFPE7` |
-| decision **E** (commitment) — options `0`, `A`, `B`, `C`, `D`, `E`; recommendation `E`; selected `E`, outcome `go`; artifact `rendered-view` → this spec, source dossier sha256 `d476b4fb…fdd0` | `01M519FQDB50MVE6HQ62RJ2T1J` |
-| decision **D2** (orientation) — options `A`, `B`, `C` from `spec/graph-dataviz-decisions.json`; selected `A`, outcome `go`; target GD-M1-PACKAGING `01M2KJTXM16G2D1YRE2S2CR5EK` | `01M519GE5EA3WF17TRHKPWWFT1` |
-| decision **D4** (orientation) — options `A`, `B`, `C`; selected `A`, outcome `go`; owner precision in its context; target GD-M2-PARITY `01M2KJTY950VZE61KCYBT87TBP` | `01M519GEGJ509PDJYRSRWA796K` |
-| decision **D7′** (commitment) — options `A` (D7=A unchanged), `revisee`; selected `revisee`, outcome `go`; artifact `rendered-view` → §18.4; targets the feature above and GD-M3-SLICE `01M2KJTYE8AX2VWQWTD852TKRK` | `01M519GRZ1FMHBF6HJ710BWSHP` |
+| feature DS-JSON-RENDER (parent: stream S6 · Moteur, Outillage & Release `01KW860ATXPNDVSCVHT92KB6P2`) | `01M51CA00H85QXGPTT5KNGWWE5` |
+| L0 — spec and traceability (in progress) | `01M51CA06YWT6FVV74XPKSW0G1` |
+| L1 — catalogue and schema generator | `01M51CA0E3QYYMPECZVGNDXCQR` |
+| L2 — elements package and measurements | `01M51CA0M8MR082MGAW19DTXPW` |
+| L3 — MCP Apps contract on the h2a side | `01M51CA0V4NMYK1Q0GYTHJ8G8G` |
+| L4 — skills | `01M51CA104C9XQ5B6X7E1TNK9K` |
+| L5 — pilot bpmn-canvas | `01M51CA16KZGQEDMR6NXZM3GTK` |
+| L6 — pilot Focus | `01M51CA1D6B3NV5WY487DW2PSA` |
+| L7a — first publication | `01M51CA1KXZMPY4GB67Y2FJDBY` |
+| L7b — publication of the engine components | `01M51CA2GY0DHR3YWHSSPJMBY0` |
+| L8 — canvas exchange envelope | `01M51CA2T7P3TVZE9GM0K8H7VQ` |
+| decision **E** (commitment) — options `0`, `A`, `B`, `C`, `D`, `E`; recommendation `E`; selected `E`, outcome `go`; artifact `rendered-view` → this spec, source dossier sha256 `d476b4fb…fdd0` | `01M51CABNRG86ZASM7QTTWYWJ6` |
+| decision **D2** (orientation) — options `A`, `B`, `C` from `spec/graph-dataviz-decisions.json`; selected `A`, outcome `go`; target GD-M1-PACKAGING `01M2KJTXM16G2D1YRE2S2CR5EK` | `01M51CACEYM1ZDCV0K6Z8N7FR7` |
+| decision **D4** (orientation) — options `A`, `B`, `C` plus `A-now` (option A amended by the owner); recommendation `A`; selected `A-now`, outcome `go`; target GD-M2-PARITY `01M2KJTY950VZE61KCYBT87TBP` | `01M51CACZE18KP5B2AYF0J89R1` |
+| decision **D7′** (commitment) — options `A` (D7=A unchanged), `revisee`; selected `revisee`, outcome `go`; artifact `rendered-view` → §18.4; targets the feature above and GD-M3-SLICE `01M2KJTYE8AX2VWQWTD852TKRK` | `01M51CADFM2PXZWDDZ9HWWH62W` |
 
-Dependencies L1 → L0, L2 → L1, L3 → L2, L4 → L3, L5 → L3, L6 → L3, L7 → L5, L7 → L6, L8 → L2 are `dependency`
-blockers with rule `linked-accepted`; each lot carries one acceptance criterion pointing at §11 or §15.
+Dependencies, all `dependency` blockers with rule `linked-accepted`: L1 → L0, L2 → L1, L3 → L2, L4 → L3, L5 → L3,
+L6 → L3, L7a → L4, L7b → L7a, L7b → L5, L7b → L6, L8 → L2, L8 → L7a. Each lot carries one acceptance criterion pointing
+at §11 or §15; L1's criterion includes the designation of the L3 carrier (§14).
 
 ### 19.2 `spec/graph-dataviz-decisions.json`
 
-D2 and D4 now read `"status": "rendered"` with a `rendered` object (selected option, outcome, `trackDecisionId`,
-`pendingReplayRecordId`, note; D4 also carries the owner's precision). The fields that
+D2 and D4 read `"status": "rendered"` with a `rendered` object (selected option, outcome, `trackDecisionId`,
+`pendingReplayRecordId`, note; D4 also carries `ownerAmendment`). The fields that
 `plan/replay-graph-dataviz-track.mjs` compares (`context`, `options`, `recommendation`) are unchanged; the file
 round-trips byte-identically through `JSON.stringify(…, null, 2)`, which was used to write it. The replay preview
-reports **0 operations** before and after the change. The pending records `01M2KK5XPJCP07FDBQBX16TV08` and
-`01M2KK5XS2SXGMSSQPAVCF2XJ4` are still `pending` with no selected option (`track decision ls --format json`).
+reports **0 operations** (1666 events). The pending records `01M2KK5XPJCP07FDBQBX16TV08` and
+`01M2KK5XS2SXGMSSQPAVCF2XJ4` are still `pending` with no selected option.
 
 ### 19.3 Checks run on the final tree
 
 `node scripts/run-script-guards.mjs`, `npm run licensing:check`, `node tools/graph-dataviz-provenance/verify.mjs`,
 `track validate`, the replay preview; results in the PR description. No workflow runs on this PR's paths (C5).
 
-### 19.4 Concurrency with PR #164
+### 19.4 Merge order with PR #164 and replay procedure
 
-PR #164 also appends to `.track/events.jsonl` (22 events after line 1604) and edits D1 and D3 in
-`spec/graph-dataviz-decisions.json`. The event log is a hash chain (`prevHash`), so the PR merged second cannot be
-resolved by concatenation: it must be rebased and its Track writes replayed with the CLI on top of the other's log,
-which assigns new identifiers, then this section is updated.
+PR #164 also appends to `.track/events.jsonl` (22 events, forked at 1604) and edits D1 and D3 in
+`spec/graph-dataviz-decisions.json` (hunks disjoint from D2 and D4). The event log is a hash chain (`prevHash`), so a
+conflict on it is never resolved by concatenation or by hand. Agreed order: **#164 first**, then this PR.
+
+When #164 has merged, this branch is rebased on the new `origin/main` and replayed again:
+1. rebase; on the `.track/*` conflict, take `origin/main`'s files, and restore `spec/graph-dataviz-decisions.json`
+   from `origin/main` (it then carries #164's D1/D3 blocks);
+2. re-run the CLI writes of this PR (the script used for this replay is the list of commands in §19.1's order:
+   feature, lots, criteria, blockers, L0 start, decisions E, D2, D4, D7′ with their artifacts and selections);
+3. re-add the D2/D4 `rendered` blocks with the new ids, regenerate §19.1 and §19.2;
+4. check before pushing: `track validate` clean; `track events-contains --base <origin/main log> --candidate
+   .track/events.jsonl` reports every `origin/main` event present (no structural loss toward a valid parent); the replay
+   preview reports 0 operations; the pending replay records are still `pending`.
+
+Criteria and blockers are replayed, never copied: `linked-accepted` blockers point at item ids, which change with each
+replay.
+
+---
+
+## Annex — Review: corrections applied / refused
+
+Review: independent muse 1.3 review of PR #168 at maximum effort, `.ds-scrap/e-REVIEW-muse.md` (untracked, 401
+lines), verdict « fusionnable après corrections listées ». Each point was re-checked against its primary source before
+being applied or refused. Owner answers that arrived after the review (Q-1, Q-2, Q-3) are applied as well.
+
+| point | decision | proof or change | where |
+|---|---|---|---|
+| F1 — D7′ extended to elkjs and xyflow without an owner decision | **Refused** | The conductor's brief of 2026-10-15, point 6, relays the owner's revision verbatim: « D7 révisée : elkjs et xyflow autorisés dans les manifestes publiés du DS ; bpmn-js autorisé via bpmn-canvas dans le paquet d'éléments, filigrane soumis à la licence Camunda ». The reviewer did not have the brief. The quotation is now in the spec, so the provenance is checkable. | header, §18.4 |
+| F2 — D2/D4 provenance not established | **Refused** (provenance), **applied** (D4 contradiction) | Provenance: the same brief, point 6, reads « D2 : choisir A pour la décision en attente `01M2KK5XPJCP07FDBQBX16TV08`, ou en créer une nouvelle si … » and « D4 : choisir A (publication de dataviz-angular maintenant, avec la matrice des absences), mêmes précautions, décision `01M2KK5XS2SXGMSSQPAVCF2XJ4` ». Contradiction: the owner then answered Q-3 (« publier maintenant » replaces the precondition); the Track record now selects a distinct option `A-now` instead of the unamended `A`. | header, §1.3 C4, §18.1, §18.2, §19 |
+| F3 — Camunda license existence and scope not verified | **Applied** | New blocking Q-5 (scope, products, deployments, verifier). Hiding is blocked until Q-1a and Q-5 are answered; P-BPMN criterion 3 is conditional and reported `not applicable` meanwhile. | §11.1, §13.3, §13.4 W5, §17 |
+| F4 — `d2d-cond`, `h-cond` undefined | **Applied** | Glossary added. | header |
+| F5 / G4 — L3 without carrier on the critical path | **Applied** | Carrier designation is L3's entry condition and a G1 criterion; H-4/H-5 sent at G0; H-5 added. Carrier stays `unknown` (h2a double study, then owner). | §8, §14, §15, §17 |
+| E1 — grep pattern | **Applied** | `git grep … 30c13318` with the cited pattern → 0 lines (re-run); the `unpkg` note moved to a parenthesis. | §3.1 |
+| E2 — « only `present-decision` exists » | **Applied** | Reworded: closest existing skill, others listed. | §3.5 |
+| E3 — 12 tokens | **Applied** | `kc/docs/kc-decision/focus/chain/style.css` lines 1-6 define 11 distinct `--st-*` properties (re-counted). | §3.5 |
+| E4 — `resourceUri` in the result column | **Applied** | `MCPA:318-345`: `_meta.ui` is on the tool definition. Table split into definition / result. | §8.2 |
+| E5 — `ui/message` as default intent channel | **Applied** | `MCPA:998` (« Send message content to the host's chat interface »), `MCPA:1094` (triggers follow-ups). Default is now `tools/call` to `submit_intent`; `ui/message` only for `comment`; `ui/update-model-context` (`MCPA:1061`) named. P-FOCUS criterion 4 rewritten. | §4.6, §8.2, §11.2 |
+| E6 — MIME | **Applied** (justified, not aligned) | A catalogue is a JSON Schema, not an A2UI message template; the divergence from `application/a2ui+json` is stated. | §5.3 |
+| E7 — `CatalogComponentCommon` omitted | **Applied** | All 18 basic-catalogue entries carry both references (counted on `specification_v0_9_1_catalogs_basic_catalog.json` at `3b0e0373`). | §5.2 |
+| E8 / R1 — Track figures stale, double replay | **Applied** | Rebased on the current `origin/main` and the Track writes replayed with the CLI; ids, counts and the merge-order procedure rewritten. | §19 |
+| E9 — dossier hash not reproducible from `.ds-scrap/canvas-std/` | **Applied** (clarified) | The hashed copies are the conductor's scratchpad copies; the `.ds-scrap` copy (`88a13838…`) predates the 2026-10-15 revision. Ledger-only facts are marked. | header, §12 |
+| E10 — `h2a focus serve` | **Applied** | `serve.ts:16` serves a vendored build. | §3.5 |
+| E11 — d2d sizes, radar location | **Applied** | 11 978 377 bytes (working tree) and 7 432 530 bytes (committed in `6274e11`, `tmp/*/` checkouts), both measured; radar copies under `tmp/`. | §3.5, §11.2 |
+| E12 — versions measured vs shipped | **Applied** | `npm view @sentropic/bpmn-canvas@0.3.0 dependencies` → bpmn-js `~18.30.1`, diagram-js `~15.27.1`; re-measurement made a P-BPMN criterion. | §11.1 |
+| E13 — wrong code for `preview` | **Applied** | `unsupported-mode` added. | §4.5, §10.3 |
+| E14 — two `contract` fields | **Applied** | Rule written, with both directions of the example. | §4.2, §4.4 |
+| T1 / U-12 — pilot assets vs « never `data:` » | **Applied** | Pilot asset rule: `ui.csp.resourceDomains` limited to jsDelivr for already-published packages, system fonts for DS text, no `data:` exception, degraded host recorded. | §6.4, §8.3, §17 |
+| T2 — 0.1 % pixel threshold across hosts | **Applied** | Structural comparison (element ids, bounding boxes ±1 px) plus per-host-pair pixel threshold. | §11.1 |
+| T3 / U-13 — ChatGPT conformance | **Applied** | VS Code is the second reference host; ChatGPT counts only if it conforms. | §8.3, §15, §17 |
+| T4 — wrapper risks incomplete | **Applied** | Wrapper API, no SSR, unions narrowed in the contract module, callback-to-intent table per component. | §4.6, §5.1, §6.2, §15 |
+| T5 — TS generation | **Applied** | No implicit `any`; explicit replacement or exclusion; canonical sorting; JSDoc as descriptions. | §5.1, §15 |
+| T6 — artifact degradation | **Applied** | Degradation accepted and stated by the template. | §6.4 |
+| T7 — lazy status | **Applied** | Validator and error panel in the core; Focus renderer lazy. | §6.6 |
+| T8 / U-14 — sanitizer | **Applied** | Candidate DOMPurify 3.4.15, already in `package-lock.json`; chosen in L2. | §6.4, §17 |
+| T9 / U-16 — effective `'self'` | **Applied** | Stated; measured per host in L3. | §6.4, §17 |
+| T10 / U-15 — `status: "unknown"` semantics | **Applied** | Listed, refused by `render` with `component-unavailable`. | §4.5, §5.2 |
+| S4 — output bounds | **Applied** | Bounds for `get_schema` and `render`, with a hash fallback. | §8.2, §8.4 |
+| S5(b) — generic F1 elements and scripts | **Applied** | P-BPMN criterion 5. | §11.1 |
+| S7 — Q-1 blocking | **Applied, superseded by the owner's answer** | The license is confidential; ways (a) and (b) measured in `bpmn-canvas` (`canvas.ts:131-133`, `canvas.css:21-24`): (a) feasible, (b) reduces to (a). New Q-1a. | §13.2, §13.3, §17 |
+| G1 — L7 hostage of externals | **Applied** | L7 split into L7a (after L4) and L7b (after L5, L6). | §14, §15 |
+| G2 — L4/L6 assume publication | **Applied** | L4 and P-FOCUS-1 run on the local build; CDN checks moved to L7a/L7b. | §9, §11.2, §15 |
+| G3 — L8 without publication | **Applied** | L8 depends on L7a and ships through its workflow. | §14, §15 |
+| G5 — criteria wording | **Applied** | AC-L1 says U-2 stays open on refusal; AC-L4 names the `watermark` pattern; U-17 added. | §15, §17 |
+| R2 — D4 contradictory | **Applied** | See F2. | §18.2 |
+| R3 — D2/D4 carried by an E PR | **Refused** | The brief asks for these writes « dans la même PR » (point 6). | §18 |
+| R4 — `by` convention | **Kept** | Stated in §19.1, as before. | §19.1 |
+| R5 — U-9 ordering | **Applied** | The table is ordered by id. | §17 |
+| H-6, Q-8, Q-9 | **H-6 applied**; **Q-8 and Q-9 not added** | Q-8 is resolved structurally by L7a/L7b; Q-9 by the VS Code reference host. | §17 |
+| H-2 | **Closed** | Answered by Q-1: h2a does not own the license. | §13.2, §17 |
+| `DecisionDossierDocument` divergence | **Removed** | h-cond corrected its statement: the TS interface exists; what is missing is a versioned JSON Schema. | §3.5 |
