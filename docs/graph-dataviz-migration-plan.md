@@ -27,9 +27,11 @@ point only.
   spec adds a hand-written catalogue of them (each rule citing its OMG clause or XSD line), reported as diagnostics
   that never block import (`spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` §8.4).
 - **What A′ does not change.** BPMN **rendering and editing** stay with bpmn-js, inside `@sentropic/bpmn-canvas`. The
-  « intégrations explicitement autorisées » above are not consumed by this amendment: no DS manifest gains `bpmn-js`,
-  `diagram-js` or `@sentropic/bpmn-canvas`, and any such dependency remains behind the **D7** gate
-  (`docs/a0-csp-dependency-qualification.md`, section « Porte restante », lines 467-473). Étape A (xyflow + bpmn-js verticale) keeps its status below.
+  « intégrations explicitement autorisées » above are not consumed by this amendment: it adds no dependency on
+  `bpmn-js`, `diagram-js` or `@sentropic/bpmn-canvas`, and bpmn-moddle enters only as a test dependency of a private
+  package. Third-party runtimes in published DS manifests are governed by **D7′** (Track `01M51CADFM2PXZWDDZ9HWWH62W`,
+  `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md` §18.4), which revised D7 = A: bpmn-js through bpmn-canvas in the elements
+  package, watermark under the Camunda licence. Étape A (xyflow + bpmn-js verticale) keeps its status below.
 - The rule « pas de deuxième implémentation active divergente » (M2 row, below) is met by construction: one exchanged
   model (moddle JSON) and one typed image proven equal to it, not two editable authorities.
 

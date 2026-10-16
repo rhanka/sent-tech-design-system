@@ -2,8 +2,9 @@
 
 **Status**: specification and traceability only — no implementation in this PR.
 **Date**: 2026-10-15. **Owner decision rendered**: 2026-10-04.
-**Base measured**: `origin/main` = `85a69e89`; rebased on `92c0b655` (#167), which changes none of the files cited here
-(`git diff --quiet 85a69e89 92c0b655 -- docs/graph-dataviz-migration-plan.md spec/ packages/diagram-core packages/diagram-canvas scripts/verify-layering.test.mjs scripts/verify-publishable-licensing.test.mjs plan docs/a0-csp-dependency-qualification.md` → exit 0, `spec/` restricted to the files cited).
+**Base measured**: `origin/main` = `85a69e89`; rebased on `4a5e80a7` (#166, #167, #168). Between `85a69e89` and `4a5e80a7` the cited files are unchanged except
+`spec/graph-dataviz-decisions.json` (D2 and D4 marked rendered by #168); the check
+(`git diff --quiet 85a69e89 4a5e80a7 -- docs/graph-dataviz-migration-plan.md spec/ packages/diagram-core packages/diagram-canvas scripts/verify-layering.test.mjs scripts/verify-publishable-licensing.test.mjs plan docs/a0-csp-dependency-qualification.md` with `spec/` restricted to the spec files cited) exits 0.
 **Revised** 2026-10-16 after the independent review and the owner's F1 decision of 2026-10-15 (Annex A). `packages/diagram-core` and `packages/diagram-canvas` are
 byte-identical to `0ce2c48f`, the revision the decision dossier measured
 (`git diff --quiet 0ce2c48f origin/main -- packages/diagram-core packages/diagram-canvas` → exit 0).
@@ -52,10 +53,12 @@ otherwise (this PR's own amendment shifts lines of `docs/graph-dataviz-migration
 - **D3 = C and the export direction** (conductor arbitration, 2026-10-15): the bijection required by the owner's
   verbatim implies the State → moddle JSON direction for the BPMN pivot. D3 = C (import first, export later) does not
   forbid this consequence; XML export stays at the test edge.
-- **bpmn-moddle stays a test dependency only**, with no runtime XML I/O in any DS package (conductor arbitration,
-  2026-10-15, referred to as "D7′"; no record named D7′ exists in the repository or in Track at `92c0b655` —
-  `git grep -n "D7′"` and a search of `.track/events.jsonl` return nothing — so this spec relies on D7 = A,
-  `docs/a0-csp-dependency-qualification.md:467-473`).
+- **Third-party runtimes: D7′** (Track `01M51CADFM2PXZWDDZ9HWWH62W`, commitment, option `revisee`, outcome `go`,
+  on `main` since #168; `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md` §18.4). It revises D7 = A: elkjs and xyflow are
+  allowed in published DS manifests under the qualification conditions of `docs/a0-csp-dependency-qualification.md`;
+  bpmn-js is allowed **through `bpmn-canvas`, in the elements package**, its bpmn.io watermark governed by the Camunda
+  licence. **bpmn-moddle stays a test dependency only** in this programme, with no runtime XML I/O in any DS package
+  (conductor arbitration, 2026-10-15).
 - The `sem:` dialect is `BpmnSemantics`, URI `https://sentropic.com/schema/bpmn/semantics/1`, descriptor sha256
   `c274f46f773b5f557f7995fa70aae9d8a50384aedfcc6c3a5d166563a17a7c97`
   (`git -C /home/antoinefa/src/bpmn-canvas show 84c93dc:src/io/semantics.json | sha256sum`, identical at the branch
@@ -104,7 +107,7 @@ namespace content **outside** the typed count. Editing and rendering of each typ
 
 **Out of scope**
 
-- Rendering or editing BPMN in the DS (stays in `bpmn-canvas`; any DS dependency on it is gated by D7, §12).
+- Rendering or editing BPMN in the DS (stays in `bpmn-canvas`; a DS dependency on it is governed by D7′, §12).
 - A runtime XML parser or serialiser in any DS package: bpmn-moddle is a test dependency only (§1.2).
 - Publishing `diagram-core` or the new package (D2: new packages are born private, `SPEC_EVOL_GD_M2_MODEL.md:14`).
 - Dialects other than `sem:` (camunda, zeebe, …): the generator is dialect-agnostic, but no other descriptor is in
@@ -579,7 +582,7 @@ summed into typed coverage (owner requirement 2).
 ### 9.3 Test-only helpers
 
 `tests/support/f1.ts` implements F1 `project`/`hydrate` over bpmn-moddle objects, following `BC@84c93dc`'s contract
-(§4.1). The DS does not import bpmn-canvas (D7, §12); when F1 is published, the helper is checked against it.
+(§4.1). This package does not import bpmn-canvas (§12); when F1 is published, the helper is checked against it.
 
 ## 10. Bijection and coverage tests
 
@@ -698,8 +701,9 @@ turned into a reference or the reverse, an enumeration literal removed, a defaul
   @sentropic/diagram-core` → E404, `docs/graph-dataviz-migration-plan.md:118`).
 - The reverse-engineering programme recorded by #167 (Track `01M518XJW7NZBFFPBH4PXQDWWE`, bpmn-js → `@sentropic/graph`)
   is about rendering and interaction parity; it does not change the semantic model specified here.
-- **Any DS dependency on bpmn-canvas** brings bpmn-js into a DS manifest and is subject to **D7** (`D7=A`,
-  `docs/a0-csp-dependency-qualification.md:469-473`). This programme adds none.
+- **DS dependency on bpmn-canvas**: D7′ allows bpmn-js through `bpmn-canvas` in the DS elements package, with the
+  bpmn.io watermark under the Camunda licence (§1.2). That is the elements package's concern; this programme adds no
+  dependency on bpmn-canvas, neither in `diagram-core` nor in `@sentropic/diagram-bpmn-moddle`.
 
 ## 13. Lots, dependencies and gates
 
@@ -787,34 +791,37 @@ scripts/run-script-guards.mjs` and `npm run licensing:check` exit 0.
 
 ## 17. Traceability
 
-Track workspace `streams`, written with the `track` CLI 0.98.0 from this branch after rebasing on `92c0b655`. The
-writes of the first version of this PR were replayed with the CLI, not merged by hand (the log is a hash chain), so
-every id below is new. The CLI derives the actor from `git config user.email` (`human:<email>`); `track validate` →
-`OK: 1631 events, integrity + desync clean` (1608 on `92c0b655`, plus 23).
+Track workspace `streams`, written with the `track` CLI 0.98.0 from this branch after rebasing on `4a5e80a7`
+(#168, which brought the log to 1666 events and recorded D7′). The writes of the earlier versions of this PR were
+replayed with the CLI each time, never merged by hand (the log is a hash chain), so every id below is new. The CLI derives the actor from `git config user.email` (`human:<email>`); `track validate` →
+`OK: 1689 events, integrity + desync clean` (1666 on `4a5e80a7`, plus 23);
+`track events-contains --base <main log> --candidate .track/events.jsonl` → `OK: candidate contains all 1655 base
+event id(s)`.
 
 | object | Track id |
 |---|---|
-| decision (commitment) — options `0`, `A`, `A′`, `B`, `C`, `D→A′`; recommendation `D→A′`; selected `A′`, outcome `go` | `01M51C22VMKPETPEXM0AMD3MZK` |
+| decision (commitment) — options `0`, `A`, `A′`, `B`, `C`, `D→A′`; recommendation `D→A′`; selected `A′`, outcome `go` | `01M51CN4FK67W6X25C6Z9MY9WR` |
 | artifact `rendered-view` → `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md`, source dossier sha256 `c40a396fdaa3a9608940f64b660c04f7d7cead3323dd3fd09aa16c316c06154f` | on the decision above |
-| feature GD-BPMN-MODDLE (parent: stream S4 `01KW860AE02142WK477SGQCFY9`) | `01M51BZY5V27TWNHXEECAGX00H` |
-| L0 — spec and traceability (in progress) | `01M51BZZMSZTYTCX3NQWFCD442` |
-| L1 — kernel 2.0 | `01M51C012X6SGMFRCR7TA71Y37` |
-| L2 — generator and profiles | `01M51C02R96DPSYYPHCYSV41GR` |
-| L3 — codec and bijection | `01M51C05Y2HT6QRQR02WGNJR7Z` |
-| L4 — CI latest | `01M51C07NM7MY2ZWS3YVW7CFKH` |
-| external blocker on L3: F1 lot of bpmn-canvas / d2d, engagement `bpmn-canvas+d2d:F1-preserve-unknown-extensions`, rule `manual` | `01M51C0NJ7V2H6VH109AE17FYJ` |
+| feature GD-BPMN-MODDLE (parent: stream S4 `01KW860AE02142WK477SGQCFY9`) | `01M51CMCQTYAGFVY3EX3VNH87J` |
+| L0 — spec and traceability (in progress) | `01M51CMCYNFMXS6ZP5NMRKXNHV` |
+| L1 — kernel 2.0 | `01M51CMD735QT8BC1MG6SE48WC` |
+| L2 — generator and profiles | `01M51CMDEZ8BNDE5P5C8F5CAAR` |
+| L3 — codec and bijection | `01M51CMDPV250R5VXDZEWBYKX3` |
+| L4 — CI latest | `01M51CMDZCJAZAZSZKH47MZKYN` |
+| external blocker on L3: F1 lot of bpmn-canvas / d2d, engagement `bpmn-canvas+d2d:F1-preserve-unknown-extensions`, rule `manual` | `01M51CMF8SGJJR2G0RJZXG6GJE` |
 
 Dependencies L1 → L0, L2 → L1, L3 → L2, L4 → L3 are `dependency` blockers with rule `linked-accepted`; each lot
 carries one acceptance criterion pointing at §14. No acceptance run and no comprehension record was created. The ids
-of the first version (decision `01M51212CEWV91B1E8HEPTDDNV`, feature `01M511ZNB2RR64XQRQ1JZ0KEAA`, …) never reached
-`main` and do not exist on this branch.
+of the two earlier versions (decisions `01M51212CEWV91B1E8HEPTDDNV` and `01M51C22VMKPETPEXM0AMD3MZK`, features
+`01M511ZNB2RR64XQRQ1JZ0KEAA` and `01M51BZY5V27TWNHXEECAGX00H`, …) never reached `main` and do not exist on this
+branch.
 
 `spec/graph-dataviz-decisions.json`: D1 and D3 now read `"status": "rendered"` with a `rendered` object (D1 = A,
 Track `01M38WXG0GRC4899GWWVAZXEFF`; D3 = C, Track `01M38WXGBSF7J8NWPC8FKERT1T`). These are the owner's decisions of
-2026-09-24, already on `main`, so the replay did not change them. The fields that `plan/replay-graph-dataviz-track.mjs`
+2026-09-24, already on `main`, so the replay did not change them; D2 and D4 were marked the same way by #168. The fields that `plan/replay-graph-dataviz-track.mjs`
 compares (`context`, `options`, `recommendation`) are unchanged: its preview reports 0 operations. The pending records
 it created (`01M2KK5XMT167FA4389ZJMRV39`, `01M2KK5XQSHM5Y7WB2TCAW6D8T`) stay pending, because
-`docs/graph-dataviz-verify.mjs:62` asserts it. That script already fails on `origin/main` before this PR, on an
+`docs/graph-dataviz-verify.mjs:60-63` asserts it. That script already fails on `origin/main` before this PR, on an
 unrelated check (`Unexpected source adaptation packages/dataviz-angular/package.json`, line 58); no workflow runs it.
 
 ## Annex A — Review: corrections applied / refused
@@ -828,8 +835,8 @@ Independent review by muse 1.3 (max effort) of the first version, verdict « fus
 | 2 | name the well-formedness catalogue as a deliberate addition in the plan amendment | **applied** | `docs/graph-dataviz-migration-plan.md`, amendment, third bullet |
 | 3 | mark the codec mapping of `external-reference` `unknown` | **applied** | K3, U3 |
 | 4 | assume that K9.5 changes the route of existing generic relation occurrences, and their migration | **refused, with a clarifying sentence**. K9.5 applies to the new `edge` form of `EntityOccurrence` (K9.2); it never touched `RelationOccurrence`, whose route stays as built at `packages/diagram-canvas/src/scene.ts:266`, `:296`. No `generic@1` scene changes and no relation-occurrence migration exists. AC-L1.4 now asserts the existing `RelationOccurrence` scene tests pass unchanged; review item U15 (cost of that migration) is therefore not added | K9.5, §7, AC-L1.4 |
-| 5 | source or remove « 16 des 120 » in the Track decision context | **applied (removed)**. The figure came from the dossier and is not derived in the repository; the replayed context states what `skeletons.ts` declares (7 entity types, 4 relation types, 1 port type, no DI) | Track `01M51C22VMKPETPEXM0AMD3MZK` |
-| 6 | say that `docs/…:NN` / `spec/…:NN` citations refer to the base | **applied**; the rebase base `92c0b655` changes none of the cited files (command in the header) | header, conventions |
+| 5 | source or remove « 16 des 120 » in the Track decision context | **applied (removed)**. The figure came from the dossier and is not derived in the repository; the replayed context states what `skeletons.ts` declares (7 entity types, 4 relation types, 1 port type, no DI) | Track `01M51CN4FK67W6X25C6Z9MY9WR` |
+| 6 | say that `docs/…:NN` / `spec/…:NN` citations refer to the base | **applied**; the rebase base `4a5e80a7` changes none of the cited files except `spec/graph-dataviz-decisions.json` (command in the header) | header, conventions |
 | 7 | say where `default` / `isAttr` compared by T4 live; settle an id-bearing value inside an open collection | **applied**: profile metadata read by T4; in an open collection such a value stays a struct, its id an ordinary field | §8.3, §5 |
 | 8 | AC for the well-formedness catalogue v0; channel and record of F1-A1…A6 | **applied**: AC-L2.5; channel h2a via the `design-system` conductor, status in §4.4 and as an external blocker on L3 in Track | §14, §4.4, §13, §17 |
 | cosmetic | Association → BaseElement cited from the descriptor first; `di:Shape.bounds` / `di:Label.bounds`; N5 lax mode; unqualified names in the effective descriptor; `subsettedProperty` ignored | **applied**, each verified: `Semantic.xsd:70-71`; `NM:bpmn-moddle/dist/index.js:55` (`lax: true`) and `NM:moddle-xml/dist/index.js:720-727`; 3 `subsettedProperty` in `di.json` | §5, §8.3, §3.1, §10.3 |
@@ -844,5 +851,5 @@ Changes made at the same time, from outside the review:
 - **Conductor arbitrations, 2026-10-15**: `bpmn@1` removed in L1 (K10, AC-L1.5); automatic GitHub issue on a red
   scheduled run instead of Dependabot (§11.1, AC-L4.5); MIWG originals added to cover `color:` (§10.4); the export
   direction is a consequence of the verbatim that D3 = C does not forbid (§1.2); bpmn-moddle is a test dependency only,
-  with no runtime XML I/O (§1.2 — the arbitration cites « D7′ », which no repository or Track record defines; the spec
-  relies on D7 = A).
+  with no runtime XML I/O (§1.2). The arbitration cited « D7′ », which was not yet on `main` at that time; it is now
+  (`01M51CADFM2PXZWDDZ9HWWH62W`, merged with #168), and §1.2 and §12 rely on it instead of D7 = A.
