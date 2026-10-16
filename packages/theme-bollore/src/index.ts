@@ -10,7 +10,12 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * from the public brand stylesheets and carries a `//` comment citing its
  * real source declaration; only font *names* are referenced — never font
  * binaries. Sources, counts (with their convention) and exact provenance are
- * documented in MAPPING.md. Where the brand publishes no equivalent for a
+ * documented in MAPPING.md. Capture convention: every `//` source below
+ * names its file, selector and declaration; values from `css/style.css` /
+ * `css/style_override.css` with no other mention come from the Wayback
+ * capture `20260921195002` (see MAPPING.md ## Sources); values from any
+ * other capture carry theirs on their line (logo `20260921194956`, fonts
+ * `20260921195000`, Candal sheet `20261011200530`). Where the brand publishes no equivalent for a
  * Sentropic role (status green/amber, large control geometry, modal-grade
  * elevation), the closest derived value is used and the choice is noted
  * "à confirmer" in MAPPING.md.
@@ -35,7 +40,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Capsule red                      #e91c3a   (8: 6 + 2 style_override.css)
  *   Title blue `.--titleBlue2`        #0f88a5   (7)
  *   Title red `.--titleRed3`          #ef153e   (7)
- *   Capsule grey                     #6c8ca6   (6: 1 + 5 style_override.css)
+ *   Grey-blue (map pin + grey)         #6c8ca6   (6: 1 map pin `.is-bluegrey` + 5 `.is-grey` style_override.css)
  *   Push-invert background           #f1f0ee   (4: `.blockPushInfo--invert`)
  *   Key-figure red                   #ce1a37   (3: `.chiffre__txt1`, popin)
  *   Title blue `.--titleBlue3`        #2a95cf   (2)
@@ -43,7 +48,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Title red `.--titleRed2`          #ad0911   (2)
  *   Mobile submenu grey (vendor-zone)#a0a3a5   (2, retained — not promoted)
  *   Alert banner red                 #e32948   (1: `.alertBannerHome`)
- *   Logo asset blue (SVG only)       #003764   (0 in CSS/HTML — not promoted, see Asset officiel)
+ *   Logo asset blue (SVG only)       #003764   (0 in CSS/HTML — not promoted, see Asset officiel; capture 20260921194956)
  */
 
 // --- Bolloré SE raw colour palette ------------------------------------------
@@ -71,7 +76,7 @@ const bolloreColor = {
   accent: {
     purple: "#7a1f5e", // `.--titleRed5` + `.capsule--purple` (39: 31 + 8 style_override.css)
     blueGreen: "#0089a6", // capsule `.is-bluegreen` (18: 15 + 3 style_override.css)
-    greyBlue: "#6c8ca6" // capsule `.is-grey` (6: 1 + 5 style_override.css, 3.54:1 on white)
+    greyBlue: "#6c8ca6" // map pin `.is-bluegrey` + capsule `.is-grey` (6: 1 + 5 style_override.css, 3.54:1 on white)
   },
   grey: {
     0: "#ffffff", // `body{background-color}` + surfaces (64 unified occurrences)
@@ -136,8 +141,9 @@ const foundation = {
     }
   },
   // Bolloré SE ships Gotham for everything (body, controls, hero titles in
-  // Gotham 700/800, self-hosted 400/700/800 in style.css `@font-face`); the
-  // Google Fonts Candal import has a single decorative use (key figures) and
+  // Gotham 700/800, self-hosted 400/700/800 in style.css `@font-face`,
+  // capture 20260921195002); the Google Fonts Candal import (sheet capture
+  // 20261011200530) has a single decorative use (key figures) and
   // is not promoted (see MAPPING.md). We reference the font *names* only.
   font: {
     sans: "'Gotham', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
