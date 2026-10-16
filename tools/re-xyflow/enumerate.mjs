@@ -95,6 +95,14 @@ const EXTRA_ROOTS = [
   "packages/react/src/additional-components/EdgeToolbar/types.ts",
   "packages/react/src/components/Panel/index.tsx",
   "packages/react/src/components/Handle/index.tsx",
+  "packages/react/src/components/ReactFlowProvider/index.tsx",
+  "packages/react/src/components/EdgeLabelRenderer/index.tsx",
+  "packages/react/src/components/ViewportPortal/index.tsx",
+  "packages/svelte/src/lib/components/SvelteFlowProvider/types.ts",
+  "packages/svelte/src/lib/container/Panel/types.ts",
+  "packages/svelte/src/lib/types/edges.ts",
+  "packages/svelte/src/lib/types/nodes.ts",
+  "packages/svelte/src/lib/store/initial-store.svelte.ts",
 ].map((p) => join(SOURCE, p));
 const program = ts.createProgram([sysEntry, reactEntry, svelteEntry, ...EXTRA_ROOTS], {
   target: ts.ScriptTarget.ESNext,
@@ -161,7 +169,7 @@ function typeMembers(file, typeName) {
     const decl = decls[0];
     const sf = decl.getSourceFile();
     let typeStr = "";
-    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl)).replace(/\s+/g, " ").slice(0, 240); } catch { typeStr = ""; }
+    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl), decl, ts.TypeFormatFlags.NoTruncation).replace(/import\("[^"]+"\)\./g, "").replace(/\s+/g, " ").trim(); } catch { typeStr = ""; }
     const optional = decls.some((x) => (ts.isPropertySignature(x) || ts.isPropertyDeclaration(x)) && !!x.questionToken) || (prop.flags & ts.SymbolFlags.Optional) !== 0;
     out.push({ name: prop.getName(), optional, type: typeStr, file: sf.fileName, line: lineOf(sf, decl), def: defaultOf(decl) });
   }
@@ -188,7 +196,7 @@ function returnMembers(file, fnName) {
     const decl = decls[0];
     const dsf = decl.getSourceFile();
     let typeStr = "";
-    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl)).replace(/\s+/g, " ").slice(0, 240); } catch { typeStr = ""; }
+    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl), decl, ts.TypeFormatFlags.NoTruncation).replace(/import\("[^"]+"\)\./g, "").replace(/\s+/g, " ").trim(); } catch { typeStr = ""; }
     out.push({ name: prop.getName(), optional: false, type: typeStr, file: dsf.fileName, line: lineOf(dsf, decl), def: defaultOf(decl) });
   }
   out.sort((a, b) => a.line - b.line || a.name.localeCompare(b.name));
@@ -202,6 +210,19 @@ function enumMembers(file, enumName) {
     line: lineOf(d.sf, m),
   }));
 }
+function declTypeText(decl, sf) {
+  // Observable signature text taken from the declaration syntax itself, so
+  // pure types never collapse to the value-space `any`.
+  const clean = (t) => t.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\s+/g, " ").trim();
+  if (ts.isTypeAliasDeclaration(decl)) return clean(decl.type.getText(sf));
+  if (ts.isInterfaceDeclaration(decl)) {
+    const parts = [];
+    for (const m of decl.members) parts.push(clean(m.getText(sf)));
+    return `{ ${parts.join("; ")} }`;
+  }
+  if (ts.isEnumDeclaration(decl)) return `enum { ${decl.members.map((m) => clean(m.getText(sf))).join(", ")} }`;
+  return clean(decl.getText(sf));
+}
 function exportInfo(entryFile) {
   const map = new Map();
   for (const sym of moduleExports(entryFile)) {
@@ -210,17 +231,47 @@ function exportInfo(entryFile) {
     const decls = (sym.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
     const isReExport = (x) => ts.isExportSpecifier(x) || ts.isImportSpecifier(x) || ts.isBindingElement(x);
     let decl = decls.find((x) => !isReExport(x)) ?? decls[0] ?? (sym.getDeclarations() ?? [])[0];
+    let aliased = sym;
     try {
-      const aliased = checker.getAliasedSymbol(sym);
+      aliased = checker.getAliasedSymbol(sym);
       const aDecls = (aliased.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
       const aDecl = aDecls.find((x) => !isReExport(x));
       if (aDecl) decl = aDecl;
     } catch { /* not an alias */ }
     if (!decl) continue;
+    if (ts.isExportAssignment(decl)) {
+      // `export default fixedForwardRef(ReactFlow)` wraps the real
+      // definition; cite the wrapped function/class/variable instead.
+      const wrapped = [];
+      (function collect(n) {
+        if (ts.isIdentifier(n)) wrapped.push(n.text);
+        ts.forEachChild(n, collect);
+      })(decl.expression);
+      const host = decl.getSourceFile();
+      for (const wanted of wrapped) {
+        let found = null;
+        (function hunt(n) {
+          if ((ts.isFunctionDeclaration(n) || ts.isClassDeclaration(n)) && n.name?.text === wanted) found = n;
+          if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.name.text === wanted) found = n;
+          ts.forEachChild(n, hunt);
+        })(host);
+        if (found) { decl = found; break; }
+      }
+    }
     const sf = decl.getSourceFile();
-    const isValue = (sym.flags & (ts.SymbolFlags.Value)) !== 0;
+    const isValue = ((aliased.flags & ts.SymbolFlags.Value) !== 0) || ((sym.flags & ts.SymbolFlags.Value) !== 0 && aliased === sym);
     let typeStr = "";
-    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(sym, decl)).replace(/\s+/g, " ").slice(0, 200); } catch { typeStr = ""; }
+    if (isValue) {
+      try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(aliased, decl), decl, ts.TypeFormatFlags.NoTruncation).replace(/import\("[^"]+"\)\./g, "").replace(/\s+/g, " ").trim(); } catch { typeStr = ""; }
+      if (!typeStr || typeStr === "any") {
+        try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(sym, decl), decl, ts.TypeFormatFlags.NoTruncation).replace(/import\("[^"]+"\)\./g, "").replace(/\s+/g, " ").trim(); } catch { /* keep empty */ }
+      }
+    } else {
+      try { typeStr = declTypeText(decl, sf); } catch { typeStr = ""; }
+      if (!typeStr) {
+        try { typeStr = checker.typeToString(checker.getDeclaredTypeOfSymbol(aliased), decl, ts.TypeFormatFlags.NoTruncation).replace(/import\("[^"]+"\)\./g, "").replace(/\s+/g, " ").trim(); } catch { typeStr = ""; }
+      }
+    }
     map.set(name, { file: sf.fileName, line: lineOf(sf, decl), kind: isValue ? "value" : "type", type: typeStr });
   }
   return map;
@@ -311,9 +362,11 @@ function targetFor(family, name) {
     if (family === "api-system" && name === "Handle") return "nouveau module";
     if (/^(use|experimental_use)/.test(name)) return "composant DS";
     if (/^(ReactFlow|SvelteFlow|Background|Controls|ControlButton|MiniMap|MiniMapNode|Panel|Handle|NodeToolbar|NodeResizer|NodeResizeControl|EdgeToolbar|EdgeLabelRenderer|EdgeLabel|EdgeReconnectAnchor|ViewportPortal|ReactFlowProvider|SvelteFlowProvider|BezierEdge|StepEdge|SmoothStepEdge|StraightEdge|SimpleBezierEdge|BaseEdge|EdgeText|Attribution)$/.test(name)) return "composant DS";
+    if (/^ViewportPortal/.test(name)) return "composant DS";
     if (/getbezier|getsmoothstep|getstraight|getsimplebezier|getedgecenter|getbezieredgecenter|marker|connectionline|bezierpathoptions|smoothsteppathoptions|steppathoptions|edge.*label/.test(k.replace(/[^a-z]/g, "")) || /^(MarkerType|ConnectionLineType|EdgeMarker|EdgeMarkerType)$/.test(name)) return "graph";
-    if (/fitview|fitbounds|viewport|pointtorenderer|rendererpoint|getnodesbounds|screentoflow|flowtoscreen/.test(k.replace(/[^a-z]/g, ""))) return "diagram-canvas";
-    if (/^(XYDrag|XYHandle|XYPanZoom|XYResizer|XYMinimap|PanZoomInstance|PanZoomParams|PanZoomUpdateOptions|PanZoomTransformOptions|OnPanZoom|getHostForElement|isInputDOMNode|getPointerPosition|handleAttributionWarning|isAttributionVisible)$/.test(name) || D3_TYPES.has(name)) return "nouveau module";
+    if (D3_TYPES.has(name)) return "nouveau module";
+    if (/fitview|fitbounds|viewport|zoom|pointtorenderer|rendererpoint|getnodesbounds|screentoflow|flowtoscreen/.test(k.replace(/[^a-z]/g, ""))) return "diagram-canvas";
+    if (/^(XYDrag|XYHandle|XYPanZoom|XYResizer|XYMinimap|PanZoomInstance|PanZoomParams|PanZoomUpdateOptions|PanZoomTransformOptions|OnPanZoom|getHostForElement|isInputDOMNode|getPointerPosition|handleAttributionWarning|isAttributionVisible)$/.test(name)) return "nouveau module";
     return "diagram-core";
   }
   return "nouveau module";
@@ -375,16 +428,9 @@ for (const m of typeMembers(svelteTypesFile, "SvelteFlowProps")) {
     `SvelteFlow prop \`${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}${m.def ? `. Documented default: ${m.def}` : ""}. Svelte binding counterpart of the ReactFlow prop of the same name where present.`,
     diff("rendered model + emitted events with the prop set vs unset"));
 }
-const svelteEventsFile = join(SOURCE, "packages/svelte/src/lib/types/events.ts");
-if (existsSync(svelteEventsFile)) {
-  for (const t of ["NodeEvents", "EdgeEvents", "PaneEvents", "NodeSelectionEvents"]) {
-    for (const m of typeMembers(svelteEventsFile, t)) {
-      add("props-flow", `SvelteFlow.${m.name} (${t})`, m.file, m.line,
-        `SvelteFlow event prop \`${m.name}\` from ${t}${sig(m.type)}. Fires on the user interaction named by the prop.`,
-        diff("event sequence (name, payload shape, order) for the scripted interaction"));
-    }
-  }
-}
+// SvelteFlowProps already intersects NodeEvents, EdgeEvents, PaneEvents and
+// NodeSelectionEvents (container/SvelteFlow/types.ts), so the semantic
+// expansion above already yields those handlers once; no second pass.
 // 3. Sub-component props (React + Svelte)
 const compPropSpecs = [
   ["Background", "packages/react/src/additional-components/Background/types.ts", "BackgroundProps"],
@@ -414,6 +460,20 @@ const compPropSpecs = [
   ["svelte:EdgeReconnectAnchor", "packages/svelte/src/lib/components/EdgeReconnectAnchor/types.ts", "EdgeReconnectAnchorProps"],
   ["svelte:Handle", "packages/svelte/src/lib/components/Handle/types.ts", "HandleProps"],
   ["svelte:ViewportPortal", "packages/svelte/src/lib/components/ViewportPortal/types.ts", "ViewportPortalProps"],
+  ["ReactFlowProvider", "packages/react/src/components/ReactFlowProvider/index.tsx", "ReactFlowProviderProps"],
+  ["svelte:SvelteFlowProvider", "packages/svelte/src/lib/components/SvelteFlowProvider/types.ts", "SvelteFlowProviderProps"],
+  ["svelte:Panel", "packages/svelte/src/lib/container/Panel/types.ts", "PanelProps"],
+  ["svelte:BaseEdge", "packages/svelte/src/lib/types/edges.ts", "BaseEdgeProps"],
+  ["EdgeLabelRenderer", "packages/react/src/components/EdgeLabelRenderer/index.tsx", "EdgeLabelRendererProps"],
+  ["BezierEdge", "packages/react/src/types/edges.ts", "BezierEdgeProps"],
+  ["SmoothStepEdge", "packages/react/src/types/edges.ts", "SmoothStepEdgeProps"],
+  ["StepEdge", "packages/react/src/types/edges.ts", "StepEdgeProps"],
+  ["StraightEdge", "packages/react/src/types/edges.ts", "StraightEdgeProps"],
+  ["SimpleBezierEdge", "packages/react/src/types/edges.ts", "SimpleBezierEdgeProps"],
+  ["svelte:BezierEdge", "packages/svelte/src/lib/types/edges.ts", "BezierEdgeProps"],
+  ["svelte:SmoothStepEdge", "packages/svelte/src/lib/types/edges.ts", "SmoothStepEdgeProps"],
+  ["svelte:StepEdge", "packages/svelte/src/lib/types/edges.ts", "StepEdgeProps"],
+  ["svelte:StraightEdge", "packages/svelte/src/lib/types/edges.ts", "StraightEdgeProps"],
 ];
 for (const [comp, relFile, typeName] of compPropSpecs) {
   const file = join(SOURCE, relFile);
@@ -423,6 +483,15 @@ for (const [comp, relFile, typeName] of compPropSpecs) {
       `${comp} prop \`${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}${m.def ? `. Documented default: ${m.def}` : ""}.`,
       diff(`${comp} rendered output (DOM/geometry) and emitted callbacks`));
   }
+}
+{
+  // React <ViewportPortal> takes an inline `{ children: ReactNode }` parameter
+  // (components/ViewportPortal/index.tsx:34); there is no named Props alias.
+  const vpFile = join(SOURCE, "packages/react/src/components/ViewportPortal/index.tsx");
+  const vpInfo = EXPORT_MAPS["api-react"].get("ViewportPortal");
+  add("props-components", "ViewportPortal.children", vpInfo?.file ?? vpFile, vpInfo?.line ?? 34,
+    "ViewportPortal prop `children`: ReactNode. Content rendered inside the viewport portal.",
+    diff("ViewportPortal rendered output (DOM/geometry) and emitted callbacks"));
 }
 // 4. Public hooks (derived from the semantic export maps)
 for (const [fam, fw] of [["api-react", "react"], ["api-svelte", "svelte"]]) {
@@ -464,6 +533,11 @@ for (const m of typeMembers(svelteStoreFile, "SvelteFlowStoreActions")) {
     `Svelte store action \`SvelteFlowStore.${m.name}\`${sig(m.type)}. Svelte counterpart of the React store action of the same name where present.`,
     diff("store snapshot (serialisable slices) after each scripted step"));
 }
+for (const m of typeMembers(svelteStoreFile, "SvelteFlowStoreState")) {
+  add("store", `SvelteFlowStore.${m.name}`, m.file, m.line,
+    `Svelte store state \`SvelteFlowStore.${m.name}\`${sig(m.type)}. Reactive state slice of the Svelte flow store (class in store/initial-store.svelte.ts, exposed as SvelteFlowStoreState = ReturnType<typeof getInitialStore>).`,
+    diff("store snapshot (serialisable slices) after each scripted step"));
+}
 // 7. Change variants (fixed protocol list; existence is guarded against api-system exports)
 for (const name of ["NodeDimensionChange", "NodePositionChange", "NodeSelectionChange", "NodeRemoveChange", "NodeAddChange", "NodeReplaceChange", "EdgeSelectionChange", "EdgeRemoveChange", "EdgeAddChange", "EdgeReplaceChange", "NodeChange", "EdgeChange"]) {
   const info = EXPORT_MAPS["api-system"].get(name);
@@ -496,6 +570,22 @@ for (const [file, typeName] of [
     if (edgeBaseNames.has(m.name)) continue;
     add("model", `Edge.${m.name}`, m.file, m.line,
       `Model field \`Edge.${m.name}\` (React extension of EdgeBase)${m.optional ? " (optional)" : ""}${sig(m.type)}. Part of the serialisable flow document as rendered by React Flow.`,
+      diff("serialised document (toObject) before/after the scenario"));
+  }
+  // Svelte framework extensions: only names that do not already exist on the
+  // React extension or the base are new observables (class vs className).
+  const reactNodeNames = new Set(typeMembers(join(SOURCE, "packages/react/src/types/nodes.ts"), "Node").map((m) => m.name));
+  for (const m of typeMembers(join(SOURCE, "packages/svelte/src/lib/types/nodes.ts"), "Node")) {
+    if (nodeBaseNames.has(m.name) || reactNodeNames.has(m.name)) continue;
+    add("model", `svelte:Node.${m.name}`, m.file, m.line,
+      `Model field \`svelte:Node.${m.name}\` (Svelte extension of NodeBase)${m.optional ? " (optional)" : ""}${sig(m.type)}. Svelte counterpart name for the flow document field (class holds the CSS class value).`,
+      diff("serialised document (toObject) before/after the scenario"));
+  }
+  const reactEdgeNames = new Set(typeMembers(join(SOURCE, "packages/react/src/types/edges.ts"), "Edge").map((m) => m.name));
+  for (const m of typeMembers(join(SOURCE, "packages/svelte/src/lib/types/edges.ts"), "Edge")) {
+    if (edgeBaseNames.has(m.name) || reactEdgeNames.has(m.name)) continue;
+    add("model", `svelte:Edge.${m.name}`, m.file, m.line,
+      `Model field \`svelte:Edge.${m.name}\` (Svelte extension of EdgeBase)${m.optional ? " (optional)" : ""}${sig(m.type)}. Svelte counterpart name for the flow document field (class holds the CSS class value).`,
       diff("serialised document (toObject) before/after the scenario"));
   }
 }
@@ -532,9 +622,10 @@ for (const [file, en] of [
     }
   }
 }
-for (const edgeType of ["default (bezier)", "straight", "step", "smoothstep", "simplebezier"]) {
-  add("edge-geometry", `edgeType:${edgeType}`, reactEntry, EXPORT_MAPS["api-react"].get("BezierEdge")?.line ?? 1,
-    `Built-in edge type \`${edgeType}\`: selects the path function and marker/label rendering for edges without a custom type.`,
+for (const [edgeType, compName] of [["default (bezier)", "BezierEdge"], ["straight", "StraightEdge"], ["step", "StepEdge"], ["smoothstep", "SmoothStepEdge"], ["simplebezier", "SimpleBezierEdge"]]) {
+  const info = EXPORT_MAPS["api-react"].get(compName);
+  add("edge-geometry", `edgeType:${edgeType}`, info?.file ?? reactEntry, info?.line ?? 1,
+    `Built-in edge type \`${edgeType}\` (component \`${compName}\`): selects the path function and marker/label rendering for edges without a custom type.`,
     diff("rendered path geometry for a fixed node pair per edge type"));
 }
 // 10. Interaction behaviours (anchored catalogue; anchors verified in the engine sources)
