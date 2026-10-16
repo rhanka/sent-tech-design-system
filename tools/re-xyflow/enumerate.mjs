@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 /**
- * Mechanical enumeration of the xyflow public surface.
- * No third-party code is copied: only names, signatures and source
- * locations are extracted. Behaviour text is written from the
- * observable contract (JSDoc + type shape), never from implementation.
+ * Mechanical enumeration of the xyflow public surface (primary extractor).
+ *
+ * Method: TypeScript compiler API (ts.createProgram + TypeChecker), loaded
+ * from the repository `node_modules/typescript`. No regex parsing of the
+ * source surface, no network, no third-party code copied: only names,
+ * signatures and source locations are extracted. Behaviour text states the
+ * observable contract (JSDoc + type shape), never the implementation.
  *
  * Usage:
  *   node tools/re-xyflow/enumerate.mjs [--source <xyflowRoot>] [--out <inventory.json>]
@@ -11,10 +14,13 @@
  *   source = <repoParent>/.ds-scrap/re-sources/xyflow
  *   out    = <worktree>/docs/re/xyflow-inventory.json
  *   raw    = <worktree>/tools/re-xyflow/raw-enumeration.json
+ *
+ * The completeness guard is a SEPARATE extractor in verify.mjs (syntactic
+ * AST walk, independently written). This file never imports it.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const worktree = resolve(here, "../..");
@@ -31,8 +37,20 @@ if (!existsSync(join(SOURCE, "packages/system/src/index.ts"))) {
   process.exit(2);
 }
 
+async function loadTypeScript() {
+  const candidates = [
+    join(worktree, "node_modules/typescript/lib/typescript.js"),
+    join(repoParent, "node_modules/typescript/lib/typescript.js"),
+  ];
+  for (const c of candidates) {
+    if (existsSync(c)) return (await import(pathToFileURL(c).href)).default;
+  }
+  console.error("typescript not found in node_modules (worktree or repo root)");
+  process.exit(2);
+}
+const ts = await loadTypeScript();
+
 const read = (p) => readFileSync(p, "utf8");
-const linesOf = (p) => read(p).split("\n");
 function walk(dir, exts, out = []) {
   for (const name of readdirSync(dir).sort()) {
     const p = join(dir, name);
@@ -44,104 +62,158 @@ function walk(dir, exts, out = []) {
 const rel = (p) => relative(SOURCE, p).split("\\").join("/");
 const relWt = (p) => relative(worktree, p).split("\\").join("/");
 
-function findDefLine(file, name) {
-  const ls = linesOf(file);
-  const pats = [
-    new RegExp(`^export\\s+(?:declare\\s+)?(?:type|interface|enum|class|const|function|let|var)\\s+${name}\\b`),
-    new RegExp(`^export\\s+\\{[^}]*\\b${name}\\b`),
-  ];
-  for (let i = 0; i < ls.length; i++) for (const re of pats) if (re.test(ls[i])) return i + 1;
-  return 1;
-}
+/* ---------- TypeScript program (semantic extraction) ---------- */
+const sysEntry = join(SOURCE, "packages/system/src/index.ts");
+const reactEntry = join(SOURCE, "packages/react/src/index.ts");
+const svelteEntry = join(SOURCE, "packages/svelte/src/lib/index.ts");
+const EXTRA_ROOTS = [
+  "packages/react/src/types/component-props.ts",
+  "packages/react/src/types/store.ts",
+  "packages/react/src/types/instance.ts",
+  "packages/react/src/types/general.ts",
+  "packages/react/src/types/nodes.ts",
+  "packages/react/src/types/edges.ts",
+  "packages/svelte/src/lib/container/SvelteFlow/types.ts",
+  "packages/svelte/src/lib/hooks/useSvelteFlow.svelte.ts",
+  "packages/svelte/src/lib/store/types.ts",
+].map((p) => join(SOURCE, p));
+const program = ts.createProgram([sysEntry, reactEntry, svelteEntry, ...EXTRA_ROOTS], {
+  target: ts.ScriptTarget.ESNext,
+  module: ts.ModuleKind.ESNext,
+  moduleResolution: ts.ModuleResolutionKind.Bundler,
+  allowImportingTsExtensions: true,
+  noEmit: true,
+  skipLibCheck: true,
+  jsx: ts.JsxEmit.Preserve,
+  allowJs: true,
+  esModuleInterop: true,
+  baseUrl: SOURCE,
+  paths: {
+    "@xyflow/system": ["packages/system/src/index.ts"],
+    "$lib/*": ["packages/svelte/src/lib/*"],
+  },
+});
+const checker = program.getTypeChecker();
+const srcPrefix = SOURCE.split("\\").join("/");
 
-/** Follow `export *` / `export {..} from` transitively from an entry file. */
-function collectExports(entry) {
-  const seenFiles = new Set();
-  const found = new Map(); // name -> {file, line, kind}
-  const queue = [entry];
-  while (queue.length) {
-    const file = queue.shift();
-    if (seenFiles.has(file) || !existsSync(file)) continue;
-    seenFiles.add(file);
-    const ls = linesOf(file);
-    ls.forEach((line, idx) => {
-      let m = line.match(/export\s+\*\s+from\s+['"]([^'"]+)['"]/);
-      if (m) { queue.push(resolveFrom(file, m[1])); return; }
-      m = line.match(/export\s+(?:type\s+)?\{([^}]+)\}(?:\s+from\s+['"]([^'"]+)['"])?/);
-      if (m) {
-        const fromFile = m[2] ? resolveFrom(file, m[2]) : file;
-        for (let part of m[1].split(",")) {
-          part = part.trim().replace(/^type\s+/, "");
-          if (!part) continue;
-          const as = part.match(/^(\S+)\s+as\s+(\S+)$/);
-          const orig = as ? as[1] : part.split(/\s/)[0];
-          const name = as ? as[2] : orig;
-          if (name === "default") continue;
-          if (!found.has(name)) found.set(name, { file: fromFile, line: findDefLine(fromFile, orig), kind: "export" });
-        }
-        return;
-      }
-      m = line.match(/^export\s+(?:declare\s+)?(type|interface|enum|class|const|function)\s+([A-Za-z_$][\w$]*)/);
-      if (m && !found.has(m[2])) found.set(m[2], { file, line: idx + 1, kind: m[1] });
-      m = line.match(/^export\s+default\s+(?:function|class)\s+([A-Za-z_$][\w$]*)/);
-      if (m && !found.has(m[1])) found.set(m[1], { file, line: idx + 1, kind: "default" });
-    });
-  }
-  return found;
+function moduleExports(entryFile) {
+  const sf = program.getSourceFile(entryFile);
+  if (!sf) throw new Error(`program has no source file ${entryFile}`);
+  const sym = checker.getSymbolAtLocation(sf);
+  if (!sym) throw new Error(`no module symbol for ${entryFile}`);
+  return checker.getExportsOfModule(sym);
 }
-function resolveFrom(fromFile, spec) {
-  let base = resolve(dirname(fromFile), spec);
-  if (spec.startsWith("@xyflow/system")) base = join(SOURCE, "packages/system/src/index.ts");
-  if (spec.startsWith("$lib/")) base = join(SOURCE, "packages/svelte/src/lib", spec.slice(5));
-  const cands = [base, base + ".ts", base + ".tsx", base + ".js", join(base, "index.ts"), join(base, "index.tsx"), join(base, "index.js"), base.replace(/\.js$/, ".ts"), base.replace(/\.js$/, ".svelte.ts")];
-  for (const c of cands) if (existsSync(c) && statSync(c).isFile()) return c;
-  return base + ".ts";
+function findDecl(file, typeName) {
+  const sf = program.getSourceFile(file);
+  if (!sf) return null;
+  let found = null;
+  (function visit(n) {
+    if ((ts.isTypeAliasDeclaration(n) || ts.isInterfaceDeclaration(n) || ts.isEnumDeclaration(n)) && n.name.text === typeName) found = n;
+    ts.forEachChild(n, visit);
+  })(sf);
+  return found ? { sf, node: found } : null;
 }
-
-/** Members of `export interface X {..}` or `export type X = {..}` at brace depth 1. */
-function objectMembers(file, typeName) {
-  const ls = linesOf(file);
-  const start = ls.findIndex((l) => new RegExp(`export\\s+(?:interface|type)\\s+${typeName}\\b`).test(l));
-  if (start < 0) return [];
-  let depth = 0, begun = false;
-  const out = [];
-  for (let i = start; i < ls.length; i++) {
-    const line = ls[i];
-    if (line.includes("{")) { begun = true; }
-    if (!begun) continue;
-    const before = depth;
-    for (const ch of line) { if (ch === "{") depth++; else if (ch === "}") depth--; }
-    if (before === 1) {
-      const m = line.match(/^\s{2,}([A-Za-z_$][\w$]*|'[^']+')(\?)?:\s*(.*)$/);
-      if (m && !line.trim().startsWith("*") && !line.trim().startsWith("//")) {
-        // look back for @default in the preceding JSDoc block
-        let def = null;
-        for (let j = Math.max(0, i - 25); j < i; j++) {
-          const d = ls[j].match(/@default\s+(.+)/);
-          if (d) def = d[1].trim();
-          if (ls[j].includes("*/")) def = def; // keep last seen in block
-        }
-        out.push({ name: m[1].replace(/'/g, ""), optional: !!m[2], type: m[3].replace(/;$/, "").slice(0, 120), line: i + 1, default: def });
+function lineOf(sf, node) {
+  return sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
+}
+function defaultOf(decl) {
+  try {
+    for (const tag of ts.getJSDocTags(decl)) {
+      if (tag.tagName.text === "default") {
+        const c = tag.comment;
+        const text = typeof c === "string" ? c : Array.isArray(c) ? c.map((x) => x.text ?? "").join("") : "";
+        return text.trim() || null;
       }
     }
-    if (begun && depth === 0 && i > start) break;
+  } catch { /* JSDoc is best-effort */ }
+  return null;
+}
+/** Members of a named object type, restricted to declarations inside the xyflow tree. */
+function typeMembers(file, typeName) {
+  const d = findDecl(file, typeName);
+  if (!d || ts.isEnumDeclaration(d.node)) return [];
+  const sym = checker.getSymbolAtLocation(d.node.name);
+  if (!sym) return [];
+  const type = checker.getDeclaredTypeOfSymbol(sym);
+  const out = [];
+  for (const prop of checker.getPropertiesOfType(type)) {
+    const decls = (prop.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
+    if (!decls.length) continue;
+    const decl = decls[0];
+    const sf = decl.getSourceFile();
+    let typeStr = "";
+    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl)).replace(/\s+/g, " ").slice(0, 240); } catch { typeStr = ""; }
+    const optional = decls.some((x) => (ts.isPropertySignature(x) || ts.isPropertyDeclaration(x)) && !!x.questionToken) || (prop.flags & ts.SymbolFlags.Optional) !== 0;
+    out.push({ name: prop.getName(), optional, type: typeStr, file: sf.fileName, line: lineOf(sf, decl), def: defaultOf(decl) });
   }
+  out.sort((a, b) => a.line - b.line || a.name.localeCompare(b.name));
   return out;
 }
+/** Return-type members of an exported function (useSvelteFlow). */
+function returnMembers(file, fnName) {
+  const sf = program.getSourceFile(file);
+  if (!sf) return [];
+  let fn = null;
+  (function visit(n) {
+    if (ts.isFunctionDeclaration(n) && n.name?.text === fnName) fn = n;
+    ts.forEachChild(n, visit);
+  })(sf);
+  if (!fn) return [];
+  const sig = checker.getSignatureFromDeclaration(fn);
+  if (!sig) return [];
+  const rt = checker.getReturnTypeOfSignature(sig);
+  const out = [];
+  for (const prop of checker.getPropertiesOfType(rt)) {
+    const decls = (prop.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
+    if (!decls.length) continue;
+    const decl = decls[0];
+    const dsf = decl.getSourceFile();
+    let typeStr = "";
+    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(prop, decl)).replace(/\s+/g, " ").slice(0, 240); } catch { typeStr = ""; }
+    out.push({ name: prop.getName(), optional: false, type: typeStr, file: dsf.fileName, line: lineOf(dsf, decl), def: defaultOf(decl) });
+  }
+  out.sort((a, b) => a.line - b.line || a.name.localeCompare(b.name));
+  return out;
+}
+function enumMembers(file, enumName) {
+  const d = findDecl(file, enumName);
+  if (!d || !ts.isEnumDeclaration(d.node)) return [];
+  return d.node.members.map((m) => ({
+    name: m.name.getText(d.sf),
+    line: lineOf(d.sf, m),
+  }));
+}
+function exportInfo(entryFile) {
+  const map = new Map();
+  for (const sym of moduleExports(entryFile)) {
+    const name = sym.getName();
+    if (name === "default") continue;
+    const decls = (sym.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
+    const isReExport = (x) => ts.isExportSpecifier(x) || ts.isImportSpecifier(x) || ts.isBindingElement(x);
+    let decl = decls.find((x) => !isReExport(x)) ?? decls[0] ?? (sym.getDeclarations() ?? [])[0];
+    try {
+      const aliased = checker.getAliasedSymbol(sym);
+      const aDecls = (aliased.getDeclarations() ?? []).filter((x) => x.getSourceFile().fileName.split("\\").join("/").startsWith(srcPrefix));
+      const aDecl = aDecls.find((x) => !isReExport(x));
+      if (aDecl) decl = aDecl;
+    } catch { /* not an alias */ }
+    if (!decl) continue;
+    const sf = decl.getSourceFile();
+    const isValue = (sym.flags & (ts.SymbolFlags.Value)) !== 0;
+    let typeStr = "";
+    try { typeStr = checker.typeToString(checker.getTypeOfSymbolAtLocation(sym, decl)).replace(/\s+/g, " ").slice(0, 200); } catch { typeStr = ""; }
+    map.set(name, { file: sf.fileName, line: lineOf(sf, decl), kind: isValue ? "value" : "type", type: typeStr });
+  }
+  return map;
+}
+
 /* ---------- sentropic corpus (coverage evidence) ---------- */
 const CORPUS_DIRS = ["packages/graph/src", "packages/diagram-core/src", "packages/diagram-canvas/src"];
-const corpus = []; // {file(relWt), lines[]}
+const corpus = [];
 for (const d of CORPUS_DIRS) {
   const abs = join(worktree, d);
   if (!existsSync(abs)) continue;
-  for (const f of walk(abs, [".ts"])) corpus.push({ file: relWt(f), lines: linesOf(f) });
-}
-function proof(needle, fileHint) {
-  const n = needle.toLowerCase();
-  const ordered = fileHint ? [...corpus.filter((c) => c.file.includes(fileHint)), ...corpus.filter((c) => !c.file.includes(fileHint))] : corpus;
-  for (const c of ordered) for (let i = 0; i < c.lines.length; i++)
-    if (c.lines[i].toLowerCase().includes(n)) return `${c.file}:${i + 1}`;
-  return null;
+  for (const f of walk(abs, [".ts"])) corpus.push({ file: relWt(f), lines: read(f).split("\n") });
 }
 function proofIn(fileSuffix, needle) {
   const c = corpus.find((x) => x.file.endsWith(fileSuffix));
@@ -151,72 +223,96 @@ function proofIn(fileSuffix, needle) {
   return null;
 }
 const P = {
-  transform: () => proofIn("diagram-canvas/src/transform.ts", "export function worldToDevice") ?? "packages/diagram-canvas/src/transform.ts:200",
-  hit: () => proofIn("diagram-canvas/src/hit.ts", "export function hitTest(") ?? "packages/diagram-canvas/src/hit.ts:85",
-  region: () => proofIn("diagram-canvas/src/hit.ts", "hitTestRegion") ?? "packages/diagram-canvas/src/hit.ts:122",
-  scene: () => proofIn("diagram-canvas/src/scene.ts", "export function buildScene") ?? "packages/diagram-canvas/src/scene.ts:168",
-  straight: () => proofIn("graph/src/edge-geometry.ts", "EdgeCurveMode") ?? "packages/graph/src/edge-geometry.ts:3",
-  octilinear: () => proof("octilinear", "graph") ?? "packages/graph/src/types.ts:60",
-  camera: () => proofIn("graph/src/renderer.ts", "export function createGraphRenderer") ?? "packages/graph/src/renderer.ts:1180",
-  commands: () => proofIn("diagram-core/src/commands.ts", "export function applyTransaction") ?? "packages/diagram-core/src/commands.ts:1016",
+  transform: () => proofIn("diagram-canvas/src/transform.ts", "export function worldToView") ?? "packages/diagram-canvas/src/transform.ts:178",
+  visibleRect: () => proofIn("diagram-canvas/src/transform.ts", "export function visibleWorldRect") ?? "packages/diagram-canvas/src/transform.ts:205",
+  commands: () => proofIn("diagram-core/src/commands.ts", "export function applyTransaction") ?? "packages/diagram-core/src/commands.ts:1",
   rectUnion: () => proofIn("diagram-canvas/src/geometry.ts", "export function rectUnion") ?? "packages/diagram-canvas/src/geometry.ts:64",
+  rectsIntersect: () => proofIn("diagram-canvas/src/geometry.ts", "export function rectsIntersect") ?? "packages/diagram-canvas/src/geometry.ts:51",
+  straight: () => proofIn("graph/src/edge-geometry.ts", "EdgeCurveMode") ?? "packages/graph/src/edge-geometry.ts:3",
+  visibility: () => proofIn("diagram-canvas/src/visibility.ts", "export function evaluateVisibility") ?? "packages/diagram-canvas/src/visibility.ts:196",
+  entity: () => proofIn("diagram-core/src/document.ts", "export interface Entity") ?? "packages/diagram-core/src/document.ts:28",
 };
-function coverageFor(key, family) {
-  const k = key.toLowerCase();
-  const cov = (proofStr, note) => ({ status: "covered", proof: proofStr, note });
-  const part = (proofStr, note) => ({ status: "partial", proof: proofStr, note });
-  const miss = (proofStr, note) => ({ status: "missing", proof: proofStr, note });
-  if (/worldtodevice|worldtoview|viewtodevice|composetransform/.test(k)) return cov(P.transform(), "diagram-canvas owns the world/view/device affine contract.");
-  if (family === "interaction" && /hit-test|picking/.test(k)) return part(P.hit(), "diagram-canvas hitTest exists; no flow-level picking/hover engine on graph yet.");
-  if (/getstraightpath|straightedge/.test(k)) return part(P.straight(), "graph edge-geometry provides straight/arc polylines, not the xyflow SVG path contract.");
-  if (/bezier|smoothstep|stepedge|simplebezier/.test(k)) return miss(P.octilinear(), "graph has octilinear + arc routing; no bezier/smoothstep path functions. Neighbouring capability only.");
-  if (/fitview|fitbounds|setcenter|zoomto|zoomin|zoomout|getviewport|setviewport|screenToFlow|flowtoscreen/.test(k)) return part(P.camera(), "graph renderer camera + diagram-canvas transform exist; no xyflow viewport-helper API (padding, duration, interpolation).");
-  if (/panzoom|pan-on|zoom-on|onmove/.test(k)) return part(P.transform(), "camera transform exists; the d3 pan/zoom gesture engine (XYPanZoom) has no equivalent.");
-  if (/applynodechanges|applyedgechanges|nodechange|edgechange/.test(k)) return part(P.commands(), "diagram-core has transactional commands with inverses; the xyflow change-array protocol is not implemented.");
-  if (/buildscene|sceneframe|paint.order/.test(k)) return cov(P.scene(), "diagram-canvas buildScene + deterministic paint order cover the scene half; rendering binding stays open.");
-  if (/rectcontains|rectsintersect|rectunion|getnodesbounds|nodebounds/.test(k)) return part(P.rectUnion(), "diagram-canvas geometry provides rect algebra; xyflow node-bounds API shape differs.");
-  if (family === "examples") return miss(P.camera(), "No sentropic recipe implements this xyflow example scenario yet.");
-  return miss(P.camera(), "No equivalent found in graph/diagram-core/diagram-canvas corpus (mechanical search at generation time).");
+const D3_TYPES = new Set(["D3ZoomInstance", "D3SelectionInstance", "D3ZoomHandler"]);
+function coverageFor(family, name) {
+  const bare = name.replace(/^(ReactFlow|SvelteFlow|useSvelteFlow|SvelteFlowStore)\./, "").replace(/^svelte:/, "");
+  const k = bare.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const part = (proof, note) => ({ status: "partial", proof, note });
+  const miss = (note) => ({ status: "missing", proof: null, note });
+  if (family === "api-system" && D3_TYPES.has(name)) {
+    return { status: "excluded", proof: null, note: "D3-coupled type alias (d3-zoom/d3-selection). No D3 on the sentropic stack: the parity surface keeps the name as a documented exclusion; implementations expose no D3 instance. See SPEC annex." };
+  }
+  if (family === "store") return miss("Headless flow store does not exist yet; this slice/action belongs to the new flow-engine module (SPEC §target architecture).");
+  if (family === "changes") return part(P.commands(), "diagram-core has transactional commands with inverses; the xyflow change-array protocol is an adapter still to build.");
+  if (/pointtorendererpoint|rendererpointtopoint/.test(k)) return part(P.transform(), "diagram-canvas worldToView implements the affine core with the opposite camera convention (SPEC §camera conversion); the xyflow [tx,ty,zoom] API shape is still to build.");
+  if (/applynodechanges|applyedgechanges/.test(k)) return part(P.commands(), "diagram-core has transactional commands with inverses; the xyflow change-array protocol is not implemented.");
+  if (family === "model") {
+    if (/^(nodebase|edgebase|node|edge)\.(id|type|data|source|target|sourcehandle|targethandle)$/.test(k)) {
+      return part(P.entity(), "diagram-core Entity/Relation already carry identity, type and attributes/endpoints; the xyflow field semantics (handles, markers) are still to map.");
+    }
+    return miss("No flow-document field with this semantics in diagram-core/diagram-canvas yet; transient and geometry fields are specified on the view/store side, never on SemanticDocument (SPEC §model contract).");
+  }
+  if (/getnodesbounds|nodebounds/.test(k)) return part(P.rectUnion(), "diagram-canvas geometry provides rect algebra; the xyflow node-bounds API shape differs.");
+  if (/getintersectingnodes|isnodeintersecting/.test(k)) return part(P.rectsIntersect(), "diagram-canvas geometry provides rect intersection; the xyflow intersecting-nodes API shape differs.");
+  if (/getstraightpath/.test(k) || (family === "edge-geometry" && /straight/.test(k))) return part(P.straight(), "graph edge-geometry provides straight/arc polylines, not the xyflow SVG path contract.");
+  if (family === "interaction" && /onlyrendervisibleelements|hiddenandvisibility/.test(k)) return part(P.visibility(), "diagram-canvas evaluateVisibility + scene culling exist; the xyflow onlyRenderVisibleElements/hidden wiring is still to build.");
+  if (family === "interaction" && /fitviewoninit/.test(k)) return part(P.visibleRect(), "diagram-canvas visibleWorldRect + rect algebra exist; the fitView framing helper (padding, clamp, animation) is still to build.");
+  if ((family === "instance" || family.startsWith("api-")) && /fitview|fitbounds|setcenter|zoomto|setzoom|zoomin|zoomout|getzoom|setviewport|getviewport|screentoflow|flowtoscreen/.test(k)) {
+    return part(P.transform(), "diagram-canvas transform + graph camera state exist; no xyflow viewport-helper API (padding, duration, interpolation).");
+  }
+  if (family === "examples") return miss("No sentropic recipe implements this xyflow example scenario yet.");
+  return miss("No equivalent found in graph/diagram-core/diagram-canvas corpus (mechanical search at generation time).");
 }
-function targetFor(family, key) {
-  const k = key.toLowerCase();
-  if (family === "edge-geometry" || /edge.*path|marker|connectionline/.test(k)) return "graph";
-  if (family === "model" || family === "changes" || /nodebase|edgebase|document|command/.test(k)) return "diagram-core";
-  if (family === "interaction" || family === "store") return "nouveau module";
-  if (/panzoom|drag|selection|viewport|transform|hit/.test(k)) return "diagram-canvas";
-  if (family.startsWith("api-") || family === "hooks" || family === "props-components" || family === "props-flow" || family === "instance") return "composant DS";
+function targetFor(family, name) {
+  const bare = name.replace(/^(ReactFlow|SvelteFlow|useSvelteFlow|SvelteFlowStore)\./, "").replace(/^svelte:/, "");
+  const k = bare.toLowerCase();
+  if (family === "edge-geometry") return "graph";
+  if (family === "changes") return "diagram-core";
+  if (family === "store" || family === "hooks") return family === "store" ? "nouveau module" : "composant DS";
+  if (family === "props-components") return "composant DS";
   if (family === "examples") return "composant DS";
+  if (family === "interaction") {
+    if (/only-render-visible-elements|hidden-and-visibility|fit-view-on-init/.test(name)) return "diagram-canvas";
+    return "nouveau module";
+  }
+  if (family === "model") {
+    if (/\.(id|data|type|source|target|sourceHandle|targetHandle)$/.test(bare)) return "diagram-core";
+    if (/\.(position|width|height|initialWidth|initialHeight)$/.test(bare)) return "diagram-canvas";
+    if (/^(ConnectionLineType|MarkerType)\./.test(bare)) return "graph";
+    return "nouveau module";
+  }
+  if (family === "instance") {
+    if (/^(zoomIn|zoomOut|zoomTo|setZoom|getZoom|setViewport|getViewport|setCenter|fitBounds|fitView|screenToFlowPosition|flowToScreenPosition|viewportInitialized|getNodesBounds|getIntersectingNodes|isNodeIntersecting)$/.test(bare)) return "diagram-canvas";
+    return "nouveau module";
+  }
+  if (family === "props-flow") {
+    if (/\.(snapToGrid|snapGrid|nodeOrigin|connectionRadius|connectionMode|connectionLineType|onlyRenderVisibleElements|autoPanOnConnect|autoPanOnNodeDrag|autoPanOnSelection|autoPanSpeed|minZoom|maxZoom|translateExtent|nodeExtent|defaultViewport|initialViewport|viewport|fitView|fitViewOptions)$/.test(name)) return "nouveau module";
+    return "composant DS";
+  }
+  if (family.startsWith("api-")) {
+    if (/^(use|experimental_use)/.test(name)) return "composant DS";
+    if (/^(ReactFlow|SvelteFlow|Background|Controls|ControlButton|MiniMap|MiniMapNode|Panel|Handle|NodeToolbar|NodeResizer|NodeResizeControl|EdgeToolbar|EdgeLabelRenderer|EdgeLabel|EdgeReconnectAnchor|ViewportPortal|ReactFlowProvider|SvelteFlowProvider|BezierEdge|StepEdge|SmoothStepEdge|StraightEdge|SimpleBezierEdge|BaseEdge|EdgeText|Attribution)$/.test(name)) return "composant DS";
+    if (/getbezier|getsmoothstep|getstraight|getsimplebezier|getedgecenter|getbezieredgecenter|marker|connectionline|bezierpathoptions|smoothsteppathoptions|steppathoptions|edge.*label/.test(k.replace(/[^a-z]/g, "")) || /^(MarkerType|ConnectionLineType|EdgeMarker|EdgeMarkerType)$/.test(name)) return "graph";
+    if (/fitview|fitbounds|viewport|pointtorenderer|rendererpoint|getnodesbounds|screentoflow|flowtoscreen/.test(k.replace(/[^a-z]/g, ""))) return "diagram-canvas";
+    if (/^(XYDrag|XYHandle|XYPanZoom|XYResizer|XYMinimap|PanZoomInstance|PanZoomParams|PanZoomUpdateOptions|PanZoomTransformOptions|OnPanZoom|getHostForElement|isInputDOMNode|getPointerPosition|handleAttributionWarning|isAttributionVisible)$/.test(name) || D3_TYPES.has(name)) return "nouveau module";
+    return "diagram-core";
+  }
   return "nouveau module";
 }
-function priorityFor(family, key) {
+function priorityFor(family, name) {
   if (["model", "changes", "interaction"].includes(family)) return "P0";
-  if (family === "props-flow" && /^(nodes|edges|onnodeschange|onedgeschange|onconnect|nodeTypes|edgeTypes|fitView|snapToGrid|minZoom|maxZoom)/.test(key)) return "P0";
   if (family === "instance" || family === "edge-geometry") return "P0";
   if (family === "examples") return "P2";
+  if (family === "props-flow" && /\.(nodes|edges|onNodesChange|onEdgesChange|onConnect|nodeTypes|edgeTypes|fitView|snapToGrid|minZoom|maxZoom)$/.test(name)) return "P0";
   return "P1";
 }
 
-function enumMembers(file, enumName) {
-  const ls = linesOf(file);
-  const start = ls.findIndex((l) => new RegExp(`export\\s+enum\\s+${enumName}\\b`).test(l));
-  if (start < 0) return [];
-  const out = [];
-  for (let i = start + 1; i < ls.length; i++) {
-    if (ls[i].includes("}")) break;
-    const m = ls[i].match(/^\s*([A-Za-z_$][\w$]*)\s*(?:=\s*['"]?([^,'"]+)['"]?)?/);
-    if (m && m[1]) out.push({ name: m[1], value: m[2] ?? null, line: i + 1 });
-  }
-  return out;
-}
-
 /* ---------- build inventory ---------- */
-const raw = []; // {key, family, name, source}
+const raw = [];
 const entries = [];
 const slug = (s) => s.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase();
-function add(family, name, sourceFile, sourceLine, behaviour, acceptance, keyOverride) {
-  const key = keyOverride ?? `${family}:${name}`;
-  raw.push({ key, family, name, source: `${rel(sourceFile)}:${sourceLine}` });
-  const cov = coverageFor(name, family);
+function add(family, name, sourceFile, sourceLine, behaviour, acceptance) {
+  raw.push({ key: `${family}:${name}`, family, name, source: `${rel(sourceFile)}:${sourceLine}` });
+  const cov = coverageFor(family, name);
   entries.push({
     id: `${family}.${slug(name)}`,
     family,
@@ -232,124 +328,157 @@ function add(family, name, sourceFile, sourceLine, behaviour, acceptance, keyOve
   });
 }
 const diff = (what) => `Differential harness: run the same fixture + scripted interaction on xyflow and on the sentropic implementation; compare ${what}. See SPEC_RE_XYFLOW_PARITY.md §differential harness.`;
+const sig = (t) => (t ? `: ${t}` : "");
 
-// 1. Package public exports (transitive from each index)
+// 1. Package public exports (semantic, transitive from each entry module)
 const EXPORT_MAPS = {};
-const sysEntry = join(SOURCE, "packages/system/src/index.ts");
-const reactEntry = join(SOURCE, "packages/react/src/index.ts");
-const svelteEntry = join(SOURCE, "packages/svelte/src/lib/index.ts");
 for (const [fam, entry] of [["api-system", sysEntry], ["api-react", reactEntry], ["api-svelte", svelteEntry]]) {
-  const map = collectExports(entry);
+  const map = exportInfo(entry);
   EXPORT_MAPS[fam] = map;
-  for (const [name, info] of [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const name of [...map.keys()].sort((a, b) => a.localeCompare(b))) {
+    const info = map.get(name);
     add(fam, name, info.file, info.line,
-      `Public export \`${name}\` (${info.kind}) of the package. Observable contract is its type/call signature at the cited definition; consumers import it by this exact name.`,
+      `Public export \`${name}\` (${info.kind}${info.type ? `, ${info.type}` : ""}) of the package. Observable contract is its type/call signature at the cited definition; consumers import it by this exact name.`,
       diff("import surface (name resolves, kind matches) plus the behavioural scenario of the owning family"));
   }
 }
 // 2. Flow component props
 const reactPropsFile = join(SOURCE, "packages/react/src/types/component-props.ts");
-for (const m of objectMembers(reactPropsFile, "ReactFlowProps")) {
-  add("props-flow", `ReactFlow.${m.name}`, reactPropsFile, m.line,
-    `ReactFlow prop \`${m.name}\`${m.optional ? " (optional)" : ""}: ${m.type || "see type"}${m.default ? `. Documented default: ${m.default}` : ""}. Setting it changes the observable flow behaviour described by its type (controlled value, handler, or option).`,
-    diff(`rendered model + emitted events with the prop set vs unset (default ${m.default ?? "documented in spec §options"})`));
+for (const m of typeMembers(reactPropsFile, "ReactFlowProps")) {
+  add("props-flow", `ReactFlow.${m.name}`, m.file, m.line,
+    `ReactFlow prop \`${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}${m.def ? `. Documented default: ${m.def}` : ""}. Setting it changes the observable flow behaviour described by its type (controlled value, handler, or option).`,
+    diff(`rendered model + emitted events with the prop set vs unset (default ${m.def ?? "as documented per entry"})`));
 }
 const svelteTypesFile = join(SOURCE, "packages/svelte/src/lib/container/SvelteFlow/types.ts");
-for (const m of objectMembers(svelteTypesFile, "SvelteFlowProps")) {
-  add("props-flow", `SvelteFlow.${m.name}`, svelteTypesFile, m.line,
-    `SvelteFlow prop \`${m.name}\`${m.optional ? " (optional)" : ""}: ${m.type || "see type"}${m.default ? `. Documented default: ${m.default}` : ""}. Svelte binding counterpart of the ReactFlow prop of the same name where present.`,
+for (const m of typeMembers(svelteTypesFile, "SvelteFlowProps")) {
+  add("props-flow", `SvelteFlow.${m.name}`, m.file, m.line,
+    `SvelteFlow prop \`${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}${m.def ? `. Documented default: ${m.def}` : ""}. Svelte binding counterpart of the ReactFlow prop of the same name where present.`,
     diff("rendered model + emitted events with the prop set vs unset"));
 }
-// Svelte event contracts (NodeEvents/EdgeEvents/PaneEvents intersections)
 const svelteEventsFile = join(SOURCE, "packages/svelte/src/lib/types/events.ts");
 if (existsSync(svelteEventsFile)) {
   for (const t of ["NodeEvents", "EdgeEvents", "PaneEvents", "NodeSelectionEvents"]) {
-    for (const m of objectMembers(svelteEventsFile, t)) {
-      add("props-flow", `SvelteFlow.${m.name} (${t})`, svelteEventsFile, m.line,
-        `SvelteFlow event prop \`${m.name}\` from ${t}: ${m.type || "handler"}. Fires on the user interaction named by the prop.`,
+    for (const m of typeMembers(svelteEventsFile, t)) {
+      add("props-flow", `SvelteFlow.${m.name} (${t})`, m.file, m.line,
+        `SvelteFlow event prop \`${m.name}\` from ${t}${sig(m.type)}. Fires on the user interaction named by the prop.`,
         diff("event sequence (name, payload shape, order) for the scripted interaction"));
     }
   }
 }
-// 3. Sub-component props
-const compPropFiles = [
-  ["Background", join(SOURCE, "packages/react/src/additional-components/Background/types.ts"), "BackgroundProps"],
-  ["Controls", join(SOURCE, "packages/react/src/additional-components/Controls/types.ts"), "ControlsProps"],
-  ["MiniMap", join(SOURCE, "packages/react/src/additional-components/MiniMap/types.ts"), "MiniMapProps"],
-  ["NodeToolbar", join(SOURCE, "packages/react/src/additional-components/NodeToolbar/types.ts"), "NodeToolbarProps"],
-  ["NodeResizer", join(SOURCE, "packages/react/src/additional-components/NodeResizer/types.ts"), "NodeResizerProps"],
-  ["EdgeToolbar", join(SOURCE, "packages/react/src/additional-components/EdgeToolbar/types.ts"), "EdgeToolbarProps"],
-  ["Panel", join(SOURCE, "packages/react/src/components/Panel/index.tsx"), "PanelProps"],
+// 3. Sub-component props (React + Svelte)
+const compPropSpecs = [
+  ["Background", "packages/react/src/additional-components/Background/types.ts", "BackgroundProps"],
+  ["Controls", "packages/react/src/additional-components/Controls/types.ts", "ControlProps"],
+  ["ControlButton", "packages/react/src/additional-components/Controls/types.ts", "ControlButtonProps"],
+  ["MiniMap", "packages/react/src/additional-components/MiniMap/types.ts", "MiniMapProps"],
+  ["MiniMapNode", "packages/react/src/additional-components/MiniMap/types.ts", "MiniMapNodeProps"],
+  ["NodeToolbar", "packages/react/src/additional-components/NodeToolbar/types.ts", "NodeToolbarProps"],
+  ["NodeResizer", "packages/react/src/additional-components/NodeResizer/types.ts", "NodeResizerProps"],
+  ["ResizeControl", "packages/react/src/additional-components/NodeResizer/types.ts", "ResizeControlProps"],
+  ["ResizeControlLine", "packages/react/src/additional-components/NodeResizer/types.ts", "ResizeControlLineProps"],
+  ["EdgeToolbar", "packages/react/src/additional-components/EdgeToolbar/types.ts", "EdgeToolbarProps"],
+  ["Panel", "packages/react/src/components/Panel/index.tsx", "PanelProps"],
+  ["Handle", "packages/react/src/components/Handle/index.tsx", "HandleProps"],
+  ["BaseEdge", "packages/react/src/types/edges.ts", "BaseEdgeProps"],
+  ["EdgeText", "packages/react/src/types/edges.ts", "EdgeTextProps"],
+  ["svelte:Controls", "packages/svelte/src/lib/plugins/Controls/types.ts", "ControlsProps"],
+  ["svelte:ControlButton", "packages/svelte/src/lib/plugins/Controls/types.ts", "ControlButtonProps"],
+  ["svelte:Background", "packages/svelte/src/lib/plugins/Background/types.ts", "BackgroundProps"],
+  ["svelte:MiniMap", "packages/svelte/src/lib/plugins/Minimap/types.ts", "MiniMapProps"],
+  ["svelte:MiniMapNode", "packages/svelte/src/lib/plugins/Minimap/types.ts", "MiniMapNodeProps"],
+  ["svelte:NodeToolbar", "packages/svelte/src/lib/plugins/NodeToolbar/types.ts", "NodeToolbarProps"],
+  ["svelte:EdgeToolbar", "packages/svelte/src/lib/plugins/EdgeToolbar/types.ts", "EdgeToolbarProps"],
+  ["svelte:NodeResizer", "packages/svelte/src/lib/plugins/NodeResizer/types.ts", "NodeResizerProps"],
+  ["svelte:ResizeControl", "packages/svelte/src/lib/plugins/NodeResizer/types.ts", "ResizeControlProps"],
+  ["svelte:EdgeLabel", "packages/svelte/src/lib/components/EdgeLabel/types.ts", "EdgeLabelProps"],
+  ["svelte:EdgeReconnectAnchor", "packages/svelte/src/lib/components/EdgeReconnectAnchor/types.ts", "EdgeReconnectAnchorProps"],
+  ["svelte:Handle", "packages/svelte/src/lib/components/Handle/types.ts", "HandleProps"],
+  ["svelte:ViewportPortal", "packages/svelte/src/lib/components/ViewportPortal/types.ts", "ViewportPortalProps"],
 ];
-for (const [comp, file, typeName] of compPropFiles) {
+for (const [comp, relFile, typeName] of compPropSpecs) {
+  const file = join(SOURCE, relFile);
   if (!existsSync(file)) continue;
-  for (const m of objectMembers(file, typeName)) {
-    add("props-components", `${comp}.${m.name}`, file, m.line,
-      `${comp} prop \`${m.name}\`${m.optional ? " (optional)" : ""}: ${m.type || "see type"}${m.default ? `. Documented default: ${m.default}` : ""}.`,
+  for (const m of typeMembers(file, typeName)) {
+    add("props-components", `${comp}.${m.name}`, m.file, m.line,
+      `${comp} prop \`${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}${m.def ? `. Documented default: ${m.def}` : ""}.`,
       diff(`${comp} rendered output (DOM/geometry) and emitted callbacks`));
   }
-  // the component itself
-  const idx = walk(join(SOURCE, "packages/react/src"), [".tsx"]).find((f) => f.includes(comp) && read(f).includes(`function ${comp}`));
-  add("props-components", comp, file, 1, `${comp} component: renders its documented chrome/overlay inside the flow viewport.`, diff(`${comp} presence, position and interaction outcome`));
 }
-// Handle + edge component props from system/react types
-const handleTypes = join(SOURCE, "packages/system/src/types/handles.ts");
-for (const m of objectMembers(handleTypes, "Handle")) {
-  add("props-components", `Handle.${m.name}`, handleTypes, m.line, `Handle field \`${m.name}\`: ${m.type || "see type"}. Determines connection anchoring and validity.`, diff("connection outcome when dragging from/to this handle"));
-}
-// 4. Public hooks only (derived from the transitive export maps, framework-prefixed)
+// 4. Public hooks (derived from the semantic export maps)
 for (const [fam, fw] of [["api-react", "react"], ["api-svelte", "svelte"]]) {
   const map = EXPORT_MAPS[fam];
-  if (!map) continue;
-  for (const [name, info] of [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const name of [...map.keys()].sort((a, b) => a.localeCompare(b))) {
     if (!/^(use|experimental_use)/.test(name)) continue;
+    const info = map.get(name);
     add("hooks", `${fw}:${name}`, info.file, info.line,
       `Hook \`${name}\` (${fw}): subscribes to the flow store and returns the value/callbacks in its signature; updates when the selected slice changes.`,
       diff("returned value sequence across the scripted state changes"));
   }
 }
-// 5. Instance helpers
+// 5. Instance helpers: ReactFlowInstance (GeneralHelpers + ViewportHelperFunctions + viewportInitialized)
+//    and the useSvelteFlow return contract.
 const instFile = join(SOURCE, "packages/react/src/types/instance.ts");
-for (const t of ["GeneralHelpers", "ViewportHelperFunctions"]) {
-  for (const m of objectMembers(instFile, t)) {
-    add("instance", m.name, instFile, m.line, `Instance method \`${m.name}\`: ${m.type || "see signature"}. Imperative counterpart of the declarative props; triggers the documented change handlers in controlled mode.`, diff("model + viewport + emitted change arrays after the call"));
+for (const m of typeMembers(instFile, "ReactFlowInstance")) {
+  add("instance", m.name, m.file, m.line,
+    `Instance method \`${m.name}\`${sig(m.type)}. Imperative counterpart of the declarative props; triggers the documented change handlers in controlled mode.`,
+    diff("model + viewport + emitted change arrays after the call"));
+}
+const svelteFlowHookFile = join(SOURCE, "packages/svelte/src/lib/hooks/useSvelteFlow.svelte.ts");
+for (const m of returnMembers(svelteFlowHookFile, "useSvelteFlow")) {
+  add("instance", `useSvelteFlow.${m.name}`, m.file, m.line,
+    `Svelte instance method \`useSvelteFlow.${m.name}\`${sig(m.type)}. Svelte counterpart of the ReactFlowInstance helper of the same name where present (note setZoom vs React zoomTo).`,
+    diff("model + viewport + emitted change arrays after the call"));
+}
+// 6. Store fields + actions (React store/actions, Svelte actions)
+const storeFile = join(SOURCE, "packages/react/src/types/store.ts");
+for (const t of ["ReactFlowStore", "ReactFlowActions"]) {
+  for (const m of typeMembers(storeFile, t)) {
+    add("store", m.name, m.file, m.line,
+      `Store ${t === "ReactFlowActions" ? "action" : "field"} \`${m.name}\`${sig(m.type)}. Single source of truth slice/action read by hooks/components of the same name family.`,
+      diff("store snapshot (serialisable slices) after each scripted step"));
   }
 }
-// 6. Store fields
-const storeFile = join(SOURCE, "packages/react/src/types/store.ts");
-for (const m of objectMembers(storeFile, "ReactFlowStore")) {
-  add("store", m.name, storeFile, m.line, `Store field \`${m.name}\`: ${m.type || "see type"}. Single source of truth slice read by hooks/components of the same name family.`, diff("store snapshot (serialisable slices) after each scripted step"));
+const svelteStoreFile = join(SOURCE, "packages/svelte/src/lib/store/types.ts");
+for (const m of typeMembers(svelteStoreFile, "SvelteFlowStoreActions")) {
+  add("store", `SvelteFlowStore.${m.name}`, m.file, m.line,
+    `Svelte store action \`SvelteFlowStore.${m.name}\`${sig(m.type)}. Svelte counterpart of the React store action of the same name where present.`,
+    diff("store snapshot (serialisable slices) after each scripted step"));
 }
-// 7. Change variants
-const changesFile = join(SOURCE, "packages/system/src/types/changes.ts");
+// 7. Change variants (fixed protocol list; existence is guarded against api-system exports)
 for (const name of ["NodeDimensionChange", "NodePositionChange", "NodeSelectionChange", "NodeRemoveChange", "NodeAddChange", "NodeReplaceChange", "EdgeSelectionChange", "EdgeRemoveChange", "EdgeAddChange", "EdgeReplaceChange", "NodeChange", "EdgeChange"]) {
-  const line = findDefLine(changesFile, name);
-  add("changes", name, changesFile, line, `Change variant \`${name}\`: one element of the onNodesChange/onEdgesChange array protocol. Applying it with apply*Changes produces the documented next model.`, diff("change arrays emitted for the gesture, then model after apply*Changes round-trip"));
+  const info = EXPORT_MAPS["api-system"].get(name);
+  const changesFile = join(SOURCE, "packages/system/src/types/changes.ts");
+  add("changes", name, info?.file ?? changesFile, info?.line ?? 1,
+    `Change variant \`${name}\`: one element of the onNodesChange/onEdgesChange array protocol. Applying it with apply*Changes produces the documented next model.`,
+    diff("change arrays emitted for the gesture, then model after apply*Changes round-trip"));
 }
-// 8. Model types (Node/Edge bases + core geometry types)
+// 8. Model types (bases, framework extras, enum members)
 for (const [file, typeName] of [
   [join(SOURCE, "packages/system/src/types/nodes.ts"), "NodeBase"],
   [join(SOURCE, "packages/system/src/types/edges.ts"), "EdgeBase"],
 ]) {
-  for (const m of objectMembers(file, typeName)) {
-    add("model", `${typeName}.${m.name}`, file, m.line, `Model field \`${typeName}.${m.name}\`${m.optional ? " (optional)" : ""}: ${m.type || "see type"}. Part of the serialisable flow document.`, diff("serialised document (toObject) before/after the scenario"));
+  for (const m of typeMembers(file, typeName)) {
+    add("model", `${typeName}.${m.name}`, m.file, m.line,
+      `Model field \`${typeName}.${m.name}\`${m.optional ? " (optional)" : ""}${sig(m.type)}. Part of the serialisable flow document.`,
+      diff("serialised document (toObject) before/after the scenario"));
   }
 }
-// 9. Edge geometry functions + built-in edge types
-for (const f of walk(join(SOURCE, "packages/system/src/utils/edges"), [".ts"]).sort()) {
-  const ls = linesOf(f);
-  ls.forEach((line, i) => {
-    const m = line.match(/export\s+function\s+(get\w+Path|get\w+Center)\b/);
-    if (m) add("edge-geometry", m[1], f, i + 1, `Path function \`${m[1]}\`: maps handle positions + options to an SVG path string and label centre. Pure function, no DOM.`, diff("path string (exact) and centre (tolerance 1e-6) over the fixture matrix of positions/options"));
-  });
+{
+  const nodeBaseNames = new Set(typeMembers(join(SOURCE, "packages/system/src/types/nodes.ts"), "NodeBase").map((m) => m.name));
+  for (const m of typeMembers(join(SOURCE, "packages/react/src/types/nodes.ts"), "Node")) {
+    if (nodeBaseNames.has(m.name)) continue;
+    add("model", `Node.${m.name}`, m.file, m.line,
+      `Model field \`Node.${m.name}\` (React extension of NodeBase)${m.optional ? " (optional)" : ""}${sig(m.type)}. Part of the serialisable flow document as rendered by React Flow.`,
+      diff("serialised document (toObject) before/after the scenario"));
+  }
+  const edgeBaseNames = new Set(typeMembers(join(SOURCE, "packages/system/src/types/edges.ts"), "EdgeBase").map((m) => m.name));
+  for (const m of typeMembers(join(SOURCE, "packages/react/src/types/edges.ts"), "Edge")) {
+    if (edgeBaseNames.has(m.name)) continue;
+    add("model", `Edge.${m.name}`, m.file, m.line,
+      `Model field \`Edge.${m.name}\` (React extension of EdgeBase)${m.optional ? " (optional)" : ""}${sig(m.type)}. Part of the serialisable flow document as rendered by React Flow.`,
+      diff("serialised document (toObject) before/after the scenario"));
+  }
 }
-for (const edgeType of ["default (bezier)", "straight", "step", "smoothstep", "simplebezier"]) {
-  const f = join(SOURCE, "packages/react/src/index.ts");
-  add("edge-geometry", `edgeType:${edgeType}`, f, findDefLine(f, "BezierEdge"),
-    `Built-in edge type \`${edgeType}\`: selects the path function and marker/label rendering for edges without a custom type.`,
-    diff("rendered path geometry for a fixed node pair per edge type"));
-}
-// 10. Enums (each member is observable)
 for (const [file, en] of [
   [join(SOURCE, "packages/system/src/types/general.ts"), "ConnectionMode"],
   [join(SOURCE, "packages/system/src/types/general.ts"), "PanOnScrollMode"],
@@ -357,13 +486,38 @@ for (const [file, en] of [
   [join(SOURCE, "packages/system/src/types/utils.ts"), "Position"],
   [join(SOURCE, "packages/system/src/types/edges.ts"), "ConnectionLineType"],
   [join(SOURCE, "packages/system/src/types/edges.ts"), "MarkerType"],
+  [join(SOURCE, "packages/react/src/additional-components/Background/types.ts"), "BackgroundVariant"],
+  [join(SOURCE, "packages/system/src/xyresizer/types.ts"), "ResizeControlVariant"],
 ]) {
   if (!existsSync(file)) continue;
   for (const mem of enumMembers(file, en)) {
-    add("model", `${en}.${mem.name}`, file, mem.line, `Enum value \`${en}.${mem.name}\`${mem.value ? ` = "${mem.value}"` : ""}: selects the named behaviour branch wherever the enum is accepted.`, diff(`behaviour branch taken with ${en}.${mem.name} in the owning scenario`));
+    add("model", `${en}.${mem.name}`, file, mem.line,
+      `Enum value \`${en}.${mem.name}\`: selects the named behaviour branch wherever the enum is accepted.`,
+      diff(`behaviour branch taken with ${en}.${mem.name} in the owning scenario`));
   }
 }
-// 11. Interaction behaviours (catalogue anchored in engine sources)
+// 9. Edge geometry functions + built-in edge types
+{
+  const seen = new Set();
+  for (const [fam] of [["api-system"], ["api-react"]]) {
+    for (const [name, info] of EXPORT_MAPS[fam]) {
+      if (!/^get\w+(Path|Center)$/.test(name)) continue;
+      const relFile = rel(info.file);
+      if (!relFile.includes("utils/edges") && !relFile.includes("components/Edges")) continue;
+      if (seen.has(name)) continue;
+      seen.add(name);
+      add("edge-geometry", name, info.file, info.line,
+        `Path function \`${name}\`: maps handle positions + options to an SVG path string and label centre. Pure function, no DOM.`,
+        diff("parsed SVG path commands compared numerically (tolerance 1e-6) and centre (tolerance 1e-6) over the fixture matrix of positions/options"));
+    }
+  }
+}
+for (const edgeType of ["default (bezier)", "straight", "step", "smoothstep", "simplebezier"]) {
+  add("edge-geometry", `edgeType:${edgeType}`, reactEntry, EXPORT_MAPS["api-react"].get("BezierEdge")?.line ?? 1,
+    `Built-in edge type \`${edgeType}\`: selects the path function and marker/label rendering for edges without a custom type.`,
+    diff("rendered path geometry for a fixed node pair per edge type"));
+}
+// 10. Interaction behaviours (anchored catalogue; anchors verified in the engine sources)
 const INTERACTIONS = [
   ["pan-by-drag", "packages/system/src/xypanzoom/XYPanZoom.ts", "XYPanZoom", "Pointer drag on the pane translates the viewport (subject to panOnDrag, translateExtent, min/max zoom)."],
   ["pan-on-scroll", "packages/system/src/xypanzoom/eventhandler.ts", "panOnScroll", "Wheel scroll pans when panOnScroll is set; mode (vertical/horizontal/free) constrains the axis."],
@@ -394,14 +548,16 @@ const INTERACTIONS = [
 ];
 for (const [slugName, relFile, anchor, behaviour] of INTERACTIONS) {
   const file = join(SOURCE, relFile);
-  const ls = existsSync(file) ? linesOf(file) : [];
+  const ls = existsSync(file) ? read(file).split("\n") : [];
   const idx = ls.findIndex((l) => l.toLowerCase().includes(anchor.toLowerCase()));
-  add("interaction", slugName, file, idx >= 0 ? idx + 1 : 1, behaviour + " Anchor verified in the cited engine source.", diff("event sequence + resulting model/viewport for the scripted gesture (Playwright)"));
+  add("interaction", slugName, file, idx >= 0 ? idx + 1 : 1, behaviour + " Anchor verified in the cited engine source.", diff("event sequence + resulting model/viewport for the scripted gesture (coordinate-driven, SPEC §differential harness)"));
 }
-// 12. Examples as acceptance scenarios
-for (const base of [join(SOURCE, "examples/react/src/examples"), join(SOURCE, "examples/svelte/src/routes")]) {
+// 11. Examples as acceptance scenarios (directories only)
+for (const [fw, base] of [
+  ["react", join(SOURCE, "examples/react/src/examples")],
+  ["svelte", join(SOURCE, "examples/svelte/src/routes/examples")],
+]) {
   if (!existsSync(base)) continue;
-  const fw = base.includes("svelte") ? "svelte" : "react";
   for (const name of readdirSync(base).sort()) {
     const p = join(base, name);
     if (!statSync(p).isDirectory()) continue;
@@ -409,16 +565,30 @@ for (const base of [join(SOURCE, "examples/react/src/examples"), join(SOURCE, "e
     add("examples", `${fw}:${name}`, first, 1, `Example scenario \`${name}\` (${fw}): the monorepo's own recipe for the feature(s) its folder demonstrates. Used as a differential acceptance scenario, not as a spec of new behaviour.`, diff("scenario outcome (model/events/geometry) replayed from the example's initial fixture"));
   }
 }
-// de-duplicate ids (React/Svelte share hook names): suffix by family already distinct; hooks need fw split
-const seen = new Map();
-for (const e of entries) {
-  if (seen.has(e.id)) { e.id = `${e.id}-${seen.get(e.id)}`; seen.set(e.id.replace(/-\d+$/, ""), (seen.get(e.id.replace(/-\d+$/, "")) ?? 1) + 1); }
-  else seen.set(e.id, 1);
+// De-duplicate ids (React/Svelte share member names): suffix repeats deterministically.
+{
+  const seen = new Map();
+  for (const e of entries) {
+    const base = e.id;
+    const n = (seen.get(base) ?? 0) + 1;
+    seen.set(base, n);
+    if (n > 1) e.id = `${base}-${n}`;
+  }
+  // Deterministic order inside each family for stable diffs.
+  const famOrder = new Map();
+  entries.forEach((e, i) => { if (!famOrder.has(e.family)) famOrder.set(e.family, i); });
+  entries.sort((a, b) => (famOrder.get(a.family) - famOrder.get(b.family)) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+  raw.sort((a, b) => a.key.localeCompare(b.key));
+  // Re-derive canonical ids after sorting is unnecessary: ids already unique.
 }
 const byFamily = {};
 for (const e of entries) byFamily[e.family] = (byFamily[e.family] ?? 0) + 1;
 const byStatus = {};
 for (const e of entries) byStatus[e.status] = (byStatus[e.status] ?? 0) + 1;
+const byTarget = {};
+for (const e of entries) byTarget[e.target] = (byTarget[e.target] ?? 0) + 1;
+const byPriority = {};
+for (const e of entries) byPriority[e.priority] = (byPriority[e.priority] ?? 0) + 1;
 const versions = {};
 for (const [k, p] of [["system", "packages/system/package.json"], ["react", "packages/react/package.json"], ["svelte", "packages/svelte/package.json"]]) {
   try { versions[k] = JSON.parse(read(join(SOURCE, p))).version; } catch { versions[k] = "unknown"; }
@@ -426,20 +596,21 @@ for (const [k, p] of [["system", "packages/system/package.json"], ["react", "pac
 const inventory = {
   meta: {
     title: "xyflow mechanical inventory for @sentropic/graph parity",
-    generatedBy: "tools/re-xyflow/enumerate.mjs (Node, no network)",
+    generatedBy: "tools/re-xyflow/enumerate.mjs (TypeScript compiler API, no network)",
+    guard: "tools/re-xyflow/verify.mjs (independent syntactic AST extractor; see SPEC §2)",
     sourceRoot: ".ds-scrap/re-sources/xyflow",
     versions,
-    countingConvention: "One entry per mechanically enumerated observable: transitive public export, flow-prop member, sub-component prop member, hook, instance method, store field, change variant, model field, enum member, edge path function/type, anchored interaction behaviour, example scenario. Duplicated React/Svelte names count once per package surface (family prefix distinguishes them).",
+    countingConvention: "One entry per mechanically enumerated observable: transitive public export (semantic module exports), flow-prop member, sub-component prop member, hook, instance method, store field/action, change variant, model field, enum member, edge path function/type, anchored interaction behaviour, example scenario. Duplicated React/Svelte names count once per package surface (family prefix distinguishes them). Generic DOM attribute expansions (HTMLAttributes/SVGAttributes) are excluded: only members declared inside the xyflow tree count.",
     total: entries.length,
-    byFamily, byStatus,
+    byFamily, byStatus, byTarget, byPriority,
   },
   entries,
 };
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(inventory, null, 2) + "\n");
-writeFileSync(RAW, JSON.stringify({ total: raw.length, keys: raw.map((r) => r.key).sort() }, null, 2) + "\n");
+writeFileSync(RAW, JSON.stringify({ total: raw.length, keys: raw.map((r) => r.key) }, null, 2) + "\n");
 console.log(`enumerated=${raw.length} entries=${entries.length}`);
 console.log("byFamily", JSON.stringify(byFamily));
 console.log("byStatus", JSON.stringify(byStatus));
+console.log("byTarget", JSON.stringify(byTarget));
 console.log(`wrote ${relWt(OUT)} and ${relWt(RAW)}`);
-
