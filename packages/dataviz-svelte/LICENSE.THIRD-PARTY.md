@@ -42,7 +42,7 @@ qu'ils arrivent dans le `node_modules` du consommateur de notre fait.
 | `core-js` | 3.50.0 | MIT |
 | `css-line-break` | 2.1.0 | MIT |
 | `cssesc` | 3.0.0 | MIT |
-| `dompurify` | 3.4.15 | (MPL-2.0 OR Apache-2.0) |
+| `dompurify` | 3.4.17 | (MPL-2.0 OR Apache-2.0) |
 | `fast-png` | 6.4.0 | MIT |
 | `fflate` | 0.8.3 | MIT |
 | `font-family-papandreou` | 0.2.0-patch2 | MIT |
@@ -323,7 +323,7 @@ qu'ils arrivent dans le `node_modules` du consommateur de notre fait.
 > OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 > WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#### `dompurify` 3.4.15 — (MPL-2.0 OR Apache-2.0)
+#### `dompurify` 3.4.17 — (MPL-2.0 OR Apache-2.0)
 
 > LICENSE:
 >
