@@ -1886,8 +1886,8 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "fbff8f6fa64246ac1db36ad46efc950d2b4b7aa345c52769f00d73159fc6fc51",
-      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory)"
+      "destinationSha256": "72f717b98edfc701b99a097e43592901935670269c14ab60ec5230de92a28f79",
+      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release"
     },
     {
       "repository": "dataviz",
