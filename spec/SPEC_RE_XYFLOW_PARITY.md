@@ -49,27 +49,46 @@ node tools/re-xyflow/verify.mjs      # independent guard, exit 1 on any disagree
   `node_modules/typescript`. It extracts transitive public exports
   (including `export async function`, multi-line `export {…} from` blocks
   and `export type * from`), members of `ReactFlowProps` /
-  `SvelteFlowProps` (plus the Svelte `NodeEvents` / `EdgeEvents` /
-  `PaneEvents` / `NodeSelectionEvents` intersections), 27 sub-component
-  prop types across React and Svelte (intersections and `Pick`/`Omit`
-  resolved, e.g. `ControlProps`, `HandleProps`, `ResizeControlProps`),
-  `ReactFlowInstance` and the `useSvelteFlow` return contract, store
-  fields and actions (`ReactFlowStore`, `ReactFlowActions`,
-  `SvelteFlowStoreActions`), change variants, model fields (`NodeBase`,
-  `EdgeBase` plus the React `Node`/`Edge` extensions), eight enums, edge
-  path functions and the five built-in edge types, 26 anchored
-  interaction behaviours, and the example scenarios
-  (`examples/react/src/examples`, `examples/svelte/src/routes/examples`).
+  `SvelteFlowProps` (the Svelte shape already intersects `NodeEvents` /
+  `EdgeEvents` / `PaneEvents` / `NodeSelectionEvents`, so those handlers
+  are yielded once), 41 sub-component prop types across React and Svelte
+  plus the inline React `ViewportPortal` children prop (intersections and
+  `Pick`/`Omit` resolved, e.g. `ControlProps`, `HandleProps`,
+  `ResizeControlProps`), `ReactFlowInstance` and the `useSvelteFlow`
+  return contract, store fields and actions (`ReactFlowStore`,
+  `ReactFlowActions`, `SvelteFlowStoreActions`,
+  `SvelteFlowStoreState`), change variants, model fields (`NodeBase`,
+  `EdgeBase` plus the React `Node`/`Edge` extensions and the Svelte-only
+  `class` names), eight enums, edge path functions and the five built-in
+  edge types, 26 anchored interaction behaviours, and the example
+  scenarios (`examples/react/src/examples`,
+  `examples/svelte/src/routes/examples`).
 - `verify.mjs` (guard) is **syntactic and independently written**: a
   `ts.createSourceFile` AST walk (export graph, type-literal /
   intersection / conditional / `Pick`/`Omit` expansion, enum members,
-  directory walk) that shares no code with `enumerate.mjs`. It fails on
-  any element present in one enumeration and absent from the other, and
-  lists both directions. It also enforces proof discipline (below). The
+  directory walk) that shares no enumeration table, constant or helper
+  with `enumerate.mjs`. Each family is re-derived from the sources by a
+  different route: public names from the syntactic export graph, flow
+  props from every `*FlowProps` shape, sub-component props from every
+  `*Props` shape in a component/plugin/`types` module whose component is
+  on the public surface, hooks from the barrel names, the instance
+  contract from the exported `*Instance` shape and the Svelte hook
+  return shape, store slices from the store modules and the Svelte
+  store class body, change names from the changes module, document
+  bases by following the framework node/edge shapes to their base
+  reference, enums from every enum declaration, path functions from
+  the edge-utils/component files, built-in edge types from the
+  `builtinEdgeTypes` object literal, interactions from the normative
+  catalogue table below, and examples from the example directories.
+  It compares the two enumerations in both directions and, for every
+  shared key, the inventory `source` path:line against the syntactic
+  candidate set and the signature detail carried by the inventory
+  `behaviour` text. It also enforces proof discipline (below). The
   earlier guard, which compared two counters written by the same
   `add()` call, was a tautology and has been removed; a tamper test
-  (one entry deleted, one invented) makes the new guard fail in both
-  directions, and the restored inventory passes again.
+  (one entry deleted, one invented, one source line moved) makes the
+  new guard fail in each direction, and the restored inventory passes
+  again.
 
 Scope convention for members: only members **declared inside the xyflow
 tree** count. Generic DOM expansions (`HTMLAttributes`,
@@ -79,18 +98,18 @@ exports include the re-exported `@xyflow/system` surface of each entry
 module; that overlap is part of each package's public import surface
 and is counted per package.
 
-Observed output after the Gemini correction round (this worktree):
+Observed output after the second Gemini correction round (this worktree):
 
 ```text
-enumerated=1598 entries=1598
-byFamily {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":249,"props-components":291,"hooks":34,"instance":57,"store":127,"changes":12,"model":84,"edge-geometry":11,"interaction":26,"examples":93}
-byStatus {"missing":1495,"excluded":3,"partial":100}
-byTarget {"diagram-core":452,"graph":70,"nouveau module":296,"diagram-canvas":73,"composant DS":707}
-expected(AST)=1598 inventory=1598
-byFamily expected {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":249,"props-components":291,"hooks":34,"instance":57,"store":127,"changes":12,"model":84,"edge-geometry":11,"interaction":26,"examples":93}
-byFamily inventory {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":249,"props-components":291,"hooks":34,"instance":57,"store":127,"changes":12,"model":84,"edge-geometry":11,"interaction":26,"examples":93}
-byStatus {"missing":1495,"excluded":3,"partial":100}
-GUARD PASS: 100% of the independently enumerated surface has an inventory entry and every inventory entry resolves in the sources; ids unique; sources resolve; proof discipline holds.
+enumerated=1885 entries=1885
+byFamily {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":233,"props-components":497,"hooks":34,"instance":57,"store":222,"changes":12,"model":86,"edge-geometry":11,"interaction":26,"examples":93}
+byStatus {"missing":1782,"excluded":3,"partial":100}
+byTarget {"diagram-core":448,"graph":70,"nouveau module":387,"diagram-canvas":82,"composant DS":898}
+expected(AST)=1885 inventory=1885
+byFamily expected {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":233,"props-components":497,"hooks":34,"instance":57,"store":222,"changes":12,"model":86,"edge-geometry":11,"examples":93,"interaction":26}
+byFamily inventory {"api-system":241,"api-react":210,"api-svelte":163,"props-flow":233,"props-components":497,"hooks":34,"instance":57,"store":222,"changes":12,"model":86,"edge-geometry":11,"interaction":26,"examples":93}
+byStatus {"missing":1782,"excluded":3,"partial":100}
+GUARD PASS: 100% of the independently enumerated surface has an inventory entry and every inventory entry resolves in the sources; source files/lines and signature details match the syntactic derivation; ids unique; proof discipline holds.
 ```
 
 "100 %" in this spec means exactly this guard passing: every element of
@@ -102,7 +121,7 @@ enumeration completeness, never about implementation parity (see
 Counting convention (stated with every figure in this spec): one entry per
 enumerated observable per family. Families overlap by design (a hook is one
 entry in `api-react` as an export and one in `hooks` as a hook contract), so
-1598 is a sum over families, not a count of unique names. Every inventory
+1885 is a sum over families, not a count of unique names. Every inventory
 entry in `docs/re/xyflow-inventory.json` carries: stable `id`, `family`,
 `name`, `source` (path:line in the xyflow tree), `behaviour` (observable
 input → output / interaction → effect, with the full type signature and
@@ -124,11 +143,48 @@ Status semantics are strict:
   `packages/graph/src`, `packages/diagram-core/src`, `packages/diagram-canvas/src`
   at generation time. `proof` is `null` by rule: a missing capability has
   no location, and no fabricated location may stand in for one.
-  Count: **1495**.
+  Count: **1782**.
 - `excluded` — enumerated, deliberately not ported as-is, with the reason
   recorded in `coverageNote`. `proof` is `null`. Count: **3** (the
   D3-coupled aliases `D3ZoomInstance`, `D3SelectionInstance`,
   `D3ZoomHandler`; see §6 and the annex).
+
+Interaction catalogue (normative). The 26 interaction behaviours are
+specification-defined gestures, not type members; this table is their
+normative list. Each row cites the xyflow engine file that anchors the
+behaviour (the inventory entry cites the anchor line in that file). The
+guard derives its interaction expectation from this table, while the
+primary extractor enumerates the same slugs from its anchored catalogue
+in code; a drift between the two fails the guard.
+
+| Slug | Anchor file |
+|---|---|
+| `pan-by-drag` | `packages/system/src/xypanzoom/XYPanZoom.ts` |
+| `pan-on-scroll` | `packages/system/src/xypanzoom/eventhandler.ts` |
+| `zoom-on-scroll-and-pinch` | `packages/system/src/xypanzoom/XYPanZoom.ts` |
+| `zoom-on-double-click` | `packages/system/src/xypanzoom/XYPanZoom.ts` |
+| `node-drag` | `packages/system/src/xydrag/XYDrag.ts` |
+| `multi-node-drag` | `packages/system/src/xydrag/XYDrag.ts` |
+| `snap-to-grid` | `packages/system/src/xydrag/utils.ts` |
+| `selection-rectangle` | `packages/react/src/container/Pane/index.tsx` |
+| `multi-selection-keys` | `packages/react/src/hooks/useGlobalKeyHandler.ts` |
+| `connection-drag` | `packages/system/src/xyhandle/XYHandle.ts` |
+| `click-to-connect` | `packages/react/src/components/Handle/index.tsx` |
+| `connection-validation` | `packages/system/src/xyhandle/utils.ts` |
+| `edge-reconnect` | `packages/react/src/components/EdgeWrapper/index.tsx` |
+| `node-resize` | `packages/system/src/xyresizer/XYResizer.ts` |
+| `parent-and-subflow` | `packages/system/src/utils/graph.ts` |
+| `extent-clamping` | `packages/system/src/utils/graph.ts` |
+| `auto-pan-on-drag` | `packages/system/src/xydrag/XYDrag.ts` |
+| `keyboard-move-and-delete` | `packages/react/src/hooks/useGlobalKeyHandler.ts` |
+| `keyboard-focus-and-a11y` | `packages/react/src/components/A11yDescriptions/index.tsx` |
+| `only-render-visible-elements` | `packages/react/src/hooks/useVisibleNodeIds.ts` |
+| `minimap-pan-zoom` | `packages/system/src/xyminimap/index.ts` |
+| `controls-buttons` | `packages/react/src/additional-components/Controls/Controls.tsx` |
+| `fit-view-on-init` | `packages/system/src/utils/graph.ts` |
+| `elevate-on-select-zindex` | `packages/react/src/store/initialState.ts` |
+| `color-mode` | `packages/react/src/hooks/useColorModeClass.ts` |
+| `hidden-and-visibility` | `packages/system/src/types/nodes.ts` |
 
 ## 3. Inventory summary by family
 
@@ -137,25 +193,25 @@ Status semantics are strict:
 | api-system | 241 | 0 | 21 | 217 | 3 | diagram-core |
 | api-react | 210 | 0 | 14 | 196 | 0 | diagram-core (re-exports) / composant DS |
 | api-svelte | 163 | 0 | 10 | 153 | 0 | diagram-core (re-exports) / composant DS |
-| props-flow | 249 | 0 | 0 | 249 | 0 | composant DS |
-| props-components | 291 | 0 | 0 | 291 | 0 | composant DS |
+| props-flow | 233 | 0 | 0 | 233 | 0 | composant DS |
+| props-components | 497 | 0 | 0 | 497 | 0 | composant DS |
 | hooks | 34 | 0 | 0 | 34 | 0 | composant DS |
 | instance | 57 | 0 | 28 | 29 | 0 | diagram-canvas / nouveau module |
-| store | 127 | 0 | 0 | 127 | 0 | nouveau module |
+| store | 222 | 0 | 0 | 222 | 0 | nouveau module |
 | changes | 12 | 0 | 12 | 0 | 0 | diagram-core |
-| model | 84 | 0 | 10 | 74 | 0 | nouveau module (transient) / diagram-core (identity) |
+| model | 86 | 0 | 10 | 76 | 0 | nouveau module (transient) / diagram-core (identity) |
 | edge-geometry | 11 | 0 | 2 | 9 | 0 | graph |
 | interaction | 26 | 0 | 3 | 23 | 0 | nouveau module |
 | examples | 93 | 0 | 0 | 93 | 0 | composant DS |
-| **Total** | **1598** | **0** | **100** | **1495** | **3** | — |
+| **Total** | **1885** | **0** | **100** | **1782** | **3** | — |
 
-By target: `composant DS` 707, `diagram-core` 452, `nouveau module` 296,
-`diagram-canvas` 73, `graph` 70. By priority: P0 208, P1 1297, P2 93.
+By target: `composant DS` 898, `diagram-core` 448, `nouveau module` 387,
+`diagram-canvas` 82, `graph` 70. By priority: P0 210, P1 1582, P2 93.
 `api-react` and `api-svelte` count each package's full import surface,
 including its re-exported `@xyflow/system` names; those re-exports keep
 the target of their nature (headless core, canvas maths, or graph
 geometry), and only components, hooks and framework wrappers target
-`composant DS`. 173 entries carry a documented default taken from the
+`composant DS`. 174 entries carry a documented default taken from the
 JSDoc `@default` of that same property (for example bezier `curvature`
 0.25 in
 `.ds-scrap/re-sources/xyflow/packages/system/src/utils/edges/bezier-edge.ts`);
@@ -369,14 +425,14 @@ Costs are judgements (T-shirt + person-week range), not measurements.
 | Lot | Covers (inventory) | Depends on | Gate (harness-proven `covered`) | Cost (judgement) |
 |---|---|---|---|---|
 | L0 Harness & fixtures | 0 entries; enables all gates | — | Reference + candidate runners execute the 93 example fixtures on L1+L2 drivers; compared outputs archived | M (2–4 pw) |
-| L1 Model & change protocol | model 84, changes 12 | L0 | ≥ 96/1598 (6 %) | M (3–5 pw) |
-| L2 Edge geometry & markers | edge-geometry 11 + edge entries in api-* (~35) | L1 | ≥ 140/1598 (9 %) | S–M (2–3 pw) |
-| L3 Pan-zoom & viewport core | pan/zoom gestures, instance viewport helpers (57 shared with L4), `onMove*` | L1 | ≥ 230/1598 (14 %) | L (5–7 pw) |
-| L4 Flow store & interaction engine (`flow-interaction`) | store 127, interaction 26 | L1, L3 | ≥ 380/1598 (24 %) | XL (8–12 pw) |
-| L5 Providers, flow shells, components + hooks (React, then Svelte) | props-flow 249, hooks 34, component exports; providers/shells land first inside the lot, hooks are gated after them | L4 | ≥ 720/1598 (45 %) | XL (10–14 pw) |
-| L6 Sub-components | props-components 291 (Controls, MiniMap, Background, Panel, NodeToolbar, NodeResizer, EdgeToolbar, Handle, labels) | L5 | ≥ 1010/1598 (63 %) | L (5–8 pw) |
-| L7 System utils parity | api-system / api-react / api-svelte remainder | L1, L2 | ≥ 1500/1598 (94 %) | M (3–5 pw) |
-| L8 Examples, a11y, hardening | examples 93 + remaining P1/P2 | L5, L6, L7 | 1598/1598 (100 %) | L (5–8 pw) |
+| L1 Model & change protocol | model 86, changes 12 | L0 | ≥ 98/1885 (5 %) | M (3–5 pw) |
+| L2 Edge geometry & markers | edge-geometry 11 + edge entries in api-* (~35) | L1 | ≥ 140/1885 (7 %) | S–M (2–3 pw) |
+| L3 Pan-zoom & viewport core | pan/zoom gestures, instance viewport helpers (57 shared with L4), `onMove*` | L1 | ≥ 230/1885 (12 %) | L (5–7 pw) |
+| L4 Flow store & interaction engine (`flow-interaction`) | store 222, interaction 26 | L1, L3 | ≥ 380/1885 (20 %) | XL (8–12 pw) |
+| L5 Providers, flow shells, components + hooks (React, then Svelte) | props-flow 233, hooks 34, component exports; providers/shells land first inside the lot, hooks are gated after them | L4 | ≥ 720/1885 (38 %) | XL (10–14 pw) |
+| L6 Sub-components | props-components 497 (Controls, MiniMap, Background, Panel, NodeToolbar, NodeResizer, EdgeToolbar, Handle, labels) | L5 | ≥ 1010/1885 (54 %) | L (5–8 pw) |
+| L7 System utils parity | api-system / api-react / api-svelte remainder | L1, L2 | ≥ 1500/1885 (80 %) | M (3–5 pw) |
+| L8 Examples, a11y, hardening | examples 93 + remaining P1/P2 | L5, L6, L7 | 1885/1885 (100 %) | L (5–8 pw) |
 
 Total judgement: ~43–66 person-weeks. The critical path is L0 → L1 → L3 →
 L4 → L5 → L8. Sequencing notes: the harness (L0) precedes every gate that
@@ -451,8 +507,9 @@ Unknowns (status `unknown`, to resolve before the named lot):
 Independent review: `.ds-scrap/re-reviews/xyflow-gemini-review.md`
 (verdict: à refaire). Every item was checked against the pinned sources
 before being applied. "Applied" means the inventory, the tooling or this
-spec now reflects the correction; counts below are the post-correction
-figures guarded in §2 (1598 entries).
+spec now reflects the correction; counts below are the first-round
+post-correction figures (1598 entries at that round, superseded by
+Annex B).
 
 Applied:
 
@@ -524,8 +581,8 @@ Applied:
     commands numerically at 1e-6, drives L2 by coordinates under a
     frozen clock, and records the D3 exclusions; §8 starts with the
     harness (L0), puts viewport (L3) before store/hooks, and
-    providers/shells before hook acceptance inside L5. Gates are
-    stated over 1598; total judgement is now ~43–66 person-weeks.
+    providers/shells before hook acceptance inside L5. Gates were
+    stated over 1598 at that round; total judgement is now ~43–66 person-weeks.
 
 Refused (with source proof):
 
@@ -554,3 +611,148 @@ Refused (with source proof):
   stay `missing` instead of becoming `partial` on that evidence.
 - The gate figure of 91 examples was not retained: the directories
   count 66 + 27 = 93, which is what the guard enumerates.
+
+## Annex B. Gemini review round 2: corrections applied / refused
+
+Independent review: `.ds-scrap/re-reviews/xyflow-gemini-review-r2.md`
+(verdict: fusionnable après corrections). Every item in its §4 list was
+checked against the pinned sources in `.ds-scrap/re-sources/xyflow`
+before being applied. Counts below are the post-correction figures
+guarded in §2 (1885 entries). The five first-round refusals were
+re-judged valid by the review and are not reopened here.
+
+Applied:
+
+1. Sixteen duplicated `SvelteFlow.on* (*Events)` entries in
+   `props-flow` removed. `SvelteFlowProps` already intersects
+   `NodeEvents`, `EdgeEvents`, `PaneEvents` and `NodeSelectionEvents`
+   (`packages/svelte/src/lib/container/SvelteFlow/types.ts`, the
+   intersection at the head of the shape), so the semantic expansion
+   yields each handler once. The redundant second loop is deleted on
+   the primary side and the syntactic guard derives the same handlers
+   from the `*FlowProps` shape alone. `props-flow` is now 233 entries
+   (was 249 with the duplicates).
+2. Value/type detection and type rendering in the public-export
+   extraction corrected. Value presence is now tested on the resolved
+   alias, and pure types are rendered from their declaration text (or
+   the declared type) instead of the value-space type, so no entry
+   carries `(type, any)`. Checked samples: `StepEdge`,
+   `useReactFlow` and `useStore` are `(value, ...)`; `Viewport` is
+   `(type, { x: number; y: number; zoom: number })`;
+   `SmoothStepEdgeProps` keeps its named alias text.
+3. All fixed-length signature truncations removed. Signatures are
+   rendered without truncation, so no behaviour text ends inside an
+   identifier (the `AdoptUs` / `}: St` artefacts are gone).
+4. The five `edgeType:*` sources corrected to their own component
+   file and line: `default (bezier)` to `BezierEdge.tsx`, `straight`
+   to `StraightEdge.tsx`, `step` to `StepEdge.tsx`, `smoothstep` to
+   `SmoothStepEdge.tsx`, `simplebezier` to `SimpleBezierEdge.tsx`,
+   each at its component definition, instead of the React barrel path
+   combined with the Bezier line.
+5. Missing observables completed, with the guard re-derived rather
+   than copied. In `store`, the Svelte store state is enumerated from
+   `SvelteFlowStoreState` (`packages/svelte/src/lib/store/types.ts`,
+   `ReturnType<typeof getInitialStore>` over the class in
+   `packages/svelte/src/lib/store/initial-store.svelte.ts`); the guard
+   re-derives the same slices from that class body. `store` is now
+   222 entries (105 React slices/actions, 22 Svelte actions, 95 Svelte
+   state slices). In `props-components`, the following are added:
+   `ReactFlowProviderProps` (14, `packages/react/src/components/ReactFlowProvider/index.tsx`),
+   `SvelteFlowProviderProps` (1, `packages/svelte/src/lib/components/SvelteFlowProvider/types.ts`),
+   `svelte:Panel` `PanelProps` (5, `packages/svelte/src/lib/container/Panel/types.ts`),
+   `svelte:BaseEdge` `BaseEdgeProps` (11, `packages/svelte/src/lib/types/edges.ts`),
+   React `EdgeLabelRendererProps` (1, `packages/react/src/components/EdgeLabelRenderer/index.tsx`),
+   the inline React `ViewportPortal` children prop
+   (`packages/react/src/components/ViewportPortal/index.tsx`, the
+   `{ children: ReactNode }` parameter, no named alias in the sources),
+   and the predefined edge-component props `BezierEdgeProps`,
+   `SmoothStepEdgeProps`, `StepEdgeProps`, `StraightEdgeProps`,
+   `SimpleBezierEdgeProps` on the React side and `BezierEdgeProps`,
+   `SmoothStepEdgeProps`, `StepEdgeProps`, `StraightEdgeProps` on the
+   Svelte side (`packages/react/src/types/edges.ts`,
+   `packages/svelte/src/lib/types/edges.ts`), including `pathOptions`.
+   `props-components` is now 497 entries. In `model`, the Svelte-only
+   names `svelte:Node.class` (`packages/svelte/src/lib/types/nodes.ts`,
+   `class?: ClassValue`) and `svelte:Edge.class`
+   (`packages/svelte/src/lib/types/edges.ts`, `class?: ClassValue`)
+   are added; `model` is now 86 entries. On the guard side, no
+   sub-component table is copied from the primary: `*Props` shapes are
+   discovered in component/plugin/`types` modules on the public
+   surface (see §2), so a future component forgotten by the primary
+   list would fail the guard in the missing direction.
+6. Target mapping adjusted: `zoom` joins the `diagram-canvas` rule so
+   `GetZoom`, `ZoomInOut` and `ZoomTo`
+   (`packages/system/src/types/general.ts`) align with their
+   `partial` proof in `diagram-canvas`, and `ViewportPortal*` is
+   matched as a DS component before the viewport rule, so
+   `ViewportPortalProps` targets `composant DS`.
+7. Inventory regenerated and spec counts updated: 1885 entries
+   (see §2/§3/§8). `missing` 1782, `partial` 100, `excluded` 3
+   (unchanged); documented defaults 174.
+
+Guard independence and comparison (applies across items 1, 5 and 7):
+the guard shares no enumeration table, whitelist, constant or helper
+function with the primary extractor (the primary component table,
+change list, model/enum lists, edge-type list and interaction list
+have no counterpart literal in the guard; each guard family is derived
+by the distinct routes listed in §2, and kind detection is scoped to
+the export-reachable files of the owning package so internal homonyms
+do not flip a public type). For every shared key the guard now also
+compares the inventory `source` path:line against the syntactic
+candidate set and the signature detail in the inventory `behaviour`
+text, not only identifiers. One primary citation was corrected to
+make that comparison exact: `ReactFlow` now cites its function
+definition (`packages/react/src/container/ReactFlow/index.tsx`, the
+`function ReactFlow` declaration) instead of the
+`export default fixedForwardRef(ReactFlow)` wrapper line in the same
+file. Tamper evidence in this round: deleting one entry, inventing
+one entry, and moving one source line each make the guard fail
+(exit 1); the restored inventory passes (see §2).
+
+Refused (with source proof):
+
+- Per-member expansion of `ConnectionLineComponentProps` in
+  `props-components` is refused. That shape is the contract of a
+  caller-supplied component type,
+  `ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>`
+  (`packages/react/src/types/edges.ts:286`), not of a library-rendered
+  sub-component. The precedent in this inventory is uniform:
+  caller-component shapes (`NodeProps`, `EdgeProps`) are enumerated
+  once as public exports and are not expanded per member in
+  `props-components`; `ConnectionLineComponentProps`
+  (`packages/react/src/types/edges.ts:263`) and
+  `ConnectionLineComponent` are likewise already present as
+  `api-react` exports. The predefined edge-component props (previous
+  item) are applied because those components are rendered by the
+  library itself.
+- A distinct `svelte:Edge.interactionWidth` model field is refused.
+  The Svelte `Edge` shape (`packages/svelte/src/lib/types/edges.ts:19`,
+  the `EdgeBase & { ... }` intersection at lines 22-40) declares
+  `label`, `labelStyle`, `style`, `class` (`.../edges.ts:26`),
+  `focusable`, `ariaRole` and `domAttributes`, with no direct
+  `interactionWidth` member. `interactionWidth` is already counted
+  once as `EdgeBase.interactionWidth`
+  (`packages/system/src/types/edges.ts:42`) from the system shape it
+  is inherited through, so a Svelte-prefixed duplicate would
+  double-count one observable. The genuinely Svelte-only `class`
+  name is applied (previous item).
+- Three syntactic over-derivations are not added to the inventory;
+  the guard derivation was narrowed from the sources instead.
+  (a) The payload shapes declared next to the instance contract
+  (`packages/react/src/types/instance.ts:5` and
+  `packages/react/src/types/instance.ts:11`, whose members are
+  `nodes`, `edges`, `viewport`) are not instance methods; the
+  instance family is the exported `*Instance` shape
+  (`packages/react/src/types/instance.ts:251`) plus the Svelte hook
+  return. (b) Derived shapes that reuse node/edge fields by
+  `Omit`/`Pick` (the default-edge-options, fit-view options/params
+  and internal-node shapes in `packages/system/src/types/`) declare
+  no new document field; the document bases are the shapes the
+  framework node/edge shapes extend. (c) The Background dot/line
+  pattern helper shapes
+  (`packages/react/src/additional-components/Background/Patterns.tsx:5`
+  and `packages/react/src/additional-components/Background/Patterns.tsx:22`)
+  are declared inside the pattern implementation file, not in a
+  plugin `types` module, and their components are not on the public
+  surface; they are internal rendering helpers of `Background`, whose
+  own props are counted.
