@@ -11,6 +11,10 @@
  *     entry and every inventory entry corresponds to an AST-extracted item.
  *     Both directions are listed on failure, so an omission in either
  *     extractor fails the guard instead of being confirmed by construction;
+ *  1b. agreement: for every shared (family, key), the inventory `source.path`
+ *     and `detail` equal the AST extractor's source path and detail. A key
+ *     found by both extractors at different sources, or with different
+ *     details, fails the guard and names both values;
  *  2. schema: every entry carries id/family/source(path:line)/behaviour/
  *     acceptance/target/status/proof/priority with allowed vocabularies;
  *  3. sources: every source path exists and its line is inside the file;
@@ -25,7 +29,7 @@
  * Usage: node tools/re-bpmn-js/verify.mjs [path/to/inventory.json]
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { extractAstAll } from './extract-ast.mjs';
 
@@ -102,6 +106,28 @@ for (const k of seenKeys) {
 for (const k of onlyAst) failures.push(`ONLY-IN-AST (missing from inventory): ${k}`);
 for (const k of onlyInventory) failures.push(`ONLY-IN-INVENTORY (not found by AST extractor): ${k}`);
 
+// Agreement on source path and detail for every shared key. The AST
+// extractor reports absolute source files; the inventory reports them
+// relative to the repository root.
+const entryByKey = new Map();
+for (const e of entries) entryByKey.set(`${e.family}\0${e.key}`, e);
+let pathMismatches = 0;
+let detailMismatches = 0;
+for (const [k, astItem] of rawKeys) {
+  const entry = entryByKey.get(k);
+  if (!entry) continue;
+  const label = k.replace('\0', ' / ');
+  const astPath = relative(repoRoot, astItem.sourceAbs).split('\\').join('/');
+  if (entry.source.path !== astPath) {
+    pathMismatches++;
+    failures.push(`SOURCE-PATH-MISMATCH ${label}: inventory=${entry.source.path} ast=${astPath}`);
+  }
+  if ((entry.detail || '') !== (astItem.detail || '')) {
+    detailMismatches++;
+    failures.push(`DETAIL-MISMATCH ${label}: inventory=${JSON.stringify(entry.detail)} ast=${JSON.stringify(astItem.detail)}`);
+  }
+}
+
 // Summary consistency.
 const total = entries.length;
 if (inventory.summary && inventory.summary.total !== total) failures.push(`summary.total ${inventory.summary.total} != entries ${total}`);
@@ -113,11 +139,11 @@ for (const [family, items] of Object.entries(raw)) astByFamily[family] = items.l
 
 if (failures.length) {
   console.error(`COMPLETENESS GUARD: FAIL (${failures.length})`);
-  console.error(`entries=${total} astExtracted=${rawKeys.size} onlyInAst=${onlyAst.length} onlyInInventory=${onlyInventory.length}`);
+  console.error(`entries=${total} astExtracted=${rawKeys.size} onlyInAst=${onlyAst.length} onlyInInventory=${onlyInventory.length} pathMismatches=${pathMismatches} detailMismatches=${detailMismatches}`);
   for (const f of failures.slice(0, 200)) console.error(` - ${f}`);
   if (failures.length > 200) console.error(` - … and ${failures.length - 200} more`);
   process.exit(1);
 }
-console.log(`COMPLETENESS GUARD: PASS entries=${total} astExtracted=${rawKeys.size} bijection=exact`);
+console.log(`COMPLETENESS GUARD: PASS entries=${total} astExtracted=${rawKeys.size} bijection=exact sourcePath=exact detail=exact`);
 console.log('byFamily=' + JSON.stringify(byFamily));
 console.log('astByFamily=' + JSON.stringify(astByFamily));
