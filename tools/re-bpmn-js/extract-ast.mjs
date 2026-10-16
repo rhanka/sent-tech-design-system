@@ -1,763 +1,1204 @@
 #!/usr/bin/env node
 /**
- * extract-ast.mjs — SECOND, independent extractor for the bpmn-js / diagram-js
- * completeness guard. It shares no code and no import with enumerate.mjs:
- * enumerate.mjs is line/regex based, this module parses every source file
- * with the TypeScript compiler API (ts.createProgram over the pinned
- * checkouts, ts.createSourceFile fallback, AST visitors only — no regex
- * extraction) and enumerates the same families under the counting
- * conventions stated in SPEC_RE_BPMN_JS_PARITY.md section 3.1.
+ * extract-ast.mjs — second enumeration of the bpmn-js / diagram-js surface,
+ * used only by the completeness guard in verify.mjs.
  *
- * verify.mjs compares the inventory (produced by enumerate.mjs) against
- * THIS extraction. Any key present on one side and absent on the other is
- * printed and fails the guard, so an omission in either extractor is
- * visible instead of tautologically confirmed.
+ * Method: every library file is parsed once with the TypeScript compiler
+ * (a ts.Program over the pinned checkouts, per-file parsing as fallback)
+ * and each family is collected by walking syntax trees. The generator in
+ * enumerate.mjs works from line text instead; the two programs were
+ * written separately, read the pinned sources through different
+ * mechanisms, and derive their perimeters differently:
+ *  - library roots are located here through the `name` field of each
+ *    checkout's package.json, not through path construction;
+ *  - didi modules are recognised by the shape of their default export,
+ *    palette / context-pad / popup providers by the provider-registration
+ *    calls and entry methods they contain, and renderer maps by the
+ *    constructor that assigns `this.handlers`;
+ *  - the public-API perimeter is rebuilt from didi service registrations
+ *    (service name -> implementation file) plus the entry classes that
+ *    sit directly in each `lib/` root;
+ *  - moddle descriptors are found by scanning the moddle checkout for
+ *    JSON documents that declare `types`, taking each document's own
+ *    `prefix` as the key namespace;
+ *  - examples are recognised by the markdown heading of their README.
+ * Counting conventions are those of SPEC_RE_BPMN_JS_PARITY.md section 3.1.
  *
  * Usage (debugging): node tools/re-bpmn-js/extract-ast.mjs
- * Prints per-family counts and the sorted key lists as JSON.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const wtRoot = resolve(scriptDir, '..', '..');
+const ownDir = dirname(fileURLToPath(import.meta.url));
+const treeRoot = resolve(ownDir, '..', '..');
 
-function resolveSourcesRoot() {
-  const candidates = [
-    process.env.RE_SOURCES,
-    resolve(wtRoot, '..', '.ds-scrap', 're-sources'),
-    resolve(wtRoot, '.ds-scrap', 're-sources'),
-    resolve(scriptDir, '..', '..', '..', '.ds-scrap', 're-sources'),
-  ].filter(Boolean);
-  for (const c of candidates) {
-    if (existsSync(join(c, 'MANIFEST.md'))) return c;
+function checkoutDir() {
+  if (process.env.RE_SOURCES && existsSync(join(process.env.RE_SOURCES, 'MANIFEST.md'))) {
+    return resolve(process.env.RE_SOURCES);
   }
-  throw new Error(`re-sources not found; tried: ${candidates.join(', ')}`);
+  let cursor = treeRoot;
+  for (let depth = 0; depth < 6; depth++) {
+    const probe = join(cursor, '.ds-scrap', 're-sources');
+    if (existsSync(join(probe, 'MANIFEST.md'))) return probe;
+    const parent = dirname(cursor);
+    if (parent === cursor) break;
+    cursor = parent;
+  }
+  throw new Error('pinned sources (MANIFEST.md) not found above ' + treeRoot);
 }
 
-const sourcesRoot = resolveSourcesRoot();
-const bpmnRoot = join(sourcesRoot, 'bpmn-js');
-const diagramRoot = join(sourcesRoot, 'diagram-js');
-const moddleRoot = join(sourcesRoot, 'bpmn-moddle');
-const examplesRoot = join(sourcesRoot, 'bpmn-js-examples');
+const checkout = checkoutDir();
 
-function loadTypeScript() {
-  const require = createRequire(import.meta.url);
-  const candidates = [
-    process.env.RE_TYPESCRIPT,
-    resolve(wtRoot, '..', 'node_modules', 'typescript'),
-    resolve(wtRoot, 'node_modules', 'typescript'),
-    resolve(scriptDir, '..', '..', '..', 'node_modules', 'typescript'),
-  ].filter(Boolean);
-  for (const c of candidates) {
+function packageDir(wanted) {
+  for (const entry of readdirSync(checkout, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+    if (!entry.isDirectory()) continue;
+    const dir = join(checkout, entry.name);
+    const manifest = join(dir, 'package.json');
+    if (!existsSync(manifest)) continue;
     try {
-      if (existsSync(join(c, 'package.json'))) return require(c);
-    } catch { /* try next candidate */ }
+      if (JSON.parse(readFileSync(manifest, 'utf8')).name === wanted) return dir;
+    } catch { /* not a package root */ }
   }
-  throw new Error(`typescript package not found; tried: ${candidates.join(', ')}`);
+  throw new Error('checkout package not found: ' + wanted);
 }
 
-const ts = loadTypeScript();
+const libRoots = [
+  { tag: 'bpmn-js', home: packageDir('bpmn-js') },
+  { tag: 'diagram-js', home: packageDir('diagram-js') },
+];
+const moddleHome = packageDir('bpmn-moddle');
+const examplesHome = packageDir('bpmn-js-examples');
 
-// ------------------------------------------------------------ file access
-function walk(dir, pred) {
-  const out = [];
-  if (!existsSync(dir)) return out;
-  for (const name of readdirSync(dir).sort()) {
-    const p = join(dir, name);
-    const st = statSync(p);
-    if (st.isDirectory()) out.push(...walk(p, pred));
-    else if (!pred || pred(p)) out.push(p);
+function typescriptApi() {
+  const load = createRequire(import.meta.url);
+  let cursor = treeRoot;
+  for (let depth = 0; depth < 6; depth++) {
+    const candidate = join(cursor, 'node_modules', 'typescript');
+    if (existsSync(join(candidate, 'package.json'))) return load(candidate);
+    const parent = dirname(cursor);
+    if (parent === cursor) break;
+    cursor = parent;
   }
-  return out;
+  throw new Error('typescript package not found above ' + treeRoot);
 }
-function jsFiles(root) {
-  return walk(join(root, 'lib'), (p) => p.endsWith('.js'));
-}
-const allJsFiles = [...jsFiles(bpmnRoot), ...jsFiles(diagramRoot)].sort();
 
-// ------------------------------------------- TypeScript program + AST map
-const sourceFileByPath = new Map();
-(function buildAstMap() {
+const ts = typescriptApi();
+
+// ---------------------------------------------------------- syntax access
+function jsUnder(dir) {
+  const pending = [dir];
+  const found = [];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const full = join(current, entry.name);
+      if (entry.isDirectory()) pending.push(full);
+      else if (entry.isFile() && entry.name.endsWith('.js')) found.push(full);
+    }
+  }
+  return found.sort();
+}
+
+const libFiles = libRoots.flatMap(({ home }) => jsUnder(join(home, 'lib'))).sort();
+const parsedByFile = new Map();
+{
+  let programFiles = [];
   try {
-    const program = ts.createProgram(allJsFiles, {
-      allowJs: true,
-      checkJs: false,
-      noLib: true,
-      noResolve: true,
-      skipLibCheck: true,
-      target: ts.ScriptTarget.ES2022,
-      module: ts.ModuleKind.CommonJS,
+    const program = ts.createProgram(libFiles, {
+      allowJs: true, checkJs: false, noLib: true, noResolve: true,
+      skipLibCheck: true, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS,
     });
+    programFiles = program.getSourceFiles().map((f) => f.fileName);
     for (const sf of program.getSourceFiles()) {
-      if (allJsFiles.includes(sf.fileName)) sourceFileByPath.set(sf.fileName, sf);
+      if (libFiles.includes(sf.fileName)) parsedByFile.set(sf.fileName, sf);
     }
-  } catch { /* fall through to per-file parsing */ }
-  for (const f of allJsFiles) {
-    if (!sourceFileByPath.has(f)) {
-      sourceFileByPath.set(f, ts.createSourceFile(f, readFileSync(f, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS));
+  } catch { /* per-file parsing below covers every input */ }
+  for (const file of libFiles) {
+    if (!parsedByFile.has(file)) {
+      parsedByFile.set(file, ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS));
     }
   }
-})();
-
-function astOf(abs) {
-  return sourceFileByPath.get(abs);
+  void programFiles;
 }
-function lineOf(sf, node) {
+
+function treeOf(file) {
+  return parsedByFile.get(file);
+}
+function lineOfNode(sf, node) {
   return sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
 }
-function visit(node, cb) {
-  cb(node);
-  ts.forEachChild(node, (child) => visit(child, cb));
+function walkTree(root, action) {
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    action(node);
+    const children = [];
+    ts.forEachChild(node, (child) => { children.push(child); });
+    for (let i = children.length - 1; i >= 0; i--) stack.push(children[i]);
+  }
 }
-function propName(nameNode) {
+function literalText(node) {
+  return node && ts.isStringLiteral(node) ? node.text : null;
+}
+function keyText(nameNode) {
   if (!nameNode) return null;
   if (ts.isStringLiteral(nameNode) || ts.isNumericLiteral(nameNode)) return nameNode.text;
   if (ts.isIdentifier(nameNode)) return nameNode.text;
   return null;
 }
-function strVal(node) {
-  return node && ts.isStringLiteral(node) ? node.text : null;
-}
-function calleeName(node) {
+function memberLabel(node) {
   if (ts.isIdentifier(node)) return node.text;
   if (ts.isPropertyAccessExpression(node)) return node.name.text;
   return null;
 }
-function objectKeys(objLit, sf) {
+function entriesOf(objectLiteral, sf) {
   const out = [];
-  for (const p of objLit.properties) {
-    if (ts.isPropertyAssignment(p) || ts.isShorthandPropertyAssignment(p)) {
-      const k = propName(p.name);
-      if (k) out.push({ key: k, line: lineOf(sf, p) });
+  for (const prop of objectLiteral.properties) {
+    if (ts.isPropertyAssignment(prop) || ts.isShorthandPropertyAssignment(prop)) {
+      const key = keyText(prop.name);
+      if (key) out.push({ key, line: lineOfNode(sf, prop), node: prop });
     }
   }
   return out;
 }
-function relKey(label, root, abs) {
-  return `${label}:${relative(join(root, 'lib'), abs).split('\\').join('/')}`;
+function libTagOf(file) {
+  for (const { tag, home } of libRoots) {
+    if (file.startsWith(join(home, 'lib'))) return tag;
+  }
+  return 'bpmn-js';
 }
-function sortedItems(map) {
-  return [...map.entries()].map(([key, v]) => ({ key, ...v })).sort((a, b) => a.key.localeCompare(b.key));
+function ordered(found) {
+  return [...found.entries()]
+    .map(([key, value]) => ({ key, ...value }))
+    .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+}
+function fromLib(file) {
+  for (const { home } of libRoots) {
+    const lib = join(home, 'lib');
+    if (file.startsWith(lib)) return relative(lib, file).split('\\').join('/');
+  }
+  return basename(file);
 }
 
 // ------------------------------------------------------------- extractors
-function extractModules() {
+function collectModules() {
   const items = [];
-  for (const [label, root] of [['bpmn-js', bpmnRoot], ['diagram-js', diagramRoot]]) {
-    for (const f of walk(join(root, 'lib'), (p) => p.endsWith('index.js'))) {
-      const sf = astOf(f);
-      let line = 1;
-      const services = [];
-      if (sf) {
-        visit(sf, (n) => {
-          if (ts.isObjectLiteralExpression(n)) {
-            for (const k of objectKeys(n, sf)) {
-              // didi services are declared as `name: [ 'type', Impl ]`.
-            }
-            for (const p of n.properties) {
-              if (ts.isPropertyAssignment(p) && ts.isArrayLiteralExpression(p.initializer)) {
-                const k = propName(p.name);
-                if (k === '__init__') line = lineOf(sf, p);
-                else if (k && k !== '__depends__') services.push(k);
+  for (const file of libFiles) {
+    if (basename(file) !== 'index.js') continue;
+    const sf = treeOf(file);
+    if (!sf) continue;
+    let moduleObject = null;
+    walkTree(sf, (node) => {
+      if (ts.isExportAssignment(node) && ts.isObjectLiteralExpression(node.expression)) moduleObject = node.expression;
+    });
+    const services = [];
+    let startLine = 1;
+    if (moduleObject) {
+      for (const prop of moduleObject.properties) {
+        if (!ts.isPropertyAssignment(prop)) continue;
+        const name = keyText(prop.name);
+        if (!name) continue;
+        if (name === '__init__') startLine = lineOfNode(sf, prop);
+        if (name.startsWith('_')) continue;
+        if (ts.isArrayLiteralExpression(prop.initializer)) services.push(name);
+      }
+    }
+    items.push({
+      key: libTagOf(file) + ':' + fromLib(file),
+      sourceAbs: file,
+      line: startLine,
+      detail: services.length ? 'services: ' + services.join(', ') : 'didi module (no inline service map matched)',
+    });
+  }
+  return items;
+}
+
+function collectCommands() {
+  // Candidates carry a precedence rank so that handler-map definitions
+  // win over call sites, matching the inventory's source choice.
+  const candidates = [];
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
+        && ts.isPropertyAccessExpression(node.left) && node.left.name.text === 'getHandlers') {
+        walkTree(node.right, (inner) => {
+          if (ts.isReturnStatement(inner) && inner.expression && ts.isObjectLiteralExpression(inner.expression)) {
+            for (const entry of entriesOf(inner.expression, sf)) {
+              if (/^[a-z][\w.]*$/.test(entry.key) && (entry.key.includes('.') || entry.key === 'spaceTool')) {
+                candidates.push({ key: entry.key, file, line: entry.line, rank: 0 });
               }
             }
           }
         });
       }
-      items.push({
-        key: relKey(label, root, f), sourceAbs: f, line,
-        detail: services.length ? `services: ${services.join(', ')}` : 'didi module (no inline service map matched)',
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
+        && ts.isElementAccessExpression(node.left) && ts.isIdentifier(node.left.expression)
+        && node.left.expression.text === 'handlers') {
+        const value = literalText(node.left.argumentExpression);
+        if (value && /^[a-z]/.test(value)) candidates.push({ key: value, file, line: lineOfNode(sf, node), rank: 1 });
+      }
+      if (ts.isCallExpression(node)) {
+        const label = memberLabel(node.expression);
+        if ((label === 'registerHandler' || label === 'execute') && node.arguments.length) {
+          const value = literalText(node.arguments[0]);
+          if (value) candidates.push({ key: value, file, line: lineOfNode(sf, node), rank: 2 });
+        }
+      }
+    });
+  }
+  candidates.sort((a, b) => a.rank - b.rank);
+  const found = new Map();
+  for (const c of candidates) {
+    if (!found.has(c.key)) found.set(c.key, { sourceAbs: c.file, line: c.line });
+  }
+  return ordered(found).map((item) => ({ ...item, detail: 'CommandStack command id' }));
+}
+
+function collectRules() {
+  const found = new Map();
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node) || memberLabel(node.expression) !== 'addRule' || !node.arguments.length) return;
+      const first = node.arguments[0];
+      const single = literalText(first);
+      if (single && !found.has(single)) found.set(single, { sourceAbs: file, line: lineOfNode(sf, node) });
+      if (ts.isArrayLiteralExpression(first)) {
+        for (const element of first.elements) {
+          const value = literalText(element);
+          if (value && !found.has(value)) found.set(value, { sourceAbs: file, line: lineOfNode(sf, node) });
+        }
+      }
+    });
+  }
+  return ordered(found).map((item) => ({ ...item, detail: 'RuleProvider action (canExecute gate)' }));
+}
+
+function filesDeclaring(methodNames) {
+  const out = [];
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    let hit = false;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left)
+        && methodNames.includes(node.left.name.text)) hit = true;
+    });
+    if (hit) out.push(file);
+  }
+  return out;
+}
+function bagKeysIn(file, methodNames) {
+  const sf = treeOf(file);
+  const found = new Map();
+  if (!sf) return found;
+  walkTree(sf, (node) => {
+    const isTargetMethod = ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left)
+      && methodNames.includes(node.left.name.text);
+    if (!isTargetMethod) return;
+    walkTree(node.right, (inner) => {
+      if (ts.isCallExpression(inner) && memberLabel(inner.expression) === 'assign' && inner.arguments.length >= 2
+        && ts.isIdentifier(inner.arguments[0])
+        && ts.isObjectLiteralExpression(inner.arguments[1])) {
+        for (const entry of entriesOf(inner.arguments[1], sf)) {
+          if (!found.has(entry.key)) found.set(entry.key, { sourceAbs: file, line: entry.line });
+        }
+      }
+    });
+  });
+  return found;
+}
+
+function collectPalette() {
+  const items = [];
+  for (const file of filesDeclaring(['getPaletteEntries'])) {
+    for (const [key, value] of bagKeysIn(file, ['getPaletteEntries'])) {
+      items.push({ key, ...value, detail: 'Palette entry (group/className/title in source)' });
+    }
+  }
+  return items;
+}
+
+function collectContextPad() {
+  const found = new Map();
+  const methods = ['getContextPadEntries', 'getMultiElementContextPadEntries'];
+  for (const file of filesDeclaring(methods)) {
+    for (const [key, value] of bagKeysIn(file, methods)) {
+      if (!found.has(key)) found.set(key, value);
+    }
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left) && node.left.name.text === '_getEntries') {
+        walkTree(node.right, (inner) => {
+          if (ts.isReturnStatement(inner) && inner.expression && ts.isObjectLiteralExpression(inner.expression)) {
+            for (const entry of entriesOf(inner.expression, sf)) {
+              if (!found.has(entry.key)) found.set(entry.key, { sourceAbs: file, line: entry.line });
+            }
+          }
+        });
+      }
+    });
+  }
+  return ordered(found).map((item) => ({ ...item, detail: 'Context-pad entry key' }));
+}
+
+function collectReplaceMenu() {
+  const found = new Map();
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'replaceWith' && node.arguments.length) {
+        const id = literalText(node.arguments[0]);
+        if (!id) return;
+        let action = 'replace-with-' + id;
+        const extra = node.arguments[1];
+        if (extra && ts.isObjectLiteralExpression(extra)) {
+          for (const prop of extra.properties) {
+            if (ts.isPropertyAssignment(prop) && keyText(prop.name) === 'actionName') {
+              const value = literalText(prop.initializer);
+              if (value) action = value;
+            }
+          }
+        }
+        if (!found.has(action)) found.set(action, { sourceAbs: file, line: lineOfNode(sf, node) });
+      }
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text === 'SEQUENCE_FLOW' && node.initializer) {
+        walkTree(node.initializer, (inner) => {
+          if (ts.isPropertyAssignment(inner) && keyText(inner.name) === 'actionName') {
+            const value = literalText(inner.initializer);
+            if (value && !found.has(value)) found.set(value, { sourceAbs: file, line: lineOfNode(sf, inner) });
+          }
+        });
+      }
+    });
+  }
+  return ordered(found).map((item) => ({ ...item, detail: 'ReplaceOptions actionName (ReplaceMenuProvider entry)' }));
+}
+
+function receiverMentions(node, word) {
+  let text = '';
+  walkTree(node, (inner) => { if (ts.isIdentifier(inner)) text += inner.text + ' '; });
+  return text.includes(word);
+}
+function popupProviderFiles() {
+  const out = [];
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    let hit = false;
+    walkTree(sf, (node) => {
+      if (ts.isCallExpression(node) && memberLabel(node.expression) === 'registerProvider'
+        && ts.isPropertyAccessExpression(node.expression) && receiverMentions(node.expression.expression, 'popupMenu')) hit = true;
+    });
+    if (hit) out.push(file);
+  }
+  return out;
+}
+function collectPopupMenu() {
+  const found = new Map();
+  const note = (key, file, line, detail) => { if (key && !found.has(key)) found.set(key, { sourceAbs: file, line, detail }); };
+  const files = popupProviderFiles();
+  const registrations = [];
+  for (const file of files) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isCallExpression(node) && memberLabel(node.expression) === 'registerProvider' && node.arguments.length
+        && ts.isPropertyAccessExpression(node.expression) && receiverMentions(node.expression.expression, 'popupMenu')) {
+        const value = literalText(node.arguments[0]);
+        if (value) registrations.push({ id: value, sourceAbs: file, line: lineOfNode(sf, node) });
+      }
+    });
+  }
+  const tally = new Map();
+  for (const reg of registrations) tally.set(reg.id, (tally.get(reg.id) || 0) + 1);
+  for (const reg of registrations) {
+    const stem = basename(reg.sourceAbs).replace(/\.js$/, '');
+    note(tally.get(reg.id) > 1 ? reg.id + ' (' + stem + ')' : reg.id, reg.sourceAbs, reg.line, 'Popup-menu provider id');
+  }
+  for (const file of files) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left) && node.left.name.text.includes('HeaderEntries')) {
+        walkTree(node.right, (inner) => {
+          if (ts.isReturnStatement(inner) && inner.expression && ts.isObjectLiteralExpression(inner.expression)) {
+            for (const entry of entriesOf(inner.expression, sf)) note(entry.key, file, entry.line, 'Popup-menu header entry (ReplaceMenuProvider)');
+          }
+        });
+      }
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
+        && ts.isElementAccessExpression(node.left)
+        && ts.isBinaryExpression(node.left.argumentExpression)
+        && node.left.argumentExpression.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+        const prefix = literalText(node.left.argumentExpression.left);
+        const iterated = node.left.argumentExpression.right;
+        if (prefix && ts.isIdentifier(iterated)) {
+          walkTree(sf, (candidate) => {
+            if (ts.isCallExpression(candidate) && ts.isIdentifier(candidate.expression) && candidate.expression.text === 'forEach'
+              && candidate.arguments.length && ts.isIdentifier(candidate.arguments[0]) && candidate.arguments[0].text === iterated.text) {
+              void candidate;
+            }
+          });
+          // The iterated values live in the string array handed to forEach
+          // through the loop variable's origin: resolve the array variable
+          // whose elements the enclosing forEach consumes by name lookup.
+          let values = [];
+          walkTree(sf, (candidate) => {
+            if (ts.isVariableDeclaration(candidate) && candidate.initializer && ts.isArrayLiteralExpression(candidate.initializer)) {
+              const elements = candidate.initializer.elements.map((el) => literalText(el)).filter(Boolean);
+              if (elements.length >= 2 && candidate.name.getText(sf).length) {
+                // Keep the array that the _getEntries body actually iterates:
+                // it is referenced as the first forEach argument in that body.
+                void elements;
+              }
+            }
+          });
+          // Direct resolution: find forEach(<arrayVar>, ...) enclosing this
+          // assignment by scanning the file for that call shape.
+          walkTree(sf, (candidate) => {
+            if (ts.isCallExpression(candidate) && memberLabel(candidate.expression) === 'forEach' && candidate.arguments.length >= 1) {
+              const head = candidate.arguments[0];
+              // forEach imported helper is called as forEach(array, fn).
+              void head;
+            }
+          });
+          void values;
+        }
+      }
+    });
+    // Align entries: '<prefix>' + <loop value> over each string-array
+    // variable consumed by a forEach inside the entry builder.
+    const arraysByName = new Map();
+    walkTree(sf, (node) => {
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer && ts.isArrayLiteralExpression(node.initializer)) {
+        arraysByName.set(node.name.text, node.initializer.elements.map((el) => literalText(el)).filter(Boolean));
+      }
+    });
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node) || !ts.isIdentifier(node.expression) || node.expression.text !== 'forEach') return;
+      if (!node.arguments.length || !ts.isIdentifier(node.arguments[0])) return;
+      const values = arraysByName.get(node.arguments[0].text);
+      if (!values || !values.length) return;
+      walkTree(node, (inner) => {
+        if (ts.isBinaryExpression(inner) && inner.operatorToken.kind === ts.SyntaxKind.EqualsToken
+          && ts.isElementAccessExpression(inner.left) && ts.isBinaryExpression(inner.left.argumentExpression)) {
+          const prefix = literalText(inner.left.argumentExpression.left);
+          if (prefix) for (const value of values) note(prefix + value, file, lineOfNode(sf, inner), 'Align-elements popup entry');
+        }
+      });
+    });
+    // Distribute entries: a returned entries object literal in the builder.
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left) && node.left.name.text === '_getEntries') {
+        walkTree(node.right, (inner) => {
+          if (ts.isVariableDeclaration(inner) && inner.initializer && ts.isObjectLiteralExpression(inner.initializer)) {
+            for (const entry of entriesOf(inner.initializer, sf)) {
+              if (entry.key.includes('distribute-elements-')) note(entry.key, file, entry.line, 'Distribute-elements popup entry');
+            }
+          }
+          if (ts.isReturnStatement(inner) && inner.expression && ts.isObjectLiteralExpression(inner.expression)) {
+            for (const entry of entriesOf(inner.expression, sf)) {
+              if (entry.key.includes('distribute-elements-')) note(entry.key, file, entry.line, 'Distribute-elements popup entry');
+            }
+          }
+        });
+      }
+    });
+  }
+  return ordered(found);
+}
+
+function serviceFileIndex() {
+  // service name -> implementation file, rebuilt from module objects:
+  // an export-assigned object whose properties pair a service name with
+  // an array holding the kind marker and an imported implementation.
+  const byServiceFile = new Map();
+  const byServiceName = new Map();
+  for (const file of libFiles) {
+    if (basename(file) !== 'index.js') continue;
+    const sf = treeOf(file);
+    if (!sf) continue;
+    const imported = new Map();
+    walkTree(sf, (node) => {
+      if (ts.isImportDeclaration(node) && node.importClause && node.importClause.name) {
+        imported.set(node.importClause.name.text, node.moduleSpecifier.text);
+      }
+    });
+    walkTree(sf, (node) => {
+      if (!ts.isExportAssignment(node) || !ts.isObjectLiteralExpression(node.expression)) return;
+      for (const prop of node.expression.properties) {
+        if (!ts.isPropertyAssignment(prop) || !ts.isArrayLiteralExpression(prop.initializer)) continue;
+        if (prop.initializer.elements.length < 2) continue;
+        if (literalText(prop.initializer.elements[0]) !== 'type') continue;
+        const implNode = prop.initializer.elements[1];
+        if (!ts.isIdentifier(implNode)) continue;
+        const spec = imported.get(implNode.text);
+        if (!spec) continue;
+        const implFile = resolveSpecifier(spec, file);
+        if (!implFile) continue;
+        const serviceName = keyText(prop.name);
+        byServiceFile.set(implFile, serviceName);
+        byServiceName.set(libTagOf(file) + ':' + implNode.text, implFile);
+      }
+    });
+  }
+  return { byServiceFile, byServiceName };
+}
+function resolveSpecifier(spec, fromFile) {
+  let base;
+  if (spec.startsWith('diagram-js/lib/')) {
+    const home = libRoots.find((r) => r.tag === 'diagram-js').home;
+    base = join(home, 'lib', spec.slice('diagram-js/lib/'.length));
+  } else if (spec.startsWith('bpmn-js/lib/')) {
+    const home = libRoots.find((r) => r.tag === 'bpmn-js').home;
+    base = join(home, 'lib', spec.slice('bpmn-js/lib/'.length));
+  } else {
+    base = resolve(dirname(fromFile), spec);
+  }
+  const hit = [base, base + '.js', join(base, 'index.js')]
+    .find((candidate) => existsSync(candidate) && statSync(candidate).isFile());
+  return hit || null;
+}
+
+function collectKeyboard() {
+  const found = new Map();
+  const note = (key, file, line, detail) => {
+    if (key && !found.has(key)) found.set(key, { sourceAbs: file, line, detail });
+  };
+  // Key groups declared as exported arrays, keyed by lowered suffix.
+  const groups = new Map();
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text.startsWith('KEYS_')
+        && node.initializer && ts.isArrayLiteralExpression(node.initializer)) {
+        const values = node.initializer.elements.map((el) => literalText(el)).filter(Boolean);
+        groups.set(node.name.text.slice('KEYS_'.length).toLowerCase(), { name: node.name.text, values });
+      }
+    });
+  }
+  // (1) Shortcut map: an exported binding table object.
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (!ts.isVariableDeclaration(node) || !ts.isIdentifier(node.name)) return;
+      if (!node.name.text.includes('KEY_BINDINGS')) return;
+      if (!node.initializer || !ts.isObjectLiteralExpression(node.initializer)) return;
+      for (const entry of entriesOf(node.initializer, sf)) {
+        const binding = entry.node.initializer;
+        if (!binding || !ts.isObjectLiteralExpression(binding)) continue;
+        let keyValue = '';
+        let modifier = '';
+        for (const bp of binding.properties) {
+          if (!ts.isPropertyAssignment(bp)) continue;
+          if (keyText(bp.name) === 'key') keyValue = literalText(bp.initializer) || '';
+          if (keyText(bp.name) === 'modifier') modifier = literalText(bp.initializer) || '';
+        }
+        note(entry.key, file, entry.line, 'key ' + (modifier ? modifier + '+' : '') + keyValue);
+      }
+    });
+  }
+  // (2) Default bindings: calls to a local addListener helper whose
+  // first argument names the action; every call line is kept.
+  const listenerLines = new Map();
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node) || !ts.isIdentifier(node.expression)) return;
+      if (node.expression.text !== 'addListener' || !node.arguments.length) return;
+      const action = literalText(node.arguments[0]);
+      if (!action) return;
+      if (!listenerLines.has(action)) listenerLines.set(action, { file, lines: [] });
+      listenerLines.get(action).lines.push(lineOfNode(sf, node));
+    });
+  }
+  for (const [action, info] of listenerLines) {
+    let detail = info.lines.length > 1
+      ? 'diagram-js default binding (' + info.lines.length + ' listeners, lines ' + info.lines.join(', ') + ')'
+      : 'diagram-js default binding (guarded by editorActions.isRegistered)';
+    const group = groups.get(action);
+    if (group) detail += '; ' + group.name + ' = [' + group.values.join(', ') + ']';
+    note(action, info.file, info.lines[0], detail);
+  }
+  // (3) Registered editor actions, wherever a register call names one.
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node)) return;
+      const label = memberLabel(node.expression);
+      if (label !== 'register' && label !== '_registerAction') return;
+      if (!node.arguments.length) return;
+      const action = literalText(node.arguments[0]);
+      if (action) note(action, file, lineOfNode(sf, node), 'registered editor action');
+    });
+  }
+  // (4) Keys handled without an editor action: standalone isKey checks
+  // inside keyboard-event callbacks (or their local helpers). The key
+  // prefix is the didi service name of the owning implementation file.
+  const { byServiceFile } = serviceFileIndex();
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    const prefix = byServiceFile.get(file);
+    if (!prefix) continue;
+    const helpers = new Set();
+    const callbacks = [];
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node)) return;
+      const isListen = ts.isIdentifier(node.expression) && node.expression.text === 'listen'
+        && node.arguments.some((a) => literalText(a) === 'keydown' || literalText(a) === 'keyup');
+      const isKeyListener = ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === 'addListener';
+      if (!isListen && !isKeyListener) return;
+      for (const arg of node.arguments) {
+        if (ts.isFunctionExpression(arg) || ts.isArrowFunction(arg)) callbacks.push(arg);
+      }
+    });
+    for (const cb of callbacks) {
+      walkTree(cb, (node) => {
+        if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) helpers.add(node.expression.text);
       });
     }
-  }
-  return items;
-}
-
-function extractCommands() {
-  const found = new Map();
-  const add = (key, abs, line) => { if (key && !found.has(key)) found.set(key, { sourceAbs: abs, line }); };
-  for (const f of allJsFiles) {
-    const sf = astOf(f);
-    if (!sf) continue;
-    visit(sf, (n) => {
-      if (ts.isCallExpression(n)) {
-        const cn = calleeName(n.expression);
-        if ((cn === 'registerHandler' || cn === 'execute') && n.arguments.length) {
-          const v = strVal(n.arguments[0]);
-          if (v) add(v, f, lineOf(sf, n));
-        }
-      }
-      // Modeling.getHandlers only: returned object literal keys.
-      if (f.endsWith('features/modeling/Modeling.js') && ts.isReturnStatement(n) && n.expression && ts.isObjectLiteralExpression(n.expression)) {
-        for (const k of objectKeys(n.expression, sf)) {
-          if (/^[a-z][\w.]*$/.test(k.key) && (k.key.includes('.') || k.key === 'spaceTool')) add(k.key, f, k.line);
-        }
-      }
-      // handlers['x'] = ... assignments (bpmn-js Modeling only).
-      if (f.endsWith('features/modeling/Modeling.js') && ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken
-        && ts.isElementAccessExpression(n.left)) {
-        const v = strVal(n.left.argumentExpression);
-        if (v && /^[a-z]/.test(v)) add(v, f, lineOf(sf, n));
-      }
-    });
-  }
-  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'CommandStack command id' })).sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractRules() {
-  const found = new Map();
-  for (const f of allJsFiles) {
-    const sf = astOf(f);
-    if (!sf) continue;
-    visit(sf, (n) => {
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'addRule' && n.arguments.length) {
-        const a = n.arguments[0];
-        const single = strVal(a);
-        if (single && !found.has(single)) found.set(single, { sourceAbs: f, line: lineOf(sf, n) });
-        if (ts.isArrayLiteralExpression(a)) {
-          for (const el of a.elements) {
-            const v = strVal(el);
-            if (v && !found.has(v)) found.set(v, { sourceAbs: f, line: lineOf(sf, n) });
+    const scanIsKey = (root) => {
+      walkTree(root, (node) => {
+        if (!ts.isCallExpression(node) || !ts.isIdentifier(node.expression)) return;
+        if (node.expression.text !== 'isKey' || !node.arguments.length) return;
+        const first = node.arguments[0];
+        const single = literalText(first);
+        if (single) note(prefix + ':' + single, file, lineOfNode(sf, node), 'key handling without editor action (isKey)');
+        if (ts.isArrayLiteralExpression(first)) {
+          for (const el of first.elements) {
+            const value = literalText(el);
+            if (value) note(prefix + ':' + value, file, lineOfNode(sf, node), 'key handling without editor action (isKey)');
           }
         }
-      }
+      });
+    };
+    for (const cb of callbacks) scanIsKey(cb);
+    walkTree(sf, (node) => {
+      if (ts.isFunctionDeclaration(node) && node.name && helpers.has(node.name.text) && node.body) scanIsKey(node.body);
     });
   }
-  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'RuleProvider action (canExecute gate)' })).sort((a, b) => a.key.localeCompare(b.key));
+  return ordered(found);
 }
 
-function extractPalette() {
-  const f = join(bpmnRoot, 'lib/features/palette/PaletteProvider.js');
-  const sf = astOf(f);
-  const items = [];
-  if (sf) {
-    visit(sf, (n) => {
-      // Entries are composed as assign(actions, { 'key': entry, ... }).
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'assign' && n.arguments.length >= 2
-        && ts.isIdentifier(n.arguments[0]) && n.arguments[0].text === 'actions'
-        && ts.isObjectLiteralExpression(n.arguments[1])) {
-        for (const k of objectKeys(n.arguments[1], sf)) {
-          if (!items.some((x) => x.key === k.key)) items.push({ key: k.key, sourceAbs: f, line: k.line, detail: 'Palette entry (group/className/title in source)' });
-        }
-      }
-    });
-  }
-  return items;
-}
-
-function extractContextPad() {
+function collectEvents() {
   const found = new Map();
-  const collectFrom = (f) => {
-    const sf = astOf(f);
-    if (!sf) return;
-    visit(sf, (n) => {
-      // assign(actions, { 'key': {...} }) entry literals (target must be the entries bag).
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'assign' && n.arguments.length >= 2
-        && ts.isIdentifier(n.arguments[0]) && (n.arguments[0].text === 'actions' || n.arguments[0].text === 'entries')
-        && ts.isObjectLiteralExpression(n.arguments[1])) {
-        for (const k of objectKeys(n.arguments[1], sf)) {
-          if (!found.has(k.key)) found.set(k.key, { sourceAbs: f, line: k.line });
-        }
-      }
-      // Returned entry literals (deleteAction helper, align _getEntries).
-      if (ts.isReturnStatement(n) && n.expression && ts.isObjectLiteralExpression(n.expression)) {
-        for (const k of objectKeys(n.expression, sf)) {
-          if (/^(append\.|connect|delete|replace|lane-|align-elements)/.test(k.key) && !found.has(k.key)) {
-            found.set(k.key, { sourceAbs: f, line: k.line });
-          }
-        }
-      }
-    });
+  const deferredTables = [];
+  const deferredBare = [];
+  const note = (name, file, line) => {
+    if (name && !found.has(name)) found.set(name, { sourceAbs: file, line });
   };
-  collectFrom(join(bpmnRoot, 'lib/features/context-pad/ContextPadProvider.js'));
-  collectFrom(join(bpmnRoot, 'lib/features/align-elements/AlignElementsContextPadProvider.js'));
-  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'Context-pad entry key' })).sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractReplaceMenu() {
-  const f = join(bpmnRoot, 'lib/features/replace/ReplaceOptions.js');
-  const sf = astOf(f);
-  const found = new Map();
-  if (sf) {
-    visit(sf, (n) => {
-      // replaceWith('id' [, { actionName: 'x' }]) -> offered replace option.
-      if (ts.isCallExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'replaceWith' && n.arguments.length) {
-        const id = strVal(n.arguments[0]);
-        if (!id) return;
-        let action = `replace-with-${id}`;
-        const extra = n.arguments[1];
-        if (extra && ts.isObjectLiteralExpression(extra)) {
-          for (const p of extra.properties) {
-            if (ts.isPropertyAssignment(p) && propName(p.name) === 'actionName') {
-              const v = strVal(p.initializer);
-              if (v) action = v;
-            }
-          }
-        }
-        if (!found.has(action)) found.set(action, { sourceAbs: f, line: lineOf(sf, n) });
-      }
-      // SEQUENCE_FLOW literal options carry their actionName directly.
-      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.name.text === 'SEQUENCE_FLOW' && n.initializer) {
-        visit(n.initializer, (m) => {
-          if (ts.isPropertyAssignment(m) && propName(m.name) === 'actionName') {
-            const v = strVal(m.initializer);
-            if (v && !found.has(v)) found.set(v, { sourceAbs: f, line: lineOf(sf, m) });
-          }
-        });
-      }
-    });
-  }
-  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'ReplaceOptions actionName (ReplaceMenuProvider entry)' })).sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractPopupMenu() {
-  const found = new Map();
-  const add = (key, abs, line, detail) => { if (key && !found.has(key)) found.set(key, { sourceAbs: abs, line, detail }); };
-  const providerFiles = [
-    join(bpmnRoot, 'lib/features/popup-menu/ReplaceMenuProvider.js'),
-    join(bpmnRoot, 'lib/features/align-elements/AlignElementsMenuProvider.js'),
-    join(bpmnRoot, 'lib/features/distribute-elements/DistributeElementsMenuProvider.js'),
-  ];
-  // Provider registrations, disambiguated by file when an id repeats.
-  const regs = [];
-  for (const f of providerFiles) {
-    const sf = astOf(f);
+  for (const file of libFiles) {
+    const sf = treeOf(file);
     if (!sf) continue;
-    visit(sf, (n) => {
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'registerProvider' && n.arguments.length) {
-        const v = strVal(n.arguments[0]);
-        if (v) regs.push({ id: v, sourceAbs: f, line: lineOf(sf, n) });
+    // Per-file string and string-array constants.
+    const constText = new Map();
+    const constList = new Map();
+    walkTree(sf, (node) => {
+      if (!ts.isVariableDeclaration(node) || !ts.isIdentifier(node.name) || !node.initializer) return;
+      const single = literalText(node.initializer);
+      if (single) constText.set(node.name.text, single);
+      if (ts.isArrayLiteralExpression(node.initializer)) {
+        constList.set(node.name.text, node.initializer.elements.map((el) => literalText(el)).filter(Boolean));
       }
     });
-  }
-  const idCount = {};
-  for (const r of regs) idCount[r.id] = (idCount[r.id] || 0) + 1;
-  for (const r of regs) {
-    const stem = r.sourceAbs.split('/').pop().replace(/\.js$/, '');
-    const key = idCount[r.id] > 1 ? `${r.id} (${stem})` : r.id;
-    add(key, r.sourceAbs, r.line, 'Popup-menu provider id');
-  }
-  // Header toggles returned by the ReplaceMenuProvider header helpers.
-  const rmp = providerFiles[0];
-  const rmpSf = astOf(rmp);
-  if (rmpSf) {
-    visit(rmpSf, (n) => {
-      if (ts.isReturnStatement(n) && n.expression && ts.isObjectLiteralExpression(n.expression)) {
-        for (const k of objectKeys(n.expression, rmpSf)) {
-          if (k.key.startsWith('toggle-')) add(k.key, rmp, k.line, 'Popup-menu header entry (ReplaceMenuProvider)');
-        }
-      }
-    });
-  }
-  // Align entries: 'align-elements-' + each ALIGNMENT_OPTIONS value.
-  const amp = providerFiles[1];
-  const ampSf = astOf(amp);
-  if (ampSf) {
-    visit(ampSf, (n) => {
-      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.name.text === 'ALIGNMENT_OPTIONS'
-        && n.initializer && ts.isArrayLiteralExpression(n.initializer)) {
-        for (const el of n.initializer.elements) {
-          const v = strVal(el);
-          if (v) add(`align-elements-${v}`, amp, lineOf(ampSf, el), 'Align-elements popup entry');
-        }
-      }
-    });
-  }
-  // Distribute entries composed in DistributeElementsMenuProvider (`var entries = {...}`).
-  const dmp = providerFiles[2];
-  const dmpSf = astOf(dmp);
-  if (dmpSf) {
-    visit(dmpSf, (n) => {
-      if (ts.isReturnStatement(n) && n.expression && ts.isObjectLiteralExpression(n.expression)) {
-        for (const k of objectKeys(n.expression, dmpSf)) {
-          if (k.key.startsWith('distribute-elements-')) add(k.key, dmp, k.line, 'Distribute-elements popup entry');
-        }
-      }
-      if (ts.isVariableDeclaration(n) && n.initializer && ts.isObjectLiteralExpression(n.initializer)) {
-        for (const k of objectKeys(n.initializer, dmpSf)) {
-          if (k.key.startsWith('distribute-elements-')) add(k.key, dmp, k.line, 'Distribute-elements popup entry');
-        }
-      }
-    });
-  }
-  return [...found.entries()].map(([key, v]) => ({ key, ...v })).sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractKeyboard() {
-  const items = [];
-  const seen = new Set();
-  const push = (key, abs, line, detail) => { if (key && !seen.has(key)) { seen.add(key); items.push({ key, sourceAbs: abs, line, detail }); } };
-  const bf = join(bpmnRoot, 'lib/features/keyboard/BpmnKeyboardBindings.js');
-  const bfSf = astOf(bf);
-  if (bfSf) {
-    visit(bfSf, (n) => {
-      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && n.name.text === 'SHORTCUTS_KEY_BINDINGS'
-        && n.initializer && ts.isObjectLiteralExpression(n.initializer)) {
-        for (const k of objectKeys(n.initializer, bfSf)) push(k.key, bf, k.line, 'bpmn-js shortcut binding');
-      }
-    });
-  }
-  const df = join(diagramRoot, 'lib/features/keyboard/KeyboardBindings.js');
-  const dfSf = astOf(df);
-  const listenerLines = new Map();
-  if (dfSf) {
-    visit(dfSf, (n) => {
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'addListener' && n.arguments.length) {
-        const v = strVal(n.arguments[0]);
-        if (v) {
-          if (!listenerLines.has(v)) listenerLines.set(v, []);
-          listenerLines.get(v).push(lineOf(dfSf, n));
-        }
-      }
-    });
-  }
-  for (const [action, lines] of listenerLines) {
-    push(action, df, lines[0], lines.length > 1 ? `diagram-js default binding (${lines.length} listeners, lines ${lines.join(', ')})` : 'diagram-js default binding (guarded by editorActions.isRegistered)');
-  }
-  // Every registered editor action (bpmn-js _registerAction, diagram-js register).
-  for (const f of [join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), join(diagramRoot, 'lib/features/editor-actions/EditorActions.js')]) {
-    const sf = astOf(f);
-    if (!sf) continue;
-    visit(sf, (n) => {
-      if (ts.isCallExpression(n)) {
-        const cn = calleeName(n.expression);
-        if ((cn === '_registerAction' || cn === 'register') && n.arguments.length) {
-          const v = strVal(n.arguments[0]);
-          if (v) push(v, f, lineOf(sf, n), 'registered editor action');
-        }
-      }
-    });
-  }
-  // Search-pad keys handled inside the pad (no editor action).
-  const sp = join(diagramRoot, 'lib/features/search-pad/SearchPad.js');
-  const spSf = astOf(sp);
-  if (spSf) {
-    visit(spSf, (n) => {
-      if (ts.isCallExpression(n) && calleeName(n.expression) === 'isKey' && n.arguments.length) {
-        const v = strVal(n.arguments[0]);
-        if (v && ['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(v)) push(`searchPad:${v}`, sp, lineOf(spSf, n), 'search-pad key handling');
-      }
-    });
-  }
-  const ku = join(diagramRoot, 'lib/features/keyboard/KeyboardUtil.js');
-  const kuSf = astOf(ku);
-  if (kuSf) {
-    visit(kuSf, (n) => {
-      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name) && /^(KEYS_|KEY_)/.test(n.name.text)) {
-        push(n.name.text, ku, lineOf(kuSf, n), 'key-group constant');
-      }
-    });
-  }
-  return items;
-}
-
-function extractEvents() {
-  const found = new Map();
-  const add = (name, abs, line) => { if (name && !found.has(name)) found.set(name, { sourceAbs: abs, line }); };
-  for (const f of allJsFiles) {
-    const sf = astOf(f);
-    if (!sf) continue;
-    visit(sf, (n) => {
-      if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression)) {
-        const cn = n.expression.name.text;
-        if ((cn === 'fire' || cn === 'on') && n.arguments.length) {
-          const a = n.arguments[0];
-          const v = strVal(a);
-          if (v) add(v, f, lineOf(sf, n));
-          if (ts.isArrayLiteralExpression(a)) {
-            for (const el of a.elements) {
-              const s = strVal(el);
-              if (s) add(s, f, lineOf(sf, n));
-            }
-          }
-          if (ts.isBinaryExpression(a) && a.operatorToken.kind === ts.SyntaxKind.PlusToken) {
-            const left = strVal(a.left);
-            if (left && left.endsWith('.')) add(left, f, lineOf(sf, n));
-          }
-        }
-      }
-    });
-  }
-  // InteractionEvents: DOM name -> EventBus name table values.
-  const ie = join(diagramRoot, 'lib/features/interaction-events/InteractionEvents.js');
-  const ieSf = astOf(ie);
-  if (ieSf) {
-    visit(ieSf, (n) => {
-      if (ts.isObjectLiteralExpression(n)) {
-        for (const p of n.properties) {
-          if (ts.isPropertyAssignment(p)) {
-            const v = strVal(p.initializer);
-            if (v && v.startsWith('element.')) add(v, ie, lineOf(ieSf, p));
-          }
-        }
-      }
-    });
-  }
-  // CommandStack lifecycle: _fire('changed') and _fire(command, 'qualifier').
-  const cs = join(diagramRoot, 'lib/command/CommandStack.js');
-  const csSf = astOf(cs);
-  if (csSf) {
-    visit(csSf, (n) => {
-      if (ts.isCallExpression(n) && calleeName(n.expression) === '_fire' && n.arguments.length) {
-        if (n.arguments.length >= 3 || (n.arguments.length === 2 && strVal(n.arguments[0]) === 'changed')) {
-          const q = strVal(n.arguments[n.arguments.length >= 3 ? 1 : 0]);
-          if (q) add(`commandStack.${q}`, cs, lineOf(csSf, n));
-        }
-        if (n.arguments.length >= 2) {
-          const q = strVal(n.arguments[1]);
-          if (q && n.arguments.length >= 2 && strVal(n.arguments[0]) !== 'changed') add(`commandStack.${q}`, cs, lineOf(csSf, n));
-        }
-      }
-    });
-  }
-  // Dragging helper: fire('type') -> drag.<type> (plus prefixed variants at runtime).
-  const dg = join(diagramRoot, 'lib/features/dragging/Dragging.js');
-  const dgSf = astOf(dg);
-  if (dgSf) {
-    visit(dgSf, (n) => {
-      if (ts.isCallExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'fire' && n.arguments.length) {
-        const v = strVal(n.arguments[0]);
-        if (v) add(`drag.${v}`, dg, lineOf(dgSf, n));
-      }
-    });
-  }
-  return [...found.entries()]
-    .map(([key, v]) => ({ key, ...v, detail: key.endsWith('.') ? 'dynamic prefix (concrete names built at runtime)' : 'EventBus event name', dynamicPrefix: key.endsWith('.') }))
-    .sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractConfig() {
-  const items = [];
-  const seen = new Set();
-  const push = (key, abs, line, detail) => { if (key && !seen.has(key)) { seen.add(key); items.push({ key, sourceAbs: abs, line, detail }); } };
-  // BaseViewerOptions typedef fields + options.* reads in BaseViewer.
-  const bv = join(bpmnRoot, 'lib/BaseViewer.js');
-  const bvSf = astOf(bv);
-  if (bvSf) {
-    visit(bvSf, (n) => {
-      if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'options') {
-        push(`viewer.${n.name.text}`, bv, lineOf(bvSf, n), 'options read in BaseViewer');
-      }
-    });
-    visit(bvSf, (n) => {
-      const docs = n.jsDoc;
-      if (!docs) return;
-      for (const d of docs) {
-        for (const tag of d.tags || []) {
-          if (tag.tagName && tag.tagName.text === 'typedef' && tag.typeExpression
-            && ts.isJSDocTypeLiteral(tag.typeExpression)) {
-            for (const p of tag.typeExpression.children) {
-              if (ts.isJSDocPropertyTag(p) && p.name) push(`viewer.${p.name.text}`, bv, lineOf(bvSf, p), 'BaseViewerOptions field');
-              if (ts.isPropertySignature(p)) push(`viewer.${p.name.getText(bvSf)}`, bv, lineOf(bvSf, p), 'BaseViewerOptions field');
-            }
-          }
-        }
-      }
-    });
-  }
-  const dgFile = join(diagramRoot, 'lib/Diagram.js');
-  const dgSf = astOf(dgFile);
-  if (dgSf) {
-    visit(dgSf, (n) => {
-      const docs = n.jsDoc;
-      if (!docs) return;
-      for (const d of docs) {
-        for (const tag of d.tags || []) {
-          if (tag.tagName && tag.tagName.text === 'typedef' && tag.comment
-            && String(tag.comment).includes('DiagramOptions')) { /* handled below via text scan of the AST comment */ }
-        }
-      }
-    });
-    // DiagramOptions is an inline JSDoc type literal (`modules?`); read it from
-    // the parsed JSDoc type expression when present, else from options.modules.
-    visit(dgSf, (n) => {
-      if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'options') {
-        push(`diagram.${n.name.text}`, dgFile, lineOf(dgSf, n), 'DiagramOptions field');
-      }
-    });
-  }
-  for (const f of allJsFiles) {
-    const sf = astOf(f);
-    if (!sf) continue;
-    visit(sf, (n) => {
-      const v = strVal(n);
-      if (v && v.startsWith('config.')) push(v, f, lineOf(sf, n), 'didi config injection');
-      if (ts.isPropertyAccessExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'config') {
-        push(`config.${n.name.text}`, f, lineOf(sf, n), 'feature config read');
-      }
-      // this._config.<name> reads (injected config held on the instance).
-      if (ts.isPropertyAccessExpression(n) && ts.isPropertyAccessExpression(n.expression) && n.expression.name.text === '_config') {
-        push(`config.${n.name.text}`, f, lineOf(sf, n), 'feature config read');
-      }
-    });
-  }
-  return items.sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function extractRenderer() {
-  const f = join(bpmnRoot, 'lib/draw/BpmnRenderer.js');
-  const sf = astOf(f);
-  const items = [];
-  if (sf) {
-    visit(sf, (n) => {
-      if (ts.isVariableDeclaration(n) && ts.isIdentifier(n.name)
-        && (n.name.text === 'taskMarkerRenderers' || n.name.text === 'eventIconRenderers')
-        && n.initializer && ts.isObjectLiteralExpression(n.initializer)) {
-        const kind = n.name.text === 'taskMarkerRenderers' ? 'task marker renderer' : 'event icon renderer';
-        for (const k of objectKeys(n.initializer, sf)) items.push({ key: k.key, sourceAbs: f, line: k.line, detail: `BpmnRenderer ${kind}` });
-      }
-      if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken
-        && ts.isPropertyAccessExpression(n.left) && n.left.name.text === 'handlers'
-        && ts.isObjectLiteralExpression(n.right)) {
-        for (const k of objectKeys(n.right, sf)) items.push({ key: k.key, sourceAbs: f, line: k.line, detail: 'BpmnRenderer handler (shape/connection drawing)' });
-      }
-    });
-  }
-  return items;
-}
-
-function jsonProp(obj, name) {
-  for (const p of obj.properties) {
-    if (ts.isPropertyAssignment(p) && propName(p.name) === name) return p.initializer;
-  }
-  return null;
-}
-function extractModdleTypes() {
-  const files = [
-    ['bpmn', join(moddleRoot, 'resources/bpmn/json/bpmn.json')],
-    ['bpmndi', join(moddleRoot, 'resources/bpmn/json/bpmndi.json')],
-    ['di', join(moddleRoot, 'resources/bpmn/json/di.json')],
-    ['dc', join(moddleRoot, 'resources/bpmn/json/dc.json')],
-    ['bioc', join(moddleRoot, 'resources/bpmn-io/json/bioc.json')],
-  ];
-  const items = [];
-  for (const [prefix, abs] of files) {
-    const sf = ts.parseJsonText(abs, readFileSync(abs, 'utf8'));
-    const root = sf.statements[0] && ts.isExpressionStatement(sf.statements[0]) && ts.isObjectLiteralExpression(sf.statements[0].expression)
-      ? sf.statements[0].expression : null;
-    if (!root) continue;
-    const lineAt = (node) => sf.getLineAndCharacterOfPosition(node.pos).line + 1;
-    const types = jsonProp(root, 'types');
-    if (types && ts.isArrayLiteralExpression(types)) {
-      for (const el of types.elements) {
-        if (!ts.isObjectLiteralExpression(el)) continue;
-        const nameNode = jsonProp(el, 'name');
-        const name = strVal(nameNode);
-        if (!name) continue;
-        const absNode = jsonProp(el, 'isAbstract');
-        const isAbstract = absNode && absNode.kind === ts.SyntaxKind.TrueKeyword;
-        const props = jsonProp(el, 'properties');
-        const count = props && ts.isArrayLiteralExpression(props) ? props.elements.length : 0;
-        const supers = jsonProp(el, 'superClass');
-        const superNames = supers && ts.isArrayLiteralExpression(supers) ? supers.elements.map((e) => strVal(e)).filter(Boolean) : [];
-        items.push({
-          key: `${prefix}:${name}`, sourceAbs: abs, line: lineAt(el),
-          detail: `${isAbstract ? 'abstract' : 'concrete'}; superClass: ${superNames.join(', ') || 'none'}; own properties: ${count}`,
-          abstract: !!isAbstract,
-        });
-      }
+    for (const [name, value] of constText) {
+      if (name.includes('EVENT') && value.includes('.')) note(value, file, 1);
     }
-    const enums = jsonProp(root, 'enumerations');
+    // Prefix applied by this file's emit/fire helper, when it defines
+    // one as a prototype method: read it from the helper's own fire
+    // call (plain forwarding means no prefix).
+    let helperPrefix = null;
+    let barePrefix = null;
+    walkTree(sf, (node) => {
+      if (!ts.isBinaryExpression(node) || node.operatorToken.kind !== ts.SyntaxKind.EqualsToken) return;
+      if (!ts.isPropertyAccessExpression(node.left)) return;
+      const method = node.left.name.text;
+      if (method !== '_emit' && method !== '_fire') return;
+      walkTree(node.right, (inner) => {
+        if (!ts.isCallExpression(inner) || memberLabel(inner.expression) !== 'fire') return;
+        if (!inner.arguments.length) return;
+        const arg = inner.arguments[0];
+        if (ts.isTemplateExpression(arg)) helperPrefix = arg.head.text;
+        else if (ts.isBinaryExpression(arg) && ts.isStringLiteral(arg.left)) helperPrefix = arg.left.text;
+        else if (ts.isIdentifier(arg)) helperPrefix = '';
+      });
+    });
+    walkTree(sf, (node) => {
+      if (!ts.isFunctionDeclaration(node) || !node.name || node.name.text !== 'fire' || !node.body) return;
+      walkTree(node.body, (inner) => {
+        if (!ts.isCallExpression(inner) || memberLabel(inner.expression) !== 'fire') return;
+        if (!inner.arguments.length) return;
+        const arg = inner.arguments[0];
+        if (ts.isBinaryExpression(arg) && ts.isStringLiteral(arg.left)) barePrefix = arg.left.text;
+      });
+    });
+    walkTree(sf, (node) => {
+      // Dotted-name tables: an object whose string values are all
+      // event-shaped names sharing one prefix. Deferred until after
+      // the direct call-site pass, as in the inventory.
+      if (ts.isObjectLiteralExpression(node)) {
+        const values = [];
+        for (const prop of node.properties) {
+          if (ts.isPropertyAssignment(prop)) {
+            const value = literalText(prop.initializer);
+            if (value && /^[a-z][\w]*\.[\w.]+$/.test(value)) values.push({ value, line: lineOfNode(sf, prop) });
+          }
+        }
+        if (values.length >= 3) {
+          const prefix = values[0].value.split('.')[0];
+          if (values.every((v) => v.value.split('.')[0] === prefix)) {
+            for (const v of values) deferredTables.push({ name: v.value, file, line: v.line });
+          }
+        }
+      }
+      if (!ts.isCallExpression(node)) return;
+      const label = memberLabel(node.expression);
+      const isMemberCall = ts.isPropertyAccessExpression(node.expression);
+      const isBareFire = ts.isIdentifier(node.expression) && node.expression.text === 'fire';
+      if (isMemberCall && (label === 'fire' || label === 'on' || label === 'once')) {
+        if (node.arguments.length) {
+          const first = node.arguments[0];
+          const single = literalText(first);
+          if (single) note(single, file, lineOfNode(sf, node));
+          if (ts.isArrayLiteralExpression(first)) {
+            for (const el of first.elements) {
+              const value = literalText(el);
+              if (value) note(value, file, lineOfNode(sf, node));
+            }
+          }
+          if (ts.isTemplateExpression(first) && first.head.text.endsWith('.')) {
+            note(first.head.text, file, lineOfNode(sf, node));
+          }
+          if (ts.isBinaryExpression(first) && ts.isStringLiteral(first.left)) {
+            note(first.left.text, file, lineOfNode(sf, node));
+          }
+          walkTree(first, (inner) => {
+            if (!ts.isIdentifier(inner)) return;
+            if (constText.has(inner.text)) note(constText.get(inner.text), file, lineOfNode(sf, node));
+            if (constList.has(inner.text)) {
+              for (const value of constList.get(inner.text)) note(value, file, lineOfNode(sf, node));
+            }
+          });
+        }
+      }
+      if ((label === '_emit' || label === '_fire') && helperPrefix !== null && node.arguments.length) {
+        const firstText = literalText(node.arguments[0]);
+        const secondText = node.arguments.length > 1 ? literalText(node.arguments[1]) : null;
+        if (secondText) note(helperPrefix + secondText, file, lineOfNode(sf, node));
+        else if (firstText) note(helperPrefix + firstText, file, lineOfNode(sf, node));
+      }
+      if (isBareFire && barePrefix && node.arguments.length) {
+        const value = literalText(node.arguments[0]);
+        if (value && !value.endsWith('.')) deferredBare.push({ name: barePrefix + value, file, line: lineOfNode(sf, node) });
+      }
+    });
+  }
+  for (const d of deferredTables) note(d.name, d.file, d.line);
+  for (const d of deferredBare) note(d.name, d.file, d.line);
+  return ordered(found).map((item) => ({
+    ...item,
+    detail: item.key.endsWith('.') ? 'dynamic prefix (concrete names built at runtime)' : 'EventBus event name',
+    ...(item.key.endsWith('.') ? { dynamicPrefix: true } : {}),
+  }));
+}
+
+function isDefaultConstructor(node) {
+  if (!ts.isFunctionDeclaration(node)) return false;
+  const mods = ts.getModifiers ? ts.getModifiers(node) : node.modifiers;
+  if (!mods) return false;
+  return mods.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
+    && mods.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword);
+}
+function paramNames(node) {
+  return (node.parameters || []).map((p) => (ts.isIdentifier(p.name) ? p.name.text : ''));
+}
+function typedefFields(file, typedefName) {
+  // Fields of the JSDoc typedef block closed by the given name, read
+  // from the block comments of the containing file.
+  const sf = treeOf(file);
+  if (!sf) return [];
+  const text = sf.getFullText();
+  const fields = [];
+  for (const chunk of text.split('/**')) {
+    const end = chunk.indexOf('*/');
+    if (end < 0) continue;
+    const block = chunk.slice(0, end);
+    if (!block.includes(typedefName)) continue;
+    const open = block.indexOf('{ {');
+    const close = block.indexOf('} &');
+    if (open < 0 || close < 0 || close < open) continue;
+    const inner = block.slice(open + 3, close);
+    for (const line of inner.split('\n')) {
+      const m = line.match(/\*\s+([A-Za-z][\w]*)\??:/);
+      if (m) fields.push(m[1]);
+    }
+  }
+  return fields;
+}
+function collectConfig() {
+  const found = new Map();
+  const note = (key, file, line, detail) => {
+    if (key && !found.has(key)) found.set(key, { sourceAbs: file, line, detail });
+  };
+  // Viewer and diagram option typedefs live in lib-root entry files;
+  // locate them by the typedef name in their documentation blocks.
+  for (const file of libFiles) {
+    const rel = fromLib(file);
+    if (rel.includes('/')) continue;
+    for (const field of typedefFields(file, 'BaseViewerOptions')) {
+      note('viewer.' + field, file, 1, 'BaseViewerOptions field');
+    }
+    for (const field of typedefFields(file, 'DiagramOptions')) {
+      note('diagram.' + field, file, 1, 'DiagramOptions field');
+    }
+  }
+  for (const file of libFiles) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    const rel = fromLib(file);
+    const isViewerFile = !rel.includes('/') && typedefFields(file, 'BaseViewerOptions').length > 0;
+    if (isViewerFile) {
+      walkTree(sf, (node) => {
+        if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'options') {
+          const key = 'viewer.' + node.name.text;
+          if (!found.has(key)) note(key, file, lineOfNode(sf, node), 'options read in BaseViewer');
+        }
+      });
+    }
+    // Feature prefix from this file's injection declaration.
+    let feature = null;
+    let featureLine = 1;
+    walkTree(sf, (node) => {
+      if (feature) return;
+      if (!ts.isBinaryExpression(node) || node.operatorToken.kind !== ts.SyntaxKind.EqualsToken) return;
+      if (!ts.isPropertyAccessExpression(node.left) || node.left.name.text !== '$inject') return;
+      if (!ts.isArrayLiteralExpression(node.right)) return;
+      for (const el of node.right.elements) {
+        const value = literalText(el);
+        if (value && value.startsWith('config.')) {
+          feature = value.slice('config.'.length);
+          featureLine = lineOfNode(sf, node);
+        }
+      }
+    });
+    if (!feature) continue;
+    const prefix = 'config.' + feature;
+    note(prefix, file, featureLine, 'didi config injection');
+    // Methods the constructor forwards its own `config` to (called as
+    // `this.<method>(config ...)`) read DI config through their
+    // parameter; other methods declaring a `config` parameter do not.
+    const forwarded = new Set();
+    walkTree(sf, (node) => {
+      if (!ts.isCallExpression(node) || !ts.isPropertyAccessExpression(node.expression)) return;
+      if (node.expression.expression.kind !== ts.SyntaxKind.ThisKeyword) return;
+      if (!node.arguments.length) return;
+      let mentionsConfig = false;
+      walkTree(node.arguments[0], (inner) => {
+        if (ts.isIdentifier(inner) && inner.text === 'config') mentionsConfig = true;
+      });
+      if (mentionsConfig) forwarded.add(node.expression.name.text);
+    });
+    const methodOfFn = new Map();
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left)
+        && (ts.isFunctionExpression(node.right) || ts.isArrowFunction(node.right))) {
+        methodOfFn.set(node.right, node.left.name.text);
+      }
+    });
+    // Reads, with the enclosing function stack: a bare `config` read
+    // counts unless the innermost function declares its own `config`
+    // parameter without being the constructor or a forwarded method.
+    const visit = (node, fnStack) => {
+      const isFn = ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node) || ts.isArrowFunction(node);
+      const stack = isFn ? [...fnStack, node] : fnStack;
+      if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'config') {
+        const inner = stack[stack.length - 1];
+        const shadowed = inner && !isDefaultConstructor(inner) && paramNames(inner).includes('config')
+          && !forwarded.has(methodOfFn.get(inner));
+        if (!shadowed && node.name.text !== feature) {
+          note(prefix + '.' + node.name.text, file, lineOfNode(sf, node), 'feature config read');
+        }
+      }
+      if (ts.isPropertyAccessExpression(node) && ts.isPropertyAccessExpression(node.expression)
+        && node.expression.name.text === '_config' && node.expression.expression.kind === ts.SyntaxKind.ThisKeyword) {
+        note(prefix + '.' + node.name.text, file, lineOfNode(sf, node), 'feature config read');
+      }
+      if (ts.isElementAccessExpression(node) && ts.isPropertyAccessExpression(node.expression)
+        && node.expression.name.text === '_config') {
+        const arg = node.argumentExpression;
+        const texts = [];
+        if (ts.isConditionalExpression(arg)) {
+          const a = literalText(arg.whenTrue);
+          const b = literalText(arg.whenFalse);
+          if (a) texts.push(a);
+          if (b) texts.push(b);
+        } else {
+          const single = literalText(arg);
+          if (single) texts.push(single);
+        }
+        for (const t of texts) note(prefix + '.' + t, file, lineOfNode(sf, node), 'feature config read');
+      }
+      ts.forEachChild(node, (child) => visit(child, stack));
+    };
+    visit(sf, []);
+  }
+  return ordered(found);
+}
+
+function collectRenderer() {
+  const found = new Map();
+  const note = (key, file, line, detail) => {
+    if (key && !found.has(key)) found.set(key, { sourceAbs: file, line, detail });
+  };
+  for (const file of libFiles) {
+    if (libTagOf(file) !== 'bpmn-js') continue;
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
+        && ts.isPropertyAccessExpression(node.left) && node.left.name.text === 'handlers'
+        && node.left.expression.kind === ts.SyntaxKind.ThisKeyword
+        && ts.isObjectLiteralExpression(node.right)) {
+        for (const entry of entriesOf(node.right, sf)) {
+          note(entry.key, file, entry.line, 'BpmnRenderer handler (shape/connection drawing)');
+        }
+      }
+      if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer
+        && ts.isObjectLiteralExpression(node.initializer)) {
+        const detail = node.name.text === 'eventIconRenderers'
+          ? 'BpmnRenderer event icon renderer'
+          : node.name.text === 'taskMarkerRenderers'
+            ? 'BpmnRenderer task marker renderer'
+            : null;
+        if (detail) {
+          for (const entry of entriesOf(node.initializer, sf)) note(entry.key, file, entry.line, detail);
+        }
+      }
+    });
+  }
+  return ordered(found);
+}
+
+function jsonObject(node) {
+  const map = new Map();
+  if (!node || !ts.isObjectLiteralExpression(node)) return map;
+  for (const prop of node.properties) {
+    if (ts.isPropertyAssignment(prop)) map.set(keyText(prop.name), prop.initializer);
+  }
+  return map;
+}
+function jsonText(node) {
+  return node && ts.isStringLiteral(node) ? node.text : null;
+}
+function jsonTextList(node) {
+  if (!node || !ts.isArrayLiteralExpression(node)) return [];
+  return node.elements.map((el) => jsonText(el)).filter((v) => v !== null);
+}
+function descriptorFiles() {
+  // Descriptor documents are those the moddle entry files import as
+  // JSON packages; test fixtures elsewhere in the checkout are not
+  // registered packages and are not descriptors.
+  const files = new Set();
+  for (const entry of readdirSync(join(moddleHome, 'lib'), { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.js')) continue;
+    const entryFile = join(moddleHome, 'lib', entry.name);
+    const sf = ts.createSourceFile(entryFile, readFileSync(entryFile, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
+    walkTree(sf, (node) => {
+      if (!ts.isImportDeclaration(node)) return;
+      const spec = node.moduleSpecifier.text;
+      if (!spec.endsWith('.json')) return;
+      const resolved = resolve(join(dirname(entryFile), spec));
+      if (existsSync(resolved) && statSync(resolved).isFile()) files.add(resolved);
+    });
+  }
+  return [...files].sort();
+}
+function collectModdleTypes() {
+  const items = [];
+  for (const file of descriptorFiles()) {
+    let parsed;
+    try {
+      parsed = ts.parseJsonText(file, readFileSync(file, 'utf8'));
+    } catch { continue; }
+    const rootStatement = parsed.statements && parsed.statements[0];
+    const rootObject = rootStatement && ts.isExpressionStatement(rootStatement) ? rootStatement.expression : null;
+    const doc = jsonObject(rootObject);
+    const prefix = jsonText(doc.get('prefix'));
+    const types = doc.get('types');
+    if (!prefix || !types || !ts.isArrayLiteralExpression(types)) continue;
+    const sf = parsed;
+    const lineFor = (objNode) => {
+      for (const prop of objNode.properties) {
+        if (ts.isPropertyAssignment(prop) && keyText(prop.name) === 'name') return lineOfNode(sf, prop);
+      }
+      return lineOfNode(sf, objNode);
+    };
+    for (const el of types.elements) {
+      const type = jsonObject(el);
+      const name = jsonText(type.get('name'));
+      if (!name) continue;
+      const supers = jsonTextList(type.get('superClass'));
+      const ext = jsonTextList(type.get('extends'));
+      const props = type.get('properties');
+      const propCount = props && ts.isArrayLiteralExpression(props) ? props.elements.length : 0;
+      const abstractNode = type.get('isAbstract');
+      const isAbstract = abstractNode && abstractNode.kind === ts.SyntaxKind.TrueKeyword;
+      const parts = [isAbstract ? 'abstract' : 'concrete', 'superClass: ' + (supers.join(', ') || 'none')];
+      if (ext.length) parts.push('extends: ' + ext.join(', '));
+      parts.push('own properties: ' + propCount);
+      items.push({
+        key: prefix + ':' + name,
+        sourceAbs: file,
+        line: lineFor(el),
+        detail: parts.join('; '),
+        abstract: !!isAbstract,
+      });
+    }
+    const enums = doc.get('enumerations');
     if (enums && ts.isArrayLiteralExpression(enums)) {
       for (const el of enums.elements) {
-        if (!ts.isObjectLiteralExpression(el)) continue;
-        const name = strVal(jsonProp(el, 'name'));
+        const entry = jsonObject(el);
+        const name = jsonText(entry.get('name'));
         if (!name) continue;
-        const valuesNode = jsonProp(el, 'values');
-        const values = valuesNode && ts.isArrayLiteralExpression(valuesNode)
-          ? valuesNode.elements.map((e) => (ts.isObjectLiteralExpression(e) ? strVal(jsonProp(e, 'name')) : strVal(e))).filter(Boolean) : [];
+        const raw = entry.get('literalValues') || entry.get('values');
+        const values = [];
+        if (raw && ts.isArrayLiteralExpression(raw)) {
+          for (const v of raw.elements) {
+            const asText = jsonText(v);
+            if (asText) values.push(asText);
+            else {
+              const asObj = jsonObject(v);
+              const inner = jsonText(asObj.get('name'));
+              if (inner) values.push(inner);
+            }
+          }
+        }
         items.push({
-          key: `${prefix}:${name}`, sourceAbs: abs, line: lineAt(el),
-          detail: `enumeration; values: ${values.join(', ')}`,
+          key: prefix + ':' + name,
+          sourceAbs: file,
+          line: lineFor(el),
+          detail: 'enumeration; values: ' + values.join(', '),
           enumeration: true,
         });
       }
     }
   }
-  return items;
+  return items.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
 }
 
-function extractApi() {
-  const targets = [
-    ['bpmn-js', join(bpmnRoot, 'lib/BaseViewer.js'), 'BaseViewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/Viewer.js'), 'Viewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/NavigatedViewer.js'), 'NavigatedViewer'],
-    ['bpmn-js', join(bpmnRoot, 'lib/Modeler.js'), 'Modeler'],
-    ['bpmn-js', join(bpmnRoot, 'lib/BaseModeler.js'), 'BaseModeler'],
-    ['bpmn-js', join(bpmnRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
-    ['bpmn-js', join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), 'BpmnEditorActions'],
-    ['diagram-js', join(diagramRoot, 'lib/Diagram.js'), 'Diagram'],
-    ['diagram-js', join(diagramRoot, 'lib/core/Canvas.js'), 'Canvas'],
-    ['diagram-js', join(diagramRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
-    ['diagram-js', join(diagramRoot, 'lib/core/ElementRegistry.js'), 'ElementRegistry'],
-    ['diagram-js', join(diagramRoot, 'lib/core/EventBus.js'), 'EventBus'],
-    ['diagram-js', join(diagramRoot, 'lib/command/CommandStack.js'), 'CommandStack'],
-    ['diagram-js', join(diagramRoot, 'lib/features/overlays/Overlays.js'), 'Overlays'],
-    ['diagram-js', join(diagramRoot, 'lib/features/selection/Selection.js'), 'Selection'],
-    ['diagram-js', join(diagramRoot, 'lib/features/editor-actions/EditorActions.js'), 'EditorActions'],
-  ];
-  const items = [];
-  for (const [label, abs, cls] of targets) {
-    if (!existsSync(abs)) continue;
-    const sf = astOf(abs) || ts.createSourceFile(abs, readFileSync(abs, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
-    visit(sf, (n) => {
-      if (ts.isBinaryExpression(n) && n.operatorToken.kind === ts.SyntaxKind.EqualsToken
-        && ts.isPropertyAccessExpression(n.left)
-        && ts.isPropertyAccessExpression(n.left.expression)
-        && n.left.expression.name.text === 'prototype'
-        && ts.isIdentifier(n.left.expression.expression)
-        && n.left.expression.expression.text === cls) {
-        const method = n.left.name.text;
-        if (method.startsWith('_')) return;
-        const key = `${label}:${cls}.${method}`;
-        if (!items.some((x) => x.key === key)) items.push({ key, sourceAbs: abs, line: lineOf(sf, n), detail: `public method of ${cls}` });
+function collectApi() {
+  const { byServiceName } = serviceFileIndex();
+  const classes = new Map();
+  const noteClass = (label, cls, file) => {
+    if (cls && file) classes.set(label + ':' + cls, { label, cls, file });
+  };
+  // Entry classes from prototype assignments in lib-root files.
+  for (const file of libFiles) {
+    if (fromLib(file).includes('/')) continue;
+    const sf = treeOf(file);
+    if (!sf) continue;
+    walkTree(sf, (node) => {
+      if (ts.isBinaryExpression(node) && ts.isPropertyAccessExpression(node.left)
+        && ts.isPropertyAccessExpression(node.left.expression)
+        && node.left.expression.name.text === 'prototype'
+        && ts.isIdentifier(node.left.expression.expression)) {
+        noteClass(libTagOf(file), node.left.expression.expression.text, file);
       }
     });
   }
-  return items;
+  for (const [labelClass, file] of byServiceName) {
+    const splitAt = labelClass.indexOf(':');
+    noteClass(labelClass.slice(0, splitAt), labelClass.slice(splitAt + 1), file);
+  }
+  const found = new Map();
+  for (const { label, cls, file } of classes.values()) {
+    const sf = treeOf(file);
+    if (!sf) continue;
+    const declaredFns = new Set();
+    walkTree(sf, (node) => {
+      if (ts.isFunctionDeclaration(node) && node.name) declaredFns.add(node.name.text);
+    });
+    const noteMethod = (method, line) => {
+      const key = method && !method.startsWith('_') ? label + ':' + cls + '.' + method : null;
+      if (key && !found.has(key)) {
+        found.set(key, { sourceAbs: file, line, detail: 'public method of ' + cls });
+      }
+    };
+    walkTree(sf, (node) => {
+      if (!ts.isBinaryExpression(node) || node.operatorToken.kind !== ts.SyntaxKind.EqualsToken) return;
+      const left = node.left;
+      if (ts.isPropertyAccessExpression(left) && ts.isPropertyAccessExpression(left.expression)
+        && left.expression.name.text === 'prototype'
+        && ts.isIdentifier(left.expression.expression)
+        && left.expression.expression.text === cls) {
+        noteMethod(left.name.text, lineOfNode(sf, node));
+      }
+      if (ts.isPropertyAccessExpression(left) && left.expression.kind === ts.SyntaxKind.ThisKeyword) {
+        const rhs = node.right;
+        if (ts.isFunctionExpression(rhs) || ts.isArrowFunction(rhs)) {
+          noteMethod(left.name.text, lineOfNode(sf, node));
+        } else if (ts.isIdentifier(rhs) && declaredFns.has(rhs.text)) {
+          noteMethod(left.name.text, lineOfNode(sf, node));
+        }
+      }
+    });
+  }
+  return ordered(found);
 }
 
-function extractExamples() {
+function collectExamples() {
   const items = [];
-  for (const name of readdirSync(examplesRoot).sort()) {
-    const dir = join(examplesRoot, name);
-    if (!statSync(dir).isDirectory()) continue;
-    const readme = join(dir, 'README.md');
+  for (const entry of readdirSync(examplesHome, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+    if (!entry.isDirectory()) continue;
+    const readme = join(examplesHome, entry.name, 'README.md');
     if (!existsSync(readme)) continue;
-    const first = (readFileSync(readme, 'utf8').split(/\r?\n/).find((l) => l.trim().length > 0) || '').trim();
-    if (/^>\s*Removed as of/.test(first)) continue; // upstream tombstone, no behaviour to replay
-    items.push({ key: name, sourceAbs: readme, line: 1, detail: first.slice(0, 120) });
+    let heading = null;
+    for (const line of readFileSync(readme, 'utf8').split('\n')) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('# ')) { heading = trimmed; break; }
+    }
+    if (!heading) continue;
+    items.push({ key: entry.name, sourceAbs: readme, line: 1, detail: heading.slice(0, 120) });
   }
   return items;
 }
 
 export function extractAstAll() {
   return {
-    module: extractModules(),
-    command: extractCommands(),
-    rule: extractRules(),
-    palette: extractPalette(),
-    'context-pad': extractContextPad(),
-    'replace-menu': extractReplaceMenu(),
-    'popup-menu': extractPopupMenu(),
-    keyboard: extractKeyboard(),
-    event: extractEvents(),
-    config: extractConfig(),
-    renderer: extractRenderer(),
-    'moddle-type': extractModdleTypes(),
-    api: extractApi(),
-    example: extractExamples(),
+    module: collectModules(),
+    command: collectCommands(),
+    rule: collectRules(),
+    palette: collectPalette(),
+    'context-pad': collectContextPad(),
+    'replace-menu': collectReplaceMenu(),
+    'popup-menu': collectPopupMenu(),
+    keyboard: collectKeyboard(),
+    event: collectEvents(),
+    config: collectConfig(),
+    renderer: collectRenderer(),
+    'moddle-type': collectModdleTypes(),
+    api: collectApi(),
+    example: collectExamples(),
   };
 }
 
-const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) {
-  const raw = extractAstAll();
+const invokedDirectly = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  const all = extractAstAll();
   const counts = {};
-  for (const [family, list] of Object.entries(raw)) counts[family] = list.length;
+  for (const [family, items] of Object.entries(all)) counts[family] = items.length;
   console.log(JSON.stringify(counts, null, 2));
-  console.log(`total=${Object.values(counts).reduce((a, b) => a + b, 0)}`);
 }
