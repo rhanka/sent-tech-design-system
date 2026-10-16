@@ -79,6 +79,16 @@ function monthOf(iso: string, offsetMonths: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+// Month coupling (two-calendar mode). Invariant: right > left, always.
+// Lexicographic comparison orders padded "YYYY-MM" chronologically.
+function seedMonths(fromDate: string, toDate: string): { left: string; right: string } {
+  const left = monthOf(fromDate, 0);
+  // Right = end month when it is after the left one, else left + 1: both
+  // bounds are visible as soon as the panel opens.
+  const endMonth = monthOf(toDate, 0);
+  return { left, right: endMonth > left ? endMonth : monthOf(left, 1) };
+}
+
 type Draft = {
   fromDate: string;
   fromTime: string;
@@ -271,8 +281,19 @@ export const TimeRangePicker = defineComponent({
         fromText: `${split.fromDate} ${split.fromTime}`,
         toText: `${split.toDate} ${split.toTime}`,
       };
-      leftMonth.value = monthOf(split.fromDate, 0);
-      rightMonth.value = monthOf(split.fromDate, 1);
+      const seeded = seedMonths(split.fromDate, split.toDate);
+      leftMonth.value = seeded.left;
+      rightMonth.value = seeded.right;
+    }
+
+    function onLeftMonthChange(next: string) {
+      leftMonth.value = next;
+      if (rightMonth.value <= next) rightMonth.value = monthOf(next, 1);
+    }
+
+    function onRightMonthChange(next: string) {
+      rightMonth.value = next;
+      if (leftMonth.value >= next) leftMonth.value = monthOf(next, -1);
     }
 
     function focusFirstInPanel() {
@@ -514,6 +535,7 @@ export const TimeRangePicker = defineComponent({
               range: true,
               value: calendarValue.value,
               onChange: onCalendarChange,
+              onMonthChange: onLeftMonthChange,
               min: calendarMinIso.value,
               max: calendarMaxIso.value,
               locale: props.locale,
@@ -524,6 +546,7 @@ export const TimeRangePicker = defineComponent({
                   range: true,
                   value: calendarValue.value,
                   onChange: onCalendarChange,
+                  onMonthChange: onRightMonthChange,
                   min: calendarMinIso.value,
                   max: calendarMaxIso.value,
                   locale: props.locale,

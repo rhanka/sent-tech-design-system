@@ -34,9 +34,13 @@ export type MenuPopoverRect = {
 };
 
 export type MenuPopoverViewport = {
+  width: number;
   height: number;
-  scrollX: number;
-  scrollY: number;
+};
+
+export type MenuPopoverPanelSize = {
+  width: number;
+  height: number;
 };
 
 export type MenuPopoverPosition = {
@@ -45,18 +49,38 @@ export type MenuPopoverPosition = {
   maxHeight: number;
   alignEnd: boolean;
   alignCenter: boolean;
+  /** True once the requested vertical side no longer fits (panel flipped). */
+  flipped: boolean;
+  /** Placement class to render (mirrors the flip so transforms keep working). */
+  effectivePlacement: MenuPopoverPlacement;
 };
+
+export function menuPopoverEffectivePlacement(
+  placement: MenuPopoverPlacement,
+  flipped: boolean,
+): MenuPopoverPlacement {
+  if (!flipped) return placement;
+  if (placement === "bottom-start") return "top-start";
+  if (placement === "bottom-end") return "top-end";
+  if (placement === "top-start") return "bottom-start";
+  return "bottom-end";
+}
 
 /**
  * Pure position solver — mirrors Svelte's `computePosition()` / React's
  * `computePosition` callback so it can be unit-tested without a real
  * `window`/DOM (this package's tests run in a Node environment, no jsdom).
+ *
+ * Viewport coordinates (matching `position: fixed`): no scroll offsets — the
+ * old document coordinates were wrong inside any positioned ancestor and the
+ * panel was clipped by overflow containers.
  */
 export function computeMenuPopoverPosition(
   rect: MenuPopoverRect,
   placement: MenuPopoverPlacement,
   align: MenuPopoverAlign | undefined,
   viewport: MenuPopoverViewport,
+  panelSize: MenuPopoverPanelSize = { width: 0, height: 0 },
 ): MenuPopoverPosition {
   const verticalUp = placement === "top-start" || placement === "top-end";
   const horizontalEnd = placement === "bottom-end" || placement === "top-end";
@@ -64,30 +88,55 @@ export function computeMenuPopoverPosition(
   const alignEnd = resolvedAlign === "end";
   const alignCenter = resolvedAlign === "center";
 
+  const need = panelSize.height > 0 ? panelSize.height : MIN_HEIGHT;
+  const spaceBelow = viewport.height - rect.bottom - GAP;
+  const spaceAbove = rect.top - GAP;
+
+  // Flip when the requested side cannot fit the panel and the other side
+  // offers more room.
+  let showUp = verticalUp;
+  if (!verticalUp && spaceBelow < need && spaceAbove > spaceBelow) showUp = true;
+  else if (verticalUp && spaceAbove < need && spaceBelow > spaceAbove) showUp = false;
+  const flipped = showUp !== verticalUp;
+
   let top: number;
   let maxHeight: number;
-  if (verticalUp) {
+  if (showUp) {
     // Panel bottom edge sits above the trigger (transform handles the flip);
     // available space is what's ABOVE the trigger.
-    top = rect.top + viewport.scrollY - GAP;
+    top = rect.top - GAP;
     maxHeight = Math.max(rect.top - GAP - VIEWPORT_MARGIN, MIN_HEIGHT);
   } else {
-    top = rect.bottom + viewport.scrollY + GAP;
+    top = rect.bottom + GAP;
     // Space actually available BELOW the trigger — `max-height: 100vh` alone
     // ignores the panel's offset and overflows past the bottom edge.
     maxHeight = Math.max(viewport.height - rect.bottom - GAP - VIEWPORT_MARGIN, MIN_HEIGHT);
   }
 
+  // Reclamp horizontally so the measured panel stays inside the viewport.
+  const panelWidth = panelSize.width;
   let left: number;
   if (resolvedAlign === "end") {
-    left = rect.right + viewport.scrollX;
+    left = rect.right;
+    if (panelWidth > 0) {
+      left = Math.min(Math.max(left, panelWidth + VIEWPORT_MARGIN), viewport.width - VIEWPORT_MARGIN);
+    }
   } else if (resolvedAlign === "center") {
-    left = rect.left + viewport.scrollX + rect.width / 2;
+    left = rect.left + rect.width / 2;
+    if (panelWidth > 0) {
+      left = Math.min(
+        Math.max(left, panelWidth / 2 + VIEWPORT_MARGIN),
+        viewport.width - panelWidth / 2 - VIEWPORT_MARGIN,
+      );
+    }
   } else {
-    left = rect.left + viewport.scrollX;
+    left = rect.left;
+    if (panelWidth > 0) {
+      left = Math.min(Math.max(left, VIEWPORT_MARGIN), viewport.width - panelWidth - VIEWPORT_MARGIN);
+    }
   }
 
-  return { top, left, maxHeight, alignEnd, alignCenter };
+  return { top, left, maxHeight, alignEnd, alignCenter, flipped, effectivePlacement: menuPopoverEffectivePlacement(placement, flipped) };
 }
 
 export function menuPopoverIsWithin(
@@ -120,6 +169,8 @@ export type MenuPopoverProps = {
   styles: [":host { display: contents; }"],
   template: `
     @if (open) {
+      <!-- No static popover attribute: set imperatively by showTopLayer()
+           only where the Popover API exists. -->
       <div
         #panel
         [attr.data-st-component]="componentName"
@@ -163,6 +214,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   maxHeight = 0;
   alignEnd = false;
   alignCenter = false;
+  flipped = false;
 
   private listenersActive = false;
   private readonly onScroll = () => this.computePosition();
@@ -184,7 +236,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   get hostClass(): string {
     return classNames(
       "st-menuPopover",
-      `st-menuPopover--${this.placement}`,
+      `st-menuPopover--${menuPopoverEffectivePlacement(this.placement, this.flipped)}`,
       this.alignEnd ? "st-menuPopover--alignEnd" : null,
       this.alignCenter ? "st-menuPopover--alignCenter" : null,
       this.classInput,
@@ -197,7 +249,10 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
 
   ngAfterViewInit(): void {
     this.registerWindowListeners();
-    if (this.open) this.computePosition();
+    if (this.open) {
+      this.computePosition();
+      this.showTopLayer();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -206,7 +261,10 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     if (changes["open"] || changes["trigger"] || changes["placement"] || changes["align"]) {
       // Recompute after Angular renders the panel for the new state.
       queueMicrotask(() => {
-        if (this.open) this.computePosition();
+        if (this.open) {
+          this.computePosition();
+          this.showTopLayer();
+        }
       });
     }
   }
@@ -219,21 +277,69 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.trigger) return;
     if (typeof window === "undefined") return;
     const rect = this.trigger.getBoundingClientRect();
+    const panelEl = this.panel?.nativeElement as
+      | (HTMLDivElement & { showPopover?: () => void })
+      | undefined;
     const pos = computeMenuPopoverPosition(
       { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right, width: rect.width },
       this.placement,
       this.align,
-      { height: window.innerHeight, scrollX: window.scrollX, scrollY: window.scrollY },
+      { width: window.innerWidth, height: window.innerHeight },
+      { width: panelEl?.offsetWidth ?? 0, height: panelEl?.offsetHeight ?? 0 },
     );
     this.top = pos.top;
     this.left = pos.left;
     this.maxHeight = pos.maxHeight;
     this.alignEnd = pos.alignEnd;
     this.alignCenter = pos.alignCenter;
+    this.flipped = pos.flipped;
+  }
+
+  /**
+   * Top layer: the element stays in place in the DOM (no portal to
+   * `<body>`) so it keeps inheriting the theme's `--st-*` custom properties;
+   * the Popover API only lifts rendering into the top layer, above overflow
+   * clipping. Where the API is missing, plain `position: fixed` applies.
+   */
+  private popoverShown = false;
+
+  showTopLayer(): void {
+    const el = this.panel?.nativeElement as
+      | (HTMLDivElement & { showPopover?: () => void })
+      | undefined;
+    if (!el || this.popoverShown) return;
+    if (typeof el.showPopover !== "function") return;
+    // The attribute is set ONLY here (never statically in the template):
+    // environments without the API hide every [popover] element via the UA
+    // rule, so a static attribute would force display:none.
+    el.setAttribute("popover", "manual");
+    try {
+      el.showPopover();
+      this.popoverShown = true;
+    } catch {
+      el.removeAttribute("popover");
+      // Already open or not ready — fixed positioning still applies.
+    }
+  }
+
+  hideTopLayer(): void {
+    const el = this.panel?.nativeElement as
+      | (HTMLDivElement & { hidePopover?: () => void })
+      | undefined;
+    this.popoverShown = false;
+    if (!el || typeof el.hidePopover !== "function") return;
+    try {
+      el.hidePopover();
+    } catch {
+      // Already hidden — nothing to do.
+    } finally {
+      el.removeAttribute("popover");
+    }
   }
 
   close(): void {
     if (!this.open) return;
+    this.hideTopLayer();
     this.open = false;
     this.openChange.emit(false);
   }
