@@ -90,7 +90,8 @@ Each was measured before being written here. None changes the decision; each cha
 | C2 | "the spec provides the `watermark: { hidden, license }` option of bpmn-canvas" | The option **already exists** in the published `@sentropic/bpmn-canvas` 0.3.0: `BC:README.md:360-380`, `BC:src/internal/canvas.ts:131-133` (non-blank `license` → `data-bpmn-canvas-watermark="hidden"`; otherwise a `watermark-refused` warning diagnostic and the logo stays). | No `bpmn-canvas` change is needed for the watermark. §13 specifies where the license reference comes from and the gates around it. |
 | C3 | `@sentropic/focus` is private (dossier S-FO2) | `H2A:packages/focus/package.json` has no `private` field and declares `"publishConfig": {"access": "public"}`; `npm view @sentropic/focus version` → `0.3.0`, published 2026-06-23T19:14:50Z. Its README still says « This package is **private** » (`H2A:packages/focus/README.md:8`). | The model package is already on npm. The Focus **renderer** (`<st-decision-dossier>`) is new and becomes public in the elements package (§6). The README contradiction is reported to h2a (§17, U-9). |
 | C4 | D4 = A is « publication de dataviz-angular maintenant, avec la matrice des absences » | Option A in `spec/graph-dataviz-decisions.json` reads « Tranche M3 identique sur 4 frameworks avant public, dette globale visible »; its recommendation text says « publier la matrice des absences ». `@sentropic/dataviz-angular` 0.5.0 is not `private` in its manifest, is wired into `.github/workflows/dataviz-publish.yml:12-14,159`, and `npm view @sentropic/dataviz-angular` returns E404. | Recorded as A with the owner's wording as a precision that prevails over the option text (§18.2). Flagged for owner confirmation (§17, Q-3). |
-| C5 | run "the guards of `verify.yml` on `spec/` and `.track/`" | `.github/workflows/verify.yml` triggers only on `packages/**`, `apps/docs/**`, `scripts/**`, `tools/**`, `docs/graph-dataviz-*`, `package.json`, `package-lock.json`, `.github/workflows/**`, `.ds-scrap/METHOD-fr-top50.md` (lines 12-24 and 25-38). No guard reads `spec/` or `.track/` (`grep -ln "spec/\|\.track" scripts/*.test.mjs` → empty). | No workflow runs on this PR's paths. The guards were run locally anyway (§19.3). |
+| C5 | run "the guards of `verify.yml` on `spec/` and `.track/`" | `.github/workflows/verify.yml` triggers only on `packages/**`, `apps/docs/**`, `scripts/**`, `tools/**`, `docs/graph-dataviz-*`, `package.json`, `package-lock.json`, `.github/workflows/**`, `.ds-scrap/METHOD-fr-top50.md` (push paths from line 13, pull-request
+paths from line 27). No guard reads `spec/` or `.track/` (`grep -ln "spec/\|\.track" scripts/*.test.mjs` → empty). | No workflow runs on this PR's paths. The guards were run locally anyway (§19.3). |
 
 ---
 
@@ -380,10 +381,12 @@ existing `st-` class prefix: `<st-bar-chart>`, `<st-bpmn-canvas>`, `<st-decision
   threshold: L2 measures the Svelte route on the three pilot elements; if one of the three loses a function that cannot
   be worked around (snippets or slots, `ThemeProvider` context, transitions), the route switches to Lit for the
   affected elements, and the switch is recorded in Track.
-- **Known risk to measure first**: child components compiled outside custom-element mode emit their CSS as an
-  external file by default, which would not reach the shadow root. L2 compiles every component that enters the
-  bundle with `css: 'injected'` and asserts that each element's computed styles match the framework component's on
-  the same input.
+- **Known risk to measure first**: `@sveltejs/vite-plugin-svelte` 7.1.2 defaults to `emitCss: true` (« Emit Svelte
+  styles as virtual CSS files », `node_modules/@sveltejs/vite-plugin-svelte/src/public.d.ts:32-37`). For child
+  components compiled outside custom-element mode, that CSS would land in a document-level file, not in the
+  element's shadow root [JUDGMENT, to confirm in L2]. L2 compiles every component that enters the bundle with
+  `css: 'injected'` and asserts that each element's computed styles match the framework component's on the same
+  input.
 - **json-render comparison** (dossier §2.4, "other standards"): L2 also renders `BarChart` with
   `@json-render/svelte` and records runtime size, schema form and catalogue mapping, before the wrapper route is
   frozen. json-render is not adopted as the base (0.x, Labs status, its own spec format, a Zod catalogue that would
@@ -801,4 +804,51 @@ D7=A: « nouveau runtime tiers seulement après décision owner explicite »
 
 ## 19. Traceability
 
-Filled in after the Track writes; see the next commit of this PR.
+### 19.1 Track
+
+Track workspace `streams`, written with the `track` CLI 0.98.0 from this branch, from the worktree root. The CLI
+derives the actor from `git config user.email` (`human:<email>`); the owner decisions were relayed by the
+`design-system` conductor, which each decision's context states. `track validate` → `OK: 1657 events, integrity +
+desync clean` (1604 on `origin/main`, 53 appended). No acceptance run, no waiver and no comprehension record was
+created.
+
+| object | Track id |
+|---|---|
+| feature DS-JSON-RENDER (parent: stream S6 · Moteur, Outillage & Release `01KW860ATXPNDVSCVHT92KB6P2`) | `01M519DQZ9HERKFR70BGDVNWWN` |
+| L0 — spec and traceability (in progress) | `01M519E5NPW4C4GZ5EN31YVB2X` |
+| L1 — catalogue and schema generator | `01M519E5VX34GQ7BBFBPYRR328` |
+| L2 — elements package and measurements | `01M519E62VZ92KY3TV4KQTFFST` |
+| L3 — MCP Apps contract on the h2a side | `01M519E690VYDW2FRCYAE65DDT` |
+| L4 — skills | `01M519E6F1SEQSBVHJJTRCD96G` |
+| L5 — pilot bpmn-canvas | `01M519E6MZYCPK2M8SDQJVFT5P` |
+| L6 — pilot Focus | `01M519E6V8PQ27Y5T3YYAAK4FN` |
+| L7 — publication | `01M519E73CVRPKZGGBBEAN9B00` |
+| L8 — canvas exchange envelope | `01M519E7AFC8CJVEHZWTCGFPE7` |
+| decision **E** (commitment) — options `0`, `A`, `B`, `C`, `D`, `E`; recommendation `E`; selected `E`, outcome `go`; artifact `rendered-view` → this spec, source dossier sha256 `d476b4fb…fdd0` | `01M519FQDB50MVE6HQ62RJ2T1J` |
+| decision **D2** (orientation) — options `A`, `B`, `C` from `spec/graph-dataviz-decisions.json`; selected `A`, outcome `go`; target GD-M1-PACKAGING `01M2KJTXM16G2D1YRE2S2CR5EK` | `01M519GE5EA3WF17TRHKPWWFT1` |
+| decision **D4** (orientation) — options `A`, `B`, `C`; selected `A`, outcome `go`; owner precision in its context; target GD-M2-PARITY `01M2KJTY950VZE61KCYBT87TBP` | `01M519GEGJ509PDJYRSRWA796K` |
+| decision **D7′** (commitment) — options `A` (D7=A unchanged), `revisee`; selected `revisee`, outcome `go`; artifact `rendered-view` → §18.4; targets the feature above and GD-M3-SLICE `01M2KJTYE8AX2VWQWTD852TKRK` | `01M519GRZ1FMHBF6HJ710BWSHP` |
+
+Dependencies L1 → L0, L2 → L1, L3 → L2, L4 → L3, L5 → L3, L6 → L3, L7 → L5, L7 → L6, L8 → L2 are `dependency`
+blockers with rule `linked-accepted`; each lot carries one acceptance criterion pointing at §11 or §15.
+
+### 19.2 `spec/graph-dataviz-decisions.json`
+
+D2 and D4 now read `"status": "rendered"` with a `rendered` object (selected option, outcome, `trackDecisionId`,
+`pendingReplayRecordId`, note; D4 also carries the owner's precision). The fields that
+`plan/replay-graph-dataviz-track.mjs` compares (`context`, `options`, `recommendation`) are unchanged; the file
+round-trips byte-identically through `JSON.stringify(…, null, 2)`, which was used to write it. The replay preview
+reports **0 operations** before and after the change. The pending records `01M2KK5XPJCP07FDBQBX16TV08` and
+`01M2KK5XS2SXGMSSQPAVCF2XJ4` are still `pending` with no selected option (`track decision ls --format json`).
+
+### 19.3 Checks run on the final tree
+
+`node scripts/run-script-guards.mjs`, `npm run licensing:check`, `node tools/graph-dataviz-provenance/verify.mjs`,
+`track validate`, the replay preview; results in the PR description. No workflow runs on this PR's paths (C5).
+
+### 19.4 Concurrency with PR #164
+
+PR #164 also appends to `.track/events.jsonl` (22 events after line 1604) and edits D1 and D3 in
+`spec/graph-dataviz-decisions.json`. The event log is a hash chain (`prevHash`), so the PR merged second cannot be
+resolved by concatenation: it must be rebased and its Track writes replayed with the CLI on top of the other's log,
+which assigns new identifiers, then this section is updated.
