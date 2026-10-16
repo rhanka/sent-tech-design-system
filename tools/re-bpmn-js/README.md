@@ -7,7 +7,7 @@ bpmn-js-examples at 18.31.0.
 
 ```sh
 node tools/re-bpmn-js/enumerate.mjs   # writes docs/re/bpmn-js-inventory.json
-node tools/re-bpmn-js/verify.mjs      # completeness guard (independent AST bijection + schema + sources + proofs)
+node tools/re-bpmn-js/verify.mjs      # completeness guard (AST bijection + source.path/detail agreement + schema + proofs)
 node tools/re-bpmn-js/extract-ast.mjs # debug: per-family counts of the second extractor
 ```
 
@@ -22,11 +22,14 @@ this worktree), and writes one inventory entry per extracted item.
 `verify.mjs` is a non-tautological guard: it never re-runs `enumerate.mjs`.
 It compares the inventory against a second, independent extraction by
 `extract-ast.mjs` (TypeScript compiler API over the same pinned sources,
-sharing no code with `enumerate.mjs`) and fails — listing both directions of
-the difference — unless the two enumerations are in exact bijection, every
-`source` and `proof` resolves to a real `path:line`, and every entry carries
-the full schema. This is the mechanical guard behind any "100 %" claim:
-100 % of the surface two independent extractors agree on, under the stated
-conventions — nothing more.
+sharing no perimeter list, constant or function with `enumerate.mjs` — every
+perimeter is derived there from the source structure) and fails — listing
+both directions of the difference and both values on disagreement — unless
+the two enumerations are in exact bijection with equal `source.path` and
+`detail` on every shared key, every `source` and `proof` resolves to a real
+`path:line`, and every entry carries the full schema. This is the mechanical
+guard behind any "100 %" claim: 100 % of the surface two independent
+extractors agree on, at the same source and with the same detail, under the
+stated conventions — nothing more.
 
 Override the sources location with `RE_SOURCES=/path/to/re-sources` if needed.
