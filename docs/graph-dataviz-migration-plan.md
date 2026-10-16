@@ -11,6 +11,28 @@ La migration conservatoire graph/dataviz peut continuer en parallèle, mais elle
 1. **Étape A — intégration XYFlow + BPMN-js** : rendre, éditer, importer/exporter et qualifier une première verticale dans le design system.
 2. **Étape B — capitalisation spécifique Sentropic** : extraire seulement les contrats et comportements effectivement validés en A, puis remplacer progressivement les dépendances de rendu par les sous-chemins de la cible consolidée. Aucun « moteur maison » n’est commencé avant les critères de sortie A.
 
+### Amendment — 2026-10-04 (recorded 2026-10-15): BPMN semantic model, option A′
+
+The text above is the order ratified on 18 September 2026 and is kept as written. On 4 October 2026 the owner selected
+option **A′** (Track commitment decision, see `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` §17), which amends it on one
+point only.
+
+- **What A′ changes.** The BPMN **semantic model** becomes native to `@sentropic/diagram-core`: profiles generated from
+  the bpmn-moddle descriptors (`bpmn`, `bpmndi`, `dc`, `di`, `bioc`, `color`, plus the `sem:` dialect) cover every type
+  and property, and the kernel receives the general mechanisms this needs. The sentence « ne réimplémente pas un moteur
+  Sentropic » no longer holds for the BPMN *model*: the exchanged model is moddle JSON (shape F1 of bpmn-canvas, not yet
+  published), and `DiagramState` is its bijective typed image, proven by tests against the latest bpmn-moddle in a
+  separate private package. `diagram-core` stays zero-dependency, zero-DOM and private.
+- **A deliberate addition beyond strict moddle coverage.** The descriptors carry no BPMN well-formedness rules. The
+  spec adds a hand-written catalogue of them (each rule citing its OMG clause or XSD line), reported as diagnostics
+  that never block import (`spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` §8.4).
+- **What A′ does not change.** BPMN **rendering and editing** stay with bpmn-js, inside `@sentropic/bpmn-canvas`. The
+  « intégrations explicitement autorisées » above are not consumed by this amendment: no DS manifest gains `bpmn-js`,
+  `diagram-js` or `@sentropic/bpmn-canvas`, and any such dependency remains behind the **D7** gate
+  (`docs/a0-csp-dependency-qualification.md`, section « Porte restante », lines 467-473). Étape A (xyflow + bpmn-js verticale) keeps its status below.
+- The rule « pas de deuxième implémentation active divergente » (M2 row, below) is met by construction: one exchanged
+  model (moddle JSON) and one typed image proven equal to it, not two editable authorities.
+
 ## Étape A — verticale XYFlow + BPMN-js
 
 ### Objectif produit
