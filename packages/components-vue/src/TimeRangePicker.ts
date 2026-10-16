@@ -47,14 +47,6 @@ export type TimeRangePickerProps = {
   value?: TimeRange;
   defaultValue?: TimeRange;
   onChange?: (value: TimeRange) => void;
-  /** Fired with the committed value on Apply (listen with `@apply`). */
-  onApply?: (value: TimeRange) => void;
-  /**
-   * Fired when the panel closes WITHOUT Apply and without a preset selection
-   * (Cancel button, Escape, outside click, trigger re-click). Listen with
-   * `@cancel`.
-   */
-  onCancel?: () => void;
   presets?: TimeRangePreset[];
   min?: number;
   max?: number;
@@ -167,20 +159,9 @@ export const TimeRangePicker = defineComponent({
       type: Function as unknown as PropType<(token: string, locale: string) => string>,
       default: undefined,
     },
-    onApply: {
-      type: Function as unknown as PropType<(value: TimeRange) => void>,
-      default: undefined,
-    },
-    onCancel: { type: Function as unknown as PropType<() => void>, default: undefined },
   },
   // `openChange` fires whenever the panel opens (true) or closes (false);
   // listen with `@open-change` / `:onOpenChange`.
-  //
-  // `apply` fires with the committed value on Apply (also declare `onApply`
-  // as a prop for typing; `emit("apply")` already routes to it, so never
-  // call `props.onApply` directly — that would fire twice). `cancel` fires
-  // when the panel closes WITHOUT Apply and without a preset selection
-  // (Cancel button, Escape, outside click, trigger re-click).
   //
   // Slot `customExtra`: optional consumer controls rendered in the Custom tab,
   // directly above the From/To fields (e.g. a "date basis" radio group). The
@@ -188,11 +169,7 @@ export const TimeRangePicker = defineComponent({
   // DRAFT: reseed it on `openChange(true)` and commit it on `change` when the
   // emitted value has `mode: "absolute"` (that emit only happens on Apply).
   // Cancel / Escape / outside click emit nothing.
-  //
-  // Slot `custom-header`: optional consumer controls rendered at the TOP of
-  // the Custom tab, above the calendars (e.g. a "document date /
-  // acquisition date" choice). Same draft contract as `customExtra`.
-  emits: ["update:modelValue", "change", "openChange", "apply", "cancel"],
+  emits: ["update:modelValue", "change", "openChange"],
   setup(props, { emit, slots }) {
     const autoId = ref(nextTrpId());
     const fieldLabelId = `${autoId.value}-label`;
@@ -281,7 +258,6 @@ export const TimeRangePicker = defineComponent({
       const resolved = resolvePresetEntry(preset, Date.now());
       if (!resolved) return;
       commit(resolved);
-      committedClose = true;
       panelOpen.value = false;
     }
 
@@ -374,14 +350,6 @@ export const TimeRangePicker = defineComponent({
       window.removeEventListener("keydown", onWindowKeydown);
     });
 
-    // True when the pending close comes from Apply or a preset selection (a
-    // committed value): the close transition must NOT emit `cancel`. Every
-    // other close path (Cancel button, Escape, outside click, trigger
-    // re-click) leaves it false so `cancel` fires exactly once per dismissal.
-    // (`watch` without `immediate` never fires on setup, so no mount guard is
-    // needed here.)
-    let committedClose = false;
-
     // Open transition: seed the tab + draft from the current value, capture
     // the element to restore focus to, then move focus into the panel. Close
     // transition: restore focus to whatever had it before opening (the
@@ -389,19 +357,11 @@ export const TimeRangePicker = defineComponent({
     watch(panelOpen, (isOpen) => {
       emit("openChange", isOpen);
       if (isOpen) {
-        committedClose = false;
         activeTab.value = current.value.mode;
         seedDraft();
         previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
         nextTick(focusFirstInPanel);
       } else {
-        // A close without Apply or a preset selection notifies `cancel`
-        // (which already routes to an `onCancel` handler prop).
-        if (committedClose) {
-          committedClose = false;
-        } else {
-          emit("cancel");
-        }
         const el = previousFocus;
         previousFocus = null;
         if (el) nextTick(() => el.focus());
@@ -497,15 +457,7 @@ export const TimeRangePicker = defineComponent({
 
     function onApply() {
       if (!composedDraft.value) return;
-      const next: TimeRange = {
-        mode: "absolute",
-        from: composedDraft.value.from,
-        to: composedDraft.value.to,
-      };
-      commit(next);
-      // Already routes to an `onApply` handler prop — never call it directly.
-      emit("apply", next);
-      committedClose = true;
+      commit({ mode: "absolute", from: composedDraft.value.from, to: composedDraft.value.to });
       panelOpen.value = false;
     }
     function onCancel() {
@@ -578,9 +530,6 @@ export const TimeRangePicker = defineComponent({
         );
 
         const customPanel = h("div", { class: "st-timeRangePicker__custom" }, [
-          slots["custom-header"]
-            ? h("div", { class: "st-timeRangePicker__customHeader" }, slots["custom-header"]())
-            : null,
           h("div", { class: "st-timeRangePicker__calendars" }, [
             h(Calendar, {
               range: true,

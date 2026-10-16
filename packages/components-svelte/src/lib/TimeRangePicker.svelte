@@ -72,25 +72,8 @@
      * Apply). Cancel / Escape / outside click emit nothing.
      */
     customExtra?: Snippet;
-    /**
-     * Optional consumer controls rendered at the TOP of the Custom tab, above
-     * the calendars (e.g. a "document date / acquisition date" choice). Same
-     * draft contract as `customExtra`; rendered only in the Custom tab and
-     * only when provided. Included in the focus trap and tab order.
-     */
-    customHeader?: Snippet;
     /** Fires whenever the panel opens (`true`) or closes (`false`). */
     onOpenChange?: (open: boolean) => void;
-    /**
-     * Fired with the committed value when the consumer clicks Apply (in
-     * addition to `onChange`).
-     */
-    onApply?: (value: TimeRange) => void;
-    /**
-     * Fired when the panel closes WITHOUT Apply and without a preset
-     * selection (Cancel button, Escape, outside click, trigger re-click).
-     */
-    onCancel?: () => void;
   };
 
   let {
@@ -113,10 +96,7 @@
     formatRange,
     formatPresetLabel: formatPresetLabelProp,
     customExtra,
-    customHeader,
-    onOpenChange,
-    onApply: onApplyProp,
-    onCancel: onCancelProp
+    onOpenChange
   }: TimeRangePickerProps = $props();
 
   const isFr = $derived((locale ?? "fr-FR").toLowerCase().startsWith("fr"));
@@ -201,7 +181,6 @@
     const resolved = resolvePresetEntry(preset, Date.now());
     if (!resolved) return;
     commit(resolved);
-    committedClose = true;
     panelOpen = false;
   }
 
@@ -309,27 +288,15 @@
     }
   });
 
-  // Guards the close branch below against the effect's initial run (which
-  // observes `panelOpen === false` before anything ever opened).
-  let everOpened = false;
-
   $effect(() => {
     if (panelOpen) {
       untrack(() => {
-        everOpened = true;
         activeTab = current.mode;
         seedDraft();
         previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       });
       tick().then(focusFirstInPanel);
     } else {
-      if (!untrack(() => everOpened)) return;
-      const wasCommitted = untrack(() => committedClose);
-      committedClose = false;
-      // A close without Apply or a preset selection (Cancel, Escape, outside
-      // click, trigger re-click) notifies `onCancel` — before focus is
-      // restored, while the dismissal is still the current transition.
-      if (!wasCommitted) untrack(() => onCancelProp?.());
       const el = previousFocus;
       previousFocus = null;
       if (el) tick().then(() => el.focus());
@@ -424,18 +391,9 @@
       : "The start date must be before the end date.";
   });
 
-  // True when the pending close comes from Apply or a preset selection (a
-  // committed value): the close transition must NOT fire `onCancel`. Every
-  // other close path (Cancel button, Escape, outside click, trigger
-  // re-click) leaves it false so `onCancel` fires exactly once per dismissal.
-  let committedClose = false;
-
   function onApply() {
     if (!composedDraft) return;
-    const next: TimeRange = { mode: "absolute", from: composedDraft.from, to: composedDraft.to };
-    commit(next);
-    onApplyProp?.(next);
-    committedClose = true;
+    commit({ mode: "absolute", from: composedDraft.from, to: composedDraft.to });
     panelOpen = false;
   }
   function onCancel() {
@@ -507,11 +465,6 @@
         </SelectableList>
       {:else}
         <div class="st-timeRangePicker__custom">
-          {#if customHeader}
-            <div class="st-timeRangePicker__customHeader">
-              {@render customHeader()}
-            </div>
-          {/if}
           <div class="st-timeRangePicker__calendars">
             <Calendar
               range
@@ -686,12 +639,6 @@
   .st-timeRangePicker__calendars :global(.st-calendar) {
     flex: 1 1 16rem;
     min-width: 16rem;
-  }
-
-  .st-timeRangePicker__customHeader {
-    display: flex;
-    flex-direction: column;
-    gap: var(--st-spacing-2, 0.5rem);
   }
 
   .st-timeRangePicker__customExtra {
