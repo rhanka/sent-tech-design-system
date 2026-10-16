@@ -1,7 +1,7 @@
 # SPEC EVOL — DS-JSON-RENDER: one JSON in, one design-system component out, in any MCP Apps host (option E)
 
 **Status**: specification and traceability only. No implementation, no package, no workflow in this PR.
-**Date**: 2026-10-15, amended 2026-10-16. **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4 and the `track focus --format json` annex).
+**Date**: 2026-10-15, amended 2026-10-16 (twice). **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4, the `track focus --format json` annex, and the cluster-mesh registry, Focus renderer and layout-engine precisions).
 **Base measured**: `origin/main` = `30c13318` (DS). Other revisions read: h2a `origin/main` = `61ddcec9`;
 bpmn-canvas `origin/main` = `62ec95f` and local, **unpushed** branch `workbench/functions-20261004` = `e9f5f89`;
 A2UI repository pinned at commit `3b0e0373`.
@@ -17,7 +17,10 @@ rests on the ledger alone is marked as such.
 D4 = A and the D7 revision with elkjs and xyflow), and the conductor's follow-up of the same day carrying the owner's
 answers to Q-1, Q-2 and Q-3 (§17). The owner's answers of 2026-10-16 to H-1, H-3 and H-4, plus the `track focus
 --format json` annex point, were relayed by h-cond after the Astra + Opus double study and are rendered in §§1.1b, 8,
-9, 11.2, 14, 15 and 17 (source for each: owner via h-cond, 2026-10-16).
+9, 11.2, 14, 15 and 17 (source for each: owner via h-cond, 2026-10-16). The three further owner precisions of
+2026-10-16 (cluster-mesh registries, Focus renderer defaults, diagram layout-engine rules), relayed by h-cond the
+same day, are rendered in §§1.1c, 7, 8, 9, 10.5, 11.2, 14, 15 and 17 (source for each: owner via h-cond,
+2026-10-16).
 **Glossary**: `d2d-cond` = the conductor session of the d2d repository (`airbus-genair-d2d`); `h-cond` = the
 conductor session of h2a. Both relay owner rules; neither is a repository.
 **Related**: [GD-BPMN-MODDLE (A′), PR #164](https://github.com/rhanka/sent-tech-design-system/pull/164) (open);
@@ -93,6 +96,14 @@ After the Astra + Opus double study, the owner decides (source for each: owner v
    without reinterpreting HTML. **Status: to build**; `unknown` until publication. It is a precondition of L6 (§14).
 
 H-2 needs no change here: it is already integrated (confidential Camunda license, property of the owner, §13.2).
+
+### 1.1c Owner precisions (2026-10-16, relayed by h-cond)
+
+The same day, the owner adds three precisions (source for each: owner via h-cond, 2026-10-16):
+
+1. **Cluster-mesh registries.** Owner verbatim: « focus devrait être présenté comme un putain de skill au registry de cluster-mesh pour les skills, idem pour le mcp d'ui. » The **`focus`** skill (in `@sentropic/focus`) is **registered and exposed by the cluster-mesh skills registry**, and the **`ui://` render MCP** (module of `@sentropic/h2a`) is **registered in the cluster-mesh MCP registry**. The registries expose them; there is **never an ad hoc installation**. On the cluster-mesh side, the carrying session is the **`s-conductor`** session; the registration form is **`unknown`** on the DS side (U-20). Details in §§8, 9; distribution in §7; lots L3, L4 in §14.
+2. **Decision-dossier renderer (Focus component).** The renderer imposes its own defaults, which the author cannot work around (§11.2): whole card clickable; 1 px strokes; light selected state; long arguments folded; renderer-chosen layout (compact list or grid by option count and length, never four tall columns); no per-option sub-action, a single annotation per decision; recommendation as a discreet badge, never preselected. The consumed `@sentropic/focus` schema carries question + optionSet **with no author layout indication**.
+3. **Diagram layout engine (canvas envelope, L8).** Owner verbatim: « c'est très perturbant quand les flèches ne sont pas branchées au centre des diagrammes quand c'est possible … ce n'est pas à un skill de faire ça mais à un layout optimizer » ; « il doit y avoir une notion d'alignement et de remplissage ». Engine rules, never per-scene metadata (§10.5): a lone edge docks at its side's centre; several edges on one side spread symmetrically about the centre; bend count is then minimised; sibling containers in one row are top-aligned and stretched to the row height. They attach to L8 and reuse the reverse-engineering programme's inventoried capacities (JointJS anchors, connection points and routers; xyflow handles and edge types; bpmn-js docking and layout).
 
 The owner's original requests (2026-10-04 and 2026-10-06), verbatim from the dossier:
 - « un standard pour permettre de render dans n'importe quelle UI (gemini, claude etc) mes composants de façon simple
@@ -557,6 +568,11 @@ browser.** It therefore never carries the Camunda license value; a `bpmn.waterma
 - **Formats**: ESM (`dist/elements.js` plus chunks) and one self-contained IIFE per element
   (`dist/browser/<id>.iife.min.js`) for script-tag pages and inlining; fonts and images stay files resolved through
   `assetBase`, never `data:` URIs (the `bpmn-canvas` rule).
+- **Cluster-mesh exposure (owner via h-cond, 2026-10-16).** The `focus` skill and the `ui://` render MCP reach
+  consumers **only through the cluster-mesh registries** (skills registry for `focus`, MCP registry for the
+  render MCP), never through an ad hoc installation. npm and jsDelivr above remain the DS artefact channels; the
+  registries are the exposure channels. The registration form each registry expects is `unknown` on the DS side
+  (U-20); L3 and L4 record the measured form (§14).
 
 ---
 
@@ -567,7 +583,10 @@ owner decision H-4 (owner via h-cond, 2026-10-16): a **module of `@sentropic/h2a
 MCP endpoint, with the DS content vendored by fingerprint. On 2026-10-15 no h2a MCP server served a `ui://` resource
 and no package was designated (§3.5; h-cond, 2026-10-15). The L3 entry condition and the G1 criterion on the carrier
 (§14, §15) are therefore **fulfilled**; Track recording follows. The DS supplies the elements package (bundled from
-the lockfile before publication, from npm after) and the catalogue.
+the lockfile before publication, from npm after) and the catalogue. **Cluster-mesh registration** (owner via h-cond,
+2026-10-16): the module is **registered in the cluster-mesh MCP registry**, which exposes it; there is never an ad
+hoc installation. The carrying session on the cluster-mesh side is `s-conductor`; the registration form is
+`unknown` on the DS side (U-20) and is measured by L3 (§14).
 
 ### 8.1 Capability
 
@@ -640,7 +659,10 @@ written in the server and covered by a test with an oversize case.
   §11.2), and how to render it in a host or as a standalone file without a Claude session
   (`H2A:docs/focus/decision-dossier-format.md:3-5`). **Carrier decided by H-3** (owner via h-cond, 2026-10-16,
   against both study proposals): the skill lives in **`@sentropic/focus`** and is installed with the other skills.
-  **Status: to build.** The DS supplies `sentropic-render` and the element.
+  **Status: to build.** **Cluster-mesh exposure** (owner via h-cond, 2026-10-16): the skill is **registered and
+  exposed by the cluster-mesh skills registry**, never installed ad hoc. The carrying session on the cluster-mesh
+  side is `s-conductor`; the registration form is `unknown` on the DS side (U-20) and is measured by L4 (§14).
+  The DS supplies `sentropic-render` and the element.
 - Measurable skill check (L4) [JUDGMENT]: on 10 fixed prompts per pilot component, at least 8 produce a valid envelope
   on the first attempt and 10 after the correction loop; the prompts and results are committed.
 
@@ -675,6 +697,31 @@ to `diagram-core` is A′ (PR #164) and is not needed for rendering.
 A transaction maps to a JSON Patch (AG-UI `STATE_DELTA`) or an A2UI `updateDataModel` **with loss** (no inverse, no
 compare-and-swap); the mapping declares that loss. An external delta is converted into a transaction and **refused**
 on conflict, never merged (dossier §2.4, lines 4, 6, 7).
+
+### 10.5 Layout engine rules (owner via h-cond, 2026-10-16)
+
+Owner verbatim: « c'est très perturbant quand les flèches ne sont pas branchées au centre des diagrammes quand
+c'est possible … ce n'est pas à un skill de faire ça mais à un layout optimizer » ; « il doit y avoir une notion
+d'alignement et de remplissage ». These are **engine** rules, never per-scene metadata: a scene carries no docking
+or layout hint; the engine owns docking, routing and row alignment:
+- **L-R1 — lone edge at the centre.** An edge alone on its side docks at the centre of that side.
+- **L-R2 — shared side spread symmetrically.** Several edges on the same side spread symmetrically about the
+  centre of that side.
+- **L-R3 — bends minimised after docking.** Once docked per L-R1/L-R2, the router minimises the bend count.
+- **L-R4 — row alignment and fill.** Sibling containers in one row are top-aligned and stretched to the row
+  height.
+
+They attach to **L8** (§14): the `DiagramCanvas` engine implements L-R1–L-R4, and AC-L8 checks them. They reuse the
+reverse-engineering programme already on main, where these capacities are inventoried: JointJS anchors, connection
+points and routers (`spec/SPEC_RE_JOINTJS_PARITY.md`: `anchor`, `link-anchor`, `connection-point`, `router` and
+`connector` families, the §4.7 pure magnet contract, Lot 5 scene geometry); xyflow handles and edge types
+(`spec/SPEC_RE_XYFLOW_PARITY.md`: `Handle` components and handle anchor bounds, the edge-geometry row covering the
+built-in path functions, markers and edge labels); bpmn-js docking and layout (`spec/SPEC_RE_BPMN_JS_PARITY.md`:
+align/distribute entries, `LayoutConnectionBehavior` verdicts compared as geometry, snapping and auto-place).
+
+**Ad hoc kit, outside the DS.** The current kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`, with copies in
+hrpolnav) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus component (§11.2):
+no scene, skill or kit metadata carries L-R1–L-R4 hints.
 
 ---
 
@@ -725,6 +772,21 @@ semver, DS pins the exact version and records the schema's sha256, exact version
 reinterpreting HTML, `unknown` until publication. Until both land, the catalogue entry `DecisionDossier` carries
 `x-sentropic.status: "unknown"` and L6 cannot start (§14).
 
+**Imposed renderer defaults** (owner via h-cond, 2026-10-16; owner verbatim: « à un moment le focus devrait être
+un renderer qui prend les options et layout tout seul sans te laisser le choix du mauvais goût »). The component
+imposes these defaults and the author cannot work around them:
+- **F-R0 — consumed contract.** The DS consumes question + optionSet **with no author layout indication**: the
+  `DecisionDossier` schema carries no author layout property, and any layout hint in an envelope is refused with
+  `schema-violation` (§4.3, `unevaluatedProperties: false`).
+- **F-R1 — whole card clickable.** The entire option card is the selection control; no separate far-away button.
+- **F-R2 — 1 px strokes.** Card outlines are 1 px; no heavier rule anywhere in the dossier.
+- **F-R3 — light selected state.** Selection is a light state (tint or 1 px outline change), never a heavy block.
+- **F-R4 — long arguments folded.** Long option arguments render folded (collapsed by default, expandable).
+- **F-R5 — renderer-chosen layout.** The renderer lays out alone: compact list or grid according to option count
+  and length — never four tall side-by-side columns of long cards.
+- **F-R6 — no per-option sub-action.** No sub-action per option; a single annotation per decision at most.
+- **F-R7 — discreet recommendation.** The recommendation is a discreet badge on the option; it never preselects it.
+
 Criteria:
 1. A dossier produced by `track focus <id> --format json` from this repository's Track renders in Claude Desktop, in
    VS Code and as a standalone file built from the **local** elements build and opened with the network disabled.
@@ -739,6 +801,21 @@ Criteria:
    (L8).
 6. The repositories that copy the chain are not migrated retroactively: kc and d2d (`docs/`), genair-cutter, and
    radar-immobilier, whose copies sit under `tmp/`. New dossiers use the element.
+7. Clickable zone covers the card (F-R1): on three fixtures, the interactive element's box equals each option
+   card's box within 1 CSS px, and clicking the card padding emits `choose-option` with the option id.
+8. No stroke above 1 px (F-R2): a scan of computed styles on the dossier fixtures reports no `border-width` above
+   1 px.
+9. Nothing preselected (F-R7): the initial render carries no selected state and emits no `choose-option` before
+   any click, on every fixture including the recommended option.
+10. Long arguments folded (F-R4): the long-argument fixture renders collapsed by default with an expand control;
+    expanding reveals the full text.
+11. Renderer-chosen layout (F-R0, F-R5): a `DecisionDossier` envelope carrying an author layout property is refused
+    with `schema-violation`; on the count/length fixtures the renderer picks compact list or grid, and no fixture
+    renders four tall side-by-side columns of long cards.
+12. Single annotation, no sub-action (F-R6): the rendered DOM holds no per-option control besides the card itself,
+    and at most one annotation control per decision.
+13. Light selection, discreet badge (F-R3, F-R7): the selected state's outline stays 1 px (or a light tint), and the
+    recommendation badge changes neither the layout nor the selection.
 
 ### 11.3 P-DATA: `<st-bar-chart>`
 
@@ -829,13 +906,13 @@ CDN runs in the browser, and everything in `hostConfig` is readable there, **the
 | **L0** | DS | this spec, Track records (§19) | — | — | **G0**: PR reviewed and merged; H-4 and H-5 sent to h2a with a requested date |
 | **L1** | DS | catalogue and schema generator (§5), envelope validator and diagnostics (§4), freshness guard, A2UI SDK acceptance test | L0 | — | **G1**: AC-L1 **and the L3 carrier designated and recorded in Track (H-4, H-5) — fulfilled 2026-10-16 (carrier: module of `@sentropic/h2a`; Track recording follows)** |
 | **L2** | DS | elements package, `private: true`: three wrappers, theme, shadow DOM, CSP and size measurements, `sri.json`, Svelte-vs-Lit threshold, json-render comparison, W4 guard | L1 | — | **G2**: AC-L2; the Svelte/Lit outcome recorded in Track |
-| **L3** | h2a (carrier: module of `@sentropic/h2a`, H-4 answered 2026-10-16) | MCP extension negotiation, `resources/*`, four tools, `ui://sentropic/render/v1`, fallbacks, bounds, W3/W4 | L2 | **carrier designated (owner + date) — fulfilled 2026-10-16 (owner via h-cond)** | **G3**: AC-L3 |
-| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (`@sentropic/focus`, H-3 answered 2026-10-16), skill check on the local build | L3 | — | **G4**: AC-L4 |
+| **L3** | h2a (carrier: module of `@sentropic/h2a`, H-4 answered 2026-10-16) | MCP extension negotiation, `resources/*`, four tools, `ui://sentropic/render/v1`, fallbacks, bounds, W3/W4, **cluster-mesh MCP registration** (registry exposes the module, never ad hoc; carrying session `s-conductor`; form `unknown` DS-side, U-20) | L2 | **carrier designated (owner + date) — fulfilled 2026-10-16 (owner via h-cond)** | **G3**: AC-L3 |
+| **L4** | DS + h2a | skills `sentropic-render` (DS) and `focus` (`@sentropic/focus`, H-3 answered 2026-10-16), skill check on the local build, **cluster-mesh skills registration** (`focus` exposed by the skills registry, never ad hoc; carrying session `s-conductor`; form `unknown` DS-side, U-20) | L3 | — | **G4**: AC-L4 |
 | **L5** | DS (+ bpmn-canvas) | pilot P-BPMN | L3 | F1 published with unknown-extension retention | **G5**: §11.1 criteria |
-| **L6** | DS (+ h2a) | pilot P-FOCUS | L3 | `@sentropic/focus` ≥ 0.4.0 with schema + validator published **and** `track focus --format json` published (both `unknown` until publication, §11.2) | **G6**: §11.2 criteria |
+| **L6** | DS (+ h2a) | pilot P-FOCUS, imposed renderer defaults F-R0–F-R7 (§11.2) | L3 | `@sentropic/focus` ≥ 0.4.0 with schema + validator published **and** `track focus --format json` published (both `unknown` until publication, §11.2) | **G6**: §11.2 criteria |
 | **L7a** | DS | first publication: `elements-publish.yml`, core + `BarChart` + catalogue + schemas, jsDelivr and SRI check, skill template switched to the CDN | L4 | — | **G7a**: AC-L7a. **Point of no return** |
 | **L7b** | DS | publication of `BpmnCanvas` and `DecisionDossier` (minor release), `diagram-core` made public, W5 | L7a, L5, L6 | — | **G7b**: AC-L7b |
-| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
+| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, **layout engine rules L-R1–L-R4 (§10.5)**, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
 
 Splitting L7 keeps the value of L2–L4 (`BarChart` end to end, skill, MCP) from waiting on the two external
 preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fires.
@@ -863,9 +940,10 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   conforms; in a client that does not negotiate the extension, `render` returns the text fallback; an oversize
   envelope returns `payload-too-large`; the resource size is measured against the 2 MiB budget and the effective CSP
   is recorded per host (U-1, U-16); the output bounds of §8.2 are fixed; `get_schema`'s `content` carries the schema
-  text; the W4 canary test passes.
+  text; the W4 canary test passes; the measured cluster-mesh MCP registration form is recorded (U-20).
 - **AC-L4**: the skill check of §9 meets its thresholds on the local build; no produced output contains the string
-  `watermark` (grep of the committed outputs).
+  `watermark` (grep of the committed outputs); the measured cluster-mesh skills registration form for `focus` is
+  recorded (U-20).
 - **AC-L5** and **AC-L6**: the criteria of §11.1 and §11.2.
 - **AC-L7a**: `npm run licensing:check` passes with the elements package publishable; the published tarball's
   `sri.json` matches jsDelivr's served bytes for every browser file; the docs page snippet loads from jsDelivr with
@@ -874,7 +952,10 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   P-FOCUS criterion 1 repeated on the jsDelivr-pinned build; W5 holds.
 - **AC-L8**: generated schemas for `SemanticDocument`, `ViewDocument` and `Transaction` agree with `diagram-core`'s
   runtime validation on every existing fixture (accepted by both, or refused by both); a proposal event is never
-  applied without the host's compare-and-swap; the release that ships `DiagramCanvas` passes the AC-L7a checks.
+  applied without the host's compare-and-swap; the layout engine rules hold on fixtures — a lone edge docks at its
+  side's centre (L-R1), shared-side edges spread symmetrically about the centre (L-R2), the bend count is minimal
+  after docking (L-R3), and same-row sibling containers are top-aligned and stretched to the row height (L-R4);
+  the release that ships `DiagramCanvas` passes the AC-L7a checks.
 
 ## 16. Risks (dossier pre-mortem) and mitigations
 
@@ -917,6 +998,7 @@ Unknowns (each measured by the named lot):
 | U-17 | F1's canonical ordering, needed by P-BPMN criterion 4 | external (bpmn-canvas) |
 | U-18 | rotation cycle of `SENTROPIC_BPMN_WATERMARK_LICENSE` | owner |
 | U-19 | publication of `track focus --format json` (annex, owner via h-cond, 2026-10-16) | external (h2a) |
+| U-20 | cluster-mesh registration forms: what the skills registry expects for `focus` and the MCP registry expects for the `ui://` module (owner via h-cond, 2026-10-16; carrying session `s-conductor`); `unknown` on the DS side until L3/L4 measure it | L3, L4 |
 
 Questions for the owner:
 - **Q-1a** (blocking for hiding, not for L1–L4) Is a **non-secret** reference, distinct from the confidential license
