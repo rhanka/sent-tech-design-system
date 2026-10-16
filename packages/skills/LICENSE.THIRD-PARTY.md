@@ -63,7 +63,7 @@ qu'ils arrivent dans le `node_modules` du consommateur de notre fait.
 | `punycode` | 2.3.1 | MIT |
 | `require-from-string` | 2.0.2 | MIT |
 | `saxes` | 6.0.0 | ISC |
-| `source-map-js` | 1.2.1 | BSD-3-Clause |
+| `source-map-js` | 1.2.2 | BSD-3-Clause |
 | `symbol-tree` | 3.2.4 | MIT |
 | `tldts` | 7.0.30 | MIT |
 | `tldts-core` | 7.0.30 | MIT |
@@ -895,7 +895,7 @@ qu'ils arrivent dans le `node_modules` du consommateur de notre fait.
 > Le texte doit être relu à la source avant toute redistribution d'une copie
 > de ce paquet.
 
-#### `source-map-js` 1.2.1 — BSD-3-Clause
+#### `source-map-js` 1.2.2 — BSD-3-Clause
 
 >
 > Copyright (c) 2009-2011, Mozilla Foundation and contributors
