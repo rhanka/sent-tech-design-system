@@ -13,28 +13,39 @@
  * - rule: distinct `addRule('…')` action names (array forms expanded).
  * - palette: keys of the object returned by bpmn-js PaletteProvider.getPaletteEntries.
  * - context-pad: distinct entry keys assigned in bpmn-js ContextPadProvider
- *   (single + multi element), de-duplicated by key.
- * - replace-menu: keys of the shared PopupEntries catalog (the atoms every
- *   replace/append/create menu composes).
- * - popup-menu: provider ids from `registerProvider('…', …)` on popupMenu/contextPad/palette
- *   plus `getPopupMenuEntries`/`getPopupMenuHeaderEntries` owners (see family split below).
- *   To keep families disjoint, context-pad and palette keys live in their own
- *   families; popup-menu counts popupMenu.registerProvider ids only.
- * - keyboard: editor-action names bound in SHORTCUTS_KEY_BINDINGS (bpmn-js)
- *   plus diagram-js KeyboardBindings addListener actions plus KeyboardUtil key groups.
- * - event: distinct EventBus event names from `fire('…')`, `.on('…')`, `.on([…])`.
+ *   (single + multi element) plus the multi-element `align-elements` entry of
+ *   AlignElementsContextPadProvider, de-duplicated by key.
+ * - replace-menu: distinct `actionName`s actually offered by ReplaceMenuProvider,
+ *   from ReplaceOptions.js (`replaceWith('…')` calls, `replace-with-` prefix
+ *   unless overridden, plus the SEQUENCE_FLOW literal options). Commented-out
+ *   options are not behaviour and are excluded.
+ * - popup-menu: popup provider registrations (disambiguated by provider file
+ *   when an id repeats), ReplaceMenuProvider header entries, align-elements
+ *   entries and distribute-elements entries.
+ * - keyboard: editor-action names bound in SHORTCUTS_KEY_BINDINGS (bpmn-js),
+ *   diagram-js KeyboardBindings addListener actions (every listener kept in
+ *   the detail), every registered EditorActions action, search-pad keys, and
+ *   KeyboardUtil key groups.
+ * - event: distinct EventBus event names from `fire('…')`, `.on('…')`,
+ *   `.on([…])` (arrays may span lines), the InteractionEvents DOM table, the
+ *   CommandStack lifecycle qualifiers, and the Dragging helper types.
  *   Dynamic names with a trailing dot (`commandStack.`, `drag.`, `keyboard.`)
  *   are kept verbatim and flagged `dynamicPrefix: true`.
- * - config: fields of BaseViewerOptions + DiagramOptions typedefs plus
- *   `config.<name>` / `options.<name>` first-level reads in entry files.
- * - renderer: keys of the BpmnRenderer `handlers` map.
- * - moddle-type: types of the five JSON descriptors present in the checkout
- *   (bpmn, bpmndi, di, dc, bioc). The `color` package (3 types) has no JSON in
- *   this checkout (external `bpmn-in-color-moddle`, dist not built) and is
- *   recorded as a source-gap in meta, not as entries.
+ * - config: fields of BaseViewerOptions + DiagramOptions typedefs plus every
+ *   `config.<name>` / `this._config.<name>` first-level read and every
+ *   `config.*` didi injection key.
+ * - renderer: keys of the BpmnRenderer `handlers` map (including `label`),
+ *   the `eventIconRenderers` map and the `taskMarkerRenderers` map.
+ * - moddle-type: types AND enumerations of the five JSON descriptors present
+ *   in the checkout (bpmn, bpmndi, di, dc, bioc). The `color` package (3 types)
+ *   has no JSON in this checkout (external `bpmn-in-color-moddle`, dist not
+ *   built) and is recorded as a source-gap in meta, not as entries.
  * - api: public prototype methods of BaseViewer/Viewer/NavigatedViewer/Modeler/
- *   BaseModeler (bpmn-js) and Diagram/Canvas (diagram-js), excluding `_private`.
- * - example: top-level example directories of bpmn-js-examples that carry a README.
+ *   BaseModeler/Modeling/EditorActions services (bpmn-js) and Diagram/Canvas/
+ *   Modeling/ElementRegistry/EventBus/CommandStack/Overlays/Selection/
+ *   EditorActions (diagram-js), excluding `_private`.
+ * - example: top-level example directories of bpmn-js-examples that carry a
+ *   README, excluding upstream tombstones (`> Removed as of …`, README only).
  *
  * Every raw item must receive exactly one inventory entry; `verify.mjs`
  * re-runs this extraction and asserts the bijection (the completeness guard).
@@ -65,7 +76,7 @@ const diagramRoot = join(sourcesRoot, 'diagram-js');
 const moddleRoot = join(sourcesRoot, 'bpmn-moddle');
 const examplesRoot = join(sourcesRoot, 'bpmn-js-examples');
 
-const GENERATED_AT = '2026-10-15';
+const GENERATED_AT = '2026-10-16';
 const VERSIONS = {
   'bpmn-js': '18.31.0',
   'diagram-js': '15.28.1',
@@ -163,7 +174,7 @@ function extractModules() {
       items.push({
         key: `${label}:${relative(join(root, 'lib'), f).split('\\').join('/')}`,
         sourceAbs: f, line: initLine,
-        detail: services.length ? `services: ${services.slice(0, 8).join(', ')}` : 'didi module (no inline service map matched)',
+        detail: services.length ? `services: ${services.join(', ')}` : 'didi module (no inline service map matched)',
       });
     }
   }
@@ -244,46 +255,82 @@ function extractContextPad() {
       if (!found.has(m[1])) found.set(m[1], { sourceAbs: f, line: i + 1 });
     }
   });
+  // Multi-element align entry (AlignElementsContextPadProvider._getEntries).
+  const af = join(bpmnRoot, 'lib/features/align-elements/AlignElementsContextPadProvider.js');
+  readLines(af).forEach((l, i) => {
+    const m = l.match(/'(align-elements)'\s*:/);
+    if (m && !found.has(m[1])) found.set(m[1], { sourceAbs: af, line: i + 1 });
+  });
   return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'Context-pad entry key' })).sort((a, b) => a.key.localeCompare(b.key));
 }
 
 function extractReplaceMenu() {
-  const f = join(bpmnRoot, 'lib/features/popup-menu/PopupEntries.js');
-  const items = [];
-  let inCatalog = false;
-  readLines(f).forEach((l, i) => {
-    if (/PopupEntries\s*=\s*\{/.test(l)) inCatalog = true;
-    if (inCatalog) {
-      const m = l.match(/^\s{2}'([\w-]+)':\s*\{/);
-      if (m) items.push({ key: m[1], sourceAbs: f, line: i + 1, detail: 'PopupEntries atom (label/className/target)' });
+  const f = join(bpmnRoot, 'lib/features/replace/ReplaceOptions.js');
+  const lines = readLines(f);
+  const text = lines.join('\n');
+  const lineAt = (idx) => text.slice(0, idx).split('\n').length;
+  const isCommentLine = (lineNo) => (lines[lineNo - 1] || '').trimStart().startsWith('//');
+  const found = new Map();
+  for (const m of text.matchAll(/replaceWith\(\s*'([^']+)'(?:\s*,\s*\{([\s\S]*?)\}\s*\))?/g)) {
+    const line = lineAt(m.index);
+    if (isCommentLine(line)) continue; // deactivated gateways are not behaviour
+    let action = `replace-with-${m[1]}`;
+    const extra = m[2] || '';
+    const override = extra.match(/actionName:\s*'([^']+)'/);
+    if (override) action = override[1];
+    if (!found.has(action)) found.set(action, { sourceAbs: f, line });
+  }
+  const seqStart = text.indexOf('export var SEQUENCE_FLOW');
+  if (seqStart >= 0) {
+    const seqText = text.slice(seqStart, text.indexOf('];', seqStart));
+    for (const m of seqText.matchAll(/actionName:\s*'([^']+)'/g)) {
+      if (!found.has(m[1])) found.set(m[1], { sourceAbs: f, line: lineAt(seqStart + m.index) });
     }
-  });
-  return items;
+  }
+  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'ReplaceOptions actionName (ReplaceMenuProvider entry)' })).sort((a, b) => a.key.localeCompare(b.key));
 }
 
 function extractPopupMenu() {
   const found = new Map();
-  for (const root of [bpmnRoot, diagramRoot]) {
-    for (const f of jsFiles(root)) {
-      readLines(f).forEach((l, i) => {
-        for (const m of l.matchAll(/registerProvider\(\s*'([^']+)'/g)) {
-          // only popup-menu registrations; contextPad/palette have their own families
-          if (/popupMenu|PopupMenu/.test(l) || /popup-menu/.test(f)) {
-            if (!found.has(m[1])) found.set(m[1], { sourceAbs: f, line: i + 1 });
-          }
-        }
-      });
-    }
-  }
-  // Fallback: the bpmn-replace provider registers 'bpmn-replace' via this._popupMenu.registerProvider
-  const rmp = join(bpmnRoot, 'lib/features/popup-menu/ReplaceMenuProvider.js');
-  if (existsSync(rmp)) {
-    readLines(rmp).forEach((l, i) => {
+  const add = (key, abs, line, detail) => { if (key && !found.has(key)) found.set(key, { sourceAbs: abs, line, detail }); };
+  const providerFiles = [
+    join(bpmnRoot, 'lib/features/popup-menu/ReplaceMenuProvider.js'),
+    join(bpmnRoot, 'lib/features/align-elements/AlignElementsMenuProvider.js'),
+    join(bpmnRoot, 'lib/features/distribute-elements/DistributeElementsMenuProvider.js'),
+  ];
+  const regs = [];
+  for (const f of providerFiles) {
+    readLines(f).forEach((l, i) => {
       const m = l.match(/registerProvider\(\s*'([^']+)'/);
-      if (m && !found.has(m[1])) found.set(m[1], { sourceAbs: rmp, line: i + 1 });
+      if (m) regs.push({ id: m[1], sourceAbs: f, line: i + 1 });
     });
   }
-  return [...found.entries()].map(([key, v]) => ({ key, ...v, detail: 'Popup-menu provider id' })).sort((a, b) => a.key.localeCompare(b.key));
+  const idCount = {};
+  for (const r of regs) idCount[r.id] = (idCount[r.id] || 0) + 1;
+  for (const r of regs) {
+    const stem = r.sourceAbs.split('/').pop().replace(/\.js$/, '');
+    add(idCount[r.id] > 1 ? `${r.id} (${stem})` : r.id, r.sourceAbs, r.line, 'Popup-menu provider id');
+  }
+  readLines(providerFiles[0]).forEach((l, i) => {
+    if (l.trimStart().startsWith('//')) return;
+    const m = l.match(/'(toggle-[\w-]+)'\s*:/);
+    if (m) add(m[1], providerFiles[0], i + 1, 'Popup-menu header entry (ReplaceMenuProvider)');
+  });
+  const ampLines = readLines(providerFiles[1]);
+  let inOptions = false;
+  ampLines.forEach((l, i) => {
+    if (/ALIGNMENT_OPTIONS\s*=\s*\[/.test(l)) inOptions = true;
+    else if (inOptions && /\];/.test(l)) inOptions = false;
+    else if (inOptions) {
+      const m = l.match(/'([\w-]+)'/);
+      if (m) add(`align-elements-${m[1]}`, providerFiles[1], i + 1, 'Align-elements popup entry');
+    }
+  });
+  readLines(providerFiles[2]).forEach((l, i) => {
+    const m = l.match(/'(distribute-elements-[\w-]+)'\s*:/);
+    if (m) add(m[1], providerFiles[2], i + 1, 'Distribute-elements popup entry');
+  });
+  return [...found.entries()].map(([key, v]) => ({ key, ...v })).sort((a, b) => a.key.localeCompare(b.key));
 }
 
 function extractKeyboard() {
@@ -301,9 +348,29 @@ function extractKeyboard() {
     }
   });
   const df = join(diagramRoot, 'lib/features/keyboard/KeyboardBindings.js');
+  const listenerLines = new Map();
   readLines(df).forEach((l, i) => {
     const m = l.match(/addListener\('([^']+)'/);
-    if (m) push(m[1], df, i + 1, 'diagram-js default binding (guarded by editorActions.isRegistered)');
+    if (m) {
+      if (!listenerLines.has(m[1])) listenerLines.set(m[1], []);
+      listenerLines.get(m[1]).push(i + 1);
+    }
+  });
+  for (const [action, lines] of listenerLines) {
+    push(action, df, lines[0], lines.length > 1 ? `diagram-js default binding (${lines.length} listeners, lines ${lines.join(', ')})` : 'diagram-js default binding (guarded by editorActions.isRegistered)');
+  }
+  // Every registered editor action (bpmn-js _registerAction, diagram-js register).
+  for (const f of [join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), join(diagramRoot, 'lib/features/editor-actions/EditorActions.js')]) {
+    readLines(f).forEach((l, i) => {
+      for (const m of l.matchAll(/(?:_registerAction|register)\(\s*'([^']+)'/g)) push(m[1], f, i + 1, 'registered editor action');
+    });
+  }
+  // Search-pad keys handled inside the pad (no editor action).
+  const sp = join(diagramRoot, 'lib/features/search-pad/SearchPad.js');
+  readLines(sp).forEach((l, i) => {
+    for (const m of l.matchAll(/isKey\(\s*'([^']+)'/g)) {
+      if (['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(m[1])) push(`searchPad:${m[1]}`, sp, i + 1, 'search-pad key handling');
+    }
   });
   const ku = join(diagramRoot, 'lib/features/keyboard/KeyboardUtil.js');
   readLines(ku).forEach((l, i) => {
@@ -323,12 +390,32 @@ function extractEvents() {
         if (l.trimStart().startsWith('*')) return; // JSDoc examples are not behaviour
         for (const m of l.matchAll(/\.fire\(\s*'([^']+)'/g)) add(m[1], f, i + 1);
         for (const m of l.matchAll(/\.on\(\s*'([^']+)'/g)) add(m[1], f, i + 1);
-        // .on([ 'a', 'b' ], ...) possibly multiline: capture quoted names in the bracket
-        const arr = l.match(/\.on\(\s*\[([^\]]*)\]/);
-        if (arr) for (const q of arr[1].matchAll(/'([^']+)'/g)) add(q[1], f, i + 1);
       });
+      // .on([ 'a', 'b' ], ...) arrays may span lines: scan the joined code.
+      const codeText = lines.filter((l) => !l.trimStart().startsWith('*')).join('\n');
+      for (const m of codeText.matchAll(/\.on\(\s*\[([\s\S]*?)\]/g)) {
+        for (const q of m[1].matchAll(/'([^']+)'/g)) add(q[1], f, firstLineMatching(f, new RegExp(`'${q[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`)));
+      }
     }
   }
+  // InteractionEvents: DOM name -> EventBus name table values.
+  const ie = join(diagramRoot, 'lib/features/interaction-events/InteractionEvents.js');
+  readLines(ie).forEach((l, i) => {
+    for (const m of l.matchAll(/:\s*'(element\.[\w.]+)'/g)) add(m[1], ie, i + 1);
+  });
+  // CommandStack lifecycle: _fire('changed') and _fire(command, 'qualifier').
+  const cs = join(diagramRoot, 'lib/command/CommandStack.js');
+  readLines(cs).forEach((l, i) => {
+    if (/_fire\(\s*'changed'/.test(l)) add('commandStack.changed', cs, i + 1);
+    for (const m of l.matchAll(/_fire\([^)]*?,\s*'([\w.]+)'/g)) add(`commandStack.${m[1]}`, cs, i + 1);
+  });
+  // Dragging helper: fire('type') -> drag.<type> (prefixed variants stay dynamic).
+  const dg = join(diagramRoot, 'lib/features/dragging/Dragging.js');
+  readLines(dg).forEach((l, i) => {
+    for (const m of l.matchAll(/(^|[^\w.])fire\(\s*'([^']+)'/g)) {
+      if (!m[2].endsWith('.')) add(`drag.${m[2]}`, dg, i + 1);
+    }
+  });
   return [...found.entries()]
     .map(([key, v]) => ({ key, ...v, detail: key.endsWith('.') ? 'dynamic prefix (concrete names built at runtime)' : 'EventBus event name', dynamicPrefix: key.endsWith('.') }))
     .sort((a, b) => a.key.localeCompare(b.key));
@@ -349,15 +436,16 @@ function extractConfig() {
   readLines(dg).forEach((l, i) => {
     if (/modules\?:/.test(l)) push('diagram.modules', dg, i + 1, 'DiagramOptions field');
   });
-  // per-feature config reads: config.xxx in $inject / constructors (first occurrence per name)
+  // per-feature config reads: every config.<name> / this._config.<name> access
+  // and every 'config.*' didi injection key (first occurrence per name).
+  // JSDoc lines are skipped: they document options, they do not read them.
   for (const root of [bpmnRoot, diagramRoot]) {
     for (const f of jsFiles(root)) {
       readLines(f).forEach((l, i) => {
+        if (l.trimStart().startsWith('*')) return;
         for (const m of l.matchAll(/'config\.([\w.]+)'/g)) push(`config.${m[1]}`, f, i + 1, 'didi config injection');
-        for (const m of l.matchAll(/config\.(\w+)\s*!==\s*false|config\.(\w+)\s*&&|config\.(\w+)\)/g)) {
-          const name = m[1] || m[2] || m[3];
-          if (name) push(`config.${name}`, f, i + 1, 'feature config read');
-        }
+        for (const m of l.matchAll(/(?:^|[^\w])config\.(\w+)/g)) push(`config.${m[1]}`, f, i + 1, 'feature config read');
+        for (const m of l.matchAll(/_config\.(\w+)/g)) push(`config.${m[1]}`, f, i + 1, 'feature config read');
       });
     }
   }
@@ -367,14 +455,22 @@ function extractConfig() {
 function extractRenderer() {
   const f = join(bpmnRoot, 'lib/draw/BpmnRenderer.js');
   const items = [];
-  let inHandlers = false;
-  readLines(f).forEach((l, i) => {
-    if (/handlers\s*=\s*this\.handlers\s*=\s*\{|var handlers = this\.handlers = \{/.test(l)) inHandlers = true;
-    if (inHandlers) {
-      const m = l.match(/^\s{4}'(bpmn:[\w]+)':/);
-      if (m && !items.some((x) => x.key === m[1])) items.push({ key: m[1], sourceAbs: f, line: i + 1, detail: 'BpmnRenderer handler (shape/connection drawing)' });
-    }
-  });
+  const blocks = [
+    [/var handlers = this\.handlers = \{/, 'BpmnRenderer handler (shape/connection drawing)'],
+    [/var eventIconRenderers = \{/, 'BpmnRenderer event icon renderer'],
+    [/var taskMarkerRenderers = \{/, 'BpmnRenderer task marker renderer'],
+  ];
+  for (const [startRe, detail] of blocks) {
+    let inBlock = false;
+    readLines(f).forEach((l, i) => {
+      if (startRe.test(l)) { inBlock = true; return; }
+      if (inBlock && /^\s{2}\};/.test(l)) { inBlock = false; return; }
+      if (inBlock) {
+        const m = l.match(/^\s{4}'([\w:.-]+)'\s*:/);
+        if (m && !items.some((x) => x.key === m[1])) items.push({ key: m[1], sourceAbs: f, line: i + 1, detail });
+      }
+    });
+  }
   return items;
 }
 
@@ -390,14 +486,25 @@ function extractModdleTypes() {
   for (const [prefix, abs] of files) {
     const doc = JSON.parse(readFileSync(abs, 'utf8'));
     const text = readFileSync(abs, 'utf8').split(/\r?\n/);
-    for (const t of doc.types) {
+    const lineOfName = (name) => {
+      for (let i = 0; i < text.length; i++) if (text[i].includes(`"name": "${name}"`)) return i + 1;
+      return 1;
+    };
+    for (const t of doc.types || []) {
       const key = `${prefix}:${t.name}`;
-      let line = 1;
-      for (let i = 0; i < text.length; i++) if (text[i].includes(`"name": "${t.name}"`)) { line = i + 1; break; }
       items.push({
-        key, sourceAbs: abs, line,
+        key, sourceAbs: abs, line: lineOfName(t.name),
         detail: `${t.isAbstract ? 'abstract' : 'concrete'}; superClass: ${(t.superClass || []).join(', ') || 'none'}; own properties: ${(t.properties || []).length}`,
         abstract: !!t.isAbstract,
+      });
+    }
+    for (const e of doc.enumerations || []) {
+      const key = `${prefix}:${e.name}`;
+      const values = (e.values || []).map((v) => (typeof v === 'string' ? v : v.name)).filter(Boolean);
+      items.push({
+        key, sourceAbs: abs, line: lineOfName(e.name),
+        detail: `enumeration; values: ${values.join(', ')}`,
+        enumeration: true,
       });
     }
   }
@@ -411,8 +518,17 @@ function extractApi() {
     ['bpmn-js', join(bpmnRoot, 'lib/NavigatedViewer.js'), 'NavigatedViewer'],
     ['bpmn-js', join(bpmnRoot, 'lib/Modeler.js'), 'Modeler'],
     ['bpmn-js', join(bpmnRoot, 'lib/BaseModeler.js'), 'BaseModeler'],
+    ['bpmn-js', join(bpmnRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
+    ['bpmn-js', join(bpmnRoot, 'lib/features/editor-actions/BpmnEditorActions.js'), 'BpmnEditorActions'],
     ['diagram-js', join(diagramRoot, 'lib/Diagram.js'), 'Diagram'],
     ['diagram-js', join(diagramRoot, 'lib/core/Canvas.js'), 'Canvas'],
+    ['diagram-js', join(diagramRoot, 'lib/features/modeling/Modeling.js'), 'Modeling'],
+    ['diagram-js', join(diagramRoot, 'lib/core/ElementRegistry.js'), 'ElementRegistry'],
+    ['diagram-js', join(diagramRoot, 'lib/core/EventBus.js'), 'EventBus'],
+    ['diagram-js', join(diagramRoot, 'lib/command/CommandStack.js'), 'CommandStack'],
+    ['diagram-js', join(diagramRoot, 'lib/features/overlays/Overlays.js'), 'Overlays'],
+    ['diagram-js', join(diagramRoot, 'lib/features/selection/Selection.js'), 'Selection'],
+    ['diagram-js', join(diagramRoot, 'lib/features/editor-actions/EditorActions.js'), 'EditorActions'],
   ];
   const items = [];
   for (const [label, abs, cls] of targets) {
@@ -435,8 +551,9 @@ function extractExamples() {
     if (!statSync(dir).isDirectory()) continue;
     const readme = join(dir, 'README.md');
     if (!existsSync(readme)) continue;
-    const first = (readFileSync(readme, 'utf8').split(/\r?\n/).find((l) => l.trim().length > 0) || '').trim().slice(0, 120);
-    items.push({ key: name, sourceAbs: readme, line: 1, detail: first });
+    const first = (readFileSync(readme, 'utf8').split(/\r?\n/).find((l) => l.trim().length > 0) || '').trim();
+    if (/^>\s*Removed as of/.test(first)) continue; // upstream tombstone, no behaviour to replay
+    items.push({ key: name, sourceAbs: readme, line: 1, detail: first.slice(0, 120) });
   }
   return items;
 }
@@ -486,7 +603,7 @@ const COMMAND_MAP = {
   'label.create': ['missing', 'diagram-core', 'P1'],
   'spaceTool': ['missing', 'diagram-canvas', 'P2'],
 };
-function coverageFor(family, key) {
+function coverageFor(family, key, item) {
   switch (family) {
     case 'module': {
       if (/modeling/.test(key)) return { status: 'partial', target: 'diagram-core', priority: 'P0', proof: PROOF.commands() };
@@ -524,14 +641,22 @@ function coverageFor(family, key) {
       if (key === 'bpmn:SequenceFlow' || key === 'bpmn:MessageFlow' || key === 'bpmn:Association' || key.endsWith('Association')) return { status: 'partial', target: 'graph', priority: 'P0', proof: PROOF.graphRenderer() };
       return { status: 'missing', target: 'graph', priority: 'P0', proof: PROOF.graphShapes() };
     case 'moddle-type': {
+      if (item && item.enumeration) return { status: 'missing', target: 'diagram-core', priority: key.startsWith('bpmn:') && !key.startsWith('bpmndi:') ? 'P0' : 'P1', proof: PROOF.skeleton() };
       const skeletonTypes = new Set(['bpmn:Process', 'bpmn:Participant', 'bpmn:Lane', 'bpmn:Task', 'bpmn:SubProcess', 'bpmn:SequenceFlow']);
       if (skeletonTypes.has(key)) return { status: 'partial', target: 'diagram-core', priority: 'P0', proof: PROOF.skeleton() };
+      // Labels, fonts and styles are explicitly not in diagram-canvas today
+      // (scene header: labels need text measurement), so no partial credit.
+      const labelStyleTypes = new Set(['dc:Font', 'bpmndi:BPMNLabel', 'bpmndi:BPMNLabelStyle', 'di:Label', 'di:LabeledEdge', 'di:LabeledShape', 'di:Style', 'di:Extension']);
+      if (labelStyleTypes.has(key)) return { status: 'missing', target: 'diagram-core', priority: 'P1', proof: PROOF.canvasReadmeGap() };
       if (key.startsWith('bpmndi:') || key.startsWith('dc:') || key.startsWith('di:')) return { status: 'partial', target: 'diagram-core', priority: 'P1', proof: PROOF.scene() };
       if (key.startsWith('bioc:') || key.startsWith('color:')) return { status: 'missing', target: 'diagram-core', priority: 'P2', proof: PROOF.skeletonNotes() };
       return { status: 'missing', target: 'diagram-core', priority: 'P0', proof: PROOF.skeleton() };
     }
     case 'api':
       if (/Canvas\.(getRootElement|addShape|addConnection|removeShape|removeConnection|viewbox|scroll|zoom)/.test(key)) return { status: 'partial', target: 'diagram-canvas', priority: 'P1', proof: PROOF.hit() };
+      if (/Modeling\./.test(key)) return { status: 'missing', target: 'diagram-core', priority: 'P0', proof: PROOF.commands() };
+      if (/CommandStack\.(execute|undo|redo|canUndo|canRedo)/.test(key)) return { status: 'partial', target: 'diagram-core', priority: 'P1', proof: PROOF.commands() };
+      if (/Selection\.|Overlays\./.test(key)) return { status: 'missing', target: 'diagram-canvas', priority: 'P1', proof: PROOF.canvasReadmeGap() };
       if (/BaseViewer\.(importXML|saveXML|saveSVG|importDefinitions|open)/.test(key)) return { status: 'missing', target: 'new-module', priority: 'P0', proof: PROOF.coreReadmeGap() };
       return { status: 'missing', target: 'new-module', priority: 'P1', proof: PROOF.coreReadmeGap() };
     case 'example':
@@ -543,17 +668,21 @@ function coverageFor(family, key) {
 
 const BEHAVIOUR = {
   module: (k, d) => `DI module \`${k}\` composed via didi (__init__/__depends__); ${d}. Observable effect: its services exist in the injector and its initialisers run at bootstrap.`,
-  command: (k) => `Command \`${k}\` executed through CommandStack.execute with undo/redo (execute/revert); observers see commandStack.* events and a dirty model.`,
+  command: (k) => (k === 'element.setColor'
+    ? 'Command `element.setColor` executed through CommandStack.execute with undo/redo; SetColorHandler postExecute writes background-color/border-color, the legacy bioc stroke/fill aliases and BPMNLabel color on the DI element.'
+    : `Command \`${k}\` executed through CommandStack.execute with undo/redo (execute/revert); observers see commandStack.* events and a dirty model.`),
   rule: (k) => `Rule \`${k}\`: canExecute gate consulted before the matching modeling operation; returns boolean or a typed result object, and forbids/permits the interaction.`,
   palette: (k) => `Palette entry \`${k}\`: drag or click starts element creation (create.start) with the entry's BPMN type, or activates the named tool.`,
   'context-pad': (k) => `Context-pad entry \`${k}\`: shown for the selected element(s); click triggers append/connect/replace/delete or lane actions on that element.`,
-  'replace-menu': (k) => `Replace/append atom \`${k}\`: a typed element variant (target type + discriminating attributes) offered by replace, append and create menus.`,
-  'popup-menu': (k) => `Popup-menu provider \`${k}\`: supplies entries/header entries for its target; opening is gated by popupMenu.open.allowed.`,
+  'replace-menu': (k) => `Replace option \`${k}\`: offered by ReplaceMenuProvider for matching elements; activation morphs the selected element in place via BpmnReplace.replaceElement, retaining connections where the rule matrix allows.`,
+  'popup-menu': (k, d) => `Popup-menu item \`${k}\` (${d}): a provider registration, header entry or menu entry supplied for its target; opening is gated by popupMenu.open.allowed.`,
   keyboard: (k, d) => `Keyboard binding \`${k}\` (${d}): key press triggers the editor action of the same name when registered.`,
   event: (k) => `EventBus event \`${k}\`: emitted/listened across modules; listeners receive the payload described at the source site.`,
   config: (k) => `Configuration \`${k}\`: public option read at construction; changes bootstrap wiring, canvas or feature behaviour.`,
-  renderer: (k) => `Renderer handler \`${k}\`: draws the BPMN shape/connection (geometry, markers, icons, label placement) into the SVG graphics element.`,
-  'moddle-type': (k, d) => `Moddle type \`${k}\` (${d}): instantiable/abstract BPMN metamodel type carried by Definitions and DI.`,
+  renderer: (k, d) => `Renderer entry \`${k}\` (${d}): draws the BPMN shape/connection/icon/marker (geometry, markers, icons, label placement) into the SVG graphics element.`,
+  'moddle-type': (k, d) => (String(d).startsWith('enumeration')
+    ? `Moddle enumeration \`${k}\` (${d}): the closed value set constraining the BPMN attributes that reference it.`
+    : `Moddle type \`${k}\` (${d}): instantiable/abstract BPMN metamodel type carried by Definitions and DI.`),
   api: (k) => `Public API \`${k}\`: callable on the viewer/modeler/canvas instance; see the JSDoc at the source for arguments and result.`,
   example: (k, d) => `Example scenario \`${k}\`: ${d || 'standalone demo'}; used here as an acceptance scenario, not as shipped behaviour.`,
 };
@@ -578,7 +707,7 @@ function buildInventory(raw) {
   const entries = [];
   for (const [family, items] of Object.entries(raw)) {
     for (const it of items) {
-      const cov = coverageFor(family, it.key);
+      const cov = coverageFor(family, it.key, it);
       entries.push({
         id: `RE.${family}.${slug(it.key)}`,
         family,
@@ -592,6 +721,7 @@ function buildInventory(raw) {
         priority: cov.priority,
         ...(it.dynamicPrefix ? { dynamicPrefix: true } : {}),
         ...(it.abstract !== undefined ? { abstract: it.abstract } : {}),
+        ...(it.enumeration ? { enumeration: true } : {}),
         detail: it.detail,
       });
     }
@@ -638,6 +768,7 @@ if (isMain) {
       sourceGaps: [
         'color package (3 types per the A-prime spec) has no JSON descriptor in this checkout: bpmn-moddle/lib/simple.js imports bpmn-in-color-moddle, whose files are absent (no node_modules, no dist). Not counted in moddle-type; recorded here as missing source.',
         'Dynamic EventBus names ending in a dot (commandStack., drag., keyboard.) are single entries flagged dynamicPrefix; concrete suffixed names are runtime-built and not enumerable statically.',
+        'Three bpmn-js-examples directories (custom-bower-bundle, simple-bower, simple-commonjs) are upstream tombstones whose README only records their removal as of bpmn-js 0.27.0; they carry no behaviour and are excluded from the example family.',
       ],
       licenceNote: 'Behavioural reimplementation only (clean room). No third-party code is copied; see the spec licence section.',
     },
