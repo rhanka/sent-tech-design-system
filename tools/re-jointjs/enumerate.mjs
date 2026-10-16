@@ -223,17 +223,32 @@ function astHasModifier(node, kind) {
   return !!(node.modifiers && node.modifiers.some((m) => m.kind === kind));
 }
 function astSignature(sf, node) {
-  let txt = node.getText(sf).replace(/\s+/g, ' ').trim();
-  // Strip a trailing semicolon and any JSDoc already handled separately.
+  // Header only: when the node carries an implementation body (the
+  // RouterService .mts surface), cut the text at the body so the stored
+  // signature never contains implementation statements.
+  const start = node.getStart(sf);
+  const end = node.body ? node.body.getStart(sf) : node.end;
+  let txt = sf.text.slice(start, end).replace(/\s+/g, ' ').trim();
+  txt = txt.replace(/[;{]\s*$/, '').trim();
   if (txt.length > 420) txt = txt.slice(0, 417) + '...';
   return txt;
 }
-function astJsDoc(node) {
+function astJsDoc(sf, node) {
   const docs = ts.getJSDocCommentsAndTags(node) || [];
   for (const d of docs) {
     if (ts.isJSDoc(d) && d.comment) {
-      const txt = typeof d.comment === 'string' ? d.comment : d.comment.map((p) => p.text || '').join('');
-      const clean = txt.replace(/\s+/g, ' ').trim();
+      // Rebuild the comment text part by part: a JSDocLink part carries an
+      // empty text and the target in `name`, so dropping it would leave
+      // holes in the sentence ("i.e.  has been called"). Keep the target.
+      const txt = typeof d.comment === 'string'
+        ? d.comment
+        : d.comment.map((p) => {
+          if (ts.isJSDocLink(p) || ts.isJSDocLinkCode(p) || ts.isJSDocLinkPlain(p)) {
+            return (p.text && p.text.trim()) || (p.name ? p.name.getText(sf) : '');
+          }
+          return p.text || '';
+        }).join('');
+      const clean = txt.replace(/\{@link\s+([^}|]+)(?:\|([^}]+))?\}/g, (m, target, label) => (label || target).trim()).replace(/\s+/g, ' ').trim();
       if (clean) return clean;
     }
   }
@@ -258,7 +273,7 @@ function collectAstMembers(sf, members) {
       visibility: astHasModifier(mem, ts.SyntaxKind.ProtectedKeyword) ? 'protected' : 'public',
       isStatic: astHasModifier(mem, ts.SyntaxKind.StaticKeyword),
       signature: astSignature(sf, mem),
-      jsDoc: astJsDoc(mem),
+      jsDoc: astJsDoc(sf, mem),
     });
   }
   return out;
@@ -380,6 +395,23 @@ function findLine(abs, needle) {
   for (let i = 0; i < lines.length; i++) if (lines[i].includes(needle)) return i + 1;
   return 1;
 }
+// Exported names of a JavaScript module (declarations and export blocks),
+// resolved with the TypeScript AST over the .mjs source.
+function parseJsExportNames(abs) {
+  const sf = loadSourceFile(abs);
+  const out = new Map();
+  const note = (name, node) => { if (name && !out.has(name)) out.set(name, astLine(sf, node)); };
+  for (const stmt of sf.statements) {
+    if (ts.isExportDeclaration(stmt) && stmt.exportClause && ts.isNamedExports(stmt.exportClause)) {
+      for (const el of stmt.exportClause.elements) note(el.name.text, stmt);
+    } else if ((ts.isClassDeclaration(stmt) || ts.isFunctionDeclaration(stmt)) && stmt.name && astHasModifier(stmt, ts.SyntaxKind.ExportKeyword)) {
+      note(stmt.name.text, stmt);
+    } else if (ts.isVariableStatement(stmt) && astHasModifier(stmt, ts.SyntaxKind.ExportKeyword)) {
+      for (const decl of stmt.declarationList.declarations) if (ts.isIdentifier(decl.name)) note(decl.name.text, stmt);
+    }
+  }
+  return out;
+}
 
 // ------------------------------------------------------------ extraction
 // Returns a Map: `${family}\0${key}` -> raw item
@@ -406,7 +438,21 @@ export function extractRaw() {
     add('dia-api', en.qualified, en.name, T('dia.d.ts'), en.line,
       { owner: en.qualified.split('.').slice(0, -1).join('.') || 'dia', kind: 'enum', enumMembers: en.members, signature: en.signature });
   }
-  // paper-option: fields of Paper.Options only (AST interface Paper.Options)
+  // dia.sortingTypes: the runtime values object behind the Paper.sorting
+  // type, exported at the top level of the dia namespace
+  // (src/dia/Paper.mjs re-exported through src/dia/index.mjs). The typed
+  // Paper.sorting enum above is the same contract in type form; this row
+  // covers the runtime object applications read as dia.sortingTypes.
+  {
+    const paperSrc = S('dia/Paper.mjs');
+    add('dia-api', 'sortingTypes', 'sortingTypes', paperSrc, findLine(paperSrc, 'export const sortingTypes'),
+      { kind: 'enum', enumMembers: ['NONE', 'APPROX', 'EXACT'], signature: 'export const sortingTypes: { NONE, APPROX, EXACT }' });
+  }
+  // paper-option: fields of Paper.Options (AST interface Paper.Options),
+  // plus the fields it inherits from sibling interfaces declared in the
+  // same file (CellVisibilityOptions, BeforeRenderOptions,
+  // AfterRenderOptions on this checkout). Interfaces inherited from other
+  // files (mvc.ViewOptions in types/mvc.d.ts) stay excluded.
   {
     const abs = T('dia.d.ts');
     const opts = interfaceMembers(abs, 'Paper.Options');
@@ -416,6 +462,32 @@ export function extractRaw() {
         add('paper-option', mem.name, mem.name, abs, mem.line, { signature: mem.signature, jsDoc: mem.jsDoc });
       }
     }
+    const sf = loadSourceFile(abs);
+    const allIfaces = parseDtsInterfaces(abs);
+    const visitOpts = (node, prefix) => {
+      if (ts.isInterfaceDeclaration(node) && prefix === 'Paper' && node.name.text === 'Options') {
+        for (const clause of node.heritageClauses || []) {
+          if (clause.token !== ts.SyntaxKind.ExtendsKeyword) continue;
+          for (const t of clause.types) {
+            if (!ts.isIdentifier(t.expression)) continue;
+            const parent = allIfaces.get(`Paper.${t.expression.text}`) || allIfaces.get(t.expression.text);
+            if (!parent) continue; // declared in another file: excluded
+            for (const mem of parent.members.values()) {
+              if (mem.kind !== 'property') continue;
+              add('paper-option', mem.name, mem.name, abs, mem.line, { signature: mem.signature, jsDoc: mem.jsDoc, inheritedFrom: parent.name });
+            }
+          }
+        }
+      }
+      if (ts.isModuleDeclaration(node) && node.body) {
+        const next = prefix ? `${prefix}.${node.name.text}` : node.name.text;
+        if (ts.isModuleBlock(node.body)) for (const s of node.body.statements) visitOpts(s, next);
+        else visitOpts(node.body, next);
+        return;
+      }
+      ts.forEachChild(node, (c) => visitOpts(c, prefix));
+    };
+    for (const s of sf.statements) visitOpts(s, '');
   }
   // event: EventMap keys (Graph and Paper namespaces) + trigger literals
   {
@@ -475,11 +547,25 @@ export function extractRaw() {
     if (en.name === 'CurveDirections') add('connector', 'curve.Directions', 'Directions', T('connectors.d.ts'), en.line, { owner: 'curve', kind: 'enum', enumMembers: en.members, signature: en.signature });
     if (en.name === 'CurveTangentDirections') add('connector', 'curve.TangentDirections', 'TangentDirections', T('connectors.d.ts'), en.line, { owner: 'curve', kind: 'enum', enumMembers: en.members, signature: en.signature });
   }
-  // anchors / link-anchors / connection points / strategies (src exports)
-  for (const [k, v] of parseSrcConstExports(S('anchors/index.mjs'))) add('anchor', k, k, S('anchors/index.mjs'), v.line, {});
+  // anchors / link-anchors / connection points / strategies (src exports).
+  // The stored source anchors on the typed declaration when one exists
+  // (types/*.d.ts `export var`); a runtime-only name keeps its
+  // implementation anchor.
+  const typedAnchorLine = (typesRel, name) => {
+    const abs = T(typesRel);
+    const lines = readLines(abs);
+    for (let i = 0; i < lines.length; i++) if (new RegExp(`export\\s+var\\s+${name}\\b`).test(lines[i])) return { abs, line: i + 1 };
+    return null;
+  };
+  const addAnchorLike = (family, name, jsAbs, jsLine, typesRel) => {
+    const typed = typedAnchorLine(typesRel, name);
+    if (typed) add(family, name, name, typed.abs, typed.line, {});
+    else add(family, name, name, jsAbs, jsLine, {});
+  };
+  for (const [k, v] of parseSrcConstExports(S('anchors/index.mjs'))) addAnchorLike('anchor', k, S('anchors/index.mjs'), v.line, 'anchors.d.ts');
   for (const [k, v] of parseSrcConstExports(S('linkAnchors/index.mjs'))) {
     if (k === 'resolveRef') continue; // internal resolver helper, not an anchor name
-    add('link-anchor', k, k, S('linkAnchors/index.mjs'), v.line, {});
+    addAnchorLike('link-anchor', k, S('linkAnchors/index.mjs'), v.line, 'linkAnchors.d.ts');
   }
   // linkAnchors uses `export { connectionRatio, connectionLength }` — catch brace exports too
   {
@@ -488,12 +574,12 @@ export function extractRaw() {
       const m = line.match(/export\s*\{\s*([^}]+)\}/);
       if (m) for (const part of m[1].split(',')) {
         const n = part.trim().split(/\s+as\s+/).pop();
-        if (n) add('link-anchor', n, n, abs, findLine(abs, n), {});
+        if (n) addAnchorLike('link-anchor', n, abs, findLine(abs, n), 'linkAnchors.d.ts');
       }
     }
   }
-  for (const [k, v] of parseSrcConstExports(S('connectionPoints/index.mjs'))) add('connection-point', k, k, S('connectionPoints/index.mjs'), v.line, {});
-  for (const [k, v] of parseSrcConstExports(S('connectionStrategies/index.mjs'))) add('connection-strategy', k, k, S('connectionStrategies/index.mjs'), v.line, {});
+  for (const [k, v] of parseSrcConstExports(S('connectionPoints/index.mjs'))) addAnchorLike('connection-point', k, S('connectionPoints/index.mjs'), v.line, 'connectionPoints.d.ts');
+  for (const [k, v] of parseSrcConstExports(S('connectionStrategies/index.mjs'))) addAnchorLike('connection-strategy', k, S('connectionStrategies/index.mjs'), v.line, 'connectionStrategies.d.ts');
   // highlighters: constructor names (src) + declared members and list enums (types)
   for (const f of walk(S('highlighters'), (p) => p.endsWith('.mjs') && !p.endsWith('index.mjs'))) {
     for (const [k, v] of parseSrcConstExports(f)) add('highlighter', k, k, f, v.line, {});
@@ -628,18 +714,56 @@ export function extractRaw() {
       depth += braceDelta(line);
       if (ns && depth <= nsDepth) ns = null;
     }
+    // Runtime-only helpers: exported by the implementation modules that
+    // src/util/index.mjs re-exports, with no declaration in types/util.d.ts.
+    // A name counts here only when it appears nowhere in the type surface.
+    const typesText = readFileSync(abs, 'utf8');
+    for (const jsFile of [S('util/util.mjs'), S('util/wrappers.mjs')]) {
+      for (const [name, line] of parseJsExportNames(jsFile)) {
+        if (new RegExp(`\\b${name}\\b`).test(typesText)) continue;
+        add('util', name, name, jsFile, line, { owner: 'util', kind: 'runtime-export' });
+      }
+    }
   }
   // mvc (typed classes + runtime-only Data methods; $ stays a single facade entry)
   {
     const abs = T('mvc.d.ts');
+    const typedMemberNames = new Set();
     for (const cls of parseDtsClasses(abs)) {
       for (const mem of cls.members.values()) {
+        typedMemberNames.add(mem.name);
         add('mvc', `${cls.name}.${mem.name}`, mem.name, abs, mem.line, { owner: cls.name, kind: mem.kind, signature: mem.signature, jsDoc: mem.jsDoc });
       }
     }
     const idx = S('mvc/index.mjs');
     add('mvc', 'Data', 'Data', idx, findLine(idx, 'Data'), { owner: 'mvc', kind: 'class' });
     add('mvc', '$', '$', idx, findLine(idx, 'Dom/index'), { owner: 'mvc', kind: 'dom-helper' });
+    // Module-level exports of the mvc namespace that are not class members:
+    // the Events mixin object and its event types, the global view registry,
+    // and the View theme-class helpers defined only at runtime.
+    add('mvc', 'Events', 'Events', abs, findLine(abs, 'export const Events'), { owner: 'mvc', kind: 'object', signature: 'export const Events: Events' });
+    add('mvc', 'Event', 'Event', abs, findLine(abs, 'MVCEvent as Event'), { owner: 'mvc', kind: 'type', signature: 'export { MVCEvent as Event }' });
+    add('mvc', 'TriggeredEvent', 'TriggeredEvent', abs, findLine(abs, 'interface TriggeredEvent'), { owner: 'mvc', kind: 'type', signature: 'export interface TriggeredEvent' });
+    const viewSrc = S('mvc/View.mjs');
+    add('mvc', 'views', 'views', viewSrc, findLine(viewSrc, 'export const views'), { owner: 'mvc', kind: 'registry', signature: 'export const views: { [cid: string]: View }' });
+    {
+      const sf = loadSourceFile(viewSrc);
+      const visitView = (node) => {
+        if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === 'extend'
+          && node.arguments.length > 0 && ts.isObjectLiteralExpression(node.arguments[0])) {
+          for (const prop of node.arguments[0].properties) {
+            const memberName = prop.name && (ts.isIdentifier(prop.name) || ts.isStringLiteralLike(prop.name)) ? prop.name.text : null;
+            if (!memberName || memberName.startsWith('_') || memberName === 'constructor') continue;
+            if (typedMemberNames.has(memberName)) continue; // already counted on its typed class
+            if (!ts.isMethodDeclaration(prop) && !ts.isPropertyAssignment(prop)) continue;
+            add('mvc', `View.${memberName}`, memberName, viewSrc, astLine(sf, prop),
+              { owner: 'View', kind: 'method', signature: astSignature(sf, prop) });
+          }
+        }
+        ts.forEachChild(node, visitView);
+      };
+      visitView(sf);
+    }
     // mvc.Data methods from the JS class body (no .d.ts declaration exists).
     {
       const dataAbs = S('mvc/Data.mjs');
@@ -674,7 +798,7 @@ export function extractRaw() {
     {
       const evalAbs = S('dia/attributes/eval.mjs');
       add('presentation-attribute', 'evalAttributes', 'evalAttributes', evalAbs, findLine(evalAbs, 'export function evalAttributes'), { owner: 'attributes', kind: 'function' });
-      add('presentation-attribute', 'evalAttribute', 'evalAttribute', evalAbs, findLine(evalAbs, 'export function evalAttribute'), { owner: 'attributes', kind: 'function' });
+      add('presentation-attribute', 'evalAttribute', 'evalAttribute', evalAbs, findLine(evalAbs, 'export function evalAttribute('), { owner: 'attributes', kind: 'function' });
     }
     // Consumed inside the text attribute handler, not a registry key.
     {
@@ -701,10 +825,9 @@ export function extractRaw() {
     const envAbs = S('env/index.mjs');
     add('core-config', 'env.addTest', 'addTest', envAbs, findLine(envAbs, 'addTest'), { owner: 'env' });
     add('core-config', 'env.test', 'test', envAbs, findLine(envAbs, 'test: function'), { owner: 'env' });
-    const themeAbs = S('setTheme.mjs');
-    add('core-config', 'setTheme', 'setTheme', themeAbs, 1, { owner: 'core' });
     const jointTypes = T('joint.d.ts');
-    add('core-config', 'version', 'version', jointTypes, findLine(jointTypes, 'version'), { owner: 'core' });
+    add('core-config', 'setTheme', 'setTheme', jointTypes, findLine(jointTypes, 'function setTheme'), { owner: 'core' });
+    add('core-config', 'version', 'version', jointTypes, findLine(jointTypes, 'const version'), { owner: 'core' });
   }
   // alg
   {
@@ -716,23 +839,70 @@ export function extractRaw() {
   return raw;
 }
 
-function parseExportStarClasses(indexAbs) {
-  // Resolve `export * from './x'` one level and collect exported classes/functions.
-  const out = new Map();
-  const dir = dirname(indexAbs);
-  for (const line of readLines(indexAbs)) {
-    const m = line.match(/export\s+\*\s+from\s+'([^']+)'/);
-    if (!m) continue;
-    let target = join(dir, m[1]);
-    if (!existsSync(target)) {
-      for (const cand of [`${target}.ts`, `${target}.tsx`, join(target, 'index.ts')]) {
-        if (existsSync(cand)) { target = cand; break; }
+// Entry-point exports of a TypeScript package, resolved with the AST:
+// direct declarations, named export blocks (with per-specifier `type`
+// modifiers) and one level of `export *` re-exports. Classes also yield
+// their own declared members (constructors, private and underscore-prefixed
+// members excluded). Returns [{ name, line, file, kind, memberOf }].
+function collectEntryExports(indexAbs) {
+  const out = [];
+  const seen = new Set();
+  const push = (name, file, line, kind, memberOf) => {
+    const ck = memberOf ? `${memberOf}.${name}` : name;
+    if (seen.has(ck)) return;
+    seen.add(ck);
+    out.push({ name, file, line, kind, memberOf });
+  };
+  const resolveTarget = (fromFile, spec) => {
+    let target = join(dirname(fromFile), spec);
+    if (existsSync(target) && statSync(target).isFile()) return target;
+    // A './x.mjs' specifier in a .mts entry usually maps to the x.mts source.
+    const swapped = target.replace(/\.m?js$/, (m) => (m === '.mjs' ? '.mts' : '.ts'));
+    for (const cand of [swapped, `${target}.ts`, `${target}.tsx`, `${target}.mts`, `${target}.mjs`, `${target}.js`,
+      join(target, 'index.ts'), join(target, 'index.mts'), join(target, 'index.mjs')]) {
+      if (existsSync(cand)) return cand;
+    }
+    return null;
+  };
+  const collectFrom = (file, isEntry) => {
+    if (!existsSync(file)) return;
+    const sf = loadSourceFile(file);
+    for (const stmt of sf.statements) {
+      if (ts.isExportDeclaration(stmt) && !stmt.exportClause && stmt.moduleSpecifier) {
+        if (!isEntry) continue; // one level of export * only
+        const target = resolveTarget(file, stmt.moduleSpecifier.text);
+        if (target) collectFrom(target, false);
+        continue;
+      }
+      if (ts.isExportDeclaration(stmt) && stmt.exportClause && ts.isNamedExports(stmt.exportClause)) {
+        for (const el of stmt.exportClause.elements) {
+          const kind = (stmt.exportClause.isTypeOnly || el.isTypeOnly) ? 'type' : 'runtime';
+          push(el.name.text, file, astLine(sf, stmt), kind);
+        }
+        continue;
+      }
+      const exported = stmt.modifiers && stmt.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
+      if (!exported) continue;
+      if (ts.isClassDeclaration(stmt) && stmt.name) {
+        push(stmt.name.text, file, astLine(sf, stmt), 'class');
+        for (const mem of collectAstMembers(sf, stmt.members).values()) {
+          if (mem.kind === 'constructor') continue;
+          const entry = { name: mem.name, file, line: mem.line, kind: mem.kind, memberOf: stmt.name.text };
+          const ck = `${stmt.name.text}.${mem.name}`;
+          if (!seen.has(ck)) { seen.add(ck); out.push({ ...entry, signature: mem.signature, jsDoc: mem.jsDoc }); }
+        }
+      } else if (ts.isInterfaceDeclaration(stmt) || ts.isTypeAliasDeclaration(stmt)) {
+        push(stmt.name.text, file, astLine(sf, stmt), 'type');
+      } else if (ts.isEnumDeclaration(stmt)) {
+        push(stmt.name.text, file, astLine(sf, stmt), 'enum');
+      } else if (ts.isFunctionDeclaration(stmt) && stmt.name) {
+        push(stmt.name.text, file, astLine(sf, stmt), 'runtime');
+      } else if (ts.isVariableStatement(stmt)) {
+        for (const decl of stmt.declarationList.declarations) if (ts.isIdentifier(decl.name)) push(decl.name.text, file, astLine(sf, stmt), 'runtime');
       }
     }
-    if (!existsSync(target)) continue;
-    for (const [k, v] of parseExportClasses(target)) if (!out.has(k)) out.set(k, { name: k, line: v.line, file: target });
-    for (const [k, v] of parseSrcConstExports(target)) if (!out.has(k)) out.set(k, { name: k, line: v.line, file: target });
-  }
+  };
+  collectFrom(indexAbs, true);
   return out;
 }
 function parseIndexExportNames(abs) {
@@ -769,10 +939,14 @@ function flushExportBlock(block, out, abs) {
   const m = block.text.match(/\{([\s\S]*)\}/);
   if (!m) return;
   for (const part of m[1].split(',')) {
+    // A specifier may carry its own `type` modifier inside a value export
+    // block (`export { createAtom, type Atom }`): keep that distinction
+    // per specifier instead of dropping it.
+    const specifierIsType = /^type\s+/.test(part.trim());
     const t = part.trim().replace(/^type\s+/, '');
     if (!t) continue;
     const name = t.split(/\s+as\s+/).pop().trim();
-    if (name && !out.has(name)) out.set(name, { name, line: block.line, kind: block.isType ? 'type' : 'runtime', file: abs });
+    if (name && !out.has(name)) out.set(name, { name, line: block.line, kind: (block.isType || specifierIsType) ? 'type' : 'runtime', file: abs });
   }
 }
 
@@ -797,26 +971,28 @@ function extractPackages(raw, add) {
       if (m) add('package-api', `@joint/layout-directed-graph:${m[1]}`, m[1], abs, findLine(abs, `function ${m[1]}`), { package: '@joint/layout-directed-graph' });
     }
   }
-  // MSAGL entry-point: layout + enums
+  // MSAGL entry-point: the layout function plus everything the entry
+  // re-exports from its types and enums modules (Options, LayoutResult,
+  // LayerDirectionEnum, EdgeRoutingMode).
   {
     const idx = P('joint-layout-msagl/src/index.mts');
-    add('package-api', '@joint/layout-msagl:layout', 'layout', idx, findLine(idx, 'export function layout'), { package: '@joint/layout-msagl' });
-    const enums = P('joint-layout-msagl/src/enums.mts');
-    for (const [k, v] of parseSrcConstExports(enums)) add('package-api', `@joint/layout-msagl:${k}`, k, enums, v.line, { package: '@joint/layout-msagl' });
-    for (const line of readLines(enums)) {
-      const m = line.match(/export\s+enum\s+(\w+)/);
-      if (m) add('package-api', `@joint/layout-msagl:${m[1]}`, m[1], enums, findLine(enums, `enum ${m[1]}`), { package: '@joint/layout-msagl' });
-      const r = line.match(/export\s*\{\s*(\w+)\s*\}/);
-      if (r) add('package-api', `@joint/layout-msagl:${r[1]}`, r[1], enums, findLine(enums, r[1]), { package: '@joint/layout-msagl' });
+    for (const v of collectEntryExports(idx)) {
+      if (v.memberOf) continue;
+      add('package-api', `@joint/layout-msagl:${v.name}`, v.name, v.file, v.line,
+        { package: '@joint/layout-msagl', ...(v.kind === 'type' ? { kind: 'type' } : {}) });
     }
   }
-  // router-avoid: initialisers + RouterService class, members and events
+  // router-avoid: the package entry point (src/index.mts) is the public
+  // surface: its exported names, and only those, become rows. Types that
+  // RouterService.mts declares without re-exporting them from the entry
+  // point are internal and get no row.
   {
     const idx = P('joint-router-avoid/src/index.mts');
-    for (const n of ['initAvoidRouter', 'loadAvoidRouter']) {
-      add('package-api', `@joint/router-avoid:${n}`, n, idx, findLine(idx, n), { package: '@joint/router-avoid' });
-    }
     const svc = P('joint-router-avoid/src/RouterService.mts');
+    for (const v of parseIndexExportNames(idx).values()) {
+      if (v.name === 'RouterService') continue; // the class row below, with its members
+      add('package-api', `@joint/router-avoid:${v.name}`, v.name, idx, v.line, { package: '@joint/router-avoid', kind: v.kind });
+    }
     if (existsSync(svc)) {
       add('package-api', '@joint/router-avoid:RouterService', 'RouterService', svc, findLine(svc, 'export class RouterService'), { package: '@joint/router-avoid', kind: 'class' });
       for (const cls of parseAllClasses(svc)) {
@@ -833,20 +1009,21 @@ function extractPackages(raw, add) {
           add('package-api', `@joint/router-avoid:RouterService.event:${mem.name}`, mem.name, svc, mem.line, { package: '@joint/router-avoid', kind: 'event', signature: mem.signature });
         }
       }
-      // Exported option/result types of the service.
-      for (const [qname, iface] of parseDtsInterfaces(svc)) {
-        if (['RouterServiceOptions', 'RoutingResult', 'FallbackRouteAttributes', 'RouteAttributes'].includes(iface.name)) {
-          add('package-api', `@joint/router-avoid:${iface.name}`, iface.name, svc, iface.line, { package: '@joint/router-avoid', kind: 'type' });
-        }
-      }
     }
   }
-  // shapes-general + shapes-general-tools (export * resolved classes)
+  // shapes-general + shapes-general-tools: every name the entry point
+  // re-exports (classes, option/result types, functions), plus the own
+  // declared members of each exported class.
   for (const [pkg, label] of [['joint-shapes-general', '@joint/shapes-general'], ['joint-shapes-general-tools', '@joint/shapes-general-tools']]) {
     const idx = P(`${pkg}/src/index.ts`);
     if (!existsSync(idx)) continue;
-    for (const v of parseExportStarClasses(idx).values()) {
-      add('package-api', `${label}:${v.name}`, v.name, v.file, v.line, { package: label });
+    for (const v of collectEntryExports(idx)) {
+      if (v.memberOf) {
+        add('package-api', `${label}:${v.memberOf}.${v.name}`, `${v.memberOf}.${v.name}`, v.file, v.line, { package: label, kind: v.kind, signature: v.signature, jsDoc: v.jsDoc });
+      } else {
+        add('package-api', `${label}:${v.name}`, v.name, v.file, v.line,
+          { package: label, ...(v.kind === 'type' ? { kind: 'type' } : {}) });
+      }
     }
   }
   // react exported names (entry point "." plus public subpath "./internal")
@@ -862,24 +1039,23 @@ function extractPackages(raw, add) {
       for (const v of parseIndexExportNames(internal).values()) {
         add('package-api', `@joint/react/internal:${v.name}`, v.name, internal, v.line, { package: '@joint/react', subpath: '/internal', kind: v.kind });
       }
-      // `export * from './state/data-mapping/...'` in internal.ts: resolve one level.
-      for (const v of parseExportStarClasses(internal).values()) {
-        add('package-api', `@joint/react/internal:${v.name}`, v.name, v.file, v.line, { package: '@joint/react', subpath: '/internal', kind: 'runtime' });
+      // `export * from './state/data-mapping/...'` in internal.ts: resolve
+      // one level, including the exported mapper types.
+      for (const v of collectEntryExports(internal)) {
+        if (v.memberOf) continue;
+        add('package-api', `@joint/react/internal:${v.name}`, v.name, v.file, v.line,
+          { package: '@joint/react', subpath: '/internal', kind: v.kind === 'type' ? 'type' : 'runtime' });
       }
     }
   }
-  // decorators factories
+  // decorators factories and their option types
   {
     const idx = P('joint-decorators/src/index.ts');
     if (existsSync(idx)) {
-      for (const v of parseExportStarClasses(idx).values()) {
-        add('package-api', `@joint/decorators:${v.name}`, v.name, v.file, v.line, { package: '@joint/decorators' });
-      }
-      for (const f of walk(P('joint-decorators/src/decorators'), (p) => p.endsWith('.ts'))) {
-        for (const line of readLines(f)) {
-          const m = line.match(/export\s+enum\s+(\w+)/);
-          if (m) add('package-api', `@joint/decorators:${m[1]}`, m[1], f, findLine(f, `enum ${m[1]}`), { package: '@joint/decorators' });
-        }
+      for (const v of collectEntryExports(idx)) {
+        if (v.memberOf) continue;
+        add('package-api', `@joint/decorators:${v.name}`, v.name, v.file, v.line,
+          { package: '@joint/decorators', ...(v.kind === 'type' ? { kind: 'type' } : {}) });
       }
     }
   }
@@ -1039,6 +1215,115 @@ const CONTRACT_DETAILS = {
   'presentation-attribute:evalAttribute': 'Single-attribute form of evalAttributes: evaluates calc(...) only when the attribute is in the calc list; otherwise returns the value unchanged (positive-value clamping as above).',
 };
 const CALC_GRAMMAR = 'calc grammar: calc(<formula>) where a formula is [coef*](w|h|x|y|s|l|d)[/divisor][+/-offset] with w=width, h=height, x,y=origin, s=min(w,h), l=max(w,h), d=sqrt(w^2+h^2); formulas may be embedded in SVG strings such as d or points and several calc(...) may appear in one value.';
+// The calc-evaluated attribute names, read from the pinned evaluator source
+// (src/dia/attributes/eval.mjs) at generation time instead of being restated
+// here: only these attributes have their calc(...) values evaluated.
+const CALC_ATTRIBUTES = (() => {
+  try {
+    const text = readFileSync(join(coreRoot, 'src', 'dia', 'attributes', 'eval.mjs'), 'utf8');
+    const m = text.match(/calcAttributesList\s*=\s*\[([\s\S]*?)\]/);
+    if (!m) return new Set();
+    return new Set([...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]));
+  } catch { return new Set(); }
+})();
+// Verified per-name contracts for the compact algorithmic families. Fields
+// and defaults below were read from the pinned argument interfaces
+// (types/routers.d.ts, types/connectors.d.ts, types/anchors.d.ts,
+// types/linkAnchors.d.ts, types/connectionPoints.d.ts, types/layout.d.ts)
+// and the runtime defaults in the corresponding src modules.
+Object.assign(CONTRACT_DETAILS, {
+  'router:normal': 'No routing at all: the intermediate vertices are returned unchanged (the options object is empty), so the rendered connection passes through the given vertices exactly as supplied.',
+  'router:orthogonal': 'Orthogonal detour around the two end elements: padding (dia.Sides; elementPadding is the legacy alias, default padding 20) expands both end bounding boxes, and the route leaves and enters orthogonally, running around the padded boxes with axis-aligned segments only.',
+  'router:rightAngle': 'Right-angled route computed from the end anchors and boxes: margin clears both ends (sourceMargin/targetMargin override it per end, minPathMargin floors the clearance), sourceDirection/targetDirection select the exit and entry sides (RightAngleDirections; auto derives the side from the anchor or magnet), useVertices honours supplied vertices as via points and useModelGeometry reads model geometry instead of rendered views.',
+  'router:oneSide': 'Deprecated in favour of rightAngle: every intermediate vertex is forced to one fixed side of both end elements (side: top, right, bottom or left, default bottom; an invalid side throws), offset outward by padding (default 40, normalised Sides).',
+  'connector:normal': 'Plain polyline through [sourcePoint, ...routePoints, targetPoint] with straight segments and no corner treatment; raw returns the g.Path object instead of its serialised string.',
+  'connector:rounded': 'Polyline whose interior corners are rounded: delegates to the straight connector with cornerType cubic and cornerRadius = radius (default 10), precision 0; raw returns the g.Path instead of the serialised string.',
+  'connector:smooth': 'Smooth curve through [sourcePoint, ...routePoints, targetPoint] rendered as cubic Bezier segments interpolated across the points (no corner rounding and no direction options); raw returns the g.Path instead of its serialised string.',
+  'connector:jumpover': 'Polyline that hops over crossing links of the same paper: at each crossing it inserts a jump of size (default 5) drawn as arc, gap or cubic (jump option, default arc), optionally rounding the jump ends with radius (default 0); crossings too close to a segment end are drawn straight instead; raw returns the g.Path.',
+  'anchor:center': 'The centre of the end element bounding box (or of the magnet node box), shifted by dx/dy (numbers, percentages of the box, or calc expressions against the box); rotate counter-rotates the point around the element centre for rotated elements, and useModelGeometry reads the model/port box instead of the rendered node.',
+  'anchor:top': 'The middle of the top side of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:bottom': 'The middle of the bottom side of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:left': 'The middle of the left side of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:right': 'The middle of the right side of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:topLeft': 'The top-left corner (origin) of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:topRight': 'The top-right corner of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:bottomLeft': 'The bottom-left corner of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:bottomRight': 'The bottom-right corner (corner point) of the end bounding box, with the dx/dy offset and rotate rules of the bbox anchor family.',
+  'anchor:perpendicular': 'The point on the end bounding box closest to the reference point along a perpendicular: the reference coordinates are projected onto the box centre lines inside the box shrunk by padding, then corrected by the element rotation angle (a zero or right angle skips the tangent correction); rotate and useModelGeometry follow the anchor family rules.',
+  'anchor:midSide': 'The middle of the box side selected by mode (auto picks the side nearest the reference point; prefer-horizontal/prefer-vertical use preferenceThreshold Sides, the *-top/bottom-top and left-right/right-left modes pick opposite sides for source and target ends), after inflating the box by padding and optionally rotating the reference point into the element frame.',
+  'anchor:modelCenter': 'Resolved from the model instead of the view: the point the element model reports for the connected link end (getPointFromConnectedLink for the given end), offset by dx/dy (plain numbers only).',
+  'link-anchor:connectionRatio': 'The point at ratio of the host link connection length (ratio option, default 0.5), measured along the rendered connection from its start.',
+  'link-anchor:connectionLength': 'The point at length world units along the host link connection from its start (length option, default 20).',
+  'link-anchor:connectionPerpendicular': 'The closest intersection of the host connection with the vertical or horizontal line through the reference point (the nearer of the two axes wins); when there is no intersection it falls back to fallbackAt along the connection, and fixedAt pins the reference resolution for element references.',
+  'link-anchor:connectionClosest': 'The closest point of the host link connection to the reference point; an empty connection yields the origin point; fixedAt pins the reference resolution for element references.',
+  'connection-point:anchor': 'No trimming: the rendered path end stays exactly at the link end anchor point, shifted only by the optional offset (number along the end segment or an explicit point).',
+  'connection-point:bbox': 'The intersection of the end segment with the end element bounding box (stroke includes half the stroke width in the box when requested, useModelGeometry uses the model box); offset then moves the point along the segment.',
+  'connection-point:rectangle': 'Like the bbox connection point but computed against the element rectangle geometry (the model box when useModelGeometry is set), honouring stroke and offset the same way.',
+  'connection-point:boundary': 'The intersection of the end segment with the actual shape outline of the end node (selector picks the node subtree, precision subdivides curves, sticky keeps the previous side, extrapolate extends the segment past the end, insideout allows intersections from inside the shape); stroke and offset apply as in the bbox rule.',
+  'connection-strategy:pinAbsolute': 'On drop, fixes the end to the drop coordinates: on an element it writes anchor topLeft with dx/dy as absolute offsets from the unrotated magnet box (the drop point is first rotated by -angle around the element centre) and rotate: true; on a link it writes connectionLength with the absolute length at the drop point.',
+  'connection-strategy:pinRelative': 'On drop, fixes the end proportionally: on an element it writes anchor topLeft with dx/dy as percentages of the magnet box width/height rounded to 3 decimals (for example "12.345%") and rotate: true; on a link it writes connectionRatio with the drop length divided by the total connection length.',
+  'connection-strategy:useDefaults': 'Leaves the dropped end definition unchanged (a no-op strategy): the paper default anchor and connection point for the end apply.',
+  'layout-port:absolute': 'Each port takes its own declared x/y position (numbers or percentages of the element box), with per-port dx/dy offsets and angle; positions are rounded to integers.',
+  'layout-port:line': 'Ports are distributed evenly along the straight line from start to end (positions or points), each then shifted by its dx/dy and given the declared angle; positions are rounded to integers.',
+  'layout-port:left': 'Ports are distributed evenly down the left side of the element box from top to bottom ((i + 0.5) / N along the side unless start/end/step options override), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:right': 'Ports are distributed evenly down the right side of the element box from top to bottom ((i + 0.5) / N along the side unless overridden), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:top': 'Ports are distributed evenly across the top side of the element box from left to right ((i + 0.5) / N along the side unless overridden), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:bottom': 'Ports are distributed evenly across the bottom side of the element box from left to right ((i + 0.5) / N along the side unless overridden), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:ellipse': 'Ports are placed on the ellipse inscribed in the element box at angles stepping from startAngle by an equal share of the remaining arc (step option overrides), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:ellipseSpread': 'Ports are spread over the full ellipse inscribed in the element box, evenly by angle from startAngle (a full turn divided by the port count unless step overrides), each shifted by its dx/dy; positions are rounded to integers.',
+  'layout-port:fn': 'Deprecated escape hatch: the group layout function itself is supplied by the application (args carries the function and its parameters); JointJS only applies the returned positions.',
+  'layout-port-label:manual': 'The label keeps the position declared in its own arguments (x/y/angle/offset); no automatic placement is computed.',
+  'layout-port-label:left': 'The label is placed to the left of its port position, offset outward by the label offset and aligned so the text sits outside the element edge.',
+  'layout-port-label:right': 'The label is placed to the right of its port position, offset outward by the label offset.',
+  'layout-port-label:top': 'The label is placed above its port position, offset outward by the label offset.',
+  'layout-port-label:bottom': 'The label is placed below its port position, offset outward by the label offset.',
+  'layout-port-label:outside': 'The label is placed outside the element on the side its port sits on (derived from the port position against the element box), at the declared offset.',
+  'layout-port-label:outsideOriented': 'Like the outside label layout, and the label is additionally rotated to follow the orientation of the side it sits on.',
+  'layout-port-label:inside': 'The label is placed inside the element on the side its port sits on, at the declared offset from the port position.',
+  'layout-port-label:insideOriented': 'Like the inside label layout, and the label is additionally rotated to follow the orientation of the side it sits on.',
+  'layout-port-label:radial': 'The label is placed radially outward from the element centre through its port position, at the declared offset.',
+  'layout-port-label:radialOriented': 'Like the radial label layout, and the label is rotated along the radial direction through its port.',
+  'highlighter:addClass': 'Adds a CSS class to the highlighted node (the className option) for the duration of the highlight and removes it on unhighlight; no geometry is drawn.',
+  'highlighter:mask': 'Clips an overlay copy of the node through an SVG mask built from the node shape (getMaskShape), so the emphasis follows the exact node outline; mask child/root attribute blacklists and tag replacements shape the mask content.',
+  'highlighter:opacity': 'Dims everything except the highlighted node by setting an opacity class (opacityClassName) on the paper root for the duration of the highlight.',
+  'highlighter:stroke': 'Draws a stroke outline around the exact node shape path (getPathData) or around the link connection, expanded by padding and rounded by rx/ry options; highlightNode and highlightConnection are the two entry points.',
+  'highlighter:list': 'Renders a stack of list items next to the cell (createListItem per item, position places the stack, Directions and Positions enumerate the allowed placements) used for validation-style callouts.',
+  'link-tool:Anchor': 'Draggable handle at a link end that re-anchors that end: dragging moves the end anchor point and commits the new anchor definition to the link on release.',
+  'link-tool:Arrowhead': 'Base draggable arrowhead handle shared by the source and target variants: dragging moves the link end along with its arrowhead and re-anchors on release.',
+  'link-tool:SourceAnchor': 'The Anchor handle specialised for the link source end.',
+  'link-tool:TargetAnchor': 'The Anchor handle specialised for the link target end.',
+  'link-tool:SourceArrowhead': 'The Arrowhead handle specialised for the link source end.',
+  'link-tool:TargetArrowhead': 'The Arrowhead handle specialised for the link target end.',
+  'link-tool:Boundary': 'Non-draggable frame showing the link connection bounding box while the tools are visible; it tracks the connection geometry and takes no edit.',
+  'link-tool:Button': 'Clickable button rendered on the link at a declared distance/offset; activating it fires the tool action callback instead of editing geometry.',
+  'link-tool:Connect': 'Handle that starts a new link from this link end (magnet-style connect interaction), creating and dragging the new link until release.',
+  'link-tool:Control': 'Generic draggable control handle positioned along the connection by ratio or length; subclasses specialise what the drag edits.',
+  'link-tool:HoverConnect': 'Connect handle revealed on hover over the link, starting a new link drag from the hovered point.',
+  'link-tool:Remove': 'Button that removes the link from the graph when activated.',
+  'link-tool:RotateLabel': 'Handle that rotates a link label around its anchor point, committing the label angle on release.',
+  'link-tool:Segments': 'Draggable handles on each route segment: dragging a segment moves it orthogonally and rewrites the adjacent vertices on release.',
+  'link-tool:Vertices': 'Draggable handles on each route vertex (VertexHandle): dragging moves the vertex, double-click removes it, and dragging a segment midpoint inserts a new vertex; the vertex list is committed on release.',
+  'element-tool:Boundary': 'Non-draggable frame showing the element bounding box while the tools are visible; it tracks element geometry and takes no edit.',
+  'element-tool:Button': 'Clickable button rendered at a declared position on the element; activating it fires the tool action callback.',
+  'element-tool:Connect': 'Handle that starts a new link from the element (optionally from a port magnet) and drags it until it is dropped on a target.',
+  'element-tool:Control': 'Generic draggable control handle on the element; subclasses specialise what the drag edits (offsets, radii, dividers).',
+  'element-tool:HoverConnect': 'Connect handle revealed on hover over the element, starting a new link drag.',
+  'element-tool:Remove': 'Button that removes the element (and its embedded content per the graph rules) when activated.',
+  'presentation-attribute:source-marker': 'Defines the marker drawn at the start of a link connection path (an SVG marker definition referenced by the connection); changing it re-renders the link ends.',
+  'presentation-attribute:target-marker': 'Defines the marker drawn at the end of a link connection path; changing it re-renders the link ends.',
+  'presentation-attribute:vertex-marker': 'Defines the marker drawn at each interior vertex of a link connection path.',
+  'presentation-attribute:text': 'Sets the text content of the target node, with wrapping and breaking per the sibling text options (text-wrap, line-height, annotations) measured against the reference box.',
+  'presentation-attribute:title': 'Sets the node tooltip by creating or updating an SVG <title> child of the target node; it carries no geometry and no calc evaluation.',
+  'presentation-attribute:props': 'Assigns DOM properties (not attributes) from the given name/value map onto the target node.',
+  'presentation-attribute:style': 'Applies the given CSS declarations to the target node style.',
+  'presentation-attribute:html': 'Replaces the target node inner HTML with the given markup (the node is emptied on unset).',
+  'util:addClassNamePrefix': 'Returns the class name prefixed with the given prefix (the global config.classNamePrefix by default); used to namespace theme and view class names.',
+  'util:removeClassNamePrefix': 'Inverse of addClassNamePrefix: strips the given prefix (the global config.classNamePrefix by default) from a class name when present.',
+  'util:normalizeWheel': 'Normalises a wheel event into a plain delta record (pixel/line/page modes converted to pixel deltas) for zoom handling.',
+  'util:cap': 'Caps a numeric value at the given maximum (returns the smaller of value and max).',
+  'util:wrapWith': 'Replaces each named method of the object with the named wrapper (or a wrapper function); an unknown wrapper name or a non-function wrapper throws.',
+  'util:wrappers': 'The named method wrappers registry; its cells wrapper adapts a function expecting (cells, opt) to one accepting a single cell, a cell list, or trailing options, normalising the arguments before delegating.',
+});
 
 function behaviourFor(r) {
   const n = r.name;
@@ -1063,32 +1348,32 @@ function behaviourFor(r) {
       if (r.extra.kind === 'enum') return `\`connectors.${r.key}\` (enum).${enumNote}${sig} The constants select the tangent/direction rule of the curve connector.`;
       return `Connector \`${n}\`: input is source point, target point, routed vertices and this connector's options; output is the connection path (serialised SVG path upstream; sampled polyline/curve points on our stack).${detail}${sig}`;
     case 'anchor':
-      return `Element anchor \`${n}\`: input is the end element/port geometry, the magnet shape descriptor and a reference point (plus this anchor's options); output is the link end point on the element. Moving, resizing or rotating the element moves the computed point by the same rule.${sig}`;
+      return `Element anchor \`${n}\`: input is the end element/port geometry, the magnet shape descriptor and a reference point (plus this anchor's options); output is the link end point on the element. Moving, resizing or rotating the element moves the computed point by the same rule.${detail}${sig}`;
     case 'link-anchor':
-      return `Link anchor \`${n}\`: input is the host link's rendered connection and a reference point or ratio/length argument; output is the attachment point on that connection, used when a link end attaches to another link.${sig}`;
+      return `Link anchor \`${n}\`: input is the host link's rendered connection and a reference point or ratio/length argument; output is the attachment point on that connection, used when a link end attaches to another link.${detail}${sig}`;
     case 'connection-point':
-      return `Connection point \`${n}\`: input is the link end segment and the end element's shape/bounding box; output trims or extends the rendered path end so the visible path starts or ends exactly at the computed boundary point (stroke and offset options honoured as declared).${sig}`;
+      return `Connection point \`${n}\`: input is the link end segment and the end element's shape/bounding box; output trims or extends the rendered path end so the visible path starts or ends exactly at the computed boundary point (stroke and offset options honoured as declared).${detail}${sig}`;
     case 'connection-strategy':
-      return `Connection strategy \`${n}\`: on a link-end drop over an element, magnet or link it rewrites the end definition (anchor name and arguments, or connection ratio on a link target) before the link model is updated; the rewritten definition is the observable output.${sig}`;
+      return `Connection strategy \`${n}\`: on a link-end drop over an element, magnet or link it rewrites the end definition (anchor name and arguments, or connection ratio on a link target) before the link model is updated; the rewritten definition is the observable output.${detail}${sig}`;
     case 'highlighter':
       if (r.extra.kind === 'enum') return `Highlighter enum \`${r.key}\`.${enumNote}${sig}`;
       if (o && n !== o) return `\`highlighters.${o}.${n}\` (${r.extra.kind}).${sig}${doc} It contributes to the "${o}" emphasis: applied to a cell view (or link connection) it adds the visible overlay and removes it cleanly on unhighlight, without changing the underlying model.`;
-      return `Highlighter \`${n}\`: when applied to a cell view (or a link connection) it adds the visible emphasis named "${n}" (padding, stroke, mask or class as declared for this highlighter) and removes it cleanly on unhighlight, without changing the underlying model.`;
+      return `Highlighter \`${n}\`: when applied to a cell view (or a link connection) it adds the visible emphasis named "${n}" (padding, stroke, mask or class as declared for this highlighter) and removes it cleanly on unhighlight, without changing the underlying model.${detail}`;
     case 'link-tool':
       if (r.extra.kind === 'class') return `Link-tool handle class \`${r.key}\`: the draggable handle view used by its parent tool; pointer drags on it produce the parent tool's link edit.${sig}`;
       if (o && r.key !== n) return `\`linkTools.${r.key}\` (${r.extra.kind}).${sig}${doc} Part of the parent tool's interaction: it renders on the link's tools layer and translates its pointer gestures into that tool's link edit, committed to the link model on release.`;
-      return `Link tool \`${n}\`: when a link's tools are shown it renders its handle(s) on the link and translates pointer drags into the link edits named by the tool (vertices, segments, arrowheads, anchors, labels or removal), updating the link model on release.`;
+      return `Link tool \`${n}\`: when a link's tools are shown it renders its handle(s) on the link and translates pointer drags into the link edits named by the tool (vertices, segments, arrowheads, anchors, labels or removal), updating the link model on release.${detail}`;
     case 'element-tool':
       if (r.extra.kind === 'class') return `Element-tool handle class \`${r.key}\`: the draggable handle view used by its parent tool.${sig}`;
       if (o && r.key !== n) return `\`elementTools.${r.key}\` (${r.extra.kind}).${sig}${doc} Part of the parent tool's interaction on the element's tools layer.`;
-      return `Element tool \`${n}\`: when an element's tools are shown it renders its handle or button on the element and translates pointer interaction into the element or link-creation edits named by the tool, updating the model on release.`;
+      return `Element tool \`${n}\`: when an element's tools are shown it renders its handle or button on the element and translates pointer interaction into the element or link-creation edits named by the tool, updating the model on release.${detail}`;
     case 'shape':
       if (o && r.key !== n) return `\`standard.${r.key}\` (${r.extra.kind}).${sig}${doc} Member of the standard shape class; reading or setting it follows the declared signature on shape instances.`;
       return `Standard shape \`standard.${n}\`: an element (or link, for the link shapes) type with its own default markup, default selector attributes (including calc(...) sizing such as calc(w)/calc(h) where declared) and default size; creating it renders the named figure and setting its selectors updates the corresponding parts.`;
     case 'layout-port':
-      return `Port layout \`${n}\`: input is a port group's ports (with per-port dx/dy) and the element bounding box; output is each port's position and angle. Positions are rounded to integers (p.round()) upstream.${sig}`;
+      return `Port layout \`${n}\`: input is a port group's ports (with per-port dx/dy) and the element bounding box; output is each port's position and angle. Positions are rounded to integers (p.round()) upstream.${detail}${sig}`;
     case 'layout-port-label':
-      return `Port-label layout \`${n}\`: input is a port position and the element bounding box; output is the port label's position, angle and attributes.${sig}`;
+      return `Port-label layout \`${n}\`: input is a port position and the element bounding box; output is the port label's position, angle and attributes.${detail}${sig}`;
     case 'geometry':
       if (r.extra.kind === 'enum') return `\`g.types\` (enum).${enumNote}${sig} The numeric codes discriminate the geometry classes (Point=1, Line=2, Ellipse=3, Rect=4, Polyline=5, Polygon=6, Curve=7, Path=8).`;
       if (o === 'Segment') return `\`g.Segment.${n}\` (${r.extra.kind}).${sig}${doc} Behavioural contract of one path segment (M/L/C/Z units created through Path.createSegment): a pure geometry operation on the segment, with no rendering side effects. Segment geometry (bbox, length, closest point, tangents, subdivision) follows the declared signature.`;
@@ -1097,16 +1382,22 @@ function behaviourFor(r) {
       if (r.extra.kind === 'callable') return `\`V(svg, attrs, children)\` (callable).${sig} Creates a VElement wrapping the given SVG element/tag, applies attrs and appends children; the result supports the VElement operations of this family.`;
       return `\`${o === 'VStatic' ? 'V.' : 'VElement.'}${n}\` (${r.extra.kind}).${sig}${doc} SVG DOM operation: ${o === 'VStatic' ? 'as a static helper it transforms or inspects SVG nodes, matrices or path data and returns the declared result.' : 'applied to the wrapped SVG node it mutates or inspects that node (attributes, transform, text, tree position or measured box) and returns the declared result.'}`;
     case 'util':
-      return `\`util.${o && o !== 'util' ? o + '.' : ''}${n}\`.${sig}${doc} Pure (or explicitly documented) helper: the documented inputs produce the documented transformed value, cloned structure, formatted string or scheduled callback behaviour, independently of any diagram state.`;
+      return `\`util.${o && o !== 'util' ? o + '.' : ''}${n}\`.${sig}${doc}${detail} Pure (or explicitly documented) helper: the documented inputs produce the documented transformed value, cloned structure, formatted string or scheduled callback behaviour, independently of any diagram state.`;
     case 'mvc':
       if (r.key === '$') return '`mvc.$`: the DOM helper facade re-exported from src/mvc/Dom/index.mjs (vendored jQuery-derived implementation, Dom.mjs). It is inventoried as a single facade entry: parity is specified as a DOM-helper replacement contract, not as per-method jQuery parity (see the spec annex).';
+      if (r.key === 'Events') return '`mvc.Events`: the event-mixin singleton object (on/off/trigger/bind/unbind/once/listenTo/listenToOnce/stopListening) that is mixed into models, collections, views and the graph; binding, unbinding and triggering follow the Events contract of this family.';
+      if (r.key === 'Event') return '`mvc.Event` (type): the normalised event object carried to view and paper handlers (mouse, pointer, keyboard and touch fields, propagation flags and preventDefault/stopPropagation controls). Type-only: parity is the handler argument shape.';
+      if (r.key === 'TriggeredEvent') return '`mvc.TriggeredEvent` (type): the event object as delivered to triggered listeners, extending mvc.Event with currentTarget, delegateTarget, target, data, namespace and originalEvent fields. Type-only: parity is the listener argument shape.';
+      if (r.key === 'views') return '`mvc.views`: the global registry of live views keyed by cid; a view registers itself at initialisation and its slot is cleared on removal, so lookups observe exactly the mounted view set.';
       if (o === 'Data') return `\`mvc.Data.${n}\` (${r.extra.kind}).${sig} WeakMap-backed per-object data store operation of mvc.Data.`;
+      if (o === 'mvc') return `\`mvc.${n}\` (${r.extra.kind || 'member'}).${sig}${doc} Module-level mvc export; see the entry name for the exact role.`;
       return `\`mvc.${o}.${n}\` (${r.extra.kind || 'member'}).${sig}${doc} Backbone-style model, collection, view or event primitive on which dia.Graph, dia.Cell and the views are built; state changes emit the documented change notifications.`;
     case 'presentation-attribute':
       if (n === 'evalAttributes' || n === 'evalAttribute') return `Presentation evaluator \`${n}\`.${detail} ${CALC_GRAMMAR}`;
       if (r.extra.kind === 'selector-attribute') return `Selector attribute \`${n}\`: consumed by CellView outside the presentation-attribute registry to resolve the magnet, event source, highlighter target or port container for a selector; it does not itself paint.`;
       if (n === 'use-no-break-space') return 'Presentation option `use-no-break-space`: when true inside text attributes, spaces are preserved as non-breaking spaces during text wrapping/measurement of the owning text attribute.';
-      return `Presentation attribute \`${n}\`${r.extra.alias ? ' (bracket-assigned alias of its -keep-gradient/-reset-offset or base variant)' : ''}: when set in a cell's selector attributes it is evaluated against the element's reference bounding box (calc(...) values through the calc evaluator) and applied to the target node following the "${n}" rule, and re-evaluated when the geometry changes. ${CALC_GRAMMAR}`;
+      if (CALC_ATTRIBUTES.has(n)) return `Presentation attribute \`${n}\`: one of the geometry attributes whose calc(...) values are evaluated against the element's reference bounding box by the calc evaluator before the "${n}" rule is applied to the target node, and re-evaluated when the geometry changes. ${CALC_GRAMMAR}`;
+      return `Presentation attribute \`${n}\`${r.extra.alias ? ' (bracket-assigned alias of its -keep-gradient/-reset-offset or base variant)' : ''}: when set in a cell's selector attributes it is applied to the target node following the "${n}" rule and re-applied when the geometry changes. This attribute is not one of the calc-evaluated geometry attributes, so a calc(...) value in it is not evaluated by the calc evaluator. ${detail}`;
     case 'core-config':
       return `\`${r.key}\`.${sig}${doc} Global JointJS setting: reading or setting it changes the library-wide default (merging, selectors, theme, capability tests or version reporting) for all subsequently created graphs, papers and cells.`;
     case 'alg':
@@ -1128,7 +1419,10 @@ function acceptanceFor(r) {
   switch (r.family) {
     case 'router': case 'connector': case 'anchor': case 'link-anchor': case 'connection-point': case 'layout-port': case 'layout-port-label': case 'geometry': case 'alg':
       return `Differential geometry oracle for ${label}: run identical fixed inputs (boxes, points, vertices, options from the behaviour contract, including its stated defaults and rounding rule) through JointJS (@joint/core ${JOINT_VERSION}) and our implementation; assert returned points/path samples match under the per-function tolerance of the spec harness section (the function's own rounding reproduced first, residual <=1e-6 world units; integers exact), including one rotated-element case and one degenerate coincident-points case.`;
-    case 'dia-api': case 'mvc':
+    case 'dia-api':
+      if (targetFor(r) === 'diagram-core') return `Differential model oracle for ${label}: apply the same operation sequence to a JointJS graph and to our diagram-core state (via transactions with the JointJS-to-Effect projection of the spec); assert the serialised model, the returned value or rejection and the projected effect/event sequence match, including one invalid-input case that must be rejected without partial state change.`;
+      return `Differential scene oracle for ${label}: build the same paper and scripted pointer/option sequence in JointJS and in our diagram-canvas plus renderer harness (playwright-core, headless Chrome); assert the scene/display-list geometry, the camera transform, the emitted paper event sequence and the final model match, with pointer coordinates compared after the shared world transform and pixels compared only where geometry cannot decide.`;
+    case 'mvc':
       return `Differential model oracle for ${label}: apply the same operation sequence to a JointJS graph and to our diagram-core state (via transactions with the JointJS-to-Effect projection of the spec); assert the serialised model, the returned value or rejection and the projected effect/event sequence match, including one invalid-input case that must be rejected without partial state change.`;
     case 'paper-option': case 'event':
       return `Differential interaction oracle for ${label}: build the same paper and scripted pointer/option sequence in JointJS and in our diagram-canvas plus renderer harness (playwright-core, headless Chrome); assert the emitted event sequence, the camera/scene result and the model result match, with pointer coordinates compared after the shared world transform.`;
@@ -1369,14 +1663,14 @@ export function buildEntries() {
 
 const COUNTING_CONVENTIONS = {
   'dia-api': 'Distinct public/protected member names per export class in types/dia.d.ts via the TypeScript AST (generic methods and required properties included, [Symbol.iterator] included); overloads collapsed; private and underscore-prefixed excluded; inherited members counted on the declaring class only; plus the namespace enums CellView.Highlighting, ElementView.Flags, LinkView.Flags, Paper.sorting, Paper.Layers (one entry per enum).',
-  'paper-option': 'Declared property fields of the Paper.Options interface in types/dia.d.ts via AST; inherited mvc.ViewOptions fields excluded.',
+  'paper-option': 'Declared property fields of the Paper.Options interface in types/dia.d.ts via AST, plus the fields inherited from the sibling option interfaces declared in the same file (CellVisibilityOptions, BeforeRenderOptions, AfterRenderOptions); fields inherited from interfaces of other files (mvc.ViewOptions) excluded.',
   event: 'Union of dia.Paper.EventMap keys, trigger() literals in src/**, and dynamic change:/eventPrefix patterns (flagged dynamic).',
   router: 'Keys of RouterArgumentsMap in types/routers.d.ts, plus routers.rightAngle.Directions (RightAngleDirections enum, one entry).',
   connector: 'Keys of ConnectorArgumentsMap in types/connectors.d.ts, plus connectors.curve.Directions and connectors.curve.TangentDirections (one entry per enum).',
-  anchor: 'export const names in src/anchors/index.mjs.',
-  'link-anchor': 'Exported anchor names in src/linkAnchors/index.mjs (resolveRef helper excluded).',
-  'connection-point': 'export const names in src/connectionPoints/index.mjs.',
-  'connection-strategy': 'export const names in src/connectionStrategies/index.mjs.',
+  anchor: 'export const names in src/anchors/index.mjs, anchored on their typed declaration when one exists (types/anchors.d.ts).',
+  'link-anchor': 'Exported anchor names in src/linkAnchors/index.mjs (resolveRef helper excluded), anchored on their typed declaration when one exists.',
+  'connection-point': 'export const names in src/connectionPoints/index.mjs, anchored on their typed declaration when one exists.',
+  'connection-strategy': 'export const names in src/connectionStrategies/index.mjs, anchored on their typed declaration when one exists.',
   highlighter: 'export const names in src/highlighters/*.mjs, plus declared members of the highlighter classes and the list.Directions/list.Positions enums in types/highlighters.d.ts.',
   'link-tool': 'Export classes in types/linkTools.d.ts (top-level plus nested handle classes such as Vertices.VertexHandle), plus their declared members (constructors excluded).',
   'element-tool': 'Export classes in types/elementTools.d.ts (top-level plus nested classes), plus their declared members (constructors excluded).',
@@ -1385,13 +1679,13 @@ const COUNTING_CONVENTIONS = {
   'layout-port-label': 'export var names under the PortLabel namespace of types/layout.d.ts.',
   geometry: 'Distinct declared member names per export class in types/geometry.d.ts via AST, plus the g.Segment interface members, the g.types enum (one entry), standalone functions and bezier/scale/intersection namespace members.',
   vectorizer: 'VElement member names plus VStatic interface members (prefix V.) and the V callable signature, in types/vectorizer.d.ts via AST.',
-  util: 'export function/var names in types/util.d.ts, including timing/interpolate/filter/format namespace members.',
-  mvc: 'Distinct declared member names per export class in types/mvc.d.ts via AST, plus Data (with its JS methods has/create/get/set/remove) and the single $ facade entry from src/mvc/index.mjs.',
+  util: 'export function/var names in types/util.d.ts, including timing/interpolate/filter/format namespace members, plus the runtime-only helpers exported by src/util/*.mjs that the type surface never declares.',
+  mvc: 'Distinct declared member names per export class in types/mvc.d.ts via AST, plus the module-level exports that are not class members (Events object, Event and TriggeredEvent types, views registry, runtime-only View theme-class helpers), plus Data (with its JS methods has/create/get/set/remove) and the single $ facade entry from src/mvc/index.mjs.',
   'presentation-attribute': 'Top-level keys of the attribute namespaces in src/dia/attributes/*.mjs, plus bracket-assigned aliases (ref-d, ref-points, at-connection-*, refX/refY/ref-*2/ref-r), the calc evaluator (evalAttributes, evalAttribute), use-no-break-space, the five CellView selector attributes (event, magnet, magnetSelector, highlighterSelector, containerSelector) and the props shorthand.',
   'core-config': 'Keys of src/config/index.mjs, plus env.addTest, env.test, setTheme, version.',
   alg: 'The exported rightAnglePath function of types/alg.d.ts (upstream-flagged internal).',
   package: 'Directories of packages/* in the monorepo carrying a package.json.',
-  'package-api': 'Entry-point exports per package (see the enumerate.mjs header), including @joint/router-avoid RouterService with its members and events and the @joint/react subpath ./internal; @joint/core excluded.',
+  'package-api': 'Entry-point exports per package (see the enumerate.mjs header), including @joint/router-avoid RouterService with its members and events, the @joint/react subpath ./internal, and the own declared members of the exported @joint/shapes-general and @joint/shapes-general-tools classes; names declared in a package but not re-exported from its entry point are excluded; @joint/core excluded.',
   'catalog-app': 'Rows of jointjs_apps_and_recipes in docs/graph-dataviz-reference-catalog.json (186 rows tracked; the 109 JointJS+ rows are greenfield GD-M5-APPS tracking excluded from the parity denominator).',
 };
 
