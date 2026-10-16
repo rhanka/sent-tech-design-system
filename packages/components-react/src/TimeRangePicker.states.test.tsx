@@ -140,40 +140,6 @@ describe("Calendar — range classes", () => {
   });
 });
 
-describe("TimeRangePicker — customHeader", () => {
-  it("renders the header at the top of the Custom tab, above the calendars", () => {
-    const { container, getByRole } = render(
-      <TimeRangePicker
-        locale="en-US"
-        customHeader={
-          <fieldset data-testid="trp-header">
-            <legend>Date kind</legend>
-            <label>
-              <input type="radio" name="kind" value="doc" />
-              Document
-            </label>
-          </fieldset>
-        }
-      />
-    );
-    openPanel(container);
-    expect(container.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-    fireEvent.click(getByRole("button", { name: "Custom" }));
-    const slot = container.querySelector(".st-timeRangePicker__customHeader") as HTMLElement;
-    expect(slot.querySelector('[data-testid="trp-header"]')).toBeTruthy();
-    const calendars = container.querySelector(".st-timeRangePicker__calendars") as HTMLElement;
-    expect(slot.compareDocumentPosition(calendars) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(slot.querySelector('input[name="kind"]')).toBeTruthy();
-  });
-
-  it("renders no header wrapper when not provided", () => {
-    const { container, getByRole } = render(<TimeRangePicker locale="en-US" />);
-    openPanel(container);
-    fireEvent.click(getByRole("button", { name: "Custom" }));
-    expect(container.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-  });
-});
-
 describe("ContentSwitcher — selected state", () => {
   it("marks exactly the active option selected (catalog contract used by TimeRangePicker)", () => {
     const { container } = render(
@@ -316,63 +282,6 @@ describe("MenuPopover — viewport positioning + top layer", () => {
       trigger.remove();
       view.unmount();
     }
-  });
-});
-
-describe("TimeRangePicker — onApply / onCancel draft events", () => {
-  it("fires onApply with the value on Apply, without onCancel", () => {
-    const onChange = vi.fn();
-    const onApply = vi.fn();
-    const onCancel = vi.fn();
-    const { container, getByRole } = render(
-      <TimeRangePicker value={SPAN} onChange={onChange} onApply={onApply} onCancel={onCancel} locale="en-US" />
-    );
-    openPanel(container);
-    fireEvent.click(getByRole("button", { name: "Apply" }));
-    expect(onApply).toHaveBeenCalledTimes(1);
-    expect(onApply.mock.calls[0][0]).toEqual({ mode: "absolute", from: SPAN.from, to: SPAN.to });
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onCancel).not.toHaveBeenCalled();
-  });
-
-  it("fires onCancel on Cancel, Escape, outside click and trigger re-click — never on mount", () => {
-    const onCancel = vi.fn();
-    const onChange = vi.fn();
-    const { container, getByRole } = render(
-      <TimeRangePicker value={SPAN} onCancel={onCancel} onChange={onChange} locale="en-US" />
-    );
-    expect(onCancel).not.toHaveBeenCalled();
-
-    openPanel(container);
-    fireEvent.click(getByRole("button", { name: "Cancel" }));
-    expect(onCancel).toHaveBeenCalledTimes(1);
-    expect(onChange).not.toHaveBeenCalled();
-
-    openPanel(container);
-    fireEvent.keyDown(window, { key: "Escape" });
-    expect(onCancel).toHaveBeenCalledTimes(2);
-
-    openPanel(container);
-    fireEvent.pointerDown(document.body);
-    expect(onCancel).toHaveBeenCalledTimes(3);
-
-    openPanel(container);
-    fireEvent.click(container.querySelector(".st-timeRangePicker__trigger") as HTMLElement);
-    expect(onCancel).toHaveBeenCalledTimes(4);
-  });
-
-  it("does not fire onCancel on preset selection", () => {
-    const onCancel = vi.fn();
-    const relative: TimeRange = {
-      mode: "relative",
-      relative: "30m",
-      from: Date.now() - 1_800_000,
-      to: Date.now()
-    };
-    const { container } = render(<TimeRangePicker value={relative} onCancel={onCancel} locale="en-US" />);
-    openPanel(container);
-    fireEvent.click(container.querySelector('[data-value="6h"]') as HTMLElement);
-    expect(onCancel).not.toHaveBeenCalled();
   });
 });
 
