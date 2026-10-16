@@ -42,7 +42,7 @@
     "catalog-app": "Rows of jointjs_apps_and_recipes in docs/graph-dataviz-reference-catalog.json (186 rows tracked; the 109 JointJS+ rows are greenfield GD-M5-APPS tracking excluded from the parity denominator)."
   },
   "counts": {
-    "total": 2232,
+    "total": 2231,
     "byFamily": {
       "alg": 1,
       "anchor": 12,
@@ -53,7 +53,7 @@
       "core-config": 12,
       "dia-api": 659,
       "element-tool": 26,
-      "event": 99,
+      "event": 98,
       "geometry": 330,
       "highlighter": 27,
       "layout-port-label": 11,
@@ -73,26 +73,26 @@
     "byStatus": {
       "covered": 2,
       "partial": 442,
-      "missing": 1788
+      "missing": 1787
     },
     "byTarget": {
       "diagram-canvas": 775,
       "ds-component": 391,
       "new-module": 441,
-      "diagram-core": 253,
+      "diagram-core": 252,
       "graph": 372
     },
     "byPriority": {
       "P2": 1164,
       "P1": 500,
       "P3": 109,
-      "P0": 459
+      "P0": 458
     },
-    "parityTotal": 2123,
+    "parityTotal": 2122,
     "parityByStatus": {
       "covered": 2,
       "partial": 417,
-      "missing": 1704
+      "missing": 1703
     },
     "demoPlusTracked": 109
   },
@@ -20789,22 +20789,6 @@
         "note": "No analogue in diagram-canvas; the README section at this line lists the uncovered areas."
       },
       "priority": "P1"
-    },
-    {
-      "id": "jointjs:event:expand",
-      "family": "event",
-      "name": "expand",
-      "source": ".ds-scrap/re-sources/joint/packages/joint-core/src/mvc/Events.mjs:17",
-      "behaviour": "Event `expand`: emitted synchronously by the owning graph, paper, model or view when the named condition occurs; listeners receive the arguments declared for this name in emission order, and preventing or suppressing the underlying operation suppresses the event.",
-      "acceptance": "Differential interaction oracle for `expand`: build the same paper and scripted pointer/option sequence in JointJS and in our diagram-canvas plus renderer harness (playwright-core, headless Chrome); assert the emitted event sequence, the camera/scene result and the model result match, with pointer coordinates compared after the shared world transform.",
-      "target": "diagram-core",
-      "status": "missing",
-      "proof": {
-        "path": "packages/diagram-core/README.md",
-        "line": 154,
-        "note": "No analogue in diagram-core; the README section at this line lists the uncovered areas."
-      },
-      "priority": "P0"
     },
     {
       "id": "jointjs:event:invalid",
