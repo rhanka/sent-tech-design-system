@@ -1,6 +1,5 @@
 import { mount } from "@vue/test-utils";
 import type { VueWrapper } from "@vue/test-utils";
-import { h } from "vue";
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -27,12 +26,6 @@ function mountPicker(props: Record<string, unknown> = {}, slots: Record<string, 
 
 async function openPanel(wrapper: VueWrapper): Promise<void> {
   await wrapper.find(".st-timeRangePicker__trigger").trigger("click");
-}
-
-async function clickTab(wrapper: VueWrapper, text: string): Promise<void> {
-  const btn = wrapper.findAll(".st-contentSwitcher button").find((w) => w.text() === text);
-  if (!btn) throw new Error(`tab not found: ${text}`);
-  await btn.trigger("click");
 }
 
 function monthLabels(el: HTMLElement): string[] {
@@ -176,33 +169,6 @@ describe("Calendar — range classes", () => {
   });
 });
 
-describe("TimeRangePicker — custom-header slot", () => {
-  const header = () =>
-    h("fieldset", { "data-testid": "trp-header" }, [
-      h("legend", "Date kind"),
-      h("label", ["Document", h("input", { type: "radio", name: "kind", value: "doc" })])
-    ]);
-
-  it("renders the header at the top of the Custom tab, above the calendars", async () => {
-    const wrapper = mountPicker({ locale: "en-US" }, { "custom-header": header });
-    await openPanel(wrapper);
-    expect(document.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-    await clickTab(wrapper, "Custom");
-    const slot = document.querySelector(".st-timeRangePicker__customHeader") as HTMLElement;
-    expect(slot.querySelector('[data-testid="trp-header"]')).toBeTruthy();
-    const calendars = document.querySelector(".st-timeRangePicker__calendars") as HTMLElement;
-    expect(slot.compareDocumentPosition(calendars) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(slot.querySelector('input[name="kind"]')).toBeTruthy();
-  });
-
-  it("renders no header wrapper when the slot is not provided", async () => {
-    const wrapper = mountPicker({ locale: "en-US" });
-    await openPanel(wrapper);
-    await clickTab(wrapper, "Custom");
-    expect(document.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-  });
-});
-
 describe("ContentSwitcher — selected state", () => {
   it("marks exactly the active option selected", () => {
     const wrapper = track(
@@ -306,74 +272,6 @@ describe("MenuPopover — viewport positioning + top layer", () => {
     } finally {
       Object.defineProperty(window, "innerHeight", { configurable: true, value: 768 });
     }
-  });
-});
-
-describe("TimeRangePicker — apply / cancel draft events", () => {
-  function actionButton(wrapper: VueWrapper, text: string) {
-    const btn = wrapper.findAll(".st-timeRangePicker__actions button").find((w) => w.text() === text);
-    if (!btn) throw new Error(`button not found: ${text}`);
-    return btn;
-  }
-
-  it("emits apply with the value on Apply, without cancel", async () => {
-    const onApply = vi.fn();
-    const onCancel = vi.fn();
-    const onChange = vi.fn();
-    const wrapper = mountPicker(
-      { value: SPAN, onApply, onCancel, onChange, locale: "en-US" },
-      {}
-    );
-    await openPanel(wrapper);
-    await actionButton(wrapper, "Apply").trigger("click");
-    expect(onApply).toHaveBeenCalledTimes(1);
-    expect(onApply.mock.calls[0][0]).toEqual({ mode: "absolute", from: SPAN.from, to: SPAN.to });
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onCancel).not.toHaveBeenCalled();
-  });
-
-  it("emits cancel on Cancel, Escape, outside click and trigger re-click — never on mount", async () => {
-    const onCancel = vi.fn();
-    const onChange = vi.fn();
-    const wrapper = mountPicker({ value: SPAN, onCancel, onChange, locale: "en-US" });
-    await wrapper.vm.$nextTick();
-    expect(onCancel).not.toHaveBeenCalled();
-
-    await openPanel(wrapper);
-    await actionButton(wrapper, "Cancel").trigger("click");
-    expect(onCancel).toHaveBeenCalledTimes(1);
-    expect(onChange).not.toHaveBeenCalled();
-
-    await openPanel(wrapper);
-    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
-    await wrapper.vm.$nextTick();
-    expect(onCancel).toHaveBeenCalledTimes(2);
-
-    await openPanel(wrapper);
-    document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
-    await wrapper.vm.$nextTick();
-    expect(onCancel).toHaveBeenCalledTimes(3);
-
-    await openPanel(wrapper);
-    await wrapper.find(".st-timeRangePicker__trigger").trigger("click");
-    await wrapper.vm.$nextTick();
-    expect(onCancel).toHaveBeenCalledTimes(4);
-  });
-
-  it("does not emit cancel on preset selection", async () => {
-    const onCancel = vi.fn();
-    const relative: TimeRange = {
-      mode: "relative",
-      relative: "30m",
-      from: Date.now() - 1_800_000,
-      to: Date.now()
-    };
-    const wrapper = mountPicker({ value: relative, onCancel, locale: "en-US" });
-    await openPanel(wrapper);
-    const row = document.querySelector('[data-value="6h"]') as HTMLElement;
-    row.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
-    expect(onCancel).not.toHaveBeenCalled();
   });
 });
 

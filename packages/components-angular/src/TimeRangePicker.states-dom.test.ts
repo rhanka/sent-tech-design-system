@@ -11,69 +11,36 @@ TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicT
 
 type Range = { mode: "relative" | "absolute"; relative?: string; from: number; to: number };
 
-class HeaderHost {
+// Mounted consumer of the documented customExtra usage with the openChange /
+// change contract: the extra stays a draft, every dismissal emits nothing.
+class DismissalHost {
   range: Range = {
     mode: "absolute",
     from: new Date(2024, 0, 15, 10, 0).getTime(),
     to: new Date(2024, 2, 10, 11, 30).getTime(),
   };
-  cancelled = 0;
-  applied: unknown[] = [];
-  onCancel = (): void => {
-    this.cancelled += 1;
+  opens: boolean[] = [];
+  seen: unknown[] = [];
+  opened = (open: boolean): void => {
+    this.opens.push(open);
   };
-  onApply = (v: unknown): void => {
-    this.applied.push(v);
+  changed = (next: unknown): void => {
+    this.seen.push(next);
   };
 }
 Component({
   standalone: true,
   imports: [TimeRangePicker],
   template: `
-    <st-time-range-picker [value]="range" locale="en-US" [onCancel]="onCancel" [onApply]="onApply">
-      <div slot="customHeader"><p data-testid="trp-header">Document or acquisition?</p></div>
+    <st-time-range-picker [value]="range" locale="en-US" (openChange)="opened($event)" (change)="changed($event)">
+      <div slot="customExtra"><p data-testid="trp-extra">Document or acquisition?</p></div>
     </st-time-range-picker>
   `,
-})(HeaderHost);
+})(DismissalHost);
 
-class BareHost {
-  range: Range = {
-    mode: "absolute",
-    from: new Date(2024, 0, 15, 10, 0).getTime(),
-    to: new Date(2024, 2, 10, 11, 30).getTime(),
-  };
-}
-Component({
-  standalone: true,
-  imports: [TimeRangePicker],
-  template: `<st-time-range-picker [value]="range" locale="en-US"></st-time-range-picker>`,
-})(BareHost);
-
-describe("TimeRangePicker — customHeader projection in a mounted Angular consumer", () => {
-  it("projects the header above the calendars and hides the empty host otherwise", () => {
-    const fixture = TestBed.createComponent(HeaderHost);
-    fixture.detectChanges();
-    const root = fixture.nativeElement as HTMLElement;
-    (root.querySelector(".st-timeRangePicker__trigger") as HTMLElement).click();
-    fixture.detectChanges();
-    const slot = root.querySelector(".st-timeRangePicker__customHeader") as HTMLElement;
-    expect(slot.querySelector('[data-testid="trp-header"]')).toBeTruthy();
-    const calendars = root.querySelector(".st-timeRangePicker__calendars") as HTMLElement;
-    expect(calendars).toBeTruthy();
-    expect(slot.compareDocumentPosition(calendars) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-
-    const bare = TestBed.createComponent(BareHost);
-    bare.detectChanges();
-    const bareRoot = bare.nativeElement as HTMLElement;
-    (bareRoot.querySelector(".st-timeRangePicker__trigger") as HTMLElement).click();
-    bare.detectChanges();
-    const bareSlot = bareRoot.querySelector(".st-timeRangePicker__customHeader") as HTMLElement;
-    // Always rendered (projection host) but empty -> hidden by :empty.
-    expect(bareSlot.textContent?.trim()).toBe("");
-  });
-
-  it("Escape and outside pointerdown close the panel and call onCancel", () => {
-    const fixture = TestBed.createComponent(HeaderHost);
+describe("TimeRangePicker — Escape / outside dismissal in a mounted Angular consumer", () => {
+  it("Escape and outside pointerdown close the panel, report openChange(false) and emit no change", () => {
+    const fixture = TestBed.createComponent(DismissalHost);
     fixture.detectChanges();
     const host = fixture.componentInstance;
     const root = fixture.nativeElement as HTMLElement;
@@ -85,28 +52,13 @@ describe("TimeRangePicker — customHeader projection in a mounted Angular consu
     open();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     fixture.detectChanges();
-    expect(host.cancelled).toBe(1);
+    expect(host.opens).toEqual([true, false]);
+    expect(host.seen).toEqual([]);
 
     open();
     document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
     fixture.detectChanges();
-    expect(host.cancelled).toBe(2);
-    expect(host.applied).toEqual([]);
-  });
-
-  it("Apply calls onApply without onCancel", () => {
-    const fixture = TestBed.createComponent(HeaderHost);
-    fixture.detectChanges();
-    const host = fixture.componentInstance;
-    const root = fixture.nativeElement as HTMLElement;
-    (root.querySelector(".st-timeRangePicker__trigger") as HTMLElement).click();
-    fixture.detectChanges();
-    const apply = Array.from(root.querySelectorAll<HTMLElement>("button, st-button")).find(
-      (b) => b.textContent?.trim() === "Apply",
-    ) as HTMLElement;
-    (apply.tagName === "ST-BUTTON" ? apply.querySelector("button") : apply)!.click();
-    fixture.detectChanges();
-    expect(host.applied).toHaveLength(1);
-    expect(host.cancelled).toBe(0);
+    expect(host.opens).toEqual([true, false, true, false]);
+    expect(host.seen).toEqual([]);
   });
 });

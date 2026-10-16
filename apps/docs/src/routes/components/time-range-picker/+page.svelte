@@ -93,35 +93,6 @@ function onRangeChange(next) {
   appliedBasis = next.mode === "absolute" ? draftBasis : "document";
 }`;
 
-  // customHeader demo: the same draft choice, rendered at the TOP of the
-  // Custom tab, above the calendars. Same draft contract as customExtra;
-  // onApply/onCancel observe the staged lifecycle without touching the draft.
-  const customHeaderUsage = `<!-- Svelte -->
-<TimeRangePicker value={range} onChange={onRangeChange} onOpenChange={onOpenChange}
-  onApply={onApply} onCancel={onCancel}>
-  {#snippet customHeader()}
-    <RadioGroup legend="Date basis" name="basis" orientation="horizontal"
-      options={basisOptions} value={draftBasis} onchange={(v) => (draftBasis = v)} />
-  {/snippet}
-</TimeRangePicker>
-
-// React
-<TimeRangePicker value={range} onChange={onRangeChange} onOpenChange={onOpenChange}
-  onApply={onApply} onCancel={onCancel}
-  customHeader={<RadioGroup ... value={draftBasis} onChange={setDraftBasis} />} />
-
-<!-- Vue -->
-<TimeRangePicker :value="range" @change="onRangeChange" @open-change="onOpenChange"
-  @apply="onApply" @cancel="onCancel">
-  <template #custom-header><RadioGroup ... /></template>
-</TimeRangePicker>
-
-<!-- Angular -->
-<st-time-range-picker [value]="range" (change)="onRangeChange($event)"
-  (openChange)="onOpenChange($event)" [onApply]="onApply" [onCancel]="onCancel">
-  <div slot="customHeader"><st-radio-group ...></st-radio-group></div>
-</st-time-range-picker>`;
-
   const statesDemo = $derived<NodeSpec[]>([
     {
       comp: "TimeRangePicker",
@@ -268,48 +239,18 @@ function onRangeChange(next) {
     <pre class="docs-codeblock"><code>{customExtraUsage}</code></pre>
     <p class="section-desc">
       {#if fr}
-        <code>customHeader</code> rend les mêmes contrôles en <strong>tête</strong> de l'onglet
-        <strong>Personnalisé</strong>, au-dessus des calendriers (même contrat de brouillon que
-        <code>customExtra</code>). Les deux mois affichés sont <strong>couplés</strong> : à
-        l'ouverture, la droite s'ouvre sur le mois de la fin quand il suit celui du début (les deux
-        bornes sont visibles d'emblée), puis naviguer à gauche repousse la droite à
-        <code>m + 1</code> et naviguer à droite ramène la gauche à <code>m − 1</code> — la droite
-        reste toujours strictement après la gauche. <code>onApply</code> reçoit la valeur validée en
-        plus de <code>onChange</code> ; <code>onCancel</code> signale toute fermeture sans validation
-        (Annuler, Échap, clic extérieur, second clic sur le déclencheur).
+        Les deux mois affichés sont <strong>couplés</strong> : à l'ouverture, la droite s'ouvre
+        sur le mois de la fin quand il suit celui du début (les deux bornes sont visibles
+        d'emblée), puis naviguer à gauche repousse la droite à <code>m + 1</code> et naviguer à
+        droite ramène la gauche à <code>m − 1</code> — la droite reste toujours strictement après
+        la gauche.
       {:else}
-        <code>customHeader</code> renders the same controls at the <strong>top</strong> of the
-        <strong>Custom</strong> tab, above the calendars (same draft contract as
-        <code>customExtra</code>). The two displayed months are <strong>coupled</strong>: on open,
-        the right one shows the end month when it follows the start month (both bounds visible
-        immediately), then navigating left pushes right to <code>m + 1</code> and navigating right
-        pulls left back to <code>m − 1</code> — right always stays strictly after left.
-        <code>onApply</code> receives the committed value alongside <code>onChange</code>;
-        <code>onCancel</code> reports any dismissal without committing (Cancel, Escape, outside
-        click, trigger re-click).
+        The two displayed months are <strong>coupled</strong>: on open, the right one shows the
+        end month when it follows the start month (both bounds visible immediately), then
+        navigating left pushes right to <code>m + 1</code> and navigating right pulls left back
+        to <code>m − 1</code> — right always stays strictly after left.
       {/if}
     </p>
-    <div class="docs-extra-demo">
-      <TimeRangePicker
-        label={fr ? "Période des signaux (en-tête)" : "Signal period (header)"}
-        locale={fr ? "fr-FR" : "en-CA"}
-        value={extraRange}
-        onChange={onExtraChange}
-        onOpenChange={onExtraOpenChange}
-      >
-        {#snippet customHeader()}
-          <RadioGroup
-            legend={fr ? "Base de date" : "Date basis"}
-            name="docs-trp-date-basis-header"
-            orientation="horizontal"
-            options={basisOptions}
-            value={draftBasis}
-            onchange={selectDraftBasis}
-          />
-        {/snippet}
-      </TimeRangePicker>
-    </div>
-    <pre class="docs-codeblock"><code>{customHeaderUsage}</code></pre>
   </section>
 
   <section class="docs-section">
@@ -522,36 +463,6 @@ function onRangeChange(next) {
             {fr
               ? "Émis à chaque ouverture (true) ou fermeture (false) du popover (Vue : @open-change ; Angular : (openChange))."
               : "Emitted on every popover open (true) or close (false) (Vue: @open-change; Angular: (openChange))."}
-          </td>
-        </tr>
-        <tr>
-          <td><code>customHeader</code></td>
-          <td><code>Snippet</code></td>
-          <td>—</td>
-          <td>
-            {fr
-              ? "Contrôles additionnels en tête de l'onglet Personnalisé, au-dessus des calendriers (React : ReactNode ; Vue : slot custom-header ; Angular : [slot=customHeader])."
-              : "Extra controls at the top of the Custom tab, above the calendars (React: ReactNode; Vue: custom-header slot; Angular: [slot=customHeader])."}
-          </td>
-        </tr>
-        <tr>
-          <td><code>onApply</code></td>
-          <td><code>(value: TimeRange) =&gt; void</code></td>
-          <td>—</td>
-          <td>
-            {fr
-              ? "Émis au clic sur Appliquer, en plus de onChange (Vue : @apply ; Angular : [onApply])."
-              : "Emitted on Apply, alongside onChange (Vue: @apply; Angular: [onApply])."}
-          </td>
-        </tr>
-        <tr>
-          <td><code>onCancel</code></td>
-          <td><code>() =&gt; void</code></td>
-          <td>—</td>
-          <td>
-            {fr
-              ? "Émis quand le panneau se ferme sans Appliquer ni preset (Annuler, Échap, clic extérieur, second clic ; Vue : @cancel ; Angular : [onCancel])."
-              : "Emitted when the panel closes without Apply or a preset (Cancel, Escape, outside click, re-click; Vue: @cancel; Angular: [onCancel])."}
           </td>
         </tr>
         <tr>

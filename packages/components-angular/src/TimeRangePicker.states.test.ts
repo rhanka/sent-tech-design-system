@@ -106,57 +106,31 @@ describe("TimeRangePicker — month coupling (angular)", () => {
   });
 });
 
-describe("TimeRangePicker — onApply / onCancel draft events (angular)", () => {
-  it("apply() calls onApply with the value and skips onCancel", () => {
+describe("TimeRangePicker — dismissal closes without emitting (angular)", () => {
+  it("toggle-close, Escape and outside pointerdown close, report openChange(false) and emit no change", () => {
     const c = new TimeRangePicker();
     c.value = SPAN;
-    const applied: TimeRange[] = [];
-    let cancelled = 0;
+    const opened: boolean[] = [];
     const changed: TimeRange[] = [];
-    c.onApply = (v) => void applied.push(v);
-    c.onCancel = () => void (cancelled += 1);
+    c.openChange.subscribe((open: boolean) => void opened.push(open));
     c.change.subscribe((v: TimeRange) => void changed.push(v));
-    c.openPanel();
-    c.apply();
-    expect(applied).toEqual([{ mode: "absolute", from: SPAN_FROM, to: SPAN_TO }]);
-    expect(changed).toHaveLength(1);
-    expect(cancelled).toBe(0);
-    expect(c.open).toBe(false);
-  });
-
-  it("cancel() calls onCancel and emits nothing", () => {
-    const c = new TimeRangePicker();
-    c.value = SPAN;
-    let cancelled = 0;
-    const changed: TimeRange[] = [];
-    c.onCancel = () => void (cancelled += 1);
-    c.change.subscribe((v: TimeRange) => void changed.push(v));
-    c.openPanel();
-    c.cancel();
-    expect(cancelled).toBe(1);
-    expect(changed).toEqual([]);
-  });
-
-  it("selectPreset() commits without onCancel; toggle-close and Escape/outside call onCancel", () => {
-    const c = new TimeRangePicker();
-    let cancelled = 0;
-    c.onCancel = () => void (cancelled += 1);
-
-    c.openPanel();
-    c.selectPreset("1h");
-    expect(cancelled).toBe(0);
 
     c.openPanel();
     c.toggle();
-    expect(cancelled).toBe(1);
+    expect(c.open).toBe(false);
 
     c.openPanel();
+    c.onDocumentKeyDown({ key: "Enter", preventDefault: () => {} } as KeyboardEvent);
+    expect(c.open).toBe(true);
     c.onDocumentKeyDown({ key: "Escape", preventDefault: () => {} } as KeyboardEvent);
-    expect(cancelled).toBe(2);
+    expect(c.open).toBe(false);
 
     c.openPanel();
     c.onDocumentPointerDown({ target: {} } as unknown as PointerEvent);
-    expect(cancelled).toBe(3);
+    expect(c.open).toBe(false);
+
+    expect(changed).toEqual([]);
+    expect(opened).toEqual([true, false, true, false, true, false]);
   });
 });
 

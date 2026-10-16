@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/svelte";
-import { createRawSnippet, tick } from "svelte";
+import { tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -149,36 +149,6 @@ describe("Calendar — range classes", () => {
   });
 });
 
-describe("TimeRangePicker — customHeader slot", () => {
-  const header = createRawSnippet(() => ({
-    render: () =>
-      `<fieldset data-testid="trp-header"><legend>Date kind</legend><label><input type="radio" name="kind" value="doc" />Document</label></fieldset>`
-  }));
-
-  it("renders the header at the top of the Custom tab, above the calendars", async () => {
-    const { container, getByRole } = render(TimeRangePicker, {
-      props: { customHeader: header, locale: "en-US" }
-    });
-    await openPanel(container);
-    // Relative tab first: no header.
-    expect(container.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-    await fireEvent.click(getByRole("tab", { name: "Custom" }));
-    const slot = container.querySelector(".st-timeRangePicker__customHeader") as HTMLElement;
-    expect(slot.querySelector('[data-testid="trp-header"]')).toBeTruthy();
-    const calendars = container.querySelector(".st-timeRangePicker__calendars") as HTMLElement;
-    expect(slot.compareDocumentPosition(calendars) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    // Header content is focusable through the panel trap.
-    expect(slot.querySelector('input[name="kind"]')).toBeTruthy();
-  });
-
-  it("renders no header wrapper when the snippet is not provided", async () => {
-    const { container, getByRole } = render(TimeRangePicker, { props: { locale: "en-US" } });
-    await openPanel(container);
-    await fireEvent.click(getByRole("tab", { name: "Custom" }));
-    expect(container.querySelector(".st-timeRangePicker__customHeader")).toBeNull();
-  });
-});
-
 describe("ContentSwitcher — selected state", () => {
   it("marks exactly the active option selected", () => {
     const { container } = render(ContentSwitcher, {
@@ -298,74 +268,6 @@ describe("MenuPopover — viewport positioning + top layer", () => {
       trigger.remove();
       view.unmount();
     }
-  });
-});
-
-describe("TimeRangePicker — onApply / onCancel draft events", () => {
-  it("fires onApply with the value on Apply, without onCancel", async () => {
-    const onChange = vi.fn();
-    const onApply = vi.fn();
-    const onCancel = vi.fn();
-    const view = render(TimeRangePicker, {
-      props: { value: SPAN, onChange, onApply, onCancel, locale: "en-US" }
-    });
-    await openPanel(view.container);
-    await fireEvent.click(view.getByRole("button", { name: "Apply" }));
-    await tick();
-    expect(onApply).toHaveBeenCalledTimes(1);
-    expect(onApply.mock.calls[0][0]).toEqual({ mode: "absolute", from: SPAN.from, to: SPAN.to });
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onCancel).not.toHaveBeenCalled();
-  });
-
-  it("fires onCancel on Cancel, Escape, outside click and trigger re-click — never on mount", async () => {
-    const onCancel = vi.fn();
-    const onChange = vi.fn();
-    const view = render(TimeRangePicker, {
-      props: { value: SPAN, onCancel, onChange, locale: "en-US" }
-    });
-    await tick();
-    expect(onCancel).not.toHaveBeenCalled();
-
-    // Cancel button.
-    await openPanel(view.container);
-    await fireEvent.click(view.getByRole("button", { name: "Cancel" }));
-    await tick();
-    expect(onCancel).toHaveBeenCalledTimes(1);
-    expect(onChange).not.toHaveBeenCalled();
-
-    // Escape.
-    await openPanel(view.container);
-    await fireEvent.keyDown(window, { key: "Escape" });
-    await tick();
-    expect(onCancel).toHaveBeenCalledTimes(2);
-
-    // Outside click.
-    await openPanel(view.container);
-    await fireEvent.pointerDown(document.body);
-    await tick();
-    expect(onCancel).toHaveBeenCalledTimes(3);
-
-    // Trigger re-click.
-    await openPanel(view.container);
-    await fireEvent.click(triggerButton(view.container));
-    await tick();
-    expect(onCancel).toHaveBeenCalledTimes(4);
-  });
-
-  it("does not fire onCancel on preset selection or Apply", async () => {
-    const onCancel = vi.fn();
-    const relative: TimeRange = {
-      mode: "relative",
-      relative: "30m",
-      from: Date.now() - 1_800_000,
-      to: Date.now()
-    };
-    const view = render(TimeRangePicker, { props: { value: relative, onCancel, locale: "en-US" } });
-    await openPanel(view.container);
-    await fireEvent.click(view.container.querySelector('[data-value="6h"]') as HTMLElement);
-    await tick();
-    expect(onCancel).not.toHaveBeenCalled();
   });
 });
 
