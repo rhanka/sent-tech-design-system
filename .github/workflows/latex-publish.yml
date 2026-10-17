@@ -118,7 +118,17 @@ jobs:
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish LaTeX theme package
-        run: npm publish --workspace @sentropic/design-system-theme-latex --access public
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Skipped when the version is already on npm (first publication done by
+          # hand under the owner's browser 2FA); never republished.
+          VERSION="${TAG#latex-v}"
+          if npm view "@sentropic/design-system-theme-latex@${VERSION}" version --silent > /dev/null 2>&1; then
+            echo "@sentropic/design-system-theme-latex@${VERSION} is already on npm: skipped."
+          else
+            npm publish --workspace @sentropic/design-system-theme-latex --access public
+          fi
 
   post-publish-check:
     needs: publish
