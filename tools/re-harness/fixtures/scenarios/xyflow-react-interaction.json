@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-interaction-selfparity","library":"xyflow","fixtures":["xyflow/react-interaction.json"],"ops":"xyflow/react-interaction.ops.json","exercises":["examples.react-interaction"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-interaction-selfparity","library":"xyflow","fixtures":["xyflow/react-interaction.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-interaction"],"comparators":["model","events","geometry","pixels"]}

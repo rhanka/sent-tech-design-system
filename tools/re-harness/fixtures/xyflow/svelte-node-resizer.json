@@ -2,32 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-node-resizer",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-node-resizer",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-node-resizer, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/node-resizer/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "unknown",
-    "cause": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/node-resizer/+page.svelte",
-    "customTypes": [
-      "bottomRightResizer",
-      "customResizer",
-      "defaultResizer",
-      "fixedExtent",
-      "horizontalResizer",
-      "verticalResizer"
-    ]
+  "runnable": {
+    "status": "runnable"
   }
 }

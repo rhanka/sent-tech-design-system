@@ -2,110 +2,22 @@
   "schemaVersion": 1,
   "id": "xyflow-react-redux",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-redux",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-redux, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "input",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {
-          "label": "hey"
-        }
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 100
-        },
-        "data": {
-          "label": "default node"
-        }
-      },
-      {
-        "id": "3",
-        "type": "default",
-        "position": {
-          "x": 400,
-          "y": 100
-        },
-        "data": {
-          "label": "custom style"
-        },
-        "style": {
-          "background": "#D6D5E6",
-          "color": "#333",
-          "border": "1px solid #222138",
-          "width": 180
-        }
-      },
-      {
-        "id": "4",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 200
-        },
-        "data": {
-          "label": "Another default node"
-        }
-      },
-      {
-        "id": "5",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 325
-        },
-        "data": {
-          "label": "Node id: 5"
-        }
-      },
-      {
-        "id": "6",
-        "type": "output",
-        "position": {
-          "x": 100,
-          "y": 480
-        },
-        "data": {
-          "label": "output"
-        }
-      },
-      {
-        "id": "7",
-        "type": "output",
-        "position": {
-          "x": 400,
-          "y": 450
-        },
-        "data": {
-          "label": "Another output node"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "react",
+    "example": "react/src/examples/Redux/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Redux/initial-elements.tsx"
+  "runnable": {
+    "status": "unknown",
+    "cause": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
+    "missing": [
+      "@reduxjs/toolkit",
+      "react-redux"
+    ]
   }
 }

@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-movinghandles-selfparity","library":"xyflow","fixtures":["xyflow/react-movinghandles.json"],"ops":"xyflow/react-movinghandles.ops.json","exercises":["examples.react-movinghandles"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-movinghandles-selfparity","library":"xyflow","fixtures":["xyflow/react-movinghandles.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-movinghandles"],"comparators":["model","events","geometry","pixels"]}

@@ -2,95 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-color-mode",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-color-mode",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-color-mode, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "A",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 150
-        },
-        "data": {
-          "label": "A"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "B",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {
-          "label": "B"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "C",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 150
-        },
-        "data": {
-          "label": "C"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "D",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 300
-        },
-        "data": {
-          "label": "D"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      }
-    ],
-    "edges": [
-      {
-        "id": "A-B",
-        "source": "A",
-        "target": "B"
-      },
-      {
-        "id": "A-C",
-        "source": "A",
-        "target": "C"
-      },
-      {
-        "id": "A-D",
-        "source": "A",
-        "target": "D"
-      }
-    ],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/color-mode/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/color-mode/+page.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

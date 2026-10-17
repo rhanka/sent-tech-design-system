@@ -2,35 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-dragndrop",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-dragndrop",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-dragndrop, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "input",
-        "position": {
-          "x": 250,
-          "y": 5
-        },
-        "data": {
-          "label": "input node"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/DragNDrop/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DragNDrop/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

@@ -25,13 +25,59 @@ function withTimeout(promise, label) {
   ]);
 }
 
-// Which in-page adapter serves a scenario. xyflow fixtures pick their
-// flavour from the fixture id (xyflow-react-* / xyflow-svelte-*).
-export function adapterFor(library, fixtureId) {
+// Which in-page adapter serves a scenario (xyflow examples have their own
+// driver, runXyflowExample below).
+export function adapterFor(library) {
   if (library === "bpmn") return "runBpmn";
   if (library === "jointjs") return "runJoint";
-  if (library === "xyflow") return fixtureId && fixtureId.includes("svelte") ? "runXyflowSvelte" : "runXyflowReact";
   return null;
+}
+
+// xyflow example driver. Each run starts from a fresh page load (the
+// example modules may keep module-level state, e.g. id counters), loads
+// the example's own bundle, mounts it, then plays the pointer script: the
+// page plans each op from the library store (client points), and the
+// mouse of the browser executes it (Playwright: trusted pointer and mouse
+// events through the real hit-testing). The page then settles and the
+// native store state is read back.
+async function runXyflowExample(page, fixture, ops, ctx) {
+  const entry = ctx.examples && ctx.examples[fixture.id];
+  if (!entry || entry.status !== "built") throw new Error(`example bundle for ${fixture.id} not built${entry && entry.cause ? `: ${entry.cause}` : ""}`);
+  await page.goto(ctx.url);
+  await page.evaluate(() => window.__harnessReady);
+  if (page.__pageErrors && page.__pageErrors.length) {
+    throw new Error(`harness page error before the example loaded: ${page.__pageErrors[0]}`);
+  }
+  await page.evaluate(([bundle, css]) => window.__reHarness.xyLoad(bundle, css), [entry.bundle, entry.css || null]);
+  // An error thrown by the example's own code (page error) ends the run:
+  // the React/Svelte tree is gone and comparing what remains would hide a
+  // missing graph. The scenario is then unknown with that precise error.
+  const errors = page.__pageErrors || [];
+  const exampleError = (phase) => {
+    if (errors.length) throw new Error(`example-error during ${phase}: ${errors[0]}`);
+  };
+  await page.evaluate(() => window.__reHarness.xyMount()).catch((err) => { exampleError("mount"); throw err; });
+  exampleError("mount");
+  for (const step of (ops && ops.steps) || []) {
+    const plan = await page.evaluate((st) => window.__reHarness.xyPlan(st), step);
+    if (plan.kind === "drag") {
+      await page.mouse.move(plan.from.x, plan.from.y);
+      await page.mouse.down();
+      await page.mouse.move(plan.to.x, plan.to.y, { steps: 8 });
+      await page.mouse.up();
+    } else if (plan.kind === "click") {
+      await page.mouse.click(plan.at.x, plan.at.y);
+    } else if (plan.kind === "wheel") {
+      await page.mouse.move(plan.at.x, plan.at.y);
+      await page.mouse.wheel(0, plan.deltaY);
+    }
+    await page.evaluate((kind) => window.__reHarness.xySettle(kind), plan.kind).catch((err) => { exampleError(`op ${step.op}`); throw err; });
+    exampleError(`op ${step.op}`);
+  }
+  // Park the pointer outside the flow so no hover state differs per run.
+  await page.mouse.move(1020, 760);
+  await page.evaluate(() => window.__reHarness.xySettle("park"));
+  return page.evaluate(() => window.__reHarness.xyExtract());
 }
 
 export function oracleGateOf(library, fixtureId) {
@@ -73,8 +119,12 @@ const DECODE_SCREENSHOT = async (base64) => {
 // adapter cleanup. Throws with the page cause when the library cannot
 // run; the caller records the gate `unknown` — it never falls back to a
 // substitute verdict.
-export async function runRealInPage(page, library, fixture, ops) {
-  const fn = adapterFor(library, fixture.id);
+export async function runRealInPage(page, library, fixture, ops, ctx = {}) {
+  if (library === "xyflow") {
+    const result = await withTimeout(runXyflowExample(page, fixture, ops, ctx), `xyflow/${fixture.id}`);
+    return capturePixels(page, result);
+  }
+  const fn = adapterFor(library);
   if (!fn) throw new Error(`unknown: no real adapter for library ${library}`);
   const result = await withTimeout(
     page.evaluate(
@@ -91,6 +141,10 @@ export async function runRealInPage(page, library, fixture, ops) {
     ),
     `${library}/${fixture.id}`,
   );
+  return capturePixels(page, result);
+}
+
+async function capturePixels(page, result) {
   try {
     const host = page.locator(".oracle-host").last();
     const box = await host.boundingBox();

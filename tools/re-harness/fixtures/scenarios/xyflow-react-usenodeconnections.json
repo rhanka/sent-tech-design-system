@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-usenodeconnections-selfparity","library":"xyflow","fixtures":["xyflow/react-usenodeconnections.json"],"exercises":["examples.react-usenodeconnections"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-usenodeconnections-selfparity","library":"xyflow","fixtures":["xyflow/react-usenodeconnections.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-usenodeconnections"],"comparators":["model","events","geometry","pixels"]}

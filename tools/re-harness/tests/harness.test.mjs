@@ -7,7 +7,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compareModel, compareEvents, compareGeometry, comparePixels, correspondenceProblems, parseSvgPath } from "../src/comparators.mjs";
-import { validateFixtures, assertGateReport, classifyGateReport, GATE_REPORT_FILES, CANDIDATE_STATUS } from "../src/harness.mjs";
+import { validateFixtures, assertGateReport, assertXyflowExamplesReport, GATE_REPORT_FILES, CANDIDATE_STATUS } from "../src/harness.mjs";
+import { validateAgainstSchema } from "../src/validate.mjs";
 import { candidateStubRunner } from "../src/runners.mjs";
 import { EXPECTED_VERSIONS, REPO_ROOT, WT_ROOT } from "../src/oracles.mjs";
 import { canonicalString } from "../src/canonical.mjs";
@@ -66,6 +67,12 @@ test("model rule: fixtures carry native reference input only, never a harness mo
       assert.match(xml, /<bpmn:definitions/);
     }
     if (doc.library === "jointjs") assert.ok(Array.isArray(doc.input.cells) && doc.input.cells.every((c) => c.type && c.id));
+    if (doc.library === "xyflow") {
+      // The input is the pinned example module itself: no graph data at all.
+      assert.equal(doc.kind, "xyflow-example");
+      assert.deepEqual(Object.keys(doc.input).sort(), ["example", "flavour"]);
+      assert.ok(fs.existsSync(path.join(REPO_ROOT, ".ds-scrap", "re-sources", "xyflow", "examples", doc.input.example)), doc.input.example);
+    }
   }
   // No .f1.json hand-written model survives.
   assert.deepEqual(walk(root).filter((p) => p.endsWith(".f1.json")), []);
@@ -155,49 +162,78 @@ test("REPO_ROOT resolves to the main checkout carrying .ds-scrap (C8)", () => {
   assert.ok(WT_ROOT.endsWith(".re-l0-wt") || WT_ROOT === REPO_ROOT, `WT_ROOT=${WT_ROOT}`);
 });
 
-test("xyflow fixtures carry the named example graphs, not one generic graph (C1)", () => {
+test("xyflow fixtures: one per inventory example, each mounting its own example module (C1, N1)", () => {
   const dir = path.resolve(HERE, "..", "fixtures", "xyflow");
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json") && !f.includes(".ops."));
   assert.equal(files.length, 93);
-  const signatures = new Map();
-  let extracted = 0;
-  let unknown = 0;
+  const modules = new Set();
+  const unknown = {};
   for (const f of files) {
     const doc = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
-    assert.ok(doc.extraction, `${f}: extraction provenance missing`);
-    if (doc.extraction.status === "extracted") {
-      extracted += 1;
-      const sig = JSON.stringify([doc.input.nodes, doc.input.edges]);
-      signatures.set(sig, (signatures.get(sig) || 0) + 1);
-    } else {
-      unknown += 1;
-      assert.ok(doc.extraction.cause && doc.extraction.cause.length > 3, `${f}: unknown without cause`);
-    }
+    modules.add(doc.input.example);
+    if (doc.runnable.status === "unknown") unknown[doc.id] = doc.runnable.missing;
+    else assert.equal(doc.runnable.status, "runnable");
   }
-  assert.equal(extracted + unknown, 93);
-  assert.ok(extracted >= 55, `only ${extracted} examples extracted`);
-  // Distinct graphs: no generic substitute graph shared across examples.
-  // Some pinned examples genuinely share one literal graph (e.g. Middlewares
-  // imports ../CancelConnection/data), so the bound is a ceiling per graph.
-  assert.ok(signatures.size >= 40, `only ${signatures.size} distinct graphs for ${extracted} examples`);
-  assert.ok(Math.max(...signatures.values()) <= 6, "one graph is shared by more than 6 examples");
+  assert.equal(modules.size, 93, "two fixtures share one example module");
+  // Only examples importing a package absent from the oracle set are
+  // statically unknown; each names the missing packages.
+  assert.deepEqual(unknown, {
+    "xyflow-react-layouting": ["dagre"],
+    "xyflow-react-redux": ["@reduxjs/toolkit", "react-redux"],
+    "xyflow-react-saverestore": ["localforage"],
+    "xyflow-svelte-dagre": ["@dagrejs/dagre"],
+  });
 });
 
-test("archived gate reports are real and either green or unknown by fixture only (C7)", () => {
+// The examples that stay unknown in the archived xyflow gate, each with a
+// cause that belongs to the example itself. Any change makes this fail.
+const EXPECTED_XYFLOW_UNKNOWN = {
+  "xyflow-react-layouting-selfparity": "example-unrunnable",
+  "xyflow-react-redux-selfparity": "example-unrunnable",
+  "xyflow-react-saverestore-selfparity": "example-unrunnable",
+  "xyflow-svelte-dagre-selfparity": "example-unrunnable",
+  "xyflow-react-floatingedges-selfparity": "example-error",
+  "xyflow-react-usekeypress-selfparity": "example-without-flow",
+};
+
+test("archived gate reports pass the strict guards (C7, N3)", () => {
   for (const file of GATE_REPORT_FILES) {
-    const full = path.join(RUNS_DIR, file);
-    assert.ok(fs.existsSync(full), `gate report ${file} is missing — run the real gates (node tools/re-harness/src/harness.mjs run / selftest)`);
-    const report = JSON.parse(fs.readFileSync(full, "utf8"));
-    const c = classifyGateReport(report, file);
-    assert.notEqual(c.status, "invalid", `${file}: ${c.problems.slice(0, 5).join("; ")}`);
+    assert.ok(fs.existsSync(path.join(RUNS_DIR, file)), `gate report ${file} is missing — run the real gates`);
   }
-  // The JointJS divergence selftest and the BPMN/JointJS self-parity are
-  // strictly green: no fixture of theirs may be unknown.
-  assert.equal(classifyGateReport(JSON.parse(fs.readFileSync(path.join(RUNS_DIR, "selftest.json"), "utf8"))).status, "pass");
-  const selfParity = JSON.parse(fs.readFileSync(path.join(RUNS_DIR, "self-parity.json"), "utf8"));
-  for (const sc of selfParity.scenarios.filter((x) => x.library !== "xyflow")) assert.equal(sc.verdict, "pass", sc.id);
-  // No synthetic report survives (the synthetic engines were removed).
+  const read = (file) => JSON.parse(fs.readFileSync(path.join(RUNS_DIR, file), "utf8"));
+  // bpmn-js + JointJS self-parity and the JointJS selftest: strictly green.
+  assert.equal(assertGateReport(read("self-parity.json"), "self-parity.json"), true);
+  assert.ok(read("self-parity.json").scenarios.every((sc) => sc.library !== "xyflow"));
+  assert.equal(assertGateReport(read("selftest.json"), "selftest.json"), true);
+  // xyflow: every example passes except the explicit list above.
+  const xy = read("xyflow-examples.json");
+  assert.equal(xy.scenarios.length, 93);
+  assert.equal(assertXyflowExamplesReport(xy, EXPECTED_XYFLOW_UNKNOWN), true);
   for (const name of fs.readdirSync(RUNS_DIR)) assert.ok(!name.startsWith("synthetic-"), name);
+});
+
+test("xyflow report guard rejects an unlisted unknown, a listed pass and a harness-caused unknown (N3)", () => {
+  const base = () => ({
+    schemaVersion: 1, mode: "self-parity", seed: 42, oracle: "real", oracleVersions: JSON.parse(JSON.stringify(EXPECTED_VERSIONS)),
+    scenarios: [
+      { id: "a", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "pass", comparators: {} },
+      { id: "b", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "unknown", cause: "x", causeKind: "example-error", comparators: {} },
+    ],
+  });
+  assert.equal(assertXyflowExamplesReport(base(), { b: "example-error" }), true);
+  assert.throws(() => assertXyflowExamplesReport(base(), {}), /is unknown/);
+  assert.throws(() => assertXyflowExamplesReport(base(), { a: "example-error", b: "example-error" }), /expected unknown/);
+  const infra = base(); infra.scenarios[1].causeKind = "infrastructure";
+  assert.throws(() => assertXyflowExamplesReport(infra, { b: "infrastructure" }), /not an example cause kind/);
+  assert.throws(() => assertXyflowExamplesReport(base(), { b: "example-error", c: "example-error" }), /absent/);
+});
+
+test("schema validator honours union types (N3)", () => {
+  const schema = { type: "object", properties: { v: { type: ["string", "null"] } } };
+  assert.deepEqual(validateAgainstSchema({ v: "x" }, schema), []);
+  assert.deepEqual(validateAgainstSchema({ v: null }, schema), []);
+  assert.equal(validateAgainstSchema({ v: 3 }, schema).length, 1);
+  assert.equal(validateAgainstSchema({ v: {} }, schema).length, 1);
 });
 
 test("the JointJS journal projection in the page equals the frozen §5.5 contract", () => {

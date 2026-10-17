@@ -2,52 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-two-way-viewport",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-two-way-viewport",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-two-way-viewport, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "A",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {
-          "label": "A"
-        }
-      },
-      {
-        "id": "B",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 100
-        },
-        "data": {
-          "label": "B"
-        }
-      }
-    ],
-    "edges": [
-      {
-        "id": "ab",
-        "source": "A",
-        "target": "B"
-      }
-    ],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/two-way-viewport/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/two-way-viewport/Flow.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

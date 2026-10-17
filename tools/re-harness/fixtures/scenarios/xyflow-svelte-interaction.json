@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-interaction-selfparity","library":"xyflow","fixtures":["xyflow/svelte-interaction.json"],"ops":"xyflow/svelte-interaction.ops.json","exercises":["examples.svelte-interaction"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-interaction-selfparity","library":"xyflow","fixtures":["xyflow/svelte-interaction.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-interaction"],"comparators":["model","events","geometry","pixels"]}

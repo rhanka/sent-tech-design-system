@@ -2,35 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-backgrounds",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-backgrounds",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-backgrounds, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 50,
-          "y": 50
-        },
-        "data": {
-          "label": "Node 1"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/Backgrounds/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Backgrounds/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

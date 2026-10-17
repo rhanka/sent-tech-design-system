@@ -2,28 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-handle-connect",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-handle-connect",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-handle-connect, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/handle-connect/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "unknown",
-    "cause": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/handle-connect/+page.svelte",
-    "customTypes": [
-      "multi",
-      "single"
-    ]
+  "runnable": {
+    "status": "runnable"
   }
 }

@@ -2,20 +2,79 @@
   "contract": "jointjs-event-projection",
   "version": 1,
   "source": "SPEC_RE_JOINTJS_PARITY.md §5.5 and §6 (Lot 0 freezes this projection)",
-  "description": "Frozen projection from raw @joint/core graph events (dia.Graph 'all') to the comparable event journal. Each journal entry carries { name, payload: { elementId, effect, ...changedValues } }. `effect` is derived ONLY by this table; `changedValues` keeps the significant new values (position, size, label text, source/target ids) at 1e-6. Anything not matched by the table projects to effect=other and keeps its raw name, so an unprojected event can never silently compare equal to a projected one.",
+  "description": "Frozen projection from raw @joint/core graph events (dia.Graph 'all') to the comparable event journal. Each journal entry carries { name, payload: { elementId, effect, ...changedValues } }. `effect` is derived ONLY by this table; `changedValues` keeps the significant new values (position, size, the full new attrs object, source/target ids), unrounded, compared at 1e-6. Anything not matched by the table projects to effect=other and keeps its raw name, so an unprojected event can never silently compare equal to a projected one.",
   "rules": [
-    { "match": "add", "effect": "cell.add" },
-    { "match": "remove", "effect": "cell.remove" },
-    { "match": "change:position", "effect": "cell.move", "values": ["x", "y"] },
-    { "match": "change:size", "effect": "cell.resize", "values": ["width", "height"] },
-    { "match": "change:attrs", "effect": "cell.attrs", "values": ["label"] },
-    { "match": "change:source", "effect": "link.reconnect-source", "values": ["source"] },
-    { "match": "change:target", "effect": "link.reconnect-target", "values": ["target"] },
-    { "match": "change:vertices", "effect": "link.vertices" },
-    { "match": "change:angle", "effect": "cell.rotate", "values": ["angle"] },
-    { "match": "change:z", "effect": "cell.zorder", "values": ["z"] },
-    { "match": "reset", "effect": "graph.reset" },
-    { "match": "sort", "effect": "graph.sort" }
+    {
+      "match": "add",
+      "effect": "cell.add"
+    },
+    {
+      "match": "remove",
+      "effect": "cell.remove"
+    },
+    {
+      "match": "change:position",
+      "effect": "cell.move",
+      "values": [
+        "x",
+        "y"
+      ]
+    },
+    {
+      "match": "change:size",
+      "effect": "cell.resize",
+      "values": [
+        "width",
+        "height"
+      ]
+    },
+    {
+      "match": "change:attrs",
+      "effect": "cell.attrs",
+      "values": [
+        "attrs"
+      ]
+    },
+    {
+      "match": "change:source",
+      "effect": "link.reconnect-source",
+      "values": [
+        "source"
+      ]
+    },
+    {
+      "match": "change:target",
+      "effect": "link.reconnect-target",
+      "values": [
+        "target"
+      ]
+    },
+    {
+      "match": "change:vertices",
+      "effect": "link.vertices"
+    },
+    {
+      "match": "change:angle",
+      "effect": "cell.rotate",
+      "values": [
+        "angle"
+      ]
+    },
+    {
+      "match": "change:z",
+      "effect": "cell.zorder",
+      "values": [
+        "z"
+      ]
+    },
+    {
+      "match": "reset",
+      "effect": "graph.reset"
+    },
+    {
+      "match": "sort",
+      "effect": "graph.sort"
+    }
   ],
   "defaultEffect": "other"
 }

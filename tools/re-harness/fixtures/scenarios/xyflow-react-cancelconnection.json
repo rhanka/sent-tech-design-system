@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-cancelconnection-selfparity","library":"xyflow","fixtures":["xyflow/react-cancelconnection.json"],"ops":"xyflow/react-cancelconnection.ops.json","exercises":["examples.react-cancelconnection"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-cancelconnection-selfparity","library":"xyflow","fixtures":["xyflow/react-cancelconnection.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-cancelconnection"],"comparators":["model","events","geometry","pixels"]}

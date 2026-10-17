@@ -2,51 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-reset",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-reset",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-reset, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "c1",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {
-          "label": "1"
-        },
-        "width": 100,
-        "height": 100
-      },
-      {
-        "id": "c2",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 0
-        },
-        "data": {
-          "label": "2"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/reset/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/reset/+page.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

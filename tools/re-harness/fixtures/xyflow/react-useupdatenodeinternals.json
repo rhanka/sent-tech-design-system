@@ -2,27 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-useupdatenodeinternals",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-useupdatenodeinternals",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-useupdatenodeinternals, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/UseUpdateNodeInternals/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "unknown",
-    "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/UseUpdateNodeInternals/CustomNode.tsx",
-    "customTypes": [
-      "custom"
-    ]
+  "runnable": {
+    "status": "runnable"
   }
 }

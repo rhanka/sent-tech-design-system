@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-useupdatenodeinternals-selfparity","library":"xyflow","fixtures":["xyflow/svelte-useupdatenodeinternals.json"],"exercises":["examples.svelte-useupdatenodeinternals"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-useupdatenodeinternals-selfparity","library":"xyflow","fixtures":["xyflow/svelte-useupdatenodeinternals.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-useupdatenodeinternals"],"comparators":["model","events","geometry","pixels"]}

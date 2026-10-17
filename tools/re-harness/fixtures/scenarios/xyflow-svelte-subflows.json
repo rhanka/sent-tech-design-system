@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-subflows-selfparity","library":"xyflow","fixtures":["xyflow/svelte-subflows.json"],"ops":"xyflow/svelte-subflows.ops.json","exercises":["examples.svelte-subflows"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-subflows-selfparity","library":"xyflow","fixtures":["xyflow/svelte-subflows.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-subflows"],"comparators":["model","events","geometry","pixels"]}

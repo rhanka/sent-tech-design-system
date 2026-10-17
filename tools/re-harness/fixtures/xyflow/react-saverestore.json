@@ -2,52 +2,21 @@
   "schemaVersion": 1,
   "id": "xyflow-react-saverestore",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-saverestore",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-saverestore, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 1"
-        }
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 200
-        },
-        "data": {
-          "label": "Node 2"
-        }
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-2",
-        "source": "1",
-        "target": "2"
-      }
-    ],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/SaveRestore/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/SaveRestore/index.tsx"
+  "runnable": {
+    "status": "unknown",
+    "cause": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
+    "missing": [
+      "localforage"
+    ]
   }
 }

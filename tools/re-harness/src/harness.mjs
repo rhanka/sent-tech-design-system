@@ -14,6 +14,7 @@
 // graph.toJSON()). The candidate side goes through packages/diagram-core
 // DiagramState and the A' codec, which does not exist yet: at L0 the
 // candidate is `unsupported` (CANDIDATE_STATUS below).
+import crypto from "node:crypto";
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
@@ -24,7 +25,7 @@ import { CANDIDATE_STATUS } from "./runners.mjs";
 export { CANDIDATE_STATUS };
 import { coverageReport, loadInventory, listScenarios } from "./coverage.mjs";
 import { canonicalise, canonicalString } from "./canonical.mjs";
-import { BUNDLES_DIR, WT_ROOT, REPO_ROOT, EXPECTED_VERSIONS, bundleStatus, gateOracle, readOracleVersions } from "./oracles.mjs";
+import { BUNDLES_DIR, WT_ROOT, REPO_ROOT, EXPECTED_VERSIONS, bundleStatus, gateOracle, readOracleVersions, xyflowExampleBundles } from "./oracles.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HARNESS_ROOT = path.resolve(HERE, "..");
@@ -35,7 +36,11 @@ export const GATE_REPORT_FILES = ["self-parity.json", "xyflow-examples.json", "s
 // its cause belongs to the FIXTURE (an example that cannot be extracted
 // mechanically). Infrastructure causes (missing bundle, no browser, launch
 // failure, run error) make the archived report invalid.
-export const ACCEPTED_UNKNOWN_KIND = "fixture-extraction";
+export const ACCEPTED_UNKNOWN_KIND = "example-unrunnable";
+// Unknown kinds that belong to the EXAMPLE itself (never to the harness or
+// the infrastructure): it cannot be built outside its application, it
+// throws in its own code, or it mounts no flow at all.
+export const EXAMPLE_UNKNOWN_KINDS = ["example-unrunnable", "example-error", "example-without-flow"];
 
 // Gate guard (C7): a gate report counts only when it is schema-valid,
 // produced by the real oracle at the pinned versions, non-empty, and every
@@ -69,34 +74,36 @@ export function assertGateReport(report, label = "report") {
   return true;
 }
 
-// Classification of an archived gate report: "pass" when the strict guard
-// accepts it; "unknown" when every non-pass scenario is an explicit
-// unknown whose cause is the fixture itself (an example that cannot be
-// extracted mechanically) and at least one scenario passed; otherwise
-// "invalid" (failures, infrastructure unknowns, skipped ops, drift).
-// An "unknown" gate is NOT green: it is reported as unknown with causes.
-export function classifyGateReport(report, label = "report") {
-  try {
-    assertGateReport(report, label);
-    return { status: "pass", problems: [] };
-  } catch (err) {
-    const problems = [];
-    const schemaErrors = validateAgainstSchema(report, readJson(schemaPath("report.schema.json")), label);
-    if (schemaErrors.length) problems.push(...schemaErrors);
-    if (report.oracle !== "real") problems.push(`${label}: oracle is not real`);
-    if (canonicalString(report.oracleVersions || {}) !== canonicalString(EXPECTED_VERSIONS)) problems.push(`${label}: oracleVersions drift`);
-    const scenarios = Array.isArray(report.scenarios) ? report.scenarios : [];
-    if (!scenarios.some((sc) => sc.verdict === "pass")) problems.push(`${label}: no scenario passed`);
-    for (const sc of scenarios) {
-      if (sc.oracle !== "real") problems.push(`${label}: ${sc.id} oracle is not real`);
-      if (Array.isArray(sc.skippedOps) && sc.skippedOps.length) problems.push(`${label}: ${sc.id} skipped operations`);
-      if (sc.verdict === "pass") continue;
-      if (sc.verdict !== "unknown" || sc.causeKind !== ACCEPTED_UNKNOWN_KIND || !sc.cause) {
-        problems.push(`${label}: ${sc.id} is ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}${sc.cause ? `: ${sc.cause}` : ""}`);
+// Guard of the xyflow examples gate report. Strict like assertGateReport,
+// except for an EXPLICIT list of examples expected to be unknown, each with
+// its cause kind (one of EXAMPLE_UNKNOWN_KINDS: a cause that belongs to the
+// example, never to the harness). The list must match exactly: an extra
+// unknown, a listed example that passes, a wrong kind, any fail or skipped
+// op throws. The xyflow gate is green only when the list is empty.
+export function assertXyflowExamplesReport(report, expectedUnknown, label = "xyflow-examples.json") {
+  const schemaErrors = validateAgainstSchema(report, readJson(schemaPath("report.schema.json")), label);
+  if (schemaErrors.length) throw new Error(`${label}: report.schema.json: ${schemaErrors[0]}`);
+  if (report.oracle !== "real") throw new Error(`${label}: oracle is not real`);
+  if (canonicalString(report.oracleVersions || {}) !== canonicalString(EXPECTED_VERSIONS)) throw new Error(`${label}: oracleVersions do not equal the pinned EXPECTED_VERSIONS`);
+  const scenarios = Array.isArray(report.scenarios) ? report.scenarios : [];
+  if (!scenarios.length) throw new Error(`${label}: no scenarios`);
+  const seen = new Set();
+  for (const sc of scenarios) {
+    if (sc.oracle !== "real") throw new Error(`${label}: ${sc.id} oracle is not real`);
+    if (Array.isArray(sc.skippedOps) && sc.skippedOps.length) throw new Error(`${label}: ${sc.id} skipped operations`);
+    const expected = expectedUnknown[sc.id];
+    if (expected) {
+      seen.add(sc.id);
+      if (!EXAMPLE_UNKNOWN_KINDS.includes(expected)) throw new Error(`${label}: ${sc.id}: ${expected} is not an example cause kind`);
+      if (sc.verdict !== "unknown" || sc.causeKind !== expected || !sc.cause) {
+        throw new Error(`${label}: ${sc.id} expected unknown (${expected}), got ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}`);
       }
+    } else if (sc.verdict !== "pass") {
+      throw new Error(`${label}: ${sc.id} is ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}${sc.cause ? `: ${sc.cause}` : ""}`);
     }
-    return { status: problems.length ? "invalid" : "unknown", problems, guardError: String(err.message || err) };
   }
+  for (const id of Object.keys(expectedUnknown)) if (!seen.has(id)) throw new Error(`${label}: expected unknown ${id} is absent`);
+  return true;
 }
 
 function readJson(p) { return JSON.parse(fs.readFileSync(p, "utf8")); }
@@ -143,13 +150,21 @@ function opsPathFor(scenario) { return scenario.ops ? path.join(HARNESS_ROOT, "f
 // JointJS geometry family of each link, read from the library's own
 // graph JSON (router first, then connector), for the per-function
 // rounding of SPEC_RE_JOINTJS_PARITY §5.3.
-function jointFamilies(graphJson) {
+// Both sides are read: a link whose family differs between the two runs
+// gets no rounding at all (the model comparator already reports it).
+function jointFamilies(leftJson, rightJson) {
+  const familyOf = (graphJson) => {
+    const out = {};
+    for (const cell of (graphJson && graphJson.cells) || []) {
+      if (!cell.source || !cell.target) continue;
+      if (cell.router && cell.router.name) out[cell.id] = `routers.${cell.router.name}`;
+      else if (cell.connector && cell.connector.name) out[cell.id] = `connectors.${cell.connector.name}`;
+    }
+    return out;
+  };
+  const l = familyOf(leftJson); const r = familyOf(rightJson);
   const out = {};
-  for (const cell of (graphJson && graphJson.cells) || []) {
-    if (!cell.source || !cell.target) continue;
-    if (cell.router && cell.router.name) out[cell.id] = `routers.${cell.router.name}`;
-    else if (cell.connector && cell.connector.name) out[cell.id] = `connectors.${cell.connector.name}`;
-  }
+  for (const id of Object.keys(l)) if (r[id] === l[id]) out[id] = l[id];
   return out;
 }
 
@@ -157,7 +172,7 @@ function compareRuns(left, right, fixture) {
   const correspondence = fixture.idCorrespondence || {};
   const geometryOptions = fixture.library === "xyflow"
     ? { tolerancePx: XYFLOW_GEOMETRY_TOLERANCE_PX, viewboxTolerance: XYFLOW_GEOMETRY_TOLERANCE_PX }
-    : fixture.library === "jointjs" ? { familyById: jointFamilies(left.model) } : {};
+    : fixture.library === "jointjs" ? { familyById: jointFamilies(left.model, right.model) } : {};
   const comparators = {
     model: compareModel(remapDeep(left.model, correspondence), remapDeep(right.model, correspondence)),
     events: compareEvents(left.events, right.events, correspondence),
@@ -204,7 +219,9 @@ function overallVerdict(comparators) {
 
 // Injected divergences must be detected on every comparator. `base` is a
 // real JointJS run output (model = graph.toJSON()).
-export function divergenceSelftest(base, fixture) {
+// The pixel divergence is NOT a buffer mutation: `mutatedRender` is a second
+// real run whose rendering was changed through the library API.
+export function divergenceSelftest(base, fixture, mutatedRender) {
   const clone = (v) => JSON.parse(JSON.stringify(v));
   const checks = [];
   const mutatedModel = clone(base);
@@ -215,9 +232,8 @@ export function divergenceSelftest(base, fixture) {
   checks.push({ comparator: "geometry", detected: compareGeometry(base.geometry, mutatedGeo.geometry).verdict === "fail" });
   const mutatedEvents = clone(base); mutatedEvents.events = [{ name: "bogus.injected", payload: { elementId: "a" } }];
   checks.push({ comparator: "events", detected: compareEvents(base.events, mutatedEvents.events).verdict === "fail" });
-  const mutatedPixels = clone(base);
-  mutatedPixels.pixels = { width: base.pixels.width, height: base.pixels.height, data: base.pixels.data.map(() => 0) };
-  checks.push({ comparator: "pixels", detected: comparePixels(base.pixels, mutatedPixels.pixels, fixture.pixelThreshold).verdict === "fail" });
+  checks.push({ comparator: "pixels", detected: comparePixels(base.pixels, mutatedRender.pixels, fixture.pixelThreshold).verdict === "fail",
+    detail: "fill mutation through the real @joint/core attr API, captured by container screenshot" });
   const control = {
     model: compareModel(base.model, clone(base).model).verdict,
     geometry: compareGeometry(base.geometry, clone(base).geometry).verdict,
@@ -256,9 +272,13 @@ function serveHarnessPage() {
       let file = null;
       if (name === "/" || name === "/harness-page.html") file = path.join(HARNESS_ROOT, "harness-page.html");
       else if (name.startsWith("/bundles/")) {
-        const base = path.basename(name);
-        const candidate = path.join(BUNDLES_DIR, base);
-        if (candidate.startsWith(BUNDLES_DIR)) file = candidate;
+        // bundles/<file> or bundles/xyflow-examples/<file>; nothing else.
+        const rel = name.slice("/bundles/".length);
+        const parts = rel.split("/");
+        if (parts.length === 1 || (parts.length === 2 && parts[0] === "xyflow-examples")) {
+          const candidate = path.join(BUNDLES_DIR, ...parts.map((p) => path.basename(p)));
+          if (candidate.startsWith(BUNDLES_DIR + path.sep)) file = candidate;
+        }
       }
       if (!file || !fs.existsSync(file)) { res.writeHead(404).end("not found"); return; }
       res.writeHead(200, { "content-type": STATIC_TYPES[path.extname(file)] || "application/octet-stream" });
@@ -280,6 +300,11 @@ async function launchHarnessBrowser() {
     const { browser, page, kind } = await launchBrowser({ playwrightCore, puppeteerCore });
     if (kind === "playwright-core") await page.addInitScript(DETERMINISM_INIT_REAL);
     else await page.evaluateOnNewDocument(DETERMINISM_INIT_REAL);
+    // Page errors are kept so that an example failing at runtime reports
+    // its own error as the cause.
+    const pageErrors = [];
+    page.on("pageerror", (err) => pageErrors.push(String(err && err.message || err).split("\n")[0].slice(0, 240)));
+    page.__pageErrors = pageErrors;
     await page.goto(served.url);
     const status = await page.evaluate(() => window.__harnessReady);
     return { browser, page, kind, served, oracleStatus: status };
@@ -304,9 +329,15 @@ function unknownScenario(scenario, gate, cause, causeKind = "infrastructure") {
   };
 }
 
+function gateOf(scenario) {
+  if (scenario.library === "xyflow") return scenario.id.includes("-svelte-") ? "xyflow-svelte" : "xyflow-react";
+  return scenario.library === "jointjs" ? "jointjs" : "bpmn";
+}
+
 export async function runRealGates(scenarios, { dumpDir = null } = {}) {
   const { runRealInPage } = await import("./runners.mjs");
   const statuses = bundleStatus();
+  const examples = xyflowExampleBundles();
   const results = [];
   const xyflow = { executed: [], failed: [], outputs: {} };
   let browserCtx = null;
@@ -317,8 +348,10 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
     chromeAvailable = !!chrome.findChrome();
   } catch { chromeAvailable = false; }
 
-  const needsBrowser = scenarios.some((s) => statuses[s.library === "xyflow" ? (s.id.includes("svelte") ? "xyflow-svelte" : "xyflow-react") : s.library === "jointjs" ? "jointjs" : "bpmn"]?.built);
-  if (needsBrowser && chromeAvailable) {
+  const builtFor = (scenario) => (scenario.library === "xyflow"
+    ? (examples[`xyflow-${scenario.id.replace(/^xyflow-/, "").replace(/-selfparity$/, "")}`] || {}).status === "built"
+    : statuses[gateOf(scenario)].built);
+  if (scenarios.some(builtFor) && chromeAvailable) {
     try {
       browserCtx = await launchHarnessBrowser();
     } catch (err) {
@@ -327,54 +360,51 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
     }
   }
 
+  const record = (scenario, entry) => {
+    results.push(entry);
+    if (scenario.library === "xyflow" && entry.verdict === "unknown") xyflow.failed.push({ id: scenario.id, cause: entry.cause, causeKind: entry.causeKind });
+  };
+
   try {
     for (const scenario of scenarios) {
-      const gate = scenario.library === "xyflow"
-        ? (scenario.id.includes("svelte") ? "xyflow-svelte" : "xyflow-react")
-        : scenario.library === "jointjs" ? "jointjs" : "bpmn";
-      const st = statuses[gate];
+      const gate = gateOf(scenario);
       const oracle = gateOracle(gate);
-      if (!st.built) {
-        const entry = unknownScenario(scenario, gate, st.cause);
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause: st.cause });
+      const fixture = loadFixture(fixturePathFor(scenario));
+      const ops = loadOps(opsPathFor(scenario));
+      // An example that cannot run outside its application is `unknown`
+      // with its precise cause — never run, never green.
+      if (fixture.runnable && fixture.runnable.status === "unknown") {
+        record(scenario, unknownScenario(scenario, gate, fixture.runnable.cause, ACCEPTED_UNKNOWN_KIND));
+        continue;
+      }
+      if (scenario.library === "xyflow") {
+        const e = examples[fixture.id];
+        if (!e || e.status !== "built") {
+          record(scenario, unknownScenario(scenario, gate, e ? e.cause : `bundles/xyflow-examples/${fixture.id}.js missing (run: node tools/re-harness/build-bundles.mjs)`));
+          continue;
+        }
+      } else if (!statuses[gate].built) {
+        record(scenario, unknownScenario(scenario, gate, statuses[gate].cause));
         continue;
       }
       if (!chromeAvailable) {
-        const entry = unknownScenario(scenario, gate, "headless Chrome not found (CHROME_BIN/google-chrome/chromium absent); real oracles require a browser");
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause: entry.cause });
+        record(scenario, unknownScenario(scenario, gate, "headless Chrome not found (CHROME_BIN/google-chrome/chromium absent); real oracles require a browser"));
         continue;
       }
       if (!browserCtx) {
-        const entry = unknownScenario(scenario, gate, `browser launch failed: ${browserError || "unknown error"}`);
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause: entry.cause });
+        record(scenario, unknownScenario(scenario, gate, `browser launch failed: ${browserError || "unknown error"}`));
         continue;
       }
-      // The bundle exists on disk; make sure it actually loaded in the page.
-      const statusKey = gate === "bpmn" ? "bpmn" : gate === "jointjs" ? "jointjs" : gate === "xyflow-svelte" ? "xyflowSvelte" : "xyflowReact";
-      if (browserCtx.oracleStatus && browserCtx.oracleStatus[statusKey] === false) {
-        const entry = unknownScenario(scenario, gate, `bundle bundles/${st.bundle.split("/").pop()} did not load in the harness page`);
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause: entry.cause });
-        continue;
-      }
-      const fixture = loadFixture(fixturePathFor(scenario));
-      const ops = loadOps(opsPathFor(scenario));
-      // A fixture whose example graph could not be extracted mechanically
-      // is `unknown` with its cause (C1) — never run, never green.
-      if (fixture.extraction && fixture.extraction.status === "unknown") {
-        const cause = fixture.extraction.cause || "example graph not mechanically extractable";
-        const entry = unknownScenario(scenario, gate, cause, ACCEPTED_UNKNOWN_KIND);
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause });
+      if (scenario.library !== "xyflow" && browserCtx.oracleStatus && browserCtx.oracleStatus[gate] === false) {
+        record(scenario, unknownScenario(scenario, gate, `bundle ${statuses[gate].bundle} did not load in the harness page`));
         continue;
       }
       try {
-        await browserCtx.page.goto(browserCtx.served.url);
-        const left = await runRealInPage(browserCtx.page, scenario.library, fixture, ops);
-        const right = await runRealInPage(browserCtx.page, scenario.library, fixture, ops);
+        if (browserCtx.page.__pageErrors) browserCtx.page.__pageErrors.length = 0;
+        const ctx = { url: browserCtx.served.url, examples };
+        if (scenario.library !== "xyflow") await browserCtx.page.goto(browserCtx.served.url);
+        const left = await runRealInPage(browserCtx.page, scenario.library, fixture, ops, ctx);
+        const right = await runRealInPage(browserCtx.page, scenario.library, fixture, ops, ctx);
         const comparators = compareRuns(left, right, fixture);
         const entry = {
           id: scenario.id, library: scenario.library, oracle: "real", oracleVersion: oracle.libraryVersion,
@@ -382,20 +412,27 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
         };
         if (left.warnings && left.warnings.length) entry.warnings = left.warnings;
         if (left.skippedOps && left.skippedOps.length) entry.skippedOps = left.skippedOps;
+        if (left.opsLog) entry.opsApplied = left.opsLog.filter((o) => o.applied).map((o) => `${o.op}:${o.target || o.kind}`);
         if (dumpDir) {
           fs.mkdirSync(dumpDir, { recursive: true });
-          fs.writeFileSync(path.join(dumpDir, `${scenario.id}.json`), JSON.stringify({ model: left.model, events: left.events, geometry: left.geometry }, null, 1));
+          fs.writeFileSync(path.join(dumpDir, `${scenario.id}.json`), JSON.stringify({ model: left.model, events: left.events, geometry: left.geometry, opsLog: left.opsLog }, null, 1));
         }
-        results.push(entry);
+        record(scenario, entry);
         if (scenario.library === "xyflow") {
           xyflow.executed.push(scenario.id);
-          xyflow.outputs[scenario.id] = { model: left.model, geometry: left.geometry, viewport: left.viewport };
+          const flows = (left.model && left.model.flows) || [];
+          xyflow.outputs[scenario.id] = {
+            modelSha256: crypto.createHash("sha256").update(canonicalString(left.model)).digest("hex"),
+            flows: flows.map((st) => ({ nodes: (st.nodes || []).length, edges: (st.edges || []).length })),
+            edgePaths: Object.keys((left.geometry && left.geometry.edgePaths) || {}).length,
+            opsApplied: entry.opsApplied || [],
+          };
         }
       } catch (err) {
-        const cause = String(err && err.message || err).split("\n")[0].slice(0, 300);
-        const entry = unknownScenario(scenario, gate, cause, "run-error");
-        results.push(entry);
-        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause });
+        const errors = browserCtx.page.__pageErrors || [];
+        const cause = `${String(err && err.message || err).split("\n")[0].slice(0, 300)}${errors.length ? ` [page error: ${errors[errors.length - 1]}]` : ""}`;
+        const kind = /example-error during/.test(cause) ? "example-error" : /example-without-flow/.test(cause) ? "example-without-flow" : "run-error";
+        record(scenario, unknownScenario(scenario, gate, cause, kind));
       }
     }
   } finally {
@@ -437,13 +474,7 @@ export async function runRealSelftest() {
     if (!mutated.pixels || !mutated.pixels.data) {
       return { unknown: "mutated JointJS run produced no captured pixels" };
     }
-    const result = divergenceSelftest(base, fixture);
-    const pixelCheck = result.checks.find((c) => c.comparator === "pixels");
-    if (pixelCheck) {
-      pixelCheck.detected = comparePixels(base.pixels, mutated.pixels, fixture.pixelThreshold).verdict === "fail";
-      pixelCheck.detail = "fill mutation through the real @joint/core attr API, captured by container screenshot";
-    }
-    result.pass = result.checks.every((c) => c.detected) && Object.values(result.control).every((v) => v === "pass");
+    const result = divergenceSelftest(base, fixture, mutated);
     return { result };
   } catch (err) {
     return { unknown: String(err && err.message || err).split("\n")[0].slice(0, 300) };
@@ -523,7 +554,11 @@ async function main(argv) {
       process.exit(results.every((sc) => sc.verdict === "pass") ? 0 : 1);
     }
     const versions = readOracleVersions();
-    const report = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions, candidate: CANDIDATE_STATUS, scenarios: results };
+    // self-parity.json: bpmn-js and JointJS (strict gate); xyflow-examples.json:
+    // the 93 examples (gate with an explicit list of example-caused unknowns).
+    const report = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions,
+      candidate: { bpmn: CANDIDATE_STATUS.bpmn, jointjs: CANDIDATE_STATUS.jointjs },
+      scenarios: results.filter((s) => s.library !== "xyflow") };
     const file = writeReport("self-parity", report);
     const xyReport = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions,
       candidate: { xyflow: CANDIDATE_STATUS.xyflow },

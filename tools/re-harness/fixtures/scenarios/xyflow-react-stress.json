@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-stress-selfparity","library":"xyflow","fixtures":["xyflow/react-stress.json"],"exercises":["examples.react-stress"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-stress-selfparity","library":"xyflow","fixtures":["xyflow/react-stress.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-stress"],"comparators":["model","events","geometry","pixels"]}

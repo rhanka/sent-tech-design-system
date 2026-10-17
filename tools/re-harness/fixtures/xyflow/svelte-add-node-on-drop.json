@@ -2,38 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-add-node-on-drop",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-add-node-on-drop",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-add-node-on-drop, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "0",
-        "type": "input",
-        "position": {
-          "x": 0,
-          "y": 50
-        },
-        "data": {
-          "label": "Node"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/add-node-on-drop/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/add-node-on-drop/Flow.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

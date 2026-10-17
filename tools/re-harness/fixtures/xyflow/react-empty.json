@@ -2,23 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-empty",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-empty",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-empty, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/Empty/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Empty/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

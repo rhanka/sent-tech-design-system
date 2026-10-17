@@ -119,10 +119,24 @@ export function gateOracle(library, oraclesDir = resolveOraclesDir()) {
 
 export const BUNDLE_FILES = {
   bpmn: "bpmn.js",
-  "xyflow-react": "xyflow-react.js",
-  "xyflow-svelte": "xyflow-svelte.js",
   jointjs: "joint.js",
 };
+
+// Per-example xyflow oracle bundles (bundles/xyflow-examples/<id>.js),
+// as recorded by build-bundles.mjs in bundles/manifest.json.
+export function xyflowExampleBundles() {
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(BUNDLES_DIR, "manifest.json"), "utf8"));
+    const out = {};
+    for (const [id, e] of Object.entries(manifest.xyflowExamples || {})) {
+      const built = e.status === "built" && fs.existsSync(path.join(HARNESS_ROOT, e.bundle));
+      out[id] = built ? e : { ...e, status: e.status === "built" ? "unknown" : e.status, cause: e.cause || `${e.bundle} missing on disk` };
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
 
 // Status of the built bundles on disk. A missing bundle means the real
 // oracle cannot run: callers must report the gate `unknown`, never green.
@@ -136,12 +150,7 @@ export function bundleStatus(oraclesDir = resolveOraclesDir()) {
       library,
       bundle: `bundles/${file}`,
       built,
-      oracleVersion: versions[
-        library === "bpmn" ? "bpmn-js"
-        : library === "xyflow-react" ? "@xyflow/react"
-        : library === "xyflow-svelte" ? "@xyflow/svelte"
-        : "@joint/core"
-      ],
+      oracleVersion: versions[library === "bpmn" ? "bpmn-js" : "@joint/core"],
       cause: built ? null : `bundle bundles/${file} missing (run: node tools/re-harness/build-bundles.mjs)`,
     };
   }

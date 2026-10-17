@@ -2,83 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-clickdistance",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-clickdistance",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-clickdistance, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1a",
-        "type": "input",
-        "position": {
-          "x": 250,
-          "y": 5
-        },
-        "data": {
-          "label": "Node 1"
-        },
-        "className": "light"
-      },
-      {
-        "id": "2a",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 2"
-        },
-        "className": "light"
-      },
-      {
-        "id": "3a",
-        "type": "default",
-        "position": {
-          "x": 400,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 3"
-        },
-        "className": "light"
-      },
-      {
-        "id": "4a",
-        "type": "default",
-        "position": {
-          "x": 400,
-          "y": 200
-        },
-        "data": {
-          "label": "Node 4"
-        },
-        "className": "light"
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-2",
-        "source": "1a",
-        "target": "2a"
-      },
-      {
-        "id": "e1-3",
-        "source": "1a",
-        "target": "3a"
-      }
-    ],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/ClickDistance/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/ClickDistance/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

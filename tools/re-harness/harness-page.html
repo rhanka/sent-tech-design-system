@@ -4,8 +4,6 @@
 <meta charset="utf-8" />
 <title>RE harness — real oracle adapters</title>
 <link rel="stylesheet" href="/bundles/bpmn.css" />
-<link rel="stylesheet" href="/bundles/xyflow-react.css" />
-<link rel="stylesheet" href="/bundles/xyflow-svelte.css" />
 <style>
   html, body { margin: 0; padding: 0; background: #ffffff; }
   .oracle-host { width: 1024px; height: 600px; position: relative; }
@@ -14,8 +12,6 @@
 <body>
 <div id="oracle-root"></div>
 <script src="/bundles/bpmn.js"></script>
-<script src="/bundles/xyflow-react.js"></script>
-<script src="/bundles/xyflow-svelte.js"></script>
 <script src="/bundles/joint.js"></script>
 <script type="module">
   // Real-oracle adapters. Each function loads ONE fixture into the REAL
@@ -33,7 +29,6 @@
   // (which fails the scenario) or throws its cause; it never fabricates
   // output or journal events.
 
-  const round3 = (n) => Math.round(n * 1000) / 1000;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // Deterministic settle barrier: two animation frames (C9). The real
   // libraries flush DOM/store work on rAF; wall-clock sleeps prove nothing.
@@ -58,7 +53,7 @@
     const minY = Math.min(...all.map((b) => b.y));
     const maxX = Math.max(...all.map((b) => b.x + b.width));
     const maxY = Math.max(...all.map((b) => b.y + b.height));
-    return { x: round3(minX), y: round3(minY), width: round3(maxX - minX), height: round3(maxY - minY) };
+    return { x: (minX), y: (minY), width: (maxX - minX), height: (maxY - minY) };
   }
 
   function makeHost() {
@@ -114,7 +109,7 @@
       // Generic (AnyType) element of an unregistered namespace: no
       // descriptor properties, so its own enumerable keys are copied.
       for (const [k, value] of Object.entries(el)) {
-        if (k.startsWith("$")) continue;
+        if (k.startsWith("$") && k !== "$body") continue; // $body: text body of a generic element
         out[k] = Array.isArray(value) ? value.map((item) => (isModdle(item) ? projectModdle(item) : item)) : (isModdle(value) ? projectModdle(value) : value);
       }
     }
@@ -246,11 +241,11 @@
     const bounds = {};
     const waypoints = {};
     for (const e of registry.getAll()) {
-      if (e.waypoints) waypoints[e.id] = e.waypoints.map((p) => ({ x: round3(p.x), y: round3(p.y) }));
-      else if (typeof e.x === "number" && e.parent) bounds[e.id] = { x: round3(e.x), y: round3(e.y), width: round3(e.width), height: round3(e.height) };
+      if (e.waypoints) waypoints[e.id] = e.waypoints.map((p) => ({ x: (p.x), y: (p.y) }));
+      else if (typeof e.x === "number" && e.parent) bounds[e.id] = { x: (e.x), y: (e.y), width: (e.width), height: (e.height) };
     }
     const vb = canvas.viewbox();
-    const viewbox = { x: round3(vb.x), y: round3(vb.y), width: round3(vb.width), height: round3(vb.height) };
+    const viewbox = { x: (vb.x), y: (vb.y), width: (vb.width), height: (vb.height) };
     const saved = await modeler.saveXML({ format: false });
     // Model: the REAL moddle tree (getDefinitions), projected mechanically
     // by the bpmn-moddle descriptors. The XML stays an input and a boundary
@@ -265,198 +260,235 @@
       events,
       geometry: { bounds, waypoints, viewbox },
       pixels: null,
-      viewport: { x: viewbox.x, y: viewbox.y, zoom: round3(vb.scale || 1) },
+      viewport: { x: viewbox.x, y: viewbox.y, zoom: (vb.scale || 1) },
       warnings,
       skippedOps,
     };
   }
 
   // -------------------------------------------------------------- xyflow
-  // One adapter for both real flavours: the bundle host mounts the flow
-  // from the fixture input verbatim (types, parentId/extent, handles, flow
-  // options); this adapter waits for the library's own DOM measurement,
-  // plays the fixture ops, and reads back the library's own store state
-  // (nodes/edges/viewport, compared verbatim after key-sorted
-  // canonicalisation — no field renamed or reinterpreted), the DOM bounds
-  // and the rendered SVG edge paths.
+  // Each xyflow fixture is a pinned example, compiled with its own code
+  // into bundles/xyflow-examples/<id>.js (build-bundles.mjs) and mounted
+  // here through the example app's own entry (StrictMode / layout). The
+  // probe registered by the bundle exposes the library store of every
+  // mounted flow; the model is that store state, serialised mechanically
+  // (window.__xyflowSerializeNative: every own property and accessor,
+  // functions/DOM/cycles dropped, no field list, no renaming).
   //
-  // Ops: `move` is a REAL pointer drag (pointer/mouse events dispatched at
-  // the client point computed from the store position and viewport, on
-  // whatever element the browser hit-tests there — no library selector),
-  // so the library's own XYDrag produces the changes. `connect`,
-  // `setLabel`, `create`, `remove` write the controlled store; they
-  // produce no callback, and the adapter journals nothing for them (no
-  // fabricated event). `setViewport` calls the library viewport API.
-  //
-  // Events: every journal entry comes from a library callback (React:
-  // onNodesChange/onEdgesChange/onConnect/onInit; Svelte: store
-  // observations and oninit/onconnect). Lifecycle callbacks (`init`) are
-  // kept in their own channel appended after the change stream: their
-  // interleaving with ResizeObserver-driven `dimensions` changes is
-  // scheduler-dependent (measured: 19 of 66 React examples differ between
-  // two identical mounts), while the order inside each channel is the
-  // real emission order (never sorted).
-  const isRenderedNode = (n) => !n.hidden;
-  // Absolute top-left of a node from the store: its position is relative
-  // to the parent's top-left, and `origin` ([0..1, 0..1], default [0, 0])
-  // says which point of the node the position designates.
-  function absolutePosition(byId, n, depth = 0) {
-    const w = (n.measured && n.measured.width) || n.width || 0;
-    const h = (n.measured && n.measured.height) || n.height || 0;
-    const origin = Array.isArray(n.origin) ? n.origin : [0, 0];
-    let x = n.position.x - origin[0] * w;
-    let y = n.position.y - origin[1] * h;
-    const parent = n.parentId ? byId.get(n.parentId) : null;
-    if (parent && depth < 32) {
-      const p = absolutePosition(byId, parent, depth + 1);
-      x += p.x; y += p.y;
-    }
-    return { x, y };
-  }
-  async function pointerDrag(container, handle, nodeId, toX, toY) {
-    const nodes = handle.getNodes();
-    const byId = new Map(nodes.map((n) => [n.id, n]));
-    const n = byId.get(nodeId);
-    if (!n) return { ok: false, why: "node not found" };
-    const abs = absolutePosition(byId, n);
-    const w = (n.measured && n.measured.width) || n.width || 0;
-    const h = (n.measured && n.measured.height) || n.height || 0;
-    const vp = handle.getViewport();
-    const rect = container.getBoundingClientRect();
-    const zoom = vp.zoom || 1;
-    const sx = rect.x + (vp.x || 0) + (abs.x + w / 2) * zoom;
-    const sy = rect.y + (vp.y || 0) + (abs.y + h / 2) * zoom;
-    const ex = sx + ((toX ?? n.position.x) - n.position.x) * zoom;
-    const ey = sy + ((toY ?? n.position.y) - n.position.y) * zoom;
-    const target = document.elementFromPoint(sx, sy);
-    if (!target || !container.contains(target)) return { ok: false, why: "no rendered element at the node centre" };
-    const hitNode = target.closest("[data-id]");
-    if (!hitNode || hitNode.getAttribute("data-id") !== nodeId) {
-      return { ok: false, why: `hit-test at the node centre lands on ${hitNode ? hitNode.getAttribute("data-id") : "the pane"}, not on ${nodeId}` };
-    }
-    const init = (x, y, buttons) => ({ bubbles: true, cancelable: true, composed: true, view: window, clientX: x, clientY: y, screenX: x, screenY: y, button: 0, buttons, pointerId: 1, pointerType: "mouse", isPrimary: true });
-    target.dispatchEvent(new PointerEvent("pointerdown", init(sx, sy, 1)));
-    target.dispatchEvent(new MouseEvent("mousedown", init(sx, sy, 1)));
-    await nextFrames();
-    const STEPS = 4;
-    for (let i = 1; i <= STEPS; i += 1) {
-      const x = sx + ((ex - sx) * i) / STEPS;
-      const y = sy + ((ey - sy) * i) / STEPS;
-      target.dispatchEvent(new PointerEvent("pointermove", init(x, y, 1)));
-      target.dispatchEvent(new MouseEvent("mousemove", init(x, y, 1)));
-      await nextFrames();
-    }
-    target.dispatchEvent(new PointerEvent("pointerup", init(ex, ey, 0)));
-    target.dispatchEvent(new MouseEvent("mouseup", init(ex, ey, 0)));
-    await nextFrames();
-    return { ok: true, hit: nodeId, hitClass: String(target.getAttribute("class") || target.tagName) };
+  // Ops are planned here from the store (xyPlan returns client points)
+  // and executed by the Node runner through Playwright's mouse, i.e. the
+  // browser's real input pipeline: a node drag, a handle-to-handle
+  // connection, a wheel zoom, preceded by a click on the empty pane. Targets are chosen mechanically in store
+  // order and must hit-test to themselves; an op with no possible target
+  // is reported as not applicable (opsLog), never faked.
+  const xy = { mounted: null };
+
+  function loadAsset(tag, attrs) {
+    return new Promise((resolve, reject) => {
+      const el = document.createElement(tag);
+      Object.assign(el, attrs);
+      el.onload = () => resolve();
+      el.onerror = () => reject(new Error(`failed to load ${attrs.src || attrs.href}`));
+      document.head.appendChild(el);
+    });
   }
 
-  async function runXyflow(flavour, fixture, ops) {
-    const oracle = flavour === "svelte" ? window.__oracleXyflowSvelte : window.__oracleXyflowReact;
-    if (!oracle) throw new Error(`xyflow ${flavour} bundle not loaded (bundles/xyflow-${flavour}.js missing)`);
+  async function xyLoad(bundle, css) {
+    if (css) await loadAsset("link", { rel: "stylesheet", href: `/${css}` });
+    await loadAsset("script", { src: `/${bundle}` });
+    if (!window.__oracleXyflowExample) throw new Error(`${bundle} did not register an example`);
+    return window.__oracleXyflowExample.id;
+  }
+
+  function activeStores() {
+    return ((window.__xyHarness && window.__xyHarness.stores) || []).filter((s) => !s.removed);
+  }
+
+  function flowView(entry) {
+    const state = entry.getState();
+    const t = entry.kind === "react" ? { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] } : { ...state.viewport };
+    return { state, t, dom: state.domNode };
+  }
+
+  function signature() {
+    return JSON.stringify(activeStores().map((entry) => {
+      const { state, t } = flowView(entry);
+      return [t, (state.nodes || []).map((n) => {
+        const internal = state.nodeLookup && state.nodeLookup.get(n.id);
+        return [n.id, n.position, internal && internal.measured, internal && internal.internals && internal.internals.positionAbsolute];
+      }), (state.edges || []).map((e) => e.id)];
+    }));
+  }
+
+  // Settle barrier: the store signature (viewport, node positions and
+  // measured sizes, edge ids) identical across three consecutive
+  // double-frames, after at least one store registered.
+  async function xySettle(afterKind) {
+    // d3-zoom ends a wheel gesture on its own 150 ms idle timer; let it fire.
+    if (afterKind === "wheel") await sleep(200);
+    let last = ""; let prev = ""; let stable = 0;
+    for (let i = 0; i < 200 && stable < 3; i += 1) {
+      await nextFrames();
+      const sig = signature();
+      if (sig === last && activeStores().length) stable += 1; else stable = 0;
+      prev = last; last = sig;
+    }
+    if (stable < 3) {
+      let at = 0; while (at < last.length && last[at] === prev[at]) at += 1;
+      throw new Error(`xyflow store did not settle after 200 double-frames (flows=${activeStores().length}; still changing near: ${last.slice(Math.max(0, at - 60), at + 60)})`);
+    }
+  }
+
+  async function xyMount() {
+    if (!window.__oracleXyflowExample) throw new Error("no xyflow example bundle loaded");
+    window.__xyHarness = { stores: [], journal: [], flowCounter: 0 };
     const container = makeHost();
-    const journal = [];
-    const skippedOps = [];
-    const warnings = [];
-    const mounted = oracle.mountFlow(container, fixture, journal);
+    const mounted = window.__oracleXyflowExample.mount(container);
     keepHost(container, () => mounted.unmount());
-    const handle = await waitFor(() => mounted.handle, { label: "xyflow handle" });
-    // Wait until every rendered (non-hidden) node carries a real measured
-    // size from the DOM.
-    const expected = (fixture.input.nodes || []).length;
-    await waitFor(() => {
-      const nodes = handle.getNodes();
-      return nodes.length >= expected && nodes.filter(isRenderedNode).every((n) => (n.measured && n.measured.width > 0) || (n.width && n.width > 0));
-    }, { label: "xyflow node measurement" });
-    // Settle barrier: the viewport (fitView runs once nodes are measured)
-    // must be identical across two consecutive double-frames.
-    let lastVp = "";
-    for (let i = 0; i < 40; i += 1) {
-      await nextFrames();
-      const vpNow = JSON.stringify(handle.getViewport());
-      if (vpNow === lastVp) break;
-      lastVp = vpNow;
+    xy.mounted = { container, opsLog: [] };
+    try { await document.fonts.ready; } catch (err) { /* not gated */ }
+    for (let i = 0; i < 60 && !activeStores().length; i += 1) await nextFrames();
+    if (!activeStores().length) throw new Error("example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare");
+    await xySettle("mount");
+    return { flows: activeStores().length };
+  }
+
+  function hitNodeId(x, y, dom) {
+    const el = document.elementFromPoint(x, y);
+    if (!el || !dom.contains(el)) return null;
+    const node = el.closest("[data-id]");
+    return node ? node.getAttribute("data-id") : null;
+  }
+
+  function nodeCentre(view, internal) {
+    const rect = view.dom.getBoundingClientRect();
+    const abs = internal.internals.positionAbsolute;
+    const w = (internal.measured && internal.measured.width) || 0;
+    const h = (internal.measured && internal.measured.height) || 0;
+    return { x: rect.x + view.t.x + (abs.x + w / 2) * view.t.zoom, y: rect.y + view.t.y + (abs.y + h / 2) * view.t.zoom };
+  }
+
+  function handleCentre(view, internal, hb) {
+    const rect = view.dom.getBoundingClientRect();
+    const abs = internal.internals.positionAbsolute;
+    return { x: rect.x + view.t.x + (abs.x + hb.x + hb.width / 2) * view.t.zoom, y: rect.y + view.t.y + (abs.y + hb.y + hb.height / 2) * view.t.zoom };
+  }
+
+  function hitHandle(p, nodeId, dom) {
+    const el = document.elementFromPoint(p.x, p.y);
+    if (!el || !dom.contains(el)) return false;
+    const handle = el.closest(".react-flow__handle, .svelte-flow__handle");
+    return Boolean(handle && handle.getAttribute("data-nodeid") === nodeId);
+  }
+
+  function xyPlan(step) {
+    const flows = activeStores();
+    const log = (entry) => { xy.mounted.opsLog.push(entry); return entry; };
+    if (!flows.length) return log({ op: step.op, kind: "none", applied: false, why: "no flow mounted" });
+    const view = flowView(flows[0]);
+    const nodes = (view.state.nodes || []).filter((n) => !n.hidden);
+    if (step.op === "move") {
+      for (const n of nodes) {
+        const internal = view.state.nodeLookup.get(n.id);
+        if (!internal || !internal.measured || !internal.measured.width) continue;
+        const from = nodeCentre(view, internal);
+        if (hitNodeId(from.x, from.y, view.dom) !== n.id) continue;
+        return log({ op: "move", kind: "drag", applied: true, target: n.id, from, to: { x: from.x + (step.dx ?? 40), y: from.y + (step.dy ?? 30) } });
+      }
+      return log({ op: "move", kind: "none", applied: false, why: "no visible node hit-tests to itself at its centre" });
     }
-    const skip = (step, why) => {
-      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
-    };
-    for (const step of (ops && ops.steps) || []) {
-      if (step.op === "move") {
-        const before = handle.getNodes().find((n) => n.id === step.elementId);
-        if (!before) { skip(step, "node not found"); continue; }
-        const r = await pointerDrag(container, handle, step.elementId, step.x, step.y);
-        if (!r.ok) { skip(step, r.why); continue; }
-        const after = handle.getNodes().find((n) => n.id === step.elementId);
-        if (after && after.position.x === before.position.x && after.position.y === before.position.y) {
-          warnings.push(`move ${step.elementId}: the library did not move the node under a real drag (hit element: ${r.hit || "none"} ${r.hitClass})`);
+    if (step.op === "connect") {
+      const edges = view.state.edges || [];
+      for (const a of nodes) {
+        const ia = view.state.nodeLookup.get(a.id);
+        const sources = (ia && ia.internals.handleBounds && ia.internals.handleBounds.source) || [];
+        for (const sh of sources) {
+          const from = handleCentre(view, ia, sh);
+          if (!hitHandle(from, a.id, view.dom)) continue;
+          for (const b of nodes) {
+            if (b.id === a.id) continue;
+            if (edges.some((e) => (e.source === a.id && e.target === b.id) || (e.source === b.id && e.target === a.id))) continue;
+            const ib = view.state.nodeLookup.get(b.id);
+            const targets = (ib && ib.internals.handleBounds && ib.internals.handleBounds.target) || [];
+            for (const th of targets) {
+              const to = handleCentre(view, ib, th);
+              if (!hitHandle(to, b.id, view.dom)) continue;
+              return log({ op: "connect", kind: "drag", applied: true, target: `${a.id}:${sh.id ?? ""}->${b.id}:${th.id ?? ""}`, from, to });
+            }
+          }
         }
-      } else if (step.op === "create") {
-        const nodes = handle.getNodes();
-        handle.setNodes([...nodes, { id: step.elementId, type: step.type || "default", position: { x: step.x ?? 0, y: step.y ?? 0 }, data: { label: step.label || "" } }]);
-        await waitFor(() => handle.getNodes().filter(isRenderedNode).every((n) => (n.measured && n.measured.width > 0) || n.width), { label: "xyflow created node measurement" });
-      } else if (step.op === "connect") {
-        const nodes = handle.getNodes();
-        if (!nodes.some((n) => n.id === step.sourceId) || !nodes.some((n) => n.id === step.targetId)) { skip(step, "source or target node not found"); continue; }
-        const edge = { id: step.elementId || `e-${step.sourceId}-${step.targetId}`, source: step.sourceId, target: step.targetId };
-        if (step.sourceHandle) edge.sourceHandle = step.sourceHandle;
-        if (step.targetHandle) edge.targetHandle = step.targetHandle;
-        handle.setEdges([...handle.getEdges(), edge]);
-      } else if (step.op === "remove") {
-        handle.setNodes(handle.getNodes().filter((n) => n.id !== step.elementId));
-        handle.setEdges(handle.getEdges().filter((e) => e.id !== step.elementId && e.source !== step.elementId && e.target !== step.elementId));
-      } else if (step.op === "setLabel") {
-        const nodes = handle.getNodes();
-        if (!nodes.some((n) => n.id === step.elementId)) { skip(step, "node not found"); continue; }
-        handle.setNodes(nodes.map((n) => (n.id === step.elementId ? { ...n, data: { ...(n.data || {}), label: step.label || "" } } : n)));
-      } else if (step.op === "setViewport") {
-        if (!handle.setViewport) { skip(step, "no setViewport on this flavour handle"); continue; }
-        handle.setViewport({ x: step.x ?? 0, y: step.y ?? 0, zoom: step.zoom ?? 1 });
-      } else {
-        skip(step, "no native equivalent in the xyflow store for this harness op");
       }
-      await nextFrames();
+      return log({ op: "connect", kind: "none", applied: false, why: "no hit-testable source handle / target handle pair between unconnected nodes" });
     }
-    await nextFrames();
-    const nodes = JSON.parse(JSON.stringify(handle.getNodes()));
-    const edges = JSON.parse(JSON.stringify(handle.getEdges()));
-    const viewportRaw = handle.getViewport();
-    const viewport = { x: viewportRaw.x, y: viewportRaw.y, zoom: viewportRaw.zoom };
-    const byId = new Map(nodes.map((n) => [n.id, n]));
-    const containerRect = container.getBoundingClientRect();
-    const bounds = {};
-    const domBounds = {};
-    for (const n of nodes) {
-      const abs = absolutePosition(byId, n);
-      bounds[n.id] = {
-        x: round3(abs.x), y: round3(abs.y),
-        width: round3((n.measured && n.measured.width) || n.width || 0),
-        height: round3((n.measured && n.measured.height) || n.height || 0),
-      };
-      const domNode = container.querySelector(`[data-id="${CSS.escape(n.id)}"]`);
-      if (domNode) {
-        const r = domNode.getBoundingClientRect();
-        domBounds[n.id] = { x: round3(r.x - containerRect.x), y: round3(r.y - containerRect.y), width: round3(r.width), height: round3(r.height) };
+    if (step.op === "paneClick") {
+      // First point of a fixed 24 px grid (row-major from the top-left of
+      // the flow) whose hit-test is the library pane itself.
+      const rect = view.dom.getBoundingClientRect();
+      for (let y = rect.y + 24; y < rect.y + rect.height - 8; y += 24) {
+        for (let x = rect.x + 24; x < rect.x + rect.width - 8; x += 24) {
+          const el = document.elementFromPoint(x, y);
+          if (el && view.dom.contains(el) && el.matches(".react-flow__pane, .svelte-flow__pane")) {
+            return log({ op: "paneClick", kind: "click", applied: true, target: "pane", at: { x, y } });
+          }
+        }
       }
+      return log({ op: "paneClick", kind: "none", applied: false, why: "no point of the flow hit-tests to the pane" });
     }
-    // Rendered edge paths: the SVG `d` the library actually drew.
-    const edgePaths = {};
-    for (const e of edges) {
-      const holder = container.querySelector(`[data-testid="rf__edge-${CSS.escape(e.id)}"], .react-flow__edge[data-id="${CSS.escape(e.id)}"], .svelte-flow__edge[data-id="${CSS.escape(e.id)}"]`);
-      const pathEl = holder ? holder.querySelector("path") : null;
-      const d = pathEl && pathEl.getAttribute("d");
-      if (d) edgePaths[e.id] = d;
+    if (step.op === "zoom") {
+      const rect = view.dom.getBoundingClientRect();
+      return log({ op: "zoom", kind: "wheel", applied: true, at: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }, deltaY: step.deltaY ?? -240 });
     }
-    const lifecycle = journal.filter((e) => e.name === "init");
-    const changes = journal.filter((e) => e.name !== "init");
+    return log({ op: step.op, kind: "none", applied: false, why: "op not part of the xyflow pointer driver" });
+  }
+
+  const isLifecycle = (e) => e.name === "onInit" || e.name === "oninit";
+  const isStoreObservation = (e) => e.name.startsWith("store.");
+
+  function xyExtract() {
+    const serialize = window.__xyflowSerializeNative;
+    if (typeof serialize !== "function") throw new Error("xyflow probe serializer missing from the example bundle");
+    const flows = activeStores();
+    const bounds = {}; const domBounds = {}; const edgePaths = {};
+    flows.forEach((entry, f) => {
+      const view = flowView(entry);
+      const rect = view.dom.getBoundingClientRect();
+      for (const n of view.state.nodes || []) {
+        const internal = view.state.nodeLookup.get(n.id);
+        if (internal && internal.internals && internal.internals.positionAbsolute) {
+          const abs = internal.internals.positionAbsolute;
+          bounds[`${f}:${n.id}`] = { x: abs.x, y: abs.y, width: (internal.measured && internal.measured.width) || 0, height: (internal.measured && internal.measured.height) || 0 };
+        }
+        const el = view.dom.querySelector(`.react-flow__node[data-id="${CSS.escape(n.id)}"], .svelte-flow__node[data-id="${CSS.escape(n.id)}"]`);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          domBounds[`${f}:${n.id}`] = { x: r.x - rect.x, y: r.y - rect.y, width: r.width, height: r.height };
+        }
+      }
+      for (const e of view.state.edges || []) {
+        const holder = view.dom.querySelector(`.react-flow__edge[data-id="${CSS.escape(e.id)}"], .svelte-flow__edge[data-id="${CSS.escape(e.id)}"]`);
+        if (!holder) continue;
+        const p = holder.querySelector("path.react-flow__edge-path, path.svelte-flow__edge-path") || holder.querySelector("path");
+        if (p && p.getAttribute("d")) edgePaths[`${f}:${e.id}`] = p.getAttribute("d");
+      }
+    });
     return {
-      model: { nodes, edges, viewport },
-      events: [...changes, ...lifecycle],
+      model: { flows: flows.map((entry) => serialize(entry.getState())) },
+      // Three channels, each in its real emission order, concatenated:
+      // callbacks, Svelte store observations (store.nodes/store.edges, run
+      // by deferred $effects), lifecycle callbacks (onInit/oninit). Their
+      // interleaving ACROSS channels is scheduler-dependent (measured: React
+      // onInit vs ResizeObserver measurements; Svelte $effect flush vs
+      // d3-zoom end timer), so it is not compared.
+      events: [
+        ...window.__xyHarness.journal.filter((e) => !isLifecycle(e) && !isStoreObservation(e)),
+        ...window.__xyHarness.journal.filter(isStoreObservation),
+        ...window.__xyHarness.journal.filter(isLifecycle),
+      ],
       geometry: { bounds, waypoints: {}, viewbox: unionViewbox(bounds), domBounds, edgePaths },
       pixels: null,
-      viewport,
-      warnings,
-      skippedOps,
+      opsLog: xy.mounted ? xy.mounted.opsLog : [],
+      warnings: (xy.mounted ? xy.mounted.opsLog : []).filter((o) => !o.applied).map((o) => `${o.op}: not applicable (${o.why})`),
+      skippedOps: [],
     };
   }
 
@@ -490,15 +522,16 @@
     graph.on("all", (name, cell) => {
       const id = cell && (cell.id || (typeof cell.get === "function" ? cell.get("id") : ""));
       const payload = { elementId: id ? String(id) : "", effect: JOINT_EFFECTS[String(name)] || "other" };
-      // Keep the significant changed values (C6), at the journal precision.
+      // Keep the significant changed values (C6), unrounded.
       if (cell && typeof cell.position === "function" && String(name) === "change:position") {
-        const p = cell.position(); payload.x = round3(p.x); payload.y = round3(p.y);
+        const p = cell.position(); payload.x = (p.x); payload.y = (p.y);
       }
       if (cell && typeof cell.size === "function" && String(name) === "change:size") {
-        const s = cell.size(); payload.width = round3(s.width); payload.height = round3(s.height);
+        const s = cell.size(); payload.width = (s.width); payload.height = (s.height);
       }
       if (cell && typeof cell.attr === "function" && String(name) === "change:attrs") {
-        payload.label = String(cell.attr("label/text") || "");
+        // The full new attrs object of the cell (native JointJS value).
+        payload.attrs = JSON.parse(JSON.stringify(cell.get("attrs") || {}));
       }
       if (cell && typeof cell.get === "function" && (String(name) === "change:source" || String(name) === "change:target")) {
         const end = cell.get(String(name) === "change:source" ? "source" : "target");
@@ -582,19 +615,19 @@
           const sp = cell.getSourcePoint();
           const tp = cell.getTargetPoint();
           if (view && Array.isArray(view.route)) {
-            if (view.sourcePoint) pts.push({ x: round3(view.sourcePoint.x), y: round3(view.sourcePoint.y) });
-            for (const v of view.route) pts.push({ x: round3(v.x), y: round3(v.y) });
-            if (view.targetPoint) pts.push({ x: round3(view.targetPoint.x), y: round3(view.targetPoint.y) });
+            if (view.sourcePoint) pts.push({ x: (view.sourcePoint.x), y: (view.sourcePoint.y) });
+            for (const v of view.route) pts.push({ x: (v.x), y: (v.y) });
+            if (view.targetPoint) pts.push({ x: (view.targetPoint.x), y: (view.targetPoint.y) });
           } else {
-            if (sp) pts.push({ x: round3(sp.x), y: round3(sp.y) });
-            if (tp) pts.push({ x: round3(tp.x), y: round3(tp.y) });
+            if (sp) pts.push({ x: (sp.x), y: (sp.y) });
+            if (tp) pts.push({ x: (tp.x), y: (tp.y) });
           }
         } catch (err) { /* link without both ends */ }
         waypoints[cell.id] = pts;
       } else {
         const view = paper.findViewByModel(cell);
         const b = view && typeof view.getBBox === "function" ? view.getBBox() : cell.getBBox();
-        bounds[cell.id] = { x: round3(b.x), y: round3(b.y), width: round3(b.width), height: round3(b.height) };
+        bounds[cell.id] = { x: (b.x), y: (b.y), width: (b.width), height: (b.height) };
       }
     }
     const viewbox = unionViewbox(bounds);
@@ -604,7 +637,7 @@
       events,
       geometry: { bounds, waypoints, viewbox },
       pixels: null,
-      viewport: { x: 0, y: 0, zoom: round3(scale.sx || 1) },
+      viewport: { x: 0, y: 0, zoom: (scale.sx || 1) },
       warnings: [],
       skippedOps,
     };
@@ -612,14 +645,15 @@
 
   window.__oracleStatus = {
     bpmn: typeof window.__oracleBpmn !== "undefined",
-    xyflowReact: typeof window.__oracleXyflowReact !== "undefined",
-    xyflowSvelte: typeof window.__oracleXyflowSvelte !== "undefined",
     jointjs: typeof window.__oracleJoint !== "undefined",
   };
   window.__reHarness = {
     runBpmn,
-    runXyflowReact: (fixture, ops) => runXyflow("react", fixture, ops),
-    runXyflowSvelte: (fixture, ops) => runXyflow("svelte", fixture, ops),
+    xyLoad,
+    xyMount,
+    xyPlan,
+    xySettle,
+    xyExtract,
     runJoint,
   };
   window.__harnessReady = (async () => {

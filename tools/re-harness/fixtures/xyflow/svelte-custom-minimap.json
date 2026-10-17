@@ -2,23 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-custom-minimap",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-custom-minimap",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-custom-minimap, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/custom-minimap/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/custom-minimap/+page.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

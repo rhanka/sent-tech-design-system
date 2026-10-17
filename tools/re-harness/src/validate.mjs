@@ -1,4 +1,4 @@
-// Minimal JSON-Schema subset validator (type, required, enum, const, items,
+// Minimal JSON-Schema subset validator (type incl. union arrays and null, required, enum, const, items,
 // properties, additionalProperties:false, minLength, minimum). Zero dependencies:
 // the harness must run offline against the repository lockfile only.
 export function validateAgainstSchema(value, schema, path = "$") {
@@ -10,17 +10,18 @@ export function validateAgainstSchema(value, schema, path = "$") {
   if (schema.enum && !schema.enum.includes(value)) {
     errors.push(`${path}: ${JSON.stringify(value)} not in enum ${JSON.stringify(schema.enum)}`);
   }
-  const type = schema.type;
-  if (type) {
-    const ok =
-      type === "object" ? value !== null && typeof value === "object" && !Array.isArray(value)
+  const types = schema.type === undefined ? [] : Array.isArray(schema.type) ? schema.type : [schema.type];
+  if (types.length) {
+    const ok = types.some((type) =>
+      type === "null" ? value === null
+      : type === "object" ? value !== null && typeof value === "object" && !Array.isArray(value)
       : type === "array" ? Array.isArray(value)
       : type === "string" ? typeof value === "string"
       : type === "number" ? typeof value === "number" && Number.isFinite(value)
       : type === "integer" ? Number.isInteger(value)
       : type === "boolean" ? typeof value === "boolean"
-      : true;
-    if (!ok) { errors.push(`${path}: expected type ${type}`); return errors; }
+      : false);
+    if (!ok) { errors.push(`${path}: expected type ${types.join("|")}`); return errors; }
   }
   if (typeof value === "string" && schema.minLength && value.length < schema.minLength) {
     errors.push(`${path}: shorter than minLength ${schema.minLength}`);

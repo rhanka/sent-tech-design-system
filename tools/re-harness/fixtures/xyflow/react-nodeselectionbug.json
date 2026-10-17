@@ -2,38 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-nodeselectionbug",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-nodeselectionbug",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-nodeselectionbug, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "0",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {
-          "label": "Rectangle Select Me First"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "react",
+    "example": "react/src/examples/NodeSelectionBug/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/NodeSelectionBug/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

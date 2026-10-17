@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-custom-connection-line-selfparity","library":"xyflow","fixtures":["xyflow/svelte-custom-connection-line.json"],"exercises":["examples.svelte-custom-connection-line"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-custom-connection-line-selfparity","library":"xyflow","fixtures":["xyflow/svelte-custom-connection-line.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-custom-connection-line"],"comparators":["model","events","geometry","pixels"]}

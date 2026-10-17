@@ -2,50 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-touchdevice",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-touchdevice",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-touchdevice, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 1"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 300,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 2"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/TouchDevice/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/TouchDevice/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

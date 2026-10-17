@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-zindexmode-selfparity","library":"xyflow","fixtures":["xyflow/react-zindexmode.json"],"ops":"xyflow/react-zindexmode.ops.json","exercises":["examples.react-zindexmode"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-zindexmode-selfparity","library":"xyflow","fixtures":["xyflow/react-zindexmode.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-zindexmode"],"comparators":["model","events","geometry","pixels"]}

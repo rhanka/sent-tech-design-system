@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-layouting-selfparity","library":"xyflow","fixtures":["xyflow/react-layouting.json"],"ops":"xyflow/react-layouting.ops.json","exercises":["examples.react-layouting"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-layouting-selfparity","library":"xyflow","fixtures":["xyflow/react-layouting.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-layouting"],"comparators":["model","events","geometry","pixels"]}

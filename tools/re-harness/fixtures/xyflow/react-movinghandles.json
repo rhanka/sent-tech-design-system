@@ -2,39 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-movinghandles",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-movinghandles",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-movinghandles, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "input",
-        "type": "input",
-        "position": {
-          "x": -300,
-          "y": 0
-        },
-        "data": {
-          "label": "input"
-        },
-        "sourcePosition": "right"
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "react",
+    "example": "react/src/examples/MovingHandles/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/MovingHandles/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

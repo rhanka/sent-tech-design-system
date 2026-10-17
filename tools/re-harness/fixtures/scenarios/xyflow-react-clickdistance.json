@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-clickdistance-selfparity","library":"xyflow","fixtures":["xyflow/react-clickdistance.json"],"ops":"xyflow/react-clickdistance.ops.json","exercises":["examples.react-clickdistance"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-clickdistance-selfparity","library":"xyflow","fixtures":["xyflow/react-clickdistance.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-clickdistance"],"comparators":["model","events","geometry","pixels"]}

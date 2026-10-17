@@ -2,27 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-edgetoolbar",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-edgetoolbar",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-edgetoolbar, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/EdgeToolbar/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "unknown",
-    "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/EdgeToolbar/CustomEdge.tsx",
-    "customTypes": [
-      "custom"
-    ]
+  "runnable": {
+    "status": "runnable"
   }
 }

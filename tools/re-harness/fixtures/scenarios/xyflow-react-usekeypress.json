@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-usekeypress-selfparity","library":"xyflow","fixtures":["xyflow/react-usekeypress.json"],"exercises":["examples.react-usekeypress"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-usekeypress-selfparity","library":"xyflow","fixtures":["xyflow/react-usekeypress.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-usekeypress"],"comparators":["model","events","geometry","pixels"]}

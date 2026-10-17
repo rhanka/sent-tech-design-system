@@ -64,9 +64,13 @@ export const DETERMINISM_INIT_REAL = `
   let seed = 42;
   Math.random = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
   try { Object.defineProperty(window, 'matchMedia', { value: (q) => ({ matches: q.includes('prefers-reduced-motion'), media: q, addEventListener(){}, removeEventListener(){}, addListener(){}, removeListener(){} }) }); } catch (e) {}
-  const style = document.createElement('style');
-  style.textContent = '*,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important;}';
-  (document.head || document.documentElement).appendChild(style);
+  const addStyle = () => {
+    const style = document.createElement('style');
+    style.textContent = '*,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important;}';
+    (document.head || document.documentElement).appendChild(style);
+  };
+  // Init scripts can run before the root element exists: defer until it does.
+  if (document.documentElement) addStyle(); else document.addEventListener('readystatechange', addStyle, { once: true });
 })();
 `;
 

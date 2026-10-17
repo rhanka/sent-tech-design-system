@@ -2,105 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-switch",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-switch",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-switch, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "inputb",
-        "type": "input",
-        "position": {
-          "x": 300,
-          "y": 5
-        },
-        "data": {
-          "label": "Input"
-        },
-        "className": "light"
-      },
-      {
-        "id": "1b",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 1"
-        },
-        "className": "light"
-      },
-      {
-        "id": "2b",
-        "type": "default",
-        "position": {
-          "x": 200,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 2"
-        },
-        "className": "light"
-      },
-      {
-        "id": "3b",
-        "type": "default",
-        "position": {
-          "x": 400,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 3"
-        },
-        "className": "light"
-      },
-      {
-        "id": "4b",
-        "type": "default",
-        "position": {
-          "x": 600,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 4"
-        },
-        "className": "light"
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1b",
-        "source": "inputb",
-        "target": "1b"
-      },
-      {
-        "id": "e2b",
-        "source": "inputb",
-        "target": "2b"
-      },
-      {
-        "id": "e3b",
-        "source": "inputb",
-        "target": "3b"
-      },
-      {
-        "id": "e4b",
-        "source": "inputb",
-        "target": "4b"
-      }
-    ],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "react",
+    "example": "react/src/examples/Switch/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Switch/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

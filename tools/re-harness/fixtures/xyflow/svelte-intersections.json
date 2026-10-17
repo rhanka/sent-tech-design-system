@@ -2,72 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-intersections",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-intersections",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-intersections, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {
-          "label": "Node 1"
-        }
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 150
-        },
-        "data": {
-          "label": "Node 2"
-        },
-        "parentId": "1"
-      },
-      {
-        "id": "3",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {
-          "label": "Node 3"
-        }
-      },
-      {
-        "id": "4",
-        "type": "default",
-        "position": {
-          "x": 350,
-          "y": 150
-        },
-        "data": {
-          "label": "Node"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/intersections/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/intersections/nodes-and-edges.ts"
+  "runnable": {
+    "status": "runnable"
   }
 }

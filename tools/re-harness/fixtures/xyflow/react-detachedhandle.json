@@ -2,60 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-react-detachedhandle",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.react-detachedhandle",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-detachedhandle, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 5
-        },
-        "data": {
-          "label": "Node 1"
-        }
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 50,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 2"
-        }
-      },
-      {
-        "id": "3",
-        "type": "default",
-        "position": {
-          "x": 450,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 3"
-        }
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "react",
+    "example": "react/src/examples/DetachedHandle/index.tsx"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DetachedHandle/index.tsx"
+  "runnable": {
+    "status": "runnable"
   }
 }

@@ -2,75 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-validation",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-validation",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-validation, mounted with its own code",
   "input": {
-    "nodes": [
-      {
-        "id": "0",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 150
-        },
-        "data": {
-          "label": "only connectable with B"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "A",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {
-          "label": "A"
-        }
-      },
-      {
-        "id": "B",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 150
-        },
-        "data": {
-          "label": "B"
-        }
-      },
-      {
-        "id": "C",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 300
-        },
-        "data": {
-          "label": "C"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      }
-    ],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    },
-    "flowOptions": {
-      "fitView": true
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/validation/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/validation/+page.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }

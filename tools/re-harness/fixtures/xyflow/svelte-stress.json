@@ -2,24 +2,17 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-stress",
   "library": "xyflow",
-  "kind": "xyflow-flow",
-  "title": "xyflow example fixture for examples.svelte-stress",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-stress, mounted with its own code",
   "input": {
-    "nodes": [],
-    "edges": [],
-    "viewport": {
-      "x": 0,
-      "y": 0,
-      "zoom": 1
-    }
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/stress/+page.svelte"
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
-  "extraction": {
-    "status": "unknown",
-    "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
-    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/stress/+page.svelte"
+  "runnable": {
+    "status": "runnable"
   }
 }
