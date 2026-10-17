@@ -72,6 +72,8 @@ import {
 
 /** How many times L-R10 may lengthen segments before reporting a label it could not place. */
 const LABEL_ROUNDS = 12;
+/** The most one round may lengthen a gap for one label, in label lengths along the flow. */
+const MAX_LENGTHEN_LABELS = 4;
 
 interface Drawing {
   readonly placement: Placement;
@@ -167,30 +169,68 @@ function draw(
       if (!short && !hitsShape && !hitsLabel) continue;
 
       const mainAligned = leftToRight === horizontal;
-      const mainCoord = leftToRight ? label.centre.x : label.centre.y;
-      const level = [...placement.levels]
-        .filter(
-          (candidate) =>
-            label.centre.x >= candidate.region.x &&
-            label.centre.x <= candidate.region.x + candidate.region.width &&
-            label.centre.y >= candidate.region.y &&
-            label.centre.y <= candidate.region.y + candidate.region.height,
-        )
-        .sort((left, right) => right.depth - left.depth)[0];
-      const gap = level?.gaps.find((candidate) => mainCoord >= candidate.from && mainCoord <= candidate.to);
-      let amount = 0;
-      if (gap !== undefined) {
-        const labelMain = leftToRight ? size.width : size.height;
-        const gapLength = gap.to - gap.from;
-        if (short && mainAligned) amount = Math.max(amount, along + 2 * margin - segmentLength);
-        if (gapLength < labelMain + 2 * margin) amount = Math.max(amount, labelMain + 2 * margin - gapLength);
-        if (amount === 0 && hitsShape) amount = metrics.rankGap / 4;
+      const mainOf = (point: Vec2) => (leftToRight ? point.x : point.y);
+      const crossOf = (point: Vec2) => (leftToRight ? point.y : point.x);
+      const centreMain = mainOf(label.centre);
+      const labelMain = leftToRight ? size.width : size.height;
+      // The gap to lengthen: for a segment along the flow, the gap it crosses
+      // nearest to the label; for a segment across the flow, the gap holding it.
+      const segmentFrom = Math.min(mainOf(a), mainOf(b));
+      const segmentTo = Math.max(mainOf(a), mainOf(b));
+      const crossAt = crossOf(label.centre);
+      let chosen: { readonly key: string; readonly from: number; readonly to: number; readonly distance: number; readonly depth: number } | undefined;
+      for (const level of placement.levels) {
+        const regionCrossFrom = leftToRight ? level.region.y : level.region.x;
+        const regionCrossTo = regionCrossFrom + (leftToRight ? level.region.height : level.region.width);
+        // The root level owns everything, including a route running outside the drawing.
+        if (level.depth > 0 && (crossAt < regionCrossFrom || crossAt > regionCrossTo)) continue;
+        for (const gap of level.gaps) {
+          const crosses = mainAligned
+            ? gap.from < segmentTo && gap.to > segmentFrom
+            : centreMain >= gap.from && centreMain <= gap.to;
+          if (!crosses) continue;
+          const distance = centreMain < gap.from ? gap.from - centreMain : centreMain > gap.to ? centreMain - gap.to : 0;
+          const better =
+            chosen === undefined ||
+            distance < chosen.distance ||
+            (distance === chosen.distance && level.depth > chosen.depth);
+          if (better) chosen = { key: `${level.key}#${gap.rank}`, from: gap.from, to: gap.to, distance, depth: level.depth };
+        }
       }
-      if (amount <= 0 || gap === undefined || level === undefined) {
+      let amount = 0;
+      if (chosen !== undefined) {
+        if (short && mainAligned) amount = Math.max(amount, along + 2 * margin - segmentLength);
+        if (chosen.distance === 0 && chosen.to - chosen.from < labelMain + 2 * margin) {
+          amount = Math.max(amount, labelMain + 2 * margin - (chosen.to - chosen.from));
+        }
+        // Lengthening a gap the segment crosses moves the label, relative to a
+        // shape on either side of that gap, by half the amount: forward from a
+        // shape before it, backward from a shape after it. A shape that spans
+        // the gap (a title band along the flow) cannot be cleared that way.
+        if (hitsShape) {
+          const boxStart = leftToRight ? padded.x : padded.y;
+          const boxEnd = boxStart + (leftToRight ? padded.width : padded.height);
+          for (const rect of blockers) {
+            if (!rectsIntersect(rect, padded)) continue;
+            const rectStart = leftToRight ? rect.x : rect.y;
+            const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
+            if (mainAligned && rectEnd <= chosen.from) amount = Math.max(amount, 2 * (rectEnd - boxStart));
+            else if (mainAligned && rectStart >= chosen.to) amount = Math.max(amount, 2 * (boxEnd - rectStart));
+            else {
+              amount = 0;
+              break;
+            }
+          }
+        }
+      }
+      // Lengthening makes room for a label; it is not a way to slide the
+      // drawing under a label that runs alongside a shape. Past a few label
+      // lengths the engine reports the label instead.
+      if (amount <= 0 || chosen === undefined || amount > MAX_LENGTHEN_LABELS * (labelMain + 2 * margin)) {
         unplaced.push(edge.id);
         continue;
       }
-      const key = `${level.key}#${gap.rank}`;
+      const key = chosen.key;
       lengthen.set(key, Math.max(lengthen.get(key) ?? 0, amount));
     }
 
