@@ -2,35 +2,10 @@
   "schemaVersion": 1,
   "id": "xyflow-react-defaultnodeoverwrite",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-defaultnodeoverwrite",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 250,
-          "y": 5
-        },
-        "data": {
-          "label": "Node 1"
-        },
-        "className": "light"
-      },
-      {
-        "id": "2",
-        "type": "unregistered",
-        "position": {
-          "x": 100,
-          "y": 100
-        },
-        "data": {
-          "label": "Node 2"
-        },
-        "className": "light"
-      }
-    ],
+  "input": {
+    "nodes": [],
     "edges": [],
     "viewport": {
       "x": 0,
@@ -38,17 +13,13 @@
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
     "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DefaultNodeOverwrite/index.tsx",
     "customTypes": [
       "unregistered"

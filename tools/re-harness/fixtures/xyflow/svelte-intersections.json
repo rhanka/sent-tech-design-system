@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-intersections",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.svelte-intersections",
-  "model": {
+  "input": {
     "nodes": [
       {
         "id": "1",
@@ -57,12 +57,10 @@
       "x": 0,
       "y": 0,
       "zoom": 1
+    },
+    "flowOptions": {
+      "fitView": true
     }
-  },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,

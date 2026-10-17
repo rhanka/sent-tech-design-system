@@ -112,7 +112,9 @@ export function parseSvgPath(d) {
 export function compareGeometry(left, right, options = {}) {
   if (!left || !right) return { verdict: "fail", detail: "geometry missing on one side" };
   const tolerancePx = options.tolerancePx ?? GEOMETRY_TOLERANCE_PX;
-  const family = options.family || "routers.manhattan";
+  // Per-function rounding applies per link (familyById, JointJS §5.3);
+  // without a declared family the residual 1e-6 applies to raw values.
+  const familyById = options.familyById || {};
   const diffs = [];
   const checkBoundsMap = (lmap, rmap, label) => {
     const l = lmap || {}; const r = rmap || {};
@@ -133,11 +135,12 @@ export function compareGeometry(left, right, options = {}) {
   for (const id of new Set([...Object.keys(lw), ...Object.keys(rw)])) {
     const a = lw[id] || []; const b = rw[id] || [];
     if (a.length !== b.length) { diffs.push(`waypoints.${id}: count ${a.length} !== ${b.length}`); continue; }
+    const family = familyById[id] || null;
     a.forEach((p, i) => {
       const ax = roundForFamily(p.x, family); const ay = roundForFamily(p.y, family);
       const bx = roundForFamily(b[i].x, family); const by = roundForFamily(b[i].y, family);
       if (Math.abs(ax - bx) > MODEL_FLOAT_TOLERANCE || Math.abs(ay - by) > MODEL_FLOAT_TOLERANCE) {
-        diffs.push(`waypoints.${id}[${i}]: (${ax},${ay}) !== (${bx},${by}) beyond 1e-6 after ${family} rounding`);
+        diffs.push(`waypoints.${id}[${i}]: (${ax},${ay}) !== (${bx},${by}) beyond 1e-6${family ? ` after ${family} rounding` : ""}`);
       }
     });
   }

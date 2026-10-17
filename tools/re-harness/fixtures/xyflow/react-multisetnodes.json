@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "xyflow-react-multisetnodes",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-multisetnodes",
-  "model": {
+  "input": {
     "nodes": [],
     "edges": [],
     "viewport": {
@@ -13,17 +13,13 @@
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
     "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/MultiSetNodes/index.tsx"
   }
 }

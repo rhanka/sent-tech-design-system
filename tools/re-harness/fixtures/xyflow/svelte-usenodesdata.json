@@ -2,87 +2,24 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-usenodesdata",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.svelte-usenodesdata",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "text",
-        "position": {
-          "x": -100,
-          "y": -50
-        },
-        "data": {
-          "text": "hello"
-        }
-      },
-      {
-        "id": "1a",
-        "type": "uppercase",
-        "position": {
-          "x": 100,
-          "y": 0
-        },
-        "data": {
-          "text": ""
-        }
-      },
-      {
-        "id": "2",
-        "type": "text",
-        "position": {
-          "x": 0,
-          "y": 100
-        },
-        "data": {
-          "text": "world"
-        }
-      },
-      {
-        "id": "3",
-        "type": "result",
-        "position": {
-          "x": 300,
-          "y": 50
-        },
-        "data": {}
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-1a",
-        "source": "1",
-        "target": "1a"
-      },
-      {
-        "id": "e1a-3",
-        "source": "1a",
-        "target": "3"
-      },
-      {
-        "id": "e2-3",
-        "source": "2",
-        "target": "3"
-      }
-    ],
+  "input": {
+    "nodes": [],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
     "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/usenodesdata/+page.svelte",
     "customTypes": [
       "result",

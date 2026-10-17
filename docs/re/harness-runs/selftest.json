@@ -30,7 +30,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "injected divergence detected on real @joint/core output",
+          "detail": "fill mutation through the real @joint/core attr API, captured by container screenshot",
           "verdict": "pass"
         }
       },

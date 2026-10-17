@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-draghandle-selfparity","library":"xyflow","fixtures":["xyflow/react-draghandle.json"],"ops":"xyflow/react-draghandle.ops.json","exercises":["examples.react-draghandle"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-draghandle-selfparity","library":"xyflow","fixtures":["xyflow/react-draghandle.json"],"exercises":["examples.react-draghandle"],"comparators":["model","events","geometry","pixels"]}

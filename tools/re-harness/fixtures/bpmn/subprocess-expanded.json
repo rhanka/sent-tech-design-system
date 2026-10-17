@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-subprocess-expanded",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Expanded subprocess containing an inner task chain",
+  "input": {
+    "xmlFile": "bpmn/subprocess-expanded.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

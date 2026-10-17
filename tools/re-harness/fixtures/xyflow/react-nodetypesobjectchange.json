@@ -2,49 +2,10 @@
   "schemaVersion": 1,
   "id": "xyflow-react-nodetypesobjectchange",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-nodetypesobjectchange",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "input",
-        "position": {
-          "x": 0,
-          "y": 80
-        },
-        "data": {
-          "label": "Input"
-        },
-        "sourcePosition": "right"
-      },
-      {
-        "id": "2",
-        "type": "a",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {
-          "label": "A Node"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      },
-      {
-        "id": "3",
-        "type": "b",
-        "position": {
-          "x": 350,
-          "y": 0
-        },
-        "data": {
-          "label": "B Node"
-        },
-        "sourcePosition": "right",
-        "targetPosition": "left"
-      }
-    ],
+  "input": {
+    "nodes": [],
     "edges": [],
     "viewport": {
       "x": 0,
@@ -52,17 +13,13 @@
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
     "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/NodeTypesObjectChange/index.tsx",
     "customTypes": [
       "a",

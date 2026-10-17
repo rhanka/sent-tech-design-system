@@ -2,47 +2,10 @@
   "schemaVersion": 1,
   "id": "xyflow-react-validation",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-validation",
-  "model": {
-    "nodes": [
-      {
-        "id": "0",
-        "type": "custominput",
-        "position": {
-          "x": 0,
-          "y": 150
-        },
-        "data": {}
-      },
-      {
-        "id": "A",
-        "type": "customnode",
-        "position": {
-          "x": 250,
-          "y": 0
-        },
-        "data": {}
-      },
-      {
-        "id": "B",
-        "type": "customnode",
-        "position": {
-          "x": 250,
-          "y": 150
-        },
-        "data": {}
-      },
-      {
-        "id": "C",
-        "type": "customnode",
-        "position": {
-          "x": 250,
-          "y": 300
-        },
-        "data": {}
-      }
-    ],
+  "input": {
+    "nodes": [],
     "edges": [],
     "viewport": {
       "x": 0,
@@ -50,18 +13,14 @@
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Validation/index.tsx",
+    "status": "unknown",
+    "cause": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Validation/ConnectionStatus.tsx",
     "customTypes": [
       "custominput",
       "customnode"

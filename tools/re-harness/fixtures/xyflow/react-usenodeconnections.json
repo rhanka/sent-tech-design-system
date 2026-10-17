@@ -2,107 +2,25 @@
   "schemaVersion": 1,
   "id": "xyflow-react-usenodeconnections",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-usenodeconnections",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "single",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {}
-      },
-      {
-        "id": "2",
-        "type": "single",
-        "position": {
-          "x": 200,
-          "y": -100
-        },
-        "data": {}
-      },
-      {
-        "id": "3",
-        "type": "single",
-        "position": {
-          "x": 200,
-          "y": 100
-        },
-        "data": {}
-      },
-      {
-        "id": "4",
-        "type": "multi",
-        "position": {
-          "x": 400,
-          "y": 0
-        },
-        "data": {}
-      },
-      {
-        "id": "5",
-        "type": "multi",
-        "position": {
-          "x": 600,
-          "y": -100
-        },
-        "data": {}
-      },
-      {
-        "id": "6",
-        "type": "multi",
-        "position": {
-          "x": 600,
-          "y": 100
-        },
-        "data": {}
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-2",
-        "source": "1",
-        "target": "2"
-      },
-      {
-        "id": "e1-3",
-        "source": "1",
-        "target": "3"
-      },
-      {
-        "id": "e4a-5",
-        "source": "4",
-        "target": "5",
-        "sourceHandle": "s1"
-      },
-      {
-        "id": "e4b-5",
-        "source": "4",
-        "target": "6",
-        "sourceHandle": "s2"
-      }
-    ],
+  "input": {
+    "nodes": [],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/UseNodeConnections/index.tsx",
+    "status": "unknown",
+    "cause": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/UseNodeConnections/MultiHandleNode.tsx",
     "customTypes": [
       "multi",
       "single"

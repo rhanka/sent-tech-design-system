@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sentropic.example/re-harness/report.schema.json",
   "title": "RE harness run report (v1)",
-  "description": "One JSON document per run, archived under docs/re/harness-runs/. Small and deterministic: no timestamps, no absolute paths, keys sorted. Gate reports (self-parity, xyflow-examples, selftest) carry oracle=real with the oracle library version read from its package.json; synthetic reports carry oracle=synthetic and never count for a gate. covered is reserved for green candidate-against-reference verdicts; self-parity verdicts never count as covered (SPEC_RE_BPMN_JS_PARITY §8.1).",
+  "description": "One JSON document per run, archived under docs/re/harness-runs/. Small and deterministic: no timestamps, no absolute paths, keys sorted. Gate reports (self-parity, xyflow-examples, selftest) carry oracle=real with the oracle library versions read from their package.json. covered is reserved for green candidate-against-reference verdicts; self-parity verdicts never count as covered (SPEC_RE_BPMN_JS_PARITY §8.1). At L0 the candidate side is unsupported (candidate).",
   "type": "object",
   "required": ["schemaVersion", "mode", "seed", "scenarios"],
   "properties": {
@@ -10,8 +10,20 @@
     "mode": { "enum": ["self-parity", "differential", "selftest", "coverage"] },
     "seed": { "type": "integer" },
     "browser": { "type": "string" },
-    "oracle": { "enum": ["real", "synthetic"], "description": "real = produced by the pinned library itself; synthetic = produced by synthetic-engines.mjs (never a gate)." },
+    "oracle": { "enum": ["real"], "description": "real = produced by the pinned library itself." },
     "oracleVersions": { "type": "object", "description": "Versions read from the oracle packages' own package.json files." },
+    "candidate": {
+      "type": "object",
+      "description": "Candidate status per library. At L0: unsupported, with the lot that delivers the DiagramState path.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["verdict", "cause"],
+        "properties": {
+          "verdict": { "enum": ["unsupported"] },
+          "cause": { "type": "string" }
+        }
+      }
+    },
     "scenarios": {
       "type": "array",
       "items": {
@@ -20,14 +32,21 @@
         "properties": {
           "id": { "type": "string" },
           "library": { "type": "string" },
-          "oracle": { "enum": ["real", "synthetic"] },
+          "oracle": { "enum": ["real"] },
           "oracleVersion": { "type": ["string", "null"] },
           "verdict": { "enum": ["pass", "fail", "unknown", "unsupported"] },
           "cause": { "type": "string" },
+          "causeKind": {
+            "enum": ["fixture-extraction", "infrastructure", "run-error"],
+            "description": "Why a scenario is unknown. Only fixture-extraction is acceptable in an archived gate report."
+          },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "skippedOps": { "type": "array" },
           "comparators": {
             "type": "object",
             "additionalProperties": {
               "type": "object",
+              "required": ["verdict"],
               "properties": {
                 "verdict": { "enum": ["pass", "fail", "unknown"] },
                 "detail": { "type": "string" }

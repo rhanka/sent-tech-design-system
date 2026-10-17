@@ -2,84 +2,24 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-edge-toolbar",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.svelte-edge-toolbar",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "default",
-        "position": {
-          "x": 0,
-          "y": 0
-        },
-        "data": {
-          "label": "Node 1",
-          "toolbarPosition": "top"
-        }
-      },
-      {
-        "id": "2",
-        "type": "default",
-        "position": {
-          "x": 100,
-          "y": 150
-        },
-        "data": {
-          "label": "Node 2",
-          "toolbarPosition": "top"
-        }
-      },
-      {
-        "id": "3",
-        "type": "default",
-        "position": {
-          "x": 200,
-          "y": 0
-        },
-        "data": {
-          "label": "Node 3",
-          "toolbarPosition": "top"
-        }
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-2",
-        "source": "1",
-        "target": "2",
-        "type": "custom"
-      },
-      {
-        "id": "e3-2",
-        "source": "3",
-        "target": "2",
-        "type": "custom"
-      },
-      {
-        "id": "e1-3",
-        "source": "1",
-        "target": "3",
-        "type": "custom"
-      }
-    ],
+  "input": {
+    "nodes": [],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
     "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/edge-toolbar/+page.svelte",
     "customTypes": [
       "custom"

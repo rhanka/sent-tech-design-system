@@ -4,11 +4,17 @@
 // Real runners drive the REAL libraries inside the harness page
 // (harness-page.html defines window.__reHarness on top of the bundles
 // built by build-bundles.mjs from RE_ORACLES_DIR). The candidate runner
-// is a stub by design at L0: it declares `unsupported` per entry and is
-// never counted `covered`. The synthetic runner (synthetic-engines.mjs)
-// exists only to self-test the comparators; it is not a reference and
-// every report it feeds is stamped oracle: "synthetic".
-import { runSyntheticEngine } from "./synthetic-engines.mjs";
+// is a stub by design at L0: it declares `unsupported` with the lot that
+// will deliver it, and is never counted `covered`.
+
+// Candidate side at L0, per library. No candidate output exists: the
+// comparison goes through DiagramState (packages/diagram-core) and the
+// adapters of later lots; nothing is converted ad hoc in the meantime.
+export const CANDIDATE_STATUS = {
+  bpmn: { verdict: "unsupported", cause: "candidate = DiagramState through the A' codec (toDiagramState / toModdleJson, private package @sentropic/diagram-bpmn-moddle), delivered by lot L3 of spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md §13; not written at L0" },
+  xyflow: { verdict: "unsupported", cause: "candidate = DiagramState (packages/diagram-core) through the xyflow-parity adapter of a later lot (spec/SPEC_RE_XYFLOW_PARITY.md §8); not written at L0" },
+  jointjs: { verdict: "unsupported", cause: "candidate = DiagramState (packages/diagram-core) through the JointJS-parity adapter of a later lot (spec/SPEC_RE_JOINTJS_PARITY.md §6); not written at L0" },
+};
 
 const RUN_TIMEOUT_MS = 60000;
 
@@ -38,7 +44,7 @@ export function oracleGateOf(library, fixtureId) {
 // Decode a PNG screenshot inside the page and downscale it to a small
 // RGBA buffer the pixel comparator consumes. The pixels come from the
 // browser's own rendering of the library output (C3) — never from a
-// synthetic rasterisation of extracted bounds.
+// rasterisation of extracted bounds.
 const DECODE_SCREENSHOT = async (base64) => {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
@@ -66,7 +72,7 @@ const DECODE_SCREENSHOT = async (base64) => {
 // (the real library rendering), decodes the capture, then runs the
 // adapter cleanup. Throws with the page cause when the library cannot
 // run; the caller records the gate `unknown` — it never falls back to a
-// synthetic verdict.
+// substitute verdict.
 export async function runRealInPage(page, library, fixture, ops) {
   const fn = adapterFor(library, fixture.id);
   if (!fn) throw new Error(`unknown: no real adapter for library ${library}`);
@@ -106,22 +112,14 @@ export async function oracleStatusInPage(page) {
   return page.evaluate(() => window.__oracleStatus || null);
 }
 
-export function syntheticRunner() {
-  return {
-    id: "synthetic",
-    oracle: "synthetic",
-    async run(fixture, ops) {
-      return runSyntheticEngine(fixture, ops);
-    },
-  };
-}
-
-export function candidateStubRunner() {
+export function candidateStubRunner(library) {
   return {
     id: "candidate",
     async run() {
-      // No parity implementation exists at L0. Never fabricate a result.
-      return { unsupported: true };
+      // No candidate implementation exists at L0, and no ad hoc converter
+      // stands in for the DiagramState codec. Never fabricate a result.
+      const status = CANDIDATE_STATUS[library] || { verdict: "unsupported", cause: `no candidate path for ${library}` };
+      return { unsupported: true, cause: status.cause };
     },
   };
 }

@@ -16,9 +16,18 @@
 // the gate reports it `unknown`, never green, and no generic substitute
 // graph is invented.
 //
+// An example whose graph uses CUSTOM node or edge types is `unknown` too:
+// those types are application components (code, not data); mounted
+// without them the library would silently fall back to its default type
+// and the fixture would no longer reproduce the named example.
+//
+// The fixture stores the example graph as the library's NATIVE input
+// (`input`: nodes, edges, viewport, flow options), never a harness model.
+//
 // Each extractable fixture also carries one representative operation
-// script when the graph supports one (drag = move of the first node,
-// connect between an unconnected pair), played through the real store.
+// script when the graph supports one: a real pointer drag of the first
+// top-level node (`move`, driven through the library's own XYDrag) and a
+// store-level connect between an unconnected pair.
 //
 // Re-run after an inventory regeneration:
 //   node tools/re-harness/gen-xyflow-fixtures.mjs
@@ -338,6 +347,28 @@ function sanitiseEdge(e, usedIds) {
   return out;
 }
 
+// Props written at depth 0 inside the <ReactFlow ...> / <SvelteFlow ...>
+// opening tag (brace-depth aware, so `=>` inside handlers is skipped).
+function flowTagProps(clean) {
+  const props = [];
+  const re = /<(ReactFlow|SvelteFlow)\b/g;
+  let m;
+  while ((m = re.exec(clean)) !== null) {
+    let depth = 0; let state = null; let i = m.index + m[0].length; let text = "";
+    for (; i < clean.length; i += 1) {
+      const c = clean[i];
+      if (state) { if (c === "\\") { i += 1; continue; } if (c === state) state = null; continue; }
+      if (c === "'" || c === '"' || c === "`") { state = c; continue; }
+      if (c === "{") { depth += 1; continue; }
+      if (c === "}") { depth -= 1; continue; }
+      if (depth === 0 && c === ">") break;
+      if (depth === 0) text += c;
+    }
+    props.push(...(text.match(/[A-Za-z_$][\w$:-]*/g) || []));
+  }
+  return props;
+}
+
 function extractFlowOptions(files) {
   const options = {};
   let viewport = null;
@@ -356,6 +387,8 @@ function extractFlowOptions(files) {
     }
     const minZ = /minZoom\s*[:={]\s*([0-9.]+)/.exec(clean);
     const maxZ = /maxZoom\s*[:={]\s*([0-9.]+)/.exec(clean);
+    // fitView is a bare boolean prop of the flow component in the examples.
+    if (flowTagProps(clean).includes("fitView")) options.fitView = true;
     if (minZ) options.minZoom = Number(minZ[1]);
     if (maxZ) options.maxZoom = Number(maxZ[1]);
     if (viewport && (options.minZoom !== undefined || options.maxZoom !== undefined)) break;
@@ -412,8 +445,15 @@ function extractExample(entry) {
       if (!Array.isArray(r.value)) continue;
       // An explicitly empty initial graph (e.g. the `empty` example) is a
       // real extraction: the named example starts with no nodes at all.
+      // It counts only as the argument of the initial-state call itself
+      // (useNodesState([]) / $state([])), in a file that does not build the
+      // graph in a mount effect (useEffect / onMount / $effect): an empty
+      // array that is later filled by a loop or an effect is not the
+      // example's initial graph.
       if (r.value.length === 0) {
-        if (wantsNodes && !emptyNodes) emptyNodes = { value: [], file, context: cand.context };
+        const initialState = /useNodesState|\$state/.test(cand.context);
+        const mountEffect = /\buseEffect\s*\(|\bonMount\s*\(|\$effect\s*\(/.test(src);
+        if (wantsNodes && initialState && !mountEffect && !emptyNodes) emptyNodes = { value: [], file, context: cand.context };
         continue;
       }
       if (r.value.every(isNodeLike) && (!bestNodes || r.value.length > bestNodes.value.length)) {
@@ -454,32 +494,50 @@ for (const entry of examples) {
     schemaVersion: 1,
     id: `xyflow-${slug}`,
     library: "xyflow",
-    kind: "xyflow-graph",
+    kind: "xyflow-flow",
     title: `xyflow example fixture for ${entry.id}`,
-    model: { nodes: [], edges: [], viewport: { x: 0, y: 0, zoom: 1 } },
-    viewport: { x: 0, y: 0, zoom: 1 },
+    input: { nodes: [], edges: [], viewport: { x: 0, y: 0, zoom: 1 } },
     pixelThreshold: { maxMismatchRatio: 0.01, perChannelDelta: 8 },
   };
   let opsFile = null;
+  const customTypes = result.ok ? [
+    ...new Set([
+      ...result.nodes.map((n) => n.type).filter((t) => !BUILTIN_NODE_TYPES.has(t)),
+      ...result.edges.map((e) => e.type).filter((t) => t && !BUILTIN_EDGE_TYPES.has(t)),
+    ]),
+  ].sort() : [];
+  if (result.ok && customTypes.length) {
+    result.ok = false;
+    result.cause = `custom node/edge types (${customTypes.join(", ")}) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example`;
+    result.customTypes = customTypes;
+  }
   if (result.ok) {
     extractedCount += 1;
-    const customTypes = [
-      ...new Set([
-        ...result.nodes.map((n) => n.type).filter((t) => !BUILTIN_NODE_TYPES.has(t)),
-        ...result.edges.map((e) => e.type).filter((t) => t && !BUILTIN_EDGE_TYPES.has(t)),
-      ]),
-    ].sort();
-    fixture.model = { nodes: result.nodes, edges: result.edges, viewport: result.viewport };
-    if (Object.keys(result.flowOptions).length) fixture.model.flowOptions = result.flowOptions;
-    fixture.viewport = result.viewport;
+    fixture.input = { nodes: result.nodes, edges: result.edges, viewport: result.viewport };
+    if (Object.keys(result.flowOptions).length) fixture.input.flowOptions = result.flowOptions;
     fixture.extraction = { status: "extracted", source: result.sourceFile };
-    if (customTypes.length) fixture.extraction.customTypes = customTypes;
     // One representative operation script (drag, then connect) when the
     // graph supports it.
     const steps = [];
     const sortedNodes = [...result.nodes].sort((a, b) => a.id.localeCompare(b.id));
-    if (sortedNodes.length >= 1) {
-      const first = sortedNodes[0];
+    // The dragged node must be on screen: with fitView every node is; else
+    // its box (default size 150x40 when unspecified) must fall inside the
+    // 1024x600 host under the extracted viewport.
+    const vp = result.viewport;
+    const onScreen = (n) => {
+      if (result.flowOptions.fitView) return true;
+      const w = n.width || 150; const h = n.height || 40;
+      const x = vp.x + n.position.x * vp.zoom; const y = vp.y + n.position.y * vp.zoom;
+      return x >= 0 && y >= 0 && x + w * vp.zoom <= 1024 && y + h * vp.zoom <= 600;
+    };
+    // ... and must not overlap another node (estimated boxes), so that the
+    // browser hit-test at its centre lands on it and not on a neighbour.
+    const box = (n) => ({ x: n.position.x, y: n.position.y, w: n.width || 150, h: n.height || 40 });
+    const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    const isolated = (n) => sortedNodes.every((o) => o === n || o.parentId || o.hidden || !overlaps(box(n), box(o)));
+    const draggable = sortedNodes.find((n) => !n.parentId && !n.hidden && onScreen(n) && isolated(n));
+    if (draggable) {
+      const first = draggable;
       steps.push({ op: "move", elementId: first.id, x: first.position.x + 40, y: first.position.y + 30 });
     }
     if (sortedNodes.length >= 2) {
@@ -501,6 +559,7 @@ for (const entry of examples) {
   } else {
     unknownCount += 1;
     fixture.extraction = { status: "unknown", cause: result.cause, source: String(entry.source || "").replace(/:\d+$/, "") };
+    if (result.customTypes) fixture.extraction.customTypes = result.customTypes;
   }
   fs.writeFileSync(path.join(HERE, "fixtures", fixtureFile), `${JSON.stringify(fixture, null, 2)}\n`);
   written.add(fixtureFile);

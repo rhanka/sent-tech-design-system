@@ -2,95 +2,24 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-customnode",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.svelte-customnode",
-  "model": {
-    "nodes": [
-      {
-        "id": "1",
-        "type": "input",
-        "position": {
-          "x": 0,
-          "y": 50
-        },
-        "data": {
-          "label": "An input node"
-        },
-        "sourcePosition": "right"
-      },
-      {
-        "id": "2",
-        "type": "colorNode",
-        "position": {
-          "x": 250,
-          "y": 50
-        },
-        "data": {}
-      },
-      {
-        "id": "3",
-        "type": "output",
-        "position": {
-          "x": 650,
-          "y": 25
-        },
-        "data": {
-          "label": "Output A"
-        },
-        "targetPosition": "left"
-      },
-      {
-        "id": "4",
-        "type": "output",
-        "position": {
-          "x": 650,
-          "y": 120
-        },
-        "data": {
-          "label": "Output B"
-        },
-        "targetPosition": "left"
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1-2",
-        "source": "1",
-        "target": "2",
-        "animated": true
-      },
-      {
-        "id": "e2a-3",
-        "source": "2",
-        "target": "3",
-        "sourceHandle": "a",
-        "animated": true
-      },
-      {
-        "id": "e2b-4",
-        "source": "2",
-        "target": "4",
-        "sourceHandle": "b",
-        "animated": true
-      }
-    ],
+  "input": {
+    "nodes": [],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
+    "status": "unknown",
+    "cause": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
     "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/customnode/+page.svelte",
     "customTypes": [
       "colorNode"

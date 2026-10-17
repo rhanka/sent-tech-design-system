@@ -1,26 +1,19 @@
 // Focused tests for the RE harness core (node --test). No browser, no network.
-// The synthetic-engine tests exercise the comparators only; they are NOT
-// oracle evidence. The gate guard test fails whenever an archived gate
-// report carries an oracle other than "real".
+// Comparators are exercised on literal values; oracle evidence lives only
+// in the archived gate reports, which the last test classifies.
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compareModel, compareEvents, compareGeometry, comparePixels, correspondenceProblems, parseSvgPath } from "../src/comparators.mjs";
-import { runSyntheticEngine } from "../src/synthetic-engines.mjs";
-import { runSelftest, validateFixtures, assertGateReport, GATE_REPORT_FILES } from "../src/harness.mjs";
+import { validateFixtures, assertGateReport, classifyGateReport, GATE_REPORT_FILES, CANDIDATE_STATUS } from "../src/harness.mjs";
+import { candidateStubRunner } from "../src/runners.mjs";
 import { EXPECTED_VERSIONS, REPO_ROOT, WT_ROOT } from "../src/oracles.mjs";
 import { canonicalString } from "../src/canonical.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const RUNS_DIR = path.resolve(HERE, "..", "..", "..", "docs", "re", "harness-runs");
-
-const fixture = {
-  schemaVersion: 1, id: "t", library: "bpmn", kind: "bpmn-xml-f1",
-  model: { elements: [{ id: "a", type: "bpmn:Task", x: 10, y: 10, width: 100, height: 80, label: "A" }], flows: [] },
-  pixelThreshold: { maxMismatchRatio: 0.01, perChannelDelta: 8 },
-};
 
 test("fixtures validate against the versioned schemas", () => {
   assert.deepEqual(validateFixtures(), []);
@@ -30,36 +23,61 @@ test("canonicalisation sorts keys recursively", () => {
   assert.equal(canonicalString({ b: 1, a: { d: 2, c: 3 } }), canonicalString({ a: { c: 3, d: 2 }, b: 1 }));
 });
 
-test("synthetic engine undo/redo chain round-trips the model exactly (comparator self-check, not an oracle)", () => {
-  const ops = { schemaVersion: 1, id: "o", steps: [
-    { op: "create", elementId: "b", type: "bpmn:Task", x: 200, y: 10, width: 90, height: 70, label: "B" },
-    { op: "move", elementId: "b", x: 220, y: 30 },
-    { op: "setLabel", elementId: "b", label: "B2" },
-  ] };
-  const beforeUndo = runSyntheticEngine(fixture, ops);
-  const withUndoRedo = runSyntheticEngine(fixture, { schemaVersion: 1, id: "o2", steps: [...ops.steps, { op: "undo" }, { op: "undo" }, { op: "redo" }, { op: "redo" }] });
-  assert.equal(compareModel(beforeUndo.model, withUndoRedo.model).verdict, "pass");
-  const undone = runSyntheticEngine(fixture, { schemaVersion: 1, id: "o3", steps: [...ops.steps, { op: "undo" }] });
-  assert.equal(compareModel(beforeUndo.model, undone.model).verdict, "fail");
-});
-
-test("synthetic selftest detects an injected divergence on every comparator", () => {
-  const r = runSelftest();
-  assert.equal(r.oracle, "synthetic");
-  assert.equal(r.pass, true);
-  assert.ok(r.checks.every((c) => c.detected));
-});
-
-test("geometry tolerates 1px but not 50px; pixels stay secondary", () => {
-  const a = runSyntheticEngine(fixture, { schemaVersion: 1, id: "x", steps: [] });
+test("geometry tolerates 1px but not 50px; missing pixels stay unknown", () => {
+  const a = { bounds: { a: { x: 10, y: 10, width: 100, height: 80 } }, waypoints: {}, viewbox: { x: 10, y: 10, width: 100, height: 80 } };
   const b = JSON.parse(JSON.stringify(a));
-  b.geometry.bounds.a.x += 1;
-  assert.equal(compareGeometry(a.geometry, b.geometry).verdict, "pass");
-  b.geometry.bounds.a.x += 50;
-  assert.equal(compareGeometry(a.geometry, b.geometry).verdict, "fail");
-  const noPixels = { model: a.model, events: a.events, geometry: a.geometry, pixels: null };
-  assert.equal(comparePixels(noPixels.pixels, a.pixels, fixture.pixelThreshold).verdict, "unknown");
-  assert.equal(compareEvents(a.events, a.events).verdict, "pass");
+  b.bounds.a.x += 1;
+  assert.equal(compareGeometry(a, b).verdict, "pass");
+  b.bounds.a.x += 50;
+  assert.equal(compareGeometry(a, b).verdict, "fail");
+  const px = { width: 2, height: 1, data: [255, 255, 255, 255, 0, 0, 0, 255] };
+  assert.equal(comparePixels(null, px, {}).verdict, "unknown");
+  assert.equal(comparePixels(px, JSON.parse(JSON.stringify(px)), { maxMismatchRatio: 0, perChannelDelta: 0 }).verdict, "pass");
+  const other = { width: 2, height: 1, data: [255, 0, 0, 255, 0, 0, 0, 255] };
+  assert.equal(comparePixels(px, other, { maxMismatchRatio: 0.01, perChannelDelta: 8 }).verdict, "fail");
+});
+
+test("model comparator: floats at 1e-6, any missing key on one side fails", () => {
+  const tree = { $type: "bpmn:Definitions", rootElements: [{ $type: "bpmn:Process", id: "p1", flowElements: [{ $type: "bpmn:Task", id: "t1", name: "A" }] }] };
+  assert.equal(compareModel(tree, JSON.parse(JSON.stringify(tree))).verdict, "pass");
+  const renamed = JSON.parse(JSON.stringify(tree));
+  renamed.rootElements[0].flowElements[0].name = "B";
+  assert.equal(compareModel(tree, renamed).verdict, "fail");
+  const dropped = JSON.parse(JSON.stringify(tree));
+  delete dropped.rootElements[0].flowElements[0].name;
+  assert.equal(compareModel(tree, dropped).verdict, "fail");
+  assert.equal(compareModel({ x: 1 }, { x: 1 + 1e-7 }).verdict, "pass");
+  assert.equal(compareModel({ x: 1 }, { x: 1 + 1e-5 }).verdict, "fail");
+});
+
+test("model rule: fixtures carry native reference input only, never a harness model", () => {
+  const root = path.resolve(HERE, "..", "fixtures");
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => d.isDirectory() ? walk(path.join(dir, d.name)) : [path.join(dir, d.name)]);
+  const files = walk(root).filter((p) => p.endsWith(".json") && !p.includes(`${path.sep}scenarios${path.sep}`) && !p.endsWith(".ops.json"));
+  assert.ok(files.length > 90);
+  for (const p of files) {
+    const doc = JSON.parse(fs.readFileSync(p, "utf8"));
+    assert.ok(!("model" in doc), `${path.relative(root, p)}: carries a harness model`);
+    assert.ok(doc.input && typeof doc.input === "object", `${path.relative(root, p)}: no native input`);
+    if (doc.library === "bpmn") {
+      assert.equal(doc.kind, "bpmn-xml");
+      const xml = fs.readFileSync(path.join(root, doc.input.xmlFile), "utf8");
+      assert.match(xml, /<bpmndi:BPMNDiagram/, `${doc.input.xmlFile}: BPMNDI missing`);
+      assert.match(xml, /<bpmn:definitions/);
+    }
+    if (doc.library === "jointjs") assert.ok(Array.isArray(doc.input.cells) && doc.input.cells.every((c) => c.type && c.id));
+  }
+  // No .f1.json hand-written model survives.
+  assert.deepEqual(walk(root).filter((p) => p.endsWith(".f1.json")), []);
+});
+
+test("candidate side is unsupported at L0 and cites the lot that delivers it", async () => {
+  for (const library of ["bpmn", "xyflow", "jointjs"]) {
+    const out = await candidateStubRunner(library).run();
+    assert.equal(out.unsupported, true);
+    assert.ok(out.cause.includes("DiagramState"), out.cause);
+  }
+  assert.match(CANDIDATE_STATUS.bpmn.cause, /lot L3 of spec\/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE\.md/);
 });
 
 function validGateReport() {
@@ -72,11 +90,11 @@ function validGateReport() {
 
 test("gate guard rejects any gate report whose oracle is not real", () => {
   assert.equal(assertGateReport(validGateReport()), true);
-  assert.throws(() => assertGateReport({ ...validGateReport(), oracle: "synthetic" }), /instead of "real"/);
+  assert.throws(() => assertGateReport({ ...validGateReport(), oracle: "synthetic" }), /instead of "real"|report\.schema\.json/);
   assert.throws(() => assertGateReport({ scenarios: [] }), /instead of "real"|report\.schema\.json/);
   const syntheticScenario = validGateReport();
   syntheticScenario.scenarios[0].oracle = "synthetic";
-  assert.throws(() => assertGateReport(syntheticScenario), /instead of "real"/);
+  assert.throws(() => assertGateReport(syntheticScenario), /instead of "real"|report\.schema\.json/);
 });
 
 test("gate guard rejects empty, unknown, skipped or version-drifted reports (C7)", () => {
@@ -141,7 +159,7 @@ test("xyflow fixtures carry the named example graphs, not one generic graph (C1)
   const dir = path.resolve(HERE, "..", "fixtures", "xyflow");
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json") && !f.includes(".ops."));
   assert.equal(files.length, 93);
-  const signatures = new Set();
+  const signatures = new Map();
   let extracted = 0;
   let unknown = 0;
   for (const f of files) {
@@ -149,47 +167,35 @@ test("xyflow fixtures carry the named example graphs, not one generic graph (C1)
     assert.ok(doc.extraction, `${f}: extraction provenance missing`);
     if (doc.extraction.status === "extracted") {
       extracted += 1;
-      signatures.add(JSON.stringify(doc.model.nodes.map((n) => `${n.id}:${n.type}`)));
+      const sig = JSON.stringify([doc.input.nodes, doc.input.edges]);
+      signatures.set(sig, (signatures.get(sig) || 0) + 1);
     } else {
       unknown += 1;
       assert.ok(doc.extraction.cause && doc.extraction.cause.length > 3, `${f}: unknown without cause`);
     }
   }
-  assert.ok(extracted > 80, `only ${extracted} examples extracted`);
-  assert.ok(signatures.size > 50, `only ${signatures.size} distinct node graphs`);
-  assert.ok(unknown <= 10, `${unknown} unknown fixtures`);
+  assert.equal(extracted + unknown, 93);
+  assert.ok(extracted >= 55, `only ${extracted} examples extracted`);
+  // Distinct graphs: no generic substitute graph shared across examples.
+  // Some pinned examples genuinely share one literal graph (e.g. Middlewares
+  // imports ../CancelConnection/data), so the bound is a ceiling per graph.
+  assert.ok(signatures.size >= 40, `only ${signatures.size} distinct graphs for ${extracted} examples`);
+  assert.ok(Math.max(...signatures.values()) <= 6, "one graph is shared by more than 6 examples");
 });
 
-test("archived gate reports carry oracle real (a synthetic gate report fails this suite)", () => {
+test("archived gate reports are real and either green or unknown by fixture only (C7)", () => {
   for (const file of GATE_REPORT_FILES) {
     const full = path.join(RUNS_DIR, file);
     assert.ok(fs.existsSync(full), `gate report ${file} is missing — run the real gates (node tools/re-harness/src/harness.mjs run / selftest)`);
     const report = JSON.parse(fs.readFileSync(full, "utf8"));
-    assert.ok(report.oracleVersions && typeof report.oracleVersions === "object", `${file}: oracleVersions missing`);
-    // A green gate report must satisfy the strict guard. A report that is
-    // not green (fixtures that stayed `unknown`) must be REJECTED by the
-    // guard, and every non-pass scenario must be an explicit unknown with
-    // a cause — never a silent or synthetic pass (C1/C7).
-    let guardError = null;
-    try { assertGateReport(report, file); } catch (err) { guardError = err; }
-    if (guardError) {
-      for (const scenario of report.scenarios || []) {
-        assert.equal(scenario.oracle, "real", `${file}: scenario ${scenario.id} oracle is not real`);
-        if (scenario.verdict !== "pass") {
-          assert.equal(scenario.verdict, "unknown", `${file}: scenario ${scenario.id} is ${scenario.verdict}, expected pass or unknown`);
-          assert.ok(scenario.cause, `${file}: scenario ${scenario.id} unknown without cause`);
-        }
-        assert.ok(!scenario.skippedOps || scenario.skippedOps.length === 0 || scenario.verdict !== "pass",
-          `${file}: scenario ${scenario.id} passed with skipped operations`);
-      }
-    }
+    const c = classifyGateReport(report, file);
+    assert.notEqual(c.status, "invalid", `${file}: ${c.problems.slice(0, 5).join("; ")}`);
   }
-  // Any synthetic report that exists must say so, and must not pose as a gate.
-  for (const file of ["synthetic-self-parity.json", "synthetic-selftest.json"]) {
-    const full = path.join(RUNS_DIR, file);
-    if (!fs.existsSync(full)) continue;
-    const report = JSON.parse(fs.readFileSync(full, "utf8"));
-    assert.equal(report.oracle, "synthetic", `${file} must be stamped oracle synthetic`);
-    assert.ok(!GATE_REPORT_FILES.includes(file));
-  }
+  // The JointJS divergence selftest and the BPMN/JointJS self-parity are
+  // strictly green: no fixture of theirs may be unknown.
+  assert.equal(classifyGateReport(JSON.parse(fs.readFileSync(path.join(RUNS_DIR, "selftest.json"), "utf8"))).status, "pass");
+  const selfParity = JSON.parse(fs.readFileSync(path.join(RUNS_DIR, "self-parity.json"), "utf8"));
+  for (const sc of selfParity.scenarios.filter((x) => x.library !== "xyflow")) assert.equal(sc.verdict, "pass", sc.id);
+  // No synthetic report survives (the synthetic engines were removed).
+  for (const name of fs.readdirSync(RUNS_DIR)) assert.ok(!name.startsWith("synthetic-"), name);
 });

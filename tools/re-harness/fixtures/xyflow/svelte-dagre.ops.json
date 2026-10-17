@@ -3,12 +3,6 @@
   "id": "xyflow-svelte-dagre-ops",
   "steps": [
     {
-      "op": "move",
-      "elementId": "1",
-      "x": 40,
-      "y": 30
-    },
-    {
       "op": "connect",
       "elementId": "xe1",
       "sourceId": "1",

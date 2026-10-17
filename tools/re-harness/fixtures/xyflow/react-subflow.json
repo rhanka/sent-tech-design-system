@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "xyflow-react-subflow",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-subflow",
-  "model": {
+  "input": {
     "nodes": [
       {
         "id": "1",
@@ -232,12 +232,10 @@
       "x": 0,
       "y": 0,
       "zoom": 1.5
+    },
+    "flowOptions": {
+      "fitView": true
     }
-  },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1.5
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,

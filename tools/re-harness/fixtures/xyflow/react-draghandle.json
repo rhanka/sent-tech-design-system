@@ -2,25 +2,10 @@
   "schemaVersion": 1,
   "id": "xyflow-react-draghandle",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-draghandle",
-  "model": {
-    "nodes": [
-      {
-        "id": "2",
-        "type": "dragHandleNode",
-        "position": {
-          "x": 200,
-          "y": 200
-        },
-        "data": {},
-        "dragHandle": ".custom-drag-handle",
-        "style": {
-          "border": "1px solid #ddd",
-          "padding": "20px 40px"
-        }
-      }
-    ],
+  "input": {
+    "nodes": [],
     "edges": [],
     "viewport": {
       "x": 0,
@@ -28,18 +13,14 @@
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DragHandle/index.tsx",
+    "status": "unknown",
+    "cause": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DragHandle/DragHandleNode.tsx",
     "customTypes": [
       "dragHandleNode"
     ]

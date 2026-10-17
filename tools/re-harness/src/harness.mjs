@@ -1,23 +1,27 @@
-// RE harness CLI (Lot L0, real-oracle correction). Usage:
+// RE harness CLI (Lot L0). Usage:
 //   node tools/re-harness/src/harness.mjs run               # real gates in headless Chrome
-//   node tools/re-harness/src/harness.mjs run --synthetic   # offline comparator determinism (NOT a gate)
 //   node tools/re-harness/src/harness.mjs selftest          # JointJS real-output divergence gate
-//   node tools/re-harness/src/harness.mjs selftest --synthetic
 //   node tools/re-harness/src/harness.mjs coverage [--strict]
 //
 // Gate reports (docs/re/harness-runs/self-parity.json, xyflow-examples.json,
 // selftest.json) always carry oracle: "real" with the library version read
 // from the oracle's own package.json. When a real oracle cannot run, its
-// gate is `unknown` with the cause — never green, never silently replaced
-// by the synthetic engines. Synthetic runs write synthetic-*.json reports
-// stamped oracle: "synthetic"; they never count for a gate.
+// gate is `unknown` with the cause — never green.
+//
+// Model rule (README, section Model): the harness defines no diagram model.
+// Reference outputs are the libraries' own (bpmn-js moddle tree projected
+// by the bpmn-moddle descriptors, xyflow store state, JointJS
+// graph.toJSON()). The candidate side goes through packages/diagram-core
+// DiagramState and the A' codec, which does not exist yet: at L0 the
+// candidate is `unsupported` (CANDIDATE_STATUS below).
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compareModel, compareEvents, compareGeometry, comparePixels, correspondenceProblems, remapDeep, XYFLOW_GEOMETRY_TOLERANCE_PX } from "./comparators.mjs";
 import { validateAgainstSchema } from "./validate.mjs";
-import { runSyntheticEngine } from "./synthetic-engines.mjs";
+import { CANDIDATE_STATUS } from "./runners.mjs";
+export { CANDIDATE_STATUS };
 import { coverageReport, loadInventory, listScenarios } from "./coverage.mjs";
 import { canonicalise, canonicalString } from "./canonical.mjs";
 import { BUNDLES_DIR, WT_ROOT, REPO_ROOT, EXPECTED_VERSIONS, bundleStatus, gateOracle, readOracleVersions } from "./oracles.mjs";
@@ -26,6 +30,12 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HARNESS_ROOT = path.resolve(HERE, "..");
 
 export const GATE_REPORT_FILES = ["self-parity.json", "xyflow-examples.json", "selftest.json"];
+
+// An `unknown` scenario is acceptable in an archived gate report only when
+// its cause belongs to the FIXTURE (an example that cannot be extracted
+// mechanically). Infrastructure causes (missing bundle, no browser, launch
+// failure, run error) make the archived report invalid.
+export const ACCEPTED_UNKNOWN_KIND = "fixture-extraction";
 
 // Gate guard (C7): a gate report counts only when it is schema-valid,
 // produced by the real oracle at the pinned versions, non-empty, and every
@@ -59,6 +69,36 @@ export function assertGateReport(report, label = "report") {
   return true;
 }
 
+// Classification of an archived gate report: "pass" when the strict guard
+// accepts it; "unknown" when every non-pass scenario is an explicit
+// unknown whose cause is the fixture itself (an example that cannot be
+// extracted mechanically) and at least one scenario passed; otherwise
+// "invalid" (failures, infrastructure unknowns, skipped ops, drift).
+// An "unknown" gate is NOT green: it is reported as unknown with causes.
+export function classifyGateReport(report, label = "report") {
+  try {
+    assertGateReport(report, label);
+    return { status: "pass", problems: [] };
+  } catch (err) {
+    const problems = [];
+    const schemaErrors = validateAgainstSchema(report, readJson(schemaPath("report.schema.json")), label);
+    if (schemaErrors.length) problems.push(...schemaErrors);
+    if (report.oracle !== "real") problems.push(`${label}: oracle is not real`);
+    if (canonicalString(report.oracleVersions || {}) !== canonicalString(EXPECTED_VERSIONS)) problems.push(`${label}: oracleVersions drift`);
+    const scenarios = Array.isArray(report.scenarios) ? report.scenarios : [];
+    if (!scenarios.some((sc) => sc.verdict === "pass")) problems.push(`${label}: no scenario passed`);
+    for (const sc of scenarios) {
+      if (sc.oracle !== "real") problems.push(`${label}: ${sc.id} oracle is not real`);
+      if (Array.isArray(sc.skippedOps) && sc.skippedOps.length) problems.push(`${label}: ${sc.id} skipped operations`);
+      if (sc.verdict === "pass") continue;
+      if (sc.verdict !== "unknown" || sc.causeKind !== ACCEPTED_UNKNOWN_KIND || !sc.cause) {
+        problems.push(`${label}: ${sc.id} is ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}${sc.cause ? `: ${sc.cause}` : ""}`);
+      }
+    }
+    return { status: problems.length ? "invalid" : "unknown", problems, guardError: String(err.message || err) };
+  }
+}
+
 function readJson(p) { return JSON.parse(fs.readFileSync(p, "utf8")); }
 function schemaPath(name) { return path.join(HARNESS_ROOT, "schemas", name); }
 
@@ -73,7 +113,7 @@ export function validateFixtures() {
     const rel = path.relative(HARNESS_ROOT, f);
     if (rel.startsWith(path.join("fixtures", "scenarios"))) {
       errors.push(...validateAgainstSchema(doc, scenarioSchema, rel).map((e) => `${rel}: ${e}`));
-    } else if (doc.steps && doc.id && !doc.model) {
+    } else if (doc.steps && doc.id && !doc.input) {
       errors.push(...validateAgainstSchema(doc, opsSchema, rel).map((e) => `${rel}: ${e}`));
     } else {
       errors.push(...validateAgainstSchema(doc, modelSchema, rel).map((e) => `${rel}: ${e}`));
@@ -85,18 +125,39 @@ export function validateFixtures() {
   return errors;
 }
 
-function loadFixture(fixturePath) { return readJson(fixturePath); }
+// The BPMN input is a .bpmn file loaded verbatim; it is attached to the
+// in-memory fixture only (input.xml), never rewritten into a JSON model.
+function loadFixture(fixturePath) {
+  const fixture = readJson(fixturePath);
+  if (fixture.input && fixture.input.xmlFile) {
+    fixture.input = { ...fixture.input, xml: fs.readFileSync(path.join(HARNESS_ROOT, "fixtures", fixture.input.xmlFile), "utf8") };
+  }
+  return fixture;
+}
 function loadOps(opsPath) {
   return opsPath && fs.existsSync(opsPath) ? readJson(opsPath) : { schemaVersion: 1, id: "empty", steps: [] };
 }
 function fixturePathFor(scenario) { return path.join(HARNESS_ROOT, "fixtures", scenario.fixtures[0]); }
 function opsPathFor(scenario) { return scenario.ops ? path.join(HARNESS_ROOT, "fixtures", scenario.ops) : null; }
 
+// JointJS geometry family of each link, read from the library's own
+// graph JSON (router first, then connector), for the per-function
+// rounding of SPEC_RE_JOINTJS_PARITY §5.3.
+function jointFamilies(graphJson) {
+  const out = {};
+  for (const cell of (graphJson && graphJson.cells) || []) {
+    if (!cell.source || !cell.target) continue;
+    if (cell.router && cell.router.name) out[cell.id] = `routers.${cell.router.name}`;
+    else if (cell.connector && cell.connector.name) out[cell.id] = `connectors.${cell.connector.name}`;
+  }
+  return out;
+}
+
 function compareRuns(left, right, fixture) {
   const correspondence = fixture.idCorrespondence || {};
   const geometryOptions = fixture.library === "xyflow"
     ? { tolerancePx: XYFLOW_GEOMETRY_TOLERANCE_PX, viewboxTolerance: XYFLOW_GEOMETRY_TOLERANCE_PX }
-    : {};
+    : fixture.library === "jointjs" ? { familyById: jointFamilies(left.model) } : {};
   const comparators = {
     model: compareModel(remapDeep(left.model, correspondence), remapDeep(right.model, correspondence)),
     events: compareEvents(left.events, right.events, correspondence),
@@ -112,8 +173,16 @@ function compareRuns(left, right, fixture) {
       detail: `skippedOps not empty: ${skipped.map((s) => `${s.op} (${s.why})`).join("; ")}`,
     };
   }
-  // bpmn-js additionally proves its serialised form is stable across the
-  // two independent runs (saveXML captured by the adapter).
+  // bpmn-js boundary checks: the XML round trip (saveXML parsed back by the
+  // same moddle and projected again equals the projected live tree), and
+  // the serialised form is stable across the two independent runs.
+  if (left.roundTripModel !== undefined || right.roundTripModel !== undefined) {
+    const l = compareModel(left.model, left.roundTripModel);
+    const r = compareModel(right.model, right.roundTripModel);
+    comparators.xmlRoundTrip = l.verdict === "pass" && r.verdict === "pass"
+      ? { verdict: "pass", detail: "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)" }
+      : { verdict: "fail", detail: `round trip differs: ${l.verdict === "pass" ? r.detail : l.detail}` };
+  }
   if (left.xml !== undefined || right.xml !== undefined) {
     const xmlEqual = typeof left.xml === "string" && left.xml === right.xml;
     comparators.xml = xmlEqual
@@ -133,37 +202,14 @@ function overallVerdict(comparators) {
   return "pass";
 }
 
-// ---------------------------------------------------------- synthetic runs
-// Offline only: the synthetic engines against themselves. Reports are
-// stamped oracle: "synthetic" and never count for a gate.
-export async function runSyntheticParity(scenarios) {
-  const out = [];
-  for (const scenario of scenarios) {
-    const fixture = loadFixture(fixturePathFor(scenario));
-    const ops = loadOps(opsPathFor(scenario));
-    const a = runSyntheticEngine(fixture, ops);
-    const b = runSyntheticEngine(fixture, ops);
-    const comparators = compareRuns(a, b, fixture);
-    out.push({ id: scenario.id, library: scenario.library, oracle: "synthetic", verdict: overallVerdict(comparators), comparators });
-  }
-  return out;
-}
-
-export function runSyntheticSelftest() {
-  const fixture = { schemaVersion: 1, id: "selftest", library: "jointjs", kind: "jointjs-graph",
-    model: { elements: [{ id: "a", type: "rect", x: 10, y: 20, width: 100, height: 50, label: "A" }], flows: [] },
-    pixelThreshold: { maxMismatchRatio: 0.01, perChannelDelta: 8 } };
-  const base = runSyntheticEngine(fixture, { schemaVersion: 1, id: "t", steps: [] });
-  return divergenceSelftest(base, fixture, "synthetic");
-}
-
 // Injected divergences must be detected on every comparator. `base` is a
-// real (or, for the synthetic variant, synthetic) run output; the caller
-// stamps the report with the matching oracle kind.
-export function divergenceSelftest(base, fixture, oracleKind) {
+// real JointJS run output (model = graph.toJSON()).
+export function divergenceSelftest(base, fixture) {
   const clone = (v) => JSON.parse(JSON.stringify(v));
   const checks = [];
-  const mutatedModel = clone(base); mutatedModel.model.elements[0].x = 999;
+  const mutatedModel = clone(base);
+  const firstElement = mutatedModel.model.cells.find((c) => c.position);
+  firstElement.position.x += 999;
   checks.push({ comparator: "model", detected: compareModel(base.model, mutatedModel.model).verdict === "fail" });
   const mutatedGeo = clone(base); mutatedGeo.geometry.bounds[Object.keys(mutatedGeo.geometry.bounds)[0]].x += 50;
   checks.push({ comparator: "geometry", detected: compareGeometry(base.geometry, mutatedGeo.geometry).verdict === "fail" });
@@ -178,13 +224,7 @@ export function divergenceSelftest(base, fixture, oracleKind) {
     events: compareEvents(base.events, clone(base).events).verdict,
     pixels: comparePixels(base.pixels, clone(base).pixels, fixture.pixelThreshold).verdict,
   };
-  return { oracle: oracleKind, checks, control, pass: checks.every((c) => c.detected) && Object.values(control).every((v) => v === "pass") };
-}
-
-// Backwards-compatible name used by the unit tests for the synthetic
-// comparator selftest (oracle: "synthetic", never a gate).
-export function runSelftest() {
-  return runSyntheticSelftest();
+  return { oracle: "real", checks, control, pass: checks.every((c) => c.detected) && Object.values(control).every((v) => v === "pass") };
 }
 
 // -------------------------------------------------------------- browser IO
@@ -250,11 +290,11 @@ async function launchHarnessBrowser() {
 }
 
 // --------------------------------------------------------------- real gates
-function unknownScenario(scenario, gate, cause) {
+function unknownScenario(scenario, gate, cause, causeKind = "infrastructure") {
   const oracle = gateOracle(gate);
   return {
     id: scenario.id, library: scenario.library, oracle: "real", oracleVersion: oracle.libraryVersion,
-    verdict: "unknown", cause,
+    verdict: "unknown", cause, causeKind,
     comparators: {
       model: { verdict: "unknown", detail: cause },
       events: { verdict: "unknown", detail: cause },
@@ -264,7 +304,7 @@ function unknownScenario(scenario, gate, cause) {
   };
 }
 
-export async function runRealGates(scenarios) {
+export async function runRealGates(scenarios, { dumpDir = null } = {}) {
   const { runRealInPage } = await import("./runners.mjs");
   const statuses = bundleStatus();
   const results = [];
@@ -326,7 +366,7 @@ export async function runRealGates(scenarios) {
       // is `unknown` with its cause (C1) — never run, never green.
       if (fixture.extraction && fixture.extraction.status === "unknown") {
         const cause = fixture.extraction.cause || "example graph not mechanically extractable";
-        const entry = unknownScenario(scenario, gate, cause);
+        const entry = unknownScenario(scenario, gate, cause, ACCEPTED_UNKNOWN_KIND);
         results.push(entry);
         if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause });
         continue;
@@ -342,6 +382,10 @@ export async function runRealGates(scenarios) {
         };
         if (left.warnings && left.warnings.length) entry.warnings = left.warnings;
         if (left.skippedOps && left.skippedOps.length) entry.skippedOps = left.skippedOps;
+        if (dumpDir) {
+          fs.mkdirSync(dumpDir, { recursive: true });
+          fs.writeFileSync(path.join(dumpDir, `${scenario.id}.json`), JSON.stringify({ model: left.model, events: left.events, geometry: left.geometry }, null, 1));
+        }
         results.push(entry);
         if (scenario.library === "xyflow") {
           xyflow.executed.push(scenario.id);
@@ -349,7 +393,7 @@ export async function runRealGates(scenarios) {
         }
       } catch (err) {
         const cause = String(err && err.message || err).split("\n")[0].slice(0, 300);
-        const entry = unknownScenario(scenario, gate, cause);
+        const entry = unknownScenario(scenario, gate, cause, "run-error");
         results.push(entry);
         if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause });
       }
@@ -365,7 +409,7 @@ export async function runRealGates(scenarios) {
 
 export async function runRealSelftest() {
   const { runRealInPage } = await import("./runners.mjs");
-  const fixture = loadFixture(path.join(HARNESS_ROOT, "fixtures", "jointjs", "basic.f1.json"));
+  const fixture = loadFixture(path.join(HARNESS_ROOT, "fixtures", "jointjs", "basic.json"));
   const emptyOps = { schemaVersion: 1, id: "empty", steps: [] };
   const st = bundleStatus()["jointjs"];
   if (!st.built) return { unknown: st.cause };
@@ -377,7 +421,7 @@ export async function runRealSelftest() {
     ctx = await launchHarnessBrowser();
     if (ctx.oracleStatus && ctx.oracleStatus.jointjs === false) return { unknown: "bundle bundles/joint.js did not load in the harness page" };
     const base = await runRealInPage(ctx.page, "jointjs", fixture, emptyOps);
-    if (!base.model || !base.model.elements || !base.model.elements.length) {
+    if (!base.model || !Array.isArray(base.model.cells) || !base.model.cells.some((c) => c.position)) {
       return { unknown: "real JointJS run produced no elements (graph did not load the fixture)" };
     }
     if (!base.pixels || !base.pixels.data) {
@@ -387,13 +431,13 @@ export async function runRealSelftest() {
     // of the real @joint/core whose first cell fill is changed through the
     // library's own attr API at identical bounds. Mutating a buffer after
     // the fact would prove nothing about the rendered output.
-    const firstCellId = fixture.model.cells.find((c) => !(c.type || "").endsWith("Link")).id;
+    const firstCellId = fixture.input.cells.find((c) => c.position).id;
     const mutatedFixture = { ...fixture, renderMutation: { cellId: firstCellId, fill: "#ff0000" } };
     const mutated = await runRealInPage(ctx.page, "jointjs", mutatedFixture, emptyOps);
     if (!mutated.pixels || !mutated.pixels.data) {
       return { unknown: "mutated JointJS run produced no captured pixels" };
     }
-    const result = divergenceSelftest(base, fixture, "real");
+    const result = divergenceSelftest(base, fixture);
     const pixelCheck = result.checks.find((c) => c.comparator === "pixels");
     if (pixelCheck) {
       pixelCheck.detected = comparePixels(base.pixels, mutated.pixels, fixture.pixelThreshold).verdict === "fail";
@@ -433,18 +477,7 @@ function gateReportBase(mode) {
 
 async function main(argv) {
   const [command, ...rest] = argv;
-  const synthetic = rest.includes("--synthetic");
   if (command === "selftest") {
-    if (synthetic) {
-      const result = runSyntheticSelftest();
-      console.log(JSON.stringify(result, null, 2));
-      const report = { schemaVersion: 1, mode: "selftest", seed: 42, oracle: "synthetic",
-        scenarios: [{ id: "synthetic-injected-divergences", oracle: "synthetic", verdict: result.pass ? "pass" : "fail",
-          comparators: Object.fromEntries(result.checks.map((c) => [c.comparator, { verdict: c.detected ? "pass" : "fail", detail: c.detected ? "injected divergence detected (synthetic base)" : "NOT detected" }])) }] };
-      const file = writeReport("synthetic-selftest", report);
-      console.log(`report: ${path.relative(REPO_ROOT, file)} (oracle: synthetic — never a gate)`);
-      process.exit(result.pass ? 0 : 1);
-    }
     const outcome = await runRealSelftest();
     if (outcome.unknown) {
       const report = { ...gateReportBase("selftest"),
@@ -479,28 +512,28 @@ async function main(argv) {
   if (command === "run") {
     const fixtureErrors = validateFixtures();
     if (fixtureErrors.length) { console.error(fixtureErrors.join("\n")); process.exit(1); }
-    const scenarios = listScenarios(path.join(HARNESS_ROOT, "fixtures", "scenarios"));
-    if (synthetic) {
-      const results = await runSyntheticParity(scenarios);
-      const report = { schemaVersion: 1, mode: "self-parity", seed: 42, oracle: "synthetic", scenarios: results };
-      const file = writeReport("synthetic-self-parity", report);
-      for (const s of results) console.log(`${s.verdict.toUpperCase()} ${s.id} model=${s.comparators.model.verdict} events=${s.comparators.events.verdict} geometry=${s.comparators.geometry.verdict} pixels=${s.comparators.pixels.verdict}`);
-      const failed = results.filter((s) => s.verdict === "fail");
-      console.log(`scenarios=${results.length} pass=${results.length - failed.length} fail=${failed.length} oracle=synthetic`);
-      console.log(`report: ${path.relative(REPO_ROOT, file)} (oracle: synthetic — never a gate)`);
-      process.exit(failed.length ? 1 : 0);
+    const onlyArg = rest.find((a) => a.startsWith("--only="));
+    const only = onlyArg ? onlyArg.slice("--only=".length) : null;
+    const scenarios = listScenarios(path.join(HARNESS_ROOT, "fixtures", "scenarios")).filter((sc) => !only || sc.id.includes(only));
+    const dumpArg = rest.find((a) => a.startsWith("--dump="));
+    const { results, xyflow } = await runRealGates(scenarios, { dumpDir: only && dumpArg ? path.resolve(dumpArg.slice("--dump=".length)) : null });
+    if (only) {
+      // Partial run for iteration: printed, never archived as a gate report.
+      for (const sc of results) console.log(JSON.stringify({ id: sc.id, verdict: sc.verdict, cause: sc.cause, warnings: sc.warnings, skippedOps: sc.skippedOps, comparators: sc.comparators }));
+      process.exit(results.every((sc) => sc.verdict === "pass") ? 0 : 1);
     }
-    const { results, xyflow } = await runRealGates(scenarios);
     const versions = readOracleVersions();
-    const report = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions, scenarios: results };
+    const report = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions, candidate: CANDIDATE_STATUS, scenarios: results };
     const file = writeReport("self-parity", report);
     const xyReport = { ...gateReportBase("self-parity"), browser: "headless-chrome", oracleVersions: versions,
+      candidate: { xyflow: CANDIDATE_STATUS.xyflow },
       scenarios: results.filter((s) => s.library === "xyflow"),
       xyflow: { executed: xyflow.executed, failed: xyflow.failed, outputs: xyflow.outputs } };
     const xyFile = writeReport("xyflow-examples", xyReport);
     for (const s of results) {
       const comp = s.comparators;
-      console.log(`${s.verdict.toUpperCase()} ${s.id} oracle=real version=${s.oracleVersion} model=${comp.model.verdict} events=${comp.events.verdict} geometry=${comp.geometry.verdict} pixels=${comp.pixels.verdict}${s.cause ? ` cause=${s.cause}` : ""}`);
+      const compText = Object.entries(comp).map(([k, v]) => `${k}=${v.verdict}`).join(" ");
+      console.log(`${s.verdict.toUpperCase()} ${s.id} oracle=real version=${s.oracleVersion} ${compText}${s.cause ? ` cause=${s.cause}` : ""}${s.warnings ? ` warnings=${s.warnings.length}` : ""}`);
     }
     const failed = results.filter((s) => s.verdict === "fail");
     const unknown = results.filter((s) => s.verdict === "unknown");
@@ -518,7 +551,7 @@ async function main(argv) {
     console.log(`report: ${path.relative(REPO_ROOT, xyFile)}`);
     process.exit(failed.length || unknown.length ? 1 : 0);
   }
-  console.error("usage: harness.mjs run [--synthetic] | selftest [--synthetic] | coverage [--strict]");
+  console.error("usage: harness.mjs run | selftest | coverage [--strict]");
   process.exit(2);
 }
 

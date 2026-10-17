@@ -4,9 +4,9 @@
   "steps": [
     {
       "op": "move",
-      "elementId": "0",
+      "elementId": "2",
       "x": 40,
-      "y": 30
+      "y": 180
     },
     {
       "op": "connect",

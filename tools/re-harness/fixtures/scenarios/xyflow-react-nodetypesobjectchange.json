@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-nodetypesobjectchange-selfparity","library":"xyflow","fixtures":["xyflow/react-nodetypesobjectchange.json"],"ops":"xyflow/react-nodetypesobjectchange.ops.json","exercises":["examples.react-nodetypesobjectchange"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-nodetypesobjectchange-selfparity","library":"xyflow","fixtures":["xyflow/react-nodetypesobjectchange.json"],"exercises":["examples.react-nodetypesobjectchange"],"comparators":["model","events","geometry","pixels"]}

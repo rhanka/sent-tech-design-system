@@ -46,15 +46,15 @@ function Host(props) {
   }, []);
 
   const onNodesChange = (changes) => {
-    for (const c of changes) props.journal.push({ name: "nodesChange", payload: { id: c.id || "", type: c.type || "" } });
+    for (const c of changes) props.journal.push({ name: "nodesChange", payload: JSON.parse(JSON.stringify(c)) });
     setNodes((nds) => applyNodeChanges(changes, nds));
   };
   const onEdgesChange = (changes) => {
-    for (const c of changes) props.journal.push({ name: "edgesChange", payload: { id: c.id || "", type: c.type || "" } });
+    for (const c of changes) props.journal.push({ name: "edgesChange", payload: JSON.parse(JSON.stringify(c)) });
     setEdges((eds) => applyEdgeChanges(changes, eds));
   };
   const onConnect = (connection) => {
-    props.journal.push({ name: "connect", payload: { source: connection.source || "", target: connection.target || "" } });
+    props.journal.push({ name: "connect", payload: JSON.parse(JSON.stringify(connection)) });
     setEdges((eds) => addEdge(connection, eds));
   };
 
@@ -77,14 +77,14 @@ function Host(props) {
       defaultViewport: props.initialViewport,
       minZoom: props.flowOptions?.minZoom,
       maxZoom: props.flowOptions?.maxZoom,
-      fitView: false,
+      fitView: Boolean(props.flowOptions?.fitView),
       proOptions: { hideAttribution: true },
     }),
   );
 }
 
 // mountFlow(container, fixture, journal) -> { handle, unmount }
-// Nodes/edges are copied from the fixture VERBATIM (C1): type, parentId,
+// Nodes/edges are copied from the fixture input VERBATIM (C1): type, parentId,
 // extent, handles, sizes, style and flow options are never truncated to
 // { id, type, position, data }.
 const NODE_FIELDS = ["parentId", "extent", "origin", "expandParent", "hidden", "selected", "draggable", "selectable", "deletable", "width", "height", "initialWidth", "initialHeight", "style", "className", "sourcePosition", "targetPosition", "zIndex", "dragHandle", "focusable", "connectable"];
@@ -111,9 +111,9 @@ function verbatimEdge(e) {
 }
 
 function mountFlow(container, fixture, journal) {
-  const initialNodes = (fixture.model.nodes || []).map(verbatimNode);
-  const initialEdges = (fixture.model.edges || []).map(verbatimEdge);
-  const initialViewport = fixture.viewport || fixture.model.viewport || { x: 0, y: 0, zoom: 1 };
+  const initialNodes = (fixture.input.nodes || []).map(verbatimNode);
+  const initialEdges = (fixture.input.edges || []).map(verbatimEdge);
+  const initialViewport = fixture.input.viewport || { x: 0, y: 0, zoom: 1 };
   let handle = null;
   const root = createRoot(container);
   root.render(
@@ -121,7 +121,7 @@ function mountFlow(container, fixture, journal) {
       initialNodes,
       initialEdges,
       initialViewport,
-      flowOptions: fixture.model.flowOptions || {},
+      flowOptions: fixture.input.flowOptions || {},
       journal,
       onHandle: (hd) => {
         handle = hd;

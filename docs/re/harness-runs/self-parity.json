@@ -1,5 +1,19 @@
 {
   "browser": "headless-chrome",
+  "candidate": {
+    "bpmn": {
+      "cause": "candidate = DiagramState through the A' codec (toDiagramState / toModdleJson, private package @sentropic/diagram-bpmn-moddle), delivered by lot L3 of spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md §13; not written at L0",
+      "verdict": "unsupported"
+    },
+    "jointjs": {
+      "cause": "candidate = DiagramState (packages/diagram-core) through the JointJS-parity adapter of a later lot (spec/SPEC_RE_JOINTJS_PARITY.md §6); not written at L0",
+      "verdict": "unsupported"
+    },
+    "xyflow": {
+      "cause": "candidate = DiagramState (packages/diagram-core) through the xyflow-parity adapter of a later lot (spec/SPEC_RE_XYFLOW_PARITY.md §8); not written at L0",
+      "verdict": "unsupported"
+    }
+  },
   "mode": "self-parity",
   "oracle": "real",
   "oracleVersions": {
@@ -37,6 +51,10 @@
         "xml": {
           "detail": "saveXML identical across both real runs",
           "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
         }
       },
       "id": "bpmn-annotations-selfparity",
@@ -65,6 +83,10 @@
         },
         "xml": {
           "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
           "verdict": "pass"
         }
       },
@@ -95,6 +117,10 @@
         "xml": {
           "detail": "saveXML identical across both real runs",
           "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
         }
       },
       "id": "bpmn-events-selfparity",
@@ -123,6 +149,10 @@
         },
         "xml": {
           "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
           "verdict": "pass"
         }
       },
@@ -153,6 +183,10 @@
         "xml": {
           "detail": "saveXML identical across both real runs",
           "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
         }
       },
       "id": "bpmn-pools-lanes-selfparity",
@@ -181,6 +215,10 @@
         },
         "xml": {
           "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
           "verdict": "pass"
         }
       },
@@ -211,6 +249,10 @@
         "xml": {
           "detail": "saveXML identical across both real runs",
           "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
         }
       },
       "id": "bpmn-subprocess-expanded-selfparity",
@@ -239,6 +281,10 @@
         },
         "xml": {
           "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
           "verdict": "pass"
         }
       },
@@ -276,8 +322,8 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "13 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -296,13 +342,13 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -321,13 +367,13 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -346,12 +392,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -376,8 +422,8 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "11 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -396,13 +442,13 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "10 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -413,7 +459,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -421,12 +467,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -451,7 +497,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -476,7 +522,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -501,8 +547,8 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "11 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -521,12 +567,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -574,84 +620,90 @@
       "verdict": "pass"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-customnode-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-defaultedgeoverwrite-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (unregistered) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-defaultnodeoverwrite-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -676,7 +728,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "6 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -699,59 +751,63 @@
       "verdict": "pass"
     },
     {
+      "cause": "initial graph is not a pure data literal (ChangeLogger.tsx: non-literal change)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (ChangeLogger.tsx: non-literal change)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (ChangeLogger.tsx: non-literal change)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (ChangeLogger.tsx: non-literal change)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (ChangeLogger.tsx: non-literal change)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-devtools-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (dragHandleNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-draghandle-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -774,35 +830,37 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-easyconnect-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "19 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -821,12 +879,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "26 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -851,7 +909,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "20 events equal (names, payload keys, remapped values)",
+          "detail": "24 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -874,54 +932,58 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-edgetoolbar-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-edgetypes-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
@@ -951,8 +1013,8 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "10 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -971,7 +1033,34 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
+    },
+    {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
+      "comparators": {
+        "events": {
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
+        },
+        "geometry": {
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
+        },
+        "model": {
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
+        },
+        "pixels": {
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
+        }
+      },
+      "id": "xyflow-react-floatingedges-selfparity",
+      "library": "xyflow",
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "unknown"
     },
     {
       "comparators": {
@@ -992,43 +1081,17 @@
           "verdict": "pass"
         }
       },
-      "id": "xyflow-react-floatingedges-selfparity",
+      "id": "xyflow-react-hidden-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
       "verdict": "pass"
     },
     {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        }
-      },
-      "id": "xyflow-react-hidden-selfparity",
-      "library": "xyflow",
-      "oracle": "real",
-      "oracleVersion": "12.12.0",
-      "verdict": "unknown"
-    },
-    {
-      "comparators": {
-        "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "11 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -1047,12 +1110,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1077,7 +1140,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1097,12 +1160,15 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "pass",
+      "warnings": [
+        "move 0: the library did not move the node under a real drag (hit element: 1 react-flow__node react-flow__node-input nopan selected selectable draggable)"
+      ]
     },
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1122,13 +1188,16 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "pass",
+      "warnings": [
+        "move 1: the library did not move the node under a real drag (hit element: 6 react-flow__node react-flow__node-output nopan selected selectable draggable)"
+      ]
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "10 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -1144,31 +1213,6 @@
         }
       },
       "id": "xyflow-react-middlewares-selfparity",
-      "library": "xyflow",
-      "oracle": "real",
-      "oracleVersion": "12.12.0",
-      "verdict": "fail"
-    },
-    {
-      "comparators": {
-        "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
-        },
-        "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
-        },
-        "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
-        },
-        "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
-        }
-      },
-      "id": "xyflow-react-movinghandles-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
@@ -1193,6 +1237,31 @@
           "verdict": "pass"
         }
       },
+      "id": "xyflow-react-movinghandles-selfparity",
+      "library": "xyflow",
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "11 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
       "id": "xyflow-react-multiflows-selfparity",
       "library": "xyflow",
       "oracle": "real",
@@ -1200,59 +1269,63 @@
       "verdict": "pass"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-multisetnodes-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-noderesizer-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1275,34 +1348,36 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-nodetoolbar-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1325,32 +1400,35 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (a, b) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-nodetypesobjectchange-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "unknown"
     },
     {
       "cause": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
           "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
@@ -1378,7 +1456,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1402,6 +1480,7 @@
     },
     {
       "cause": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
           "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
@@ -1429,7 +1508,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "10 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1454,7 +1533,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1479,7 +1558,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1503,6 +1582,7 @@
     },
     {
       "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
           "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
@@ -1528,35 +1608,37 @@
       "verdict": "unknown"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-stress-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -1575,12 +1657,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1605,7 +1687,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1628,34 +1710,36 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-undirectional-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1680,8 +1764,8 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name init !== nodesChange",
-          "verdict": "fail"
+          "detail": "9 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -1700,10 +1784,11 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
           "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
@@ -1729,6 +1814,60 @@
       "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
+      "comparators": {
+        "events": {
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "geometry": {
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "model": {
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "pixels": {
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        }
+      },
+      "id": "xyflow-react-usenodeconnections-selfparity",
+      "library": "xyflow",
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "unknown"
+    },
+    {
+      "cause": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
+      "comparators": {
+        "events": {
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "geometry": {
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "model": {
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        },
+        "pixels": {
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
+        }
+      },
+      "id": "xyflow-react-usenodesdata-selfparity",
+      "library": "xyflow",
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "unknown"
+    },
+    {
       "comparators": {
         "events": {
           "detail": "9 events equal (names, payload keys, remapped values)",
@@ -1747,7 +1886,7 @@
           "verdict": "pass"
         }
       },
-      "id": "xyflow-react-usenodeconnections-selfparity",
+      "id": "xyflow-react-usenodesinit-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
@@ -1756,58 +1895,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
-        },
-        "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
-        },
-        "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
-        },
-        "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
-        }
-      },
-      "id": "xyflow-react-usenodesdata-selfparity",
-      "library": "xyflow",
-      "oracle": "real",
-      "oracleVersion": "12.12.0",
-      "verdict": "fail"
-    },
-    {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-      "comparators": {
-        "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        },
-        "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
-          "verdict": "unknown"
-        }
-      },
-      "id": "xyflow-react-usenodesinit-selfparity",
-      "library": "xyflow",
-      "oracle": "real",
-      "oracleVersion": "12.12.0",
-      "verdict": "unknown"
-    },
-    {
-      "comparators": {
-        "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1832,7 +1920,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1855,60 +1943,64 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-useupdatenodeinternals-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custominput, customnode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-validation-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "event[0] name nodesChange !== init",
-          "verdict": "fail"
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
           "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
@@ -1927,12 +2019,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "fail"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1957,7 +2049,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1982,7 +2074,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2005,29 +2097,31 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-custom-connection-line-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
@@ -2055,22 +2149,23 @@
       "verdict": "pass"
     },
     {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+      "cause": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (colorNode) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         }
       },
@@ -2083,7 +2178,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "16 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2095,7 +2190,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -2103,37 +2198,42 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "pass",
+      "warnings": [
+        "move 1: the library did not move the node under a real drag (hit element: 7 svelte-flow__node svelte-flow__node-output draggable connectable selectable nopan selected)"
+      ]
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "6 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-detached-handle-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2156,34 +2256,36 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "6 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-edge-toolbar-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "20 events equal (names, payload keys, remapped values)",
+          "detail": "21 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2208,7 +2310,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2220,7 +2322,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -2231,22 +2333,23 @@
       "verdict": "pass"
     },
     {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+      "cause": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (multi, single) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         }
       },
@@ -2259,7 +2362,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2284,7 +2387,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2307,72 +2410,77 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "17 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (bottomRightResizer, customResizer, defaultResizer, fixedExtent, horizontalResizer, verticalResizer) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-node-resizer-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "4 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-node-toolbar-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+      "cause": "custom node/edge types (custom, dragHandle) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (custom, dragHandle) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (custom, dragHandle) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (custom, dragHandle) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (custom, dragHandle) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         }
       },
@@ -2385,7 +2493,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2408,34 +2516,36 @@
       "verdict": "pass"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-stress-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "16 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2460,7 +2570,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2485,7 +2595,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2508,22 +2618,23 @@
       "verdict": "pass"
     },
     {
-      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+      "cause": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "detail": "custom node/edge types (result, text, uppercase) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
           "verdict": "unknown"
         }
       },
@@ -2536,7 +2647,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2559,34 +2670,36 @@
       "verdict": "pass"
     },
     {
+      "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+      "causeKind": "fixture-extraction",
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-useupdatenodeinternals-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {

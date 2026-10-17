@@ -2,39 +2,24 @@
   "schemaVersion": 1,
   "id": "xyflow-react-edgetypes",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.react-edgetypes",
-  "model": {
+  "input": {
     "nodes": [],
-    "edges": [
-      {
-        "id": "bottom->top",
-        "source": "bottom",
-        "target": "top"
-      },
-      {
-        "id": "right->left",
-        "source": "right",
-        "target": "left"
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
       "zoom": 1
     }
   },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
-  },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
   },
   "extraction": {
-    "status": "extracted",
-    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/EdgeTypes/utils.ts"
+    "status": "unknown",
+    "cause": "initial graph is not a pure data literal (utils.ts: non-literal nodeGapWidth)",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/EdgeTypes/index.tsx"
   }
 }

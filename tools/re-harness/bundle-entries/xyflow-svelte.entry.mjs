@@ -30,9 +30,9 @@ function verbatimEdge(e) {
 }
 
 function mountFlow(container, fixture, journal) {
-  const initialNodes = (fixture.model.nodes || []).map(verbatimNode);
-  const initialEdges = (fixture.model.edges || []).map(verbatimEdge);
-  const initialViewport = fixture.viewport || fixture.model.viewport || { x: 0, y: 0, zoom: 1 };
+  const initialNodes = (fixture.input.nodes || []).map(verbatimNode);
+  const initialEdges = (fixture.input.edges || []).map(verbatimEdge);
+  const initialViewport = fixture.input.viewport || { x: 0, y: 0, zoom: 1 };
   let api = null;
   const app = mount(Host, {
     target: container,
@@ -40,6 +40,7 @@ function mountFlow(container, fixture, journal) {
       initialNodes,
       initialEdges,
       initialViewport,
+      flowOptions: fixture.input.flowOptions || {},
       journal,
       onready: (a) => {
         api = a;

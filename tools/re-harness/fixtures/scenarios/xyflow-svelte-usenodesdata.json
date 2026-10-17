@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-usenodesdata-selfparity","library":"xyflow","fixtures":["xyflow/svelte-usenodesdata.json"],"ops":"xyflow/svelte-usenodesdata.ops.json","exercises":["examples.svelte-usenodesdata"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-usenodesdata-selfparity","library":"xyflow","fixtures":["xyflow/svelte-usenodesdata.json"],"exercises":["examples.svelte-usenodesdata"],"comparators":["model","events","geometry","pixels"]}

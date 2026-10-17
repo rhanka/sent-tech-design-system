@@ -1,26 +1,31 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sentropic.example/re-harness/fixture-model.schema.json",
-  "title": "RE harness fixture: model document (v1)",
-  "description": "Pure-data model shared verbatim by the reference and candidate runners. One file per fixture. BPMN fixtures carry the XML text plus the derived F1 canonical model; xyflow fixtures carry a flow graph; JointJS fixtures carry a graph JSON. No fixture encodes library calls.",
+  "title": "RE harness fixture envelope (v1)",
+  "description": "Envelope of one fixture: identity, library, the reference library's NATIVE input, and run options. It describes no diagram model: the harness defines no semantic schema or canonical form of its own (tools/re-harness/README.md, section Model). The diagram metamodel is packages/diagram-core (DiagramState); BPMN enters it through the A' codec of spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md. input is passed to the reference library verbatim: a complete BPMN 2.0 XML file with BPMNDI for bpmn-js importXML, the nodes/edges/props of an xyflow flow, or a dia.Graph JSON for JointJS graph.fromJSON.",
   "type": "object",
-  "required": ["schemaVersion", "id", "library", "kind", "model"],
+  "required": ["schemaVersion", "id", "library", "kind", "input"],
   "properties": {
     "schemaVersion": { "const": 1 },
     "id": { "type": "string", "minLength": 1 },
     "library": { "enum": ["bpmn", "xyflow", "jointjs"] },
-    "kind": { "enum": ["bpmn-xml-f1", "xyflow-graph", "jointjs-graph"] },
+    "kind": {
+      "enum": ["bpmn-xml", "xyflow-flow", "jointjs-graph-json"],
+      "description": "Which native input format `input` carries."
+    },
     "title": { "type": "string" },
-    "xml": { "type": "string", "description": "Complete BPMN 2.0 XML text with BPMNDI (reference-native); present only for bpmn-xml-f1. Loaded verbatim by importXML." },
-    "model": { "type": "object", "description": "Canonical model: F1 (bpmn), flow graph (xyflow) or graph JSON (jointjs). Keys are compared after canonical sort." },
+    "input": {
+      "type": "object",
+      "description": "Reference-native input, never a harness model. bpmn-xml: { xmlFile } naming a .bpmn file under fixtures/, loaded verbatim by importXML. xyflow-flow: { nodes, edges, viewport, flowOptions } extracted mechanically from the pinned example sources and mounted verbatim. jointjs-graph-json: { cells } passed verbatim to graph.fromJSON."
+    },
     "idCorrespondence": {
       "type": "object",
-      "description": "Declared id remapping between the two runs (bpmn §8.3 point 2). Must be a bijection; enforced by validateFixtures and compareEvents (C6).",
+      "description": "Declared id remapping between the two compared runs (SPEC_RE_BPMN_JS_PARITY §8.3 point 2). Must be a bijection; enforced by validateFixtures and compareEvents.",
       "additionalProperties": { "type": "string" }
     },
     "extraction": {
       "type": "object",
-      "description": "Mechanical-extraction provenance for xyflow example fixtures (C1). status=unknown fixtures are never run green: the gate reports them unknown with the cause.",
+      "description": "Mechanical-extraction provenance for xyflow example fixtures. status=unknown fixtures are never run green: the gate reports them unknown with the cause.",
       "required": ["status"],
       "properties": {
         "status": { "enum": ["extracted", "unknown"] },
@@ -31,7 +36,7 @@
     },
     "renderMutation": {
       "type": "object",
-      "description": "Selftest only: a real rendering mutation applied through the library API before pixel capture (C3).",
+      "description": "Selftest only: a real rendering mutation applied through the library API before pixel capture.",
       "properties": {
         "cellId": { "type": "string" },
         "fill": { "type": "string" }

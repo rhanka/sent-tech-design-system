@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "xyflow-svelte-reset",
   "library": "xyflow",
-  "kind": "xyflow-graph",
+  "kind": "xyflow-flow",
   "title": "xyflow example fixture for examples.svelte-reset",
-  "model": {
+  "input": {
     "nodes": [
       {
         "id": "c1",
@@ -36,12 +36,10 @@
       "x": 0,
       "y": 0,
       "zoom": 1
+    },
+    "flowOptions": {
+      "fitView": true
     }
-  },
-  "viewport": {
-    "x": 0,
-    "y": 0,
-    "zoom": 1
   },
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
