@@ -25,7 +25,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "16 events equal (names, payload keys, remapped values)",
+          "detail": "21 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -122,7 +122,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -153,7 +153,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "26 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -184,7 +184,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -215,7 +215,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -246,7 +246,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -277,7 +277,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -308,7 +308,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -406,7 +406,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -437,7 +437,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -470,7 +470,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -503,7 +503,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -534,7 +534,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -565,7 +565,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -662,7 +662,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -695,7 +695,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "9 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -726,7 +726,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "31 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -757,7 +757,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "9 events equal (names, payload keys, remapped values)",
+          "detail": "25 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -788,7 +788,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -821,7 +821,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "172 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -886,7 +886,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -915,31 +915,32 @@
       "verdict": "pass"
     },
     {
-      "cause": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
-      "causeKind": "example-error",
+      "cause": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
+      "causeKind": "upstream-deviation",
       "comparators": {
         "events": {
-          "detail": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
+          "detail": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
+          "detail": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
+          "detail": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
+          "detail": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
           "verdict": "unknown"
         }
       },
+      "deviation": "xyflow-react-floatingedges-connection-line",
       "id": "xyflow-react-floatingedges-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "unknown"
+      "verdict": "deviation"
     },
     {
       "comparators": {
@@ -977,7 +978,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "2 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1010,7 +1011,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "22 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1041,7 +1042,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1070,36 +1071,40 @@
       "verdict": "pass"
     },
     {
-      "cause": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-      "causeKind": "example-unrunnable",
       "comparators": {
         "events": {
-          "detail": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "22 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
-          "detail": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
         },
         "model": {
-          "detail": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
         },
         "pixels": {
-          "detail": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
         }
       },
       "id": "xyflow-react-layouting-selfparity",
       "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "unknown"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1130,7 +1135,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "22 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1161,7 +1166,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "17 events equal (names, payload keys, remapped values)",
+          "detail": "23 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1192,7 +1197,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "111 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1223,7 +1228,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "26 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1287,7 +1292,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "24 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1318,7 +1323,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1351,7 +1356,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1382,7 +1387,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "7 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1413,7 +1418,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1444,7 +1449,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "8 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1473,36 +1478,40 @@
       "verdict": "pass"
     },
     {
-      "cause": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-      "causeKind": "example-unrunnable",
       "comparators": {
         "events": {
-          "detail": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
-          "detail": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
         },
         "model": {
-          "detail": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
         },
         "pixels": {
-          "detail": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
         }
       },
       "id": "xyflow-react-redux-selfparity",
       "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "unknown"
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1531,36 +1540,42 @@
       "verdict": "pass"
     },
     {
-      "cause": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-      "causeKind": "example-unrunnable",
       "comparators": {
         "events": {
-          "detail": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "12 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
-          "detail": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
         },
         "model": {
-          "detail": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
         },
         "pixels": {
-          "detail": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
         }
       },
       "id": "xyflow-react-saverestore-selfparity",
       "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "unknown"
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
     },
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1592,7 +1607,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "636 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1623,7 +1638,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "23 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1654,7 +1669,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "16 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1685,7 +1700,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1716,7 +1731,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1749,7 +1764,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1782,7 +1797,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1811,23 +1826,23 @@
       "verdict": "pass"
     },
     {
-      "cause": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+      "cause": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
       "causeKind": "example-without-flow",
       "comparators": {
         "events": {
-          "detail": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+          "detail": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
           "verdict": "unknown"
         },
         "geometry": {
-          "detail": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+          "detail": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
           "verdict": "unknown"
         },
         "model": {
-          "detail": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+          "detail": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
           "verdict": "unknown"
         },
         "pixels": {
-          "detail": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+          "detail": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
           "verdict": "unknown"
         }
       },
@@ -1835,12 +1850,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "unknown"
+      "verdict": "not-applicable"
     },
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1871,7 +1886,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1902,7 +1917,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1933,7 +1948,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1966,7 +1981,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2028,7 +2043,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "10 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2061,7 +2076,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2285,31 +2300,35 @@
       "verdict": "pass"
     },
     {
-      "cause": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-      "causeKind": "example-unrunnable",
       "comparators": {
         "events": {
-          "detail": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
         },
         "geometry": {
-          "detail": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
         },
         "model": {
-          "detail": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
         },
         "pixels": {
-          "detail": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-          "verdict": "unknown"
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
         }
       },
       "id": "xyflow-svelte-dagre-selfparity",
       "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "unknown"
+      "verdict": "pass"
     },
     {
       "comparators": {
@@ -2977,6 +2996,7 @@
       "xyflow-react-interaction-selfparity",
       "xyflow-react-interactiveminimap-selfparity",
       "xyflow-react-intersection-selfparity",
+      "xyflow-react-layouting-selfparity",
       "xyflow-react-middlewares-selfparity",
       "xyflow-react-movinghandles-selfparity",
       "xyflow-react-multiflows-selfparity",
@@ -2989,7 +3009,9 @@
       "xyflow-react-overview-selfparity",
       "xyflow-react-provider-selfparity",
       "xyflow-react-reconnectedge-selfparity",
+      "xyflow-react-redux-selfparity",
       "xyflow-react-remount-selfparity",
+      "xyflow-react-saverestore-selfparity",
       "xyflow-react-setnodesbatching-selfparity",
       "xyflow-react-stress-selfparity",
       "xyflow-react-subflow-selfparity",
@@ -3012,6 +3034,7 @@
       "xyflow-svelte-custom-connection-line-selfparity",
       "xyflow-svelte-custom-minimap-selfparity",
       "xyflow-svelte-customnode-selfparity",
+      "xyflow-svelte-dagre-selfparity",
       "xyflow-svelte-detached-handle-selfparity",
       "xyflow-svelte-drag-n-drop-selfparity",
       "xyflow-svelte-edge-toolbar-selfparity",
@@ -3035,34 +3058,16 @@
     ],
     "failed": [
       {
-        "cause": "example-error during op connect: Cannot read properties of undefined (reading 'positionAbsolute') [page error: Cannot read properties of undefined (reading 'positionAbsolute')]",
-        "causeKind": "example-error",
-        "id": "xyflow-react-floatingedges-selfparity"
+        "cause": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11)",
+        "causeKind": "upstream-deviation",
+        "id": "xyflow-react-floatingedges-selfparity",
+        "verdict": "deviation"
       },
       {
-        "cause": "imports dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-        "causeKind": "example-unrunnable",
-        "id": "xyflow-react-layouting-selfparity"
-      },
-      {
-        "cause": "imports @reduxjs/toolkit, react-redux, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-        "causeKind": "example-unrunnable",
-        "id": "xyflow-react-redux-selfparity"
-      },
-      {
-        "cause": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-        "causeKind": "example-unrunnable",
-        "id": "xyflow-react-saverestore-selfparity"
-      },
-      {
-        "cause": "page.evaluate: Error: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
+        "cause": "example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare",
         "causeKind": "example-without-flow",
-        "id": "xyflow-react-usekeypress-selfparity"
-      },
-      {
-        "cause": "imports @dagrejs/dagre, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-        "causeKind": "example-unrunnable",
-        "id": "xyflow-svelte-dagre-selfparity"
+        "id": "xyflow-react-usekeypress-selfparity",
+        "verdict": "not-applicable"
       }
     ],
     "outputs": {
@@ -3577,6 +3582,22 @@
           "zoom:wheel"
         ]
       },
+      "xyflow-react-layouting-selfparity": {
+        "edgePaths": 10,
+        "flows": [
+          {
+            "edges": 10,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "9dc08bb6a17dc8b8c8db929b7baf0020933cb551be28cfc35702a406021846d6",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
       "xyflow-react-middlewares-selfparity": {
         "edgePaths": 3,
         "flows": [
@@ -3771,6 +3792,22 @@
           "zoom:wheel"
         ]
       },
+      "xyflow-react-redux-selfparity": {
+        "edgePaths": 6,
+        "flows": [
+          {
+            "edges": 6,
+            "nodes": 7
+          }
+        ],
+        "modelSha256": "fa174fab60b4bd20c30c65b6e05994c0018a6a3274fac27ad853da3c4f60063f",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
       "xyflow-react-remount-selfparity": {
         "edgePaths": 4,
         "flows": [
@@ -3784,6 +3821,21 @@
           "paneClick:pane",
           "move:1",
           "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-saverestore-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "5c06591e746e47526b2030b943a50527eb74ff6827fd73ca908b299e2da6f793",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
           "zoom:wheel"
         ]
       },
@@ -4130,6 +4182,22 @@
           "paneClick:pane",
           "move:1",
           "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-dagre-selfparity": {
+        "edgePaths": 10,
+        "flows": [
+          {
+            "edges": 10,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "d3c89f669c42581bcfaeb15fe735058511f5ef6ef8dfa76eb789e1b40eac58f5",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
           "zoom:wheel"
         ]
       },

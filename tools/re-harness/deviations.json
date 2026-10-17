@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "rule": "SPEC_RE_BPMN_JS_PARITY.md §8.5: an upstream (reference) bug is recorded as a deviation entry with its source path:line, never reproduced silently. A scenario backed by an entry is excluded from its gate with verdict `deviation`; the harness still runs it and checks that the recorded symptom is what happens, so a fixed or changed upstream behaviour fails loudly.",
+  "entries": [
+    {
+      "id": "xyflow-react-floatingedges-connection-line",
+      "library": "xyflow",
+      "scenario": "xyflow-react-floatingedges-selfparity",
+      "kind": "upstream-bug",
+      "summary": "the FloatingEdges example's custom connection line crashes on any connection drag with @xyflow/react 12.12.0: it builds the connection target as a plain node without `internals` and passes it to a helper that reads `internals.positionAbsolute`",
+      "sources": [
+        { "path": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx", "line": 10, "note": "targetNode built with id/width/height/position only (no internals), cast to InternalNode" },
+        { "path": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx", "line": 17, "note": "getEdgeParams(fromNode, targetNode)" },
+        { "path": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts", "line": 11, "note": "targetNode.internals.positionAbsolute: TypeError on the connection target" }
+      ],
+      "trigger": "a connection drag from a node handle (pointer op connect)",
+      "symptom": "Cannot read properties of undefined (reading 'positionAbsolute')",
+      "effect": "the error is thrown during render; React unmounts the example tree, so no graph remains to compare"
+    }
+  ]
+}

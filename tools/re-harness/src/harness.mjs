@@ -75,38 +75,54 @@ export function assertGateReport(report, label = "report") {
 }
 
 // Guard of the xyflow examples gate report. Strict like assertGateReport,
-// except for an EXPLICIT list of examples expected to be unknown, each with
-// its cause kind (one of EXAMPLE_UNKNOWN_KINDS: a cause that belongs to the
-// example, never to the harness). The list must match exactly: an extra
-// unknown, a listed example that passes, a wrong kind, any fail or skipped
-// op throws. The xyflow gate is green only when the list is empty.
-export function assertXyflowExamplesReport(report, expectedUnknown, label = "xyflow-examples.json") {
+// except for an EXPLICIT list of excluded examples, each with its verdict:
+//   "deviation"      — an upstream bug recorded in deviations.json (with its
+//                      source path:line) that happened exactly as recorded;
+//   "not-applicable" — the example mounts no flow (nothing to compare).
+// The list must match exactly: an extra exclusion, a listed example that
+// passes, any unknown, fail or skipped op throws. With these exclusions
+// only, the xyflow gate is green.
+export function assertXyflowExamplesReport(report, expectedExcluded, label = "xyflow-examples.json") {
   const schemaErrors = validateAgainstSchema(report, readJson(schemaPath("report.schema.json")), label);
   if (schemaErrors.length) throw new Error(`${label}: report.schema.json: ${schemaErrors[0]}`);
   if (report.oracle !== "real") throw new Error(`${label}: oracle is not real`);
   if (canonicalString(report.oracleVersions || {}) !== canonicalString(EXPECTED_VERSIONS)) throw new Error(`${label}: oracleVersions do not equal the pinned EXPECTED_VERSIONS`);
   const scenarios = Array.isArray(report.scenarios) ? report.scenarios : [];
   if (!scenarios.length) throw new Error(`${label}: no scenarios`);
+  const deviations = loadDeviations();
   const seen = new Set();
   for (const sc of scenarios) {
     if (sc.oracle !== "real") throw new Error(`${label}: ${sc.id} oracle is not real`);
     if (Array.isArray(sc.skippedOps) && sc.skippedOps.length) throw new Error(`${label}: ${sc.id} skipped operations`);
-    const expected = expectedUnknown[sc.id];
+    const expected = expectedExcluded[sc.id];
     if (expected) {
       seen.add(sc.id);
-      if (!EXAMPLE_UNKNOWN_KINDS.includes(expected)) throw new Error(`${label}: ${sc.id}: ${expected} is not an example cause kind`);
-      if (sc.verdict !== "unknown" || sc.causeKind !== expected || !sc.cause) {
-        throw new Error(`${label}: ${sc.id} expected unknown (${expected}), got ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}`);
-      }
+      if (expected === "deviation") {
+        const dev = deviations[sc.id];
+        if (!dev || sc.verdict !== "deviation" || sc.deviation !== dev.id || sc.causeKind !== "upstream-deviation") {
+          throw new Error(`${label}: ${sc.id} expected deviation backed by deviations.json, got ${sc.verdict}`);
+        }
+        if (!Array.isArray(dev.sources) || !dev.sources.length || dev.sources.some((src) => !src.path || !Number.isInteger(src.line))) {
+          throw new Error(`${label}: deviation ${dev.id} lacks source path:line`);
+        }
+      } else if (expected === "not-applicable") {
+        if (sc.verdict !== "not-applicable" || sc.causeKind !== "example-without-flow" || !sc.cause) throw new Error(`${label}: ${sc.id} expected not-applicable, got ${sc.verdict}`);
+      } else throw new Error(`${label}: ${sc.id}: ${expected} is not an exclusion verdict`);
     } else if (sc.verdict !== "pass") {
       throw new Error(`${label}: ${sc.id} is ${sc.verdict}${sc.causeKind ? ` (${sc.causeKind})` : ""}${sc.cause ? `: ${sc.cause}` : ""}`);
     }
   }
-  for (const id of Object.keys(expectedUnknown)) if (!seen.has(id)) throw new Error(`${label}: expected unknown ${id} is absent`);
+  for (const id of Object.keys(expectedExcluded)) if (!seen.has(id)) throw new Error(`${label}: expected exclusion ${id} is absent`);
   return true;
 }
 
 function readJson(p) { return JSON.parse(fs.readFileSync(p, "utf8")); }
+
+// Upstream deviation entries (SPEC_RE_BPMN_JS_PARITY §8.5), keyed by scenario.
+export function loadDeviations() {
+  const doc = readJson(path.join(HARNESS_ROOT, "deviations.json"));
+  return Object.fromEntries((doc.entries || []).map((e) => [e.scenario, e]));
+}
 function schemaPath(name) { return path.join(HARNESS_ROOT, "schemas", name); }
 
 export function validateFixtures() {
@@ -338,6 +354,7 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
   const { runRealInPage } = await import("./runners.mjs");
   const statuses = bundleStatus();
   const examples = xyflowExampleBundles();
+  const deviations = loadDeviations();
   const results = [];
   const xyflow = { executed: [], failed: [], outputs: {} };
   let browserCtx = null;
@@ -362,7 +379,7 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
 
   const record = (scenario, entry) => {
     results.push(entry);
-    if (scenario.library === "xyflow" && entry.verdict === "unknown") xyflow.failed.push({ id: scenario.id, cause: entry.cause, causeKind: entry.causeKind });
+    if (scenario.library === "xyflow" && entry.verdict !== "pass") xyflow.failed.push({ id: scenario.id, verdict: entry.verdict, cause: entry.cause, causeKind: entry.causeKind });
   };
 
   try {
@@ -415,7 +432,7 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
         if (left.opsLog) entry.opsApplied = left.opsLog.filter((o) => o.applied).map((o) => `${o.op}:${o.target || o.kind}`);
         if (dumpDir) {
           fs.mkdirSync(dumpDir, { recursive: true });
-          fs.writeFileSync(path.join(dumpDir, `${scenario.id}.json`), JSON.stringify({ model: left.model, events: left.events, geometry: left.geometry, opsLog: left.opsLog }, null, 1));
+          fs.writeFileSync(path.join(dumpDir, `${scenario.id}.json`), JSON.stringify({ model: left.model, events: left.events, rightEvents: right.events, geometry: left.geometry, opsLog: left.opsLog }, null, 1));
         }
         record(scenario, entry);
         if (scenario.library === "xyflow") {
@@ -431,8 +448,19 @@ export async function runRealGates(scenarios, { dumpDir = null } = {}) {
       } catch (err) {
         const errors = browserCtx.page.__pageErrors || [];
         const cause = `${String(err && err.message || err).split("\n")[0].slice(0, 300)}${errors.length ? ` [page error: ${errors[errors.length - 1]}]` : ""}`;
-        const kind = /example-error during/.test(cause) ? "example-error" : /example-without-flow/.test(cause) ? "example-without-flow" : "run-error";
-        record(scenario, unknownScenario(scenario, gate, cause, kind));
+        const deviation = deviations[scenario.id];
+        if (deviation && /example-error during/.test(cause) && cause.includes(deviation.symptom)) {
+          // The recorded upstream bug happened exactly as recorded: the
+          // scenario is excluded from the gate, never reproduced silently.
+          const where = deviation.sources.map((src) => `${src.path}:${src.line}`).join(", ");
+          record(scenario, { ...unknownScenario(scenario, gate, `deviation ${deviation.id}: ${deviation.symptom} during ${deviation.trigger} (${where})`, "upstream-deviation"), verdict: "deviation", deviation: deviation.id });
+        } else if (/example-without-flow/.test(cause)) {
+          // Nothing to compare in a flow harness: not applicable, not unknown.
+          record(scenario, { ...unknownScenario(scenario, gate, cause.replace(/^page\.evaluate: Error: /, ""), "example-without-flow"), verdict: "not-applicable" });
+        } else {
+          const kind = /example-error during/.test(cause) ? "example-error" : "run-error";
+          record(scenario, unknownScenario(scenario, gate, cause, kind));
+        }
       }
     }
   } finally {
@@ -572,19 +600,23 @@ async function main(argv) {
     }
     const failed = results.filter((s) => s.verdict === "fail");
     const unknown = results.filter((s) => s.verdict === "unknown");
+    const excluded = results.filter((s) => s.verdict === "deviation" || s.verdict === "not-applicable");
     const byLib = {};
-    for (const s of results) { byLib[s.library] = byLib[s.library] || { pass: 0, fail: 0, unknown: 0 }; byLib[s.library][s.verdict] += 1; }
-    for (const [lib, c] of Object.entries(byLib)) console.log(`${lib}: pass=${c.pass} fail=${c.fail} unknown=${c.unknown}`);
-    console.log(`scenarios=${results.length} pass=${results.length - failed.length - unknown.length} fail=${failed.length} unknown=${unknown.length} oracle=real`);
-    if (xyflow.failed.length) {
-      console.log(`xyflow not executed (${xyflow.failed.length}):`);
-      for (const f of xyflow.failed) console.log(`  ${f.id}: ${f.cause}`);
-    } else {
-      console.log(`xyflow executed=${xyflow.executed.length} failed=0`);
+    for (const s of results) {
+      byLib[s.library] = byLib[s.library] || { pass: 0, fail: 0, unknown: 0, deviation: 0, "not-applicable": 0 };
+      byLib[s.library][s.verdict] += 1;
     }
+    for (const [lib, c] of Object.entries(byLib)) console.log(`${lib}: pass=${c.pass} fail=${c.fail} unknown=${c.unknown} deviation=${c.deviation} not-applicable=${c["not-applicable"]}`);
+    console.log(`scenarios=${results.length} pass=${results.length - failed.length - unknown.length - excluded.length} fail=${failed.length} unknown=${unknown.length} excluded=${excluded.length} oracle=real`);
+    for (const e of excluded) console.log(`  excluded ${e.id}: ${e.verdict} — ${e.cause}`);
+    // Gate verdicts: self-parity (bpmn-js, JointJS) strictly green; xyflow
+    // green when every example passes except deviation-backed or
+    // not-applicable ones, each with its precise cause.
+    const gateGreen = !failed.length && !unknown.length;
+    console.log(`gates: self-parity=${results.filter((s) => s.library !== "xyflow").every((s) => s.verdict === "pass") ? "pass" : "not green"} xyflow-examples=${results.filter((s) => s.library === "xyflow").every((s) => ["pass", "deviation", "not-applicable"].includes(s.verdict)) ? "pass" : "not green"}`);
     console.log(`report: ${path.relative(REPO_ROOT, file)}`);
     console.log(`report: ${path.relative(REPO_ROOT, xyFile)}`);
-    process.exit(failed.length || unknown.length ? 1 : 0);
+    process.exit(gateGreen ? 0 : 1);
   }
   console.error("usage: harness.mjs run | selftest | coverage [--strict]");
   process.exit(2);

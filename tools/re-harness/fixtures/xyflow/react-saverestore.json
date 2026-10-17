@@ -13,10 +13,6 @@
     "perChannelDelta": 8
   },
   "runnable": {
-    "status": "unknown",
-    "cause": "imports localforage, not installed in the oracle set (.ds-scrap/re-oracles); installing needs network, out of scope",
-    "missing": [
-      "localforage"
-    ]
+    "status": "runnable"
   }
 }

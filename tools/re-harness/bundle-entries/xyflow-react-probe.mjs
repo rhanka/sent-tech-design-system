@@ -39,7 +39,14 @@ export const ReactFlow = React.forwardRef(function ProbedReactFlow(props, ref) {
     wrappers.current = {};
     for (const name of OBSERVED) {
       wrappers.current[name] = (...args) => {
-        journal(flowRef.current, name, args);
+        // Change callbacks are journaled one change per entry, in order:
+        // how changes are GROUPED into calls follows the browser's
+        // ResizeObserver delivery (measured on react-layouting: the same 11
+        // `dimensions` changes arrive in 1 call or in 11 calls between two
+        // identical mounts), so batch boundaries are not compared.
+        if ((name === "onNodesChange" || name === "onEdgesChange") && Array.isArray(args[0])) {
+          for (const change of args[0]) journal(flowRef.current, name, [[change]]);
+        } else journal(flowRef.current, name, args);
         const original = latest.current[name];
         return typeof original === "function" ? original(...args) : undefined;
       };

@@ -175,25 +175,18 @@ test("xyflow fixtures: one per inventory example, each mounting its own example 
     else assert.equal(doc.runnable.status, "runnable");
   }
   assert.equal(modules.size, 93, "two fixtures share one example module");
-  // Only examples importing a package absent from the oracle set are
-  // statically unknown; each names the missing packages.
-  assert.deepEqual(unknown, {
-    "xyflow-react-layouting": ["dagre"],
-    "xyflow-react-redux": ["@reduxjs/toolkit", "react-redux"],
-    "xyflow-react-saverestore": ["localforage"],
-    "xyflow-svelte-dagre": ["@dagrejs/dagre"],
-  });
+  // Every example's imports resolve in the oracle set (the example
+  // dependencies dagre, @dagrejs/dagre, localforage, react-redux and
+  // @reduxjs/toolkit are installed there): none is statically unknown.
+  assert.deepEqual(unknown, {});
 });
 
-// The examples that stay unknown in the archived xyflow gate, each with a
-// cause that belongs to the example itself. Any change makes this fail.
-const EXPECTED_XYFLOW_UNKNOWN = {
-  "xyflow-react-layouting-selfparity": "example-unrunnable",
-  "xyflow-react-redux-selfparity": "example-unrunnable",
-  "xyflow-react-saverestore-selfparity": "example-unrunnable",
-  "xyflow-svelte-dagre-selfparity": "example-unrunnable",
-  "xyflow-react-floatingedges-selfparity": "example-error",
-  "xyflow-react-usekeypress-selfparity": "example-without-flow",
+// The only examples excluded from the xyflow gate, each with its verdict.
+// Any change (a new exclusion, an excluded example that starts passing)
+// makes this fail.
+const EXPECTED_XYFLOW_EXCLUDED = {
+  "xyflow-react-floatingedges-selfparity": "deviation",
+  "xyflow-react-usekeypress-selfparity": "not-applicable",
 };
 
 test("archived gate reports pass the strict guards (C7, N3)", () => {
@@ -208,24 +201,44 @@ test("archived gate reports pass the strict guards (C7, N3)", () => {
   // xyflow: every example passes except the explicit list above.
   const xy = read("xyflow-examples.json");
   assert.equal(xy.scenarios.length, 93);
-  assert.equal(assertXyflowExamplesReport(xy, EXPECTED_XYFLOW_UNKNOWN), true);
+  assert.equal(assertXyflowExamplesReport(xy, EXPECTED_XYFLOW_EXCLUDED), true);
+  assert.equal(xy.scenarios.filter((sc) => sc.verdict === "pass").length, 91);
   for (const name of fs.readdirSync(RUNS_DIR)) assert.ok(!name.startsWith("synthetic-"), name);
 });
 
-test("xyflow report guard rejects an unlisted unknown, a listed pass and a harness-caused unknown (N3)", () => {
+test("xyflow report guard: exact exclusion list, deviation backed by deviations.json (N3, §8.5)", () => {
   const base = () => ({
     schemaVersion: 1, mode: "self-parity", seed: 42, oracle: "real", oracleVersions: JSON.parse(JSON.stringify(EXPECTED_VERSIONS)),
     scenarios: [
       { id: "a", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "pass", comparators: {} },
-      { id: "b", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "unknown", cause: "x", causeKind: "example-error", comparators: {} },
+      { id: "xyflow-react-floatingedges-selfparity", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "deviation", deviation: "xyflow-react-floatingedges-connection-line", causeKind: "upstream-deviation", cause: "x", comparators: {} },
+      { id: "b", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "not-applicable", causeKind: "example-without-flow", cause: "no flow", comparators: {} },
     ],
   });
-  assert.equal(assertXyflowExamplesReport(base(), { b: "example-error" }), true);
-  assert.throws(() => assertXyflowExamplesReport(base(), {}), /is unknown/);
-  assert.throws(() => assertXyflowExamplesReport(base(), { a: "example-error", b: "example-error" }), /expected unknown/);
-  const infra = base(); infra.scenarios[1].causeKind = "infrastructure";
-  assert.throws(() => assertXyflowExamplesReport(infra, { b: "infrastructure" }), /not an example cause kind/);
-  assert.throws(() => assertXyflowExamplesReport(base(), { b: "example-error", c: "example-error" }), /absent/);
+  const ok = { "xyflow-react-floatingedges-selfparity": "deviation", b: "not-applicable" };
+  assert.equal(assertXyflowExamplesReport(base(), ok), true);
+  assert.throws(() => assertXyflowExamplesReport(base(), { b: "not-applicable" }), /is deviation/);
+  assert.throws(() => assertXyflowExamplesReport(base(), { ...ok, a: "not-applicable" }), /expected not-applicable/);
+  const unbacked = base(); unbacked.scenarios[1].deviation = "nope";
+  assert.throws(() => assertXyflowExamplesReport(unbacked, ok), /backed by deviations.json/);
+  const unk = base(); unk.scenarios[0].verdict = "unknown"; unk.scenarios[0].cause = "x"; unk.scenarios[0].causeKind = "example-error";
+  assert.throws(() => assertXyflowExamplesReport(unk, ok), /is unknown/);
+  assert.throws(() => assertXyflowExamplesReport(base(), { ...ok, c: "deviation" }), /absent/);
+});
+
+test("deviation entries point at real upstream source lines (§8.5)", () => {
+  const doc = JSON.parse(fs.readFileSync(path.resolve(HERE, "..", "deviations.json"), "utf8"));
+  assert.ok(doc.entries.length >= 1);
+  for (const e of doc.entries) {
+    assert.ok(e.id && e.scenario && e.symptom && e.sources.length, e.id);
+    for (const src of e.sources) {
+      const lines = fs.readFileSync(path.join(REPO_ROOT, src.path), "utf8").split("\n");
+      assert.ok(src.line >= 1 && src.line <= lines.length, `${src.path}:${src.line}`);
+    }
+  }
+  const fe = doc.entries.find((e) => e.id === "xyflow-react-floatingedges-connection-line");
+  const crash = fe.sources.find((src) => src.path.endsWith("utils.ts"));
+  assert.match(fs.readFileSync(path.join(REPO_ROOT, crash.path), "utf8").split("\n")[crash.line - 1], /targetNode\.internals\.positionAbsolute/);
 });
 
 test("schema validator honours union types (N3)", () => {
