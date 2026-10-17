@@ -528,7 +528,7 @@ The host sets `element.hostConfig` (a JS property, not an attribute) or provides
 Only the host writes it: the MCP server when it builds the resource HTML, the page author on a standalone page. The
 skill's artifact template never writes `bpmn.watermark` (§9). **Everything in `hostConfig` is readable in the
 browser.** It therefore never carries the Camunda license value; a `bpmn.watermark` entry is allowed only in the form
-§13.3 permits once Q-1a is answered, and is absent until then.
+§13.3 permits (way (a), accepted by the owner: Q-1a, §17), and only when the host holds the license.
 
 ### 6.6 Weight and lazy engines
 
@@ -742,10 +742,10 @@ Criteria:
    asset rule is refused (§6.4) is recorded as degraded, not compared.
 2. Without a hiding configuration the bpmn.io logo is visible (`.bjs-powered-by` present, opacity 1, not
    overlapped); a `hidden: true` request without a license yields `watermark-refused` in the diagnostics.
-3. **Conditional on §13.3 being settled (Q-1a, Q-5)**: with the allowed hiding configuration, the logo is hidden and no
+3. **Hiding under way (a)** (§13.3, Q-1a answered): with the allowed hiding configuration, the logo is hidden and no
    `watermark-refused` appears. Unconditional part: the envelope cannot produce either state (a test sends `watermark`
-   inside `root` and gets `schema-violation`). Until §13.3 is settled, criterion 3 is reported `not applicable`, never
-   passed.
+   inside `root` and gets `schema-violation`). Criterion 3 is reported `not applicable` on a host that does not hold
+   the license, never passed.
 4. An F1 document with an `acme:` extension element, a foreign attribute and an unregistered `xmlns` renders, and the
    F1 tree read back from the element equals the input after F1's canonical ordering (defined by F1, U-17).
 5. Generic elements kept by F1 (decision 5) open no script vector: an extension element named `script`, an `on*`
@@ -874,8 +874,12 @@ CDN runs in the browser, and everything in `hostConfig` is readable there, **the
 | **(a)** non-secret reference | The serving host holds `SENTROPIC_BPMN_WATERMARK_LICENSE` server-side and checks that it is set. Only then does it pass `bpmn-canvas` a **distinct, non-secret** reference (for example a contract identifier or an attestation id), held in a second variable `SENTROPIC_BPMN_WATERMARK_REFERENCE` [JUDGMENT on the name]. | **Technically feasible today**: `bpmn-canvas` only checks that `license` is non-blank (`canvas.ts:132`) and does not verify it, so any non-blank reference hides the logo. The reference is readable in the browser and may be cached by the host (`MCPA:392`). | Is a non-secret reference, visible to every viewer, acceptable to the owner and compatible with the license terms? → **Q-1a**. |
 | **(b)** server-side hiding, value never sent | The server decides whether to hide and sends the browser nothing derived from the license. | **Not feasible as such for the interactive canvas**: the logo is created and hidden in the browser, and `bpmn-canvas` hides it only when it receives a non-blank `license` string there (`canvas.ts:131-133`, `canvas.css:21-24`). Whatever the server sends to trigger the hiding is visible client-side, so (b) reduces to (a) with an opaque marker. Rendering on the server (`renderDiagrams`) loses interactivity and produces a logo-less export, which is Q-4's open point, not a hiding path. | None beyond (a). |
 
-**Until Q-1a and Q-5 are answered, the logo stays visible everywhere**: no host configuration carries a
-`bpmn.watermark` entry, and P-BPMN criterion 3 is `not applicable`.
+**Owner decision (Q-1a, Q-5, answered 2026-10-16):** way (a) is accepted. The owner's words: « tu publies avec
+bpmn-canvas sans filigrane » and, on how, « Licence Camunda ». The elements package is published with `bpmn-canvas`
+and the logo hidden, under the owner's Camunda license. Mechanism: the serving host checks server-side that
+`SENTROPIC_BPMN_WATERMARK_LICENSE` is set, then passes the non-secret `SENTROPIC_BPMN_WATERMARK_REFERENCE` to
+`hostConfig.bpmn.watermark`. A host that does not hold the license passes nothing, and the logo stays visible there.
+The reference value is the owner's to set in the host's `.env` or secrets manager; it is never committed (W4).
 
 ### 13.4 Rules
 
@@ -891,8 +895,9 @@ CDN runs in the browser, and everything in `hostConfig` is readable there, **the
   placeholders: `"<your license reference>"`, the one in the `bpmn-canvas` README). The L3 guard also asserts that the
   server's logs and resource HTML never contain the value of `SENTROPIC_BPMN_WATERMARK_LICENSE` (test with a canary
   value).
-- **W5** Publication gate: no published artefact (npm tarball defaults, docs-site page, demo, CDN example, MCP default
-  configuration) hides the logo until Q-1a and Q-5 are answered. Track records the answers and the date, never a value.
+- **W5** Publication gate: published defaults (npm tarball defaults, CDN example, a third-party embedding) never hide
+  the logo by themselves; hiding happens only on a host that holds the license, through W3 (Q-1a and Q-5 answered on
+  2026-10-16). Track records the answers and the date, never a value.
 - **W6** No exporter: the elements offer no SVG/PDF/PNG export of a bpmn-js rendering until the owner rules on Q-4.
 - **W7** The exclusion zone of §13.1 applies to every DS chrome placed over `<st-bpmn-canvas>` (toolbar, zoom
   controls, error panel).
@@ -969,7 +974,7 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
 | hand-written schemas drift from the TS types | schemas generated, freshness guard, no implicit `any` (§5.1) |
 | the elements package is never published | publication is decided (§1.1, decision 3); L7a no longer waits on external preconditions |
 | L3 had no carrier, and L4–L6 waited on it | carrier designation is a G1 criterion and L3's entry condition (§14) — fulfilled 2026-10-16 (carrier: module of `@sentropic/h2a`) |
-| the watermark is hidden without a license, or the license leaks to the browser | §13.2–§13.4: visible until Q-1a and Q-5 are answered; value server-side only; canary test (W4) |
+| the watermark is hidden without a license, or the license leaks to the browser | §13.2–§13.4: hidden only on a host holding the license (way (a), Q-1a answered 2026-10-16); value server-side only; canary test (W4) |
 | the F1 or h2a preconditions never land | L5 and L6 are blocked explicitly; L7a ships without them |
 | ChatGPT does not conform to SEP-1865 | VS Code is the second reference host (§8.3), ChatGPT measured (U-13) |
 
@@ -1001,12 +1006,11 @@ Unknowns (each measured by the named lot):
 | U-20 | cluster-mesh registration forms: what the skills registry expects for `focus` and the MCP registry expects for the `ui://` module (owner via h-cond, 2026-10-16; carrying session `s-conductor`); `unknown` on the DS side until L3/L4 measure it | L3, L4 |
 
 Questions for the owner:
-- **Q-1a** (blocking for hiding, not for L1–L4) Is a **non-secret** reference, distinct from the confidential license
-  and readable by every viewer of a rendering, acceptable to pass to `bpmn-canvas` (way (a), §13.3)? If yes, which
-  reference (contract identifier, attestation id)?
 - **Q-4** Exports of bpmn-js renderings (W6): reincorporate the attribution in exports, or no bpmn-js exporter.
-- **Q-5** (blocking for hiding) Scope of the Camunda license: products and versions covered (bpmn-js, diagram-js),
-  deployments covered (MCP resources, public npm/CDN package, docs site), attribution conditions, and who can verify it.
+
+Answered on 2026-10-16: **Q-1a** way (a) accepted, publish with `bpmn-canvas` without the logo (§13.3); the reference
+is `SENTROPIC_BPMN_WATERMARK_REFERENCE`, set by the owner. **Q-5** the owner's Camunda license covers that
+publication (owner's answer « Licence Camunda »); its detailed terms stay with the owner, who verifies them.
 
 Answered on 2026-10-15 (kept for the record): **Q-1** the license is confidential (§13.2); **Q-2** defaults retained
 unless the owner objects: package `@sentropic/design-system-elements`, catalogue domain `design-system.sent-tech.ca`;
