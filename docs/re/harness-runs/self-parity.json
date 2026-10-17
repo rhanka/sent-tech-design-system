@@ -459,7 +459,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -1160,15 +1160,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 0: the library did not move the node under a real drag (hit element: 1 react-flow__node react-flow__node-input nopan selected selectable draggable)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "18 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1188,10 +1185,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 1: the library did not move the node under a real drag (hit element: 6 react-flow__node react-flow__node-output nopan selected selectable draggable)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
@@ -2178,7 +2172,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "16 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2190,7 +2184,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -2198,10 +2192,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 1: the library did not move the node under a real drag (hit element: 7 svelte-flow__node svelte-flow__node-output draggable connectable selectable nopan selected)"
-      ]
+      "verdict": "pass"
     },
     {
       "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
@@ -2322,7 +2313,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },

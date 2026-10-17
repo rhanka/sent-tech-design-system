@@ -162,7 +162,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -863,15 +863,12 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 0: the library did not move the node under a real drag (hit element: 1 react-flow__node react-flow__node-input nopan selected selectable draggable)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "18 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -891,10 +888,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 1: the library did not move the node under a real drag (hit element: 6 react-flow__node react-flow__node-output nopan selected selectable draggable)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
@@ -1881,7 +1875,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "16 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1893,7 +1887,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -1901,10 +1895,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass",
-      "warnings": [
-        "move 1: the library did not move the node under a real drag (hit element: 7 svelte-flow__node svelte-flow__node-output draggable connectable selectable nopan selected)"
-      ]
+      "verdict": "pass"
     },
     {
       "cause": "custom node/edge types (custom) are application components, not data: mounted without them the library falls back to its default type, so the fixture would not reproduce the example",
@@ -2025,7 +2016,7 @@
           "verdict": "pass"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000072 <= 0.01 (secondary signal)",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
           "verdict": "pass"
         }
       },
@@ -7044,14 +7035,14 @@
             "1": {
               "height": 100,
               "width": 200,
-              "x": 30,
-              "y": 22.5
+              "x": 0,
+              "y": 0
             },
             "2": {
               "height": 37,
               "width": 150,
-              "x": 0,
-              "y": 150
+              "x": 30,
+              "y": 172.5
             },
             "3": {
               "height": 37,
@@ -7076,14 +7067,14 @@
             "1": {
               "height": 200,
               "width": 400,
-              "x": 172,
-              "y": 145
+              "x": 112,
+              "y": 100
             },
             "2": {
               "height": 74,
               "width": 300,
-              "x": 112,
-              "y": 400
+              "x": 172,
+              "y": 445
             },
             "3": {
               "height": 74,
@@ -7100,7 +7091,7 @@
           },
           "edgePaths": {},
           "viewbox": {
-            "height": 200,
+            "height": 209.5,
             "width": 400,
             "x": 0,
             "y": 0
@@ -7141,7 +7132,6 @@
               "data": {
                 "label": "Node 1"
               },
-              "dragging": false,
               "height": 100,
               "id": "1",
               "measured": {
@@ -7149,10 +7139,9 @@
                 "width": 200
               },
               "position": {
-                "x": 30,
-                "y": 22.5
+                "x": 0,
+                "y": 0
               },
-              "selected": true,
               "type": "input",
               "width": 200
             },
@@ -7160,15 +7149,17 @@
               "data": {
                 "label": "Node 2"
               },
+              "dragging": false,
               "id": "2",
               "measured": {
                 "height": 37,
                 "width": 150
               },
               "position": {
-                "x": 0,
-                "y": 150
+                "x": 30,
+                "y": 172.5
               },
+              "selected": true,
               "type": "default"
             },
             {
@@ -7254,14 +7245,14 @@
             "6": {
               "height": 37,
               "width": 150,
-              "x": 30,
-              "y": 11.125
+              "x": 0,
+              "y": 0
             },
             "7": {
               "height": 37,
               "width": 150,
-              "x": 400,
-              "y": 450
+              "x": 430,
+              "y": 472
             },
             "2a": {
               "height": 37,
@@ -7293,67 +7284,67 @@
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "2": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "3": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "4": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "5": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "6": {
               "height": 37,
               "width": 150,
-              "x": 30,
-              "y": 22
+              "x": 0,
+              "y": 0
             },
             "7": {
               "height": 37,
               "width": 150,
-              "x": 400,
-              "y": 460.875
+              "x": 430,
+              "y": 472
             },
             "2a": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "2b": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "2c": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             },
             "2d": {
               "height": 37,
               "width": 150,
               "x": 0,
-              "y": 10.875
+              "y": 0
             }
           },
           "edgePaths": {
@@ -7364,13 +7355,13 @@
             "e22c": "M75 40L75 60L75 -23L75 -3",
             "e2c2d": "M75 40L75 60L75 -23L75 -3",
             "e45": "M75 40L75 60L75 -23L75 -3",
-            "e56": "M75 40L 75,55Q 75,60 80,60L 85,60Q 90,60 90,55L 90,-6.875Q 90,-11.875 95,-11.875L 100,-11.875Q 105,-11.875 105,-6.875L105 8.125",
-            "e57": "M75 40L75 60L 75,238.5Q 75,243.5 80,243.5L 470,243.5Q 475,243.5 475,248.5L475 427L475 447",
+            "e56": "M75 40L75 60L75 -23L75 -3",
+            "e57": "M75 40L75 60L 75,249.5Q 75,254.5 80,254.5L 500,254.5Q 505,254.5 505,259.5L505 449L505 469",
             "xe1": "M75,40 C75,80.98399077688751 75,-43.9839907768875 75,-3"
           },
           "viewbox": {
-            "height": 487,
-            "width": 550,
+            "height": 509,
+            "width": 580,
             "x": 0,
             "y": 0
           },
@@ -7605,44 +7596,44 @@
               "data": {
                 "label": "output"
               },
-              "dragging": false,
               "id": "6",
               "measured": {
                 "height": 37,
                 "width": 150
               },
               "position": {
-                "x": 30,
-                "y": 11.125
+                "x": 0,
+                "y": 0
               },
-              "selected": true,
               "type": "output"
             },
             {
               "data": {
                 "label": "output"
               },
+              "dragging": false,
               "id": "7",
               "measured": {
                 "height": 37,
                 "width": 150
               },
               "position": {
-                "x": 400,
-                "y": 450
+                "x": 430,
+                "y": 472
               },
+              "selected": true,
               "type": "output"
             }
           ],
           "viewport": {
             "x": 0,
-            "y": 10.875,
+            "y": 0,
             "zoom": 1
           }
         },
         "viewport": {
           "x": 0,
-          "y": 10.875,
+          "y": 0,
           "zoom": 1
         }
       },
@@ -11050,8 +11041,8 @@
             "7": {
               "height": 37,
               "width": 150,
-              "x": 30,
-              "y": 22.5
+              "x": 0,
+              "y": 0
             },
             "2a": {
               "height": 37,
@@ -11118,8 +11109,8 @@
             "7": {
               "height": 74,
               "width": 300,
-              "x": 422,
-              "y": 308
+              "x": 362,
+              "y": 263
             },
             "2a": {
               "height": 74,
@@ -11155,12 +11146,12 @@
             "e2c2d": "M75 40L75 60L75 -23L75 -3",
             "e45": "M75 40L75 60L75 -23L75 -3",
             "e56": "M75 40L75 60L75 -23L75 -3",
-            "e57": "M75 40L 75,55Q 75,60 80,60L 85,60Q 90,60 90,55L 90,4.5Q 90,-0.5 95,-0.5L 100,-0.5Q 105,-0.5 105,4.5L105 19.5",
+            "e57": "M75 40L75 60L75 -23L75 -3",
             "xe1": "M75,40 C75,80.98399077688751 75,-43.9839907768875 75,-3"
           },
           "viewbox": {
-            "height": 59.5,
-            "width": 180,
+            "height": 37,
+            "width": 150,
             "x": 0,
             "y": 0
           },
@@ -11392,17 +11383,15 @@
               "data": {
                 "label": "output"
               },
-              "dragging": false,
               "id": "7",
               "measured": {
                 "height": 37,
                 "width": 150
               },
               "position": {
-                "x": 30,
-                "y": 22.5
+                "x": 0,
+                "y": 0
               },
-              "selected": true,
               "type": "output"
             }
           ],
