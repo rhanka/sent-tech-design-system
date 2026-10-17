@@ -1,10 +1,11 @@
-// Deterministic reference engines, one per library family. Each engine is a
-// pure function of (fixture, ops): same inputs, same outputs, no wall clock,
-// no Math.random. The engines interpret the shared fixture data; they contain
-// no third-party code (clean room). Live library bundles, when buildable from
-// the pinned sources, replace these engines behind the same interface
-// (see build-bundles.mjs); until then the live-bundle status is reported
-// separately and never conflated with engine verdicts.
+// SYNTHETIC engines — NOT oracles. These are pure functions of
+// (fixture, ops) written for this harness; they re-implement an
+// interpretation of the fixture data and contain no library behaviour.
+// Their only legitimate uses are (a) self-testing the comparators and
+// (b) offline determinism checks. Every report produced from them MUST
+// carry oracle: "synthetic", and a synthetic verdict NEVER counts for a
+// gate (the gate guard in tests/harness.test.mjs enforces this). The
+// reference paths run the real libraries through harness-page.html.
 //
 // Undo/redo: every mutating op pushes its inverse onto the undo stack, so
 // undo chains round-trip exactly (SPEC_RE_BPMN_JS_PARITY.md §8.2, §5.2).
@@ -82,7 +83,7 @@ export function rasterise(state, { width = 64, height = 48 } = {}) {
   return { width, height, data: Array.from(data) };
 }
 
-export function runEngine(fixture, ops) {
+export function runSyntheticEngine(fixture, ops) {
   const state = baseState(fixture);
   const events = [];
   const undoStack = []; const redoStack = [];
