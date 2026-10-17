@@ -151,12 +151,20 @@ jobs:
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish Dataviz packages in dependency order
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          npm publish --workspace @sentropic/dataviz-core --access public
-          npm publish --workspace @sentropic/dataviz-svelte --access public
-          npm publish --workspace @sentropic/dataviz-react --access public
-          npm publish --workspace @sentropic/dataviz-vue --access public
-          npm publish --workspace @sentropic/dataviz-angular --access public
+          # A version already on npm (first publication done by hand under the
+          # owner's browser 2FA, because npm cannot attach a trusted publisher to
+          # a package that does not exist yet) is skipped, never republished.
+          VERSION="${TAG#dataviz-v}"
+          for package in @sentropic/dataviz-core @sentropic/dataviz-svelte @sentropic/dataviz-react @sentropic/dataviz-vue @sentropic/dataviz-angular; do
+            if npm view "${package}@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "${package}@${VERSION} is already on npm: skipped."
+            else
+              npm publish --workspace "${package}" --access public
+            fi
+          done
 
   post-publish-check:
     needs: publish
