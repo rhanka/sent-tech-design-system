@@ -55,6 +55,21 @@ export async function launchBrowser({ playwrightCore, puppeteerCore } = {}) {
   throw new Error("unknown: neither playwright-core nor puppeteer-core available (no network install attempted)");
 }
 
+// Real-oracle bootstrap: fixed seed RNG and reduced motion, but NATIVE
+// clocks and requestAnimationFrame — the real libraries (bpmn-js, xyflow,
+// JointJS) schedule real work on them, and parity comes from two identical
+// independent runs plus explicit stabilisation waits in the adapters.
+export const DETERMINISM_INIT_REAL = `
+(() => {
+  let seed = 42;
+  Math.random = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+  try { Object.defineProperty(window, 'matchMedia', { value: (q) => ({ matches: q.includes('prefers-reduced-motion'), media: q, addEventListener(){}, removeEventListener(){}, addListener(){}, removeListener(){} }) }); } catch (e) {}
+  const style = document.createElement('style');
+  style.textContent = '*,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important;}';
+  (document.head || document.documentElement).appendChild(style);
+})();
+`;
+
 // Determinism bootstrap evaluated before any page script (bpmn §8.4):
 // fixed seed RNG, harness-stepped clock and rAF, reduced motion forced.
 export const DETERMINISM_INIT = `

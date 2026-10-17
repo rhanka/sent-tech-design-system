@@ -1,0 +1,31 @@
+{
+  "mode": "selftest",
+  "oracle": "synthetic",
+  "scenarios": [
+    {
+      "comparators": {
+        "events": {
+          "detail": "injected divergence detected (synthetic base)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "injected divergence detected (synthetic base)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "injected divergence detected (synthetic base)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "injected divergence detected (synthetic base)",
+          "verdict": "pass"
+        }
+      },
+      "id": "synthetic-injected-divergences",
+      "oracle": "synthetic",
+      "verdict": "pass"
+    }
+  ],
+  "schemaVersion": 1,
+  "seed": 42
+}

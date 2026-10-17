@@ -1,29 +1,46 @@
 {
-  "schemaVersion": 1,
   "mode": "selftest",
-  "seed": 42,
+  "oracle": "real",
+  "oracleVersions": {
+    "@joint/core": "4.3.3",
+    "@xyflow/react": "12.12.0",
+    "@xyflow/svelte": "1.7.0",
+    "@xyflow/system": "0.0.83",
+    "bpmn-js": "18.31.0",
+    "bpmn-moddle": "10.3.1",
+    "diagram-js": "15.28.1",
+    "esbuild": "0.25.12",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "svelte": "5.56.4"
+  },
   "scenarios": [
     {
-      "id": "injected-divergences",
-      "verdict": "pass",
       "comparators": {
-        "model": {
-          "verdict": "pass",
-          "detail": "injected divergence detected"
+        "events": {
+          "detail": "injected divergence detected on real @joint/core output",
+          "verdict": "pass"
         },
         "geometry": {
-          "verdict": "pass",
-          "detail": "injected divergence detected"
+          "detail": "injected divergence detected on real @joint/core output",
+          "verdict": "pass"
         },
-        "events": {
-          "verdict": "pass",
-          "detail": "injected divergence detected"
+        "model": {
+          "detail": "injected divergence detected on real @joint/core output",
+          "verdict": "pass"
         },
         "pixels": {
-          "verdict": "pass",
-          "detail": "injected divergence detected"
+          "detail": "injected divergence detected on real @joint/core output",
+          "verdict": "pass"
         }
-      }
+      },
+      "id": "jointjs-injected-divergences",
+      "library": "jointjs",
+      "oracle": "real",
+      "oracleVersion": "4.3.3",
+      "verdict": "pass"
     }
-  ]
+  ],
+  "schemaVersion": 1,
+  "seed": 42
 }
