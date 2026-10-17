@@ -7,47 +7,38 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 64,
-          "y": 40
+          "x": 0,
+          "y": 80
         },
         "data": {
-          "label": "One"
+          "label": "Input"
         },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right"
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "2",
+        "type": "output",
         "position": {
-          "x": 240,
-          "y": 164
+          "x": 250,
+          "y": 0
         },
         "data": {
-          "label": "Two"
+          "label": "A Node"
         },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right",
+        "targetPosition": "left"
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2",
+        "type": "smoothstep",
+        "animated": true
       }
     ],
     "viewport": {
@@ -64,5 +55,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/NodeTypeChange/index.tsx"
   }
 }

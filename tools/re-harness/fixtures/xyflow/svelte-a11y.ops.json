@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-a11y-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "A",
+      "x": 40,
+      "y": 30
+    },
+    {
+      "op": "connect",
+      "elementId": "xe1",
+      "sourceId": "B",
+      "targetId": "C"
+    }
+  ]
+}

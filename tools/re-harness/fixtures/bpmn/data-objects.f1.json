@@ -4,18 +4,87 @@
   "library": "bpmn",
   "kind": "bpmn-xml-f1",
   "title": "Task with a data object input and a data store output",
-  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_do\"><bpmn:process id=\"p1\"><bpmn:dataObject id=\"dobj1\"/><bpmn:dataStore id=\"store1\"/><bpmn:task id=\"task1\"/></bpmn:process></bpmn:definitions>",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"defs_do\" targetNamespace=\"http://sentropic.example/re-harness\"><bpmn:dataStore id=\"store1_data\" name=\"Orders DB\"/><bpmn:process id=\"p1\" isExecutable=\"false\"><bpmn:dataObject id=\"dobj1_data\" name=\"Order\"/><bpmn:dataObjectReference id=\"dobj1\" dataObjectRef=\"dobj1_data\" name=\"Order\"/><bpmn:dataStoreReference id=\"store1\" dataStoreRef=\"store1_data\" name=\"Orders DB\"/><bpmn:task id=\"task1\" name=\"Process order\"><bpmn:dataInputAssociation id=\"da1\"><bpmn:sourceRef>dobj1</bpmn:sourceRef></bpmn:dataInputAssociation><bpmn:dataOutputAssociation id=\"da2\"><bpmn:targetRef>store1</bpmn:targetRef></bpmn:dataOutputAssociation></bpmn:task></bpmn:process><bpmndi:BPMNDiagram id=\"diagram1\"><bpmndi:BPMNPlane id=\"plane1\" bpmnElement=\"p1\"><bpmndi:BPMNShape id=\"task1_di\" bpmnElement=\"task1\"><dc:Bounds x=\"220\" y=\"100\" width=\"110\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"dobj1_di\" bpmnElement=\"dobj1\"><dc:Bounds x=\"80\" y=\"115\" width=\"44\" height=\"58\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"store1_di\" bpmnElement=\"store1\"><dc:Bounds x=\"420\" y=\"105\" width=\"60\" height=\"70\"/></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"da1_di\" bpmnElement=\"da1\"><di:waypoint x=\"124\" y=\"144\"/><di:waypoint x=\"220\" y=\"144\"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"da2_di\" bpmnElement=\"da2\"><di:waypoint x=\"330\" y=\"140\"/><di:waypoint x=\"420\" y=\"140\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>",
   "model": {
     "elements": [
-      { "id": "task1", "type": "bpmn:Task", "x": 220, "y": 100, "width": 110, "height": 80, "label": "Process order" },
-      { "id": "dobj1", "type": "bpmn:DataObject", "x": 80, "y": 115, "width": 44, "height": 58, "label": "Order" },
-      { "id": "store1", "type": "bpmn:DataStore", "x": 420, "y": 105, "width": 60, "height": 70, "label": "Orders DB" }
+      {
+        "id": "task1",
+        "type": "bpmn:Task",
+        "parent": "p1",
+        "x": 220,
+        "y": 100,
+        "width": 110,
+        "height": 80,
+        "label": "Process order",
+        "eventDefinitions": []
+      },
+      {
+        "id": "dobj1",
+        "type": "bpmn:DataObjectReference",
+        "parent": "p1",
+        "x": 80,
+        "y": 115,
+        "width": 44,
+        "height": 58,
+        "label": "Order",
+        "eventDefinitions": [],
+        "dataObjectRef": "dobj1_data"
+      },
+      {
+        "id": "store1",
+        "type": "bpmn:DataStoreReference",
+        "parent": "p1",
+        "x": 420,
+        "y": 105,
+        "width": 60,
+        "height": 70,
+        "label": "Orders DB",
+        "eventDefinitions": [],
+        "dataStoreRef": "store1_data"
+      }
     ],
     "flows": [
-      { "id": "da1", "source": "dobj1", "target": "task1", "waypoints": [{ "x": 124, "y": 144 }, { "x": 220, "y": 144 }] },
-      { "id": "da2", "source": "task1", "target": "store1", "waypoints": [{ "x": 330, "y": 140 }, { "x": 420, "y": 140 }] }
+      {
+        "id": "da1",
+        "type": "bpmn:DataInputAssociation",
+        "source": "dobj1",
+        "target": "task1",
+        "waypoints": [
+          {
+            "x": 124,
+            "y": 144
+          },
+          {
+            "x": 220,
+            "y": 144
+          }
+        ]
+      },
+      {
+        "id": "da2",
+        "type": "bpmn:DataOutputAssociation",
+        "source": "task1",
+        "target": "store1",
+        "waypoints": [
+          {
+            "x": 330,
+            "y": 140
+          },
+          {
+            "x": 420,
+            "y": 140
+          }
+        ]
+      }
     ]
   },
-  "viewport": { "x": 0, "y": 0, "zoom": 1 },
-  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
 }

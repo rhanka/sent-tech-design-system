@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-undirectional-selfparity","library":"xyflow","fixtures":["xyflow/react-undirectional.json"],"exercises":["examples.react-undirectional"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-undirectional-selfparity","library":"xyflow","fixtures":["xyflow/react-undirectional.json"],"ops":"xyflow/react-undirectional.ops.json","exercises":["examples.react-undirectional"],"comparators":["model","events","geometry","pixels"]}

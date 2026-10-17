@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-nodeselectionbug-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "0",
+      "x": 40,
+      "y": 30
+    }
+  ]
+}

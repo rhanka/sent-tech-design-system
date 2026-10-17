@@ -7,49 +7,31 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
+        "id": "c1",
         "type": "default",
         "position": {
-          "x": 67,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
+          "label": "1"
         },
-        "width": 120,
-        "height": 44
+        "width": 100,
+        "height": 100
       },
       {
-        "id": "n2",
+        "id": "c2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 167
+          "x": 100,
+          "y": 0
         },
         "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
+          "label": "2"
+        }
       }
     ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +46,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/reset/+page.svelte"
   }
 }

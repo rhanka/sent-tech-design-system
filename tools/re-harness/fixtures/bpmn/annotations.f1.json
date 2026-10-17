@@ -4,17 +4,69 @@
   "library": "bpmn",
   "kind": "bpmn-xml-f1",
   "title": "Task annotated by a text annotation inside a group",
-  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_an\"><bpmn:process id=\"p1\"><bpmn:task id=\"task1\"/><bpmn:textAnnotation id=\"note1\"><bpmn:text>Check the total first</bpmn:text></bpmn:textAnnotation><bpmn:group id=\"grp1\"/></bpmn:process></bpmn:definitions>",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"defs_an\" targetNamespace=\"http://sentropic.example/re-harness\"><bpmn:category id=\"cat1\"><bpmn:categoryValue id=\"cv1\" value=\"Review phase\"/></bpmn:category><bpmn:process id=\"p1\" isExecutable=\"false\"><bpmn:task id=\"task1\" name=\"Check invoice\"/><bpmn:textAnnotation id=\"note1\"><bpmn:text>Check the total first</bpmn:text></bpmn:textAnnotation><bpmn:group id=\"grp1\" categoryValueRef=\"cv1\"/><bpmn:association id=\"assoc1\" sourceRef=\"note1\" targetRef=\"task1\"/></bpmn:process><bpmndi:BPMNDiagram id=\"diagram1\"><bpmndi:BPMNPlane id=\"plane1\" bpmnElement=\"p1\"><bpmndi:BPMNShape id=\"grp1_di\" bpmnElement=\"grp1\"><dc:Bounds x=\"40\" y=\"30\" width=\"520\" height=\"240\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"task1_di\" bpmnElement=\"task1\"><dc:Bounds x=\"100\" y=\"100\" width=\"120\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"note1_di\" bpmnElement=\"note1\"><dc:Bounds x=\"320\" y=\"90\" width=\"170\" height=\"60\"/></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"assoc1_di\" bpmnElement=\"assoc1\"><di:waypoint x=\"320\" y=\"120\"/><di:waypoint x=\"220\" y=\"120\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>",
   "model": {
     "elements": [
-      { "id": "grp1", "type": "bpmn:Group", "x": 40, "y": 30, "width": 520, "height": 240, "label": "Review phase" },
-      { "id": "task1", "type": "bpmn:Task", "x": 100, "y": 100, "width": 120, "height": 80, "label": "Check invoice" },
-      { "id": "note1", "type": "bpmn:TextAnnotation", "x": 320, "y": 90, "width": 170, "height": 60, "label": "Check the total first" }
+      {
+        "id": "grp1",
+        "type": "bpmn:Group",
+        "parent": "p1",
+        "x": 40,
+        "y": 30,
+        "width": 520,
+        "height": 240,
+        "label": "Review phase",
+        "eventDefinitions": []
+      },
+      {
+        "id": "task1",
+        "type": "bpmn:Task",
+        "parent": "p1",
+        "x": 100,
+        "y": 100,
+        "width": 120,
+        "height": 80,
+        "label": "Check invoice",
+        "eventDefinitions": []
+      },
+      {
+        "id": "note1",
+        "type": "bpmn:TextAnnotation",
+        "parent": "p1",
+        "x": 320,
+        "y": 90,
+        "width": 170,
+        "height": 60,
+        "label": "Check the total first",
+        "eventDefinitions": []
+      }
     ],
     "flows": [
-      { "id": "assoc1", "source": "note1", "target": "task1", "waypoints": [{ "x": 320, "y": 120 }, { "x": 220, "y": 120 }] }
+      {
+        "id": "assoc1",
+        "type": "bpmn:Association",
+        "source": "note1",
+        "target": "task1",
+        "waypoints": [
+          {
+            "x": 320,
+            "y": 120
+          },
+          {
+            "x": 220,
+            "y": 120
+          }
+        ]
+      }
     ]
   },
-  "viewport": { "x": 0, "y": 0, "zoom": 1 },
-  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-nodetoolbar-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "4",
+      "x": 40,
+      "y": -170
+    }
+  ]
+}

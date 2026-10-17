@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-usenodesinit-selfparity","library":"xyflow","fixtures":["xyflow/react-usenodesinit.json"],"exercises":["examples.react-usenodesinit"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-usenodesinit-selfparity","library":"xyflow","fixtures":["xyflow/react-usenodesinit.json"],"ops":"xyflow/react-usenodesinit.ops.json","exercises":["examples.react-usenodesinit"],"comparators":["model","events","geometry","pixels"]}

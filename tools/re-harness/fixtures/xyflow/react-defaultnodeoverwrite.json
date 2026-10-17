@@ -7,49 +7,31 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
+        "id": "1",
         "type": "default",
         "position": {
-          "x": 60,
-          "y": 40
+          "x": 250,
+          "y": 5
         },
         "data": {
-          "label": "One"
+          "label": "Node 1"
         },
-        "width": 120,
-        "height": 44
+        "className": "light"
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "2",
+        "type": "unregistered",
         "position": {
-          "x": 240,
-          "y": 160
+          "x": 100,
+          "y": 100
         },
         "data": {
-          "label": "Two"
+          "label": "Node 2"
         },
-        "width": 120,
-        "height": 44
+        "className": "light"
       }
     ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +46,12 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DefaultNodeOverwrite/index.tsx",
+    "customTypes": [
+      "unregistered"
+    ]
   }
 }

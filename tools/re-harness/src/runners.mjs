@@ -35,13 +35,42 @@ export function oracleGateOf(library, fixtureId) {
   return library;
 }
 
-// Execute one real-oracle run in the harness page. Throws with the page
-// cause when the library cannot run; the caller records the gate
-// `unknown` — it never falls back to a synthetic verdict.
+// Decode a PNG screenshot inside the page and downscale it to a small
+// RGBA buffer the pixel comparator consumes. The pixels come from the
+// browser's own rendering of the library output (C3) — never from a
+// synthetic rasterisation of extracted bounds.
+const DECODE_SCREENSHOT = async (base64) => {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  const url = URL.createObjectURL(new Blob([bytes], { type: "image/png" }));
+  try {
+    const img = new Image();
+    await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = url; });
+    const width = 192; const height = 144;
+    const canvas = document.createElement("canvas");
+    canvas.width = width; canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(img, 0, 0, width, height);
+    const data = ctx.getImageData(0, 0, width, height);
+    return { width, height, data: Array.from(data.data) };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+};
+
+// Execute one real-oracle run in the harness page. The adapter leaves its
+// rendered container in place; this runner screenshots that container
+// (the real library rendering), decodes the capture, then runs the
+// adapter cleanup. Throws with the page cause when the library cannot
+// run; the caller records the gate `unknown` — it never falls back to a
+// synthetic verdict.
 export async function runRealInPage(page, library, fixture, ops) {
   const fn = adapterFor(library, fixture.id);
   if (!fn) throw new Error(`unknown: no real adapter for library ${library}`);
-  return withTimeout(
+  const result = await withTimeout(
     page.evaluate(
       ([fnName, fixtureJson, opsJson]) => {
         const fixture = JSON.parse(fixtureJson);
@@ -56,6 +85,21 @@ export async function runRealInPage(page, library, fixture, ops) {
     ),
     `${library}/${fixture.id}`,
   );
+  try {
+    const host = page.locator(".oracle-host").last();
+    const box = await host.boundingBox();
+    if (!box || box.width < 1 || box.height < 1) throw new Error("oracle host has no rendered box");
+    const png = await page.screenshot({ clip: { x: box.x, y: box.y, width: box.width, height: box.height } });
+    result.pixels = await page.evaluate(DECODE_SCREENSHOT, png.toString("base64"));
+  } catch (err) {
+    result.pixels = null;
+    result.pixelCaptureError = String(err && err.message || err).split("\n")[0].slice(0, 200);
+  } finally {
+    await page.evaluate(() => {
+      if (typeof window.__cleanupLastRun === "function") window.__cleanupLastRun();
+    }).catch(() => {});
+  }
+  return result;
 }
 
 export async function oracleStatusInPage(page) {

@@ -7,47 +7,65 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 64,
-          "y": 40
+          "x": 250,
+          "y": 5
         },
         "data": {
-          "label": "One"
+          "label": "Node 1"
         },
-        "width": 120,
-        "height": 44
+        "className": "light"
       },
       {
-        "id": "n2",
+        "id": "2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 144
+          "x": 100,
+          "y": 100
         },
         "data": {
-          "label": "Two"
+          "label": "Node 2"
         },
-        "width": 120,
-        "height": 44
+        "className": "light"
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "data": {
+          "label": "Node 3"
+        },
+        "className": "light"
+      },
+      {
+        "id": "4",
+        "type": "default",
+        "position": {
+          "x": 400,
+          "y": 200
+        },
+        "data": {
+          "label": "Node 4"
+        },
+        "className": "light"
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2",
+        "animated": true
+      },
+      {
+        "id": "e1-3",
+        "source": "1",
+        "target": "3"
       }
     ],
     "viewport": {
@@ -64,5 +82,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Figma/index.tsx"
   }
 }

@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-addnodeonedgedrop-selfparity","library":"xyflow","fixtures":["xyflow/react-addnodeonedgedrop.json"],"exercises":["examples.react-addnodeonedgedrop"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-addnodeonedgedrop-selfparity","library":"xyflow","fixtures":["xyflow/react-addnodeonedgedrop.json"],"ops":"xyflow/react-addnodeonedgedrop.ops.json","exercises":["examples.react-addnodeonedgedrop"],"comparators":["model","events","geometry","pixels"]}

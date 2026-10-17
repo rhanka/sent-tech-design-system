@@ -8,12 +8,10 @@
 <link rel="stylesheet" href="/bundles/xyflow-svelte.css" />
 <style>
   html, body { margin: 0; padding: 0; background: #ffffff; }
-  #stage { display: none; }
   .oracle-host { width: 1024px; height: 600px; position: relative; }
 </style>
 </head>
 <body>
-<canvas id="stage" width="256" height="192"></canvas>
 <div id="oracle-root"></div>
 <script src="/bundles/bpmn.js"></script>
 <script src="/bundles/xyflow-react.js"></script>
@@ -23,15 +21,22 @@
   // Real-oracle adapters. Each function loads ONE fixture into the REAL
   // library bundled from RE_ORACLES_DIR (see build-bundles.mjs), drives it
   // through the library's own API, and extracts the outputs the harness
-  // comparators consume: canonical model, event journal, geometry, and a
-  // secondary pixel signal rasterised from the REAL extracted geometry.
-  // No library behaviour is re-implemented here; when a library or an
-  // operation is unavailable the adapter records it (harness.skipped /
-  // thrown cause) instead of fabricating output.
+  // comparators consume: canonical model, event journal, geometry.
+  // Pixels are captured by the Node runner as a screenshot of the rendered
+  // .oracle-host container (C3): adapters leave the container in place and
+  // register window.__cleanupLastRun, which the runner calls AFTER the
+  // capture. No library behaviour is re-implemented here; when a library
+  // or an operation is unavailable the adapter records it (harness.skipped
+  // / thrown cause) instead of fabricating output.
 
   const clone = (v) => JSON.parse(JSON.stringify(v));
   const round3 = (n) => Math.round(n * 1000) / 1000;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // Deterministic settle barrier: two animation frames (C9). The real
+  // libraries flush DOM/store work on rAF; wall-clock sleeps prove nothing.
+  const nextFrames = () => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  });
 
   async function waitFor(fn, { timeout = 8000, step = 25, label = "condition" } = {}) {
     const start = Date.now();
@@ -41,25 +46,6 @@
       if (Date.now() - start > timeout) throw new Error(`timeout waiting for ${label}`);
       await sleep(step);
     }
-  }
-
-  // Secondary pixel signal: rasterise the REAL extracted bounds onto the
-  // backing-store canvas (golden-harness pattern). Same bounds -> same
-  // pixels; it never substitutes for the model/geometry comparators.
-  function rasterise(bounds, viewbox) {
-    const canvas = document.getElementById("stage");
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const vb = viewbox || { x: 0, y: 0, width: 1, height: 1 };
-    const sx = canvas.width / Math.max(1, vb.width);
-    const sy = canvas.height / Math.max(1, vb.height);
-    ctx.fillStyle = "#1e5ac8";
-    for (const b of Object.values(bounds || {})) {
-      ctx.fillRect((b.x - vb.x) * sx, (b.y - vb.y) * sy, Math.max(1, b.width * sx), Math.max(1, b.height * sy));
-    }
-    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    return { width: canvas.width, height: canvas.height, data: Array.from(img.data) };
   }
 
   function unionViewbox(bounds) {
@@ -79,402 +65,207 @@
     return el;
   }
 
-  // ---------------------------------------------------------------- bpmn
-  // The fixture carries a BPMN XML skeleton plus the canonical F1 model.
-  // bpmn-js needs complete semantics + DI to import, so the adapter
-  // completes the document from the fixture model (missing flow
-  // declarations, lanes, per-participant processes, data references) and
-  // generates the DI from the fixture geometry, then calls the REAL
-  // importXML. This is fixture preparation, not library behaviour.
-  const BPMN_NS = {
-    bpmn: "http://www.omg.org/spec/BPMN/20100524/MODEL",
-    bpmndi: "http://www.omg.org/spec/BPMN/20100524/DI",
-    dc: "http://www.omg.org/spec/DD/20100524/DC",
-    di: "http://www.omg.org/spec/DD/20100524/DI",
-  };
-
-  function buildBpmnXml(fixture) {
-    const doc = new DOMParser().parseFromString(fixture.xml, "text/xml");
-    const root = doc.documentElement;
-    root.setAttribute("xmlns:bpmndi", BPMN_NS.bpmndi);
-    root.setAttribute("xmlns:dc", BPMN_NS.dc);
-    root.setAttribute("xmlns:di", BPMN_NS.di);
-    const model = fixture.model;
-    const byId = new Map(model.elements.map((e) => [e.id, e]));
-    const declared = new Set();
-    doc.querySelectorAll("[id]").forEach((n) => declared.add(n.getAttribute("id")));
-    const processes = () => [...doc.querySelectorAll("process")];
-    let mainProcess = processes()[0] || null;
-    const collaboration = doc.querySelector("collaboration");
-    const tagOf = (type) => {
-      const t = type.replace(/^bpmn:/, "");
-      return t.charAt(0).toLowerCase() + t.slice(1);
+  function keepHost(container, cleanup) {
+    window.__cleanupLastRun = () => {
+      try { cleanup(); } catch (err) { /* already gone */ }
+      if (container.parentNode) container.remove();
+      window.__cleanupLastRun = null;
     };
-    const contains = (outer, inner) => {
-      const cx = inner.x + inner.width / 2;
-      const cy = inner.y + inner.height / 2;
-      return cx >= outer.x && cx <= outer.x + outer.width && cy >= outer.y && cy <= outer.y + outer.height;
-    };
-    // Participants without processRef get a generated process.
-    const participantProcess = new Map();
-    for (const p of [...doc.querySelectorAll("participant")]) {
-      let pref = p.getAttribute("processRef");
-      if (!pref) {
-        pref = `${p.getAttribute("id")}_process`;
-        const proc = doc.createElementNS(BPMN_NS.bpmn, "bpmn:process");
-        proc.setAttribute("id", pref);
-        proc.setAttribute("isExecutable", "false");
-        root.appendChild(proc);
-        p.setAttribute("processRef", pref);
-      }
-      participantProcess.set(p.getAttribute("id"), pref);
-    }
-    if (!mainProcess) mainProcess = processes()[0] || null;
-    const processById = (id) => processes().find((p) => p.getAttribute("id") === id);
-    function containerFor(el) {
-      const subs = model.elements.filter((e) => e.type === "bpmn:SubProcess" && e.id !== el.id && contains(e, el));
-      if (subs.length) {
-        const s = subs.sort((a, b) => a.width * a.height - b.width * b.height)[0];
-        const node = doc.querySelector(`subProcess[id="${s.id}"]`);
-        if (node) return node;
-      }
-      const parts = model.elements.filter((e) => e.type === "bpmn:Participant" && contains(e, el));
-      if (parts.length && participantProcess.size) {
-        const p = parts.sort((a, b) => a.width * a.height - b.width * b.height)[0];
-        const proc = processById(participantProcess.get(p.id));
-        if (proc) return proc;
-      }
-      return mainProcess;
-    }
-    // Data objects/stores are drawn through references in bpmn-js.
-    const refId = new Map();
-    const refIdOf = (id) => refId.get(id) || id;
-    for (const el of model.elements) {
-      if (el.type !== "bpmn:DataObject" && el.type !== "bpmn:DataStore") continue;
-      if (el.type === "bpmn:DataStore") {
-        let storeNode = doc.querySelector(`dataStore[id="${el.id}"]`);
-        if (!storeNode) {
-          storeNode = doc.createElementNS(BPMN_NS.bpmn, "bpmn:dataStore");
-          storeNode.setAttribute("id", el.id);
-        }
-        if (el.label) storeNode.setAttribute("name", el.label);
-        root.appendChild(storeNode); // root element, outside any process
-        const ref = doc.createElementNS(BPMN_NS.bpmn, "bpmn:dataStoreReference");
-        ref.setAttribute("id", `${el.id}_ref`);
-        ref.setAttribute("dataStoreRef", el.id);
-        (containerFor(el) || mainProcess).appendChild(ref);
-      } else {
-        const ref = doc.createElementNS(BPMN_NS.bpmn, "bpmn:dataObjectReference");
-        ref.setAttribute("id", `${el.id}_ref`);
-        ref.setAttribute("dataObjectRef", el.id);
-        (containerFor(el) || mainProcess).appendChild(ref);
-      }
-      declared.add(`${el.id}_ref`);
-      refId.set(el.id, `${el.id}_ref`);
-    }
-    // Declare elements missing from the XML skeleton.
-    for (const el of model.elements) {
-      if (declared.has(el.id) || el.type === "bpmn:Participant" || el.type === "bpmn:Lane"
-        || el.type === "bpmn:DataObject" || el.type === "bpmn:DataStore") continue;
-      const node = doc.createElementNS(BPMN_NS.bpmn, `bpmn:${tagOf(el.type)}`);
-      node.setAttribute("id", el.id);
-      if (el.label) node.setAttribute("name", el.label);
-      (containerFor(el) || mainProcess).appendChild(node);
-      declared.add(el.id);
-    }
-    // Lanes: one laneSet per containing participant process.
-    const lanes = model.elements.filter((e) => e.type === "bpmn:Lane");
-    if (lanes.length && mainProcess) {
-      const byProcess = new Map();
-      for (const lane of lanes) {
-        const parts = model.elements.filter((e) => e.type === "bpmn:Participant" && contains(e, lane));
-        const procId = parts.length && participantProcess.get(parts[0].id)
-          ? participantProcess.get(parts[0].id)
-          : mainProcess.getAttribute("id");
-        if (!byProcess.has(procId)) byProcess.set(procId, []);
-        byProcess.get(procId).push(lane);
-      }
-      for (const [procId, ls] of byProcess) {
-        const proc = processById(procId);
-        const laneSet = doc.createElementNS(BPMN_NS.bpmn, "bpmn:laneSet");
-        laneSet.setAttribute("id", `${procId}_laneSet`);
-        for (const lane of ls) {
-          const ln = doc.createElementNS(BPMN_NS.bpmn, "bpmn:lane");
-          ln.setAttribute("id", lane.id);
-          if (lane.label) ln.setAttribute("name", lane.label);
-          for (const el of model.elements) {
-            if (el.type === "bpmn:Lane" || el.type === "bpmn:Participant") continue;
-            if (contains(lane, el) && containerFor(el) === proc) {
-              const ref = doc.createElementNS(BPMN_NS.bpmn, "bpmn:flowNodeRef");
-              ref.textContent = el.id;
-              ln.appendChild(ref);
-            }
-          }
-          laneSet.appendChild(ln);
-          declared.add(lane.id);
-        }
-        proc.appendChild(laneSet);
-      }
-    }
-    // Declare flows missing from the XML skeleton.
-    const artefactTypes = ["bpmn:TextAnnotation", "bpmn:DataObject", "bpmn:DataStore", "bpmn:DataObjectReference", "bpmn:DataStoreReference"];
-    const dataTypes = ["bpmn:DataObject", "bpmn:DataStore", "bpmn:DataObjectReference", "bpmn:DataStoreReference"];
-    for (const f of model.flows || []) {
-      if (declared.has(f.id)) continue;
-      const st = byId.get(f.source);
-      const tt = byId.get(f.target);
-      const isArtefact = (st && artefactTypes.includes(st.type)) || (tt && artefactTypes.includes(tt.type));
-      if (isArtefact && st && tt) {
-        const stData = dataTypes.includes(st.type);
-        const ttData = dataTypes.includes(tt.type);
-        if (stData || ttData) {
-          const taskEl = stData ? tt : st;
-          const taskNode = doc.querySelector(`[id="${taskEl.id}"]`);
-          if (taskNode) {
-            const assoc = doc.createElementNS(BPMN_NS.bpmn, stData ? "bpmn:dataInputAssociation" : "bpmn:dataOutputAssociation");
-            assoc.setAttribute("id", f.id);
-            const ref = doc.createElementNS(BPMN_NS.bpmn, stData ? "bpmn:sourceRef" : "bpmn:targetRef");
-            ref.textContent = refIdOf(stData ? st.id : tt.id);
-            assoc.appendChild(ref);
-            taskNode.appendChild(assoc);
-            declared.add(f.id);
-            continue;
-          }
-        }
-        const assoc = doc.createElementNS(BPMN_NS.bpmn, "bpmn:association");
-        assoc.setAttribute("id", f.id);
-        assoc.setAttribute("sourceRef", f.source);
-        assoc.setAttribute("targetRef", f.target);
-        (containerFor(st) || mainProcess).appendChild(assoc);
-        declared.add(f.id);
-        continue;
-      }
-      if (collaboration && st && tt) {
-        const sp = model.elements.filter((e) => e.type === "bpmn:Participant" && contains(e, st));
-        const tp = model.elements.filter((e) => e.type === "bpmn:Participant" && contains(e, tt));
-        if (sp.length && tp.length && sp[0].id !== tp[0].id) {
-          const mf = doc.createElementNS(BPMN_NS.bpmn, "bpmn:messageFlow");
-          mf.setAttribute("id", f.id);
-          mf.setAttribute("sourceRef", f.source);
-          mf.setAttribute("targetRef", f.target);
-          collaboration.appendChild(mf);
-          declared.add(f.id);
-          continue;
-        }
-      }
-      const sf = doc.createElementNS(BPMN_NS.bpmn, "bpmn:sequenceFlow");
-      sf.setAttribute("id", f.id);
-      sf.setAttribute("sourceRef", f.source);
-      sf.setAttribute("targetRef", f.target);
-      (containerFor(st) || mainProcess).appendChild(sf);
-      declared.add(f.id);
-    }
-    // DI: a single plane (collaboration when present, else the process).
-    // Data references come first so data associations resolve on import.
-    const diagram = doc.createElementNS(BPMN_NS.bpmndi, "bpmndi:BPMNDiagram");
-    diagram.setAttribute("id", "diagram1");
-    const plane = doc.createElementNS(BPMN_NS.bpmndi, "bpmndi:BPMNPlane");
-    plane.setAttribute("id", "plane1");
-    plane.setAttribute("bpmnElement", collaboration ? collaboration.getAttribute("id") : mainProcess.getAttribute("id"));
-    const diOrder = [...model.elements].sort((a, b) => {
-      const rank = (e) => (e.type === "bpmn:DataObject" || e.type === "bpmn:DataStore" ? 0 : 1);
-      return rank(a) - rank(b);
-    });
-    for (const e of diOrder) {
-      const shape = doc.createElementNS(BPMN_NS.bpmndi, "bpmndi:BPMNShape");
-      shape.setAttribute("id", `${e.id}_di`);
-      shape.setAttribute("bpmnElement", refIdOf(e.id));
-      if (e.type === "bpmn:Participant" || e.type === "bpmn:Lane") shape.setAttribute("isHorizontal", "true");
-      if (e.type === "bpmn:SubProcess" && model.elements.some((c) => c.id !== e.id && contains(e, c))) {
-        shape.setAttribute("isExpanded", "true");
-      }
-      const bounds = doc.createElementNS(BPMN_NS.dc, "dc:Bounds");
-      bounds.setAttribute("x", String(e.x));
-      bounds.setAttribute("y", String(e.y));
-      bounds.setAttribute("width", String(e.width));
-      bounds.setAttribute("height", String(e.height));
-      shape.appendChild(bounds);
-      plane.appendChild(shape);
-    }
-    for (const f of model.flows || []) {
-      const edge = doc.createElementNS(BPMN_NS.bpmndi, "bpmndi:BPMNEdge");
-      edge.setAttribute("id", `${f.id}_di`);
-      edge.setAttribute("bpmnElement", f.id);
-      for (const wp of f.waypoints || []) {
-        const pt = doc.createElementNS(BPMN_NS.di, "di:waypoint");
-        pt.setAttribute("x", String(wp.x));
-        pt.setAttribute("y", String(wp.y));
-        edge.appendChild(pt);
-      }
-      plane.appendChild(edge);
-    }
-    diagram.appendChild(plane);
-    root.appendChild(diagram);
-    return new XMLSerializer().serializeToString(doc);
   }
 
+  // ---------------------------------------------------------------- bpmn
+  // The fixture carries a COMPLETE BPMN 2.0 XML document (semantics +
+  // BPMNDI) which is loaded verbatim by the real importXML (C4). No XML or
+  // DI is synthesised here. The extracted F1 model keeps, per element: id,
+  // type, parent container id, isExpanded for subprocesses, the BPMN
+  // eventDefinitions, label and DI geometry; per flow: id, BPMN type,
+  // source/target references and DI waypoints.
   async function runBpmn(fixture, ops) {
     if (!window.__oracleBpmn) throw new Error("bpmn-js bundle not loaded (bundles/bpmn.js missing)");
     const container = makeHost();
     const events = [];
     const skippedOps = [];
     const modeler = new window.__oracleBpmn.Modeler({ container });
-    try {
-      const eventBus = modeler.get("eventBus");
-      const origFire = eventBus.fire.bind(eventBus);
-      eventBus.fire = function (type, data) {
-        const el = (data && (data.element || data.shape || data.connection))
-          || (data && data.context && (data.context.element || data.context.shape || data.context.connection));
-        events.push({
-          name: String(type),
-          payload: {
-            command: data && data.command ? String(data.command.id || data.command) : "",
-            elementId: el && el.id ? String(el.id) : "",
-          },
-        });
-        return origFire(type, data);
-      };
-      const xml = buildBpmnXml(fixture);
-      const imported = await modeler.importXML(xml);
-      const warnings = (imported.warnings || []).map((w) => String(w.message || w).slice(0, 200));
-      const registry = modeler.get("elementRegistry");
-      const modeling = modeler.get("modeling");
-      const commandStack = modeler.get("commandStack");
-      const canvas = modeler.get("canvas");
-      const rootEl = canvas.getRootElement();
-      const skip = (step, why) => {
-        skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
-        events.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "" } });
-      };
-      for (const step of (ops && ops.steps) || []) {
-        if (step.op === "undo") { commandStack.undo(); continue; }
-        if (step.op === "redo") { commandStack.redo(); continue; }
-        if (step.op === "create") {
-          const factory = modeler.get("elementFactory");
-          const bpmnFactory = modeler.get("bpmnFactory");
-          const width = step.width ?? 100;
-          const height = step.height ?? 80;
-          const type = step.type || "bpmn:Task";
-          // Pin the business-object id to the fixture id: bpmn-js otherwise
-          // generates Activity_* ids that differ per run (saveXML evidence).
-          const businessObject = bpmnFactory.create(type, { id: step.elementId });
-          const shape = factory.createShape({ id: step.elementId, type, businessObject, width, height });
-          // In a collaboration the canvas root is not a process container:
-          // BpmnUpdater cannot parent a new flow node to it (observed
-          // TypeError in updateSemanticParent). Create inside the first
-          // participant instead, which is the real modeling parent.
-          let parent = rootEl;
-          if (rootEl.type === "bpmn:Collaboration") {
-            const participants = registry.getAll()
-              .filter((e) => e.type === "bpmn:Participant")
-              .sort((a, b) => a.id.localeCompare(b.id));
-            if (participants.length) parent = participants[0];
-          }
-          modeling.createShape(shape, { x: (step.x ?? 0) + width / 2, y: (step.y ?? 0) + height / 2 }, parent);
-          const created = registry.get(step.elementId);
-          if (created && step.label) modeling.updateLabel(created, step.label);
-          if (!created) skip(step, "shape not in registry after create");
-          continue;
+    keepHost(container, () => modeler.destroy());
+    const eventBus = modeler.get("eventBus");
+    const origFire = eventBus.fire.bind(eventBus);
+    // Keep the significant payload (C6): command id, every element id the
+    // event touches (element/shape/connection/elements/context, recursive),
+    // and the primary element type. Plural payloads (elements.changed,
+    // shape.remove, ...) keep their full id list instead of "".
+    const collectIds = (value, out, depth) => {
+      if (!value || depth > 4) return;
+      if (Array.isArray(value)) { for (const item of value) collectIds(item, out, depth + 1); return; }
+      if (typeof value === "object") {
+        if (typeof value.id === "string" && (value.businessObject || value.waypoints || value.type)) {
+          if (!out.includes(value.id)) out.push(value.id);
         }
-        const el = step.elementId ? registry.get(step.elementId) : null;
-        if (step.op === "move") {
-          if (!el) { skip(step, "element not found"); continue; }
-          modeling.moveShape(el, { x: (step.x ?? el.x) - el.x, y: (step.y ?? el.y) - el.y });
-        } else if (step.op === "resize") {
-          if (!el) { skip(step, "element not found"); continue; }
-          modeling.resizeShape(el, { x: step.x ?? el.x, y: step.y ?? el.y, width: step.width ?? el.width, height: step.height ?? el.height });
-        } else if (step.op === "connect") {
-          const s = registry.get(step.sourceId);
-          const t = registry.get(step.targetId);
-          if (!s || !t) { skip(step, "source or target not found"); continue; }
-          const bpmnFactory = modeler.get("bpmnFactory");
-          const connectionBo = bpmnFactory.create("bpmn:SequenceFlow", { id: step.elementId });
-          modeling.connect(s, t, { id: step.elementId, type: "bpmn:SequenceFlow", businessObject: connectionBo });
-        } else if (step.op === "reconnect") {
-          const conn = el;
-          const t = registry.get(step.targetId);
-          if (!conn || !t) { skip(step, "connection or target not found"); continue; }
-          modeling.reconnectEnd(conn, t, null);
-        } else if (step.op === "remove") {
-          if (!el) { skip(step, "element not found"); continue; }
-          if (el.waypoints) modeling.removeConnection(el);
-          else modeling.removeShape(el);
-        } else if (step.op === "setLabel") {
-          if (!el) { skip(step, "element not found"); continue; }
-          modeling.updateLabel(el, step.label || "");
-        } else if (step.op === "setType") {
-          if (!el) { skip(step, "element not found"); continue; }
-          const replace = modeler.get("bpmnReplace", false);
-          if (!replace) { skip(step, "bpmnReplace unavailable"); continue; }
-          replace.replaceElement(el, { type: step.type });
-        } else if (step.op === "setViewport") {
-          canvas.viewbox({ x: step.x ?? 0, y: step.y ?? 0 });
-          events.push({ name: "harness.viewport", payload: { command: "setViewport", elementId: "" } });
-        } else if (step.op === "select") {
-          const selection = modeler.get("selection");
-          selection.select(el || []);
-          events.push({ name: "harness.select", payload: { command: "select", elementId: step.elementId || "" } });
-        } else {
-          skip(step, "unsupported op");
+        for (const key of ["element", "shape", "connection", "elements", "context", "gfx"]) {
+          if (key in value) collectIds(value[key], out, depth + 1);
         }
       }
-      const elements = [];
-      const flows = [];
-      const bounds = {};
-      const waypoints = {};
-      for (const e of registry.getAll()) {
-        if (!e.businessObject || e.type === "label" || e.id.endsWith("_plane")) continue;
-        const isRoot = !e.parent && (e.type === "bpmn:Process" || e.type === "bpmn:Collaboration");
-        if (isRoot) continue;
-        if (e.waypoints) {
-          flows.push({
-            id: e.id,
-            source: e.source ? e.source.id : "",
-            target: e.target ? e.target.id : "",
-            waypoints: e.waypoints.map((p) => ({ x: round3(p.x), y: round3(p.y) })),
-          });
-          waypoints[e.id] = clone(flows[flows.length - 1].waypoints);
-        } else if (typeof e.x === "number") {
-          elements.push({
-            id: e.id,
-            type: e.type,
-            x: round3(e.x),
-            y: round3(e.y),
-            width: round3(e.width),
-            height: round3(e.height),
-            label: (e.businessObject && e.businessObject.name) || "",
-          });
-          bounds[e.id] = { x: round3(e.x), y: round3(e.y), width: round3(e.width), height: round3(e.height) };
+    };
+    eventBus.fire = function (type, data) {
+      const ids = [];
+      collectIds(data, ids, 0);
+      const primary = (data && (data.element || data.shape || data.connection)) || null;
+      events.push({
+        name: String(type),
+        payload: {
+          command: data && data.command ? String(data.command.id || data.command) : "",
+          elementId: ids[0] || "",
+          elementIds: ids,
+          elementType: primary && primary.type ? String(primary.type) : "",
+        },
+      });
+      return origFire(type, data);
+    };
+    const imported = await modeler.importXML(fixture.xml);
+    const warnings = (imported.warnings || []).map((w) => String(w.message || w).slice(0, 200));
+    const registry = modeler.get("elementRegistry");
+    const modeling = modeler.get("modeling");
+    const commandStack = modeler.get("commandStack");
+    const canvas = modeler.get("canvas");
+    const rootEl = canvas.getRootElement();
+    const skip = (step, why) => {
+      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
+      events.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "", elementIds: [], elementType: "" } });
+    };
+    for (const step of (ops && ops.steps) || []) {
+      if (step.op === "undo") { commandStack.undo(); continue; }
+      if (step.op === "redo") { commandStack.redo(); continue; }
+      if (step.op === "create") {
+        const factory = modeler.get("elementFactory");
+        const bpmnFactory = modeler.get("bpmnFactory");
+        const width = step.width ?? 100;
+        const height = step.height ?? 80;
+        const type = step.type || "bpmn:Task";
+        // Pin the business-object id to the fixture id: bpmn-js otherwise
+        // generates Activity_* ids that differ per run (saveXML evidence).
+        const businessObject = bpmnFactory.create(type, { id: step.elementId });
+        const shape = factory.createShape({ id: step.elementId, type, businessObject, width, height });
+        // In a collaboration the canvas root is not a process container:
+        // BpmnUpdater cannot parent a new flow node to it. Create inside
+        // the first participant, which is the real modeling parent.
+        let parent = rootEl;
+        if (rootEl.type === "bpmn:Collaboration") {
+          const participants = registry.getAll()
+            .filter((e) => e.type === "bpmn:Participant")
+            .sort((a, b) => a.id.localeCompare(b.id));
+          if (participants.length) parent = participants[0];
         }
+        modeling.createShape(shape, { x: (step.x ?? 0) + width / 2, y: (step.y ?? 0) + height / 2 }, parent);
+        const created = registry.get(step.elementId);
+        if (created && step.label) modeling.updateLabel(created, step.label);
+        if (!created) skip(step, "shape not in registry after create");
+        continue;
       }
-      elements.sort((a, b) => a.id.localeCompare(b.id));
-      flows.sort((a, b) => a.id.localeCompare(b.id));
-      const vb = canvas.viewbox();
-      const viewbox = { x: round3(vb.x), y: round3(vb.y), width: round3(vb.width), height: round3(vb.height) };
-      const saved = await modeler.saveXML({ format: false });
-      const model = { elements, flows };
-      const geometry = { bounds, waypoints, viewbox };
-      return {
-        model,
-        xml: saved.xml,
-        events,
-        geometry,
-        pixels: rasterise(bounds, unionViewbox(bounds) || viewbox),
-        viewport: { x: viewbox.x, y: viewbox.y, zoom: round3(vb.scale || 1) },
-        warnings,
-        skippedOps,
-      };
-    } finally {
-      try { modeler.destroy(); } catch (err) { /* already gone */ }
-      container.remove();
+      const el = step.elementId ? registry.get(step.elementId) : null;
+      if (step.op === "move") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.moveShape(el, { x: (step.x ?? el.x) - el.x, y: (step.y ?? el.y) - el.y });
+      } else if (step.op === "resize") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.resizeShape(el, { x: step.x ?? el.x, y: step.y ?? el.y, width: step.width ?? el.width, height: step.height ?? el.height });
+      } else if (step.op === "connect") {
+        const s = registry.get(step.sourceId);
+        const t = registry.get(step.targetId);
+        if (!s || !t) { skip(step, "source or target not found"); continue; }
+        const bpmnFactory = modeler.get("bpmnFactory");
+        const connectionBo = bpmnFactory.create("bpmn:SequenceFlow", { id: step.elementId });
+        modeling.connect(s, t, { id: step.elementId, type: "bpmn:SequenceFlow", businessObject: connectionBo });
+      } else if (step.op === "reconnect") {
+        const conn = el;
+        const t = registry.get(step.targetId);
+        if (!conn || !t) { skip(step, "connection or target not found"); continue; }
+        modeling.reconnectEnd(conn, t, null);
+      } else if (step.op === "remove") {
+        if (!el) { skip(step, "element not found"); continue; }
+        if (el.waypoints) modeling.removeConnection(el);
+        else modeling.removeShape(el);
+      } else if (step.op === "setLabel") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.updateLabel(el, step.label || "");
+      } else if (step.op === "setType") {
+        if (!el) { skip(step, "element not found"); continue; }
+        const replace = modeler.get("bpmnReplace", false);
+        if (!replace) { skip(step, "bpmnReplace unavailable"); continue; }
+        replace.replaceElement(el, { type: step.type });
+      } else if (step.op === "setViewport") {
+        canvas.viewbox({ x: step.x ?? 0, y: step.y ?? 0 });
+        events.push({ name: "harness.viewport", payload: { command: "setViewport", elementId: "", elementIds: [], elementType: "" } });
+      } else if (step.op === "select") {
+        const selection = modeler.get("selection");
+        selection.select(el || []);
+        events.push({ name: "harness.select", payload: { command: "select", elementId: step.elementId || "", elementIds: step.elementId ? [step.elementId] : [], elementType: "" } });
+      } else {
+        skip(step, "unsupported op");
+      }
     }
+    const elements = [];
+    const flows = [];
+    const bounds = {};
+    const waypoints = {};
+    for (const e of registry.getAll()) {
+      if (!e.businessObject || e.type === "label" || e.id.endsWith("_plane")) continue;
+      const isRoot = !e.parent && (e.type === "bpmn:Process" || e.type === "bpmn:Collaboration");
+      if (isRoot) continue;
+      if (e.waypoints) {
+        flows.push({
+          id: e.id,
+          type: e.type,
+          source: e.source ? e.source.id : "",
+          target: e.target ? e.target.id : "",
+          waypoints: e.waypoints.map((p) => ({ x: round3(p.x), y: round3(p.y) })),
+        });
+        waypoints[e.id] = clone(flows[flows.length - 1].waypoints);
+      } else if (typeof e.x === "number") {
+        const bo = e.businessObject;
+        let label = bo.name || "";
+        if (e.type === "bpmn:TextAnnotation") label = bo.text || label;
+        if (e.type === "bpmn:Group") label = (bo.categoryValueRef && bo.categoryValueRef.value) || label;
+        const entry = {
+          id: e.id,
+          type: e.type,
+          parent: e.parent ? e.parent.id : "",
+          x: round3(e.x),
+          y: round3(e.y),
+          width: round3(e.width),
+          height: round3(e.height),
+          label,
+          eventDefinitions: ((bo.eventDefinitions || []).map((d) => String(d.$type || "")).filter(Boolean)).sort(),
+        };
+        if (e.type === "bpmn:SubProcess") entry.isExpanded = Boolean(e.isExpanded);
+        if (bo.dataObjectRef && bo.dataObjectRef.id) entry.dataObjectRef = bo.dataObjectRef.id;
+        if (bo.dataStoreRef && bo.dataStoreRef.id) entry.dataStoreRef = bo.dataStoreRef.id;
+        elements.push(entry);
+        bounds[e.id] = { x: round3(e.x), y: round3(e.y), width: round3(e.width), height: round3(e.height) };
+      }
+    }
+    elements.sort((a, b) => a.id.localeCompare(b.id));
+    flows.sort((a, b) => a.id.localeCompare(b.id));
+    const vb = canvas.viewbox();
+    const viewbox = { x: round3(vb.x), y: round3(vb.y), width: round3(vb.width), height: round3(vb.height) };
+    const saved = await modeler.saveXML({ format: false });
+    return {
+      model: { elements, flows },
+      xml: saved.xml,
+      events,
+      geometry: { bounds, waypoints, viewbox },
+      pixels: null,
+      viewport: { x: viewbox.x, y: viewbox.y, zoom: round3(vb.scale || 1) },
+      warnings,
+      skippedOps,
+    };
   }
 
   // -------------------------------------------------------------- xyflow
   // One adapter for both real flavours: the bundle host mounts the flow
-  // from the fixture; this adapter waits for the library's own DOM
-  // measurement to settle, reads the store state (nodes/edges/viewport),
-  // the DOM bounds of the nodes, and returns the comparator inputs.
+  // from the fixture verbatim (types, parentId/extent, handles, flow
+  // options); this adapter waits for the library's own DOM measurement,
+  // plays the fixture ops through the controlled store, and reads back
+  // the store state, the DOM bounds and the rendered SVG edge paths.
+  // Mount events keep their REAL emission order (no sort, C6).
   async function runXyflow(flavour, fixture, ops) {
     const oracle = flavour === "svelte" ? window.__oracleXyflowSvelte : window.__oracleXyflowReact;
     if (!oracle) throw new Error(`xyflow ${flavour} bundle not loaded (bundles/xyflow-${flavour}.js missing)`);
@@ -482,111 +273,145 @@
     const journal = [];
     const skippedOps = [];
     const mounted = oracle.mountFlow(container, fixture, journal);
-    try {
-      const handle = await waitFor(() => mounted.handle, { label: "xyflow handle" });
-      // Wait until every node carries a real measured size from the DOM.
-      const expected = (fixture.model.nodes || []).length;
-      await waitFor(() => {
-        const nodes = handle.getNodes();
-        return nodes.length >= expected && nodes.every((n) => (n.measured && n.measured.width > 0) || (n.width && n.width > 0));
-      }, { label: "xyflow node measurement" });
-      await sleep(30); // let trailing dimension changes flush into the journal
-      // The mount-phase callback order is NOT a library guarantee (React
-      // effect scheduling interleaves onInit and dimension changes
-      // differently across mounts — observed on the real bundle). The
-      // comparable contract is the SET of mount events plus the ORDERED
-      // op events, so the mount prefix is canonicalised by sort key and
-      // op events keep their real order from here on.
-      const mountEvents = journal.splice(0, journal.length);
-      mountEvents.sort((a, b) => {
-        const ka = `${a.name}|${a.payload.id || ""}|${a.payload.type || ""}|${a.payload.source || ""}|${a.payload.target || ""}`;
-        const kb = `${b.name}|${b.payload.id || ""}|${b.payload.type || ""}|${b.payload.source || ""}|${b.payload.target || ""}`;
-        return ka.localeCompare(kb);
-      });
-      journal.push(...mountEvents);
-      const skip = (step, why) => {
-        skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
-        journal.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "" } });
-      };
-      for (const step of (ops && ops.steps) || []) {
-        if (step.op === "move") {
-          const nodes = handle.getNodes();
-          if (!nodes.some((n) => n.id === step.elementId)) { skip(step, "node not found"); continue; }
-          handle.setNodes(nodes.map((n) => (n.id === step.elementId ? { ...n, position: { x: step.x ?? n.position.x, y: step.y ?? n.position.y } } : n)));
-          journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "position" } });
-        } else if (step.op === "create") {
-          const nodes = handle.getNodes();
-          handle.setNodes([...nodes, { id: step.elementId, type: step.type || "default", position: { x: step.x ?? 0, y: step.y ?? 0 }, data: { label: step.label || "" } }]);
-          journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "add" } });
-          await waitFor(() => handle.getNodes().every((n) => (n.measured && n.measured.width > 0) || n.width), { label: "xyflow created node measurement" }).catch(() => {});
-        } else if (step.op === "connect") {
-          const edges = handle.getEdges();
-          const edge = { id: step.elementId || `e-${step.sourceId}-${step.targetId}`, source: step.sourceId, target: step.targetId };
-          handle.setEdges([...edges, edge]);
-          journal.push({ name: "connect", payload: { source: step.sourceId || "", target: step.targetId || "" } });
-        } else if (step.op === "remove") {
-          handle.setNodes(handle.getNodes().filter((n) => n.id !== step.elementId));
-          handle.setEdges(handle.getEdges().filter((e) => e.id !== step.elementId && e.source !== step.elementId && e.target !== step.elementId));
-          journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "remove" } });
-        } else if (step.op === "setLabel") {
-          const nodes = handle.getNodes();
-          if (!nodes.some((n) => n.id === step.elementId)) { skip(step, "node not found"); continue; }
-          handle.setNodes(nodes.map((n) => (n.id === step.elementId ? { ...n, data: { ...(n.data || {}), label: step.label || "" } } : n)));
-          journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "replace" } });
-        } else if (step.op === "setViewport") {
-          const vp = { x: step.x ?? 0, y: step.y ?? 0, zoom: 1 };
-          if (handle.setViewport) handle.setViewport(vp);
-          journal.push({ name: "viewportChange", payload: { id: "", type: "set" } });
-        } else if (step.op === "undo" || step.op === "redo" || step.op === "select" || step.op === "setType" || step.op === "resize" || step.op === "reconnect") {
-          skip(step, "no native equivalent in the controlled xyflow store for this harness op");
-        } else {
-          skip(step, "unsupported op");
-        }
-      }
-      await sleep(30);
+    keepHost(container, () => mounted.unmount());
+    const handle = await waitFor(() => mounted.handle, { label: "xyflow handle" });
+    // Wait until every node carries a real measured size from the DOM.
+    const expected = (fixture.model.nodes || []).length;
+    await waitFor(() => {
       const nodes = handle.getNodes();
-      const edges = handle.getEdges();
-      const viewportRaw = handle.getViewport ? handle.getViewport() : (fixture.viewport || { x: 0, y: 0, zoom: 1 });
-      const viewport = { x: round3(viewportRaw.x || 0), y: round3(viewportRaw.y || 0), zoom: round3(viewportRaw.zoom || 1) };
-      const containerRect = container.getBoundingClientRect();
-      const bounds = {};
-      const domBounds = {};
-      const modelNodes = nodes.map((n) => {
-        const width = round3((n.measured && n.measured.width) || n.width || 0);
-        const height = round3((n.measured && n.measured.height) || n.height || 0);
-        const x = round3(n.positionAbsolute ? n.positionAbsolute.x : n.position.x);
-        const y = round3(n.positionAbsolute ? n.positionAbsolute.y : n.position.y);
-        bounds[n.id] = { x, y, width, height };
-        const domNode = container.querySelector(`[data-id="${CSS.escape(n.id)}"]`);
-        if (domNode) {
-          const r = domNode.getBoundingClientRect();
-          domBounds[n.id] = {
-            x: round3(r.x - containerRect.x),
-            y: round3(r.y - containerRect.y),
-            width: round3(r.width),
-            height: round3(r.height),
-          };
-        }
-        return { id: n.id, type: n.type || "default", position: { x: round3(n.position.x), y: round3(n.position.y) }, label: (n.data && n.data.label) || "" };
-      }).sort((a, b) => a.id.localeCompare(b.id));
-      const modelEdges = edges.map((e) => ({ id: e.id, source: e.source, target: e.target })).sort((a, b) => a.id.localeCompare(b.id));
-      const viewbox = unionViewbox(bounds);
-      return {
-        model: { nodes: modelNodes, edges: modelEdges, viewport },
-        events: journal,
-        geometry: { bounds, waypoints: {}, viewbox, domBounds },
-        pixels: rasterise(bounds, viewbox),
-        viewport,
-        warnings: [],
-        skippedOps,
-      };
-    } finally {
-      try { mounted.unmount(); } catch (err) { /* already gone */ }
-      container.remove();
+      return nodes.length >= expected && nodes.every((n) => (n.measured && n.measured.width > 0) || (n.width && n.width > 0));
+    }, { label: "xyflow node measurement" });
+    await nextFrames();
+    const skip = (step, why) => {
+      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
+      journal.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "" } });
+    };
+    for (const step of (ops && ops.steps) || []) {
+      if (step.op === "move") {
+        const nodes = handle.getNodes();
+        if (!nodes.some((n) => n.id === step.elementId)) { skip(step, "node not found"); continue; }
+        handle.setNodes(nodes.map((n) => (n.id === step.elementId ? { ...n, position: { x: step.x ?? n.position.x, y: step.y ?? n.position.y } } : n)));
+        journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "position" } });
+      } else if (step.op === "create") {
+        const nodes = handle.getNodes();
+        handle.setNodes([...nodes, { id: step.elementId, type: step.type || "default", position: { x: step.x ?? 0, y: step.y ?? 0 }, data: { label: step.label || "" } }]);
+        journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "add" } });
+        await waitFor(() => handle.getNodes().every((n) => (n.measured && n.measured.width > 0) || n.width), { label: "xyflow created node measurement" }).catch(() => {});
+      } else if (step.op === "connect") {
+        const edges = handle.getEdges();
+        const nodes = handle.getNodes();
+        if (!nodes.some((n) => n.id === step.sourceId) || !nodes.some((n) => n.id === step.targetId)) { skip(step, "source or target node not found"); continue; }
+        const edge = { id: step.elementId || `e-${step.sourceId}-${step.targetId}`, source: step.sourceId, target: step.targetId };
+        if (step.sourceHandle) edge.sourceHandle = step.sourceHandle;
+        if (step.targetHandle) edge.targetHandle = step.targetHandle;
+        handle.setEdges([...edges, edge]);
+        journal.push({ name: "connect", payload: { source: step.sourceId || "", target: step.targetId || "", sourceHandle: step.sourceHandle || "", targetHandle: step.targetHandle || "" } });
+      } else if (step.op === "remove") {
+        handle.setNodes(handle.getNodes().filter((n) => n.id !== step.elementId));
+        handle.setEdges(handle.getEdges().filter((e) => e.id !== step.elementId && e.source !== step.elementId && e.target !== step.elementId));
+        journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "remove" } });
+      } else if (step.op === "setLabel") {
+        const nodes = handle.getNodes();
+        if (!nodes.some((n) => n.id === step.elementId)) { skip(step, "node not found"); continue; }
+        handle.setNodes(nodes.map((n) => (n.id === step.elementId ? { ...n, data: { ...(n.data || {}), label: step.label || "" } } : n)));
+        journal.push({ name: "nodesChange", payload: { id: step.elementId, type: "replace" } });
+      } else if (step.op === "setViewport") {
+        const vp = { x: step.x ?? 0, y: step.y ?? 0, zoom: step.zoom ?? 1 };
+        if (handle.setViewport) handle.setViewport(vp);
+        else { skip(step, "no setViewport on this flavour handle"); continue; }
+        journal.push({ name: "viewportChange", payload: { id: "", type: "set" } });
+      } else if (step.op === "undo" || step.op === "redo" || step.op === "select" || step.op === "setType" || step.op === "resize" || step.op === "reconnect") {
+        skip(step, "no native equivalent in the controlled xyflow store for this harness op");
+      } else {
+        skip(step, "unsupported op");
+      }
     }
+    await nextFrames();
+    const nodes = handle.getNodes();
+    const edges = handle.getEdges();
+    const viewportRaw = handle.getViewport ? handle.getViewport() : (fixture.viewport || { x: 0, y: 0, zoom: 1 });
+    const viewport = { x: round3(viewportRaw.x || 0), y: round3(viewportRaw.y || 0), zoom: round3(viewportRaw.zoom || 1) };
+    const containerRect = container.getBoundingClientRect();
+    const bounds = {};
+    const domBounds = {};
+    const modelNodes = nodes.map((n) => {
+      const width = round3((n.measured && n.measured.width) || n.width || 0);
+      const height = round3((n.measured && n.measured.height) || n.height || 0);
+      const x = round3(n.positionAbsolute ? n.positionAbsolute.x : n.position.x);
+      const y = round3(n.positionAbsolute ? n.positionAbsolute.y : n.position.y);
+      bounds[n.id] = { x, y, width, height };
+      const domNode = container.querySelector(`[data-id="${CSS.escape(n.id)}"]`);
+      if (domNode) {
+        const r = domNode.getBoundingClientRect();
+        domBounds[n.id] = {
+          x: round3(r.x - containerRect.x),
+          y: round3(r.y - containerRect.y),
+          width: round3(r.width),
+          height: round3(r.height),
+        };
+      }
+      return {
+        id: n.id,
+        type: n.type || "default",
+        position: { x: round3(n.position.x), y: round3(n.position.y) },
+        label: (n.data && n.data.label) || "",
+        parentId: n.parentId || "",
+        hidden: Boolean(n.hidden),
+      };
+    }).sort((a, b) => a.id.localeCompare(b.id));
+    const modelEdges = edges.map((e) => ({
+      id: e.id,
+      source: e.source,
+      target: e.target,
+      sourceHandle: e.sourceHandle || "",
+      targetHandle: e.targetHandle || "",
+      type: e.type || "default",
+    })).sort((a, b) => a.id.localeCompare(b.id));
+    // Rendered edge paths: the SVG `d` the library actually drew (C1).
+    const edgePaths = {};
+    for (const e of modelEdges) {
+      const holder = container.querySelector(`[data-testid="rf__edge-${CSS.escape(e.id)}"], .react-flow__edge[data-id="${CSS.escape(e.id)}"], .svelte-flow__edge[data-id="${CSS.escape(e.id)}"]`);
+      const pathEl = holder ? holder.querySelector("path") : container.querySelector(`path[data-id="${CSS.escape(e.id)}"]`);
+      const d = pathEl && pathEl.getAttribute("d");
+      if (d) edgePaths[e.id] = d;
+    }
+    if (Object.keys(edgePaths).length === 0 && modelEdges.length > 0) {
+      // Fallback: associate the rendered edge paths in DOM order with the
+      // edges sorted by id when the wrapper carries no data-id.
+      const paths = [...container.querySelectorAll("svg path")].map((p) => p.getAttribute("d")).filter(Boolean);
+      if (paths.length === modelEdges.length) modelEdges.forEach((e, i) => { edgePaths[e.id] = paths[i]; });
+    }
+    const viewbox = unionViewbox(bounds);
+    return {
+      model: { nodes: modelNodes, edges: modelEdges, viewport },
+      events: journal,
+      geometry: { bounds, waypoints: {}, viewbox, domBounds, edgePaths },
+      pixels: null,
+      viewport,
+      warnings: [],
+      skippedOps,
+    };
   }
 
   // ------------------------------------------------------------- JointJS
+  // Frozen events->effects projection: tools/re-harness/contracts/
+  // jointjs-event-projection.json (§5.5, C6). This table mirrors it; the
+  // contract file is the normative source.
+  const JOINT_EFFECTS = {
+    add: "cell.add",
+    remove: "cell.remove",
+    "change:position": "cell.move",
+    "change:size": "cell.resize",
+    "change:attrs": "cell.attrs",
+    "change:source": "link.reconnect-source",
+    "change:target": "link.reconnect-target",
+    "change:vertices": "link.vertices",
+    "change:angle": "cell.rotate",
+    "change:z": "cell.zorder",
+    reset: "graph.reset",
+    sort: "graph.sort",
+  };
+
   async function runJoint(fixture, ops) {
     const joint = window.__oracleJoint;
     if (!joint || !joint.dia) throw new Error("@joint/core bundle not loaded (bundles/joint.js missing)");
@@ -595,11 +420,24 @@
     const events = [];
     const skippedOps = [];
     const graph = new dia.Graph({}, { cellNamespace: shapes });
-    let journalOn = true;
     graph.on("all", (name, cell) => {
-      if (!journalOn) return;
       const id = cell && (cell.id || (typeof cell.get === "function" ? cell.get("id") : ""));
-      events.push({ name: String(name), payload: { elementId: id ? String(id) : "" } });
+      const payload = { elementId: id ? String(id) : "", effect: JOINT_EFFECTS[String(name)] || "other" };
+      // Keep the significant changed values (C6), at the journal precision.
+      if (cell && typeof cell.position === "function" && String(name) === "change:position") {
+        const p = cell.position(); payload.x = round3(p.x); payload.y = round3(p.y);
+      }
+      if (cell && typeof cell.size === "function" && String(name) === "change:size") {
+        const s = cell.size(); payload.width = round3(s.width); payload.height = round3(s.height);
+      }
+      if (cell && typeof cell.attr === "function" && String(name) === "change:attrs") {
+        payload.label = String(cell.attr("label/text") || "");
+      }
+      if (cell && typeof cell.get === "function" && (String(name) === "change:source" || String(name) === "change:target")) {
+        const end = cell.get(String(name) === "change:source" ? "source" : "target");
+        payload[String(name) === "change:source" ? "source" : "target"] = end && end.id ? String(end.id) : "";
+      }
+      events.push({ name: String(name), payload });
     });
     const paper = new dia.Paper({
       el: container,
@@ -611,144 +449,133 @@
       gridSize: 1,
       background: { color: "#ffffff" },
     });
-    try {
-      const cells = (fixture.model.cells || []).map((c) => {
-        if (c.type && c.type.endsWith("Link")) {
-          return {
-            id: c.id,
-            type: c.type,
-            source: { id: c.source },
-            target: { id: c.target },
-            vertices: (c.waypoints || []).slice(1, -1),
-          };
-        }
+    keepHost(container, () => paper.remove());
+    const cells = (fixture.model.cells || []).map((c) => {
+      if (c.type && c.type.endsWith("Link")) {
         return {
           id: c.id,
           type: c.type,
-          position: { x: c.position ? c.position.x : c.x || 0, y: c.position ? c.position.y : c.y || 0 },
-          size: { width: c.size ? c.size.width : c.width || 100, height: c.size ? c.size.height : c.height || 40 },
-          attrs: c.attrs || {},
+          source: { id: c.source },
+          target: { id: c.target },
+          vertices: (c.waypoints || []).slice(1, -1),
         };
-      });
-      graph.fromJSON({ cells });
-      // Paper renders synchronously with async:false; one frame for views.
-      await sleep(20);
-      const undoStack = [];
-      const redoStack = [];
-      const snapshot = () => JSON.stringify(graph.toJSON());
-      const restore = (json) => {
-        journalOn = false;
-        try { graph.fromJSON(JSON.parse(json)); } finally { journalOn = true; }
-      };
-      const skip = (step, why) => {
-        skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
-        events.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "" } });
-      };
-      for (const step of (ops && ops.steps) || []) {
-        if (step.op === "undo") {
-          const prev = undoStack.pop();
-          if (prev) { redoStack.push(snapshot()); restore(prev); events.push({ name: "harness.undo", payload: { elementId: "" } }); }
-          continue;
-        }
-        if (step.op === "redo") {
-          const next = redoStack.pop();
-          if (next) { undoStack.push(snapshot()); restore(next); events.push({ name: "harness.redo", payload: { elementId: "" } }); }
-          continue;
-        }
-        undoStack.push(snapshot());
-        redoStack.length = 0;
-        if (step.op === "move") {
-          const cell = graph.getCell(step.elementId);
-          if (!cell || typeof cell.position !== "function") { skip(step, "cell not found"); continue; }
-          cell.position(step.x ?? cell.position().x, step.y ?? cell.position().y);
-        } else if (step.op === "resize") {
-          const cell = graph.getCell(step.elementId);
-          if (!cell || typeof cell.resize !== "function") { skip(step, "cell not found"); continue; }
-          cell.resize(step.width ?? cell.size().width, step.height ?? cell.size().height);
-        } else if (step.op === "create") {
-          const Rect = (shapes.standard && shapes.standard.Rectangle) || dia.Element;
-          const el = new Rect({ id: step.elementId, position: { x: step.x ?? 0, y: step.y ?? 0 }, size: { width: step.width ?? 100, height: step.height ?? 60 }, attrs: { label: { text: step.label || "" } } });
-          graph.addCell(el);
-        } else if (step.op === "connect") {
-          const Link = (shapes.standard && shapes.standard.Link) || dia.Link;
-          graph.addCell(new Link({ id: step.elementId, source: { id: step.sourceId }, target: { id: step.targetId } }));
-        } else if (step.op === "remove") {
-          const cell = graph.getCell(step.elementId);
-          if (!cell) { skip(step, "cell not found"); continue; }
-          cell.remove();
-        } else if (step.op === "setLabel") {
-          const cell = graph.getCell(step.elementId);
-          if (!cell) { skip(step, "cell not found"); continue; }
-          cell.attr("label/text", step.label || "");
-        } else if (step.op === "setViewport" || step.op === "select" || step.op === "setType" || step.op === "reconnect") {
-          skip(step, "no native equivalent used by this harness op");
-        } else {
-          skip(step, "unsupported op");
-        }
       }
-      await sleep(20);
-      const json = graph.toJSON();
-      const elements = [];
-      const flows = [];
-      const bounds = {};
-      const waypoints = {};
-      for (const cell of json.cells || []) {
-        const model = graph.getCell(cell.id);
-        const isLink = cell.type && cell.type.endsWith("Link");
-        if (isLink) {
-          const pts = [];
-          if (model) {
-            try {
-              const sp = model.getSourcePoint();
-              const tp = model.getTargetPoint();
-              if (sp) pts.push({ x: round3(sp.x), y: round3(sp.y) });
-              for (const v of model.vertices() || []) pts.push({ x: round3(v.x), y: round3(v.y) });
-              if (tp) pts.push({ x: round3(tp.x), y: round3(tp.y) });
-            } catch (err) { /* link without both ends */ }
-          }
-          flows.push({ id: cell.id, source: cell.source ? cell.source.id || "" : "", target: cell.target ? cell.target.id || "" : "", waypoints: pts });
-          waypoints[cell.id] = clone(pts);
-        } else {
-          const pos = cell.position || { x: 0, y: 0 };
-          const size = cell.size || { width: 0, height: 0 };
-          let bbox = { x: pos.x, y: pos.y, width: size.width, height: size.height };
-          if (model) {
-            const view = paper.findViewByModel(model);
-            if (view && typeof view.getBBox === "function") {
-              const b = view.getBBox();
-              bbox = { x: b.x, y: b.y, width: b.width, height: b.height };
-            }
-          }
-          bounds[cell.id] = { x: round3(bbox.x), y: round3(bbox.y), width: round3(bbox.width), height: round3(bbox.height) };
-          elements.push({
-            id: cell.id,
-            type: cell.type,
-            x: round3(pos.x),
-            y: round3(pos.y),
-            width: round3(size.width),
-            height: round3(size.height),
-            label: (cell.attrs && cell.attrs.label && cell.attrs.label.text) || "",
-          });
-        }
-      }
-      elements.sort((a, b) => a.id.localeCompare(b.id));
-      flows.sort((a, b) => a.id.localeCompare(b.id));
-      const viewbox = unionViewbox(bounds);
-      const scale = typeof paper.scale === "function" ? paper.scale() : { sx: 1 };
       return {
-        model: { elements, flows },
-        graphJson: json,
-        events,
-        geometry: { bounds, waypoints, viewbox },
-        pixels: rasterise(bounds, viewbox),
-        viewport: { x: 0, y: 0, zoom: round3(scale.sx || 1) },
-        warnings: [],
-        skippedOps,
+        id: c.id,
+        type: c.type,
+        position: { x: c.position ? c.position.x : c.x || 0, y: c.position ? c.position.y : c.y || 0 },
+        size: { width: c.size ? c.size.width : c.width || 100, height: c.size ? c.size.height : c.height || 40 },
+        attrs: c.attrs || {},
       };
-    } finally {
-      try { paper.remove(); } catch (err) { /* already gone */ }
-      container.remove();
+    });
+    graph.fromJSON({ cells });
+    // Selftest-only real rendering mutation (C3): through the library API.
+    if (fixture.renderMutation && fixture.renderMutation.cellId) {
+      const cell = graph.getCell(fixture.renderMutation.cellId);
+      if (cell && typeof cell.attr === "function") cell.attr("body/fill", fixture.renderMutation.fill || "#ff0000");
     }
+    await nextFrames();
+    const skip = (step, why) => {
+      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
+      events.push({ name: "harness.skipped", payload: { command: `${step.op}: ${why}`, elementId: step.elementId || "", effect: "other" } });
+    };
+    for (const step of (ops && ops.steps) || []) {
+      // @joint/core 4.3.3 ships no CommandManager (that is JointJS+):
+      // undo/redo has NO native mechanism in this oracle and is therefore
+      // removed from the JointJS gate (C4) — never fabricated here. A
+      // scenario scripting it records a skip, which fails the scenario.
+      if (step.op === "undo" || step.op === "redo") {
+        skip(step, "no native undo/redo in @joint/core (no CommandManager); removed from the JointJS gate");
+        continue;
+      }
+      if (step.op === "move") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell || typeof cell.position !== "function") { skip(step, "cell not found"); continue; }
+        cell.position(step.x ?? cell.position().x, step.y ?? cell.position().y);
+      } else if (step.op === "resize") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell || typeof cell.resize !== "function") { skip(step, "cell not found"); continue; }
+        cell.resize(step.width ?? cell.size().width, step.height ?? cell.size().height);
+      } else if (step.op === "create") {
+        const Rect = (shapes.standard && shapes.standard.Rectangle) || dia.Element;
+        const el = new Rect({ id: step.elementId, position: { x: step.x ?? 0, y: step.y ?? 0 }, size: { width: step.width ?? 100, height: step.height ?? 60 }, attrs: { label: { text: step.label || "" } } });
+        graph.addCell(el);
+      } else if (step.op === "connect") {
+        const Link = (shapes.standard && shapes.standard.Link) || dia.Link;
+        graph.addCell(new Link({ id: step.elementId, source: { id: step.sourceId }, target: { id: step.targetId } }));
+      } else if (step.op === "remove") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell) { skip(step, "cell not found"); continue; }
+        cell.remove();
+      } else if (step.op === "setLabel") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell) { skip(step, "cell not found"); continue; }
+        cell.attr("label/text", step.label || "");
+      } else if (step.op === "setViewport" || step.op === "select" || step.op === "setType" || step.op === "reconnect") {
+        skip(step, "no native equivalent used by this harness op");
+      } else {
+        skip(step, "unsupported op");
+      }
+    }
+    await nextFrames();
+    const json = graph.toJSON();
+    const elements = [];
+    const flows = [];
+    const bounds = {};
+    const waypoints = {};
+    for (const cell of json.cells || []) {
+      const model = graph.getCell(cell.id);
+      const isLink = cell.type && cell.type.endsWith("Link");
+      if (isLink) {
+        const pts = [];
+        if (model) {
+          try {
+            const sp = model.getSourcePoint();
+            const tp = model.getTargetPoint();
+            if (sp) pts.push({ x: round3(sp.x), y: round3(sp.y) });
+            for (const v of model.vertices() || []) pts.push({ x: round3(v.x), y: round3(v.y) });
+            if (tp) pts.push({ x: round3(tp.x), y: round3(tp.y) });
+          } catch (err) { /* link without both ends */ }
+        }
+        flows.push({ id: cell.id, source: cell.source ? cell.source.id || "" : "", target: cell.target ? cell.target.id || "" : "", waypoints: pts });
+        waypoints[cell.id] = clone(pts);
+      } else {
+        const pos = cell.position || { x: 0, y: 0 };
+        const size = cell.size || { width: 0, height: 0 };
+        let bbox = { x: pos.x, y: pos.y, width: size.width, height: size.height };
+        if (model) {
+          const view = paper.findViewByModel(model);
+          if (view && typeof view.getBBox === "function") {
+            const b = view.getBBox();
+            bbox = { x: b.x, y: b.y, width: b.width, height: b.height };
+          }
+        }
+        bounds[cell.id] = { x: round3(bbox.x), y: round3(bbox.y), width: round3(bbox.width), height: round3(bbox.height) };
+        elements.push({
+          id: cell.id,
+          type: cell.type,
+          x: round3(pos.x),
+          y: round3(pos.y),
+          width: round3(size.width),
+          height: round3(size.height),
+          label: (cell.attrs && cell.attrs.label && cell.attrs.label.text) || "",
+        });
+      }
+    }
+    elements.sort((a, b) => a.id.localeCompare(b.id));
+    flows.sort((a, b) => a.id.localeCompare(b.id));
+    const viewbox = unionViewbox(bounds);
+    const scale = typeof paper.scale === "function" ? paper.scale() : { sx: 1 };
+    return {
+      model: { elements, flows },
+      graphJson: json,
+      events,
+      geometry: { bounds, waypoints, viewbox },
+      pixels: null,
+      viewport: { x: 0, y: 0, zoom: round3(scale.sx || 1) },
+      warnings: [],
+      skippedOps,
+    };
   }
 
   window.__oracleStatus = {

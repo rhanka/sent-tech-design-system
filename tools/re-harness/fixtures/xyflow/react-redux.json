@@ -7,49 +7,90 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 80,
-          "y": 40
+          "x": 250,
+          "y": 0
         },
         "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+          "label": "hey"
+        }
       },
       {
-        "id": "n2",
+        "id": "2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 140
+          "x": 100,
+          "y": 100
         },
         "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
-      }
-    ],
-    "edges": [
+          "label": "default node"
+        }
+      },
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "data": {
+          "label": "custom style"
+        },
+        "style": {
+          "background": "#D6D5E6",
+          "color": "#333",
+          "border": "1px solid #222138",
+          "width": 180
+        }
+      },
+      {
+        "id": "4",
+        "type": "default",
+        "position": {
+          "x": 250,
+          "y": 200
+        },
+        "data": {
+          "label": "Another default node"
+        }
+      },
+      {
+        "id": "5",
+        "type": "default",
+        "position": {
+          "x": 250,
+          "y": 325
+        },
+        "data": {
+          "label": "Node id: 5"
+        }
+      },
+      {
+        "id": "6",
+        "type": "output",
+        "position": {
+          "x": 100,
+          "y": 480
+        },
+        "data": {
+          "label": "output"
+        }
+      },
+      {
+        "id": "7",
+        "type": "output",
+        "position": {
+          "x": 400,
+          "y": 450
+        },
+        "data": {
+          "label": "Another output node"
+        }
       }
     ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +105,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Redux/initial-elements.tsx"
   }
 }

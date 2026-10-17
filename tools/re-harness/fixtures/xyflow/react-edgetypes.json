@@ -5,49 +5,17 @@
   "kind": "xyflow-graph",
   "title": "xyflow example fixture for examples.react-edgetypes",
   "model": {
-    "nodes": [
-      {
-        "id": "n1",
-        "type": "default",
-        "position": {
-          "x": 48,
-          "y": 40
-        },
-        "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
-      },
-      {
-        "id": "n2",
-        "type": "default",
-        "position": {
-          "x": 240,
-          "y": 148
-        },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
-      }
-    ],
+    "nodes": [],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "bottom->top",
+        "source": "bottom",
+        "target": "top"
+      },
+      {
+        "id": "right->left",
+        "source": "right",
+        "target": "left"
       }
     ],
     "viewport": {
@@ -64,5 +32,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/EdgeTypes/utils.ts"
   }
 }

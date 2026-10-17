@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-color-mode-selfparity","library":"xyflow","fixtures":["xyflow/svelte-color-mode.json"],"exercises":["examples.svelte-color-mode"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-color-mode-selfparity","library":"xyflow","fixtures":["xyflow/svelte-color-mode.json"],"ops":"xyflow/svelte-color-mode.ops.json","exercises":["examples.svelte-color-mode"],"comparators":["model","events","geometry","pixels"]}

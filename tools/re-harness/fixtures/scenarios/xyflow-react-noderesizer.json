@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-noderesizer-selfparity","library":"xyflow","fixtures":["xyflow/react-noderesizer.json"],"exercises":["examples.react-noderesizer"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-noderesizer-selfparity","library":"xyflow","fixtures":["xyflow/react-noderesizer.json"],"ops":"xyflow/react-noderesizer.ops.json","exercises":["examples.react-noderesizer"],"comparators":["model","events","geometry","pixels"]}

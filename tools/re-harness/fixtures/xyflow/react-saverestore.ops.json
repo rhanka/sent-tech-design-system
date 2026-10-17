@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-saverestore-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "1",
+      "x": 140,
+      "y": 130
+    }
+  ]
+}

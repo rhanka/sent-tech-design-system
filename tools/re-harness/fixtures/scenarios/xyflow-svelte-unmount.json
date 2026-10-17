@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-unmount-selfparity","library":"xyflow","fixtures":["xyflow/svelte-unmount.json"],"exercises":["examples.svelte-unmount"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-unmount-selfparity","library":"xyflow","fixtures":["xyflow/svelte-unmount.json"],"ops":"xyflow/svelte-unmount.ops.json","exercises":["examples.svelte-unmount"],"comparators":["model","events","geometry","pixels"]}

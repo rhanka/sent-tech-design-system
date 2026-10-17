@@ -7,47 +7,142 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "A",
+        "type": "input",
         "position": {
-          "x": 87,
-          "y": 40
+          "x": 0,
+          "y": 150
         },
         "data": {
-          "label": "One"
+          "label": "A"
         },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right",
+        "targetPosition": "left"
       },
       {
-        "id": "n2",
+        "id": "B",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 147
+          "x": 250,
+          "y": 0
         },
         "data": {
-          "label": "Two"
+          "label": "B"
         },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "C",
+        "type": "default",
+        "position": {
+          "x": 250,
+          "y": 150
+        },
+        "data": {
+          "label": "C"
+        },
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "D",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 300
+        },
+        "data": {
+          "label": "D"
+        },
+        "width": 200,
+        "height": 200,
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "E",
+        "type": "default",
+        "position": {
+          "x": 10,
+          "y": 10
+        },
+        "data": {
+          "label": "E"
+        },
+        "parentId": "D",
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "F",
+        "type": "default",
+        "position": {
+          "x": 250,
+          "y": 300
+        },
+        "data": {
+          "label": "F"
+        },
+        "width": 200,
+        "height": 200,
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "G",
+        "type": "default",
+        "position": {
+          "x": 10,
+          "y": 10
+        },
+        "data": {
+          "label": "G"
+        },
+        "parentId": "F",
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "H",
+        "type": "default",
+        "position": {
+          "x": 500,
+          "y": 300
+        },
+        "data": {
+          "label": "H"
+        },
+        "width": 200,
+        "height": 200,
+        "sourcePosition": "right",
+        "targetPosition": "left"
+      },
+      {
+        "id": "I",
+        "type": "default",
+        "position": {
+          "x": 10,
+          "y": 10
+        },
+        "data": {
+          "label": "I"
+        },
+        "parentId": "H",
+        "sourcePosition": "right",
+        "targetPosition": "left"
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "A-B",
+        "source": "A",
+        "target": "B"
+      },
+      {
+        "id": "A-C",
+        "source": "A",
+        "target": "C"
       }
     ],
     "viewport": {
@@ -64,5 +159,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/ZIndexMode/index.tsx"
   }
 }

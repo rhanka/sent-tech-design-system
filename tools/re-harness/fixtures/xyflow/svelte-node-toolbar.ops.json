@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-node-toolbar-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "default-node",
+      "x": 40,
+      "y": -170
+    }
+  ]
+}

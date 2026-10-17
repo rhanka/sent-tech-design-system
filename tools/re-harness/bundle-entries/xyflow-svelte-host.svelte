@@ -13,7 +13,10 @@
   let edges = $state(structuredClone(initialEdges));
   let viewport = $state({ ...initialViewport });
 
-  let seen = new Map();
+  // Seeded with the initial nodes (C6): the first $effect must not emit
+  // synthetic `add` events for nodes that were present from the start —
+  // that was the React/Svelte mount asymmetry (5 events vs 3).
+  let seen = new Map(snapshot(initialNodes).map((s) => [s.id, s]));
   function snapshot(list) {
     return list.map((n) => ({
       id: n.id,
@@ -44,6 +47,7 @@
     getNodes: () => $state.snapshot(nodes),
     getEdges: () => $state.snapshot(edges),
     getViewport: () => ({ ...viewport }),
+    setViewport: (vp) => { viewport = { ...vp }; },
     setNodes: (next) => { nodes = next; },
     setEdges: (next) => { edges = next; },
   };

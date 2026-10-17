@@ -1,1 +1,0 @@
-{ "schemaVersion": 1, "id": "jointjs-edit-undo", "steps": [ { "op": "move", "elementId": "r2", "x": 320, "y": 80 }, { "op": "undo" }, { "op": "redo" } ] }

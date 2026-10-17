@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-useupdatenodeinternals-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "1",
+      "x": 290,
+      "y": 35
+    }
+  ]
+}

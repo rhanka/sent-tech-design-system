@@ -4,16 +4,59 @@
   "library": "bpmn",
   "kind": "bpmn-xml-f1",
   "title": "Collapsed subprocess between start and end",
-  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_sc\"><bpmn:process id=\"p1\"><bpmn:subProcess id=\"sub1\"/><bpmn:task id=\"after\"/></bpmn:process></bpmn:definitions>",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"defs_sc\" targetNamespace=\"http://sentropic.example/re-harness\"><bpmn:process id=\"p1\" isExecutable=\"false\"><bpmn:subProcess id=\"sub1\" name=\"Collapsed\"/><bpmn:task id=\"after\" name=\"After\"/><bpmn:sequenceFlow id=\"fs\" sourceRef=\"sub1\" targetRef=\"after\"/></bpmn:process><bpmndi:BPMNDiagram id=\"diagram1\"><bpmndi:BPMNPlane id=\"plane1\" bpmnElement=\"p1\"><bpmndi:BPMNShape id=\"sub1_di\" bpmnElement=\"sub1\" isExpanded=\"false\"><dc:Bounds x=\"120\" y=\"80\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"after_di\" bpmnElement=\"after\"><dc:Bounds x=\"300\" y=\"80\" width=\"100\" height=\"80\"/></bpmndi:BPMNShape><bpmndi:BPMNEdge id=\"fs_di\" bpmnElement=\"fs\"><di:waypoint x=\"220\" y=\"120\"/><di:waypoint x=\"300\" y=\"120\"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>",
   "model": {
     "elements": [
-      { "id": "sub1", "type": "bpmn:SubProcess", "x": 120, "y": 80, "width": 100, "height": 80, "label": "Collapsed" },
-      { "id": "after", "type": "bpmn:Task", "x": 300, "y": 80, "width": 100, "height": 80, "label": "After" }
+      {
+        "id": "sub1",
+        "type": "bpmn:SubProcess",
+        "parent": "p1",
+        "x": 120,
+        "y": 80,
+        "width": 100,
+        "height": 80,
+        "label": "Collapsed",
+        "eventDefinitions": [],
+        "isExpanded": false
+      },
+      {
+        "id": "after",
+        "type": "bpmn:Task",
+        "parent": "p1",
+        "x": 300,
+        "y": 80,
+        "width": 100,
+        "height": 80,
+        "label": "After",
+        "eventDefinitions": []
+      }
     ],
     "flows": [
-      { "id": "fs", "source": "sub1", "target": "after", "waypoints": [{ "x": 220, "y": 120 }, { "x": 300, "y": 120 }] }
+      {
+        "id": "fs",
+        "type": "bpmn:SequenceFlow",
+        "source": "sub1",
+        "target": "after",
+        "waypoints": [
+          {
+            "x": 220,
+            "y": 120
+          },
+          {
+            "x": 300,
+            "y": 120
+          }
+        ]
+      }
     ]
   },
-  "viewport": { "x": 0, "y": 0, "zoom": 1 },
-  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
 }

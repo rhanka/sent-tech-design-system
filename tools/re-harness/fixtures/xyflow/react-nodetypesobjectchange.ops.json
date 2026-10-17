@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-nodetypesobjectchange-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "1",
+      "x": 40,
+      "y": 110
+    },
+    {
+      "op": "connect",
+      "elementId": "xe1",
+      "sourceId": "1",
+      "targetId": "2"
+    }
+  ]
+}

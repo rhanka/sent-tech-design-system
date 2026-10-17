@@ -7,49 +7,74 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
+        "id": "0",
         "type": "default",
         "position": {
-          "x": 61,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
+          "label": "rectangle"
         },
-        "width": 120,
-        "height": 44
+        "draggable": false,
+        "width": 100,
+        "height": 100,
+        "style": {
+          "opacity": 0.5
+        }
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 240,
-          "y": 161
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "Two"
+          "label": "Node 1"
         },
-        "width": 120,
-        "height": 44
-      }
-    ],
-    "edges": [
+        "width": 200,
+        "height": 100
+      },
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "2",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 150
+        },
+        "data": {
+          "label": "Node 2"
+        }
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 250,
+          "y": 0
+        },
+        "data": {
+          "label": "Node 3"
+        }
+      },
+      {
+        "id": "4",
+        "type": "default",
+        "position": {
+          "x": 350,
+          "y": 150
+        },
+        "data": {
+          "label": "Node"
+        },
+        "style": {
+          "width": 50,
+          "height": 50
+        }
       }
     ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +89,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Intersection/index.tsx"
   }
 }

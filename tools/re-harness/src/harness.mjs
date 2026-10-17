@@ -15,30 +15,45 @@ import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { compareModel, compareEvents, compareGeometry, comparePixels } from "./comparators.mjs";
+import { compareModel, compareEvents, compareGeometry, comparePixels, correspondenceProblems, remapDeep, XYFLOW_GEOMETRY_TOLERANCE_PX } from "./comparators.mjs";
 import { validateAgainstSchema } from "./validate.mjs";
 import { runSyntheticEngine } from "./synthetic-engines.mjs";
 import { coverageReport, loadInventory, listScenarios } from "./coverage.mjs";
-import { canonicalise } from "./canonical.mjs";
-import { BUNDLES_DIR, bundleStatus, gateOracle, readOracleVersions } from "./oracles.mjs";
+import { canonicalise, canonicalString } from "./canonical.mjs";
+import { BUNDLES_DIR, WT_ROOT, REPO_ROOT, EXPECTED_VERSIONS, bundleStatus, gateOracle, readOracleVersions } from "./oracles.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const HARNESS_ROOT = path.resolve(HERE, "..");
-const WT_ROOT = path.resolve(HARNESS_ROOT, "..", "..");
-const REPO_ROOT = path.resolve(WT_ROOT, "..");
 
 export const GATE_REPORT_FILES = ["self-parity.json", "xyflow-examples.json", "selftest.json"];
 
-// Gate guard: a gate report is valid only when produced by the real
-// oracle. The test suite fails on any gate report stamped otherwise.
+// Gate guard (C7): a gate report counts only when it is schema-valid,
+// produced by the real oracle at the pinned versions, non-empty, and every
+// scenario is `pass` with no skipped operation. An `unknown` or empty
+// report archived as a gate fails here instead of passing silently.
 export function assertGateReport(report, label = "report") {
   if (!report || typeof report !== "object") throw new Error(`${label}: not an object`);
+  const schema = readJson(schemaPath("report.schema.json"));
+  const schemaErrors = validateAgainstSchema(report, schema, label);
+  if (schemaErrors.length) throw new Error(`${label}: report.schema.json: ${schemaErrors[0]}`);
   if (report.oracle !== "real") {
     throw new Error(`${label}: gate report carries oracle=${JSON.stringify(report.oracle)} instead of "real"`);
   }
-  for (const scenario of report.scenarios || []) {
-    if (scenario.oracle !== undefined && scenario.oracle !== "real") {
+  if (canonicalString(report.oracleVersions || {}) !== canonicalString(EXPECTED_VERSIONS)) {
+    throw new Error(`${label}: oracleVersions do not equal the pinned EXPECTED_VERSIONS`);
+  }
+  if (!Array.isArray(report.scenarios) || report.scenarios.length === 0) {
+    throw new Error(`${label}: gate report has no scenarios`);
+  }
+  for (const scenario of report.scenarios) {
+    if (scenario.oracle !== "real") {
       throw new Error(`${label}: scenario ${scenario.id} carries oracle=${JSON.stringify(scenario.oracle)} instead of "real"`);
+    }
+    if (scenario.verdict !== "pass") {
+      throw new Error(`${label}: scenario ${scenario.id} verdict=${JSON.stringify(scenario.verdict)} instead of "pass"`);
+    }
+    if (Array.isArray(scenario.skippedOps) && scenario.skippedOps.length > 0) {
+      throw new Error(`${label}: scenario ${scenario.id} skipped ${scenario.skippedOps.length} operation(s)`);
     }
   }
   return true;
@@ -62,6 +77,9 @@ export function validateFixtures() {
       errors.push(...validateAgainstSchema(doc, opsSchema, rel).map((e) => `${rel}: ${e}`));
     } else {
       errors.push(...validateAgainstSchema(doc, modelSchema, rel).map((e) => `${rel}: ${e}`));
+      if (doc.idCorrespondence) {
+        errors.push(...correspondenceProblems(doc.idCorrespondence).map((e) => `${rel}: ${e}`));
+      }
     }
   }
   return errors;
@@ -75,12 +93,25 @@ function fixturePathFor(scenario) { return path.join(HARNESS_ROOT, "fixtures", s
 function opsPathFor(scenario) { return scenario.ops ? path.join(HARNESS_ROOT, "fixtures", scenario.ops) : null; }
 
 function compareRuns(left, right, fixture) {
+  const correspondence = fixture.idCorrespondence || {};
+  const geometryOptions = fixture.library === "xyflow"
+    ? { tolerancePx: XYFLOW_GEOMETRY_TOLERANCE_PX, viewboxTolerance: XYFLOW_GEOMETRY_TOLERANCE_PX }
+    : {};
   const comparators = {
-    model: compareModel(left.model, right.model),
-    events: compareEvents(left.events, right.events, fixture.idCorrespondence || {}),
-    geometry: compareGeometry(left.geometry, right.geometry),
+    model: compareModel(remapDeep(left.model, correspondence), remapDeep(right.model, correspondence)),
+    events: compareEvents(left.events, right.events, correspondence),
+    geometry: compareGeometry(remapDeep(left.geometry, correspondence), remapDeep(right.geometry, correspondence), geometryOptions),
     pixels: comparePixels(left.pixels, right.pixels, fixture.pixelThreshold || {}),
   };
+  // A skipped operation is never silent (C2): the scenario cannot pass,
+  // because the two runs may have skipped the same step and stayed equal.
+  const skipped = [...(left.skippedOps || []), ...(right.skippedOps || [])];
+  if (skipped.length) {
+    comparators.operations = {
+      verdict: "fail",
+      detail: `skippedOps not empty: ${skipped.map((s) => `${s.op} (${s.why})`).join("; ")}`,
+    };
+  }
   // bpmn-js additionally proves its serialised form is stable across the
   // two independent runs (saveXML captured by the adapter).
   if (left.xml !== undefined || right.xml !== undefined) {
@@ -158,15 +189,21 @@ export function runSelftest() {
 
 // -------------------------------------------------------------- browser IO
 function findUpward(rel) {
+  // Bounded at the REPOSITORY root (C8): search the working tree, then —
+  // in a linked worktree, whose node_modules live in the main checkout —
+  // the main repository root. Never walk above the repository.
   let dir = HARNESS_ROOT;
-  for (let i = 0; i < 8; i += 1) {
+  for (;;) {
     const candidate = path.join(dir, rel);
     if (fs.existsSync(candidate)) return candidate;
+    if (dir === REPO_ROOT) return null;
     const parent = path.dirname(dir);
-    if (parent === dir) break;
+    if (parent === dir) return null;
     dir = parent;
+    // Once the working-tree root is passed, jump straight to the main
+    // repository root: nothing between the two belongs to the repository.
+    if (dir === path.dirname(WT_ROOT) && WT_ROOT !== REPO_ROOT) dir = REPO_ROOT;
   }
-  return null;
 }
 function pathToFile(p) { return new URL(`file://${p}`).href; }
 
@@ -285,6 +322,15 @@ export async function runRealGates(scenarios) {
       }
       const fixture = loadFixture(fixturePathFor(scenario));
       const ops = loadOps(opsPathFor(scenario));
+      // A fixture whose example graph could not be extracted mechanically
+      // is `unknown` with its cause (C1) — never run, never green.
+      if (fixture.extraction && fixture.extraction.status === "unknown") {
+        const cause = fixture.extraction.cause || "example graph not mechanically extractable";
+        const entry = unknownScenario(scenario, gate, cause);
+        results.push(entry);
+        if (scenario.library === "xyflow") xyflow.failed.push({ id: scenario.id, cause });
+        continue;
+      }
       try {
         await browserCtx.page.goto(browserCtx.served.url);
         const left = await runRealInPage(browserCtx.page, scenario.library, fixture, ops);
@@ -334,7 +380,27 @@ export async function runRealSelftest() {
     if (!base.model || !base.model.elements || !base.model.elements.length) {
       return { unknown: "real JointJS run produced no elements (graph did not load the fixture)" };
     }
-    return { result: divergenceSelftest(base, fixture, "real") };
+    if (!base.pixels || !base.pixels.data) {
+      return { unknown: "real JointJS run produced no captured pixels (container screenshot unavailable)" };
+    }
+    // Pixel divergence is injected in the REAL rendering (C3): a second run
+    // of the real @joint/core whose first cell fill is changed through the
+    // library's own attr API at identical bounds. Mutating a buffer after
+    // the fact would prove nothing about the rendered output.
+    const firstCellId = fixture.model.cells.find((c) => !(c.type || "").endsWith("Link")).id;
+    const mutatedFixture = { ...fixture, renderMutation: { cellId: firstCellId, fill: "#ff0000" } };
+    const mutated = await runRealInPage(ctx.page, "jointjs", mutatedFixture, emptyOps);
+    if (!mutated.pixels || !mutated.pixels.data) {
+      return { unknown: "mutated JointJS run produced no captured pixels" };
+    }
+    const result = divergenceSelftest(base, fixture, "real");
+    const pixelCheck = result.checks.find((c) => c.comparator === "pixels");
+    if (pixelCheck) {
+      pixelCheck.detected = comparePixels(base.pixels, mutated.pixels, fixture.pixelThreshold).verdict === "fail";
+      pixelCheck.detail = "fill mutation through the real @joint/core attr API, captured by container screenshot";
+    }
+    result.pass = result.checks.every((c) => c.detected) && Object.values(result.control).every((v) => v === "pass");
+    return { result };
   } catch (err) {
     return { unknown: String(err && err.message || err).split("\n")[0].slice(0, 300) };
   } finally {
@@ -393,7 +459,7 @@ async function main(argv) {
     console.log(JSON.stringify(result, null, 2));
     const report = { ...gateReportBase("selftest"),
       scenarios: [{ id: "jointjs-injected-divergences", library: "jointjs", oracle: "real", oracleVersion: gateOracle("jointjs").libraryVersion, verdict: result.pass ? "pass" : "fail",
-        comparators: Object.fromEntries(result.checks.map((c) => [c.comparator, { verdict: c.detected ? "pass" : "fail", detail: c.detected ? "injected divergence detected on real @joint/core output" : "NOT detected" }])) }] };
+        comparators: Object.fromEntries(result.checks.map((c) => [c.comparator, { verdict: c.detected ? "pass" : "fail", detail: c.detected ? (c.detail || "injected divergence detected on real @joint/core output") : "NOT detected" }])) }] };
     const file = writeReport("selftest", report);
     console.log(`report: ${path.relative(REPO_ROOT, file)}`);
     process.exit(result.pass ? 0 : 1);

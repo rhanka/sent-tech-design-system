@@ -5,51 +5,8 @@
   "kind": "xyflow-graph",
   "title": "xyflow example fixture for examples.react-reconnectedge",
   "model": {
-    "nodes": [
-      {
-        "id": "n1",
-        "type": "default",
-        "position": {
-          "x": 84,
-          "y": 40
-        },
-        "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
-      },
-      {
-        "id": "n2",
-        "type": "default",
-        "position": {
-          "x": 240,
-          "y": 164
-        },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
-      }
-    ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "nodes": [],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +21,10 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "unknown",
+    "cause": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/ReconnectEdge/index.tsx"
   }
 }

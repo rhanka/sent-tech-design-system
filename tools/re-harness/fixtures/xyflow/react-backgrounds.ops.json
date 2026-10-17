@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-backgrounds-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "1",
+      "x": 90,
+      "y": 80
+    }
+  ]
+}

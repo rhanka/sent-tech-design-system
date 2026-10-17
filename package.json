@@ -20,7 +20,7 @@
     "docs:build": "npm --workspace apps/docs run build",
     "showcase": "npm run docs:dev",
     "parity:dataviz-angular": "vitest run --config tools/dataviz-angular-parity/vitest.config.ts",
-    "re:harness": "node tools/re-harness/src/harness.mjs run --browser",
+    "re:harness": "node tools/re-harness/src/harness.mjs run",
     "re:harness:selftest": "node tools/re-harness/src/harness.mjs selftest && node tools/re-harness/src/harness.mjs coverage"
   },
   "devDependencies": {

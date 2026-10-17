@@ -7,47 +7,71 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 79,
-          "y": 40
+          "x": 0,
+          "y": 50
         },
         "data": {
-          "label": "One"
+          "label": "An input node"
         },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right"
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "2",
+        "type": "colorNode",
         "position": {
-          "x": 240,
-          "y": 179
+          "x": 250,
+          "y": 50
+        },
+        "data": {}
+      },
+      {
+        "id": "3",
+        "type": "output",
+        "position": {
+          "x": 650,
+          "y": 25
         },
         "data": {
-          "label": "Two"
+          "label": "Output A"
         },
-        "width": 120,
-        "height": 44
+        "targetPosition": "left"
+      },
+      {
+        "id": "4",
+        "type": "output",
+        "position": {
+          "x": 650,
+          "y": 120
+        },
+        "data": {
+          "label": "Output B"
+        },
+        "targetPosition": "left"
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2",
+        "animated": true
+      },
+      {
+        "id": "e2a-3",
+        "source": "2",
+        "target": "3",
+        "sourceHandle": "a",
+        "animated": true
+      },
+      {
+        "id": "e2b-4",
+        "source": "2",
+        "target": "4",
+        "sourceHandle": "b",
+        "animated": true
       }
     ],
     "viewport": {
@@ -64,5 +88,12 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/customnode/+page.svelte",
+    "customTypes": [
+      "colorNode"
+    ]
   }
 }

@@ -7,47 +7,190 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 85,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+          "label": "input"
+        }
       },
       {
-        "id": "n2",
+        "id": "2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 165
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "Two"
+          "label": "node 2"
+        }
+      },
+      {
+        "id": "2a",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
         },
-        "width": 120,
-        "height": 44
+        "data": {
+          "label": "node 2a"
+        }
+      },
+      {
+        "id": "2b",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 2b"
+        }
+      },
+      {
+        "id": "2c",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 2c"
+        }
+      },
+      {
+        "id": "2d",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 2d"
+        }
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 3"
+        }
+      },
+      {
+        "id": "4",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 4"
+        }
+      },
+      {
+        "id": "5",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "node 5"
+        }
+      },
+      {
+        "id": "6",
+        "type": "output",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "output"
+        }
+      },
+      {
+        "id": "7",
+        "type": "output",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "output"
+        }
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e12",
+        "source": "1",
+        "target": "2",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e13",
+        "source": "1",
+        "target": "3",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e22a",
+        "source": "2",
+        "target": "2a",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e22b",
+        "source": "2",
+        "target": "2b",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e22c",
+        "source": "2",
+        "target": "2c",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e2c2d",
+        "source": "2c",
+        "target": "2d",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e45",
+        "source": "4",
+        "target": "5",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e56",
+        "source": "5",
+        "target": "6",
+        "type": "smoothstep",
+        "animated": true
+      },
+      {
+        "id": "e57",
+        "source": "5",
+        "target": "7",
+        "type": "smoothstep",
+        "animated": true
       }
     ],
     "viewport": {
@@ -64,5 +207,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/dagre/nodes-and-edges.ts"
   }
 }

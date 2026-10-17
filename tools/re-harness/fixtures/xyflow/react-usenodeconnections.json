@@ -7,47 +7,82 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "single",
         "position": {
-          "x": 60,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
-        "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+        "data": {}
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "2",
+        "type": "single",
         "position": {
-          "x": 240,
-          "y": 140
+          "x": 200,
+          "y": -100
         },
-        "data": {
-          "label": "Two"
+        "data": {}
+      },
+      {
+        "id": "3",
+        "type": "single",
+        "position": {
+          "x": 200,
+          "y": 100
         },
-        "width": 120,
-        "height": 44
+        "data": {}
+      },
+      {
+        "id": "4",
+        "type": "multi",
+        "position": {
+          "x": 400,
+          "y": 0
+        },
+        "data": {}
+      },
+      {
+        "id": "5",
+        "type": "multi",
+        "position": {
+          "x": 600,
+          "y": -100
+        },
+        "data": {}
+      },
+      {
+        "id": "6",
+        "type": "multi",
+        "position": {
+          "x": 600,
+          "y": 100
+        },
+        "data": {}
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2"
+      },
+      {
+        "id": "e1-3",
+        "source": "1",
+        "target": "3"
+      },
+      {
+        "id": "e4a-5",
+        "source": "4",
+        "target": "5",
+        "sourceHandle": "s1"
+      },
+      {
+        "id": "e4b-5",
+        "source": "4",
+        "target": "6",
+        "sourceHandle": "s2"
       }
     ],
     "viewport": {
@@ -64,5 +99,13 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/UseNodeConnections/index.tsx",
+    "customTypes": [
+      "multi",
+      "single"
+    ]
   }
 }

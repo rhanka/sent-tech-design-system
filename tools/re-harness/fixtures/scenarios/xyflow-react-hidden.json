@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-hidden-selfparity","library":"xyflow","fixtures":["xyflow/react-hidden.json"],"exercises":["examples.react-hidden"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-hidden-selfparity","library":"xyflow","fixtures":["xyflow/react-hidden.json"],"ops":"xyflow/react-hidden.ops.json","exercises":["examples.react-hidden"],"comparators":["model","events","geometry","pixels"]}

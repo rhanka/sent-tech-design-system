@@ -70,21 +70,9 @@ export const DETERMINISM_INIT_REAL = `
 })();
 `;
 
-// Determinism bootstrap evaluated before any page script (bpmn §8.4):
-// fixed seed RNG, harness-stepped clock and rAF, reduced motion forced.
-export const DETERMINISM_INIT = `
-(() => {
-  let seed = 42;
-  Math.random = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
-  let now = 0; const rafQueue = [];
-  performance.now = () => now;
-  Date.now = () => 1700000000000 + now;
-  window.__harnessStep = (ms) => { now += (ms || 16); const q = rafQueue.splice(0); for (const cb of q) cb(now); return now; };
-  window.requestAnimationFrame = (cb) => { rafQueue.push(cb); return rafQueue.length; };
-  window.cancelAnimationFrame = () => {};
-  try { Object.defineProperty(window, 'matchMedia', { value: (q) => ({ matches: q.includes('prefers-reduced-motion'), media: q, addEventListener(){}, removeEventListener(){} }) }); } catch (e) {}
-  const style = document.createElement('style');
-  style.textContent = '*,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important;}';
-  (document.head || document.documentElement).appendChild(style);
-})();
-`;
+// NOTE (C9): a stepped-clock variant of this bootstrap (harness-stepped
+// performance.now/Date.now/rAF via __harnessStep) was removed: it was dead
+// code — never injected — and freezing the clock breaks the real
+// libraries, which schedule real work on rAF/timers. Determinism comes
+// from two identical independent runs plus explicit settle barriers
+// (waitFor / double-rAF) in the adapters, not from a fake clock.

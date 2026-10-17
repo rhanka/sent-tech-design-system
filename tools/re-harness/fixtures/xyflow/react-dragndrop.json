@@ -7,49 +7,18 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 69,
-          "y": 40
+          "x": 250,
+          "y": 5
         },
         "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
-      },
-      {
-        "id": "n2",
-        "type": "default",
-        "position": {
-          "x": 240,
-          "y": 169
-        },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
+          "label": "input node"
+        }
       }
     ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +33,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/DragNDrop/index.tsx"
   }
 }

@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-saverestore-selfparity","library":"xyflow","fixtures":["xyflow/react-saverestore.json"],"exercises":["examples.react-saverestore"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-saverestore-selfparity","library":"xyflow","fixtures":["xyflow/react-saverestore.json"],"ops":"xyflow/react-saverestore.ops.json","exercises":["examples.react-saverestore"],"comparators":["model","events","geometry","pixels"]}

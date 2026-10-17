@@ -6,12 +6,64 @@
 // bundles/ (git-ignored). The directory is overridable with RE_ORACLES_DIR.
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const HARNESS_ROOT = path.resolve(HERE, "..");
-export const WT_ROOT = path.resolve(HARNESS_ROOT, "..", "..");
-export const REPO_ROOT = path.resolve(WT_ROOT, "..");
+
+// WT_ROOT is the current working tree (reports and inventories are written
+// there). REPO_ROOT is the main repository root, which owns
+// .ds-scrap/re-oracles. Inside a linked worktree the two differ; after the
+// branch is merged onto main they coincide. Resolution order (C8):
+//   1. `git rev-parse --git-common-dir` -> parent of the shared .git dir
+//      (the main checkout, in a worktree and on main alike);
+//   2. `git rev-parse --show-toplevel` when it already carries .ds-scrap;
+//   3. upward walk from the harness to the root package.json (workspaces).
+function gitOut(args) {
+  try {
+    return execFileSync("git", args, { cwd: HARNESS_ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  } catch {
+    return null;
+  }
+}
+
+function resolveWorkingTreeRoot() {
+  const top = gitOut(["rev-parse", "--show-toplevel"]);
+  if (top) return path.resolve(top);
+  // Fallback: the harness lives at tools/re-harness/src inside the tree.
+  return path.resolve(HARNESS_ROOT, "..", "..");
+}
+
+function resolveMainRepoRoot(wtRoot) {
+  const commonDir = gitOut(["rev-parse", "--git-common-dir"]);
+  if (commonDir) {
+    const mainRoot = path.dirname(path.resolve(HARNESS_ROOT, commonDir));
+    if (fs.existsSync(path.join(mainRoot, ".ds-scrap", "re-oracles")) || mainRoot === wtRoot) return mainRoot;
+    if (fs.existsSync(path.join(mainRoot, "package.json"))) return mainRoot;
+  }
+  if (fs.existsSync(path.join(wtRoot, ".ds-scrap", "re-oracles"))) return wtRoot;
+  // Upward walk to the root package.json (the one declaring workspaces),
+  // never above the working tree.
+  let dir = HARNESS_ROOT;
+  for (;;) {
+    const pkgPath = path.join(dir, "package.json");
+    if (fs.existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+        if (pkg && pkg.workspaces) return dir;
+      } catch { /* keep walking */ }
+    }
+    if (dir === wtRoot) break;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return wtRoot;
+}
+
+export const WT_ROOT = resolveWorkingTreeRoot();
+export const REPO_ROOT = resolveMainRepoRoot(WT_ROOT);
 export const BUNDLES_DIR = path.join(HARNESS_ROOT, "bundles");
 
 // Pinned versions (specs: SPEC_RE_BPMN_JS_PARITY, SPEC_RE_XYFLOW_PARITY,

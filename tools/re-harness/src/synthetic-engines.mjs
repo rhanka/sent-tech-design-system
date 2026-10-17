@@ -16,19 +16,23 @@ function baseState(fixture) {
   const model = clone(fixture.model || {});
   const elements = new Map();
   const order = [];
+  // One entry per id across the elements/nodes/cells views (C9): a fixture
+  // describing the same graph in two views must not duplicate the order.
+  const push = (el) => {
+    if (!elements.has(el.id)) order.push(el.id);
+    elements.set(el.id, el);
+  };
   if (Array.isArray(model.elements)) {
-    for (const el of model.elements) { elements.set(el.id, clone(el)); order.push(el.id); }
+    for (const el of model.elements) push(clone(el));
   }
   if (Array.isArray(model.nodes)) {
     for (const n of model.nodes) {
-      elements.set(n.id, { id: n.id, type: n.type || "node", x: n.position?.x ?? n.x ?? 0, y: n.position?.y ?? n.y ?? 0, width: n.width ?? 100, height: n.height ?? 40, label: n.data?.label || "" });
-      order.push(n.id);
+      push({ id: n.id, type: n.type || "node", x: n.position?.x ?? n.x ?? 0, y: n.position?.y ?? n.y ?? 0, width: n.width ?? 100, height: n.height ?? 40, label: n.data?.label || "" });
     }
   }
   if (Array.isArray(model.cells)) {
     for (const c of model.cells) {
-      elements.set(c.id, { id: c.id, type: c.type || "element", x: c.position?.x ?? 0, y: c.position?.y ?? 0, width: c.size?.width ?? 100, height: c.size?.height ?? 40, label: c.attrs?.label?.text || "" });
-      order.push(c.id);
+      push({ id: c.id, type: c.type || "element", x: c.position?.x ?? 0, y: c.position?.y ?? 0, width: c.size?.width ?? 100, height: c.size?.height ?? 40, label: c.attrs?.label?.text || "" });
     }
   }
   const connections = [];

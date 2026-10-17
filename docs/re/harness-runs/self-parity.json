@@ -19,15 +19,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "227 events equal (names, payload keys, remapped values)",
+          "detail": "279 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -43,27 +43,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "232 events equal (names, payload keys, remapped values)",
+          "detail": "288 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -79,27 +72,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "279 events equal (names, payload keys, remapped values)",
+          "detail": "283 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -120,15 +106,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "237 events equal (names, payload keys, remapped values)",
+          "detail": "285 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -144,27 +130,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "242 events equal (names, payload keys, remapped values)",
+          "detail": "290 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -180,27 +159,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "225 events equal (names, payload keys, remapped values)",
+          "detail": "273 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -216,27 +188,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "227 events equal (names, payload keys, remapped values)",
+          "detail": "275 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -252,27 +217,20 @@
       "library": "bpmn",
       "oracle": "real",
       "oracleVersion": "18.31.0",
-      "skippedOps": [
-        {
-          "elementId": "fx",
-          "op": "connect",
-          "why": "source or target not found"
-        }
-      ],
       "verdict": "pass"
     },
     {
       "comparators": {
         "events": {
-          "detail": "284 events equal (names, payload keys, remapped values)",
+          "detail": "280 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -293,15 +251,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -318,15 +276,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -338,20 +296,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -363,20 +321,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -388,20 +346,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -418,15 +376,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -438,20 +396,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -463,20 +421,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -493,15 +451,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -518,15 +476,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -543,15 +501,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -563,7 +521,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
@@ -572,11 +530,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -593,15 +551,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -618,15 +576,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -643,15 +601,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -668,15 +626,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -693,15 +651,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -718,15 +676,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -743,15 +701,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -768,15 +726,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -788,7 +746,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
@@ -797,11 +755,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -818,15 +776,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -838,20 +796,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -863,20 +821,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "23 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -893,15 +851,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -918,15 +876,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -943,15 +901,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -968,15 +926,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -993,15 +951,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1013,20 +971,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1041,42 +999,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-hidden-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1088,20 +1047,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1118,15 +1077,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1143,15 +1102,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1168,15 +1127,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1188,7 +1147,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
@@ -1197,11 +1156,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1218,15 +1177,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1243,15 +1202,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1268,15 +1227,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1288,7 +1247,7 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
@@ -1297,11 +1256,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1322,11 +1281,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1343,15 +1302,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1368,15 +1327,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1388,45 +1347,46 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
+      "cause": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-overview-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1441,42 +1401,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "initial graph is not a pure data literal (index.tsx: non-literal JSX element in the graph data (application code, not pure data))",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-reconnectedge-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "10 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1493,15 +1454,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1518,15 +1479,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1541,42 +1502,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-setnodesbatching-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1593,15 +1555,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1613,20 +1575,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1643,15 +1605,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1668,15 +1630,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1693,15 +1655,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1718,15 +1680,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name init !== nodesChange",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1738,45 +1700,46 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
+      "cause": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "no initial nodes array literal found in the example sources (graph is computed, imported, or built by interaction callbacks)",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-usekeypress-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "9 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1793,15 +1756,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1813,45 +1776,46 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-react-usenodesinit-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1868,15 +1832,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1893,15 +1857,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1913,20 +1877,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1943,15 +1907,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "3 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "event[0] name nodesChange !== init",
+          "verdict": "fail"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1963,20 +1927,20 @@
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass"
+      "verdict": "fail"
     },
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -1993,15 +1957,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2018,15 +1982,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2043,15 +2007,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2068,15 +2032,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2091,42 +2055,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-customnode-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2143,15 +2108,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2168,15 +2133,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2193,15 +2158,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2218,15 +2183,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2243,15 +2208,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2266,42 +2231,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-handle-connect-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2318,15 +2284,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2343,15 +2309,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2368,15 +2334,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2391,29 +2357,30 @@
       "verdict": "pass"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-overview-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
@@ -2422,11 +2389,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2443,15 +2410,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "1 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2468,15 +2435,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2497,11 +2464,11 @@
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2518,15 +2485,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2541,42 +2508,43 @@
       "verdict": "pass"
     },
     {
+      "cause": "page.evaluate: Error: timeout waiting for xyflow node measurement",
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         },
         "pixels": {
-          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
-          "verdict": "pass"
+          "detail": "page.evaluate: Error: timeout waiting for xyflow node measurement",
+          "verdict": "unknown"
         }
       },
       "id": "xyflow-svelte-usenodesdata-selfparity",
       "library": "xyflow",
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass"
+      "verdict": "unknown"
     },
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2593,15 +2561,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {
@@ -2618,15 +2586,15 @@
     {
       "comparators": {
         "events": {
-          "detail": "5 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
-          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)",
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
           "verdict": "pass"
         },
         "model": {
-          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)",
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
           "verdict": "pass"
         },
         "pixels": {

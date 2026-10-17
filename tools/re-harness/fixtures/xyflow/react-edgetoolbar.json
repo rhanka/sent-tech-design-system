@@ -7,47 +7,63 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
+        "id": "1",
         "type": "default",
         "position": {
-          "x": 58,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
+          "label": "Node 1",
+          "toolbarPosition": "top"
         },
-        "width": 120,
-        "height": 44
+        "className": "react-flow__node-default"
       },
       {
-        "id": "n2",
+        "id": "2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 158
+          "x": 100,
+          "y": 150
         },
         "data": {
-          "label": "Two"
+          "label": "Node 2",
+          "toolbarPosition": "top"
         },
-        "width": 120,
-        "height": 44
+        "className": "react-flow__node-default"
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 200,
+          "y": 0
+        },
+        "data": {
+          "label": "Node 3",
+          "toolbarPosition": "top"
+        },
+        "className": "react-flow__node-default"
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2",
+        "type": "custom"
+      },
+      {
+        "id": "e3-2",
+        "source": "3",
+        "target": "2",
+        "type": "custom"
+      },
+      {
+        "id": "e1-3",
+        "source": "1",
+        "target": "3",
+        "type": "custom"
       }
     ],
     "viewport": {
@@ -64,5 +80,12 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/EdgeToolbar/index.tsx",
+    "customTypes": [
+      "custom"
+    ]
   }
 }

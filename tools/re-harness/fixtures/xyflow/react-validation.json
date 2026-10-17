@@ -7,49 +7,43 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "0",
+        "type": "custominput",
         "position": {
-          "x": 65,
-          "y": 40
+          "x": 0,
+          "y": 150
         },
-        "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+        "data": {}
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "A",
+        "type": "customnode",
         "position": {
-          "x": 240,
-          "y": 145
+          "x": 250,
+          "y": 0
         },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
-      }
-    ],
-    "edges": [
+        "data": {}
+      },
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "B",
+        "type": "customnode",
+        "position": {
+          "x": 250,
+          "y": 150
+        },
+        "data": {}
+      },
+      {
+        "id": "C",
+        "type": "customnode",
+        "position": {
+          "x": 250,
+          "y": 300
+        },
+        "data": {}
       }
     ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +58,13 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/Validation/index.tsx",
+    "customTypes": [
+      "custominput",
+      "customnode"
+    ]
   }
 }

@@ -7,49 +7,190 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "defaultResizer",
         "position": {
-          "x": 99,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+          "label": "default resizer"
+        }
       },
       {
-        "id": "n2",
-        "type": "default",
+        "id": "1a",
+        "type": "defaultResizer",
         "position": {
-          "x": 240,
-          "y": 179
+          "x": 0,
+          "y": 60
         },
         "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
-      }
-    ],
-    "edges": [
+          "label": "default resizer with min and max dimensions",
+          "minWidth": 100,
+          "minHeight": 80,
+          "maxWidth": 200,
+          "maxHeight": 200
+        }
+      },
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
+        "id": "1b",
+        "type": "defaultResizer",
+        "position": {
+          "x": 250,
+          "y": 0
+        },
+        "data": {
+          "label": "default resizer with initial size and aspect ratio",
+          "keepAspectRatio": true,
+          "minWidth": 100,
+          "minHeight": 60,
+          "maxWidth": 400,
+          "maxHeight": 400
+        }
+      },
+      {
+        "id": "2",
+        "type": "customResizer",
+        "position": {
+          "x": 0,
+          "y": 200
+        },
+        "data": {
+          "label": "custom resize icon"
+        }
+      },
+      {
+        "id": "3",
+        "type": "verticalResizer",
+        "position": {
+          "x": 250,
+          "y": 200
+        },
+        "data": {
+          "label": "vertical resizer"
+        }
+      },
+      {
+        "id": "3a",
+        "type": "verticalResizer",
+        "position": {
+          "x": 400,
+          "y": 200
+        },
+        "data": {
+          "label": "vertical resizer with min/maxHeight and aspect ratio",
+          "minHeight": 50,
+          "maxHeight": 200,
+          "keepAspectRatio": true
+        }
+      },
+      {
+        "id": "4",
+        "type": "horizontalResizer",
+        "position": {
+          "x": 250,
+          "y": 300
+        },
+        "data": {
+          "label": "horizontal resizer with aspect ratio",
+          "keepAspectRatio": true,
+          "minHeight": 20,
+          "maxHeight": 80,
+          "maxWidth": 300
+        }
+      },
+      {
+        "id": "4a",
+        "type": "horizontalResizer",
+        "position": {
+          "x": 250,
+          "y": 400
+        },
+        "data": {
+          "label": "horizontal resizer with maxWidth",
+          "maxWidth": 300
+        }
+      },
+      {
+        "id": "5",
+        "type": "defaultResizer",
+        "position": {
+          "x": 700,
+          "y": 0
+        },
+        "data": {
+          "label": "Parent"
+        }
+      },
+      {
+        "id": "5a",
+        "type": "defaultResizer",
+        "position": {
+          "x": 50,
+          "y": 50
+        },
+        "data": {
+          "label": "Child with extent parent"
+        },
+        "parentId": "5",
+        "extent": "parent"
+      },
+      {
+        "id": "5b",
+        "type": "defaultResizer",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "data": {
+          "label": "Child"
+        },
+        "parentId": "5"
+      },
+      {
+        "id": "6",
+        "type": "bottomRightResizer",
+        "position": {
+          "x": 500,
+          "y": 0
+        },
+        "data": {
+          "label": "bottom-right horizontal resizer"
+        }
+      },
+      {
+        "id": "7",
+        "type": "fixedExtent",
+        "position": {
+          "x": 500,
+          "y": 350
+        },
+        "data": {
+          "label": "Fixed Extent",
+          "extent": [
+            [
+              500,
+              350
+            ],
+            [
+              700,
+              450
+            ]
+          ]
+        },
+        "extent": [
+          [
+            500,
+            350
+          ],
+          [
+            700,
+            450
+          ]
         ]
       }
     ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +205,17 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/node-resizer/+page.svelte",
+    "customTypes": [
+      "bottomRightResizer",
+      "customResizer",
+      "defaultResizer",
+      "fixedExtent",
+      "horizontalResizer",
+      "verticalResizer"
+    ]
   }
 }

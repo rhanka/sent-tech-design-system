@@ -7,49 +7,20 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "4",
+        "type": "custom",
         "position": {
-          "x": 65,
-          "y": 40
+          "x": 0,
+          "y": -200
         },
         "data": {
-          "label": "One"
+          "label": "toolbar top",
+          "toolbarPosition": "top"
         },
-        "width": 120,
-        "height": 44
-      },
-      {
-        "id": "n2",
-        "type": "default",
-        "position": {
-          "x": 240,
-          "y": 145
-        },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
+        "className": "react-flow__node-default"
       }
     ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +35,12 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/NodeToolbar/index.tsx",
+    "customTypes": [
+      "custom"
+    ]
   }
 }

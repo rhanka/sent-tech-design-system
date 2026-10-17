@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-defaultnodeoverwrite-selfparity","library":"xyflow","fixtures":["xyflow/react-defaultnodeoverwrite.json"],"exercises":["examples.react-defaultnodeoverwrite"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-defaultnodeoverwrite-selfparity","library":"xyflow","fixtures":["xyflow/react-defaultnodeoverwrite.json"],"ops":"xyflow/react-defaultnodeoverwrite.ops.json","exercises":["examples.react-defaultnodeoverwrite"],"comparators":["model","events","geometry","pixels"]}

@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-updatenode-selfparity","library":"xyflow","fixtures":["xyflow/react-updatenode.json"],"exercises":["examples.react-updatenode"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-updatenode-selfparity","library":"xyflow","fixtures":["xyflow/react-updatenode.json"],"ops":"xyflow/react-updatenode.ops.json","exercises":["examples.react-updatenode"],"comparators":["model","events","geometry","pixels"]}

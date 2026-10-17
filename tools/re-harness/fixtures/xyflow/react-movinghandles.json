@@ -7,49 +7,19 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "input",
+        "type": "input",
         "position": {
-          "x": 49,
-          "y": 40
+          "x": -300,
+          "y": 0
         },
         "data": {
-          "label": "One"
+          "label": "input"
         },
-        "width": 120,
-        "height": 44
-      },
-      {
-        "id": "n2",
-        "type": "default",
-        "position": {
-          "x": 240,
-          "y": 149
-        },
-        "data": {
-          "label": "Two"
-        },
-        "width": 120,
-        "height": 44
+        "sourcePosition": "right"
       }
     ],
-    "edges": [
-      {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
-      }
-    ],
+    "edges": [],
     "viewport": {
       "x": 0,
       "y": 0,
@@ -64,5 +34,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/MovingHandles/index.tsx"
   }
 }

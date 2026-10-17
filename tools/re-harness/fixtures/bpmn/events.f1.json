@@ -4,16 +4,67 @@
   "library": "bpmn",
   "kind": "bpmn-xml-f1",
   "title": "Timer and message intermediate events on a task chain",
-  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_ev\"><bpmn:process id=\"p1\"><bpmn:startEvent id=\"start\"/><bpmn:intermediateCatchEvent id=\"timer1\"><bpmn:timerEventDefinition/></bpmn:intermediateCatchEvent><bpmn:intermediateThrowEvent id=\"msg1\"><bpmn:messageEventDefinition/></bpmn:intermediateThrowEvent><bpmn:endEvent id=\"end\"/></bpmn:process></bpmn:definitions>",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"defs_ev\" targetNamespace=\"http://sentropic.example/re-harness\"><bpmn:process id=\"p1\" isExecutable=\"false\"><bpmn:startEvent id=\"start\"/><bpmn:intermediateCatchEvent id=\"timer1\" name=\"wait\"><bpmn:timerEventDefinition id=\"ted1\"/></bpmn:intermediateCatchEvent><bpmn:intermediateThrowEvent id=\"msg1\" name=\"notify\"><bpmn:messageEventDefinition id=\"med1\"/></bpmn:intermediateThrowEvent><bpmn:endEvent id=\"end\"/></bpmn:process><bpmndi:BPMNDiagram id=\"diagram1\"><bpmndi:BPMNPlane id=\"plane1\" bpmnElement=\"p1\"><bpmndi:BPMNShape id=\"start_di\" bpmnElement=\"start\"><dc:Bounds x=\"80\" y=\"100\" width=\"36\" height=\"36\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"timer1_di\" bpmnElement=\"timer1\"><dc:Bounds x=\"180\" y=\"100\" width=\"36\" height=\"36\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"msg1_di\" bpmnElement=\"msg1\"><dc:Bounds x=\"280\" y=\"100\" width=\"36\" height=\"36\"/></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"end_di\" bpmnElement=\"end\"><dc:Bounds x=\"380\" y=\"100\" width=\"36\" height=\"36\"/></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>",
   "model": {
     "elements": [
-      { "id": "start", "type": "bpmn:StartEvent", "x": 80, "y": 100, "width": 36, "height": 36, "label": "" },
-      { "id": "timer1", "type": "bpmn:IntermediateCatchEvent", "x": 180, "y": 100, "width": 36, "height": 36, "label": "wait" },
-      { "id": "msg1", "type": "bpmn:IntermediateThrowEvent", "x": 280, "y": 100, "width": 36, "height": 36, "label": "notify" },
-      { "id": "end", "type": "bpmn:EndEvent", "x": 380, "y": 100, "width": 36, "height": 36, "label": "" }
+      {
+        "id": "start",
+        "type": "bpmn:StartEvent",
+        "parent": "p1",
+        "x": 80,
+        "y": 100,
+        "width": 36,
+        "height": 36,
+        "label": "",
+        "eventDefinitions": []
+      },
+      {
+        "id": "timer1",
+        "type": "bpmn:IntermediateCatchEvent",
+        "parent": "p1",
+        "x": 180,
+        "y": 100,
+        "width": 36,
+        "height": 36,
+        "label": "wait",
+        "eventDefinitions": [
+          "bpmn:TimerEventDefinition"
+        ]
+      },
+      {
+        "id": "msg1",
+        "type": "bpmn:IntermediateThrowEvent",
+        "parent": "p1",
+        "x": 280,
+        "y": 100,
+        "width": 36,
+        "height": 36,
+        "label": "notify",
+        "eventDefinitions": [
+          "bpmn:MessageEventDefinition"
+        ]
+      },
+      {
+        "id": "end",
+        "type": "bpmn:EndEvent",
+        "parent": "p1",
+        "x": 380,
+        "y": 100,
+        "width": 36,
+        "height": 36,
+        "label": "",
+        "eventDefinitions": []
+      }
     ],
     "flows": []
   },
-  "viewport": { "x": 0, "y": 0, "zoom": 1 },
-  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
 }

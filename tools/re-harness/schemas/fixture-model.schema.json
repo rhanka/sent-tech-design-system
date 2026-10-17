@@ -11,8 +11,32 @@
     "library": { "enum": ["bpmn", "xyflow", "jointjs"] },
     "kind": { "enum": ["bpmn-xml-f1", "xyflow-graph", "jointjs-graph"] },
     "title": { "type": "string" },
-    "xml": { "type": "string", "description": "BPMN XML text (reference-native); present only for bpmn-xml-f1." },
+    "xml": { "type": "string", "description": "Complete BPMN 2.0 XML text with BPMNDI (reference-native); present only for bpmn-xml-f1. Loaded verbatim by importXML." },
     "model": { "type": "object", "description": "Canonical model: F1 (bpmn), flow graph (xyflow) or graph JSON (jointjs). Keys are compared after canonical sort." },
+    "idCorrespondence": {
+      "type": "object",
+      "description": "Declared id remapping between the two runs (bpmn §8.3 point 2). Must be a bijection; enforced by validateFixtures and compareEvents (C6).",
+      "additionalProperties": { "type": "string" }
+    },
+    "extraction": {
+      "type": "object",
+      "description": "Mechanical-extraction provenance for xyflow example fixtures (C1). status=unknown fixtures are never run green: the gate reports them unknown with the cause.",
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["extracted", "unknown"] },
+        "cause": { "type": "string" },
+        "source": { "type": "string" },
+        "customTypes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "renderMutation": {
+      "type": "object",
+      "description": "Selftest only: a real rendering mutation applied through the library API before pixel capture (C3).",
+      "properties": {
+        "cellId": { "type": "string" },
+        "fill": { "type": "string" }
+      }
+    },
     "viewport": {
       "type": "object",
       "properties": {

@@ -7,47 +7,187 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 85,
-          "y": 40
+          "x": 250,
+          "y": 5
         },
         "data": {
-          "label": "One"
+          "label": "Node 1"
         },
-        "width": 120,
-        "height": 44
+        "origin": [
+          0.5,
+          0.5
+        ]
       },
       {
-        "id": "n2",
+        "id": "4",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 165
+          "x": 100,
+          "y": 200
         },
         "data": {
-          "label": "Two"
+          "label": "Node 4"
+        }
+      },
+      {
+        "id": "4a",
+        "type": "default",
+        "position": {
+          "x": 15,
+          "y": 15
         },
-        "width": 120,
-        "height": 44
+        "data": {
+          "label": "Node 4a"
+        },
+        "parentId": "4",
+        "extent": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            100
+          ]
+        ]
+      },
+      {
+        "id": "4b",
+        "type": "default",
+        "position": {
+          "x": 100,
+          "y": 60
+        },
+        "data": {
+          "label": "Node 4b"
+        },
+        "parentId": "4"
+      },
+      {
+        "id": "4b1",
+        "type": "default",
+        "position": {
+          "x": 40,
+          "y": 20
+        },
+        "data": {
+          "label": "Node 4b1"
+        },
+        "parentId": "4b"
+      },
+      {
+        "id": "4b2",
+        "type": "default",
+        "position": {
+          "x": 20,
+          "y": 100
+        },
+        "data": {
+          "label": "Node 4b2"
+        },
+        "parentId": "4b"
+      },
+      {
+        "id": "5",
+        "type": "group",
+        "position": {
+          "x": 650,
+          "y": 250
+        },
+        "data": {
+          "label": "Node 5"
+        },
+        "zIndex": 1000
+      },
+      {
+        "id": "5a",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "Node 5a"
+        },
+        "parentId": "5",
+        "extent": "parent"
+      },
+      {
+        "id": "5b",
+        "type": "default",
+        "position": {
+          "x": 225,
+          "y": 50
+        },
+        "data": {
+          "label": "Node 5b"
+        },
+        "parentId": "5",
+        "expandParent": true
+      },
+      {
+        "id": "2",
+        "type": "default",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "data": {
+          "label": "Node 2"
+        }
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "data": {
+          "label": "Node 3"
+        }
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2"
+      },
+      {
+        "id": "e1-3",
+        "source": "1",
+        "target": "3"
+      },
+      {
+        "id": "e3-4",
+        "source": "3",
+        "target": "4"
+      },
+      {
+        "id": "e3-4b",
+        "source": "3",
+        "target": "4b",
+        "zIndex": 100
+      },
+      {
+        "id": "e4a-4b1",
+        "source": "4a",
+        "target": "4b1"
+      },
+      {
+        "id": "e4a-4b2",
+        "source": "4a",
+        "target": "4b2",
+        "zIndex": 100
+      },
+      {
+        "id": "e4b1-4b2",
+        "source": "4b1",
+        "target": "4b2"
       }
     ],
     "viewport": {
@@ -64,5 +204,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/subflows/+page.svelte"
   }
 }

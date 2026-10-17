@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-edgetoolbar-selfparity","library":"xyflow","fixtures":["xyflow/react-edgetoolbar.json"],"exercises":["examples.react-edgetoolbar"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-edgetoolbar-selfparity","library":"xyflow","fixtures":["xyflow/react-edgetoolbar.json"],"ops":"xyflow/react-edgetoolbar.ops.json","exercises":["examples.react-edgetoolbar"],"comparators":["model","events","geometry","pixels"]}

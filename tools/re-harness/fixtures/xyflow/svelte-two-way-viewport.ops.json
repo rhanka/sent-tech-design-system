@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-two-way-viewport-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "A",
+      "x": 40,
+      "y": 30
+    }
+  ]
+}

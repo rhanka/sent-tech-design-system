@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-svelte-add-node-on-drop-selfparity","library":"xyflow","fixtures":["xyflow/svelte-add-node-on-drop.json"],"exercises":["examples.svelte-add-node-on-drop"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-svelte-add-node-on-drop-selfparity","library":"xyflow","fixtures":["xyflow/svelte-add-node-on-drop.json"],"ops":"xyflow/svelte-add-node-on-drop.ops.json","exercises":["examples.svelte-add-node-on-drop"],"comparators":["model","events","geometry","pixels"]}

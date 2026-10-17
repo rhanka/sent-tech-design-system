@@ -1,1 +1,1 @@
-{"schemaVersion":1,"id":"xyflow-react-edgerenderer-selfparity","library":"xyflow","fixtures":["xyflow/react-edgerenderer.json"],"exercises":["examples.react-edgerenderer"],"comparators":["model","events","geometry","pixels"]}
+{"schemaVersion":1,"id":"xyflow-react-edgerenderer-selfparity","library":"xyflow","fixtures":["xyflow/react-edgerenderer.json"],"ops":"xyflow/react-edgerenderer.ops.json","exercises":["examples.react-edgerenderer"],"comparators":["model","events","geometry","pixels"]}

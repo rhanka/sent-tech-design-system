@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-draghandle-ops",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "2",
+      "x": 240,
+      "y": 230
+    }
+  ]
+}

@@ -7,47 +7,100 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
-        "type": "default",
+        "id": "1",
+        "type": "input",
         "position": {
-          "x": 44,
-          "y": 40
+          "x": 250,
+          "y": 5
         },
         "data": {
-          "label": "One"
+          "label": "A11y Node 1"
         },
-        "width": 120,
-        "height": 44
+        "className": "light"
       },
       {
-        "id": "n2",
+        "id": "2",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 144
+          "x": 1000,
+          "y": 100
         },
         "data": {
-          "label": "Two"
+          "label": "Node 2"
+        }
+      },
+      {
+        "id": "3",
+        "type": "default",
+        "position": {
+          "x": 100,
+          "y": 100
         },
-        "width": 120,
-        "height": 44
+        "data": {
+          "label": "Node 3"
+        },
+        "className": "light"
+      },
+      {
+        "id": "4",
+        "type": "default",
+        "position": {
+          "x": 300,
+          "y": 100
+        },
+        "data": {
+          "label": "Node 4"
+        }
+      },
+      {
+        "id": "5",
+        "type": "default",
+        "position": {
+          "x": 400,
+          "y": 200
+        },
+        "data": {
+          "label": "Node 5"
+        }
+      },
+      {
+        "id": "6",
+        "type": "default",
+        "position": {
+          "x": -1000,
+          "y": 200
+        },
+        "data": {
+          "label": "Node 6"
+        }
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "e1-2",
+        "source": "1",
+        "target": "2",
+        "animated": true
+      },
+      {
+        "id": "e1-3",
+        "source": "1",
+        "target": "3"
+      },
+      {
+        "id": "e1-4",
+        "source": "1",
+        "target": "4"
+      },
+      {
+        "id": "e1-5",
+        "source": "4",
+        "target": "5"
+      },
+      {
+        "id": "e1-6",
+        "source": "3",
+        "target": "6"
       }
     ],
     "viewport": {
@@ -64,5 +117,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/react/src/examples/A11y/index.tsx"
   }
 }

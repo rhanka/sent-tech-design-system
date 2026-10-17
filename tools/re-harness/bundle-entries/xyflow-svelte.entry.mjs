@@ -6,18 +6,32 @@ import { mount, unmount } from "svelte";
 import Host from "./xyflow-svelte-host.svelte";
 import "@xyflow/svelte/dist/style.css";
 
-function mountFlow(container, fixture, journal) {
-  const initialNodes = (fixture.model.nodes || []).map((n) => ({
+const NODE_FIELDS = ["parentId", "extent", "origin", "expandParent", "hidden", "selected", "draggable", "selectable", "deletable", "width", "height", "initialWidth", "initialHeight", "style", "className", "sourcePosition", "targetPosition", "zIndex", "dragHandle", "focusable", "connectable"];
+const EDGE_FIELDS = ["sourceHandle", "targetHandle", "type", "animated", "hidden", "selected", "deletable", "selectable", "focusable", "zIndex", "label", "style", "className", "reconnectable", "interactionWidth"];
+
+function verbatimNode(n) {
+  const out = {
     id: n.id,
     type: n.type || "default",
     position: { x: n.position?.x ?? 0, y: n.position?.y ?? 0 },
     data: { ...(n.data || {}) },
-  }));
-  const initialEdges = (fixture.model.edges || []).map((e) => ({
-    id: e.id,
-    source: e.source,
-    target: e.target,
-  }));
+  };
+  if (!out.data.label && typeof n.label === "string" && n.label) out.data.label = n.label;
+  for (const f of NODE_FIELDS) if (n[f] !== undefined) out[f] = n[f];
+  return out;
+}
+
+function verbatimEdge(e) {
+  const out = { id: e.id, source: e.source, target: e.target };
+  for (const f of EDGE_FIELDS) if (e[f] !== undefined) out[f] = e[f];
+  if (e.markerEnd !== undefined) out.markerEnd = typeof e.markerEnd === "string" ? e.markerEnd : { ...e.markerEnd };
+  if (e.markerStart !== undefined) out.markerStart = typeof e.markerStart === "string" ? e.markerStart : { ...e.markerStart };
+  return out;
+}
+
+function mountFlow(container, fixture, journal) {
+  const initialNodes = (fixture.model.nodes || []).map(verbatimNode);
+  const initialEdges = (fixture.model.edges || []).map(verbatimEdge);
   const initialViewport = fixture.viewport || fixture.model.viewport || { x: 0, y: 0, zoom: 1 };
   let api = null;
   const app = mount(Host, {

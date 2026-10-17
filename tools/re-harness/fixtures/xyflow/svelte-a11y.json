@@ -7,47 +7,65 @@
   "model": {
     "nodes": [
       {
-        "id": "n1",
+        "id": "A",
         "type": "default",
         "position": {
-          "x": 76,
-          "y": 40
+          "x": 0,
+          "y": 0
         },
         "data": {
-          "label": "One"
-        },
-        "width": 120,
-        "height": 44
+          "label": "A"
+        }
       },
       {
-        "id": "n2",
+        "id": "B",
         "type": "default",
         "position": {
-          "x": 240,
-          "y": 176
+          "x": -100,
+          "y": 150
         },
         "data": {
-          "label": "Two"
+          "label": "B"
+        }
+      },
+      {
+        "id": "C",
+        "type": "default",
+        "position": {
+          "x": 1000,
+          "y": 150
         },
-        "width": 120,
-        "height": 44
+        "data": {
+          "label": "C"
+        }
+      },
+      {
+        "id": "D",
+        "type": "default",
+        "position": {
+          "x": 0,
+          "y": 260
+        },
+        "data": {
+          "label": "D"
+        }
       }
     ],
     "edges": [
       {
-        "id": "e1",
-        "source": "n1",
-        "target": "n2",
-        "waypoints": [
-          {
-            "x": 160,
-            "y": 62
-          },
-          {
-            "x": 240,
-            "y": 162
-          }
-        ]
+        "id": "A-B",
+        "source": "A",
+        "target": "B"
+      },
+      {
+        "id": "A-C",
+        "source": "A",
+        "target": "C"
+      },
+      {
+        "id": "A-D",
+        "source": "A",
+        "target": "D"
       }
     ],
     "viewport": {
@@ -64,5 +82,9 @@
   "pixelThreshold": {
     "maxMismatchRatio": 0.01,
     "perChannelDelta": 8
+  },
+  "extraction": {
+    "status": "extracted",
+    "source": ".ds-scrap/re-sources/xyflow/examples/svelte/src/routes/examples/a11y/+page.svelte"
   }
 }

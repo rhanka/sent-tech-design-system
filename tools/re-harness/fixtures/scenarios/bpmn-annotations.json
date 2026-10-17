@@ -1,1 +1,1 @@
-{ "schemaVersion": 1, "id": "bpmn-annotations-selfparity", "library": "bpmn", "fixtures": ["bpmn/annotations.f1.json"], "ops": "bpmn/edit-undo.ops.json", "exercises": ["RE.renderer.bpmn-textannotation", "RE.renderer.bpmn-group"], "comparators": ["model", "events", "geometry", "pixels"] }
+{"schemaVersion":1,"id":"bpmn-annotations-selfparity","library":"bpmn","fixtures":["bpmn/annotations.f1.json"],"ops":"bpmn/annotations-edit.ops.json","exercises":["RE.renderer.bpmn-textannotation","RE.renderer.bpmn-group"],"comparators":["model","events","geometry","pixels"]}

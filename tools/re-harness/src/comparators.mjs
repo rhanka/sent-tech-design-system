@@ -4,26 +4,78 @@
 // never asserted (task L0 clause 3).
 import { canonicalise, diffValues } from "./canonical.mjs";
 
-// Float tolerance for DI geometry in model JSON (bpmn §8.3 point 1).
+// Float tolerance for DI geometry in model JSON (bpmn §8.3 point 1) and for
+// final-state / viewport / SVG-path comparison (xyflow §6, C5).
 export const MODEL_FLOAT_TOLERANCE = 1e-6;
 // Geometry tolerance in CSS pixels (bpmn §8.4, joint §5.3 residual rule).
 export const GEOMETRY_TOLERANCE_PX = 1;
+// Rendered-geometry tolerance for xyflow (SPEC_RE_XYFLOW_PARITY §6: 0.5 px).
+export const XYFLOW_GEOMETRY_TOLERANCE_PX = 0.5;
+
+// Per-function rounding applied BEFORE comparison (SPEC_RE_JOINTJS_PARITY
+// §5.3 / §6 Lot 0: "comparators of §5.3 with per-function rounding", then a
+// 1e-6 residual). Keyed by geometry family; the value is the number of
+// decimals kept (null = no rounding).
+export const ROUNDING_BY_FAMILY = {
+  "connectors.straight": 1,
+  "routers.manhattan": 1,
+  "connectors.curve": 3,
+  pinRelative: 3,
+  "routers.metro": 0,
+  "layout.ports": 0,
+};
+
+export function roundForFamily(value, family) {
+  const decimals = ROUNDING_BY_FAMILY[family];
+  if (decimals === undefined || decimals === null || typeof value !== "number") return value;
+  const factor = 10 ** decimals;
+  return Math.round(value * factor) / factor;
+}
+
+// An id-correspondence is usable only as a bijection: two distinct source
+// ids mapped onto one target would merge distinct elements and mask a
+// divergence (C6). Returns a list of problems (empty = valid bijection).
+export function correspondenceProblems(correspondence = {}) {
+  const problems = [];
+  const targets = new Map();
+  for (const [from, to] of Object.entries(correspondence || {})) {
+    if (typeof to !== "string" || !to) problems.push(`idCorrespondence.${from}: target is not a non-empty string`);
+    else if (targets.has(to)) problems.push(`idCorrespondence: ${targets.get(to)} and ${from} both map to ${to} (not a bijection)`);
+    else targets.set(to, from);
+  }
+  return problems;
+}
+
+// Recursively remap every string value/key through the correspondence.
+export function remapDeep(value, correspondence = {}) {
+  if (!correspondence || Object.keys(correspondence).length === 0) return value;
+  if (typeof value === "string") return correspondence[value] || value;
+  if (Array.isArray(value)) return value.map((v) => remapDeep(v, correspondence));
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) out[correspondence[k] || k] = remapDeep(v, correspondence);
+    return out;
+  }
+  return value;
+}
 
 export function compareModel(left, right) {
   const diffs = diffValues(canonicalise(left), canonicalise(right), { floatTolerance: MODEL_FLOAT_TOLERANCE });
   return diffs.length === 0
-    ? { verdict: "pass", detail: "canonical models equal (sorted keys, DI floats at 1e-6)" }
+    ? { verdict: "pass", detail: "canonical models equal (sorted keys, floats at 1e-6)" }
     : { verdict: "fail", detail: diffs.slice(0, 8).join("; ") };
 }
 
 // Event log: ordered names + payload keys; values compared only after the
-// declared id-correspondence remaps them (bpmn §8.3 point 2).
+// declared id-correspondence remaps them (bpmn §8.3 point 2). The
+// correspondence must be a bijection (C6).
 export function compareEvents(left, right, idCorrespondence = {}) {
-  const remap = (v) => (typeof v === "string" && idCorrespondence[v] ? idCorrespondence[v] : v);
+  const problems = correspondenceProblems(idCorrespondence);
+  if (problems.length) return { verdict: "fail", detail: problems[0] };
   const normalise = (log) => (log || []).map((e) => ({
     name: e.name,
     keys: Object.keys(e.payload || {}).sort(),
-    values: Object.fromEntries(Object.entries(e.payload || {}).map(([k, v]) => [k, remap(v)])),
+    values: remapDeep(e.payload || {}, idCorrespondence),
   }));
   const a = normalise(left); const b = normalise(right);
   if (a.length !== b.length) return { verdict: "fail", detail: `event count ${a.length} !== ${b.length}` };
@@ -38,36 +90,87 @@ export function compareEvents(left, right, idCorrespondence = {}) {
   return { verdict: "pass", detail: `${a.length} events equal (names, payload keys, remapped values)` };
 }
 
-// Geometry: bounds, waypoints, viewbox at ±1 CSS px. Text metrics are
-// excluded until the font-metric decision is taken (bpmn §8.4) -> unknown.
-export function compareGeometry(left, right) {
-  if (!left || !right) return { verdict: "unknown", detail: "geometry missing on one side" };
+// Parse an SVG path `d` string into [command, ...numbers] pairs. Only the
+// absolute commands xyflow/bpmn emit (M/L/C/Q/Z plus H/V normalised by the
+// caller libraries) are needed for the numeric comparison at 1e-6.
+export function parseSvgPath(d) {
+  if (typeof d !== "string") return null;
+  const tokens = d.match(/[MLCQZSTAHVmlcqzstahv]|-?\d*\.?\d+(?:e[-+]?\d+)?/g) || [];
+  const out = [];
+  let current = null;
+  for (const tok of tokens) {
+    if (/^[A-Za-z]$/.test(tok)) { current = [tok]; out.push(current); }
+    else if (current) current.push(Number(tok));
+  }
+  return out;
+}
+
+// Geometry: bounds, waypoints, viewbox, DOM bounds and rendered edge paths.
+// A side missing on one side only is a FAILURE, never silently equal (C5).
+// Text metrics are excluded until the font-metric decision is taken
+// (bpmn §8.4) -> reported in the detail, not compared.
+export function compareGeometry(left, right, options = {}) {
+  if (!left || !right) return { verdict: "fail", detail: "geometry missing on one side" };
+  const tolerancePx = options.tolerancePx ?? GEOMETRY_TOLERANCE_PX;
+  const family = options.family || "routers.manhattan";
   const diffs = [];
-  const checkPoint = (p, q, label) => {
-    if (Math.abs(p.x - q.x) > GEOMETRY_TOLERANCE_PX || Math.abs(p.y - q.y) > GEOMETRY_TOLERANCE_PX) {
-      diffs.push(`${label}: (${p.x},${p.y}) !== (${q.x},${q.y}) beyond 1px`);
+  const checkBoundsMap = (lmap, rmap, label) => {
+    const l = lmap || {}; const r = rmap || {};
+    for (const id of new Set([...Object.keys(l), ...Object.keys(r)])) {
+      if (!l[id] || !r[id]) { diffs.push(`${label}.${id}: missing on one side`); continue; }
+      for (const f of ["x", "y", "width", "height"]) {
+        if (Math.abs(l[id][f] - r[id][f]) > tolerancePx) diffs.push(`${label}.${id}.${f}: ${l[id][f]} !== ${r[id][f]} beyond ${tolerancePx}px`);
+      }
     }
   };
-  const lb = left.bounds || {}; const rb = right.bounds || {};
-  for (const id of new Set([...Object.keys(lb), ...Object.keys(rb)])) {
-    if (!lb[id] || !rb[id]) { diffs.push(`bounds.${id}: missing on one side`); continue; }
-    for (const f of ["x", "y", "width", "height"]) {
-      if (Math.abs(lb[id][f] - rb[id][f]) > GEOMETRY_TOLERANCE_PX) diffs.push(`bounds.${id}.${f}: ${lb[id][f]} !== ${rb[id][f]} beyond 1px`);
-    }
+  checkBoundsMap(left.bounds, right.bounds, "bounds");
+  // DOM bounds are part of the rendered geometry whenever either side has them.
+  if (left.domBounds !== undefined || right.domBounds !== undefined) {
+    if (!left.domBounds || !right.domBounds) diffs.push("domBounds: missing on one side");
+    else checkBoundsMap(left.domBounds, right.domBounds, "domBounds");
   }
   const lw = left.waypoints || {}; const rw = right.waypoints || {};
   for (const id of new Set([...Object.keys(lw), ...Object.keys(rw)])) {
     const a = lw[id] || []; const b = rw[id] || [];
     if (a.length !== b.length) { diffs.push(`waypoints.${id}: count ${a.length} !== ${b.length}`); continue; }
-    a.forEach((p, i) => checkPoint(p, b[i], `waypoints.${id}[${i}]`));
+    a.forEach((p, i) => {
+      const ax = roundForFamily(p.x, family); const ay = roundForFamily(p.y, family);
+      const bx = roundForFamily(b[i].x, family); const by = roundForFamily(b[i].y, family);
+      if (Math.abs(ax - bx) > MODEL_FLOAT_TOLERANCE || Math.abs(ay - by) > MODEL_FLOAT_TOLERANCE) {
+        diffs.push(`waypoints.${id}[${i}]: (${ax},${ay}) !== (${bx},${by}) beyond 1e-6 after ${family} rounding`);
+      }
+    });
   }
-  if (left.viewbox && right.viewbox) {
+  // Rendered edge paths (SVG `d`), compared numerically at 1e-6 (xyflow §6).
+  if (left.edgePaths !== undefined || right.edgePaths !== undefined) {
+    if (!left.edgePaths || !right.edgePaths) diffs.push("edgePaths: missing on one side");
+    else {
+      for (const id of new Set([...Object.keys(left.edgePaths), ...Object.keys(right.edgePaths)])) {
+        const pa = parseSvgPath(left.edgePaths[id]); const pb = parseSvgPath(right.edgePaths[id]);
+        if (!pa || !pb) { diffs.push(`edgePaths.${id}: missing on one side`); continue; }
+        if (pa.length !== pb.length) { diffs.push(`edgePaths.${id}: ${pa.length} commands !== ${pb.length}`); continue; }
+        for (let i = 0; i < pa.length; i += 1) {
+          if (pa[i][0] !== pb[i][0]) { diffs.push(`edgePaths.${id}[${i}]: command ${pa[i][0]} !== ${pb[i][0]}`); break; }
+          const numsA = pa[i].slice(1); const numsB = pb[i].slice(1);
+          if (numsA.length !== numsB.length || numsA.some((n, j) => Math.abs(n - numsB[j]) > MODEL_FLOAT_TOLERANCE)) {
+            diffs.push(`edgePaths.${id}[${i}]: coordinates differ beyond 1e-6`);
+            break;
+          }
+        }
+      }
+    }
+  }
+  // A viewbox present on one side only is a divergence (C5), not equality.
+  if (Boolean(left.viewbox) !== Boolean(right.viewbox)) {
+    diffs.push("viewbox: missing on one side");
+  } else if (left.viewbox && right.viewbox) {
+    const viewboxTolerance = options.viewboxTolerance ?? tolerancePx;
     for (const f of ["x", "y", "width", "height"]) {
-      if (Math.abs(left.viewbox[f] - right.viewbox[f]) > GEOMETRY_TOLERANCE_PX) diffs.push(`viewbox.${f} beyond 1px`);
+      if (Math.abs(left.viewbox[f] - right.viewbox[f]) > viewboxTolerance) diffs.push(`viewbox.${f} beyond ${viewboxTolerance}`);
     }
   }
   if (diffs.length) return { verdict: "fail", detail: diffs.slice(0, 8).join("; ") };
-  return { verdict: "pass", detail: "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)" };
+  return { verdict: "pass", detail: `bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (${tolerancePx}px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)` };
 }
 
 // Pixels: secondary signal only (bpmn §8.3 point 4, joint §5.3). Threshold is
