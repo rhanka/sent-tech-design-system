@@ -719,9 +719,13 @@ points and routers (`spec/SPEC_RE_JOINTJS_PARITY.md`: `anchor`, `link-anchor`, `
 built-in path functions, markers and edge labels); bpmn-js docking and layout (`spec/SPEC_RE_BPMN_JS_PARITY.md`:
 align/distribute entries, `LayoutConnectionBehavior` verdicts compared as geometry, snapping and auto-place).
 
-**Ad hoc kit, outside the DS.** The current kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`, with copies in
-hrpolnav) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus component (§11.2):
-no scene, skill or kit metadata carries L-R1–L-R4 hints.
+**Ad hoc kit, outside the DS.** The current decision-dossier kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`
+and the copies made from it) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus
+component (§11.2): no scene, skill or kit metadata carries L-R1–L-R4 hints.
+
+**Implementation (owner, 2026-10-17).** L-R1–L-R4 are written in the DS from the rules above, in concert with h2a
+(`@sentropic/focus`): h2a defines the diagram content a dossier carries, the DS engine lays it out and renders it. No
+code is ported from any kit copy.
 
 ---
 
