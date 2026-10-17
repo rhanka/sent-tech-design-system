@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/contracts/camera.v1.json",
+  "title": "Frozen contract: unified camera (v1)",
+  "description": "Frozen at L0 per SPEC_RE_JOINTJS_PARITY.md §6 Lot 0. Source: spec/SPEC_RE_JOINTJS_PARITY.md §4.6 (lines 203-207). The contract camera is the diagram-canvas origin reading: camera.x/camera.y are the world point drawn at the view origin, camera.zoom is CSS pixels per world unit; view = (world - camera) * zoom (packages/diagram-canvas/src/transform.ts:178, cited at spec line 205). @sentropic/graph keeps its centre-based projection internally (packages/graph/src/mat4.ts:114) but receives the contract camera converted at the display-list boundary: centre = origin + viewport / (2 * zoom) per axis (spec line 207). No fixture may carry a raw JointJS tx/ty without that conversion. Same conversion as SPEC_RE_BPMN_JS_PARITY.md §5.7 and SPEC_RE_XYFLOW_PARITY.md §4 (viewport.x = -camera.x * camera.zoom).",
+  "type": "object",
+  "required": ["contractVersion", "x", "y", "zoom"],
+  "properties": {
+    "contractVersion": { "const": 1 },
+    "x": { "type": "number", "description": "World x at the view origin (origin reading)." },
+    "y": { "type": "number", "description": "World y at the view origin (origin reading)." },
+    "zoom": { "type": "number", "exclusiveMinimum": 0, "description": "CSS pixels per world unit; identical on both sides." },
+    "viewportWidth": { "type": "number", "description": "CSS pixels; used only for the boundary conversion to the graph centre reading." },
+    "viewportHeight": { "type": "number" }
+  },
+  "additionalProperties": false
+}

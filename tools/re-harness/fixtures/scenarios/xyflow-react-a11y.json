@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-a11y-selfparity","library":"xyflow","fixtures":["xyflow/react-a11y.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-a11y"],"comparators":["model","events","geometry","pixels"]}

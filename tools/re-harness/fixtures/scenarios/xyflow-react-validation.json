@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-validation-selfparity","library":"xyflow","fixtures":["xyflow/react-validation.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-validation"],"comparators":["model","events","geometry","pixels"]}

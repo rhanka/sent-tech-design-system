@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-handle-connect-selfparity","library":"xyflow","fixtures":["xyflow/svelte-handle-connect.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-handle-connect"],"comparators":["model","events","geometry","pixels"]}

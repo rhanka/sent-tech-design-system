@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-custom-minimap-selfparity","library":"xyflow","fixtures":["xyflow/svelte-custom-minimap.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-custom-minimap"],"comparators":["model","events","geometry","pixels"]}

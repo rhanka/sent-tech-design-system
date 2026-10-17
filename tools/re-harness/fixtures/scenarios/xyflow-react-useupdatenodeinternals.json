@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-useupdatenodeinternals-selfparity","library":"xyflow","fixtures":["xyflow/react-useupdatenodeinternals.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-useupdatenodeinternals"],"comparators":["model","events","geometry","pixels"]}

@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-detachedhandle-selfparity","library":"xyflow","fixtures":["xyflow/react-detachedhandle.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-detachedhandle"],"comparators":["model","events","geometry","pixels"]}

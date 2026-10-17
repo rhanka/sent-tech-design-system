@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-data-objects",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Task with a data object input and a data store output",
+  "input": {
+    "xmlFile": "bpmn/data-objects.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

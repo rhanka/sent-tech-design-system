@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "jointjs-basic",
+  "library": "jointjs",
+  "kind": "jointjs-graph-json",
+  "title": "Two standard rectangles linked by a manhattan-routed standard link anchored at the source bottom",
+  "input": {
+    "cells": [
+      {
+        "type": "standard.Rectangle",
+        "id": "r1",
+        "position": {
+          "x": 60,
+          "y": 60
+        },
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "attrs": {
+          "label": {
+            "text": "Start"
+          }
+        }
+      },
+      {
+        "type": "standard.Rectangle",
+        "id": "r2",
+        "position": {
+          "x": 300,
+          "y": 160
+        },
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "attrs": {
+          "label": {
+            "text": "End"
+          }
+        }
+      },
+      {
+        "type": "standard.Link",
+        "id": "l1",
+        "source": {
+          "id": "r1",
+          "anchor": {
+            "name": "bottom"
+          }
+        },
+        "target": {
+          "id": "r2"
+        },
+        "router": {
+          "name": "manhattan"
+        }
+      }
+    ]
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

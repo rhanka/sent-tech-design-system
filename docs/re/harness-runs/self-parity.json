@@ -1,0 +1,321 @@
+{
+  "browser": "headless-chrome",
+  "candidate": {
+    "bpmn": {
+      "cause": "candidate = DiagramState through the A' codec (toDiagramState / toModdleJson, private package @sentropic/diagram-bpmn-moddle), delivered by lot L3 of spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md §13; not written at L0",
+      "verdict": "unsupported"
+    },
+    "jointjs": {
+      "cause": "candidate = DiagramState (packages/diagram-core) through the JointJS-parity adapter of a later lot (spec/SPEC_RE_JOINTJS_PARITY.md §6); not written at L0",
+      "verdict": "unsupported"
+    }
+  },
+  "mode": "self-parity",
+  "oracle": "real",
+  "oracleVersions": {
+    "@joint/core": "4.3.3",
+    "@xyflow/react": "12.12.0",
+    "@xyflow/svelte": "1.7.0",
+    "@xyflow/system": "0.0.83",
+    "bpmn-js": "18.31.0",
+    "bpmn-moddle": "10.3.1",
+    "diagram-js": "15.28.1",
+    "esbuild": "0.25.12",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "svelte": "5.56.4"
+  },
+  "scenarios": [
+    {
+      "comparators": {
+        "events": {
+          "detail": "279 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-annotations-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "288 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-data-objects-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "283 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-events-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "285 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-gateways-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "290 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-pools-lanes-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "273 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-subprocess-collapsed-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "275 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-subprocess-expanded-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "280 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        },
+        "xml": {
+          "detail": "saveXML identical across both real runs",
+          "verdict": "pass"
+        },
+        "xmlRoundTrip": {
+          "detail": "saveXML -> moddle.fromXML -> descriptor projection equals the live moddle tree (both runs)",
+          "verdict": "pass"
+        }
+      },
+      "id": "bpmn-task-selfparity",
+      "library": "bpmn",
+      "oracle": "real",
+      "oracleVersion": "18.31.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "12 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (1px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "jointjs-basic-selfparity",
+      "library": "jointjs",
+      "oracle": "real",
+      "oracleVersion": "4.3.3",
+      "verdict": "pass"
+    }
+  ],
+  "schemaVersion": 1,
+  "seed": 42
+}

@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"bpmn-data-objects-selfparity","library":"bpmn","fixtures":["bpmn/data-objects.json"],"ops":"bpmn/data-objects-edit.ops.json","exercises":["RE.renderer.bpmn-dataobject","RE.renderer.bpmn-association"],"comparators":["model","events","geometry","pixels"]}

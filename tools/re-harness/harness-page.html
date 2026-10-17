@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RE harness — real oracle adapters</title>
+<link rel="stylesheet" href="/bundles/bpmn.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  .oracle-host { width: 1024px; height: 600px; position: relative; }
+</style>
+</head>
+<body>
+<div id="oracle-root"></div>
+<script src="/bundles/bpmn.js"></script>
+<script src="/bundles/joint.js"></script>
+<script type="module">
+  // Real-oracle adapters. Each function loads ONE fixture into the REAL
+  // library bundled from RE_ORACLES_DIR (see build-bundles.mjs), drives it
+  // through the library's own API, and extracts the outputs the harness
+  // comparators consume: the library's OWN model output (bpmn-js: the
+  // moddle tree projected by its descriptors; xyflow: the store state;
+  // JointJS: graph.toJSON()), the event journal and the geometry. The
+  // harness defines no diagram model of its own (README, section Model).
+  // Pixels are captured by the Node runner as a screenshot of the rendered
+  // .oracle-host container (C3): adapters leave the container in place and
+  // register window.__cleanupLastRun, which the runner calls AFTER the
+  // capture. No library behaviour is re-implemented here; when a library
+  // or an operation is unavailable the adapter records it in skippedOps
+  // (which fails the scenario) or throws its cause; it never fabricates
+  // output or journal events.
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // Deterministic settle barrier: two animation frames (C9). The real
+  // libraries flush DOM/store work on rAF; wall-clock sleeps prove nothing.
+  const nextFrames = () => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  });
+
+  async function waitFor(fn, { timeout = 8000, step = 25, label = "condition" } = {}) {
+    const start = Date.now();
+    for (;;) {
+      const value = fn();
+      if (value) return value;
+      if (Date.now() - start > timeout) throw new Error(`timeout waiting for ${label}`);
+      await sleep(step);
+    }
+  }
+
+  function unionViewbox(bounds) {
+    const all = Object.values(bounds || {});
+    if (!all.length) return null;
+    const minX = Math.min(...all.map((b) => b.x));
+    const minY = Math.min(...all.map((b) => b.y));
+    const maxX = Math.max(...all.map((b) => b.x + b.width));
+    const maxY = Math.max(...all.map((b) => b.y + b.height));
+    return { x: (minX), y: (minY), width: (maxX - minX), height: (maxY - minY) };
+  }
+
+  function makeHost() {
+    const el = document.createElement("div");
+    el.className = "oracle-host";
+    document.getElementById("oracle-root").appendChild(el);
+    return el;
+  }
+
+  function keepHost(container, cleanup) {
+    window.__cleanupLastRun = () => {
+      try { cleanup(); } catch (err) { /* already gone */ }
+      if (container.parentNode) container.remove();
+      window.__cleanupLastRun = null;
+    };
+  }
+
+  // ---------------------------------------------------------------- bpmn
+  // The fixture carries a COMPLETE BPMN 2.0 XML document (semantics +
+  // BPMNDI) which is loaded verbatim by the real importXML. No XML or DI
+  // is synthesised here, and no harness model is extracted: the compared
+  // model is the moddle tree of the real library, projected below.
+  //
+  // projectModdle: mechanical projection of a moddle element through its
+  // OWN effective descriptor (bpmn-moddle resources): { $type, ...every
+  // declared property that carries a value (own or descriptor default) }.
+  // Containment recurses, references (isReference) become id strings,
+  // primitives are copied, $attrs are kept verbatim, $parent is never
+  // emitted, an empty collection equals an absent one (moddle creates
+  // collections lazily). Virtual properties (isVirtual) are derived inverses and are
+  // skipped, as in the F1 exchange form (SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE
+  // §4.1, §5). No field is invented, renamed or dropped by choice.
+  const isModdle = (v) => v !== null && typeof v === "object" && typeof v.$type === "string";
+  const refId = (v) => (v && typeof v === "object" ? (v.id ?? null) : v);
+  function projectModdle(el) {
+    const out = { $type: el.$type };
+    const properties = (el.$descriptor && el.$descriptor.properties) || null;
+    if (properties) {
+      for (const p of properties) {
+        if (p.isVirtual) continue;
+        const value = el[p.name];
+        if (value === undefined) continue;
+        // moddle semantics: a collection (isMany) is lazily created as []
+        // on first get(), so an empty collection and an absent one are the
+        // same value (and serialise identically). Empty collections are
+        // therefore not emitted, on the live tree and the reparsed tree.
+        if (p.isMany && Array.isArray(value) && value.length === 0) continue;
+        if (p.isReference) out[p.name] = p.isMany ? value.map(refId) : refId(value);
+        else if (p.isMany) out[p.name] = value.map((item) => (isModdle(item) ? projectModdle(item) : item));
+        else out[p.name] = isModdle(value) ? projectModdle(value) : value;
+      }
+    } else {
+      // Generic (AnyType) element of an unregistered namespace: no
+      // descriptor properties, so its own enumerable keys are copied.
+      for (const [k, value] of Object.entries(el)) {
+        if (k.startsWith("$") && k !== "$body") continue; // $body: text body of a generic element
+        out[k] = Array.isArray(value) ? value.map((item) => (isModdle(item) ? projectModdle(item) : item)) : (isModdle(value) ? projectModdle(value) : value);
+      }
+    }
+    if (el.$attrs && Object.keys(el.$attrs).length) out.$attrs = { ...el.$attrs };
+    return out;
+  }
+
+  async function runBpmn(fixture, ops) {
+    if (!window.__oracleBpmn) throw new Error("bpmn-js bundle not loaded (bundles/bpmn.js missing)");
+    const container = makeHost();
+    const events = [];
+    const skippedOps = [];
+    const modeler = new window.__oracleBpmn.Modeler({ container });
+    keepHost(container, () => modeler.destroy());
+    const eventBus = modeler.get("eventBus");
+    const origFire = eventBus.fire.bind(eventBus);
+    // Keep the significant payload (C6): command id, every element id the
+    // event touches (element/shape/connection/elements/context, recursive),
+    // and the primary element type. Plural payloads (elements.changed,
+    // shape.remove, ...) keep their full id list instead of "".
+    const collectIds = (value, out, depth) => {
+      if (!value || depth > 4) return;
+      if (Array.isArray(value)) { for (const item of value) collectIds(item, out, depth + 1); return; }
+      if (typeof value === "object") {
+        if (typeof value.id === "string" && (value.businessObject || value.waypoints || value.type)) {
+          if (!out.includes(value.id)) out.push(value.id);
+        }
+        for (const key of ["element", "shape", "connection", "elements", "context", "gfx"]) {
+          if (key in value) collectIds(value[key], out, depth + 1);
+        }
+      }
+    };
+    eventBus.fire = function (type, data) {
+      const ids = [];
+      collectIds(data, ids, 0);
+      const primary = (data && (data.element || data.shape || data.connection)) || null;
+      events.push({
+        name: String(type),
+        payload: {
+          command: data && data.command ? String(data.command.id || data.command) : "",
+          elementId: ids[0] || "",
+          elementIds: ids,
+          elementType: primary && primary.type ? String(primary.type) : "",
+        },
+      });
+      return origFire(type, data);
+    };
+    const imported = await modeler.importXML(fixture.input.xml);
+    const warnings = (imported.warnings || []).map((w) => String(w.message || w).slice(0, 200));
+    const registry = modeler.get("elementRegistry");
+    const modeling = modeler.get("modeling");
+    const commandStack = modeler.get("commandStack");
+    const canvas = modeler.get("canvas");
+    const rootEl = canvas.getRootElement();
+    const skip = (step, why) => {
+      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
+    };
+    for (const step of (ops && ops.steps) || []) {
+      if (step.op === "undo") { commandStack.undo(); continue; }
+      if (step.op === "redo") { commandStack.redo(); continue; }
+      if (step.op === "create") {
+        const factory = modeler.get("elementFactory");
+        const bpmnFactory = modeler.get("bpmnFactory");
+        const width = step.width ?? 100;
+        const height = step.height ?? 80;
+        const type = step.type || "bpmn:Task";
+        // Pin the business-object id to the fixture id: bpmn-js otherwise
+        // generates Activity_* ids that differ per run (saveXML evidence).
+        const businessObject = bpmnFactory.create(type, { id: step.elementId });
+        const shape = factory.createShape({ id: step.elementId, type, businessObject, width, height });
+        // In a collaboration the canvas root is not a process container:
+        // BpmnUpdater cannot parent a new flow node to it. Create inside
+        // the first participant, which is the real modeling parent.
+        let parent = rootEl;
+        if (rootEl.type === "bpmn:Collaboration") {
+          const participants = registry.getAll()
+            .filter((e) => e.type === "bpmn:Participant")
+            .sort((a, b) => a.id.localeCompare(b.id));
+          if (participants.length) parent = participants[0];
+        }
+        modeling.createShape(shape, { x: (step.x ?? 0) + width / 2, y: (step.y ?? 0) + height / 2 }, parent);
+        const created = registry.get(step.elementId);
+        if (created && step.label) modeling.updateLabel(created, step.label);
+        if (!created) skip(step, "shape not in registry after create");
+        continue;
+      }
+      const el = step.elementId ? registry.get(step.elementId) : null;
+      if (step.op === "move") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.moveShape(el, { x: (step.x ?? el.x) - el.x, y: (step.y ?? el.y) - el.y });
+      } else if (step.op === "resize") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.resizeShape(el, { x: step.x ?? el.x, y: step.y ?? el.y, width: step.width ?? el.width, height: step.height ?? el.height });
+      } else if (step.op === "connect") {
+        const s = registry.get(step.sourceId);
+        const t = registry.get(step.targetId);
+        if (!s || !t) { skip(step, "source or target not found"); continue; }
+        const bpmnFactory = modeler.get("bpmnFactory");
+        const connectionBo = bpmnFactory.create("bpmn:SequenceFlow", { id: step.elementId });
+        modeling.connect(s, t, { id: step.elementId, type: "bpmn:SequenceFlow", businessObject: connectionBo });
+      } else if (step.op === "reconnect") {
+        const conn = el;
+        const t = registry.get(step.targetId);
+        if (!conn || !t) { skip(step, "connection or target not found"); continue; }
+        modeling.reconnectEnd(conn, t, null);
+      } else if (step.op === "remove") {
+        if (!el) { skip(step, "element not found"); continue; }
+        if (el.waypoints) modeling.removeConnection(el);
+        else modeling.removeShape(el);
+      } else if (step.op === "setLabel") {
+        if (!el) { skip(step, "element not found"); continue; }
+        modeling.updateLabel(el, step.label || "");
+      } else if (step.op === "setType") {
+        if (!el) { skip(step, "element not found"); continue; }
+        const replace = modeler.get("bpmnReplace", false);
+        if (!replace) { skip(step, "bpmnReplace unavailable"); continue; }
+        replace.replaceElement(el, { type: step.type });
+      } else if (step.op === "setViewport") {
+        canvas.viewbox({ x: step.x ?? 0, y: step.y ?? 0 });
+      } else if (step.op === "select") {
+        const selection = modeler.get("selection");
+        selection.select(el || []);
+      } else {
+        skip(step, "unsupported op");
+      }
+    }
+    // Geometry: the diagram-js element registry (the rendered shapes and
+    // connections), not a model.
+    const bounds = {};
+    const waypoints = {};
+    for (const e of registry.getAll()) {
+      if (e.waypoints) waypoints[e.id] = e.waypoints.map((p) => ({ x: (p.x), y: (p.y) }));
+      else if (typeof e.x === "number" && e.parent) bounds[e.id] = { x: (e.x), y: (e.y), width: (e.width), height: (e.height) };
+    }
+    const vb = canvas.viewbox();
+    const viewbox = { x: (vb.x), y: (vb.y), width: (vb.width), height: (vb.height) };
+    const saved = await modeler.saveXML({ format: false });
+    // Model: the REAL moddle tree (getDefinitions), projected mechanically
+    // by the bpmn-moddle descriptors. The XML stays an input and a boundary
+    // check: it is parsed back by the same moddle and projected again.
+    const model = projectModdle(modeler.getDefinitions());
+    const reparsed = await modeler.get("moddle").fromXML(saved.xml, "bpmn:Definitions");
+    const roundTripModel = projectModdle(reparsed.rootElement);
+    return {
+      model,
+      roundTripModel,
+      xml: saved.xml,
+      events,
+      geometry: { bounds, waypoints, viewbox },
+      pixels: null,
+      viewport: { x: viewbox.x, y: viewbox.y, zoom: (vb.scale || 1) },
+      warnings,
+      skippedOps,
+    };
+  }
+
+  // -------------------------------------------------------------- xyflow
+  // Each xyflow fixture is a pinned example, compiled with its own code
+  // into bundles/xyflow-examples/<id>.js (build-bundles.mjs) and mounted
+  // here through the example app's own entry (StrictMode / layout). The
+  // probe registered by the bundle exposes the library store of every
+  // mounted flow; the model is that store state, serialised mechanically
+  // (window.__xyflowSerializeNative: every own property and accessor,
+  // functions/DOM/cycles dropped, no field list, no renaming).
+  //
+  // Ops are planned here from the store (xyPlan returns client points)
+  // and executed by the Node runner through Playwright's mouse, i.e. the
+  // browser's real input pipeline: a node drag, a handle-to-handle
+  // connection, a wheel zoom, preceded by a click on the empty pane. Targets are chosen mechanically in store
+  // order and must hit-test to themselves; an op with no possible target
+  // is reported as not applicable (opsLog), never faked.
+  const xy = { mounted: null };
+
+  function loadAsset(tag, attrs) {
+    return new Promise((resolve, reject) => {
+      const el = document.createElement(tag);
+      Object.assign(el, attrs);
+      el.onload = () => resolve();
+      el.onerror = () => reject(new Error(`failed to load ${attrs.src || attrs.href}`));
+      document.head.appendChild(el);
+    });
+  }
+
+  async function xyLoad(bundle, css) {
+    if (css) await loadAsset("link", { rel: "stylesheet", href: `/${css}` });
+    await loadAsset("script", { src: `/${bundle}` });
+    if (!window.__oracleXyflowExample) throw new Error(`${bundle} did not register an example`);
+    return window.__oracleXyflowExample.id;
+  }
+
+  function activeStores() {
+    return ((window.__xyHarness && window.__xyHarness.stores) || []).filter((s) => !s.removed);
+  }
+
+  function flowView(entry) {
+    const state = entry.getState();
+    const t = entry.kind === "react" ? { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] } : { ...state.viewport };
+    return { state, t, dom: state.domNode };
+  }
+
+  function signature() {
+    return JSON.stringify(activeStores().map((entry) => {
+      const { state, t } = flowView(entry);
+      return [t, (state.nodes || []).map((n) => {
+        const internal = state.nodeLookup && state.nodeLookup.get(n.id);
+        return [n.id, n.position, internal && internal.measured, internal && internal.internals && internal.internals.positionAbsolute];
+      }), (state.edges || []).map((e) => e.id)];
+    }));
+  }
+
+  // Settle barrier: the store signature (viewport, node positions and
+  // measured sizes, edge ids) identical across three consecutive
+  // double-frames, after at least one store registered.
+  async function xySettle(afterKind) {
+    // d3-zoom ends a wheel gesture on its own 150 ms idle timer; let it fire.
+    if (afterKind === "wheel") await sleep(200);
+    let last = ""; let prev = ""; let stable = 0;
+    for (let i = 0; i < 200 && stable < 3; i += 1) {
+      await nextFrames();
+      const sig = signature();
+      if (sig === last && activeStores().length) stable += 1; else stable = 0;
+      prev = last; last = sig;
+    }
+    if (stable < 3) {
+      let at = 0; while (at < last.length && last[at] === prev[at]) at += 1;
+      throw new Error(`xyflow store did not settle after 200 double-frames (flows=${activeStores().length}; still changing near: ${last.slice(Math.max(0, at - 60), at + 60)})`);
+    }
+  }
+
+  async function xyMount() {
+    if (!window.__oracleXyflowExample) throw new Error("no xyflow example bundle loaded");
+    window.__xyHarness = { stores: [], journal: [], flowCounter: 0 };
+    const container = makeHost();
+    const mounted = window.__oracleXyflowExample.mount(container);
+    keepHost(container, () => mounted.unmount());
+    xy.mounted = { container, opsLog: [] };
+    try { await document.fonts.ready; } catch (err) { /* not gated */ }
+    for (let i = 0; i < 60 && !activeStores().length; i += 1) await nextFrames();
+    if (!activeStores().length) throw new Error("example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare");
+    await xySettle("mount");
+    return { flows: activeStores().length };
+  }
+
+  function hitNodeId(x, y, dom) {
+    const el = document.elementFromPoint(x, y);
+    if (!el || !dom.contains(el)) return null;
+    const node = el.closest("[data-id]");
+    return node ? node.getAttribute("data-id") : null;
+  }
+
+  function nodeCentre(view, internal) {
+    const rect = view.dom.getBoundingClientRect();
+    const abs = internal.internals.positionAbsolute;
+    const w = (internal.measured && internal.measured.width) || 0;
+    const h = (internal.measured && internal.measured.height) || 0;
+    return { x: rect.x + view.t.x + (abs.x + w / 2) * view.t.zoom, y: rect.y + view.t.y + (abs.y + h / 2) * view.t.zoom };
+  }
+
+  function handleCentre(view, internal, hb) {
+    const rect = view.dom.getBoundingClientRect();
+    const abs = internal.internals.positionAbsolute;
+    return { x: rect.x + view.t.x + (abs.x + hb.x + hb.width / 2) * view.t.zoom, y: rect.y + view.t.y + (abs.y + hb.y + hb.height / 2) * view.t.zoom };
+  }
+
+  function hitHandle(p, nodeId, dom) {
+    const el = document.elementFromPoint(p.x, p.y);
+    if (!el || !dom.contains(el)) return false;
+    const handle = el.closest(".react-flow__handle, .svelte-flow__handle");
+    return Boolean(handle && handle.getAttribute("data-nodeid") === nodeId);
+  }
+
+  // Every op is planned on EVERY mounted flow (the runner calls xyPlan once
+  // per flow index), except exampleButton, which acts on the example.
+  function xyFlowCount() { return activeStores().length; }
+
+  function xyPlan(step, flowIndex = 0) {
+    const flows = activeStores();
+    if (flowIndex === 0) window.__xyHarness.segment = (window.__xyHarness.segment || 0) + 1;
+    const log = (entry) => { const e = { flow: flowIndex, ...entry }; xy.mounted.opsLog.push(e); return e; };
+    if (!flows[flowIndex]) return log({ op: step.op, kind: "none", applied: false, why: "no such flow mounted" });
+    const view = flowView(flows[flowIndex]);
+    const nodes = (view.state.nodes || []).filter((n) => !n.hidden);
+    if (step.op === "move") {
+      for (const n of nodes) {
+        const internal = view.state.nodeLookup.get(n.id);
+        if (!internal || !internal.measured || !internal.measured.width) continue;
+        const from = nodeCentre(view, internal);
+        if (hitNodeId(from.x, from.y, view.dom) !== n.id) continue;
+        return log({ op: "move", kind: "drag", applied: true, target: n.id, from, to: { x: from.x + (step.dx ?? 40), y: from.y + (step.dy ?? 30) } });
+      }
+      return log({ op: "move", kind: "none", applied: false, why: "no visible node hit-tests to itself at its centre" });
+    }
+    if (step.op === "connect") {
+      const edges = view.state.edges || [];
+      for (const a of nodes) {
+        const ia = view.state.nodeLookup.get(a.id);
+        const sources = (ia && ia.internals.handleBounds && ia.internals.handleBounds.source) || [];
+        for (const sh of sources) {
+          const from = handleCentre(view, ia, sh);
+          if (!hitHandle(from, a.id, view.dom)) continue;
+          for (const b of nodes) {
+            if (b.id === a.id) continue;
+            if (edges.some((e) => (e.source === a.id && e.target === b.id) || (e.source === b.id && e.target === a.id))) continue;
+            const ib = view.state.nodeLookup.get(b.id);
+            const targets = (ib && ib.internals.handleBounds && ib.internals.handleBounds.target) || [];
+            for (const th of targets) {
+              const to = handleCentre(view, ib, th);
+              if (!hitHandle(to, b.id, view.dom)) continue;
+              return log({ op: "connect", kind: "drag", applied: true, target: `${a.id}:${sh.id ?? ""}->${b.id}:${th.id ?? ""}`, from, to });
+            }
+          }
+        }
+      }
+      return log({ op: "connect", kind: "none", applied: false, why: "no hit-testable source handle / target handle pair between unconnected nodes" });
+    }
+    if (step.op === "exampleButton" && flowIndex > 0) {
+      return log({ op: "exampleButton", kind: "none", applied: false, ruleSkip: true, why: "example-level op, planned once (flow 0)" });
+    }
+    if (step.op === "exampleButton") {
+      // Only when the example mounted an EMPTY graph: such examples build
+      // their graph from their own panel button. The first <button> of the
+      // example (document order) outside the library's own components.
+      if (flows.some((entry) => (flowView(entry).state.nodes || []).length)) {
+        return log({ op: "exampleButton", kind: "none", applied: false, ruleSkip: true, why: "graph not empty at mount (rule: only for examples that start empty)" });
+      }
+      const library = ".react-flow__controls, .svelte-flow__controls, .react-flow__minimap, .svelte-flow__minimap, .react-flow__attribution, .svelte-flow__attribution";
+      const button = [...xy.mounted.container.querySelectorAll("button")].find((b) => !b.closest(library) && !b.disabled);
+      if (!button) return log({ op: "exampleButton", kind: "none", applied: false, why: "the example has no button of its own" });
+      const r = button.getBoundingClientRect();
+      const at = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+      if (document.elementFromPoint(at.x, at.y) !== button && !button.contains(document.elementFromPoint(at.x, at.y))) {
+        return log({ op: "exampleButton", kind: "none", applied: false, why: "the example button is not hit-testable" });
+      }
+      return log({ op: "exampleButton", kind: "click", applied: true, target: (button.textContent || "").trim().slice(0, 40), at });
+    }
+    if (step.op === "paneClick") {
+      // First point of a fixed 24 px grid (row-major from the top-left of
+      // the flow) whose hit-test is the library pane itself.
+      const rect = view.dom.getBoundingClientRect();
+      for (let y = rect.y + 24; y < rect.y + rect.height - 8; y += 24) {
+        for (let x = rect.x + 24; x < rect.x + rect.width - 8; x += 24) {
+          const el = document.elementFromPoint(x, y);
+          if (el && view.dom.contains(el) && el.matches(".react-flow__pane, .svelte-flow__pane")) {
+            return log({ op: "paneClick", kind: "click", applied: true, target: "pane", at: { x, y } });
+          }
+        }
+      }
+      return log({ op: "paneClick", kind: "none", applied: false, why: "no point of the flow hit-tests to the pane" });
+    }
+    if (step.op === "zoom") {
+      const rect = view.dom.getBoundingClientRect();
+      return log({ op: "zoom", kind: "wheel", applied: true, at: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }, deltaY: step.deltaY ?? -240 });
+    }
+    return log({ op: step.op, kind: "none", applied: false, why: "op not part of the xyflow pointer driver" });
+  }
+
+  const isLifecycle = (e) => e.name === "onInit" || e.name === "oninit";
+  const isStoreObservation = (e) => e.name.startsWith("store.");
+  // Store-observation channel: within one segment (mount, then each pointer
+  // op), the distinct (collection, kind, id) entries in first-occurrence
+  // order. How many store updates carry a given change follows React/Svelte
+  // render batching (measured on react-layouting: onInit's layout and the
+  // ResizeObserver measurements land in one or two store updates between
+  // identical mounts), so repetitions inside a segment are not compared.
+  function normaliseStoreChannel(entries) {
+    const seen = new Set();
+    const out = [];
+    for (const e of entries) {
+      const key = JSON.stringify([e.segment, e.name, e.payload]);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(e);
+    }
+    return out;
+  }
+
+  function xyExtract() {
+    const serialize = window.__xyflowSerializeNative;
+    if (typeof serialize !== "function") throw new Error("xyflow probe serializer missing from the example bundle");
+    const flows = activeStores();
+    const bounds = {}; const domBounds = {}; const edgePaths = {};
+    flows.forEach((entry, f) => {
+      const view = flowView(entry);
+      const rect = view.dom.getBoundingClientRect();
+      for (const n of view.state.nodes || []) {
+        const internal = view.state.nodeLookup.get(n.id);
+        if (internal && internal.internals && internal.internals.positionAbsolute) {
+          const abs = internal.internals.positionAbsolute;
+          bounds[`${f}:${n.id}`] = { x: abs.x, y: abs.y, width: (internal.measured && internal.measured.width) || 0, height: (internal.measured && internal.measured.height) || 0 };
+        }
+        const el = view.dom.querySelector(`.react-flow__node[data-id="${CSS.escape(n.id)}"], .svelte-flow__node[data-id="${CSS.escape(n.id)}"]`);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          domBounds[`${f}:${n.id}`] = { x: r.x - rect.x, y: r.y - rect.y, width: r.width, height: r.height };
+        }
+      }
+      for (const e of view.state.edges || []) {
+        const holder = view.dom.querySelector(`.react-flow__edge[data-id="${CSS.escape(e.id)}"], .svelte-flow__edge[data-id="${CSS.escape(e.id)}"]`);
+        if (!holder) continue;
+        const p = holder.querySelector("path.react-flow__edge-path, path.svelte-flow__edge-path") || holder.querySelector("path");
+        if (p && p.getAttribute("d")) edgePaths[`${f}:${e.id}`] = p.getAttribute("d");
+      }
+    });
+    return {
+      model: { flows: flows.map((entry) => serialize(entry.getState())) },
+      // Three channels, each in its real emission order, concatenated:
+      // callbacks, Svelte store observations (store.nodes/store.edges, run
+      // by deferred $effects), lifecycle callbacks (onInit/oninit). Their
+      // interleaving ACROSS channels is scheduler-dependent (measured: React
+      // onInit vs ResizeObserver measurements; Svelte $effect flush vs
+      // d3-zoom end timer), so it is not compared.
+      events: [
+        ...window.__xyHarness.journal.filter((e) => !isLifecycle(e) && !isStoreObservation(e)),
+        ...normaliseStoreChannel(window.__xyHarness.journal.filter(isStoreObservation)),
+        ...window.__xyHarness.journal.filter(isLifecycle),
+      ],
+      geometry: { bounds, waypoints: {}, viewbox: unionViewbox(bounds), domBounds, edgePaths },
+      pixels: null,
+      opsLog: xy.mounted ? xy.mounted.opsLog : [],
+      warnings: (xy.mounted ? xy.mounted.opsLog : []).filter((o) => !o.applied && !o.ruleSkip).map((o) => `${o.op}: not applicable (${o.why})`),
+      skippedOps: [],
+    };
+  }
+
+  // ------------------------------------------------------------- JointJS
+  // Frozen events->effects projection: tools/re-harness/contracts/
+  // jointjs-event-projection.json (§5.5, C6). This table mirrors it; the
+  // contract file is the normative source.
+  const JOINT_EFFECTS = {
+    add: "cell.add",
+    remove: "cell.remove",
+    "change:position": "cell.move",
+    "change:size": "cell.resize",
+    "change:attrs": "cell.attrs",
+    "change:source": "link.reconnect-source",
+    "change:target": "link.reconnect-target",
+    "change:vertices": "link.vertices",
+    "change:angle": "cell.rotate",
+    "change:z": "cell.zorder",
+    reset: "graph.reset",
+    sort: "graph.sort",
+  };
+
+  async function runJoint(fixture, ops) {
+    const joint = window.__oracleJoint;
+    if (!joint || !joint.dia) throw new Error("@joint/core bundle not loaded (bundles/joint.js missing)");
+    const { dia, shapes } = joint;
+    const container = makeHost();
+    const events = [];
+    const skippedOps = [];
+    const graph = new dia.Graph({}, { cellNamespace: shapes });
+    graph.on("all", (name, cell) => {
+      const id = cell && (cell.id || (typeof cell.get === "function" ? cell.get("id") : ""));
+      const payload = { elementId: id ? String(id) : "", effect: JOINT_EFFECTS[String(name)] || "other" };
+      // Keep the significant changed values (C6), unrounded.
+      if (cell && typeof cell.position === "function" && String(name) === "change:position") {
+        const p = cell.position(); payload.x = (p.x); payload.y = (p.y);
+      }
+      if (cell && typeof cell.size === "function" && String(name) === "change:size") {
+        const s = cell.size(); payload.width = (s.width); payload.height = (s.height);
+      }
+      if (cell && typeof cell.attr === "function" && String(name) === "change:attrs") {
+        // The full new attrs object of the cell (native JointJS value).
+        payload.attrs = JSON.parse(JSON.stringify(cell.get("attrs") || {}));
+      }
+      if (cell && typeof cell.get === "function" && (String(name) === "change:source" || String(name) === "change:target")) {
+        const end = cell.get(String(name) === "change:source" ? "source" : "target");
+        payload[String(name) === "change:source" ? "source" : "target"] = end && end.id ? String(end.id) : "";
+      }
+      events.push({ name: String(name), payload });
+    });
+    const paper = new dia.Paper({
+      el: container,
+      model: graph,
+      width: 1024,
+      height: 600,
+      cellViewNamespace: shapes,
+      async: false,
+      gridSize: 1,
+      background: { color: "#ffffff" },
+    });
+    keepHost(container, () => paper.remove());
+    // The fixture input is a native dia.Graph JSON, loaded verbatim.
+    graph.fromJSON(JSON.parse(JSON.stringify(fixture.input)));
+    // Selftest-only real rendering mutation (C3): through the library API.
+    if (fixture.renderMutation && fixture.renderMutation.cellId) {
+      const cell = graph.getCell(fixture.renderMutation.cellId);
+      if (cell && typeof cell.attr === "function") cell.attr("body/fill", fixture.renderMutation.fill || "#ff0000");
+    }
+    await nextFrames();
+    const skip = (step, why) => {
+      skippedOps.push({ op: step.op, elementId: step.elementId || "", why });
+    };
+    for (const step of (ops && ops.steps) || []) {
+      // @joint/core 4.3.3 ships no CommandManager (that is JointJS+):
+      // undo/redo has NO native mechanism in this oracle and is therefore
+      // removed from the JointJS gate (C4) — never fabricated here. A
+      // scenario scripting it records a skip, which fails the scenario.
+      if (step.op === "undo" || step.op === "redo") {
+        skip(step, "no native undo/redo in @joint/core (no CommandManager); removed from the JointJS gate");
+        continue;
+      }
+      if (step.op === "move") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell || typeof cell.position !== "function") { skip(step, "cell not found"); continue; }
+        cell.position(step.x ?? cell.position().x, step.y ?? cell.position().y);
+      } else if (step.op === "resize") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell || typeof cell.resize !== "function") { skip(step, "cell not found"); continue; }
+        cell.resize(step.width ?? cell.size().width, step.height ?? cell.size().height);
+      } else if (step.op === "create") {
+        const Rect = (shapes.standard && shapes.standard.Rectangle) || dia.Element;
+        const el = new Rect({ id: step.elementId, position: { x: step.x ?? 0, y: step.y ?? 0 }, size: { width: step.width ?? 100, height: step.height ?? 60 }, attrs: { label: { text: step.label || "" } } });
+        graph.addCell(el);
+      } else if (step.op === "connect") {
+        const Link = (shapes.standard && shapes.standard.Link) || dia.Link;
+        graph.addCell(new Link({ id: step.elementId, source: { id: step.sourceId }, target: { id: step.targetId } }));
+      } else if (step.op === "remove") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell) { skip(step, "cell not found"); continue; }
+        cell.remove();
+      } else if (step.op === "setLabel") {
+        const cell = graph.getCell(step.elementId);
+        if (!cell) { skip(step, "cell not found"); continue; }
+        cell.attr("label/text", step.label || "");
+      } else if (step.op === "setViewport" || step.op === "select" || step.op === "setType" || step.op === "reconnect") {
+        skip(step, "no native equivalent used by this harness op");
+      } else {
+        skip(step, "unsupported op");
+      }
+    }
+    await nextFrames();
+    // Model: the library's own graph.toJSON(), compared after key-sorted
+    // canonicalisation only (no renaming, no reinterpretation).
+    const json = graph.toJSON();
+    // Geometry: rendered element bboxes (paper views) and link route points
+    // computed by the library (source point, vertices, target point).
+    const bounds = {};
+    const waypoints = {};
+    for (const cell of graph.getCells()) {
+      if (cell.isLink()) {
+        const pts = [];
+        try {
+          const view = paper.findViewByModel(cell);
+          const sp = cell.getSourcePoint();
+          const tp = cell.getTargetPoint();
+          if (view && Array.isArray(view.route)) {
+            if (view.sourcePoint) pts.push({ x: (view.sourcePoint.x), y: (view.sourcePoint.y) });
+            for (const v of view.route) pts.push({ x: (v.x), y: (v.y) });
+            if (view.targetPoint) pts.push({ x: (view.targetPoint.x), y: (view.targetPoint.y) });
+          } else {
+            if (sp) pts.push({ x: (sp.x), y: (sp.y) });
+            if (tp) pts.push({ x: (tp.x), y: (tp.y) });
+          }
+        } catch (err) { /* link without both ends */ }
+        waypoints[cell.id] = pts;
+      } else {
+        const view = paper.findViewByModel(cell);
+        const b = view && typeof view.getBBox === "function" ? view.getBBox() : cell.getBBox();
+        bounds[cell.id] = { x: (b.x), y: (b.y), width: (b.width), height: (b.height) };
+      }
+    }
+    const viewbox = unionViewbox(bounds);
+    const scale = typeof paper.scale === "function" ? paper.scale() : { sx: 1 };
+    return {
+      model: json,
+      events,
+      geometry: { bounds, waypoints, viewbox },
+      pixels: null,
+      viewport: { x: 0, y: 0, zoom: (scale.sx || 1) },
+      warnings: [],
+      skippedOps,
+    };
+  }
+
+  window.__oracleStatus = {
+    bpmn: typeof window.__oracleBpmn !== "undefined",
+    jointjs: typeof window.__oracleJoint !== "undefined",
+  };
+  window.__reHarness = {
+    runBpmn,
+    xyLoad,
+    xyMount,
+    xyPlan,
+    xyFlowCount,
+    xySettle,
+    xyExtract,
+    runJoint,
+  };
+  window.__harnessReady = (async () => {
+    try { await document.fonts.ready; } catch (err) { /* fonts are not gated */ }
+    return window.__oracleStatus;
+  })();
+</script>
+</body>
+</html>

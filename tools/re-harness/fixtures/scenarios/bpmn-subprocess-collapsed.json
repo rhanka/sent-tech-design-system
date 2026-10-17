@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"bpmn-subprocess-collapsed-selfparity","library":"bpmn","fixtures":["bpmn/subprocess-collapsed.json"],"ops":"bpmn/subprocess-collapsed-edit.ops.json","exercises":["RE.renderer.bpmn-subprocess"],"comparators":["model","events","geometry","pixels"]}
