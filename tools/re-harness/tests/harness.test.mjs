@@ -199,3 +199,11 @@ test("archived gate reports are real and either green or unknown by fixture only
   // No synthetic report survives (the synthetic engines were removed).
   for (const name of fs.readdirSync(RUNS_DIR)) assert.ok(!name.startsWith("synthetic-"), name);
 });
+
+test("the JointJS journal projection in the page equals the frozen §5.5 contract", () => {
+  const contract = JSON.parse(fs.readFileSync(path.resolve(HERE, "..", "contracts", "jointjs-event-projection.json"), "utf8"));
+  const page = fs.readFileSync(path.resolve(HERE, "..", "harness-page.html"), "utf8");
+  const block = page.slice(page.indexOf("const JOINT_EFFECTS = {"), page.indexOf("};", page.indexOf("const JOINT_EFFECTS = {")));
+  const table = Object.fromEntries([...block.matchAll(/(?:"([^"]+)"|([A-Za-z]+)):\s*"([^"]+)"/g)].map((m) => [m[1] || m[2], m[3]]));
+  assert.deepEqual(table, Object.fromEntries(contract.rules.map((r) => [r.match, r.effect])));
+});
