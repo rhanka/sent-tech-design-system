@@ -1,0 +1,4 @@
+# Real-oracle browser bundles built by build-bundles.mjs from
+# RE_ORACLES_DIR (outside the repository). Build artifacts: the build
+# script is committed, the bundles never are.
+bundles/

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-task-edit-undo",
+  "steps": [
+    {
+      "op": "create",
+      "elementId": "extra1",
+      "type": "bpmn:ServiceTask",
+      "x": 480,
+      "y": 78,
+      "width": 110,
+      "height": 80,
+      "label": "Extra"
+    },
+    {
+      "op": "move",
+      "elementId": "extra1",
+      "x": 500,
+      "y": 90
+    },
+    {
+      "op": "connect",
+      "elementId": "fx",
+      "sourceId": "extra1",
+      "targetId": "end",
+      "waypoints": [
+        {
+          "x": 610,
+          "y": 130
+        },
+        {
+          "x": 700,
+          "y": 130
+        }
+      ]
+    },
+    {
+      "op": "setLabel",
+      "elementId": "extra1",
+      "label": "Extra renamed"
+    },
+    {
+      "op": "undo"
+    },
+    {
+      "op": "undo"
+    },
+    {
+      "op": "redo"
+    },
+    {
+      "op": "redo"
+    }
+  ]
+}

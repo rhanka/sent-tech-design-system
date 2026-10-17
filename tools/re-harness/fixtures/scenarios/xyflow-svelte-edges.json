@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-edges-selfparity","library":"xyflow","fixtures":["xyflow/svelte-edges.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-edges"],"comparators":["model","events","geometry","pixels"]}

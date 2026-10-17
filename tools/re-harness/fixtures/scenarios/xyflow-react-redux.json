@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-redux-selfparity","library":"xyflow","fixtures":["xyflow/react-redux.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-redux"],"comparators":["model","events","geometry","pixels"]}

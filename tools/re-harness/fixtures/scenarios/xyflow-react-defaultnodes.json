@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-defaultnodes-selfparity","library":"xyflow","fixtures":["xyflow/react-defaultnodes.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-defaultnodes"],"comparators":["model","events","geometry","pixels"]}

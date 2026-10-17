@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-add-node-on-drop",
+  "library": "xyflow",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-add-node-on-drop, mounted with its own code",
+  "input": {
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/add-node-on-drop/+page.svelte"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  },
+  "runnable": {
+    "status": "runnable"
+  }
+}

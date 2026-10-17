@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-node-toolbar-selfparity","library":"xyflow","fixtures":["xyflow/svelte-node-toolbar.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-node-toolbar"],"comparators":["model","events","geometry","pixels"]}

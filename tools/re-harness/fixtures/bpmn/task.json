@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-task",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Single user task with start/end and a labelled sequence flow",
+  "input": {
+    "xmlFile": "bpmn/task.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

@@ -230,6 +230,8 @@ WebGL2 has no SVG path, gradient, pattern or filter engine, so the display list 
 
 ## 5. Differential parity harness
 
+Implementation (Lot L0): the harness described in this section is built as the single shared harness in [tools/re-harness/README.md](../tools/re-harness/README.md) (fixture schemas, comparators, coverage verifier, frozen contracts). Read that README for the runner status per library; this section remains the normative design.
+
 ### 5.1 Principle
 
 The same inputs are played on JointJS (@joint/core 4.3.3, from the pinned checkout) and on our implementation, and the observable outputs are compared: resulting model (canonical serialisation), emitted event sequence, computed geometry, and — only where geometry cannot decide — pixels. A lot is done when its inventory rows move to `covered` on the strength of harness passes, not on code presence.

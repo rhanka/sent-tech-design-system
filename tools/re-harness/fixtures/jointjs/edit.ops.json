@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "jointjs-edit",
+  "steps": [
+    {
+      "op": "move",
+      "elementId": "r2",
+      "x": 320,
+      "y": 80
+    },
+    {
+      "op": "setLabel",
+      "elementId": "r2",
+      "label": "End renamed"
+    },
+    {
+      "op": "create",
+      "elementId": "r3",
+      "type": "standard.Rectangle",
+      "x": 300,
+      "y": 220,
+      "width": 140,
+      "height": 60,
+      "label": "Extra"
+    },
+    {
+      "op": "connect",
+      "elementId": "l2",
+      "sourceId": "r2",
+      "targetId": "r3"
+    },
+    {
+      "op": "remove",
+      "elementId": "l2"
+    }
+  ]
+}

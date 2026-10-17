@@ -349,6 +349,8 @@ different initial document.
 
 ## 6. Differential parity harness
 
+Implementation (Lot L0): the harness described in this section is built as the single shared harness in [tools/re-harness/README.md](../tools/re-harness/README.md) (fixture schemas, comparators, coverage verifier, frozen contracts). Read that README for the runner status per library; this section remains the normative design.
+
 Same inputs, both implementations, compared outputs:
 
 - **Fixtures**: serialised flow documents (nodes/edges/viewport/options),

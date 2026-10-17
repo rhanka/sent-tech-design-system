@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/fixture-model.schema.json",
+  "title": "RE harness fixture envelope (v1)",
+  "description": "Envelope of one fixture: identity, library, the reference library's NATIVE input, and run options. It describes no diagram model: the harness defines no semantic schema or canonical form of its own (tools/re-harness/README.md, section Model). The diagram metamodel is packages/diagram-core (DiagramState); BPMN enters it through the A' codec of spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md. input is passed to the reference library verbatim: a complete BPMN 2.0 XML file with BPMNDI for bpmn-js importXML, the pinned xyflow example module itself, or a dia.Graph JSON for JointJS graph.fromJSON.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "library",
+    "kind",
+    "input"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "library": {
+      "enum": [
+        "bpmn",
+        "xyflow",
+        "jointjs"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "bpmn-xml",
+        "xyflow-example",
+        "jointjs-graph-json"
+      ],
+      "description": "Which native input format `input` carries."
+    },
+    "title": {
+      "type": "string"
+    },
+    "input": {
+      "type": "object",
+      "description": "Reference-native input, never a harness model. bpmn-xml: { xmlFile } naming a .bpmn file under fixtures/, loaded verbatim by importXML. xyflow-example: { flavour, example } naming the root module of a pinned example under .ds-scrap/re-sources/xyflow/examples, compiled with its own code into an oracle bundle and mounted as the example app does. jointjs-graph-json: { cells } passed verbatim to graph.fromJSON."
+    },
+    "idCorrespondence": {
+      "type": "object",
+      "description": "Declared id remapping between the two compared runs (SPEC_RE_BPMN_JS_PARITY §8.3 point 2). Must be a bijection; enforced by validateFixtures and compareEvents.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "renderMutation": {
+      "type": "object",
+      "description": "Selftest only: a real rendering mutation applied through the library API before pixel capture.",
+      "properties": {
+        "cellId": {
+          "type": "string"
+        },
+        "fill": {
+          "type": "string"
+        }
+      }
+    },
+    "viewport": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "zoom": {
+          "type": "number"
+        }
+      }
+    },
+    "pixelThreshold": {
+      "type": "object",
+      "description": "Per-fixture pixel secondary threshold (SPEC_RE_JOINTJS_PARITY §5.3: fixed per fixture).",
+      "properties": {
+        "maxMismatchRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "perChannelDelta": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 255
+        }
+      }
+    },
+    "runnable": {
+      "type": "object",
+      "description": "xyflow examples: whether the pinned example can run outside its application. status=unknown fixtures are never run green: the gate reports them unknown with the precise cause.",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "runnable",
+            "unknown"
+          ]
+        },
+        "cause": {
+          "type": "string"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

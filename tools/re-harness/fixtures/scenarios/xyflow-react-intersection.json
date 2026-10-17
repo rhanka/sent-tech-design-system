@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-intersection-selfparity","library":"xyflow","fixtures":["xyflow/react-intersection.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-intersection"],"comparators":["model","events","geometry","pixels"]}

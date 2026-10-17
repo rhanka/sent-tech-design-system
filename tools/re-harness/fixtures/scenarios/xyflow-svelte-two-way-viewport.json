@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-two-way-viewport-selfparity","library":"xyflow","fixtures":["xyflow/svelte-two-way-viewport.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.svelte-two-way-viewport"],"comparators":["model","events","geometry","pixels"]}

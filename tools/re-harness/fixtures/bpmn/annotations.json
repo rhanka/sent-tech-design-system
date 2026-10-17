@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-annotations",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Task annotated by a text annotation inside a group",
+  "input": {
+    "xmlFile": "bpmn/annotations.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

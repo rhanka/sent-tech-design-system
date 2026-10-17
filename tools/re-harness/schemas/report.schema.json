@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/report.schema.json",
+  "title": "RE harness run report (v1)",
+  "description": "One JSON document per run, archived under docs/re/harness-runs/. Small and deterministic: no timestamps, no absolute paths, keys sorted. Gate reports (self-parity, xyflow-examples, selftest) carry oracle=real with the oracle library versions read from their package.json. covered is reserved for green candidate-against-reference verdicts; self-parity verdicts never count as covered (SPEC_RE_BPMN_JS_PARITY §8.1). At L0 the candidate side is unsupported (candidate).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "mode",
+    "seed",
+    "scenarios"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "mode": {
+      "enum": [
+        "self-parity",
+        "xyflow-examples",
+        "differential",
+        "selftest",
+        "coverage"
+      ]
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "browser": {
+      "type": "string"
+    },
+    "oracle": {
+      "enum": [
+        "real"
+      ],
+      "description": "real = produced by the pinned library itself."
+    },
+    "oracleVersions": {
+      "type": "object",
+      "description": "Versions read from the oracle packages' own package.json files."
+    },
+    "candidate": {
+      "type": "object",
+      "description": "Candidate status per library. At L0: unsupported, with the lot that delivers the DiagramState path.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "verdict",
+          "cause"
+        ],
+        "properties": {
+          "verdict": {
+            "enum": [
+              "unsupported"
+            ]
+          },
+          "cause": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "verdict"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "library": {
+            "type": "string"
+          },
+          "oracle": {
+            "enum": [
+              "real"
+            ]
+          },
+          "oracleVersion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "verdict": {
+            "enum": [
+              "pass",
+              "fail",
+              "unknown",
+              "unsupported",
+              "deviation",
+              "not-applicable"
+            ],
+            "description": "deviation: an upstream bug recorded in tools/re-harness/deviations.json (source path:line) happened as recorded — excluded from the gate. not-applicable: the example mounts no flow, nothing to compare."
+          },
+          "cause": {
+            "type": "string"
+          },
+          "causeKind": {
+            "enum": [
+              "example-unrunnable",
+              "example-error",
+              "example-without-flow",
+              "upstream-deviation",
+              "infrastructure",
+              "run-error"
+            ],
+            "description": "Why a scenario is unknown. Only the example-* kinds (a cause that belongs to the example) are acceptable in an archived gate report, and only when listed explicitly by the test."
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skippedOps": {
+            "type": "array"
+          },
+          "comparators": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "verdict"
+              ],
+              "properties": {
+                "verdict": {
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "unknown"
+                  ]
+                },
+                "detail": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "opsApplied": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deviation": {
+            "type": "string",
+            "description": "id of the deviations.json entry"
+          }
+        }
+      }
+    },
+    "xyflow": {
+      "type": "object",
+      "description": "xyflow-examples.json only.",
+      "required": [
+        "executed",
+        "failed",
+        "excluded",
+        "outputs"
+      ],
+      "properties": {
+        "executed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failed": {
+          "type": "array",
+          "description": "scenarios that are fail or unknown (gate not green)"
+        },
+        "excluded": {
+          "type": "array",
+          "description": "scenarios excluded by deviations.json (deviation) or not-applicable.json (not-applicable)"
+        },
+        "outputs": {
+          "type": "object",
+          "description": "per executed scenario: model SHA-256, node/edge counts per flow, rendered edge paths, ops applied"
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
