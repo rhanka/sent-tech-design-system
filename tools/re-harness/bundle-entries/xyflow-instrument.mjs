@@ -90,7 +90,10 @@ export function unregisterStore(index) {
 }
 
 export function journal(flow, name, args) {
-  registry().journal.push({ name, payload: { flow, args: serializeNative(args) } });
+  const reg = registry();
+  // segment: index of the pointer op being played (0 = mount), set by the
+  // harness page; used to normalise the store-observation channel.
+  reg.journal.push({ name, segment: reg.segment || 0, payload: { flow, args: serializeNative(args) } });
 }
 
 export function nextFlowIndex() {

@@ -25,7 +25,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "20 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -56,7 +56,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "20 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -89,7 +89,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "80 events equal (names, payload keys, remapped values)",
+          "detail": "48 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -134,7 +134,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "37 events equal (names, payload keys, remapped values)",
+          "detail": "29 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -165,7 +165,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "44 events equal (names, payload keys, remapped values)",
+          "detail": "37 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -196,7 +196,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "30 events equal (names, payload keys, remapped values)",
+          "detail": "22 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -227,7 +227,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "32 events equal (names, payload keys, remapped values)",
+          "detail": "24 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -258,7 +258,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "28 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -289,7 +289,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "40 events equal (names, payload keys, remapped values)",
+          "detail": "19 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -320,7 +320,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "36 events equal (names, payload keys, remapped values)",
+          "detail": "28 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -351,7 +351,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -384,7 +384,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -418,7 +418,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "28 events equal (names, payload keys, remapped values)",
+          "detail": "25 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -449,7 +449,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "3 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -482,7 +482,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "3 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -515,7 +515,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -546,7 +546,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -577,7 +577,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "28 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -641,7 +641,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "28 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -707,7 +707,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "45 events equal (names, payload keys, remapped values)",
+          "detail": "41 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -738,7 +738,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "30 events equal (names, payload keys, remapped values)",
+          "detail": "22 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -769,7 +769,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "55 events equal (names, payload keys, remapped values)",
+          "detail": "51 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -800,7 +800,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -833,7 +833,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "343 events equal (names, payload keys, remapped values)",
+          "detail": "334 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -864,7 +864,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -898,7 +898,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "27 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -935,7 +935,7 @@
           "verdict": "pass"
         },
         "events": {
-          "detail": "37 events equal (names, payload keys, remapped values)",
+          "detail": "29 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1031,7 +1031,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "29 events equal (names, payload keys, remapped values)",
+          "detail": "22 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1062,7 +1062,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "62 events equal (names, payload keys, remapped values)",
+          "detail": "31 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1093,7 +1093,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "54 events equal (names, payload keys, remapped values)",
+          "detail": "35 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1124,7 +1124,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "28 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1155,7 +1155,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "42 events equal (names, payload keys, remapped values)",
+          "detail": "34 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1186,7 +1186,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "68 events equal (names, payload keys, remapped values)",
+          "detail": "46 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1221,7 +1221,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "220 events equal (names, payload keys, remapped values)",
+          "detail": "212 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1252,7 +1252,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "49 events equal (names, payload keys, remapped values)",
+          "detail": "41 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1283,7 +1283,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "20 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1316,7 +1316,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1347,7 +1347,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "22 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1380,7 +1380,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1411,7 +1411,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "64 events equal (names, payload keys, remapped values)",
+          "detail": "61 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1442,7 +1442,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "35 events equal (names, payload keys, remapped values)",
+          "detail": "24 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1473,7 +1473,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "20 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1504,7 +1504,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "34 events equal (names, payload keys, remapped values)",
+          "detail": "26 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1535,7 +1535,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1566,7 +1566,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "22 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1599,7 +1599,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "16 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1631,7 +1631,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1270 events equal (names, payload keys, remapped values)",
+          "detail": "1262 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1662,7 +1662,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "52 events equal (names, payload keys, remapped values)",
+          "detail": "44 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1693,7 +1693,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "38 events equal (names, payload keys, remapped values)",
+          "detail": "31 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1724,7 +1724,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1755,7 +1755,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "40 events equal (names, payload keys, remapped values)",
+          "detail": "32 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1788,7 +1788,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1821,7 +1821,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1879,7 +1879,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "32 events equal (names, payload keys, remapped values)",
+          "detail": "24 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1910,7 +1910,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "38 events equal (names, payload keys, remapped values)",
+          "detail": "28 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1941,7 +1941,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1972,7 +1972,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "25 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2005,7 +2005,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "34 events equal (names, payload keys, remapped values)",
+          "detail": "26 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2036,7 +2036,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "26 events equal (names, payload keys, remapped values)",
+          "detail": "18 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2067,7 +2067,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "24 events equal (names, payload keys, remapped values)",
+          "detail": "17 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2100,7 +2100,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "38 events equal (names, payload keys, remapped values)",
+          "detail": "30 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2131,7 +2131,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "17 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2164,7 +2164,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "10 events equal (names, payload keys, remapped values)",
+          "detail": "2 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2197,7 +2197,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2228,7 +2228,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "10 events equal (names, payload keys, remapped values)",
+          "detail": "2 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2261,7 +2261,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "3 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2295,7 +2295,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2326,7 +2326,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "21 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2357,7 +2357,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2388,7 +2388,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2419,7 +2419,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "12 events equal (names, payload keys, remapped values)",
+          "detail": "4 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2452,7 +2452,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "27 events equal (names, payload keys, remapped values)",
+          "detail": "19 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2483,7 +2483,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "22 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2514,7 +2514,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "16 events equal (names, payload keys, remapped values)",
+          "detail": "8 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2578,7 +2578,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "41 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2611,7 +2611,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2642,7 +2642,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "23 events equal (names, payload keys, remapped values)",
+          "detail": "15 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2673,7 +2673,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "12 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2704,7 +2704,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2736,7 +2736,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1260 events equal (names, payload keys, remapped values)",
+          "detail": "1252 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2767,7 +2767,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "21 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2798,7 +2798,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "11 events equal (names, payload keys, remapped values)",
+          "detail": "3 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2831,7 +2831,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "14 events equal (names, payload keys, remapped values)",
+          "detail": "6 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2862,7 +2862,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "15 events equal (names, payload keys, remapped values)",
+          "detail": "7 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2893,7 +2893,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2924,7 +2924,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2955,7 +2955,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "13 events equal (names, payload keys, remapped values)",
+          "detail": "5 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {

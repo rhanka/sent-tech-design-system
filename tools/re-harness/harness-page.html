@@ -387,6 +387,7 @@
 
   function xyPlan(step, flowIndex = 0) {
     const flows = activeStores();
+    if (flowIndex === 0) window.__xyHarness.segment = (window.__xyHarness.segment || 0) + 1;
     const log = (entry) => { const e = { flow: flowIndex, ...entry }; xy.mounted.opsLog.push(e); return e; };
     if (!flows[flowIndex]) return log({ op: step.op, kind: "none", applied: false, why: "no such flow mounted" });
     const view = flowView(flows[flowIndex]);
@@ -467,6 +468,23 @@
 
   const isLifecycle = (e) => e.name === "onInit" || e.name === "oninit";
   const isStoreObservation = (e) => e.name.startsWith("store.");
+  // Store-observation channel: within one segment (mount, then each pointer
+  // op), the distinct (collection, kind, id) entries in first-occurrence
+  // order. How many store updates carry a given change follows React/Svelte
+  // render batching (measured on react-layouting: onInit's layout and the
+  // ResizeObserver measurements land in one or two store updates between
+  // identical mounts), so repetitions inside a segment are not compared.
+  function normaliseStoreChannel(entries) {
+    const seen = new Set();
+    const out = [];
+    for (const e of entries) {
+      const key = JSON.stringify([e.segment, e.name, e.payload]);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(e);
+    }
+    return out;
+  }
 
   function xyExtract() {
     const serialize = window.__xyflowSerializeNative;
@@ -505,7 +523,7 @@
       // d3-zoom end timer), so it is not compared.
       events: [
         ...window.__xyHarness.journal.filter((e) => !isLifecycle(e) && !isStoreObservation(e)),
-        ...window.__xyHarness.journal.filter(isStoreObservation),
+        ...normaliseStoreChannel(window.__xyHarness.journal.filter(isStoreObservation)),
         ...window.__xyHarness.journal.filter(isLifecycle),
       ],
       geometry: { bounds, waypoints: {}, viewbox: unionViewbox(bounds), domBounds, edgePaths },
