@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "jointjs-basic",
+  "library": "jointjs",
+  "kind": "jointjs-graph",
+  "title": "Two standard rectangles linked by a straight connector",
+  "model": {
+    "cells": [
+      { "id": "r1", "type": "standard.Rectangle", "position": { "x": 60, "y": 60 }, "size": { "width": 140, "height": 60 }, "attrs": { "label": { "text": "Start" } } },
+      { "id": "r2", "type": "standard.Rectangle", "position": { "x": 300, "y": 60 }, "size": { "width": 140, "height": 60 }, "attrs": { "label": { "text": "End" } } },
+      { "id": "l1", "type": "standard.Link", "source": "r1", "target": "r2", "waypoints": [{ "x": 200, "y": 90 }, { "x": 300, "y": 90 }] }
+    ],
+    "elements": [
+      { "id": "r1", "type": "standard.Rectangle", "x": 60, "y": 60, "width": 140, "height": 60, "label": "Start" },
+      { "id": "r2", "type": "standard.Rectangle", "x": 300, "y": 60, "width": 140, "height": 60, "label": "End" }
+    ],
+    "flows": [
+      { "id": "l1", "source": "r1", "target": "r2", "waypoints": [{ "x": 200, "y": 90 }, { "x": 300, "y": 90 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

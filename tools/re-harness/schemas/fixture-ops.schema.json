@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/fixture-ops.schema.json",
+  "title": "RE harness fixture: operation script (v1)",
+  "description": "Ordered model operations played identically on both sides. undo/redo are first-class so undo chains are exercised (SPEC_RE_BPMN_JS_PARITY §8.2).",
+  "type": "object",
+  "required": ["schemaVersion", "id", "steps"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["op"],
+        "properties": {
+          "op": {
+            "enum": [
+              "create", "move", "resize", "connect", "reconnect", "remove",
+              "setLabel", "setType", "undo", "redo", "setViewport", "select"
+            ]
+          },
+          "elementId": { "type": "string" },
+          "type": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "sourceId": { "type": "string" },
+          "targetId": { "type": "string" },
+          "label": { "type": "string" },
+          "waypoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

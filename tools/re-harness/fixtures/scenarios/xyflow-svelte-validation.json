@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-validation-selfparity","library":"xyflow","fixtures":["xyflow/svelte-validation.json"],"exercises":["examples.svelte-validation"],"comparators":["model","events","geometry","pixels"]}

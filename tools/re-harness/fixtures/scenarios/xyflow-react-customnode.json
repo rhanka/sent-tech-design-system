@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-customnode-selfparity","library":"xyflow","fixtures":["xyflow/react-customnode.json"],"exercises":["examples.react-customnode"],"comparators":["model","events","geometry","pixels"]}

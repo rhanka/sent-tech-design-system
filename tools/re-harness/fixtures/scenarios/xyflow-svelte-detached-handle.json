@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-detached-handle-selfparity","library":"xyflow","fixtures":["xyflow/svelte-detached-handle.json"],"exercises":["examples.svelte-detached-handle"],"comparators":["model","events","geometry","pixels"]}

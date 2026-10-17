@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-drag-n-drop-selfparity","library":"xyflow","fixtures":["xyflow/svelte-drag-n-drop.json"],"exercises":["examples.svelte-drag-n-drop"],"comparators":["model","events","geometry","pixels"]}

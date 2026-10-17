@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-useonselectionchange-selfparity","library":"xyflow","fixtures":["xyflow/react-useonselectionchange.json"],"exercises":["examples.react-useonselectionchange"],"comparators":["model","events","geometry","pixels"]}

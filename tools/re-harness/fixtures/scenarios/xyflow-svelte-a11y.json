@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-a11y-selfparity","library":"xyflow","fixtures":["xyflow/svelte-a11y.json"],"exercises":["examples.svelte-a11y"],"comparators":["model","events","geometry","pixels"]}

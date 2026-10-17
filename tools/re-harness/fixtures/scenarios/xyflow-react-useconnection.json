@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-useconnection-selfparity","library":"xyflow","fixtures":["xyflow/react-useconnection.json"],"exercises":["examples.react-useconnection"],"comparators":["model","events","geometry","pixels"]}

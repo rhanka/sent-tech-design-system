@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-overview",
+  "library": "xyflow",
+  "kind": "xyflow-graph",
+  "title": "xyflow example fixture for examples.react-overview",
+  "model": {
+    "nodes": [
+      {
+        "id": "n1",
+        "type": "default",
+        "position": {
+          "x": 45,
+          "y": 40
+        },
+        "data": {
+          "label": "One"
+        },
+        "width": 120,
+        "height": 44
+      },
+      {
+        "id": "n2",
+        "type": "default",
+        "position": {
+          "x": 240,
+          "y": 145
+        },
+        "data": {
+          "label": "Two"
+        },
+        "width": 120,
+        "height": 44
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "n1",
+        "target": "n2",
+        "waypoints": [
+          {
+            "x": 160,
+            "y": 62
+          },
+          {
+            "x": 240,
+            "y": 162
+          }
+        ]
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

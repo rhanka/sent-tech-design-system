@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-pools-lanes",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Pool with two lanes and a message flow across pools",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_pl\"><bpmn:collaboration id=\"c1\"><bpmn:participant id=\"pool1\"/><bpmn:participant id=\"pool2\"/><bpmn:messageFlow id=\"mf1\" sourceRef=\"t1\" targetRef=\"t2\"/></bpmn:collaboration></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "pool1", "type": "bpmn:Participant", "x": 40, "y": 40, "width": 600, "height": 250, "label": "Seller" },
+      { "id": "lane1", "type": "bpmn:Lane", "x": 70, "y": 40, "width": 570, "height": 125, "label": "Sales" },
+      { "id": "lane2", "type": "bpmn:Lane", "x": 70, "y": 165, "width": 570, "height": 125, "label": "Support" },
+      { "id": "t1", "type": "bpmn:Task", "x": 140, "y": 70, "width": 100, "height": 60, "label": "Quote" },
+      { "id": "pool2", "type": "bpmn:Participant", "x": 40, "y": 340, "width": 600, "height": 120, "label": "Buyer" },
+      { "id": "t2", "type": "bpmn:Task", "x": 140, "y": 370, "width": 100, "height": 60, "label": "Approve" }
+    ],
+    "flows": [
+      { "id": "mf1", "source": "t1", "target": "t2", "waypoints": [{ "x": 190, "y": 130 }, { "x": 190, "y": 370 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

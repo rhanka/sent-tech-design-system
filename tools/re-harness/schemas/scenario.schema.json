@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/scenario.schema.json",
+  "title": "RE harness scenario (v1)",
+  "description": "A scenario names the inventory entries it exercises; the coverage verifier unions them over all scenarios (SPEC_RE_BPMN_JS_PARITY §8.2, SPEC_RE_XYFLOW_PARITY §6 gate mechanics).",
+  "type": "object",
+  "required": ["schemaVersion", "id", "library", "fixtures", "exercises"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "library": { "enum": ["bpmn", "xyflow", "jointjs"] },
+    "fixtures": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "ops": { "type": "string" },
+    "pointer": { "type": "string" },
+    "exercises": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Inventory entry ids (e.g. RE.command.shape.create, examples.react-basic)."
+    },
+    "comparators": {
+      "type": "array",
+      "items": { "enum": ["model", "events", "geometry", "pixels"] }
+    }
+  },
+  "additionalProperties": false
+}

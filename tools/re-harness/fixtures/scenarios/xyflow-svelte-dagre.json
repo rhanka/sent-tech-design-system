@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-dagre-selfparity","library":"xyflow","fixtures":["xyflow/svelte-dagre.json"],"exercises":["examples.svelte-dagre"],"comparators":["model","events","geometry","pixels"]}

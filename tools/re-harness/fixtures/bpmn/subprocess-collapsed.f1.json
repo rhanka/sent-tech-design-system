@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-subprocess-collapsed",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Collapsed subprocess between start and end",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_sc\"><bpmn:process id=\"p1\"><bpmn:subProcess id=\"sub1\"/><bpmn:task id=\"after\"/></bpmn:process></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "sub1", "type": "bpmn:SubProcess", "x": 120, "y": 80, "width": 100, "height": 80, "label": "Collapsed" },
+      { "id": "after", "type": "bpmn:Task", "x": 300, "y": 80, "width": 100, "height": 80, "label": "After" }
+    ],
+    "flows": [
+      { "id": "fs", "source": "sub1", "target": "after", "waypoints": [{ "x": 220, "y": 120 }, { "x": 300, "y": 120 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

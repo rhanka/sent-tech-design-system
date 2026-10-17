@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-reset-selfparity","library":"xyflow","fixtures":["xyflow/svelte-reset.json"],"exercises":["examples.svelte-reset"],"comparators":["model","events","geometry","pixels"]}

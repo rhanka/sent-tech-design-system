@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-usenodesdata-selfparity","library":"xyflow","fixtures":["xyflow/react-usenodesdata.json"],"exercises":["examples.react-usenodesdata"],"comparators":["model","events","geometry","pixels"]}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-events",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Timer and message intermediate events on a task chain",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_ev\"><bpmn:process id=\"p1\"><bpmn:startEvent id=\"start\"/><bpmn:intermediateCatchEvent id=\"timer1\"><bpmn:timerEventDefinition/></bpmn:intermediateCatchEvent><bpmn:intermediateThrowEvent id=\"msg1\"><bpmn:messageEventDefinition/></bpmn:intermediateThrowEvent><bpmn:endEvent id=\"end\"/></bpmn:process></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "start", "type": "bpmn:StartEvent", "x": 80, "y": 100, "width": 36, "height": 36, "label": "" },
+      { "id": "timer1", "type": "bpmn:IntermediateCatchEvent", "x": 180, "y": 100, "width": 36, "height": 36, "label": "wait" },
+      { "id": "msg1", "type": "bpmn:IntermediateThrowEvent", "x": 280, "y": 100, "width": 36, "height": 36, "label": "notify" },
+      { "id": "end", "type": "bpmn:EndEvent", "x": 380, "y": 100, "width": 36, "height": 36, "label": "" }
+    ],
+    "flows": []
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

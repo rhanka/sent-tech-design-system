@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-nodetoolbar-selfparity","library":"xyflow","fixtures":["xyflow/react-nodetoolbar.json"],"exercises":["examples.react-nodetoolbar"],"comparators":["model","events","geometry","pixels"]}

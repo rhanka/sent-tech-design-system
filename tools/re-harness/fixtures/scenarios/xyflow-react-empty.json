@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-empty-selfparity","library":"xyflow","fixtures":["xyflow/react-empty.json"],"exercises":["examples.react-empty"],"comparators":["model","events","geometry","pixels"]}

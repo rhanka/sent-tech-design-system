@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/report.schema.json",
+  "title": "RE harness run report (v1)",
+  "description": "One JSON document per run, archived under docs/re/harness-runs/. Small and deterministic: no timestamps, no absolute paths, keys sorted. covered is reserved for green candidate-against-reference verdicts; self-parity verdicts never count as covered (SPEC_RE_BPMN_JS_PARITY §8.1).",
+  "type": "object",
+  "required": ["schemaVersion", "mode", "seed", "scenarios"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "mode": { "enum": ["self-parity", "differential", "selftest", "coverage"] },
+    "seed": { "type": "integer" },
+    "browser": { "type": "string" },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "verdict"],
+        "properties": {
+          "id": { "type": "string" },
+          "verdict": { "enum": ["pass", "fail", "unknown", "unsupported"] },
+          "comparators": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "verdict": { "enum": ["pass", "fail", "unknown"] },
+                "detail": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

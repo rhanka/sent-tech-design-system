@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-multisetnodes-selfparity","library":"xyflow","fixtures":["xyflow/react-multisetnodes.json"],"exercises":["examples.react-multisetnodes"],"comparators":["model","events","geometry","pixels"]}

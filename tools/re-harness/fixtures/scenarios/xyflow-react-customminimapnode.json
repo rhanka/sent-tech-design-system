@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-customminimapnode-selfparity","library":"xyflow","fixtures":["xyflow/react-customminimapnode.json"],"exercises":["examples.react-customminimapnode"],"comparators":["model","events","geometry","pixels"]}

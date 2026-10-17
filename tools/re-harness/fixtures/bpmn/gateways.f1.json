@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-gateways",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Exclusive gateway split and join around two tasks",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_gw\"><bpmn:process id=\"p1\"><bpmn:exclusiveGateway id=\"gw1\"/><bpmn:task id=\"ta\"/><bpmn:task id=\"tb\"/><bpmn:exclusiveGateway id=\"gw2\"/></bpmn:process></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "gw1", "type": "bpmn:ExclusiveGateway", "x": 150, "y": 95, "width": 50, "height": 50, "label": "" },
+      { "id": "ta", "type": "bpmn:Task", "x": 260, "y": 40, "width": 100, "height": 80, "label": "Path A" },
+      { "id": "tb", "type": "bpmn:Task", "x": 260, "y": 160, "width": 100, "height": 80, "label": "Path B" },
+      { "id": "gw2", "type": "bpmn:ExclusiveGateway", "x": 420, "y": 95, "width": 50, "height": 50, "label": "" }
+    ],
+    "flows": [
+      { "id": "fa", "source": "gw1", "target": "ta", "waypoints": [{ "x": 200, "y": 120 }, { "x": 260, "y": 80 }] },
+      { "id": "fb", "source": "gw1", "target": "tb", "waypoints": [{ "x": 200, "y": 120 }, { "x": 260, "y": 200 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

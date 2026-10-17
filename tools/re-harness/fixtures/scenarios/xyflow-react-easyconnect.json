@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-easyconnect-selfparity","library":"xyflow","fixtures":["xyflow/react-easyconnect.json"],"exercises":["examples.react-easyconnect"],"comparators":["model","events","geometry","pixels"]}

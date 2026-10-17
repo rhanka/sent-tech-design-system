@@ -1,0 +1,1 @@
+{ "schemaVersion": 1, "id": "jointjs-basic-selfparity", "library": "jointjs", "fixtures": ["jointjs/basic.f1.json"], "ops": "jointjs/edit-undo.ops.json", "exercises": ["jointjs:anchor:bottom", "jointjs:router:manhattan"], "comparators": ["model", "events", "geometry", "pixels"] }

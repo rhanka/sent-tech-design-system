@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "mode": "selftest",
+  "seed": 42,
+  "scenarios": [
+    {
+      "id": "injected-divergences",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "injected divergence detected"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "injected divergence detected"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "injected divergence detected"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "injected divergence detected"
+        }
+      }
+    }
+  ]
+}

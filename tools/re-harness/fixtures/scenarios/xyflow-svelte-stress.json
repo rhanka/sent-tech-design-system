@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-svelte-stress-selfparity","library":"xyflow","fixtures":["xyflow/svelte-stress.json"],"exercises":["examples.svelte-stress"],"comparators":["model","events","geometry","pixels"]}

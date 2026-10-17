@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-edgetypes-selfparity","library":"xyflow","fixtures":["xyflow/react-edgetypes.json"],"exercises":["examples.react-edgetypes"],"comparators":["model","events","geometry","pixels"]}

@@ -1,0 +1,2252 @@
+{
+  "schemaVersion": 1,
+  "mode": "self-parity",
+  "seed": 42,
+  "browser": "playwright-core",
+  "scenarios": [
+    {
+      "id": "bpmn-annotations-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-data-objects-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-events-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-gateways-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-pools-lanes-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-subprocess-collapsed-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-subprocess-expanded-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "bpmn-task-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "10 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "jointjs-basic-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "4 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-a11y-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-addnodeonedgedrop-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-backgrounds-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-basic-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-brokennodes-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-cancelconnection-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-clickdistance-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-colormode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-controlleduncontrolled-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-controlledviewport-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-customconnectionline-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-customminimapnode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-customnode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-defaultedgeoverwrite-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-defaultnodeoverwrite-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-defaultnodes-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-detachedhandle-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-devtools-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-draghandle-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-dragndrop-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-easyconnect-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-edgerenderer-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-edgerouting-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-edges-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-edgetoolbar-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-edgetypes-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-empty-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-figma-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-floatingedges-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-hidden-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-interaction-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-interactiveminimap-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-intersection-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-layouting-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-middlewares-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-movinghandles-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-multiflows-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-multisetnodes-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-noderesizer-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-nodeselectionbug-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-nodetoolbar-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-nodetypechange-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-nodetypesobjectchange-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-overview-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-provider-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-reconnectedge-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-redux-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-remount-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-saverestore-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-setnodesbatching-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-stress-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-subflow-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-switch-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-touchdevice-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-undirectional-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-updatenode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-useconnection-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-usekeypress-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-usenodeconnections-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-usenodesdata-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-usenodesinit-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-useonselectionchange-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-usereactflow-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-useupdatenodeinternals-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-validation-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-react-zindexmode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-a11y-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-add-node-on-drop-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-color-mode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-custom-connection-line-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-custom-minimap-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-customnode-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-dagre-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-detached-handle-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-drag-n-drop-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-edge-toolbar-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-edges-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-figma-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-handle-connect-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-interaction-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-intersections-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-node-resizer-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-node-toolbar-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-overview-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-reset-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-stress-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-subflows-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-two-way-viewport-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-unmount-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-usenodesdata-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-usesvelteflow-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-useupdatenodeinternals-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    },
+    {
+      "id": "xyflow-svelte-validation-selfparity",
+      "verdict": "pass",
+      "comparators": {
+        "model": {
+          "verdict": "pass",
+          "detail": "canonical models equal (sorted keys, DI floats at 1e-6)"
+        },
+        "events": {
+          "verdict": "pass",
+          "detail": "0 events equal (names, payload keys, remapped values)"
+        },
+        "geometry": {
+          "verdict": "pass",
+          "detail": "bounds/waypoints/viewbox within 1 CSS px; textMetrics=unknown (excluded, font decision pending)"
+        },
+        "pixels": {
+          "verdict": "pass",
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)"
+        }
+      }
+    }
+  ]
+}

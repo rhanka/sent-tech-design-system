@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-backgrounds-selfparity","library":"xyflow","fixtures":["xyflow/react-backgrounds.json"],"exercises":["examples.react-backgrounds"],"comparators":["model","events","geometry","pixels"]}

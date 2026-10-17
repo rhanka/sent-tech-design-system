@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-subprocess-expanded",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Expanded subprocess containing an inner task chain",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_se\"><bpmn:process id=\"p1\"><bpmn:subProcess id=\"sub1\"><bpmn:startEvent id=\"innerStart\"/><bpmn:task id=\"innerTask\"/></bpmn:subProcess></bpmn:process></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "sub1", "type": "bpmn:SubProcess", "x": 60, "y": 40, "width": 460, "height": 240, "label": "Expanded" },
+      { "id": "innerStart", "type": "bpmn:StartEvent", "x": 100, "y": 140, "width": 36, "height": 36, "label": "" },
+      { "id": "innerTask", "type": "bpmn:Task", "x": 200, "y": 118, "width": 120, "height": 80, "label": "Inner work" }
+    ],
+    "flows": [
+      { "id": "fi", "source": "innerStart", "target": "innerTask", "waypoints": [{ "x": 136, "y": 158 }, { "x": 200, "y": 158 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

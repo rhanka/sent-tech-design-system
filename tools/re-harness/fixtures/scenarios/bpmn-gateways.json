@@ -1,0 +1,1 @@
+{ "schemaVersion": 1, "id": "bpmn-gateways-selfparity", "library": "bpmn", "fixtures": ["bpmn/gateways.f1.json"], "ops": "bpmn/edit-undo.ops.json", "exercises": ["RE.renderer.bpmn-exclusivegateway", "RE.renderer.bpmn-task"], "comparators": ["model", "events", "geometry", "pixels"] }

@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-nodeselectionbug-selfparity","library":"xyflow","fixtures":["xyflow/react-nodeselectionbug.json"],"exercises":["examples.react-nodeselectionbug"],"comparators":["model","events","geometry","pixels"]}

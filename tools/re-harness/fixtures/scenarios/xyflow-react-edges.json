@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-edges-selfparity","library":"xyflow","fixtures":["xyflow/react-edges.json"],"exercises":["examples.react-edges"],"comparators":["model","events","geometry","pixels"]}

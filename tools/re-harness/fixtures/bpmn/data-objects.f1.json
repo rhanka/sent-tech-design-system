@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-data-objects",
+  "library": "bpmn",
+  "kind": "bpmn-xml-f1",
+  "title": "Task with a data object input and a data store output",
+  "xml": "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"defs_do\"><bpmn:process id=\"p1\"><bpmn:dataObject id=\"dobj1\"/><bpmn:dataStore id=\"store1\"/><bpmn:task id=\"task1\"/></bpmn:process></bpmn:definitions>",
+  "model": {
+    "elements": [
+      { "id": "task1", "type": "bpmn:Task", "x": 220, "y": 100, "width": 110, "height": 80, "label": "Process order" },
+      { "id": "dobj1", "type": "bpmn:DataObject", "x": 80, "y": 115, "width": 44, "height": 58, "label": "Order" },
+      { "id": "store1", "type": "bpmn:DataStore", "x": 420, "y": 105, "width": 60, "height": 70, "label": "Orders DB" }
+    ],
+    "flows": [
+      { "id": "da1", "source": "dobj1", "target": "task1", "waypoints": [{ "x": 124, "y": 144 }, { "x": 220, "y": 144 }] },
+      { "id": "da2", "source": "task1", "target": "store1", "waypoints": [{ "x": 330, "y": 140 }, { "x": 420, "y": 140 }] }
+    ]
+  },
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "pixelThreshold": { "maxMismatchRatio": 0.01, "perChannelDelta": 8 }
+}

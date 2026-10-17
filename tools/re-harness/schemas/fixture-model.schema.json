@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/fixture-model.schema.json",
+  "title": "RE harness fixture: model document (v1)",
+  "description": "Pure-data model shared verbatim by the reference and candidate runners. One file per fixture. BPMN fixtures carry the XML text plus the derived F1 canonical model; xyflow fixtures carry a flow graph; JointJS fixtures carry a graph JSON. No fixture encodes library calls.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "library", "kind", "model"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "library": { "enum": ["bpmn", "xyflow", "jointjs"] },
+    "kind": { "enum": ["bpmn-xml-f1", "xyflow-graph", "jointjs-graph"] },
+    "title": { "type": "string" },
+    "xml": { "type": "string", "description": "BPMN XML text (reference-native); present only for bpmn-xml-f1." },
+    "model": { "type": "object", "description": "Canonical model: F1 (bpmn), flow graph (xyflow) or graph JSON (jointjs). Keys are compared after canonical sort." },
+    "viewport": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "zoom": { "type": "number" }
+      }
+    },
+    "pixelThreshold": {
+      "type": "object",
+      "description": "Per-fixture pixel secondary threshold (SPEC_RE_JOINTJS_PARITY §5.3: fixed per fixture).",
+      "properties": {
+        "maxMismatchRatio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "perChannelDelta": { "type": "number", "minimum": 0, "maximum": 255 }
+      }
+    }
+  },
+  "additionalProperties": false
+}
