@@ -3,6 +3,9 @@
   "id": "xyflow-pointer",
   "steps": [
     {
+      "op": "exampleButton"
+    },
+    {
       "op": "paneClick"
     },
     {

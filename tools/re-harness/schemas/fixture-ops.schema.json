@@ -40,7 +40,8 @@
               "setViewport",
               "select",
               "zoom",
-              "paneClick"
+              "paneClick",
+              "exampleButton"
             ]
           },
           "elementId": {

@@ -420,6 +420,23 @@
       }
       return log({ op: "connect", kind: "none", applied: false, why: "no hit-testable source handle / target handle pair between unconnected nodes" });
     }
+    if (step.op === "exampleButton") {
+      // Only when the example mounted an EMPTY graph: such examples build
+      // their graph from their own panel button. The first <button> of the
+      // example (document order) outside the library's own components.
+      if (flows.some((entry) => (flowView(entry).state.nodes || []).length)) {
+        return log({ op: "exampleButton", kind: "none", applied: false, ruleSkip: true, why: "graph not empty at mount (rule: only for examples that start empty)" });
+      }
+      const library = ".react-flow__controls, .svelte-flow__controls, .react-flow__minimap, .svelte-flow__minimap, .react-flow__attribution, .svelte-flow__attribution";
+      const button = [...xy.mounted.container.querySelectorAll("button")].find((b) => !b.closest(library) && !b.disabled);
+      if (!button) return log({ op: "exampleButton", kind: "none", applied: false, why: "the example has no button of its own" });
+      const r = button.getBoundingClientRect();
+      const at = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+      if (document.elementFromPoint(at.x, at.y) !== button && !button.contains(document.elementFromPoint(at.x, at.y))) {
+        return log({ op: "exampleButton", kind: "none", applied: false, why: "the example button is not hit-testable" });
+      }
+      return log({ op: "exampleButton", kind: "click", applied: true, target: (button.textContent || "").trim().slice(0, 40), at });
+    }
     if (step.op === "paneClick") {
       // First point of a fixed 24 px grid (row-major from the top-left of
       // the flow) whose hit-test is the library pane itself.
@@ -487,7 +504,7 @@
       geometry: { bounds, waypoints: {}, viewbox: unionViewbox(bounds), domBounds, edgePaths },
       pixels: null,
       opsLog: xy.mounted ? xy.mounted.opsLog : [],
-      warnings: (xy.mounted ? xy.mounted.opsLog : []).filter((o) => !o.applied).map((o) => `${o.op}: not applicable (${o.why})`),
+      warnings: (xy.mounted ? xy.mounted.opsLog : []).filter((o) => !o.applied && !o.ruleSkip).map((o) => `${o.op}: not applicable (${o.why})`),
       skippedOps: [],
     };
   }

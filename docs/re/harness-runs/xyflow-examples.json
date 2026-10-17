@@ -372,7 +372,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -391,14 +391,15 @@
       "id": "xyflow-react-customminimapnode-selfparity",
       "library": "xyflow",
       "opsApplied": [
+        "exampleButton:add node",
         "paneClick:pane",
+        "move:1",
         "zoom:wheel"
       ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
       "verdict": "pass",
       "warnings": [
-        "move: not applicable (no visible node hit-tests to itself at its centre)",
         "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
       ]
     },
@@ -851,7 +852,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
+          "detail": "11 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -870,14 +871,15 @@
       "id": "xyflow-react-empty-selfparity",
       "library": "xyflow",
       "opsApplied": [
+        "exampleButton:add node",
         "paneClick:pane",
+        "move:1",
         "zoom:wheel"
       ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
       "verdict": "pass",
       "warnings": [
-        "move: not applicable (no visible node hit-tests to itself at its centre)",
         "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
       ]
     },
@@ -1558,7 +1560,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
+          "detail": "13 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -1577,16 +1579,15 @@
       "id": "xyflow-react-setnodesbatching-selfparity",
       "library": "xyflow",
       "opsApplied": [
+        "exampleButton:queue multiple setNodes calls",
         "paneClick:pane",
+        "move:a",
+        "connect:a:->b:",
         "zoom:wheel"
       ],
       "oracle": "real",
       "oracleVersion": "12.12.0",
-      "verdict": "pass",
-      "warnings": [
-        "move: not applicable (no visible node hit-tests to itself at its centre)",
-        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
@@ -2221,7 +2222,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
+          "detail": "14 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2240,14 +2241,15 @@
       "id": "xyflow-svelte-custom-minimap-selfparity",
       "library": "xyflow",
       "opsApplied": [
+        "exampleButton:add node",
         "paneClick:pane",
+        "move:1",
         "zoom:wheel"
       ],
       "oracle": "real",
       "oracleVersion": "1.7.0",
       "verdict": "pass",
       "warnings": [
-        "move: not applicable (no visible node hit-tests to itself at its centre)",
         "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
       ]
     },
@@ -2659,7 +2661,7 @@
     {
       "comparators": {
         "events": {
-          "detail": "1 events equal (names, payload keys, remapped values)",
+          "detail": "16 events equal (names, payload keys, remapped values)",
           "verdict": "pass"
         },
         "geometry": {
@@ -2678,16 +2680,15 @@
       "id": "xyflow-svelte-reset-selfparity",
       "library": "xyflow",
       "opsApplied": [
+        "exampleButton:Reset",
         "paneClick:pane",
+        "move:c1",
+        "connect:c1:->c2:",
         "zoom:wheel"
       ],
       "oracle": "real",
       "oracleVersion": "1.7.0",
-      "verdict": "pass",
-      "warnings": [
-        "move: not applicable (no visible node hit-tests to itself at its centre)",
-        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
-      ]
+      "verdict": "pass"
     },
     {
       "comparators": {
@@ -3255,12 +3256,14 @@
         "flows": [
           {
             "edges": 0,
-            "nodes": 0
+            "nodes": 1
           }
         ],
-        "modelSha256": "be7f6089113dfbb6b920b236c6eb706f14417c3bcbeec8be74777be9c9364cd4",
+        "modelSha256": "df9d8ac33d41177fcb583467d4f11906bd87f53f09ae105c44adb62addb841ae",
         "opsApplied": [
+          "exampleButton:add node",
           "paneClick:pane",
+          "move:1",
           "zoom:wheel"
         ]
       },
@@ -3487,12 +3490,14 @@
         "flows": [
           {
             "edges": 0,
-            "nodes": 0
+            "nodes": 1
           }
         ],
-        "modelSha256": "be7f6089113dfbb6b920b236c6eb706f14417c3bcbeec8be74777be9c9364cd4",
+        "modelSha256": "a86e033543f1426736afdcd2acbfbedc877e9ba764498d93ea3e2aa9393ad186",
         "opsApplied": [
+          "exampleButton:add node",
           "paneClick:pane",
+          "move:1",
           "zoom:wheel"
         ]
       },
@@ -3783,16 +3788,19 @@
         ]
       },
       "xyflow-react-setnodesbatching-selfparity": {
-        "edgePaths": 0,
+        "edgePaths": 1,
         "flows": [
           {
-            "edges": 0,
-            "nodes": 0
+            "edges": 1,
+            "nodes": 3
           }
         ],
-        "modelSha256": "9fa985e5cab3c6f4a8fb4d72cb1ca192beaf6df9ae974d6cad2afc47f6dd5a81",
+        "modelSha256": "1894fbd9ff05e3e8c12658e7fdbc402d5cad9864fe40fd04b943259735f77559",
         "opsApplied": [
+          "exampleButton:queue multiple setNodes calls",
           "paneClick:pane",
+          "move:a",
+          "connect:a:->b:",
           "zoom:wheel"
         ]
       },
@@ -4098,12 +4106,14 @@
         "flows": [
           {
             "edges": 0,
-            "nodes": 0
+            "nodes": 1
           }
         ],
-        "modelSha256": "8079c693410a1c328c06826e3a2e2f75b6b75fb1176d4590c2a4301804715750",
+        "modelSha256": "3f9116796d1ebcedc247d7dd2d78c4ff33e4c6bbf6d6717cbcd0f2df5d69696e",
         "opsApplied": [
+          "exampleButton:add node",
           "paneClick:pane",
+          "move:1",
           "zoom:wheel"
         ]
       },
@@ -4297,16 +4307,19 @@
         ]
       },
       "xyflow-svelte-reset-selfparity": {
-        "edgePaths": 0,
+        "edgePaths": 1,
         "flows": [
           {
-            "edges": 0,
-            "nodes": 0
+            "edges": 1,
+            "nodes": 2
           }
         ],
-        "modelSha256": "181b693405903fcd950f961a46e6587394019ecc2ac5867ccb57110b92edaf03",
+        "modelSha256": "645377053255c87dc3605079e0756727a8312a9fb5fb8d089fb35a2b5cdb6e9a",
         "opsApplied": [
+          "exampleButton:Reset",
           "paneClick:pane",
+          "move:c1",
+          "connect:c1:->c2:",
           "zoom:wheel"
         ]
       },

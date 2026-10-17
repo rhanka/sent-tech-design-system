@@ -18,9 +18,10 @@
 // records every bare specifier; the cause names the missing packages.
 //
 // Every runnable example plays the shared pointer script
-// fixtures/xyflow/pointer.ops.json (a click on the empty pane — which is
-// how several examples add nodes —, a real mouse drag of a node, a real
-// handle-to-handle connection, a real wheel zoom), driven through the
+// fixtures/xyflow/pointer.ops.json (for an example that starts with an
+// empty graph, a click on its own first button, which builds the graph;
+// a click on the empty pane; a real mouse drag of a node; a real
+// handle-to-handle connection; a real wheel zoom), driven through the
 // browser's input pipeline (Playwright mouse) at client points computed
 // from the library store.
 //
@@ -86,6 +87,7 @@ function main() {
     schemaVersion: 1,
     id: "xyflow-pointer",
     steps: [
+      { op: "exampleButton" },
       { op: "paneClick" },
       { op: "move", dx: 40, dy: 30 },
       { op: "connect" },
