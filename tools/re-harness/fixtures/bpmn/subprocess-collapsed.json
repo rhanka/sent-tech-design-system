@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-subprocess-collapsed",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Collapsed subprocess between start and end",
+  "input": {
+    "xmlFile": "bpmn/subprocess-collapsed.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

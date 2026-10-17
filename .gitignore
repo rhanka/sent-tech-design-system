@@ -32,3 +32,6 @@ apps/docs/static/compare-local/**
 
 # Chromium profiles created by the graph golden tests (WebGL oracle over CDP)
 .graphify-cdp-prof-*/
+
+# RE harness: generated reference bundles (build artifacts)
+tools/re-harness/bundles/

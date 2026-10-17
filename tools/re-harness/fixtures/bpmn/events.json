@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-events",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Timer and message intermediate events on a task chain",
+  "input": {
+    "xmlFile": "bpmn/events.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

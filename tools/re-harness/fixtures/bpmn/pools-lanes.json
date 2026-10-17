@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-pools-lanes",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Pool with two lanes and a message flow across pools",
+  "input": {
+    "xmlFile": "bpmn/pools-lanes.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}

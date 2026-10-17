@@ -215,6 +215,8 @@ Both routes implement §5 identically at planes 1–3 (model, commands, rules). 
 
 ## 8. Differential parity harness
 
+Implementation (Lot L0): the harness described in this section is built as the single shared harness in [tools/re-harness/README.md](../tools/re-harness/README.md) (fixture schemas, comparators, coverage verifier, frozen contracts). Read that README for the runner status per library; this section remains the normative design.
+
 ### 8.1 Principle
 
 The same inputs are played on the reference (bpmn-js 18.31.0 + diagram-js 15.28.1, pinned sources) and on the target implementation; outputs are compared. A behaviour is `covered` (in the strong, post-implementation sense) only when its differential scenario passes — the inventory's static `status` (§4) is the *starting* coverage, the harness verdict is the *proven* coverage quoted by lot gates (§9). [JUDGMENT] This two-word use is deliberate: static status says where we start, harness verdict says what we may claim.

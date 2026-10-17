@@ -1,0 +1,4576 @@
+{
+  "browser": "headless-chrome",
+  "candidate": {
+    "xyflow": {
+      "cause": "candidate = DiagramState (packages/diagram-core) through the xyflow-parity adapter of a later lot (spec/SPEC_RE_XYFLOW_PARITY.md §8); not written at L0",
+      "verdict": "unsupported"
+    }
+  },
+  "mode": "xyflow-examples",
+  "oracle": "real",
+  "oracleVersions": {
+    "@joint/core": "4.3.3",
+    "@xyflow/react": "12.12.0",
+    "@xyflow/svelte": "1.7.0",
+    "@xyflow/system": "0.0.83",
+    "bpmn-js": "18.31.0",
+    "bpmn-moddle": "10.3.1",
+    "diagram-js": "15.28.1",
+    "esbuild": "0.25.12",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "svelte": "5.56.4"
+  },
+  "scenarios": [
+    {
+      "comparators": {
+        "events": {
+          "detail": "8 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-a11y-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->5:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "12 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-addnodeonedgedrop-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "48 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-backgrounds-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "paneClick@flow1:pane",
+        "paneClick@flow2:pane",
+        "paneClick@flow3:pane",
+        "move:1",
+        "move@flow1:1",
+        "move@flow2:1",
+        "move@flow3:1",
+        "zoom:wheel",
+        "zoom@flow1:wheel",
+        "zoom@flow2:wheel",
+        "zoom@flow3:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)",
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)",
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)",
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "29 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-basic-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "37 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-brokennodes-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1a",
+        "connect:1a:->4a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "22 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-cancelconnection-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "24 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-clickdistance-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1a",
+        "connect:1a:->4a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-colormode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:A",
+        "connect:B:->C:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "19 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-controlleduncontrolled-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "28 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-controlledviewport-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1a",
+        "connect:1a:->4a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-customconnectionline-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-customminimapnode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "exampleButton:add node",
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "25 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-customnode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "3 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-defaultedgeoverwrite-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "3 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-defaultnodeoverwrite-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "6 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-defaultnodes-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-detachedhandle-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-devtools-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1a",
+        "connect:1a:->4a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "3 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-draghandle-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:2",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-dragndrop-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "10 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-easyconnect-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "move: not applicable (no visible node hit-tests to itself at its centre)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "41 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-edgerenderer-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "22 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-edgerouting-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "51 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-edges-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "4 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-edgetoolbar-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "334 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-edgetypes-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "connect:0:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-empty-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "exampleButton:add node",
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-figma-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "cause": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11); both runs compared up to op connect",
+      "causeKind": "upstream-deviation",
+      "comparators": {
+        "deviation": {
+          "detail": "recorded symptom reproduced by op connect in both runs",
+          "verdict": "pass"
+        },
+        "events": {
+          "detail": "29 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "deviation": "xyflow-react-floatingedges-connection-line",
+      "id": "xyflow-react-floatingedges-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:target"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "deviation"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-hidden-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "move: not applicable (no visible node hit-tests to itself at its centre)",
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "9 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-interaction-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "move: not applicable (no visible node hit-tests to itself at its centre)",
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "22 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-interactiveminimap-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "31 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-intersection-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->0:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "35 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-layouting-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-middlewares-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "34 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-movinghandles-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:input",
+        "connect:input:->0:a",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "46 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-multiflows-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "paneClick@flow1:pane",
+        "move:1",
+        "move@flow1:1",
+        "connect:1:->4:",
+        "connect@flow1:1:->4:",
+        "zoom:wheel",
+        "zoom@flow1:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "212 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-multisetnodes-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "connect:0:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "41 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-noderesizer-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->1a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "12 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-nodeselectionbug-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-nodetoolbar-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:4",
+        "connect:4:->node-start-top:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "14 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-nodetypechange-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-nodetypesobjectchange-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "61 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-overview-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "24 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-provider-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "20 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-reconnectedge-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "26 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-redux-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "6 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-remount-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "14 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-saverestore-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "8 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-setnodesbatching-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "exampleButton:queue multiple setNodes calls",
+        "paneClick:pane",
+        "move:a",
+        "connect:a:->b:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "1262 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-stress-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "44 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-subflow-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "31 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-switch-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1a",
+        "connect:1a:->4a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-touchdevice-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "32 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-undirectional-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:00",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "14 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-updatenode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-useconnection-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "cause": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+      "causeKind": "example-without-flow",
+      "comparators": {
+        "events": {
+          "detail": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+          "verdict": "unknown"
+        },
+        "geometry": {
+          "detail": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+          "verdict": "unknown"
+        },
+        "model": {
+          "detail": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+          "verdict": "unknown"
+        },
+        "pixels": {
+          "detail": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+          "verdict": "unknown"
+        }
+      },
+      "id": "xyflow-react-usekeypress-selfparity",
+      "library": "xyflow",
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "not-applicable"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "24 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-usenodeconnections-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:t1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "28 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-usenodesdata-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-usenodesinit-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "17 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-useonselectionchange-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "26 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-usereactflow-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->5:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "18 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-useupdatenodeinternals-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:handle-0->5:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "17 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-validation-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "30 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-react-zindexmode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:A",
+        "connect:A:->D:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "12.12.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-a11y-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:A",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "2 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-add-node-on-drop-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "6 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-color-mode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:A",
+        "connect:B:->C:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "2 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-custom-connection-line-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:connectionline-1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "3 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-custom-minimap-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "exampleButton:add node",
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-customnode-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "13 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-dagre-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "4 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-detached-handle-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-drag-n-drop-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "4 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-edge-toolbar-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "19 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-edges-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->2a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "14 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-figma-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "8 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-handle-connect-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-interaction-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-intersections-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-node-resizer-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->1a:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "15 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-node-toolbar-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:default-node",
+        "connect:default-node:->node-start-top:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "12 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-overview-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->A:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "6 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-reset-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "exampleButton:Reset",
+        "paneClick:pane",
+        "move:c1",
+        "connect:c1:->c2:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "1252 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-stress-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0-0",
+        "connect:0-0:->2-0:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "13 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-subflows-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->4:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "3 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-two-way-viewport-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:A",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass",
+      "warnings": [
+        "connect: not applicable (no hit-testable source handle / target handle pair between unconnected nodes)"
+      ]
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "6 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-unmount-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "7 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-usenodesdata-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:1:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-usesvelteflow-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-useupdatenodeinternals-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:1",
+        "connect:2:->3:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    },
+    {
+      "comparators": {
+        "events": {
+          "detail": "5 events equal (names, payload keys, remapped values)",
+          "verdict": "pass"
+        },
+        "geometry": {
+          "detail": "bounds/waypoints/viewbox/domBounds/edgePaths within tolerance (0.5px, paths at 1e-6); textMetrics=unknown (excluded, font decision pending)",
+          "verdict": "pass"
+        },
+        "model": {
+          "detail": "canonical models equal (sorted keys, floats at 1e-6)",
+          "verdict": "pass"
+        },
+        "pixels": {
+          "detail": "pixel mismatch ratio 0.000000 <= 0.01 (secondary signal)",
+          "verdict": "pass"
+        }
+      },
+      "id": "xyflow-svelte-validation-selfparity",
+      "library": "xyflow",
+      "opsApplied": [
+        "paneClick:pane",
+        "move:0",
+        "connect:0:->A:",
+        "zoom:wheel"
+      ],
+      "oracle": "real",
+      "oracleVersion": "1.7.0",
+      "verdict": "pass"
+    }
+  ],
+  "schemaVersion": 1,
+  "seed": 42,
+  "xyflow": {
+    "excluded": [
+      {
+        "cause": "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect) (.ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:10, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/FloatingConnectionLine.tsx:17, .ds-scrap/re-sources/xyflow/examples/react/src/examples/FloatingEdges/utils.ts:11); both runs compared up to op connect",
+        "causeKind": "upstream-deviation",
+        "id": "xyflow-react-floatingedges-selfparity",
+        "verdict": "deviation"
+      },
+      {
+        "cause": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare (observed: example-without-flow: the example mounts no ReactFlow/SvelteFlow, so there is no library store to compare)",
+        "causeKind": "example-without-flow",
+        "id": "xyflow-react-usekeypress-selfparity",
+        "verdict": "not-applicable"
+      }
+    ],
+    "executed": [
+      "xyflow-react-a11y-selfparity",
+      "xyflow-react-addnodeonedgedrop-selfparity",
+      "xyflow-react-backgrounds-selfparity",
+      "xyflow-react-basic-selfparity",
+      "xyflow-react-brokennodes-selfparity",
+      "xyflow-react-cancelconnection-selfparity",
+      "xyflow-react-clickdistance-selfparity",
+      "xyflow-react-colormode-selfparity",
+      "xyflow-react-controlleduncontrolled-selfparity",
+      "xyflow-react-controlledviewport-selfparity",
+      "xyflow-react-customconnectionline-selfparity",
+      "xyflow-react-customminimapnode-selfparity",
+      "xyflow-react-customnode-selfparity",
+      "xyflow-react-defaultedgeoverwrite-selfparity",
+      "xyflow-react-defaultnodeoverwrite-selfparity",
+      "xyflow-react-defaultnodes-selfparity",
+      "xyflow-react-detachedhandle-selfparity",
+      "xyflow-react-devtools-selfparity",
+      "xyflow-react-draghandle-selfparity",
+      "xyflow-react-dragndrop-selfparity",
+      "xyflow-react-easyconnect-selfparity",
+      "xyflow-react-edgerenderer-selfparity",
+      "xyflow-react-edgerouting-selfparity",
+      "xyflow-react-edges-selfparity",
+      "xyflow-react-edgetoolbar-selfparity",
+      "xyflow-react-edgetypes-selfparity",
+      "xyflow-react-empty-selfparity",
+      "xyflow-react-figma-selfparity",
+      "xyflow-react-floatingedges-selfparity",
+      "xyflow-react-hidden-selfparity",
+      "xyflow-react-interaction-selfparity",
+      "xyflow-react-interactiveminimap-selfparity",
+      "xyflow-react-intersection-selfparity",
+      "xyflow-react-layouting-selfparity",
+      "xyflow-react-middlewares-selfparity",
+      "xyflow-react-movinghandles-selfparity",
+      "xyflow-react-multiflows-selfparity",
+      "xyflow-react-multisetnodes-selfparity",
+      "xyflow-react-noderesizer-selfparity",
+      "xyflow-react-nodeselectionbug-selfparity",
+      "xyflow-react-nodetoolbar-selfparity",
+      "xyflow-react-nodetypechange-selfparity",
+      "xyflow-react-nodetypesobjectchange-selfparity",
+      "xyflow-react-overview-selfparity",
+      "xyflow-react-provider-selfparity",
+      "xyflow-react-reconnectedge-selfparity",
+      "xyflow-react-redux-selfparity",
+      "xyflow-react-remount-selfparity",
+      "xyflow-react-saverestore-selfparity",
+      "xyflow-react-setnodesbatching-selfparity",
+      "xyflow-react-stress-selfparity",
+      "xyflow-react-subflow-selfparity",
+      "xyflow-react-switch-selfparity",
+      "xyflow-react-touchdevice-selfparity",
+      "xyflow-react-undirectional-selfparity",
+      "xyflow-react-updatenode-selfparity",
+      "xyflow-react-useconnection-selfparity",
+      "xyflow-react-usenodeconnections-selfparity",
+      "xyflow-react-usenodesdata-selfparity",
+      "xyflow-react-usenodesinit-selfparity",
+      "xyflow-react-useonselectionchange-selfparity",
+      "xyflow-react-usereactflow-selfparity",
+      "xyflow-react-useupdatenodeinternals-selfparity",
+      "xyflow-react-validation-selfparity",
+      "xyflow-react-zindexmode-selfparity",
+      "xyflow-svelte-a11y-selfparity",
+      "xyflow-svelte-add-node-on-drop-selfparity",
+      "xyflow-svelte-color-mode-selfparity",
+      "xyflow-svelte-custom-connection-line-selfparity",
+      "xyflow-svelte-custom-minimap-selfparity",
+      "xyflow-svelte-customnode-selfparity",
+      "xyflow-svelte-dagre-selfparity",
+      "xyflow-svelte-detached-handle-selfparity",
+      "xyflow-svelte-drag-n-drop-selfparity",
+      "xyflow-svelte-edge-toolbar-selfparity",
+      "xyflow-svelte-edges-selfparity",
+      "xyflow-svelte-figma-selfparity",
+      "xyflow-svelte-handle-connect-selfparity",
+      "xyflow-svelte-interaction-selfparity",
+      "xyflow-svelte-intersections-selfparity",
+      "xyflow-svelte-node-resizer-selfparity",
+      "xyflow-svelte-node-toolbar-selfparity",
+      "xyflow-svelte-overview-selfparity",
+      "xyflow-svelte-reset-selfparity",
+      "xyflow-svelte-stress-selfparity",
+      "xyflow-svelte-subflows-selfparity",
+      "xyflow-svelte-two-way-viewport-selfparity",
+      "xyflow-svelte-unmount-selfparity",
+      "xyflow-svelte-usenodesdata-selfparity",
+      "xyflow-svelte-usesvelteflow-selfparity",
+      "xyflow-svelte-useupdatenodeinternals-selfparity",
+      "xyflow-svelte-validation-selfparity"
+    ],
+    "failed": [],
+    "outputs": {
+      "xyflow-react-a11y-selfparity": {
+        "edgePaths": 6,
+        "flows": [
+          {
+            "edges": 6,
+            "nodes": 6
+          }
+        ],
+        "modelSha256": "7c91c654e269dbae3d9dcae58506ea41c06f30133d4078f62dd5edbab0228cc6",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->5:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-addnodeonedgedrop-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "32a18dc30d195e19637c69dcc9f050f1249793a6a0c059cad56a9f6328f82a3e",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-backgrounds-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          },
+          {
+            "edges": 0,
+            "nodes": 1
+          },
+          {
+            "edges": 0,
+            "nodes": 1
+          },
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "c7f575eac5f374e30d84fddcc796ad6a4c7be072ca3d38bf111f307e855386a0",
+        "opsApplied": [
+          "paneClick:pane",
+          "paneClick@flow1:pane",
+          "paneClick@flow2:pane",
+          "paneClick@flow3:pane",
+          "move:1",
+          "move@flow1:1",
+          "move@flow2:1",
+          "move@flow3:1",
+          "zoom:wheel",
+          "zoom@flow1:wheel",
+          "zoom@flow2:wheel",
+          "zoom@flow3:wheel"
+        ]
+      },
+      "xyflow-react-basic-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "ab004aa290cdcbd1f9a7875406334a38248a004fb40a2e92e3e7540db9f44766",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-brokennodes-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "d63072bb5b08844a20dfb8405b1e478b3fcd4836f3e04820c6c79f277000321b",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1a",
+          "connect:1a:->4a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-cancelconnection-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "6214c031dc4b4d5229d78a05349f4930f91b2753ccad8047bf55d8ade7abe88f",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-clickdistance-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "751fb1a22d5854ec05e507cb909c1162c7dba52c2fdd0881d309351f6ab9f70c",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1a",
+          "connect:1a:->4a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-colormode-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "9ce643ee6b3ce90b0a59e2c0f4a0f46729e43d8aa201406d1198fff48d909b1e",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:A",
+          "connect:B:->C:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-controlleduncontrolled-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "4892758c2238157b1b282decefba416c53fac78a4c97a571e3ab54b95d49758a",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-controlledviewport-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "fbcefec1a3d04b549d09b993bd6a75752dd33155cc325c2e032f371c35c828a7",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1a",
+          "connect:1a:->4a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-customconnectionline-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "15cef5ae268a6621a0dfbe8fc038cd09258f2b1f685dde8b454b434fc9a80da8",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-customminimapnode-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "1a8069b621a94ed22a5aeb796a6282b480e3d7509aa7cb9d2c54b68b4b0719cb",
+        "opsApplied": [
+          "exampleButton:add node",
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-customnode-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "353c46da63f65cad6578b4e8fcab55ffa1657bbc5dd5e97f858f250d08a0f9a0",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-defaultedgeoverwrite-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "318fffec00c1403fc3e5f8b3c69ff865aef08afcbe65af945bbbfcbe814568c6",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-defaultnodeoverwrite-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "5c5c44e3cf5e12d48746fe81533aeb20f5f6db05da58eb82b339b1ed0da9ef56",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-defaultnodes-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "e08e0ca94b9de3b9a1146269deaee97721ee3fe2ab9acad81339c7fca5733380",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-detachedhandle-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "e855da256c0834507018a292dcbbee079ab6a2f325c1bafdc00b46895515a931",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-devtools-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "4e8bcbac8f06de32429209e7a963fe770d65ea90def5c4d274cda890b9dcf140",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1a",
+          "connect:1a:->4a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-draghandle-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "ac6ac465be02591a0384921708c8b0b04c21d3daf2a9aa81480b238394926b86",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:2",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-dragndrop-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "e9fe522f374f97d77f32ee5d4276a1a4dddf7239544be03ef38127a021ed2790",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-easyconnect-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "4438df48c7d8ff41db96a47fd92c0e01007bcc768cb6328caf8c50940afc1618",
+        "opsApplied": [
+          "paneClick:pane",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-edgerenderer-selfparity": {
+        "edgePaths": 12,
+        "flows": [
+          {
+            "edges": 12,
+            "nodes": 12
+          }
+        ],
+        "modelSha256": "ada2a914505e1227a44f901006d50a50b3c18e5c5b0b7b08a908f6bbd0c6e098",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-edgerouting-selfparity": {
+        "edgePaths": 11,
+        "flows": [
+          {
+            "edges": 11,
+            "nodes": 20
+          }
+        ],
+        "modelSha256": "23de81e55d0da46836d0ae39d6934c8a1a2a7ecf7e3882c0e5162d4182c471da",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-edges-selfparity": {
+        "edgePaths": 17,
+        "flows": [
+          {
+            "edges": 17,
+            "nodes": 17
+          }
+        ],
+        "modelSha256": "0d47a555b8fe3f4a19e0d041d5e074601de580ea48e41670dca7ed3304eaadae",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-edgetoolbar-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "2260fbb3519cd0206d6a082d74a6870074226bc8fcc419629e3e58aee5cb1ceb",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-edgetypes-selfparity": {
+        "edgePaths": 81,
+        "flows": [
+          {
+            "edges": 81,
+            "nodes": 160
+          }
+        ],
+        "modelSha256": "b01248a1371a60cc4ac9e9d096cbcb876c1b255708c684ad7295d836fed7daa9",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "connect:0:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-empty-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "effbfa5891d5445ead3aefb6f13883b08193f7290e7b3b77952e3484ded7781c",
+        "opsApplied": [
+          "exampleButton:add node",
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-figma-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "ed8a5816630cb2c9bd891b1da53dd124babda7f39dca1d7aadfaaf4df2863965",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-floatingedges-selfparity": {
+        "edgePaths": 8,
+        "flows": [
+          {
+            "edges": 8,
+            "nodes": 9
+          }
+        ],
+        "modelSha256": "a107605494a5c60f5e6dd9e40de5b59fe867aa148c48f4fb423f5fa6d723b7c9",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:target"
+        ]
+      },
+      "xyflow-react-hidden-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "fb4fcb39da358e2cf20d2b881f6478d559d8a7f26fc1adec9e179122728bb0f2",
+        "opsApplied": [
+          "paneClick:pane",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-interaction-selfparity": {
+        "edgePaths": 2,
+        "flows": [
+          {
+            "edges": 2,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "8ba5d2678cd6c4ce816d1bca9db3d68fdc43c84f8d08f0f3476d53e4dc7b2705",
+        "opsApplied": [
+          "paneClick:pane",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-interactiveminimap-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 12
+          }
+        ],
+        "modelSha256": "8e5d5f300475260305c8f25dd86bdedf4fdbb57d2798faf564192e2648d0e79d",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-intersection-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 5
+          }
+        ],
+        "modelSha256": "1f1dcf145b6bd801124bafb3e41e0f3653979679e6547efbf7f67eeea31dbdf4",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->0:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-layouting-selfparity": {
+        "edgePaths": 10,
+        "flows": [
+          {
+            "edges": 10,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "8130a2730fe794311ba256930cafc8baa668776a6460a4ef978ea3d337769b37",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-middlewares-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "bde9eeb9e4c5e515b8d5bc895a6a6c1697f9f1d73f08d26f12fe6f0df491e477",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-movinghandles-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "8b5d42d799385413abfe4cc1e950b8f5ac9f2d94e483f3d000891f9a4ce6d1fd",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:input",
+          "connect:input:->0:a",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-multiflows-selfparity": {
+        "edgePaths": 6,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          },
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "7d43313591550d7f56ce72b97f80cae4eaff606922cfb97ebb9d0ec7db568a6d",
+        "opsApplied": [
+          "paneClick:pane",
+          "paneClick@flow1:pane",
+          "move:1",
+          "move@flow1:1",
+          "connect:1:->4:",
+          "connect@flow1:1:->4:",
+          "zoom:wheel",
+          "zoom@flow1:wheel"
+        ]
+      },
+      "xyflow-react-multisetnodes-selfparity": {
+        "edgePaths": 100,
+        "flows": [
+          {
+            "edges": 100,
+            "nodes": 100
+          }
+        ],
+        "modelSha256": "775039df310d8507b41315f99cbf6f2ed7fb8b91f24bfe76cf86d97b6e50335a",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "connect:0:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-noderesizer-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 14
+          }
+        ],
+        "modelSha256": "0841ba7def95a3cb9aacbdcdc1197775fd991188922d05681850511fe9bdc774",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->1a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-nodeselectionbug-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "c0c7693f939f2f927eca72c884a67e4f3a11dda7108bb8d66909b1b504b67022",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-nodetoolbar-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 13
+          }
+        ],
+        "modelSha256": "77e1f8e33d51c84c02b21d9b5a9c89c5f83a379544de516c629401a8c8f1bf2d",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:4",
+          "connect:4:->node-start-top:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-nodetypechange-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "54af7289bb9ade60afb0ccc237d37a9d02e2c0124b6e7ad06a9ceda6f056d1fb",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-nodetypesobjectchange-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "1708fcb3d3f418c61b47d6c16244664e094cfae2d79ffab175d6a533d3617bad",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-overview-selfparity": {
+        "edgePaths": 7,
+        "flows": [
+          {
+            "edges": 7,
+            "nodes": 7
+          }
+        ],
+        "modelSha256": "4ef9b2112f02f763255cbd209dbe73cb9b9e4c10ad58f21fc3906e58be4f4b42",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-provider-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "9c362f36dc7bab06f07622bea056d172a91461e26cc755871a009202502cce60",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-reconnectedge-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 6
+          }
+        ],
+        "modelSha256": "e763713150b16bd600de3e39d2eeb189021c08bbb002fa325584da716035e979",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-redux-selfparity": {
+        "edgePaths": 6,
+        "flows": [
+          {
+            "edges": 6,
+            "nodes": 7
+          }
+        ],
+        "modelSha256": "6278e1ec5b78cccdabca08c615b1094a0df0d21669b1aee1044092af6e89b6fb",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-remount-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "210f6c76dd232e0e0230dbb0534a403bcd0a1b11c1f6ae514b9149ebc5813817",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-saverestore-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "8da8a911105652c9719ba04355e76820cfb0a93bf357d253b9d2f75aaee242f1",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-setnodesbatching-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "b90d220f497d453f697b49d174a960dd23f4184cf0d959c4810bc5d23473527b",
+        "opsApplied": [
+          "exampleButton:queue multiple setNodes calls",
+          "paneClick:pane",
+          "move:a",
+          "connect:a:->b:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-stress-selfparity": {
+        "edgePaths": 625,
+        "flows": [
+          {
+            "edges": 625,
+            "nodes": 625
+          }
+        ],
+        "modelSha256": "f0d16ef48956854756f9bf2580d11f8504dfbe6e8eb52f3684f35ab010b9b562",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-subflow-selfparity": {
+        "edgePaths": 8,
+        "flows": [
+          {
+            "edges": 8,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "1d3cdf5eb44b3d989f922b8edb98dfd8e227cd2548c2e0dc05ee1e19dc183be7",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-switch-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "0f3805e8bcdf55c75a030ce32537d7085e733538feb50c09603b9104dcc75473",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1a",
+          "connect:1a:->4a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-touchdevice-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "5fa820ae4283729d75136cd583da690f07648568c8e2a3574b484e20488611ee",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-undirectional-selfparity": {
+        "edgePaths": 12,
+        "flows": [
+          {
+            "edges": 12,
+            "nodes": 10
+          }
+        ],
+        "modelSha256": "ee311633eda7f3fe89982b45547f82f9adc86d8d64f06bb0d22fb358df831ace",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:00",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-updatenode-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "db2e8f7daf0ca7114992c4270d7543e17d98fa975c67d99374ea4c884e9aca48",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-useconnection-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "969c509a5234fb377242359defe312baf4be2fe275327f8f010e213fb30ab07c",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-usenodeconnections-selfparity": {
+        "edgePaths": 5,
+        "flows": [
+          {
+            "edges": 5,
+            "nodes": 6
+          }
+        ],
+        "modelSha256": "906c72475d3328f35ebfc65d458d4ba84af8e50d75823798f9db864736f7ebdf",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:t1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-usenodesdata-selfparity": {
+        "edgePaths": 6,
+        "flows": [
+          {
+            "edges": 6,
+            "nodes": 6
+          }
+        ],
+        "modelSha256": "59d230ce0f76b7d32be7080c9aa8fbe25fc5d5a2a940115275e3e70512561b51",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-usenodesinit-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "3046ef80e9433499574f912c159607032afa6f0d8ba3321a31d51af608285b3b",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-useonselectionchange-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "a74d7360d6ed3a214a1b37d5b1b9ab0ab46481a9e3eea59383c0caf8a9a3d21a",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-usereactflow-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 5
+          }
+        ],
+        "modelSha256": "a0ec7a98f845601470a1690da7596b1ee31a690389b6621b536294e07877a204",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->5:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-useupdatenodeinternals-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "4f84483b12d53c13d264c5372d86be240e743ea2d6ce4cbc957f49bb2530d950",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:handle-0->5:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-validation-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "41d2c1203afe0bb0551bc18f4c83eeaa5b95b1189a8bf55d80fc8bc29c41201d",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-react-zindexmode-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 9
+          }
+        ],
+        "modelSha256": "4ed6753b77e4b5264a975c388d218ff998136925140c40e09d19989debae4c28",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:A",
+          "connect:A:->D:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-a11y-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "cf96566038c7a26dd4b86925ad0df9491e4d5bd77919682956cc21b5dbcae79b",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:A",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-add-node-on-drop-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "69467ec7ec3e7b4871d8308f6eb90501c941007ca5afe07e3a5ea258c8e69b5a",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-color-mode-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "3bf4b2763444c9d3685bf16eafa164f6ff795f9575da7e870ede3e8902f50a93",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:A",
+          "connect:B:->C:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-custom-connection-line-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "ba57d525377bd7090d86b1177b12c07bfe8167bcca826e312740109ac611e3d4",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:connectionline-1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-custom-minimap-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 1
+          }
+        ],
+        "modelSha256": "eeade3fe3fce4334ae4418419f496375bb4ca4d37526d69b4195ca4e3787ff9b",
+        "opsApplied": [
+          "exampleButton:add node",
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-customnode-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "873af5c06e8d56f9898f8615e1cce85536d3d86af0ccaac27eca765892f1f15b",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-dagre-selfparity": {
+        "edgePaths": 10,
+        "flows": [
+          {
+            "edges": 10,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "e4516901641c854e46aa12d4d083961e256fdef3115ddfc7578e21520202b672",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-detached-handle-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "f1f3ad3fd829effe5db143f80cfea8c540506ee1211d07584b869426e3f1f043",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-drag-n-drop-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "dc2bfa94446222a07ea81a4df86a65f5ca3ce7516834a6aa2e9e562128eb33c2",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-edge-toolbar-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "dd3ae91e1a78204104e4c8924292d6637ffc27f3edce05e2382fb14c4bf41956",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-edges-selfparity": {
+        "edgePaths": 16,
+        "flows": [
+          {
+            "edges": 16,
+            "nodes": 16
+          }
+        ],
+        "modelSha256": "1a1ede203af0a70eeaae64ea7b655738561631418ff8c4cf8afa9d7ccfa79c99",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->2a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-figma-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "3968e3ecfe62035aef02af03cb90c96fbc9f6aea204192f42b95f7e98b92cee5",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-handle-connect-selfparity": {
+        "edgePaths": 5,
+        "flows": [
+          {
+            "edges": 5,
+            "nodes": 6
+          }
+        ],
+        "modelSha256": "c46211edeaff06fa1cbdea08355acbaa15cc7a5d4a96016aed40cb19752c9f79",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-interaction-selfparity": {
+        "edgePaths": 2,
+        "flows": [
+          {
+            "edges": 2,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "d9579d5c950937f42562b04f3fc17ce43828a7f43c34105c1328176f0a442f73",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-intersections-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "9e3c37491a41d93621f5f27668f238e25d733f0a01481063e4867efacbd84cac",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-node-resizer-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 13
+          }
+        ],
+        "modelSha256": "50e7fb0c883f7b38d02e206903def158147e771a0affe45087222639b007ebe8",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->1a:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-node-toolbar-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 13
+          }
+        ],
+        "modelSha256": "cce64bc22f5b755a37dad44effd7a8af2a43ab0e711ea02d2b9388375d145bf1",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:default-node",
+          "connect:default-node:->node-start-top:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-overview-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 9
+          }
+        ],
+        "modelSha256": "164b534f5cc6595beb4ffa5c284fd33c6c38f49a952cc4612cebb155146423f8",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->A:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-reset-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "fba6256e2093346dfeba072751601d7f27fb998e3e054d7d787804d610cb1000",
+        "opsApplied": [
+          "exampleButton:Reset",
+          "paneClick:pane",
+          "move:c1",
+          "connect:c1:->c2:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-stress-selfparity": {
+        "edgePaths": 575,
+        "flows": [
+          {
+            "edges": 625,
+            "nodes": 625
+          }
+        ],
+        "modelSha256": "5678417921bd8c56fc554e84397bafbd185f1c514a830125115aa29987400355",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0-0",
+          "connect:0-0:->2-0:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-subflows-selfparity": {
+        "edgePaths": 8,
+        "flows": [
+          {
+            "edges": 8,
+            "nodes": 11
+          }
+        ],
+        "modelSha256": "74883089dc382f5a0cf31f183750aed34ed35de1209b1965e651a45563338a47",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->4:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-two-way-viewport-selfparity": {
+        "edgePaths": 1,
+        "flows": [
+          {
+            "edges": 1,
+            "nodes": 2
+          }
+        ],
+        "modelSha256": "d5b696f5a43a0d63094429a55b89f95dde0db578d94822c4e625d4c1331771b7",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:A",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-unmount-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "7065df786902c94da53d98162958dafc05bb63e63165b9e8b9f223babfaa68e7",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-usenodesdata-selfparity": {
+        "edgePaths": 4,
+        "flows": [
+          {
+            "edges": 4,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "a9200382c83a4a88a454bd8703a3b5eefc5cf2e58e2444def6f5c12f3c04a36e",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:1:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-usesvelteflow-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "fafe9a858c6150c2c3cabcdca4da7fac437161589c5061738cd3e7464a41246a",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-useupdatenodeinternals-selfparity": {
+        "edgePaths": 3,
+        "flows": [
+          {
+            "edges": 3,
+            "nodes": 3
+          }
+        ],
+        "modelSha256": "91252e0d2f72d5a51c94e8b3f6ce00dff3e7fa8792c19e76f879f5383eef1bd5",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:1",
+          "connect:2:->3:",
+          "zoom:wheel"
+        ]
+      },
+      "xyflow-svelte-validation-selfparity": {
+        "edgePaths": 0,
+        "flows": [
+          {
+            "edges": 0,
+            "nodes": 4
+          }
+        ],
+        "modelSha256": "885909e1d2b46fe858ef8c08b33f07f860d7fbd9c18196f99fc6e4b4ab3a1b68",
+        "opsApplied": [
+          "paneClick:pane",
+          "move:0",
+          "connect:0:->A:",
+          "zoom:wheel"
+        ]
+      }
+    }
+  }
+}

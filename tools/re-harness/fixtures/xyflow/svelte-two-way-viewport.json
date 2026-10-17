@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-two-way-viewport",
+  "library": "xyflow",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-two-way-viewport, mounted with its own code",
+  "input": {
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/two-way-viewport/+page.svelte"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  },
+  "runnable": {
+    "status": "runnable"
+  }
+}

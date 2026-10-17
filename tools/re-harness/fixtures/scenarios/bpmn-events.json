@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"bpmn-events-selfparity","library":"bpmn","fixtures":["bpmn/events.json"],"ops":"bpmn/events-edit.ops.json","exercises":["RE.renderer.bpmn-intermediatecatchevent","RE.renderer.bpmn-intermediatethrowevent"],"comparators":["model","events","geometry","pixels"]}

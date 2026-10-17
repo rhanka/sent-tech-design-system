@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-svelte-interaction",
+  "library": "xyflow",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.svelte-interaction, mounted with its own code",
+  "input": {
+    "flavour": "svelte",
+    "example": "svelte/src/routes/examples/interaction/+page.svelte"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  },
+  "runnable": {
+    "status": "runnable"
+  }
+}

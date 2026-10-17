@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xyflow-react-defaultnodes",
+  "library": "xyflow",
+  "kind": "xyflow-example",
+  "title": "pinned xyflow example examples.react-defaultnodes, mounted with its own code",
+  "input": {
+    "flavour": "react",
+    "example": "react/src/examples/DefaultNodes/index.tsx"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  },
+  "runnable": {
+    "status": "runnable"
+  }
+}

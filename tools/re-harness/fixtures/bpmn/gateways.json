@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "bpmn-gateways",
+  "library": "bpmn",
+  "kind": "bpmn-xml",
+  "title": "Exclusive gateway split and join around two tasks",
+  "input": {
+    "xmlFile": "bpmn/gateways.bpmn"
+  },
+  "pixelThreshold": {
+    "maxMismatchRatio": 0.01,
+    "perChannelDelta": 8
+  }
+}
