@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compareModel, compareEvents, compareGeometry, comparePixels, correspondenceProblems, parseSvgPath } from "../src/comparators.mjs";
-import { validateFixtures, assertGateReport, assertXyflowExamplesReport, GATE_REPORT_FILES, CANDIDATE_STATUS } from "../src/harness.mjs";
+import { validateFixtures, assertGateReport, assertXyflowExamplesReport, checkGates, expectedXyflowExclusions, GATE_REPORT_FILES, CANDIDATE_STATUS } from "../src/harness.mjs";
 import { validateAgainstSchema } from "../src/validate.mjs";
 import { candidateStubRunner } from "../src/runners.mjs";
 import { EXPECTED_VERSIONS, REPO_ROOT, WT_ROOT } from "../src/oracles.mjs";
@@ -189,6 +189,36 @@ const EXPECTED_XYFLOW_EXCLUDED = {
   "xyflow-react-usekeypress-selfparity": "not-applicable",
 };
 
+test("the gate's exclusion list is derived from deviations.json and not-applicable.json (M1)", () => {
+  assert.deepEqual(expectedXyflowExclusions(), EXPECTED_XYFLOW_EXCLUDED);
+});
+
+test("the gate command fails when the recorded deviation disappears or changes, or on unexpected not-applicable (M1)", () => {
+  const read = (file) => JSON.parse(fs.readFileSync(path.join(RUNS_DIR, file), "utf8"));
+  const sp = read("self-parity.json");
+  const green = read("xyflow-examples.json");
+  assert.deepEqual(Object.fromEntries(Object.entries(checkGates(sp, green)).map(([k, g]) => [k, g.ok])), { "self-parity": true, "xyflow-examples": true });
+  const fe = "xyflow-react-floatingedges-selfparity";
+  // 1. The upstream bug is fixed: the scenario now passes.
+  const fixed = JSON.parse(JSON.stringify(green));
+  const sc = fixed.scenarios.find((x) => x.id === fe);
+  Object.assign(sc, { verdict: "pass" }); delete sc.deviation; delete sc.cause; delete sc.causeKind;
+  assert.match(checkGates(sp, fixed)["xyflow-examples"].error, /expected deviation/);
+  // 2. The upstream behaviour changed: the symptom did not reproduce.
+  const changed = JSON.parse(JSON.stringify(green));
+  const sc2 = changed.scenarios.find((x) => x.id === fe);
+  Object.assign(sc2, { verdict: "fail", cause: "recorded deviation did not reproduce" });
+  sc2.comparators.deviation = { verdict: "fail", detail: "recorded deviation did not reproduce" };
+  assert.equal(checkGates(sp, changed)["xyflow-examples"].ok, false);
+  // 3. Every example turns not-applicable (e.g. a broken probe).
+  const none = JSON.parse(JSON.stringify(green));
+  for (const x of none.scenarios) Object.assign(x, { verdict: "not-applicable", causeKind: "example-without-flow", cause: "no flow" });
+  assert.equal(checkGates(sp, none)["xyflow-examples"].ok, false);
+  // 4. A drifted self-parity is rejected too.
+  const spBad = JSON.parse(JSON.stringify(sp)); spBad.scenarios[0].verdict = "unknown";
+  assert.equal(checkGates(spBad, green)["self-parity"].ok, false);
+});
+
 test("archived gate reports pass the strict guards (C7, N3)", () => {
   for (const file of GATE_REPORT_FILES) {
     assert.ok(fs.existsSync(path.join(RUNS_DIR, file)), `gate report ${file} is missing — run the real gates`);
@@ -211,7 +241,9 @@ test("xyflow report guard: exact exclusion list, deviation backed by deviations.
     schemaVersion: 1, mode: "self-parity", seed: 42, oracle: "real", oracleVersions: JSON.parse(JSON.stringify(EXPECTED_VERSIONS)),
     scenarios: [
       { id: "a", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "pass", comparators: {} },
-      { id: "xyflow-react-floatingedges-selfparity", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "deviation", deviation: "xyflow-react-floatingedges-connection-line", causeKind: "upstream-deviation", cause: "x", comparators: {} },
+      { id: "xyflow-react-floatingedges-selfparity", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "deviation", deviation: "xyflow-react-floatingedges-connection-line", causeKind: "upstream-deviation",
+        cause: "deviation xyflow-react-floatingedges-connection-line: Cannot read properties of undefined (reading 'positionAbsolute') during a connection drag from a node handle (pointer op connect)",
+        comparators: { model: { verdict: "pass" }, deviation: { verdict: "pass" } } },
       { id: "b", library: "xyflow", oracle: "real", oracleVersion: "1", verdict: "not-applicable", causeKind: "example-without-flow", cause: "no flow", comparators: {} },
     ],
   });

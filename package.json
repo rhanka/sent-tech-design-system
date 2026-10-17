@@ -21,7 +21,7 @@
     "showcase": "npm run docs:dev",
     "parity:dataviz-angular": "vitest run --config tools/dataviz-angular-parity/vitest.config.ts",
     "re:harness": "node tools/re-harness/src/harness.mjs run",
-    "re:harness:selftest": "node tools/re-harness/src/harness.mjs selftest && node tools/re-harness/src/harness.mjs coverage"
+    "re:harness:selftest": "node tools/re-harness/src/harness.mjs selftest && node tools/re-harness/src/harness.mjs coverage && node --test tools/re-harness/tests/harness.test.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",

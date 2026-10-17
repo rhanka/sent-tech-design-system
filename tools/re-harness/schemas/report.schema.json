@@ -17,6 +17,7 @@
     "mode": {
       "enum": [
         "self-parity",
+        "xyflow-examples",
         "differential",
         "selftest",
         "coverage"
@@ -150,6 +151,36 @@
             "type": "string",
             "description": "id of the deviations.json entry"
           }
+        }
+      }
+    },
+    "xyflow": {
+      "type": "object",
+      "description": "xyflow-examples.json only.",
+      "required": [
+        "executed",
+        "failed",
+        "excluded",
+        "outputs"
+      ],
+      "properties": {
+        "executed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failed": {
+          "type": "array",
+          "description": "scenarios that are fail or unknown (gate not green)"
+        },
+        "excluded": {
+          "type": "array",
+          "description": "scenarios excluded by deviations.json (deviation) or not-applicable.json (not-applicable)"
+        },
+        "outputs": {
+          "type": "object",
+          "description": "per executed scenario: model SHA-256, node/edge counts per flow, rendered edge paths, ops applied"
         }
       }
     }

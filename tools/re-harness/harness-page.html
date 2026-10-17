@@ -381,11 +381,15 @@
     return Boolean(handle && handle.getAttribute("data-nodeid") === nodeId);
   }
 
-  function xyPlan(step) {
+  // Every op is planned on EVERY mounted flow (the runner calls xyPlan once
+  // per flow index), except exampleButton, which acts on the example.
+  function xyFlowCount() { return activeStores().length; }
+
+  function xyPlan(step, flowIndex = 0) {
     const flows = activeStores();
-    const log = (entry) => { xy.mounted.opsLog.push(entry); return entry; };
-    if (!flows.length) return log({ op: step.op, kind: "none", applied: false, why: "no flow mounted" });
-    const view = flowView(flows[0]);
+    const log = (entry) => { const e = { flow: flowIndex, ...entry }; xy.mounted.opsLog.push(e); return e; };
+    if (!flows[flowIndex]) return log({ op: step.op, kind: "none", applied: false, why: "no such flow mounted" });
+    const view = flowView(flows[flowIndex]);
     const nodes = (view.state.nodes || []).filter((n) => !n.hidden);
     if (step.op === "move") {
       for (const n of nodes) {
@@ -419,6 +423,9 @@
         }
       }
       return log({ op: "connect", kind: "none", applied: false, why: "no hit-testable source handle / target handle pair between unconnected nodes" });
+    }
+    if (step.op === "exampleButton" && flowIndex > 0) {
+      return log({ op: "exampleButton", kind: "none", applied: false, ruleSkip: true, why: "example-level op, planned once (flow 0)" });
     }
     if (step.op === "exampleButton") {
       // Only when the example mounted an EMPTY graph: such examples build
@@ -669,6 +676,7 @@
     xyLoad,
     xyMount,
     xyPlan,
+    xyFlowCount,
     xySettle,
     xyExtract,
     runJoint,

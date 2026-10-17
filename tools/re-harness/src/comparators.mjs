@@ -15,7 +15,11 @@ export const XYFLOW_GEOMETRY_TOLERANCE_PX = 0.5;
 // Per-function rounding applied BEFORE comparison (SPEC_RE_JOINTJS_PARITY
 // §5.3 / §6 Lot 0: "comparators of §5.3 with per-function rounding", then a
 // 1e-6 residual). Keyed by geometry family; the value is the number of
-// decimals kept (null = no rounding).
+// decimals kept (null = no rounding). The table is the normative §5.3
+// list; jointFamilies (harness.mjs) emits routers.* / connectors.* from
+// link cells only. pinRelative and layout.ports are not emitted today: no
+// fixture uses a pin-relative connection strategy or port layouts, and port
+// geometry is not extracted (not covered at L0).
 export const ROUNDING_BY_FAMILY = {
   "connectors.straight": 1,
   "routers.manhattan": 1,

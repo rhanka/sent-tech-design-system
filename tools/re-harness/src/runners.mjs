@@ -43,6 +43,8 @@ export function adapterFor(library) {
 async function runXyflowExample(page, fixture, ops, ctx) {
   const entry = ctx.examples && ctx.examples[fixture.id];
   if (!entry || entry.status !== "built") throw new Error(`example bundle for ${fixture.id} not built${entry && entry.cause ? `: ${entry.cause}` : ""}`);
+  // Errors of a previous run (e.g. a recorded deviation) do not carry over.
+  if (page.__pageErrors) page.__pageErrors.length = 0;
   await page.goto(ctx.url);
   await page.evaluate(() => window.__harnessReady);
   if (page.__pageErrors && page.__pageErrors.length) {
@@ -51,15 +53,57 @@ async function runXyflowExample(page, fixture, ops, ctx) {
   await page.evaluate(([bundle, css]) => window.__reHarness.xyLoad(bundle, css), [entry.bundle, entry.css || null]);
   // An error thrown by the example's own code (page error) ends the run:
   // the React/Svelte tree is gone and comparing what remains would hide a
-  // missing graph. The scenario is then unknown with that precise error.
+  // missing graph. The scenario is then unknown with that precise error —
+  // unless it is a recorded upstream deviation (ctx.deviation), see below.
   const errors = page.__pageErrors || [];
   const exampleError = (phase) => {
     if (errors.length) throw new Error(`example-error during ${phase}: ${errors[0]}`);
   };
   await page.evaluate(() => window.__reHarness.xyMount()).catch((err) => { exampleError("mount"); throw err; });
   exampleError("mount");
+  const deviation = ctx.deviation || null;
   for (const step of (ops && ops.steps) || []) {
-    const plan = await page.evaluate((st) => window.__reHarness.xyPlan(st), step);
+    // Recorded upstream deviation (SPEC_RE_BPMN_JS_PARITY §8.5): just
+    // before the op that triggers it, the state reached so far is read
+    // (store, journal, geometry, pixels) so that both runs are still
+    // compared up to the crash; then the op must reproduce the recorded
+    // symptom. The run stops there.
+    if (deviation && step.op === deviation.op) {
+      const pre = await page.evaluate(() => window.__reHarness.xyExtract());
+      await capturePixels(page, pre, { keepHost: true });
+      let reproduced = null;
+      try {
+        await playStep(page, step);
+        exampleError(`op ${step.op}`);
+      } catch (err) {
+        // The example's own page error is the observed symptom (the settle
+        // barrier that follows only reports that the tree is gone).
+        reproduced = errors.length ? errors[0] : String(err && err.message || err).split("\n")[0];
+      }
+      pre.deviationOutcome = {
+        id: deviation.id,
+        op: step.op,
+        reproduced: Boolean(reproduced && reproduced.includes(deviation.symptom)),
+        observed: reproduced || "no error: the recorded upstream bug did not reproduce",
+      };
+      await page.evaluate(() => { if (typeof window.__cleanupLastRun === "function") window.__cleanupLastRun(); }).catch(() => {});
+      return pre;
+    }
+    await playStep(page, step).catch((err) => { exampleError(`op ${step.op}`); throw err; });
+    exampleError(`op ${step.op}`);
+  }
+  // Park the pointer outside the flow so no hover state differs per run.
+  await page.mouse.move(1020, 760);
+  await page.evaluate(() => window.__reHarness.xySettle("park"));
+  return page.evaluate(() => window.__reHarness.xyExtract());
+}
+
+// One op on every mounted flow: planned in the page from the store, played
+// by the browser's mouse, then settled.
+async function playStep(page, step) {
+  const count = await page.evaluate(() => window.__reHarness.xyFlowCount());
+  for (let flow = 0; flow < Math.max(1, count); flow += 1) {
+    const plan = await page.evaluate(([st, f]) => window.__reHarness.xyPlan(st, f), [step, flow]);
     if (plan.kind === "drag") {
       await page.mouse.move(plan.from.x, plan.from.y);
       await page.mouse.down();
@@ -71,20 +115,8 @@ async function runXyflowExample(page, fixture, ops, ctx) {
       await page.mouse.move(plan.at.x, plan.at.y);
       await page.mouse.wheel(0, plan.deltaY);
     }
-    await page.evaluate((kind) => window.__reHarness.xySettle(kind), plan.kind).catch((err) => { exampleError(`op ${step.op}`); throw err; });
-    exampleError(`op ${step.op}`);
+    await page.evaluate((kind) => window.__reHarness.xySettle(kind), plan.kind);
   }
-  // Park the pointer outside the flow so no hover state differs per run.
-  await page.mouse.move(1020, 760);
-  await page.evaluate(() => window.__reHarness.xySettle("park"));
-  return page.evaluate(() => window.__reHarness.xyExtract());
-}
-
-export function oracleGateOf(library, fixtureId) {
-  if (library === "xyflow") return fixtureId && fixtureId.includes("svelte") ? "xyflow-svelte" : "xyflow-react";
-  if (library === "bpmn") return "bpmn";
-  if (library === "jointjs") return "jointjs";
-  return library;
 }
 
 // Decode a PNG screenshot inside the page and downscale it to a small
@@ -122,7 +154,7 @@ const DECODE_SCREENSHOT = async (base64) => {
 export async function runRealInPage(page, library, fixture, ops, ctx = {}) {
   if (library === "xyflow") {
     const result = await withTimeout(runXyflowExample(page, fixture, ops, ctx), `xyflow/${fixture.id}`);
-    return capturePixels(page, result);
+    return result.pixels ? result : capturePixels(page, result);
   }
   const fn = adapterFor(library);
   if (!fn) throw new Error(`unknown: no real adapter for library ${library}`);
@@ -144,7 +176,7 @@ export async function runRealInPage(page, library, fixture, ops, ctx = {}) {
   return capturePixels(page, result);
 }
 
-async function capturePixels(page, result) {
+async function capturePixels(page, result, { keepHost = false } = {}) {
   try {
     const host = page.locator(".oracle-host").last();
     const box = await host.boundingBox();
@@ -155,9 +187,11 @@ async function capturePixels(page, result) {
     result.pixels = null;
     result.pixelCaptureError = String(err && err.message || err).split("\n")[0].slice(0, 200);
   } finally {
-    await page.evaluate(() => {
-      if (typeof window.__cleanupLastRun === "function") window.__cleanupLastRun();
-    }).catch(() => {});
+    if (!keepHost) {
+      await page.evaluate(() => {
+        if (typeof window.__cleanupLastRun === "function") window.__cleanupLastRun();
+      }).catch(() => {});
+    }
   }
   return result;
 }

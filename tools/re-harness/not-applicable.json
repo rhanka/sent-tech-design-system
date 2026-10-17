@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "rule": "Declarative list of scenarios with nothing to compare in this harness. The run reports them `not-applicable` (distinct from `unknown`); the gate command fails if a listed scenario turns out applicable, or if an unlisted one is found not applicable.",
+  "entries": [
+    {
+      "scenario": "xyflow-react-usekeypress-selfparity",
+      "library": "xyflow",
+      "causeKind": "example-without-flow",
+      "cause": "the UseKeyPress example demonstrates the useKeyPress hook alone and mounts no ReactFlow (.ds-scrap/re-sources/xyflow/examples/react/src/examples/UseKeyPress/index.tsx), so a flow harness has no store to compare"
+    }
+  ]
+}
