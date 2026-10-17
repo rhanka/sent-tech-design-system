@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/contracts/magnet-descriptor.v1.json",
+  "title": "Frozen contract: pure magnet descriptor (v1)",
+  "description": "Frozen at L0 per SPEC_RE_JOINTJS_PARITY.md §6 Lot 0. Source: spec/SPEC_RE_JOINTJS_PARITY.md §4.7 (lines 209-220). Pure replacement for the upstream (view, magnet: SVGElement) triple: anchors and connection points are pure functions of this descriptor plus the reference point; connectionPoints.boundary intersects the end segment with shape (options insideout, extrapolate, sticky, stroke, offset) instead of descending a DOM subtree (line 219). pinRelative computes dx/dy percentages rounded to 3 decimals against bbox after rotating the drop point by -angle (line 219-220). strokeWidth is the resolved presentation value, never read from a DOM node.",
+  "type": "object",
+  "required": ["contractVersion", "shape", "localMatrix", "strokeWidth", "bbox"],
+  "properties": {
+    "contractVersion": { "const": 1 },
+    "shape": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["rect", "ellipse", "path", "polygon"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "points": { "type": "array", "items": { "type": "object", "properties": { "x": { "type": "number" }, "y": { "type": "number" } } } }
+      },
+      "description": "World geometry of the magnet part: Rect | Ellipse | PathOutline | PolygonOutline (spec line 214)."
+    },
+    "localMatrix": {
+      "type": "object",
+      "required": ["a", "b", "c", "d", "e", "f"],
+      "properties": {
+        "a": { "type": "number" }, "b": { "type": "number" }, "c": { "type": "number" },
+        "d": { "type": "number" }, "e": { "type": "number" }, "f": { "type": "number" }
+      },
+      "description": "Part-local to world affine, rotation included (spec line 215)."
+    },
+    "strokeWidth": { "type": "number", "minimum": 0, "description": "Resolved presentation value (spec line 216)." },
+    "portId": { "type": "string", "description": "Stable part/port identity when the magnet is a port (spec line 217)." },
+    "bbox": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number" }, "y": { "type": "number" },
+        "width": { "type": "number" }, "height": { "type": "number" }
+      },
+      "description": "Unrotated bounding box used by pinRelative-style rules (spec line 218)."
+    }
+  },
+  "additionalProperties": false
+}

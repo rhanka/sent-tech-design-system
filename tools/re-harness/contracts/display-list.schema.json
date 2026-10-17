@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentropic.example/re-harness/contracts/display-list.v1.json",
+  "title": "Frozen contract: RenderDisplayList (v1)",
+  "description": "Frozen at L0 per SPEC_RE_JOINTJS_PARITY.md §6 Lot 0. Source: spec/SPEC_RE_JOINTJS_PARITY.md §4.4 (lines 188-194): per occurrence, parts in markup order keyed by stable partId (selector replacement); each primitive is a positioned rect/ellipse, tessellated path, measured text run, marker instance, or overlay; paint order is occurrence z, then part order, then primitive order. Attribute resolution order: own box + calc(...) first, then ref rebasing with ref-x/ref-y/ref-dx/ref-dy/ref-width/ref-height/ref-d/ref-points and x-alignment/y-alignment; missing or cyclic ref is a degraded diagnostic, never a silent origin fallback (line 193). Port parts resolve after element parts; link label parts after connection geometry (§4.7). The list is handed to @sentropic/graph as typed buffers; text runs are measured once and drawn by the Canvas2D overlay, never via SVG getBBox (line 194).",
+  "type": "object",
+  "required": ["contractVersion", "occurrences"],
+  "properties": {
+    "contractVersion": { "const": 1 },
+    "occurrences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["occurrenceId", "z", "parts"],
+        "properties": {
+          "occurrenceId": { "type": "string", "minLength": 1 },
+          "z": { "type": "number" },
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["partId", "primitives"],
+              "properties": {
+                "partId": { "type": "string", "minLength": 1, "description": "Stable selector name; 'root' is the occurrence itself (spec line 192)." },
+                "ref": { "type": "string", "description": "Optional sibling partId the reference box rebases to (spec line 193)." },
+                "degraded": { "type": "string", "description": "Named degradation when ref is missing/cyclic or a feature is outside the §4.8 policy; never a silent fallback." },
+                "primitives": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["kind"],
+                    "properties": {
+                      "kind": { "enum": ["rect", "ellipse", "path", "text", "marker", "overlay"] },
+                      "x": { "type": "number" },
+                      "y": { "type": "number" },
+                      "width": { "type": "number" },
+                      "height": { "type": "number" },
+                      "points": { "type": "array", "items": { "type": "object", "properties": { "x": { "type": "number" }, "y": { "type": "number" } } } },
+                      "text": { "type": "string" },
+                      "paint": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

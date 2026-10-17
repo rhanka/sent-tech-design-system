@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"bpmn-annotations-selfparity","library":"bpmn","fixtures":["bpmn/annotations.json"],"ops":"bpmn/annotations-edit.ops.json","exercises":["RE.renderer.bpmn-textannotation","RE.renderer.bpmn-group"],"comparators":["model","events","geometry","pixels"]}

@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"xyflow-react-interactiveminimap-selfparity","library":"xyflow","fixtures":["xyflow/react-interactiveminimap.json"],"ops":"xyflow/pointer.ops.json","exercises":["examples.react-interactiveminimap"],"comparators":["model","events","geometry","pixels"]}
