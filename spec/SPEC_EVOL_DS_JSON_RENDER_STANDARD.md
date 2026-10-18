@@ -711,7 +711,31 @@ or layout hint; the engine owns docking, routing and row alignment:
 - **L-R4 — row alignment and fill.** Sibling containers in one row are top-aligned and stretched to the row
   height.
 
-They attach to **L8** (§14): the `DiagramCanvas` engine implements L-R1–L-R4, and AC-L8 checks them. They reuse the
+Engine rules for the cases h2a reported from the dossiers (h-cond, 2026-10-17); the DS fixes them, the scene
+carries no hint for any of them:
+- **L-R5 — flow direction.** Left-to-right when that drawing fits the target width at scale 1; top-to-bottom
+  otherwise. The choice is a function of the graph and the width only.
+- **L-R6 — rank and sibling order.** Rank is the longest path from a source; a cycle is broken by reversing the
+  edge with the greatest relation id. Within a rank, order minimises crossings (barycentre sweeps), ties broken by
+  entity id. Document insertion order is never used: diagram-core collections are records keyed by id, so insertion
+  order is not content.
+- **L-R7 — target width and phone fallback.** The target width is the host's content width. From 320 to 390 CSS px
+  the drawing is top-to-bottom; if it is still wider, it scales down to 0.75 at most, then pans inside the canvas.
+  The page never scrolls horizontally.
+- **L-R8 — edges across containers.** An edge between nodes of different containers crosses only the boundaries of
+  their own ancestors; every other node and container is an obstacle.
+- **L-R9 — parallel edges.** Several edges between the same two nodes take distinct docking slots under L-R2 and
+  never share a segment.
+- **L-R10 — edge labels.** A label sits on the longest segment of its route, centred, and never overlaps a node, a
+  container title or another label; when it cannot fit, the router lengthens that segment.
+- **L-R11 — legend.** No legend in L8: `generic@1` gives the engine no typed kind to explain. A legend comes with a
+  profile that declares kinds.
+
+**Input.** The engine lays out a diagram-core `SemanticDocument` (`generic@1`: `node` and `container` entities,
+`link` relations, nesting through the `contains` tree), with no view and no geometry. This is the content h2a's
+`diagram` node carries (h-cond, 2026-10-17); no other diagram model is introduced.
+
+They attach to **L8** (§14): the `DiagramCanvas` engine implements L-R1–L-R11, and AC-L8 checks them. They reuse the
 reverse-engineering programme already on main, where these capacities are inventoried: JointJS anchors, connection
 points and routers (`spec/SPEC_RE_JOINTJS_PARITY.md`: `anchor`, `link-anchor`, `connection-point`, `router` and
 `connector` families, the §4.7 pure magnet contract, Lot 5 scene geometry); xyflow handles and edge types
@@ -719,9 +743,13 @@ points and routers (`spec/SPEC_RE_JOINTJS_PARITY.md`: `anchor`, `link-anchor`, `
 built-in path functions, markers and edge labels); bpmn-js docking and layout (`spec/SPEC_RE_BPMN_JS_PARITY.md`:
 align/distribute entries, `LayoutConnectionBehavior` verdicts compared as geometry, snapping and auto-place).
 
-**Ad hoc kit, outside the DS.** The current kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`, with copies in
-hrpolnav) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus component (§11.2):
-no scene, skill or kit metadata carries L-R1–L-R4 hints.
+**Ad hoc kit, outside the DS.** The current decision-dossier kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`
+and the copies made from it) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus
+component (§11.2): no scene, skill or kit metadata carries L-R1–L-R11 hints.
+
+**Implementation (owner, 2026-10-17).** L-R1–L-R11 are written in the DS from the rules above, in concert with h2a
+(`@sentropic/focus`): h2a defines the diagram content a dossier carries, the DS engine lays it out and renders it. No
+code is ported from any kit copy.
 
 ---
 
@@ -917,7 +945,7 @@ The reference value is the owner's to set in the host's `.env` or secrets manage
 | **L6** | DS (+ h2a) | pilot P-FOCUS, imposed renderer defaults F-R0–F-R7 (§11.2) | L3 | `@sentropic/focus` ≥ 0.4.0 with schema + validator published **and** `track focus --format json` published (both `unknown` until publication, §11.2) | **G6**: §11.2 criteria |
 | **L7a** | DS | first publication: `elements-publish.yml`, core + `BarChart` + catalogue + schemas, jsDelivr and SRI check, skill template switched to the CDN | L4 | — | **G7a**: AC-L7a. **Point of no return** |
 | **L7b** | DS | publication of `BpmnCanvas` and `DecisionDossier` (minor release), `diagram-core` made public, W5 | L7a, L5, L6 | — | **G7b**: AC-L7b |
-| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, **layout engine rules L-R1–L-R4 (§10.5)**, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
+| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, **layout engine rules L-R1–L-R11 (§10.5)**, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
 
 Splitting L7 keeps the value of L2–L4 (`BarChart` end to end, skill, MCP) from waiting on the two external
 preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fires.
@@ -960,7 +988,8 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   applied without the host's compare-and-swap; the layout engine rules hold on fixtures — a lone edge docks at its
   side's centre (L-R1), shared-side edges spread symmetrically about the centre (L-R2), the bend count is minimal
   after docking (L-R3), and same-row sibling containers are top-aligned and stretched to the row height (L-R4);
-  the release that ships `DiagramCanvas` passes the AC-L7a checks.
+  L-R5–L-R11 hold on one fixture each, laying out the same document twice gives the same geometry, and no page
+  scrolls horizontally at 320 CSS px; the release that ships `DiagramCanvas` passes the AC-L7a checks.
 
 ## 16. Risks (dossier pre-mortem) and mitigations
 
