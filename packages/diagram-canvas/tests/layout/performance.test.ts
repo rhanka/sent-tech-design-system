@@ -40,4 +40,31 @@ describe("performance", () => {
       expect(median).toBeLessThan(BUDGET_MS);
     });
   }
+
+  // Sol pass-3 finding 4: 40 nodes, 200 links (`d ∈ {1,7,13,19,23}`), no
+  // labels. The budget is NEVER raised: this test stays red until the A*
+  // search meets it with the exact grid and tie-break rules intact.
+  it("dense 40-node / 200-link load within 1000 ms (finding 4, currently red)", () => {
+    const nodes: string[] = [];
+    for (let i = 0; i < 40; i += 1) nodes.push(`n${String(i).padStart(2, "0")}`);
+    const links: [string, string, string][] = [];
+    for (let i = 0; i < 40; i += 1) {
+      for (const d of [1, 7, 13, 19, 23]) {
+        links.push([`r${String(i).padStart(2, "0")}.${d}`, `n${String(i).padStart(2, "0")}`, `n${String((i + d) % 40).padStart(2, "0")}`]);
+      }
+    }
+    expect(links).toHaveLength(200);
+    const dense = buildDocument({ nodes, links });
+    const options = { registry: defaultProfileRegistry, measureText: measure, targetWidth: 8000 };
+    expect(layoutDocument(dense, options).status).toBe("laid-out");
+    const times: number[] = [];
+    for (let run = 0; run < 3; run += 1) {
+      const started = performance.now();
+      layoutDocument(dense, options);
+      times.push(performance.now() - started);
+    }
+    times.sort((a, b) => a - b);
+    console.info(`dense layout of 40 nodes / 200 links: ${times.map((t) => t.toFixed(0)).join(", ")} ms`);
+    expect(times[1]!).toBeLessThan(BUDGET_MS);
+  });
 });

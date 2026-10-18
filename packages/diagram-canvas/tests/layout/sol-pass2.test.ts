@@ -114,15 +114,15 @@ describe("sol pass 2 finding 2 — parallel relations keep distinct slots on a s
     links: [["r1", "pa", "pb"], ["r2", "pa", "pb"]],
   });
 
-  it("emits one PortOccurrence per parallel end with distinct slots", () => {
+  it("emits one injective PortOccurrence per parallel end with distinct slots (429c92a2)", () => {
     const { fit, warnings, view } = lay(document, 8000);
     expect(warnings).toEqual([]);
     expect(fit.direction).toBe("left-to-right");
     expect(Object.keys(view.portOccurrences).sort()).toEqual(
-      ["p.pa.r1.source", "p.pa.r2.source", "p.pb.r1.target", "p.pb.r2.target"].map((id) => occurrenceRef(id)).sort(),
+      ["p.e.2.pa.2.r1.source", "p.e.2.pa.2.r2.source", "p.e.2.pb.2.r1.target", "p.e.2.pb.2.r2.target"].map((id) => occurrenceRef(id)).sort(),
     );
-    const pa = [view.portOccurrences[occurrenceRef("p.pa.r1.source")]!, view.portOccurrences[occurrenceRef("p.pa.r2.source")]!];
-    const pb = [view.portOccurrences[occurrenceRef("p.pb.r1.target")]!, view.portOccurrences[occurrenceRef("p.pb.r2.target")]!];
+    const pa = [view.portOccurrences[occurrenceRef("p.e.2.pa.2.r1.source")]!, view.portOccurrences[occurrenceRef("p.e.2.pa.2.r2.source")]!];
+    const pb = [view.portOccurrences[occurrenceRef("p.e.2.pb.2.r1.target")]!, view.portOccurrences[occurrenceRef("p.e.2.pb.2.r2.target")]!];
     for (const occurrence of pa) expect(occurrence.port).toBe("port:pa");
     for (const occurrence of pb) expect(occurrence.port).toBe("port:pb");
     // Distinct slots on both sides, symmetric about the side centre.
@@ -136,8 +136,8 @@ describe("sol pass 2 finding 2 — parallel relations keep distinct slots on a s
     for (const id of ["r1", "r2"]) {
       const relation = Object.values(view.relationOccurrences).find((occurrence) => occurrence.relation === relationRef(id))!;
       const ends = new Map(relation.endpoints.map((endpoint) => [endpoint.role, endpoint.occurrence]));
-      expect(ends.get("source")).toBe(occurrenceRef(`p.pa.${id}.source`));
-      expect(ends.get("target")).toBe(occurrenceRef(`p.pb.${id}.target`));
+      expect(ends.get("source")).toBe(occurrenceRef(`p.e.2.pa.2.${id}.source`));
+      expect(ends.get("target")).toBe(occurrenceRef(`p.e.2.pb.2.${id}.target`));
     }
   });
 
@@ -166,19 +166,19 @@ describe("AC-L8 L-R2 — a port shared by a parallel pair and a third relation",
     links: [["r1", "p", "q"], ["r2", "p", "q"], ["r3", "p", "C"], ["r4", "p", "D"]],
   });
 
-  it("splits the parallel ends and shares one slot for the rest", () => {
+  it("splits the parallel ends and shares one slot for the rest (429c92a2 injective ids)", () => {
     const { warnings, view } = lay(document, 8000);
     expect(warnings).toEqual([]);
     expect(Object.keys(view.portOccurrences).sort()).toEqual(
-      ["p.p.r1.source", "p.p.r2.source", "p.p", "p.q.r1.target", "p.q.r2.target"].map((id) => occurrenceRef(id)).sort(),
+      ["p.e.1.p.2.r1.source", "p.e.1.p.2.r2.source", "p.s.1.p", "p.e.1.q.2.r1.target", "p.e.1.q.2.r2.target"].map((id) => occurrenceRef(id)).sort(),
     );
     // The parallel pair keeps the same slot order at both ends, so the routes
     // cannot cross each other; the shared slot comes last on its side.
     const orderOf = (id: string): number => view.portOccurrences[occurrenceRef(id)]!.order;
-    expect(orderOf("p.p.r1.source")).toBe(orderOf("p.q.r1.target"));
-    expect(orderOf("p.p.r2.source")).toBe(orderOf("p.q.r2.target"));
-    expect(orderOf("p.p.r1.source")).toBeLessThan(orderOf("p.p.r2.source"));
-    const side = ["p.p.r1.source", "p.p.r2.source", "p.p"].map((id) => view.portOccurrences[occurrenceRef(id)]!);
+    expect(orderOf("p.e.1.p.2.r1.source")).toBe(orderOf("p.e.1.q.2.r1.target"));
+    expect(orderOf("p.e.1.p.2.r2.source")).toBe(orderOf("p.e.1.q.2.r2.target"));
+    expect(orderOf("p.e.1.p.2.r1.source")).toBeLessThan(orderOf("p.e.1.p.2.r2.source"));
+    const side = ["p.e.1.p.2.r1.source", "p.e.1.p.2.r2.source", "p.s.1.p"].map((id) => view.portOccurrences[occurrenceRef(id)]!);
     expect(side.map((occurrence) => occurrence.order).sort()).toEqual([0, 1, 2]);
     for (const occurrence of side) {
       expect(occurrence.port).toBe("port:p");
@@ -189,7 +189,7 @@ describe("AC-L8 L-R2 — a port shared by a parallel pair and a third relation",
     expect(routeOf(view, "r3")[0]).toEqual(routeOf(view, "r4")[0]);
     const r3 = Object.values(view.relationOccurrences).find((occurrence) => occurrence.relation === relationRef("r3"))!;
     expect(new Map(r3.endpoints.map((endpoint) => [endpoint.role, endpoint.occurrence])).get("source")).toBe(
-      occurrenceRef("p.p"),
+      occurrenceRef("p.s.1.p"),
     );
     expect(sharesSegment(routeOf(view, "r1"), routeOf(view, "r2"))).toBe(false);
   });
