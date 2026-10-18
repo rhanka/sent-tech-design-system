@@ -737,18 +737,29 @@ widening rounds have all run to their stopping condition.
   side, centre `x` on a north/south side). Slots are ordered by that position, ties by slot key. For `n`
   slots the offsets from the side centre are `(i − (n−1)/2) · s`, `i` in slot order from the side's start
   (west end of a north/south side, north end of an east/west side), so offsets sum to zero and an odd middle
-  slot is the centre; a parallel pair thus keeps the same slot order at both ends and does not cross. The
+  slot is the centre; a parallel pair thus keeps the same slot order at both ends (whether its routes
+  cross is L-R9's rule, not a consequence of this order). The
   spacing `s` starts from `slotSpacing`, raised when any end on the side carries a label to
   `max(slotSpacing, widest label thickness across the side + labelMargin)` (thickness is the label height on
   an east/west side, its width on a north/south side). If `n ≥ 2` and `s · (n+1)` exceeds the side length of
   a node, the node grows along that side's axis to `s · (n+1)`, effective from the next placement attempt
   (L-R10 counts it in the same 12); the docked spacing on any attempt is `min(s, side length / (n+1))`, so
-  every slot stays on its side even on the attempt that first demands growth. In the `ViewDocument` a
-  non-parallel port takes one `PortOccurrence` (`occurrence:p.<port local id>`) carrying its slot's side,
-  order and anchor; a parallel end on a port takes one `PortOccurrence` per relation end
-  (`occurrence:p.<port local id>.<relation local id>.<role>`), each with its own slot's side, order and
-  anchor — `ViewDocument` already allows several occurrences of one port (`occurrencesOfPort`), so no model
-  changes. Each relation end attaches to its own occurrence.
+  every slot stays on its side even on the attempt that first demands growth. In the `ViewDocument`, port
+  occurrence ids are encoded injectively. Write `len(s)` for the number of characters of a local id `s`
+  (ASCII, by `diagram-core`'s `LOCAL_ID`), in decimal with no leading zeros, and `coded(s)` for
+  `<len(s)>.<s>`. A non-parallel port takes one shared `PortOccurrence`
+  (`occurrence:p.s.<coded(port local id)>`) carrying its slot's side, order and anchor; a parallel end on a
+  port takes one per-end `PortOccurrence`
+  (`occurrence:p.e.<coded(port local id)>.<coded(relation local id)>.<role>`, `role` being `source` or
+  `target`), each with its own slot's side, order and anchor. The fixed prefixes `p.s.` and `p.e.` keep the
+  shared and per-end forms apart, and each length field fixes the end of its component — an id is decoded
+  left to right by reading each decimal length up to its `.`, then exactly that many characters — so distinct ports,
+  and distinct `(port, relation, role)` ends, never produce the same id for any local ids `LOCAL_ID` allows
+  — for example the shared port `p.e.source` gives `occurrence:p.s.10.p.e.source`, while the parallel end of
+  port `p` by relation `e` as `source` gives `occurrence:p.e.1.p.1.e.source`. Both forms remain
+  `occurrence:` references whose local part matches `LOCAL_ID`; `ViewDocument` already allows several
+  occurrences of one port (`occurrencesOfPort`), so no model changes. Each relation end attaches to its own
+  occurrence.
 - **L-R3 — bends minimised after docking; the route is the one this exact search returns.** Docks are fixed
   first (L-R1/L-R2). The grid's `x` coordinates are every grown obstacle boundary (left and right of every
   entity rectangle grown by `clearance`), the midline `(a + b) / 2` of every pair of consecutive distinct
@@ -758,32 +769,43 @@ widening rounds have all run to their stopping condition.
   index is `((row · nx + column) · 4 + heading)`. A move goes to an adjacent grid point in any heading except
   the reverse of the current one (no U-turn), is refused when the grid unit it traverses crosses an obstacle
   interior (L-R8; running on a grown boundary is allowed, ancestors of either end excluded per request),
-  and costs `length · m + (BEND if the heading changes)`, where `length` is the coordinate distance,
-  `BEND = 10^7`, and `m` is 3 when the unit is already used by an edge of another unordered entity pair,
-  else 1; a unit used by an edge of the same pair is forbidden outright (L-R9). The start state is the
-  source clearance point with the source exit's heading and cost 0; arrival heading is the opposite of the
-  target exit. Reaching the target clearance point closes the route with one further `BEND` when the current
+  and costs the ordered pair `(1 if the heading changes, else 0, length · m)`, where `length` is the
+  coordinate distance and `m` is 3 when the unit is already used by an edge of another unordered entity
+  pair, else 1; a unit used by an edge of the same pair is forbidden outright (L-R9). Costs are compared
+  lexicographically as `(bends, weighted length)`: no length saving, however large, compensates for one
+  extra bend, and no finite bend coefficient is used. A move that would make the route transversally
+  cross an already routed edge of the same pair is likewise forbidden: the candidate's full route, as
+  assembled and simplified (its two dock-to-clearance joins included, see L-R9), may contain no point
+  interior to both one of its segments and one segment of that earlier route, and the search must not
+  return a route — grid part or dock-to-clearance join — that contains such a point. The start state is the
+  source clearance point with the source exit's heading and cost `(0, 0)`; arrival heading is the opposite of the
+  target exit. Reaching the target clearance point closes the route with one further bend (cost
+  `(1, 0)`) when the current
   heading differs from the arrival heading, and never from the opposite heading. The heuristic is exactly
-  `t · BEND + (|dx| + |dy|)` to the target clearance point, where the remaining-turns lower bound `t` is:
+  the pair `(t, |dx| + |dy|)` to the target clearance point — an admissible lower bound on each component,
+  since `m ≥ 1` — where the remaining-turns lower bound `t` is:
   0 when the target is straight ahead on the current heading (same heading out, collinear, positive along)
   or the state is the target with the arrival heading; with `v` the vector to the target, `along = v · h` and
   `across` its signed perpendicular component — 1 when the current and arrival headings are perpendicular,
   `along ≥ 0` and `v · (arrival heading) ≥ 0`, or the state is the target with a perpendicular heading;
-  2 when the state is the target with the opposite heading; otherwise 2. The frontier is a heap ordered by
-  (estimated total cost `g + h`, state index); a state is closed when popped and never reopened; a neighbour
-  replaces the recorded cost and parent only on a strictly smaller `g`, so on an exact cost tie the parent
-  recorded first — by the earliest popped predecessor, neighbours tried east, south, west, north — is kept;
-  the virtual goal likewise keeps the first parent achieving the smallest closing total and is popped after
-  every state of equal estimated cost. Requests are routed in ascending relation id, so an earlier relation
+  2 when the state is the target with the opposite heading; otherwise 2. Estimated totals are the
+  componentwise sum `g + h`, themselves compared lexicographically. The frontier is a heap ordered by
+  (estimated bends, estimated weighted length, state index); a state is closed when popped and never
+  reopened; a neighbour replaces the recorded cost and parent only on a strictly smaller
+  `(bends, weighted length)` pair, so on an exact pair tie the parent recorded first — by the earliest
+  popped predecessor, neighbours tried east, south, west, north — is kept;
+  the virtual goal likewise keeps the first parent achieving the smallest closing pair and is popped after
+  every state of equal estimated pair. Requests are routed in ascending relation id, so an earlier relation
   occupies the grid first; the route is the parent chain of that goal, dock to dock with collinear points
-  removed. Only the bend count is claimed optimal; among bend-optimal routes the heap discipline above, not
-  length alone, selects the route. If the grid holds no route, the fallback elbow is fixed: with `S` the
+  removed. The returned route is lexicographically minimal: first the bend count, then the weighted length;
+  among routes equal on both, the heap discipline above selects the route. If the grid holds no route
+  admissible under L-R8 and L-R9 (the transversal ban included), the fallback elbow is fixed: with `S` the
   source clearance point and `T` the target clearance point, no elbow point when `S.x = T.x` or `S.y = T.y`,
   else `(T.x, S.y)` when the source exit is horizontal (east/west), else `(S.x, T.y)`; the route is
   dock, `S`, elbow, `T`, dock, simplified. The engine reports `route-obstructed` for that relation: for that
-  relation only the elbow is an accepted exception to L-R8 *and* L-R9 (it may cross an obstacle interior or
-  share a segment with a same-pair edge); no claim is made that either held for it, and every other relation
-  keeps both.
+  relation only the elbow is an accepted exception to L-R8 *and* L-R9 (it may cross an obstacle interior,
+  share a segment with a same-pair edge, or transversally cross one); no claim is made that either held for
+  it, and every other relation keeps both.
 - **L-R4 — row constitution, alignment and fill.** A row is constituted per nesting level, among sibling
   containers only, once per level on each placement attempt, from that attempt's pre-row geometry (the
   cross starts and sizes placement gives before any row step), and then fixed for that attempt's rounds. Top-to-bottom: a row is one rank, all
@@ -822,7 +844,11 @@ carries no hint for any of them:
   placed rectangle widens `B` although no L-R10 round widened a gap for it. Placement normalises each
   level's entity extent to a `(0, 0)` origin (L-R6), and the returned geometry keeps that origin; `B` is
   the translation-invariant width of `U` measured on that geometry, and the layout outcome's reported width
-  for a drawing is its `B`. The direction is left-to-right when `B_lr ≤ W`, else top-to-bottom when
+  for a drawing is its `B`. Write `xmin`, `xmax`, `ymin` and `ymax` for the extrema of `U` on that geometry
+  (all four 0 for an empty drawing): `B = xmax − xmin`, and routes or labels extending to negative
+  coordinates make `xmin` or `ymin` negative without moving any entity. L-R7 fixes the initial framing and
+  the pan limits from these extrema; neither widened entity geometry nor a renormalised origin may hide
+  them. The direction is left-to-right when `B_lr ≤ W`, else top-to-bottom when
   `B_tb ≤ W`, else the narrower of the two, top-to-bottom on an exact tie. The choice is a function of the
   graph and `W` only; no document field, option or scene value can force it. Because the comparison uses
   finalized bounds, a drawing that fits before its labels and exceeds `W` only after L-R10 widening is
@@ -884,10 +910,22 @@ carries no hint for any of them:
   left-to-right, zoom 1 and no pan. For `B > 0` the zoom is `s = min(1, max(0.75, W / B))`, written to
   `presentation.camera.zoom`; the floor 0.75 is included, so `B = W / 0.75` gives exactly 0.75. The drawing
   pans exactly when `B · s > W`, that is `B > W / 0.75`. L-R5 chooses the direction at every width, the
-  phone range included; no width forces a direction. The renderer containment is a renderer rule, not a
+  phone range included; no width forces a direction. *Initial framing and pan limits.* `camera.x` and
+  `camera.y` are the world point drawn at the view origin. For a non-empty drawing the produced view's
+  `presentation.camera` is `(xmin, ymin, s)`, with `xmin`/`ymin` from L-R5, so the union's minimum corner
+  sits at the view origin: with `U.x = [−8, 64]` and `W = 100`, `s = 1` and `camera.x = −8`, the visible
+  world interval starts at `−8` and no negative part is clipped at rest. An empty drawing takes camera
+  `(0, 0, 1)`. Panning only moves the camera, inside these limits: `camera.x` stays in
+  `[xmin, xmax − W / s]` when `xmax − W / s ≥ xmin`, and is fixed at `xmin` otherwise (no horizontal pan);
+  `camera.y` stays in `[ymin, ymax − H / s]` when `ymax − H / s ≥ ymin`, and is fixed at `ymin` otherwise,
+  where `H` is the viewport box's content height in CSS px, measured by the renderer as it measures `W`.
+  At the greatest pan the visible interval ends exactly at `xmax` (resp. `ymax`), so every pixel of the
+  drawing is reachable and none is reachable only outside the limits. The renderer containment is a
+  renderer rule, not a
   geometry outcome: the `DiagramCanvas` renderer clips the drawing to that viewport box, whose box is never
   sized by the drawing's width or height; overflow is contained inside that box (`overflow: hidden` or an
-  equivalent clip), and panning changes only the camera offset inside the unchanged box, at any pan offset.
+  equivalent clip), and panning changes only the camera offset inside the unchanged box, at any pan offset
+  within the limits above.
   A drawing wider than the viewport therefore widens neither the component nor the page's scrollable area.
 - **L-R8 — edges across containers.** An edge between nodes of different containers crosses only the
   boundaries of their own ancestors; every other node and container is an obstacle, grown by `clearance`,
@@ -896,9 +934,16 @@ carries no hint for any of them:
   L-R9 for that relation alone.
 - **L-R9 — parallel edges.** Several edges between the same two nodes (same unordered entity pair, L-R2)
   take distinct docking slots under L-R2 — including when they carry the same semantic ports, where L-R2
-  splits the port slot per relation — their slot order is the same at both ends, so they do not cross each
-  other, and they never share a segment: the router forbids a grid unit already used by an edge of the same
-  unordered entity pair to the next such edge. The sole exception is a `route-obstructed` elbow (L-R3).
+  splits the port slot per relation — and their slot order is the same at both ends. That order alone does
+  not settle crossings, and two further bans hold on the full simplified routes, dock to dock, the
+  dock-to-clearance joins (dock to its clearance point, dock + exit · `clearance`, at both ends)
+  included: they never share a
+  segment — the router forbids a grid unit already used by an edge of the same unordered entity pair to
+  the next such edge — and they never cross transversally: no segment of one route meets a segment of
+  another route of the pair at a point interior to both segments. L-R3's search enforces both bans against
+  the routes already fixed (ascending relation id); when no route satisfying them (and L-R8) remains, the
+  relation takes the `route-obstructed` fallback instead of a crossing route. The sole exception is that
+  `route-obstructed` elbow (L-R3), for that relation only.
 - **L-R10 — edge labels.** A label's size `(w, h)` is the measurer's `edge-label` size in CSS px; its box is
   the axis-aligned `w × h` box centred on a segment midpoint, never rotated. Write `m = labelMargin`,
   `labelMain` for the label size along the flow (`w` left-to-right, `h` top-to-bottom) and `crossSize` for
@@ -936,7 +981,16 @@ carries no hint for any of them:
   level in the pre-order above. Only that gap may be lengthened for the segment. The *gap set between two
   members* `A, B` at rank `k` of a level is every adjacent sibling gap between them in that rank's cross
   order (dummies included in the order); it is empty when either member is undefined, absent from rank
-  `k`, or equal to the other.
+  `k`, or equal to the other. The *T-sibling candidates* of a segment are an independent, canonical list
+  of `(level, rank)` pairs, defined whether or not a canonical gap exists. When a canonical gap exists,
+  the list is the single pair `(its level, its rank r)`, and the selections below may also read rank
+  `r + 1` at that level. When no canonical gap exists, the list is every pair `(L, k)` such that `L` is
+  eligible for the label centre (the same cross-region eligibility as for the canonical gap, the root
+  always eligible) and rank `k` of `L` holds at least one sibling gap, ordered by `L` in the placement
+  pre-order above, then by `k` ascending. A level with a single rank has no rank gap, yet it contributes
+  the candidate `(L, 0)` when its rank 0 holds a sibling gap; a rank with fewer than two members in cross
+  order holds none and contributes nothing. When the list is empty, no gap set is selected for the
+  segment. This list, not the canonical gap, is what the selections below iterate.
   *One segment's search.* Blockers are the node rectangles and title bands intersecting the padded label
   box — enumerated nodes first (placement pre-order), then title bands (container pre-order) — and the
   already-placed label boxes it intersects, in ascending relation id. Every blocker is evaluated; an
@@ -954,12 +1008,18 @@ carries no hint for any of them:
   label, `D_cross = (crossSize + otherCross) / 2 + 2m − |centreCross − otherCentreCross|`; against a
   blocker shape, `D_cross = min(paddedCrossEnd − shapeCrossStart, shapeCrossEnd − paddedCrossStart) + 2m`.
   A positive `D_cross` is assigned *in full to each* gap of the selected gap set (separation grows by at
-  least the deficit; it is never divided among the gaps). Gap sets are selected: against a label, the
-  first defined of (targets at `r+1`, sources at `r`, sources at `r+1`, targets at `r`, target/source at
-  `r+1`, source/target at `r+1`, target/source at `r`, source/target at `r`) — members are `member_L` of
-  each relation's ends, `r` the canonical gap's rank, so a return edge is met at its geometric ranks, not
-  its roles; against a shape, the first defined-and-usable of (source member at `r`, target member at `r`,
-  source member at `r+1`, target member at `r+1`) against the shape owner's member. Per attempt, an
+  least the deficit; it is never divided among the gaps). Gap sets are selected by iterating the
+  T-sibling candidates in their order. Against a label, for each candidate `(L, k)` the first defined of
+  (targets at `k+1`, sources at `k`, sources at `k+1`, targets at `k`, target/source at
+  `k+1`, source/target at `k+1`, target/source at `k`, source/target at `k`) is tried, and the first
+  defined set over the whole iteration is selected — members are `member_L` of
+  each relation's ends, so a return edge is met at its geometric ranks, not
+  its roles; against a shape, for each candidate `(L, k)` in order the pairings (source member at `k`,
+  target member at `k`, source member at `k+1`, target member at `k+1`) against the shape owner's member
+  are tried, and the first defined-and-usable set over the whole iteration is selected. With a canonical
+  gap the sole candidate is `(its level, r)`, so these readings are exactly the former `r`/`r+1` ones;
+  without one, the candidate list supplies every `(L, k)` read here, the single-rank candidate `(L, 0)`
+  included. Per attempt, an
   unplaced label makes at most one composite request — for the first segment (in the order above) yielding
   a rank amount or a sibling amount — whose
   rank amount and every sibling amount take effect together; requests from several labels on one gap
@@ -976,14 +1036,22 @@ carries no hint for any of them:
   failing dimension closes under (a)–(d); *budget-closed* when no transformation is requestable and at
   least one failing dimension closes only under (e) or the progress guard. The closed proof reasons, over
   the closed transformation domain above (the only transformations the engine may apply), are: (a) the
-  segment runs across the flow and is too short — T-rank translates along the flow and cannot change a
-  cross length, and T-sibling separates members across the flow but moves this segment's lane as a whole,
-  so neither lengthens it; (b) a flow-aligned length, gap-width or along-flow shape deficit needs T-rank
+  segment runs across the flow and is too short, and no request admitted for this segment is a request to
+  lengthen it: the only length request the search defines is the T-rank amount, computed from flow-aligned
+  deficits (`D_len`, `D_gap` and the along-flow shape deficits) and applied as a main-axis gap
+  lengthening, while a T-sibling amount for this segment is admitted only from a cross deficit
+  (`D_cross`) against a blocker or a placed label, never from this segment's own length. Reason (a) is
+  therefore a statement about the requests admitted for this label, not about the geometry of a widening:
+  it asserts no invariance of the segment under a sibling widening (such a widening may move its two ends
+  by different amounts), and a transformation outside the admitted requests — a sibling amount invented
+  to lengthen this segment — is outside the domain the classification closes over; (b) a flow-aligned
+  length, gap-width or along-flow shape deficit needs T-rank
   but no eligible level has a gap crossing or holding the segment (gaps that do neither translate segment
   and blocker together or not at all), and the cross dimension is separately closed or absent; (c) a
   blocker shape spans the padded label on both cross sides and its owner is the lane's own member or an
-  ancestor of it, so it moves with the lane under any sibling widening; (d) for every candidate pairing
-  above, the lane and the blocker — or the two lanes — resolve to one member at the tried ranks, so the
+  ancestor of it, so it moves with the lane under any sibling widening; (d) for every pairing tried over
+  the T-sibling candidates above, the lane and the blocker — or the two lanes — resolve to one member at
+  the tried ranks, so the
   gap set is empty and a sibling widening moves both together. Segment reasons are recorded
   deterministically: rank reasons (a)/(b)/(e) first, then label blockers by relation id, then shapes in
   blocker order, deduplicated. A label is reported `label-unplaced`, with the relation as its sole ref,
@@ -1257,9 +1325,22 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   ordered by its representative (smallest relation id) end's other centre against a neighbouring slot, and
   the combined port/parallel fixture: two relations `A.p → B.q` plus a third `A.p → C`, where the parallel
   pair takes distinct slots in the same order at both ends with one `PortOccurrence` per relation end for
-  `p` and for `q`, the third relation keeps the shared port slot, and the parallel routes share no segment;
-  L-R3 the route selected between two equal-cost routes, including a state reached at equal cost from two
-  predecessors (the first-recorded parent is kept), the exact heuristic values on a bent approach, and both
+  `p` and for `q`, the third relation keeps the shared port slot, and the parallel routes share no segment,
+  and the port-occurrence id collision: a parallel relation `e` (a second relation joins the same unordered
+  entity pair) using port `p` as its source, laid out with
+  a distinct non-parallel port whose local id is `p.e.source`, where the two prescribed occurrences coexist
+  in one `ViewDocument` under distinct ids (`occurrence:p.e.1.p.1.e.source` and
+  `occurrence:p.s.10.p.e.source`), each carrying its own side, order and anchor, and each relation end
+  attaches to its own occurrence;
+  L-R3 the route selected between two routes equal on the `(bends, weighted length)` pair, including a state reached at equal pair cost from two
+  predecessors (the first-recorded parent is kept), a route beyond the former bend coefficient: a drawing
+  where the bend-minimal route's weighted length exceeds that of a route with two more bends by more than
+  `2 · 10^7` (both weighted lengths recomputed from the fixture geometry), and the returned route is still
+  the bend-minimal one, the exact heuristic values on a bent approach, the transversal parallel pair:
+  four nodes with relations `a, b : A→B`, `c : A→D` and `d : C→B`, no labels, at `W = 320`, where the full
+  simplified routes of `a` and `b`, dock-to-clearance joins included, share no segment and meet at no point
+  interior to both of a segment of each (in particular not at the crossings a shared-unit-only ban allows),
+  their slot order is the same at both ends, and neither relation is reported `route-obstructed`, and both
   fallback-elbow orientations (horizontal-exit and vertical-exit starts), the elbow reported
   `route-obstructed` and exempt from L-R8 and L-R9 for that relation only; L-R4 row constitution
   top-to-bottom (one rank) and left-to-right (a transitive overlap chain, not only a directly overlapping
@@ -1275,7 +1356,10 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   the union width in both), an empty document (zoom 1, left-to-right,
   no pan), a zero or non-finite `W` refused as `target-width-invalid`, and a viewport box narrower than its
   host (300 CSS px inside a 320 CSS px host: the engine is laid out at `W = 300`, the zoom and pan are
-  computed at 300, and every pixel of a 310 CSS px drawing is reachable); L-R6 a self-loop (rank unchanged,
+  computed at 300, and every pixel of a 310 CSS px drawing is reachable), and a loop overflowing to the
+  left: a self-loop whose finalized union is `U.x = [−8, 64]` at `W = 100`, where the produced view's
+  camera is `(−8, ymin)` at zoom 1, horizontal pan is fixed at `camera.x = −8`, the visible world interval
+  `[-8, 92]` covers the whole union at rest, and the loop's leftmost pixels are not clipped; L-R6 a self-loop (rank unchanged,
   semantic direction preserved), two interleaved cycles broken in ascending relation id order, a long edge's
   dummy ranks with their canonical `~<relation-id>~<rank>` keys sorting after every entity, the initial
   coordinates of a rank of unequal sizes (nodes centred in the band, containers at the band start, a dummy
@@ -1289,11 +1373,20 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   final geometry, a widening across several gaps and several blockers (the full cross deficit applied to each
   gap of the set, never divided; two labels requesting one gap in a round widen it by the maximum, never the
   sum; a request visible only from the next attempt, and the 12th attempt's geometry carrying no widening
-  that was only computed there), one `label-unplaced` fixture per L-R10 proof reason (a)–(d), each with the
+  that was only computed there), the single-rank loop: a labelled self-loop whose label centre lies in a
+  level with a single rank (so the level has no rank gap and no canonical gap exists for its segments),
+  where `T-sibling` is nevertheless evaluated at the canonical candidate `(that level, 0)`, the gap set
+  between the loop entity's member and the blocker's member at rank 0 is the one selected, and the label
+  is placed after that widening or classified on the final geometry under the reasons below — never left
+  unexamined for want of a canonical gap —, one `label-unplaced` fixture per L-R10 proof reason (a)–(d), each with the
   warning's sole relation ref, the per-segment reasons asserted on the final geometry, *and* an independent
-  enumeration of the final levels — every rank gap and every sibling gap set re-derived from the placed
+  enumeration of the final levels — every rank gap, every T-sibling candidate (the no-canonical-gap list
+  included) and every sibling gap set re-derived from the placed
   geometry, not from the engine's own search — showing no admissible transformation at or under the cap for
-  any segment, one `label-budget-exhausted` fixture per budget exit: a required amount over the
+  any segment; for a segment closed under (a), that enumeration re-derives the admitted requests from the
+  deficit formulas and shows that none of them is a request to lengthen that segment, without assuming
+  that a sibling widening moves the segment's ends together and without crediting any transformation the
+  search does not admit for that segment, one `label-budget-exhausted` fixture per budget exit: a required amount over the
   `4 · (size + 2m)` cap (the amount recomputed from the final geometry and asserted over the cap), a request
   still outstanding after 12 rounds, and a progress-guard stall, each reported under that code and never as
   `label-unplaced`;
