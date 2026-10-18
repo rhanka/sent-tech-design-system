@@ -148,7 +148,7 @@ rediscovered.
 | Annotations and circling | `GD-M2-CANVAS`, later |
 | Framework adapters (Svelte / React / Vue / Angular) | `GD-M2-DS-PRESENTATION` and the four DS packages |
 | Rendering: SVG, Canvas2D, WebGL, export | `@sentropic/graph`'s renderer and later slices |
-| Labels in the scene | the layout engine measures text through an injected function and places labels (`edgeLabelPlacement`); `SceneFrame` still carries no label item |
+| Labels in the scene | the layout engine measures text through an injected function and places labels (`placeEdgeLabels`); `SceneFrame` still carries no label item |
 | The group box of a collapsed group, and aggregate edges | later; this lot evaluates the `collapsed` flag and nothing more |
 | Projection, `LayoutOutcome.inverse` | `@sentropic/graph/processing`, already delivered; the L-R1–L-R11 layout is here (see Layout) |
 | Lasso and polygon selection | later; point and rectangle are what a selection needs first |
@@ -205,12 +205,12 @@ and `warnings` for what it could not fully satisfy (`label-unplaced`,
 | L-R2 shared side spread symmetrically | n slots at `(i - (n-1)/2) * s` from the centre; `s` widens for labels, narrows to `length/(n+1)`, and a node too short grows | idem |
 | L-R3 bends minimised after docking | A* on an orthogonal grid, cost `bends * 1e7 + length`; checked against an independent 0-1 BFS oracle | idem |
 | L-R4 row alignment and fill | top-to-bottom: the containers of a rank take its top and height; left-to-right: containers whose vertical spans overlap take a common top and height, members below are pushed down | idem |
-| L-R5 flow direction | left-to-right when that drawing fits `targetWidth` at scale 1, else top-to-bottom; no option forces it | idem |
+| L-R5 flow direction | left-to-right when that drawing fits `targetWidth` at scale 1, else top-to-bottom (subject to L-R7 when neither fits); no option forces it | idem |
 | L-R6 rank and order | longest path; edges taken in ascending relation id, the one closing a cycle (the greatest on it) reversed; barycentre sweeps, ties by entity id | idem |
-| L-R7 target width, phone fallback | at most 390 px: top-to-bottom; still too wide: zoom down to 0.75, then `pans` | idem |
+| L-R7 target width, phone fallback | L-R5 chooses at every width, phone included; neither fits: the narrower drawing wins (top-to-bottom on a tie); zoom down to 0.75, then `pans`; the page never scrolls horizontally | idem |
 | L-R8 edges across containers | every entity is an obstacle except the ancestors of either end | idem |
 | L-R9 parallel edges | distinct slots, same id order at both ends; a grid unit used by a parallel edge is forbidden to the next | idem |
-| L-R10 edge labels | centred on the longest segment (`edgeLabelPlacement`); a label that does not fit, or meets a node or title, lengthens the gap its segment crosses | idem |
+| L-R10 edge labels | centred on the longest segment that can hold the label (`placeEdgeLabels`, segments by decreasing length); when none can, the rank gap or the sibling gap the route crosses is widened until one can | idem |
 | L-R11 legend | none: the view holds no legend occurrence, group or field, and the options have no switch | idem |
 
 Determinism: the same document laid out twice, and with its entity and relation
@@ -222,9 +222,12 @@ budget in `tests/layout/performance.test.ts`, which prints the figure.
 
 Limits, stated rather than hidden:
 
-- A label on a segment that runs **alongside** a shape (across the flow) cannot be
-  cleared by lengthening; it is reported as `label-unplaced`. Seen once on the
-  40-node fixture laid out left to right (a back edge routed round the drawing).
+- A label no rank or sibling gap can clear is reported as `label-unplaced`:
+  lengthening moves the lane and the blocker together (the same member carries
+  both ends), the shape spans the lane past the label on both sides, or the
+  segment lies outside any rank gap. Seen once on the 40-node fixture laid out
+  left to right (`relation:x4`, a hand-off label thrown over the top of the
+  drawing), pinned in `tests/layout/rules.test.ts`.
 - A docking point on an entity occurrence is held as the first or last waypoint:
   a relation occurrence endpoint drawn on an entity cannot hold one, and a port
   occurrence may only draw the relation's own semantic port
@@ -246,7 +249,7 @@ src/scene.ts        SceneFrame, port anchors, relation routes, paint order
 src/hit.ts          point, region and device-space hit testing
 src/layout/         the layout engine, L-R1–L-R11 (see Layout)
 tests/              8 suites; types-nominal.test.ts is a COMPILER test
-tests/layout/       one fixture per layout rule, contract, determinism, time budget
+tests/layout/       one fixture per layout rule, contract, determinism, time budget, h2a dossiers
 ```
 
 ## Gates

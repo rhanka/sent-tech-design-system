@@ -6,6 +6,14 @@
  */
 
 export { layoutDocument } from "./engine.js";
-export { edgeLabelPlacement, relationRoute, type LabelPlacement } from "./labels.js";
+export {
+  edgeLabelCandidates,
+  edgeLabelPlacement,
+  labelBoxOnSegment,
+  placeEdgeLabels,
+  relationRoute,
+  type LabelEntry,
+  type LabelPlacement,
+} from "./labels.js";
 export { bendCount, simplifyRoute } from "./route.js";
 export * from "./types.js";

@@ -63,7 +63,7 @@ export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
   labelMargin: 4,
 };
 
-/** L-R7: the phone range, in CSS px, inside which the drawing is always top-to-bottom. */
+/** L-R7: the phone range, in CSS px. It no longer forces a direction — L-R5 chooses at every width — but `fit.phone` still reports it. */
 export const PHONE_MIN_WIDTH = 320;
 export const PHONE_MAX_WIDTH = 390;
 /** L-R7: the drawing scales down to this at most, then pans inside the canvas. */

@@ -34,7 +34,7 @@
 import type { EntityRef } from "@sentropic/diagram-core";
 
 import type { Rect } from "../transform.js";
-import type { LayoutGraph } from "./graph.js";
+import { memberOf, type LayoutGraph } from "./graph.js";
 import { orderLevel, type LevelEdge } from "./rank.js";
 import type { FlowDirection, LayoutMetrics, LayoutWarning, TextMeasurer } from "./types.js";
 
@@ -46,6 +46,20 @@ export interface LevelGeometry {
   readonly region: Rect;
   /** Absolute main-axis interval of the gap after rank `rank`. */
   readonly gaps: readonly { readonly rank: number; readonly from: number; readonly to: number }[];
+  /** Adjacent members of each rank, in cross order: what L-R10 widens sideways. */
+  readonly siblings: readonly SiblingGap[];
+}
+
+/** Two adjacent members of one rank: the sibling gap L-R10 may widen. */
+export interface SiblingGap {
+  /** Key into `PlaceInput.extraSiblingGaps`. */
+  readonly key: string;
+  /** Rank index within the level. */
+  readonly rank: number;
+  /** The member before the gap in cross order. */
+  readonly left: string;
+  /** The member after the gap in cross order. */
+  readonly right: string;
 }
 
 export interface Placement {
@@ -68,6 +82,8 @@ export interface PlaceInput {
   readonly measureText: TextMeasurer;
   /** Extra gap after a rank, keyed `<level key>#<rank>`, requested by L-R10. */
   readonly extraGaps: ReadonlyMap<string, number>;
+  /** Extra separation between two siblings, keyed by `SiblingGap.key`, requested by L-R10. */
+  readonly extraSiblingGaps: ReadonlyMap<string, number>;
   /** Minimum node sizes requested by docking, when a side was too short for its slots (L-R2). */
   readonly minSizes: ReadonlyMap<EntityRef, { readonly width: number; readonly height: number }>;
 }
@@ -84,9 +100,16 @@ interface LevelLocal {
   readonly crossSize: number;
   readonly boxes: ReadonlyMap<string, Box>;
   readonly gaps: readonly { readonly rank: number; readonly from: number; readonly to: number }[];
+  readonly siblings: readonly SiblingGap[];
 }
 
-const ROOT = "root";
+/** The level key of the drawing root: `Placement.levels` holds it at depth 0. */
+export const ROOT = "root";
+
+/** Key into `PlaceInput.extraSiblingGaps` for the gap between two adjacent members. */
+export function siblingGapKey(levelKey: string, rank: number, left: string, right: string): string {
+  return `${levelKey}#sibling#${rank}#${left}#${right}`;
+}
 const ROW_FILL_ROUNDS = 20;
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
@@ -122,7 +145,7 @@ export function slotSpacingFor(metrics: LayoutMetrics, labelThickness: number): 
 }
 
 export function place(input: PlaceInput): Placement {
-  const { graph, direction, metrics, measureText, extraGaps, minSizes } = input;
+  const { graph, direction, metrics, measureText, extraGaps, extraSiblingGaps, minSizes } = input;
   const leftToRight = direction === "left-to-right";
   const warnings: LayoutWarning[] = [];
   const rankOfEntity = new Map<EntityRef, number>();
@@ -152,13 +175,6 @@ export function place(input: PlaceInput): Placement {
 
   const titleHeight = new Map<EntityRef, number>();
   const contentOrigin = (id: EntityRef) => ({ x: metrics.containerPadding, y: metrics.containerPadding + titleHeight.get(id)! });
-
-  const memberOf = (entity: EntityRef, parent: EntityRef | undefined): EntityRef | undefined => {
-    for (let cursor: EntityRef | undefined = entity; cursor !== undefined; cursor = graph.nodes.get(cursor)?.parent) {
-      if (graph.nodes.get(cursor)?.parent === parent) return cursor;
-    }
-    return undefined;
-  };
 
   const levelLocals = new Map<string, LevelLocal>();
 
@@ -205,12 +221,24 @@ export function place(input: PlaceInput): Placement {
 
     const lifted: LevelEdge[] = [];
     for (const edge of graph.edges) {
-      const from = memberOf(edge.source.entity, parent);
-      const to = memberOf(edge.target.entity, parent);
+      const from = memberOf(graph, edge.source.entity, parent);
+      const to = memberOf(graph, edge.target.entity, parent);
       if (from === undefined || to === undefined || from === to) continue;
       lifted.push({ id: edge.id, from, to });
     }
     const order = orderLevel(sorted, lifted);
+    // Sibling gaps of this level, in cross order, with L-R10's requested widening.
+    const siblings: SiblingGap[] = [];
+    const siblingExtra = new Map<string, number>();
+    order.ranks.forEach((members, rank) => {
+      for (let index = 1; index < members.length; index += 1) {
+        const left = members[index - 1]!;
+        const right = members[index]!;
+        siblings.push({ key: siblingGapKey(key, rank, left, right), rank, left, right });
+        const extra = extraSiblingGaps.get(siblingGapKey(key, rank, left, right)) ?? 0;
+        if (extra > 0) siblingExtra.set(`${left}|${right}`, extra);
+      }
+    });
     for (const member of sorted) rankOfEntity.set(member, order.rankOf.get(member)!);
     for (const dummy of order.dummies) boxes.set(dummy, { main: 0, cross: 0, mainSize: 0, crossSize: metrics.slotSpacing });
 
@@ -240,9 +268,12 @@ export function place(input: PlaceInput): Placement {
     });
 
     // Cross axis: barycentric isotonic placement, keeping the L-R6 order.
+    // L-R10 may widen one sibling gap: the extra separation pushes exactly
+    // those two neighbours apart, and the lanes docked on them with them.
     const separation = (left: string, right: string) =>
       (boxes.get(left)!.crossSize + boxes.get(right)!.crossSize) / 2 +
-      (isDummy(left) || isDummy(right) ? metrics.slotSpacing : metrics.nodeGap);
+      (isDummy(left) || isDummy(right) ? metrics.slotSpacing : metrics.nodeGap) +
+      (siblingExtra.get(`${left}|${right}`) ?? 0);
     const centre = new Map<string, number>();
     for (const rank of order.ranks) {
       let running = 0;
@@ -368,7 +399,7 @@ export function place(input: PlaceInput): Placement {
       from: starts[rank]! + extents[rank]! - minMain,
       to: starts[rank + 1]! - minMain,
     }));
-    const local: LevelLocal = { mainSize: maxMain - minMain, crossSize: maxCross - minCross, boxes, gaps };
+    const local: LevelLocal = { mainSize: maxMain - minMain, crossSize: maxCross - minCross, boxes, gaps, siblings };
     levelLocals.set(key, local);
     return local;
   }
@@ -391,6 +422,7 @@ export function place(input: PlaceInput): Placement {
       depth,
       region,
       gaps: local.gaps.map((gap) => ({ rank: gap.rank, from: originMain + gap.from, to: originMain + gap.to })),
+      siblings: local.siblings,
     });
     for (const [id, box] of local.boxes) {
       const node = graph.nodes.get(id as EntityRef);
