@@ -19,13 +19,14 @@
  *   - `presentation.camera.zoom` is the L-R7 scale.
  *
  * L-R5 — flow direction: left-to-right when that drawing fits the target width
- *        at scale 1, top-to-bottom otherwise. A function of the graph and the
- *        width only: nothing in the document or the options can force it.
- * L-R7 — target width and phone fallback: at most 390 CSS px the drawing is
- *        top-to-bottom; if it is still wider than the target it scales down to
- *        0.75 at most, then the host pans inside the canvas (`fit.pans`). Below
- *        320 the same rule is applied; the spec's range starts at 320 because
- *        that is the narrowest page the DS supports.
+ *        at scale 1, top-to-bottom otherwise (subject to L-R7 when neither fits
+ *        at scale 1). A function of the graph and the width only: nothing in
+ *        the document or the options can force it.
+ * L-R7 — target width and phone fallback: L-R5 chooses the direction at every
+ *        width, the phone included. When neither direction fits at scale 1, the
+ *        direction that needs the smaller reduction wins, top-to-bottom on a
+ *        tie; the drawing scales down to 0.75 at most, then the host pans inside
+ *        the canvas (`fit.pans`). The page never scrolls horizontally.
  * L-R11 — legend: none. `generic@1` gives the engine no typed kind to explain,
  *        so the view holds no occurrence, group or field for one.
  *
@@ -53,9 +54,9 @@ import {
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
 import { dockEdges, type EdgeDocks } from "./dock.js";
-import { ancestorsOf, readGraph, type LayoutGraph } from "./graph.js";
-import { edgeLabelPlacement } from "./labels.js";
-import { place, type Placement } from "./place.js";
+import { ancestorsOf, memberOf, readGraph, type LayoutEdge, type LayoutGraph } from "./graph.js";
+import { edgeLabelCandidates, labelBoxOnSegment, pad, placeEdgeLabels, segmentLength } from "./labels.js";
+import { place, ROOT, type Placement } from "./place.js";
 import { routeEdges, type RouteRequest } from "./route.js";
 import {
   DEFAULT_LAYOUT_METRICS,
@@ -93,12 +94,13 @@ function draw(
 ): Drawing {
   const leftToRight = direction === "left-to-right";
   const extraGaps = new Map<string, number>();
+  const siblingGaps = new Map<string, number>();
   const minSizes = new Map<EntityRef, { width: number; height: number }>();
   let drawing: Drawing | undefined;
   let unplaced: RelationRef[] = [];
 
   for (let round = 0; round < LABEL_ROUNDS; round += 1) {
-    const placement = place({ graph, direction, metrics, measureText, extraGaps, minSizes });
+    const placement = place({ graph, direction, metrics, measureText, extraGaps, extraSiblingGaps: siblingGaps, minSizes });
     const docked = dockEdges({ graph, rects: placement.rects, direction, metrics, labelSizes });
     const docks = docked.docks;
     // L-R2 needs room: a node side too short for its slots grows, and the
@@ -137,53 +139,38 @@ function draw(
     const outcome = routeEdges({ rects: placement.rects, requests, clearance: metrics.clearance });
 
     const lengthen = new Map<string, number>();
+    const widen = new Map<string, number>();
     const waiting: RelationRef[] = [];
     unplaced = [];
-    const accepted: Rect[] = [];
+    const margin = metrics.labelMargin;
     const blockers: Rect[] = [
       ...[...placement.rects.entries()]
         .filter(([id]) => graph.nodes.get(id)!.kind === "node")
         .map(([, rect]) => rect),
       ...placement.titleBands.values(),
     ];
-    for (const edge of graph.edges) {
-      const size = labelSizes.get(edge.id);
-      if (size === undefined) continue;
-      const route = outcome.routes.get(edge.id)!;
-      const label = edgeLabelPlacement(route, size)!;
-      const a = route[label.segment]!;
-      const b = route[label.segment + 1]!;
-      const horizontal = a.y === b.y;
-      const along = horizontal ? size.width : size.height;
-      const segmentLength = Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
-      const margin = metrics.labelMargin;
-      const padded = {
-        x: label.box.x - margin,
-        y: label.box.y - margin,
-        width: label.box.width + 2 * margin,
-        height: label.box.height + 2 * margin,
-      };
-      const short = segmentLength < along + 2 * margin;
-      const hitsShape = blockers.some((rect) => rectsIntersect(rect, padded));
-      const hitsLabel = accepted.some((rect) => rectsIntersect(rect, padded));
-      accepted.push(label.box);
-      if (!short && !hitsShape && !hitsLabel) continue;
-
-      const mainAligned = leftToRight === horizontal;
-      const mainOf = (point: Vec2) => (leftToRight ? point.x : point.y);
-      const crossOf = (point: Vec2) => (leftToRight ? point.y : point.x);
-      const centreMain = mainOf(label.centre);
-      const labelMain = leftToRight ? size.width : size.height;
-      // The gap to lengthen: for a segment along the flow, the gap it crosses
-      // nearest to the label; for a segment across the flow, the gap holding it.
+    const shapeOwner = new Map<Rect, EntityRef>();
+    for (const [id, rect] of placement.rects) {
+      if (graph.nodes.get(id)!.kind === "node") shapeOwner.set(rect, id);
+    }
+    for (const [id, band] of placement.titleBands) shapeOwner.set(band, id);
+    const mainOf = (point: Vec2) => (leftToRight ? point.x : point.y);
+    const crossOf = (point: Vec2) => (leftToRight ? point.y : point.x);
+    // The rank gap to lengthen: for a segment along the flow, the gap it
+    // crosses nearest to the label; for a segment across the flow, the gap
+    // holding it. The root level owns everything, including a route running
+    // outside the drawing.
+    const findRankGap = (a: Vec2, b: Vec2, centre: Vec2, mainAligned: boolean) => {
       const segmentFrom = Math.min(mainOf(a), mainOf(b));
       const segmentTo = Math.max(mainOf(a), mainOf(b));
-      const crossAt = crossOf(label.centre);
-      let chosen: { readonly key: string; readonly from: number; readonly to: number; readonly distance: number; readonly depth: number } | undefined;
+      const centreMain = mainOf(centre);
+      const crossAt = crossOf(centre);
+      let chosen:
+        | { readonly level: (typeof placement.levels)[number]; readonly rank: number; readonly from: number; readonly to: number; readonly distance: number; readonly depth: number }
+        | undefined;
       for (const level of placement.levels) {
         const regionCrossFrom = leftToRight ? level.region.y : level.region.x;
         const regionCrossTo = regionCrossFrom + (leftToRight ? level.region.height : level.region.width);
-        // The root level owns everything, including a route running outside the drawing.
         if (level.depth > 0 && (crossAt < regionCrossFrom || crossAt > regionCrossTo)) continue;
         for (const gap of level.gaps) {
           const crosses = mainAligned
@@ -195,45 +182,219 @@ function draw(
             chosen === undefined ||
             distance < chosen.distance ||
             (distance === chosen.distance && level.depth > chosen.depth);
-          if (better) chosen = { key: `${level.key}#${gap.rank}`, from: gap.from, to: gap.to, distance, depth: level.depth };
+          if (better) chosen = { level, rank: gap.rank, from: gap.from, to: gap.to, distance, depth: level.depth };
         }
       }
-      let amount = 0;
-      if (chosen !== undefined) {
-        if (short && mainAligned) amount = Math.max(amount, along + 2 * margin - segmentLength);
-        if (chosen.distance === 0 && chosen.to - chosen.from < labelMain + 2 * margin) {
-          amount = Math.max(amount, labelMain + 2 * margin - (chosen.to - chosen.from));
+      return chosen;
+    };
+    // Sibling-gap keys on the path between two members of one rank: widening
+    // every gap between them pushes the lanes docked on them apart.
+    const keysBetween = (
+      level: (typeof placement.levels)[number],
+      rank: number,
+      first: string | undefined,
+      second: string | undefined,
+    ): readonly string[] | undefined => {
+      if (first === undefined || second === undefined || first === second) return undefined;
+      const siblings = level.siblings.filter((sibling) => sibling.rank === rank);
+      const order: string[] = [];
+      for (const sibling of siblings) {
+        if (order.length === 0) order.push(sibling.left);
+        order.push(sibling.right);
+      }
+      const from = order.indexOf(first);
+      const to = order.indexOf(second);
+      if (from < 0 || to < 0) return undefined;
+      const [low, high] = from < to ? [from, to] : [to, from];
+      const keys = siblings.slice(low, high).map((sibling) => sibling.key);
+      return keys.length > 0 ? keys : undefined;
+    };
+    // L-R10: every label sits centred on the longest segment of its route that
+    // can hold it without overlap; segments tried by decreasing length. Edges
+    // go in reference order, so the outcome never depends on record order.
+    const entries = graph.edges.flatMap((edge) => {
+      const size = labelSizes.get(edge.id);
+      return size === undefined ? [] : [{ id: edge.id, route: outcome.routes.get(edge.id)!, size }];
+    });
+    const choices = placeEdgeLabels(entries, blockers, margin);
+    const placedBoxes = new Map<RelationRef, Rect>();
+    for (const edge of graph.edges) {
+      const choice = choices.get(edge.id);
+      if (choice !== undefined) placedBoxes.set(edge.id, choice.box);
+    }
+    // Room for one label no tried segment can hold: segments by decreasing
+    // length, and for the first one a gap can be widened for, widen the rank
+    // gap its route crosses along the flow, or the sibling gap it crosses
+    // sideways, until one segment can hold it. True when a request was recorded.
+    const requestLabelRoom = (edge: LayoutEdge, route: readonly Vec2[], size: TextSize): boolean => {
+      const candidates = edgeLabelCandidates(route);
+      if (candidates.length === 0) return false;
+      const crossSize = leftToRight ? size.height : size.width;
+      const labelMain = leftToRight ? size.width : size.height;
+      // The lanes of two labels meet the next rank at their targets, the
+      // previous one at their sources: separate whichever pair shares the level.
+      const lanesBetween = (
+        level: (typeof placement.levels)[number],
+        parent: EntityRef | undefined,
+        rank: number,
+        first: LayoutEdge,
+        second: LayoutEdge,
+      ): readonly string[] | undefined => {
+        const attempts: readonly (readonly [EntityRef, EntityRef, number])[] = [
+          [first.target.entity, second.target.entity, rank + 1],
+          [first.source.entity, second.source.entity, rank],
+        ];
+        for (const [firstEntity, secondEntity, attemptRank] of attempts) {
+          const keys = keysBetween(
+            level,
+            attemptRank,
+            memberOf(graph, firstEntity, parent),
+            memberOf(graph, secondEntity, parent),
+          );
+          if (keys !== undefined) return keys;
         }
-        // Lengthening a gap the segment crosses moves the label, relative to a
-        // shape on either side of that gap, by half the amount: forward from a
-        // shape before it, backward from a shape after it. A shape that spans
-        // the gap (a title band along the flow) cannot be cleared that way.
-        if (hitsShape) {
-          const boxStart = leftToRight ? padded.x : padded.y;
-          const boxEnd = boxStart + (leftToRight ? padded.width : padded.height);
-          for (const rect of blockers) {
-            if (!rectsIntersect(rect, padded)) continue;
-            const rectStart = leftToRight ? rect.x : rect.y;
-            const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
-            if (mainAligned && rectEnd <= chosen.from) amount = Math.max(amount, 2 * (rectEnd - boxStart));
-            else if (mainAligned && rectStart >= chosen.to) amount = Math.max(amount, 2 * (boxEnd - rectStart));
-            else {
-              amount = 0;
-              break;
+        return undefined;
+      };
+      for (const segment of candidates) {
+        const a = route[segment]!;
+        const b = route[segment + 1]!;
+        const horizontal = a.y === b.y;
+        const mainAligned = leftToRight === horizontal;
+        const along = horizontal ? size.width : size.height;
+        const short = segmentLength(route, segment) < along + 2 * margin;
+        // A segment across the flow that is too short cannot grow by
+        // lengthening a rank gap: the next candidate is tried.
+        if (short && !mainAligned) continue;
+        const box = labelBoxOnSegment(route, segment, size).box;
+        const centre = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+        const padded = pad(box, margin);
+        const hitShapes = blockers.filter((rect) => rectsIntersect(rect, padded));
+        const hitLabels = graph.edges.filter(
+          (other) =>
+            other.id !== edge.id &&
+            placedBoxes.get(other.id) !== undefined &&
+            rectsIntersect(placedBoxes.get(other.id)!, padded),
+        );
+        // No overlap: placeEdgeLabels holds this label here, so an unplaced
+        // edge never reaches this with a fitting segment. A short but clear
+        // segment still needs its lengthening below.
+        if (!short && hitShapes.length === 0 && hitLabels.length === 0) continue;
+        const chosen = findRankGap(a, b, centre, mainAligned);
+        if (chosen === undefined) continue;
+        const key = `${chosen.level.key}#${chosen.rank}`;
+        const parent = chosen.level.key === ROOT ? undefined : (chosen.level.key as EntityRef);
+        // Two lanes the rank gap cannot separate — the same member carries
+        // both ends, so lengthening moves them together — fail this candidate.
+        const siblingRequests = new Map<string, number>();
+        let lanesBlocked = false;
+        for (const other of hitLabels) {
+          const otherBox = placedBoxes.get(other.id)!;
+          const otherCross = leftToRight ? otherBox.height : otherBox.width;
+          const lane = leftToRight ? centre.y : centre.x;
+          const otherLane =
+            leftToRight ? otherBox.y + otherBox.height / 2 : otherBox.x + otherBox.width / 2;
+          const need = (crossSize + otherCross) / 2 + 2 * margin - Math.abs(lane - otherLane);
+          if (need > MAX_LENGTHEN_LABELS * (crossSize + 2 * margin)) {
+            lanesBlocked = true;
+            break;
+          }
+          const keys = lanesBetween(chosen.level, parent, chosen.rank, other, edge);
+          if (keys === undefined) {
+            lanesBlocked = true;
+            break;
+          }
+          if (!short) {
+            for (const siblingKey of keys) {
+              siblingRequests.set(siblingKey, Math.max(siblingRequests.get(siblingKey) ?? 0, need));
             }
           }
         }
+        if (lanesBlocked) continue;
+        let rankAmount = 0;
+        if (short) rankAmount = Math.max(rankAmount, along + 2 * margin - segmentLength(route, segment));
+        // Lengthening a gap the segment crosses moves the label, relative to a
+        // shape on either side of that gap, by half the amount: forward from a
+        // shape before it, backward from a shape after it.
+        if (hitShapes.length > 0) {
+          if (mainAligned && chosen.distance === 0 && chosen.to - chosen.from < labelMain + 2 * margin) {
+            rankAmount = Math.max(rankAmount, labelMain + 2 * margin - (chosen.to - chosen.from));
+          }
+          const boxStart = leftToRight ? padded.x : padded.y;
+          const boxEnd = boxStart + (leftToRight ? padded.width : padded.height);
+          for (const rect of hitShapes) {
+            const rectStart = leftToRight ? rect.x : rect.y;
+            const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
+            if (mainAligned && rectEnd <= chosen.from) rankAmount = Math.max(rankAmount, 2 * (rectEnd - boxStart));
+            else if (mainAligned && rectStart >= chosen.to) rankAmount = Math.max(rankAmount, 2 * (boxEnd - rectStart));
+          }
+        }
+        // A shape the lane runs alongside (a title band along the flow, a node
+        // beside the lane) cannot be cleared by lengthening the rank gap: widen
+        // the sibling gap between the lane's member and the shape's instead.
+        const alongside = hitShapes.filter((rect) => {
+          if (!mainAligned) return true;
+          const rectStart = leftToRight ? rect.x : rect.y;
+          const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
+          return !(rectEnd <= chosen.from || rectStart >= chosen.to);
+        });
+        let shapeBlocked = false;
+        for (const rect of alongside) {
+          const owner = shapeOwner.get(rect);
+          if (owner === undefined) {
+            shapeBlocked = true;
+            break;
+          }
+          const lane = leftToRight ? centre.y : centre.x;
+          const shapeStart = leftToRight ? rect.y : rect.x;
+          const shapeEnd = shapeStart + (leftToRight ? rect.height : rect.width);
+          const paddedStart = leftToRight ? padded.y : padded.x;
+          const paddedEnd = paddedStart + (leftToRight ? padded.height : padded.width);
+          // The shape spans the lane past the label on both sides: no sibling
+          // gap separates them, so the engine provably cannot clear it.
+          if (shapeStart <= paddedStart && shapeEnd >= paddedEnd) {
+            shapeBlocked = true;
+            break;
+          }
+          const need = Math.min(paddedEnd - shapeStart, shapeEnd - paddedStart) + 2 * margin;
+          if (need > MAX_LENGTHEN_LABELS * (crossSize + 2 * margin)) {
+            shapeBlocked = true;
+            break;
+          }
+          const shapeMember = memberOf(graph, owner, parent);
+          const anchors = [edge.source.entity, edge.target.entity].map((entity) => memberOf(graph, entity, parent));
+          let cleared = false;
+          for (const rank of [chosen.rank, chosen.rank + 1]) {
+            for (const anchor of anchors) {
+              const keys = keysBetween(chosen.level, rank, anchor, shapeMember);
+              if (keys === undefined) continue;
+              for (const siblingKey of keys) {
+                siblingRequests.set(siblingKey, Math.max(siblingRequests.get(siblingKey) ?? 0, need));
+              }
+              cleared = true;
+            }
+            if (cleared) break;
+          }
+          if (!cleared) {
+            shapeBlocked = true;
+            break;
+          }
+        }
+        if (shapeBlocked) continue;
+        if (rankAmount > MAX_LENGTHEN_LABELS * (labelMain + 2 * margin)) continue;
+        if (rankAmount <= 0 && siblingRequests.size === 0) continue;
+        if (rankAmount > 0) lengthen.set(key, Math.max(lengthen.get(key) ?? 0, rankAmount));
+        for (const [siblingKey, need] of siblingRequests) {
+          widen.set(siblingKey, Math.max(widen.get(siblingKey) ?? 0, need));
+        }
+        return true;
       }
-      // Lengthening makes room for a label; it is not a way to slide the
-      // drawing under a label that runs alongside a shape. Past a few label
-      // lengths the engine reports the label instead.
-      if (amount <= 0 || chosen === undefined || amount > MAX_LENGTHEN_LABELS * (labelMain + 2 * margin)) {
-        unplaced.push(edge.id);
-        continue;
-      }
-      const key = chosen.key;
-      lengthen.set(key, Math.max(lengthen.get(key) ?? 0, amount));
-      waiting.push(edge.id);
+      return false;
+    };
+    for (const edge of graph.edges) {
+      const size = labelSizes.get(edge.id);
+      if (size === undefined || placedBoxes.has(edge.id)) continue;
+      if (requestLabelRoom(edge, outcome.routes.get(edge.id)!, size)) waiting.push(edge.id);
+      else unplaced.push(edge.id);
     }
 
     drawing = {
@@ -249,10 +410,11 @@ function draw(
         })),
       ],
     };
-    if (lengthen.size === 0) break;
+    if (lengthen.size === 0 && widen.size === 0) break;
     // Out of rounds with labels still waiting for room: they are reported, not dropped.
     if (round === LABEL_ROUNDS - 1) unplaced = [...unplaced, ...waiting];
     for (const [key, amount] of lengthen) extraGaps.set(key, (extraGaps.get(key) ?? 0) + amount);
+    for (const [key, amount] of widen) siblingGaps.set(key, (siblingGaps.get(key) ?? 0) + amount);
   }
 
   return {
@@ -262,7 +424,7 @@ function draw(
       ...unplaced.map((id) => ({
         code: "label-unplaced" as const,
         refs: [id],
-        message: `the label of ${id} overlaps a shape, a title or another label, and no segment could be lengthened to fix it`,
+        message: `the label of ${id} overlaps a shape, a title or another label, and no rank or sibling gap could be widened to fix it`,
       })),
     ],
   };
@@ -373,15 +535,20 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
 
   const target = options.targetWidth;
   const phone = target <= PHONE_MAX_WIDTH;
-  let drawing: Drawing;
-  if (phone) drawing = draw(graph, "top-to-bottom", metrics, options.measureText, labelSizes);
-  else {
-    const leftToRight = draw(graph, "left-to-right", metrics, options.measureText, labelSizes);
-    drawing =
-      leftToRight.placement.width <= target
-        ? leftToRight
-        : draw(graph, "top-to-bottom", metrics, options.measureText, labelSizes);
-  }
+  // L-R5 chooses the direction at every width, the phone included: the first
+  // direction that fits at scale 1 wins. When neither fits, L-R7 takes the one
+  // that needs the smaller reduction — the narrower drawing — top-to-bottom on
+  // a tie. The page never scrolls horizontally: past 0.75 the host pans.
+  const leftToRightDrawing = draw(graph, "left-to-right", metrics, options.measureText, labelSizes);
+  const topToBottomDrawing = draw(graph, "top-to-bottom", metrics, options.measureText, labelSizes);
+  const drawing =
+    leftToRightDrawing.placement.width <= target
+      ? leftToRightDrawing
+      : topToBottomDrawing.placement.width <= target
+        ? topToBottomDrawing
+        : leftToRightDrawing.placement.width < topToBottomDrawing.placement.width
+          ? leftToRightDrawing
+          : topToBottomDrawing;
 
   const width = drawing.placement.width;
   const zoom = width <= target ? 1 : Math.max(MIN_ZOOM, target / width);

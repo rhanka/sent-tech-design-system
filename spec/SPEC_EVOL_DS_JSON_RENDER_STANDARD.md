@@ -714,20 +714,25 @@ or layout hint; the engine owns docking, routing and row alignment:
 Engine rules for the cases h2a reported from the dossiers (h-cond, 2026-10-17); the DS fixes them, the scene
 carries no hint for any of them:
 - **L-R5 — flow direction.** Left-to-right when that drawing fits the target width at scale 1; top-to-bottom
-  otherwise. The choice is a function of the graph and the width only.
+  otherwise, subject to L-R7 when neither direction fits at scale 1. The choice is a function of the graph and the
+  width only.
 - **L-R6 — rank and sibling order.** Rank is the longest path from a source; a cycle is broken by reversing the
   edge with the greatest relation id. Within a rank, order minimises crossings (barycentre sweeps), ties broken by
   entity id. Document insertion order is never used: diagram-core collections are records keyed by id, so insertion
   order is not content.
-- **L-R7 — target width and phone fallback.** The target width is the host's content width. From 320 to 390 CSS px
-  the drawing is top-to-bottom; if it is still wider, it scales down to 0.75 at most, then pans inside the canvas.
-  The page never scrolls horizontally.
+- **L-R7 — target width and phone fallback.** The target width is the host's content width. L-R5 chooses the
+  direction at every width, the phone included. When neither direction fits at scale 1, the engine takes the
+  direction that needs the smaller reduction, top-to-bottom on a tie; it scales down to 0.75 at most, then pans
+  inside the canvas. The page never scrolls horizontally.
 - **L-R8 — edges across containers.** An edge between nodes of different containers crosses only the boundaries of
   their own ancestors; every other node and container is an obstacle.
 - **L-R9 — parallel edges.** Several edges between the same two nodes take distinct docking slots under L-R2 and
   never share a segment.
-- **L-R10 — edge labels.** A label sits on the longest segment of its route, centred, and never overlaps a node, a
-  container title or another label; when it cannot fit, the router lengthens that segment.
+- **L-R10 — edge labels.** A label sits centred on the longest segment of its route that can hold it without
+  overlap, and never overlaps a node, a container title or another label. Segments are tried by decreasing length.
+  When none can hold it, the engine widens the gap between ranks, or between siblings, that the route crosses, until
+  one segment can hold it. `label-unplaced` remains only for a case the engine provably cannot clear, and is named in
+  a test.
 - **L-R11 — legend.** No legend in L8: `generic@1` gives the engine no typed kind to explain. A legend comes with a
   profile that declares kinds.
 
