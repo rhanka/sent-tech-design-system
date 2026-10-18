@@ -137,22 +137,23 @@ describe("output", () => {
     }
   });
 
-  it("docks a link that targets a semantic port through a port occurrence with side, order and anchor", () => {
+  it("docks a link that targets a semantic port through an injective per-end occurrence (429c92a2)", () => {
     // The scene suites' own fixture: r1 joins port pa (on a) to port pb (on b).
     // `0b785150`: r1 and r2 share the unordered entity pair, so r1 is parallel
     // and each of its port ends takes its own occurrence identified by relation
-    // and role — never the shared port slot.
+    // and role — never the shared port slot. `429c92a2` encodes the ids
+    // injectively: `p.e.<len>.<port>.<len>.<relation>.<role>`.
     const document = sampleDocument();
     const { view } = lay(document, WIDE);
     const ports = Object.values(view.portOccurrences);
     expect(ports.map((port) => port.port).sort()).toEqual(["port:pa", "port:pb"]);
     const relation = Object.values(view.relationOccurrences).find((occurrence) => occurrence.relation === "relation:r1")!;
     expect(relation.endpoints.map((endpoint) => endpoint.occurrence).sort()).toEqual([
-      occurrenceRef("p.pa.r1.source"),
-      occurrenceRef("p.pb.r1.target"),
+      occurrenceRef("p.e.2.pa.2.r1.source"),
+      occurrenceRef("p.e.2.pb.2.r1.target"),
     ]);
     const route = relationRoute(view, relation.id)!;
-    const pa = view.portOccurrences[occurrenceRef("p.pa.r1.source")]!;
+    const pa = view.portOccurrences[occurrenceRef("p.e.2.pa.2.r1.source")]!;
     const owner = view.entityOccurrences[pa.ownerOccurrence]!;
     expect(route[0]).toEqual(portAnchorPoint(owner.geometry, pa.side, pa.anchor));
     expect(pa.side).toBe("east");

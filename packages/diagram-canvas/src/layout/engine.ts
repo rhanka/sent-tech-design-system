@@ -149,24 +149,53 @@ interface Drawing {
 }
 
 /**
- * L-R5's finalized width `B`: `xmax − xmin` over the union of every entity
- * rectangle, every route polyline dock to dock, and every placed label's
- * unpadded box. Unplaced labels are drawn nowhere and contribute nothing;
- * `B = 0` with no entities, routes or placed labels.
+ * L-R5/L-R7's finalized union `U` (429c92a2): `xmin`, `xmax`, `ymin`, `ymax`
+ * over every entity rectangle, every route polyline dock to dock, and every
+ * placed label's unpadded box. Unplaced labels are drawn nowhere and
+ * contribute nothing; all four are 0 with no entities, routes or placed
+ * labels. `B = xmax − xmin`; routes or labels extending to negative
+ * coordinates make `xmin` or `ymin` negative without moving any entity.
+ */
+interface UnionBounds {
+  readonly empty: boolean;
+  readonly xmin: number;
+  readonly xmax: number;
+  readonly ymin: number;
+  readonly ymax: number;
+  readonly width: number;
+}
+
+function unionBounds(drawing: Drawing): UnionBounds {
+  let empty = true;
+  let xmin = Number.POSITIVE_INFINITY;
+  let xmax = Number.NEGATIVE_INFINITY;
+  let ymin = Number.POSITIVE_INFINITY;
+  let ymax = Number.NEGATIVE_INFINITY;
+  const extend = (x: number, y: number): void => {
+    empty = false;
+    if (x < xmin) xmin = x;
+    if (x > xmax) xmax = x;
+    if (y < ymin) ymin = y;
+    if (y > ymax) ymax = y;
+  };
+  for (const rect of drawing.placement.rects.values()) {
+    extend(rect.x, rect.y);
+    extend(rect.x + rect.width, rect.y + rect.height);
+  }
+  for (const route of drawing.routes.values()) for (const point of route) extend(point.x, point.y);
+  for (const box of drawing.labelBoxes.values()) {
+    extend(box.x, box.y);
+    extend(box.x + box.width, box.y + box.height);
+  }
+  if (empty) return { empty: true, xmin: 0, xmax: 0, ymin: 0, ymax: 0, width: 0 };
+  return { empty: false, xmin, xmax, ymin, ymax, width: xmax - xmin };
+}
+
+/**
+ * L-R5's finalized width `B`: `xmax − xmin` over the union above.
  */
 function boundsWidth(drawing: Drawing): number {
-  let empty = true;
-  let min = Number.POSITIVE_INFINITY;
-  let max = Number.NEGATIVE_INFINITY;
-  const extend = (from: number, to: number): void => {
-    empty = false;
-    if (from < min) min = from;
-    if (to > max) max = to;
-  };
-  for (const rect of drawing.placement.rects.values()) extend(rect.x, rect.x + rect.width);
-  for (const route of drawing.routes.values()) for (const point of route) extend(point.x, point.x);
-  for (const box of drawing.labelBoxes.values()) extend(box.x, box.x + box.width);
-  return empty ? 0 : max - min;
+  return unionBounds(drawing).width;
 }
 
 /**
@@ -853,6 +882,7 @@ function buildView(
   drawing: Drawing,
   viewId: ViewDocument["viewId"],
   zoom: number,
+  camera: { readonly x: number; readonly y: number },
 ): ViewDocument {
   const occurrenceOf = (entity: EntityRef): OccurrenceRef => occurrenceRef(`e.${localIdOf(entity)}`);
   const maxContainerDepth = Math.max(
@@ -874,8 +904,14 @@ function buildView(
 
   const portOccurrences: Record<string, PortOccurrence> = {};
   const relationOccurrences: Record<string, RelationOccurrence> = {};
-  // L-R2/L-R9: a non-parallel port takes one occurrence; a parallel end on a
-  // port takes one occurrence per relation end, each with its own slot.
+  // L-R2/L-R9 (429c92a2): port occurrence ids are encoded injectively.
+  // `coded(s)` is `<len(s)>.<s>`; a non-parallel port takes one shared
+  // occurrence `p.s.<coded(port)>`, a parallel end takes one per-end
+  // occurrence `p.e.<coded(port)>.<coded(relation)>.<role>`. The fixed
+  // `p.s.`/`p.e.` prefixes keep the forms apart and each length field fixes
+  // its component's end, so distinct ports and distinct (port, relation,
+  // role) ends never collide for any `LOCAL_ID` local ids.
+  const coded = (value: string): string => `${value.length}.${value}`;
   const parallel = parallelRelations(graph);
   for (const edge of graph.edges) {
     const pair = drawing.docks.get(edge.id)!;
@@ -883,8 +919,8 @@ function buildView(
     const endOccurrence = (dock: EdgeDocks["source"], role: "source" | "target"): OccurrenceRef => {
       if (dock.port === undefined) return occurrenceOf(dock.entity);
       const id = parallel.has(edge.id)
-        ? occurrenceRef(`p.${localIdOf(dock.port)}.${localIdOf(edge.id)}.${role}`)
-        : occurrenceRef(`p.${localIdOf(dock.port)}`);
+        ? occurrenceRef(`p.e.${coded(localIdOf(dock.port))}.${coded(localIdOf(edge.id))}.${role}`)
+        : occurrenceRef(`p.s.${coded(localIdOf(dock.port))}`);
       portOccurrences[id] ??= {
         id,
         port: dock.port,
@@ -919,7 +955,13 @@ function buildView(
     portOccurrences,
     groups: {},
     filters: [],
-    presentation: { camera: { x: 0, y: 0, zoom } },
+    // L-R7 (429c92a2): the produced view's initial framing is
+    // `(xmin, ymin, s)` for a non-empty drawing, `(0, 0, 1)` when empty.
+    // Pan limits (`[xmin, xmax − W/s]`, fixed at `xmin` without pan, and the
+    // `y` analogue with the viewport content height `H`) are a renderer rule:
+    // no renderer lives in this package (L8), so they stay not covered —
+    // the engine returns the camera in its own result next to `fit`.
+    presentation: { camera: { x: clean(camera.x), y: clean(camera.y), zoom } },
   };
 }
 
@@ -968,13 +1010,17 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
   const topToBottomDrawing = draw(graph, "top-to-bottom", metrics, options.measureText, labelSizes);
   const drawing = pickDrawing(leftToRightDrawing, topToBottomDrawing, target);
 
-  // L-R7: `s = min(1, max(0.75, W / B))` on the chosen finalized width `B`.
-  // The empty drawing takes zoom 1; `B = W / 0.75` gives exactly 0.75, and
-  // the drawing pans exactly when `B · s > W`, that is `B > W / 0.75`. The
-  // reported width is `B`.
-  const width = boundsWidth(drawing);
-  const zoom = width === 0 ? 1 : Math.min(1, Math.max(MIN_ZOOM, target / width));
-  const view = buildView(document, graph, drawing, options.viewId ?? viewRef("layout"), zoom);
+  // L-R7 (429c92a2): `s = min(1, max(0.75, W / B))` on the chosen finalized
+  // width `B = xmax − xmin`. The empty drawing takes zoom 1 with camera
+  // `(0, 0, 1)`; a non-empty drawing takes `(xmin, ymin, s)`, so the union's
+  // minimum corner sits at the view origin. `B = W / 0.75` gives exactly
+  // 0.75, and the drawing pans exactly when `B · s > W`, that is
+  // `B > W / 0.75`. The reported width is `B`.
+  const bounds = unionBounds(drawing);
+  const width = bounds.width;
+  const zoom = bounds.empty ? 1 : Math.min(1, Math.max(MIN_ZOOM, target / width));
+  const camera = bounds.empty ? { x: 0, y: 0 } : { x: bounds.xmin, y: bounds.ymin };
+  const view = buildView(document, graph, drawing, options.viewId ?? viewRef("layout"), zoom, camera);
   return {
     status: "laid-out",
     view,
