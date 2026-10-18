@@ -181,3 +181,19 @@ export function ancestorsOf(graph: LayoutGraph, id: EntityRef): readonly EntityR
 export function isAncestor(graph: LayoutGraph, ancestor: EntityRef, of: EntityRef): boolean {
   return ancestorsOf(graph, of).includes(ancestor);
 }
+
+/**
+ * The member of `parent`'s level an entity is laid out with: itself when its
+ * own parent is `parent` (`undefined` at the root), else the ancestor it
+ * descends from. `undefined` when the entity is not under `parent` at all.
+ */
+export function memberOf(
+  graph: LayoutGraph,
+  entity: EntityRef,
+  parent: EntityRef | undefined,
+): EntityRef | undefined {
+  for (let cursor: EntityRef | undefined = entity; cursor !== undefined; cursor = graph.nodes.get(cursor)?.parent) {
+    if (graph.nodes.get(cursor)?.parent === parent) return cursor;
+  }
+  return undefined;
+}
