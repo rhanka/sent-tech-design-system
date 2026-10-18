@@ -919,8 +919,10 @@ carries no hint for any of them:
   `[xmin, xmax − W / s]` when `xmax − W / s ≥ xmin`, and is fixed at `xmin` otherwise (no horizontal pan);
   `camera.y` stays in `[ymin, ymax − H / s]` when `ymax − H / s ≥ ymin`, and is fixed at `ymin` otherwise,
   where `H` is the viewport box's content height in CSS px, measured by the renderer as it measures `W`.
-  At the greatest pan the visible interval ends exactly at `xmax` (resp. `ymax`), so every pixel of the
-  drawing is reachable and none is reachable only outside the limits. The renderer containment is a
+  On an axis where the drawing overflows the viewport after zoom — its extent on that axis exceeds
+  `W / s` (resp. `H / s`) — at the greatest pan the visible interval ends exactly at `xmax` (resp.
+  `ymax`), so every pixel of the drawing is reachable on that axis and none is reachable only outside
+  the limits. The renderer containment is a
   renderer rule, not a
   geometry outcome: the `DiagramCanvas` renderer clips the drawing to that viewport box, whose box is never
   sized by the drawing's width or height; overflow is contained inside that box (`overflow: hidden` or an
@@ -1336,11 +1338,16 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   predecessors (the first-recorded parent is kept), a route beyond the former bend coefficient: a drawing
   where the bend-minimal route's weighted length exceeds that of a route with two more bends by more than
   `2 · 10^7` (both weighted lengths recomputed from the fixture geometry), and the returned route is still
-  the bend-minimal one, the exact heuristic values on a bent approach, the transversal parallel pair:
-  four nodes with relations `a, b : A→B`, `c : A→D` and `d : C→B`, no labels, at `W = 320`, where the full
-  simplified routes of `a` and `b`, dock-to-clearance joins included, share no segment and meet at no point
-  interior to both of a segment of each (in particular not at the crossings a shared-unit-only ban allows),
-  their slot order is the same at both ends, and neither relation is reported `route-obstructed`, and both
+  the bend-minimal one, the exact heuristic values on a bent approach, the transversal parallel pair as
+  an expected-fallback fixture: four nodes with relations `a, b : A→B`, `c : A→D` and `d : C→B`, no
+  labels, at `W = 320`, where `a` is routed with no warning and the sole warning is `route-obstructed`
+  for `b` (its fallback elbow accepted under L-R3 for that relation only), and the clean parallel pair:
+  three nodes `A`, `B` and `C` with relations `a, b : A→B` and `c : A→C`, no ports and no labels, at
+  `W = 320`, where `c` shares `A`'s east side with the pair and no other relation shares `B`'s west
+  side, no warning is reported, `a` and `b` keep the same slot order at both ends, the full simplified
+  routes of `a` and `b` are `(64,35) → (72,35) → (72,12) → (120,12)` and
+  `(64,47) → (92,47) → (92,24) → (120,24)`, and those routes, dock-to-clearance joins included, share
+  no segment and meet at no point interior to both of a segment of each, and both
   fallback-elbow orientations (horizontal-exit and vertical-exit starts), the elbow reported
   `route-obstructed` and exempt from L-R8 and L-R9 for that relation only; L-R4 row constitution
   top-to-bottom (one rank) and left-to-right (a transitive overlap chain, not only a directly overlapping
