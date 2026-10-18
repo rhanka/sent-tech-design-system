@@ -18,9 +18,17 @@ import {
 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { buildScene, layoutDocument, portAnchorPoint, relationRoute, sceneEdges, sceneOccurrenceCount } from "../../src/index.js";
+import {
+  bendCount,
+  buildScene,
+  layoutDocument,
+  portAnchorPoint,
+  relationRoute,
+  sceneEdges,
+  sceneOccurrenceCount,
+} from "../../src/index.js";
 import { sampleDocument } from "../fixtures.js";
-import { WIDE, buildDocument, lay, measure } from "./fixtures.js";
+import { WIDE, buildDocument, isOrthogonal, lay, measure, rectOf, routeOf, sideOfPoint } from "./fixtures.js";
 
 const options = { registry: defaultProfileRegistry, measureText: measure, targetWidth: WIDE };
 
@@ -143,6 +151,34 @@ describe("output", () => {
     expect(pa.side).toBe("east");
     expect(pa.anchor).toBeGreaterThan(0);
     expect(pa.anchor).toBeLessThan(1);
+  });
+
+  it("routes a self-loop out of the flow exit side and back on the side before it", () => {
+    const { view, warnings } = lay(buildDocument({ nodes: ["a"], links: [["r1", "a", "a"]] }), WIDE);
+    expect(warnings).toEqual([]);
+    const route = routeOf(view, "r1");
+    const rect = rectOf(view, "a");
+    expect(isOrthogonal(route)).toBe(true);
+    expect(sideOfPoint(rect, route[0]!)).toBe("east");
+    expect(sideOfPoint(rect, route[route.length - 1]!)).toBe("north");
+    expect(bendCount(route)).toBe(3);
+  });
+
+  it("routes a link between a container and its own child inside the container", () => {
+    const document = buildDocument({ nodes: ["n", "m"], containers: { k: ["n", "m"] }, links: [["r1", "k", "n"], ["r2", "m", "k"], ["r3", "n", "m"]] });
+    const { view, warnings } = lay(document, WIDE);
+    expect(warnings).toEqual([]);
+    const k = rectOf(view, "k");
+    for (const relation of ["r1", "r2"]) {
+      const route = routeOf(view, relation);
+      expect(isOrthogonal(route)).toBe(true);
+      for (const point of route) {
+        expect(point.x).toBeGreaterThanOrEqual(k.x);
+        expect(point.x).toBeLessThanOrEqual(k.x + k.width);
+        expect(point.y).toBeGreaterThanOrEqual(k.y);
+        expect(point.y).toBeLessThanOrEqual(k.y + k.height);
+      }
+    }
   });
 
   it("is drawn by the existing scene builder with every occurrence conserved", () => {

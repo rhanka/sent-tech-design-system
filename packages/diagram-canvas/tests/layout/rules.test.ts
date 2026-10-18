@@ -445,6 +445,33 @@ describe("L-R9 — parallel edges take distinct slots and never share a segment"
   });
 });
 
+describe("L-R9 — parallel edges that must bend still never share a segment", () => {
+  // a also feeds c, so b is not level with a: the three a -> b edges bend.
+  const document = buildDocument({
+    nodes: ["a", "b", "c"],
+    links: [
+      ["p1", "a", "b"],
+      ["p2", "a", "b"],
+      ["p3", "a", "b"],
+      ["q1", "a", "c"],
+    ],
+  });
+  const { view } = lay(document, WIDE);
+  const routes = ["p1", "p2", "p3"].map((relation) => routeOf(view, relation));
+
+  it("the case is not trivial: the parallel routes do bend", () => {
+    expect(routes.some((route) => bendCount(route) > 0)).toBe(true);
+  });
+
+  it("distinct slots at both ends, and no shared segment", () => {
+    expect(new Set(routes.map((route) => JSON.stringify(first(route)))).size).toBe(3);
+    expect(new Set(routes.map((route) => JSON.stringify(last(route)))).size).toBe(3);
+    for (let i = 0; i < routes.length; i += 1) {
+      for (let j = i + 1; j < routes.length; j += 1) expect(sharesSegment(routes[i]!, routes[j]!)).toBe(false);
+    }
+  });
+});
+
 describe("L-R10 — a label sits centred on the longest segment and overlaps nothing", () => {
   const LONG = "a rather long edge label"; // 24 characters: 168 px, far more than the base gap
   const labelled = buildDocument({
