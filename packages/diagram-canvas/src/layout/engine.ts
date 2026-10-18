@@ -18,29 +18,33 @@
  *     to it and its route starts at the port anchor;
  *   - `presentation.camera.zoom` is the L-R7 scale.
  *
- * L-R5 — flow direction, measured after labels: both finalized drawings
- *        (left-to-right and top-to-bottom, each with its L-R10 widening rounds
- *        complete) are compared at their finalized widths `B_lr`, `B_tb`.
- *        Left-to-right when `B_lr ≤ W`, else top-to-bottom when `B_tb ≤ W`,
- *        else the narrower, top-to-bottom on an exact tie. A function of the
- *        graph and the width only: nothing in the document or the options can
- *        force it.
- * L-R7 — target width and phone fallback: `W` finite and greater than 0, else
+ * L-R5 — flow direction, measured after labels, on the bounds of everything
+ *        drawn: both finalized drawings (left-to-right and top-to-bottom,
+ *        each with its L-R10 attempts complete) are compared at `B_lr`,
+ *        `B_tb`, the translation-invariant `xmax − xmin` over the union of
+ *        entity rectangles, route polylines dock to dock, and placed label
+ *        boxes. Left-to-right when `B_lr ≤ W`, else top-to-bottom when
+ *        `B_tb ≤ W`, else the narrower, top-to-bottom on an exact tie. A
+ *        function of the graph and the width only.
+ * L-R7 — target width and phone fallback: `W` is the effective viewport inner
+ *        width (content-box, CSS px), finite and greater than 0, else
  *        `target-width-invalid` with no view and no scale. An empty drawing
  *        (`B = 0`) takes left-to-right, zoom 1, no pan. Otherwise the zoom is
  *        `s = min(1, max(0.75, W / B))`, and the drawing pans exactly when
  *        `B · s > W` (that is `B > W / 0.75`). L-R5 chooses at every width,
  *        the phone range included; no width forces a direction. Renderer
- *        containment (viewport box at most `W`, clipped, pan inside the box)
- *        is a renderer rule, not a geometry outcome.
+ *        containment (viewport box at `W`, clipped, pan inside the box) is a
+ *        renderer rule, not a geometry outcome.
  * L-R10 — edge labels: centred on the longest holdable segment; otherwise at
- *        most 12 widening rounds (side growth shares them), one request per
- *        label per round, gaps combined by maximum. A widening round that
- *        moved nothing (same gaps, same length, same overlaps, same demand)
- *        is not repeated for that label: the next segment is tried instead.
- *        On the final geometry a label with a request outstanding is
- *        `label-budget-exhausted`, and only a label closed by the residual
- *        predicate on every segment is `label-unplaced`; never merged.
+ *        most 12 placement attempts (side growth shares them), one composite
+ *        request per label per attempt, gaps combined by maximum, requests
+ *        taking effect only in the next attempt (the 12th attempt's requests
+ *        are recorded but never applied). Every blocker is evaluated, both
+ *        transformations independently; (e) and the progress guard are
+ *        budget outcomes, never proof. On the final geometry a label is
+ *        `label-unplaced` only when every segment is proof-closed under
+ *        (a)–(d); any open segment, 12th-attempt request or budget-closed
+ *        segment reports `label-budget-exhausted`; never merged.
  * L-R11 — legend: none. `generic@1` gives the engine no typed kind to explain,
  *        so the view holds no occurrence, group or field for one.
  *
@@ -68,8 +72,8 @@ import {
 
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
-import { dockEdges, type EdgeDocks } from "./dock.js";
-import { ancestorsOf, memberOf, readGraph, type LayoutEdge, type LayoutGraph } from "./graph.js";
+import { dockEdges, parallelRelations, type EdgeDocks } from "./dock.js";
+import { ancestorsOf, isAncestor, memberOf, readGraph, type LayoutEdge, type LayoutGraph } from "./graph.js";
 import { edgeLabelCandidates, labelBoxOnSegment, pad, placeEdgeLabels, segmentLength } from "./labels.js";
 import { place, ROOT, type Placement } from "./place.js";
 import { routeEdges, type RouteRequest } from "./route.js";
@@ -93,15 +97,17 @@ const LABEL_ROUNDS = 12;
 const MAX_LENGTHEN_LABELS = 4;
 
 /**
- * L-R10 residual reasons: the closed list of why no widening exists for one
- * route segment — (a) the segment runs across the flow and is too short;
- * (b) no rank gap at any containing level crosses or holds it usefully;
- * (c) a blocking shape spans the padded label on both cross-axis sides;
- * (d) the lane and the blocker, or the two lanes, share one member at the
- * relevant ranks, so the sibling-gap set is empty;
- * (e) the required lengthening or separation exceeds the `4 ·` cap.
- * A gap whose lengthening provably makes no progress (the segment keeps its
- * length and no overlap shrinks) counts as (b): no useful gap.
+ * L-R10 closed proof reasons over the engine's transformation domain: (a)
+ * the segment runs across the flow and is too short; (b) a flow-aligned
+ * length, gap-width or along-flow shape deficit needs T-rank but no eligible
+ * level has a gap crossing or holding the segment; (c) a blocking shape spans
+ * the padded label on both cross-axis sides and its owner is the lane's own
+ * member or an ancestor of it; (d) for every candidate pairing the lane and
+ * the blocker resolve to one member, so the sibling-gap set is empty; (e) a
+ * required amount exceeds the `4 ·` cap. Recorded deterministically (rank
+ * reasons first, then label blockers by relation id, then shapes in blocker
+ * order, deduplicated). (e) and the progress guard are budget outcomes:
+ * they never make a label `label-unplaced`.
  */
 export type ResidualReason = "a" | "b" | "c" | "d" | "e";
 
@@ -112,10 +118,13 @@ export interface SegmentResidual {
 }
 
 /**
- * L-R10 residual predicate: a label is provably unplaceable exactly when it
- * has at least one segment and every segment carries a closed reason.
- * A label with a widening request outstanding is never unplaceable: after the
- * 12th round it is `label-budget-exhausted`, never `label-unplaced`.
+ * L-R10 residual predicate over recorded reasons: a label carries closed
+ * reasons on every segment. The engine's proof additionally requires no
+ * budget outcome ((e) or the progress guard) on any segment: use this helper
+ * together with the diagnosed outcome, never alone, to decide
+ * `label-unplaced`. A label with a widening request outstanding is never
+ * unplaceable: after the 12th attempt it is `label-budget-exhausted`, never
+ * `label-unplaced`.
  */
 export function residualUnplaceable(segments: readonly SegmentResidual[]): boolean {
   return segments.length > 0 && segments.every((entry) => entry.reasons.length > 0);
@@ -133,8 +142,31 @@ interface Drawing {
   readonly docks: ReadonlyMap<RelationRef, EdgeDocks>;
   readonly routes: ReadonlyMap<RelationRef, readonly Vec2[]>;
   readonly warnings: readonly LayoutWarning[];
+  /** Final attempt's placed label boxes, for L-R5's bounds union. */
+  readonly labelBoxes: ReadonlyMap<RelationRef, Rect>;
   /** Per-label L-R10 outcome on the final geometry, for AC-L8 fixtures. */
   readonly labelOutcomes: ReadonlyMap<RelationRef, LabelOutcome>;
+}
+
+/**
+ * L-R5's finalized width `B`: `xmax − xmin` over the union of every entity
+ * rectangle, every route polyline dock to dock, and every placed label's
+ * unpadded box. Unplaced labels are drawn nowhere and contribute nothing;
+ * `B = 0` with no entities, routes or placed labels.
+ */
+function boundsWidth(drawing: Drawing): number {
+  let empty = true;
+  let min = Number.POSITIVE_INFINITY;
+  let max = Number.NEGATIVE_INFINITY;
+  const extend = (from: number, to: number): void => {
+    empty = false;
+    if (from < min) min = from;
+    if (to > max) max = to;
+  };
+  for (const rect of drawing.placement.rects.values()) extend(rect.x, rect.x + rect.width);
+  for (const route of drawing.routes.values()) for (const point of route) extend(point.x, point.x);
+  for (const box of drawing.labelBoxes.values()) extend(box.x, box.x + box.width);
+  return empty ? 0 : max - min;
 }
 
 /**
@@ -352,6 +384,8 @@ function draw(
       readonly rankAmount: number;
       readonly sibling: ReadonlyMap<string, number>;
       readonly reasons: readonly ResidualReason[];
+      /** A failing dimension closes only under (e) or the progress guard: budget, never proof. */
+      readonly budget: boolean;
     }
     const searchSegment = (edge: LayoutEdge, route: readonly Vec2[], size: TextSize, segment: number): SegmentSearch => {
       const crossSize = crossSizeOf(size);
@@ -385,150 +419,226 @@ function draw(
         rankAmount: 0,
         sibling: new Map(),
         reasons: [],
+        budget: false,
       };
       // No deficit: placeEdgeLabels holds this label here; an unplaced label
       // never reaches this with a fitting segment.
       if (!short && hitShapes.length === 0 && hitLabels.length === 0) return { ...none, holds: true };
-      // (a) A segment across the flow that is too short is never lengthened
-      // by a rank gap, and a sibling widening cannot extend it either.
-      if (short && !mainAligned) return { ...none, reasons: ["a"] };
-      const chosen = findRankGap(a, b, centre, mainAligned);
-      // (b) No rank gap at any containing level crosses or holds the segment.
-      if (chosen === undefined) return { ...none, reasons: ["b"] };
-      const key = `${chosen.level.key}#${chosen.rank}`;
-      const parent = chosen.level.key === ROOT ? undefined : (chosen.level.key as EntityRef);
+      // Every blocker is evaluated; an early blocker never hides a later one.
+      // The two transformations are independent: one's rejection never
+      // cancels the other. Reasons accumulate rank-first, then label blockers
+      // by relation id, then shapes in blocker order, deduplicated at the end.
       const reasons: ResidualReason[] = [];
+      // (a) A segment across the flow that is too short is never lengthened
+      // by a rank gap: T-rank translates along the flow and cannot change a
+      // cross length, and T-sibling moves this segment's lane as a whole, so
+      // neither lengthens it. The segment can never hold the label: blockers
+      // are still evaluated for the record below, but no sibling amount is
+      // requested for it — the label belongs on another segment.
+      const doomed = short && !mainAligned;
+      if (doomed) reasons.push("a");
+      const chosen = findRankGap(a, b, centre, mainAligned);
+      // The rank deficits: the length deficit (flow-aligned only), the
+      // gap-width deficit when the centre sits in a short canonical gap, and
+      // the along-flow shape deficits (twice, the centre moves by half the
+      // lengthening). Without a canonical gap T-rank is unavailable.
       let rankAmount = 0;
-      if (short) rankAmount = Math.max(rankAmount, along + 2 * margin - segLen);
-      // Lengthening a gap the segment crosses moves the label, relative to a
-      // shape on either side of that gap, by half the amount: forward from a
-      // shape before it, backward from a shape after it.
-      if (hitShapes.length > 0) {
-        if (mainAligned && chosen.distance === 0 && chosen.to - chosen.from < labelMain + 2 * margin) {
-          rankAmount = Math.max(rankAmount, labelMain + 2 * margin - (chosen.to - chosen.from));
+      if (chosen !== undefined) {
+        if (short && mainAligned) rankAmount = Math.max(rankAmount, along + 2 * margin - segLen);
+        if (hitShapes.length > 0) {
+          if (mainAligned && chosen.distance === 0 && chosen.to - chosen.from < labelMain + 2 * margin) {
+            rankAmount = Math.max(rankAmount, labelMain + 2 * margin - (chosen.to - chosen.from));
+          }
+          const boxStart = leftToRight ? padded.x : padded.y;
+          const boxEnd = boxStart + (leftToRight ? padded.width : padded.height);
+          for (const rect of hitShapes) {
+            const rectStart = leftToRight ? rect.x : rect.y;
+            const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
+            if (mainAligned && rectEnd <= chosen.from) rankAmount = Math.max(rankAmount, 2 * (rectEnd - boxStart));
+            else if (mainAligned && rectStart >= chosen.to) rankAmount = Math.max(rankAmount, 2 * (boxEnd - rectStart));
+          }
         }
-        const boxStart = leftToRight ? padded.x : padded.y;
-        const boxEnd = boxStart + (leftToRight ? padded.width : padded.height);
-        for (const rect of hitShapes) {
-          const rectStart = leftToRight ? rect.x : rect.y;
-          const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
-          if (mainAligned && rectEnd <= chosen.from) rankAmount = Math.max(rankAmount, 2 * (rectEnd - boxStart));
-          else if (mainAligned && rectStart >= chosen.to) rankAmount = Math.max(rankAmount, 2 * (boxEnd - rectStart));
-        }
-      }
-      // (e) An amount above the cap is not clamped: the rank lengthening is
-      // rejected, but a sibling widening for the same segment may still stand.
-      let rankOk = rankAmount > 0;
-      if (rankAmount > MAX_LENGTHEN_LABELS * (labelMain + 2 * margin)) {
-        rankOk = false;
-        reasons.push("e");
-      }
-      // A gap proven to make no progress for this label lengthens nothing:
-      // no useful gap (b) for the rank part.
-      if (rankOk && deadGaps.has(`${edge.id}|${key}`)) {
-        rankOk = false;
+      } else if (mainAligned && (short || hitShapes.length > 0)) {
+        // (b) A flow-aligned deficit needs T-rank but no eligible level has
+        // a gap crossing or holding the segment. A cross-flow segment never
+        // needs T-rank: its deficits close under (a) or the sibling search.
         reasons.push("b");
       }
-      // Two lanes the rank gap cannot separate — the same member carries
-      // both ends, so lengthening moves them together — fail this candidate.
-      // Sibling keys already proven useless for this label are skipped; when
-      // every key died that way the sibling path reports (b): no useful gap.
+      // The cap rejects one transformation only, never clamped; an amount
+      // equal to the cap is admissible. A withdrawn gap is an observed budget
+      // outcome, never proof.
+      let rankKey: string | undefined;
+      let budget = false;
+      if (chosen !== undefined && rankAmount > 0) {
+        const key = `${chosen.level.key}#${chosen.rank}`;
+        if (rankAmount > MAX_LENGTHEN_LABELS * (labelMain + 2 * margin)) {
+          reasons.push("e");
+          budget = true;
+        } else if (deadGaps.has(`${edge.id}|${key}`)) {
+          budget = true;
+        } else {
+          rankKey = key;
+        }
+      }
+      // Sibling context: the canonical level at the canonical rank when one
+      // exists, else every eligible level (pre-order, root first) at every
+      // rank holding siblings — T-sibling is still evaluated with no gap.
+      interface SiblingContext {
+        readonly level: (typeof placement.levels)[number];
+        readonly parent: EntityRef | undefined;
+        readonly ranks: readonly number[];
+      }
+      const siblingContexts = ((): readonly SiblingContext[] => {
+        if (chosen !== undefined) {
+          return [
+            {
+              level: chosen.level,
+              parent: chosen.level.key === ROOT ? undefined : (chosen.level.key as EntityRef),
+              ranks: [chosen.rank],
+            },
+          ];
+        }
+        const crossAt = leftToRight ? centre.y : centre.x;
+        const contexts: SiblingContext[] = [];
+        for (const level of placement.levels) {
+          const regionCrossFrom = leftToRight ? level.region.y : level.region.x;
+          const regionCrossTo = regionCrossFrom + (leftToRight ? level.region.height : level.region.width);
+          if (level.depth > 0 && (crossAt < regionCrossFrom || crossAt > regionCrossTo)) continue;
+          const ranks = [...new Set(level.siblings.map((gap) => gap.rank))].sort((x, y) => x - y);
+          if (ranks.length === 0) continue;
+          contexts.push({ level, parent: level.key === ROOT ? undefined : (level.key as EntityRef), ranks });
+        }
+        return contexts;
+      })();
       const sibling = new Map<string, number>();
-      let siblingDead = false;
+      const siblingCap = MAX_LENGTHEN_LABELS * (crossSize + 2 * margin);
+      // Against a placed label: the cross deficit in full to each gap of the
+      // first defined gap set (never divided among the gaps).
       for (const other of hitLabels) {
         const otherBox = placedBoxes.get(other.id)!;
         const otherCross = leftToRight ? otherBox.height : otherBox.width;
         const lane = leftToRight ? centre.y : centre.x;
-        const otherLane =
-          leftToRight ? otherBox.y + otherBox.height / 2 : otherBox.x + otherBox.width / 2;
+        const otherLane = leftToRight ? otherBox.y + otherBox.height / 2 : otherBox.x + otherBox.width / 2;
         const need = (crossSize + otherCross) / 2 + 2 * margin - Math.abs(lane - otherLane);
-        if (need > MAX_LENGTHEN_LABELS * (crossSize + 2 * margin)) {
+        if (need <= 0) continue;
+        if (need > siblingCap) {
           reasons.push("e");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+          budget = true;
+          continue;
         }
-        const keys = lanesBetween(chosen.level, parent, chosen.rank, other, edge);
+        let keys: readonly string[] | undefined;
+        for (const context of siblingContexts) {
+          for (const rank of context.ranks) {
+            keys = lanesBetween(context.level, context.parent, rank, other, edge);
+            if (keys !== undefined) break;
+          }
+          if (keys !== undefined) break;
+        }
+        // (d) Every candidate pairing resolves to one member.
         if (keys === undefined) {
           reasons.push("d");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+          continue;
         }
-        if (!short) {
-          let live = false;
-          for (const siblingKey of keys) {
-            if (deadGaps.has(`${edge.id}|${siblingKey}`)) continue;
-            sibling.set(siblingKey, Math.max(sibling.get(siblingKey) ?? 0, need));
-            live = true;
-          }
-          if (!live) siblingDead = true;
+        const live = keys.filter((siblingKey) => !deadGaps.has(`${edge.id}|${siblingKey}`));
+        if (live.length === 0) {
+          budget = true;
+          continue;
         }
+        for (const siblingKey of live) sibling.set(siblingKey, Math.max(sibling.get(siblingKey) ?? 0, need));
       }
-      // A shape the lane runs alongside (a title band along the flow, a node
-      // beside the lane) cannot be cleared by lengthening the rank gap: widen
-      // the sibling gap between the lane's member and the shape's instead.
-      // Failing here never vetoes the rank lengthening computed above.
-      const alongside = hitShapes.filter((rect) => {
-        if (!mainAligned) return true;
+      // A shape the lane runs alongside is cleared by widening the sibling
+      // gap set between the lane's member and the shape's, never by vetoing
+      // the rank lengthening computed above.
+      const alongside = (rect: Rect): boolean => {
+        if (chosen === undefined || !mainAligned) return true;
         const rectStart = leftToRight ? rect.x : rect.y;
         const rectEnd = rectStart + (leftToRight ? rect.width : rect.height);
         return !(rectEnd <= chosen.from || rectStart >= chosen.to);
-      });
-      for (const rect of alongside) {
-        const owner = shapeOwner.get(rect);
-        if (owner === undefined) {
-          reasons.push("d");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+      };
+      // (c) holds only when the shape's owner is the lane's own member or an
+      // ancestor of it, so it moves with the lane under any sibling widening.
+      const laneMovesWith = (owner: EntityRef | undefined): boolean => {
+        if (owner === undefined) return false;
+        if (owner === edge.source.entity || owner === edge.target.entity) return true;
+        if (isAncestor(graph, owner, edge.source.entity) || isAncestor(graph, owner, edge.target.entity)) return true;
+        for (const context of siblingContexts) {
+          const ownerMember = memberOf(graph, owner, context.parent);
+          if (ownerMember === undefined) continue;
+          for (const end of [edge.source.entity, edge.target.entity] as const) {
+            const laneMember = memberOf(graph, end, context.parent);
+            if (laneMember !== undefined && (laneMember === ownerMember || isAncestor(graph, owner, laneMember))) {
+              return true;
+            }
+          }
         }
+        return false;
+      };
+      for (const rect of hitShapes) {
+        if (!alongside(rect)) continue;
+        const owner = shapeOwner.get(rect);
         const lane = leftToRight ? centre.y : centre.x;
         const shapeStart = leftToRight ? rect.y : rect.x;
         const shapeEnd = shapeStart + (leftToRight ? rect.height : rect.width);
         const paddedStart = leftToRight ? padded.y : padded.x;
         const paddedEnd = paddedStart + (leftToRight ? padded.height : padded.width);
-        // (c) The shape spans the lane past the label on both sides: no
-        // sibling gap separates them.
-        if (shapeStart <= paddedStart && shapeEnd >= paddedEnd) {
+        if (shapeStart <= paddedStart && shapeEnd >= paddedEnd && laneMovesWith(owner)) {
           reasons.push("c");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+          continue;
         }
         const need = Math.min(paddedEnd - shapeStart, shapeEnd - paddedStart) + 2 * margin;
-        if (need > MAX_LENGTHEN_LABELS * (crossSize + 2 * margin)) {
+        if (need <= 0) continue;
+        if (need > siblingCap) {
           reasons.push("e");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+          budget = true;
+          continue;
         }
-        const shapeMember = memberOf(graph, owner, parent);
-        const anchors = [edge.source.entity, edge.target.entity].map((entity) => memberOf(graph, entity, parent));
+        if (owner === undefined) {
+          reasons.push("d");
+          continue;
+        }
+        // The first defined-and-usable gap set: source then target member,
+        // rank then next rank (every sibling rank without a canonical gap).
         let cleared = false;
-        let shapeDead = false;
-        for (const rank of [chosen.rank, chosen.rank + 1]) {
-          for (const anchor of anchors) {
-            const keys = keysBetween(chosen.level, rank, anchor, shapeMember);
-            if (keys === undefined) continue;
-            let usable = false;
-            for (const siblingKey of keys) {
-              if (deadGaps.has(`${edge.id}|${siblingKey}`)) continue;
-              sibling.set(siblingKey, Math.max(sibling.get(siblingKey) ?? 0, need));
-              usable = true;
-            }
-            if (usable) cleared = true;
-            else shapeDead = true;
-          }
+        let stalled = false;
+        for (const context of siblingContexts) {
           if (cleared) break;
+          const ranks = chosen !== undefined ? [chosen.rank, chosen.rank + 1] : context.ranks;
+          for (const rank of ranks) {
+            if (cleared) break;
+            for (const end of [edge.source.entity, edge.target.entity] as const) {
+              const keys = keysBetween(
+                context.level,
+                rank,
+                memberOf(graph, end, context.parent),
+                memberOf(graph, owner, context.parent),
+              );
+              if (keys === undefined) continue;
+              const live = keys.filter((siblingKey) => !deadGaps.has(`${edge.id}|${siblingKey}`));
+              if (live.length === 0) {
+                stalled = true;
+                continue;
+              }
+              for (const siblingKey of live) sibling.set(siblingKey, Math.max(sibling.get(siblingKey) ?? 0, need));
+              cleared = true;
+              break;
+            }
+          }
         }
-        // (d) The lane and the blocker share one member at the relevant
-        // ranks, so the sibling-gap set is empty; (b) when gaps existed but
-        // every one already proved useless for this label.
+        // (d) The lane and the blocker share one member at every tried rank.
         if (!cleared) {
-          reasons.push(shapeDead ? "b" : "d");
-          return { ...none, rankKey: rankOk ? key : undefined, rankAmount: rankOk ? rankAmount : 0, reasons };
+          if (stalled) budget = true;
+          else reasons.push("d");
         }
       }
-      // Sibling gaps existed but all already proved useless for this label:
-      // no useful gap (b). Reasons stay empty only with requests outstanding.
-      const finalReasons: ResidualReason[] = reasons.length === 0 && siblingDead ? [...reasons, "b"] : reasons;
       return {
         ...none,
-        rankKey: rankOk ? key : undefined,
-        rankAmount: rankOk ? rankAmount : 0,
-        sibling,
-        reasons: finalReasons,
+        rankKey,
+        rankAmount: rankKey !== undefined ? rankAmount : 0,
+        // A doomed segment can never hold the label: its sibling amounts are
+        // evaluated for the record above but never requested.
+        sibling: doomed ? new Map() : sibling,
+        reasons: [...new Set(reasons)],
+        budget,
       };
     };
     // Room for one label no tried segment can hold: segments by decreasing
@@ -659,14 +769,20 @@ function draw(
           message: `no orthogonal route around the obstacles was found for ${id}; an elbow is drawn instead`,
         })),
       ],
+      labelBoxes: new Map(placedBoxes),
       labelOutcomes: new Map(),
     };
-    // L-R10 residual, evaluated on the final round's geometry: a label with a
-    // widening request outstanding is a search budget exhausted
-    // (`label-budget-exhausted`), never `label-unplaced`; only a label whose
-    // every segment is closed by the residual predicate is `label-unplaced`.
-    // The two outcomes are never merged; every warning names its sole ref.
-    // Outcomes are recorded per label for `diagnoseLabels` either way.
+    // L-R10 classification, on the final attempt's geometry: a segment is
+    // open when a transformation at or under the cap is still requestable,
+    // proof-closed when no transformation is requestable and every failing
+    // dimension closes under (a)–(d), budget-closed when no transformation is
+    // requestable and at least one dimension closes only under (e) or the
+    // progress guard. A label is `label-unplaced` only with at least one
+    // segment and every segment proof-closed; any open segment, any request
+    // recorded in the 12th attempt, or any budget-closed segment reports
+    // `label-budget-exhausted`. The two outcomes are never merged; every
+    // warning names its sole ref. Outcomes are recorded per label for
+    // `diagnoseLabels` either way.
     classifyLabels = (ids: readonly RelationRef[]): LayoutWarning[] => {
       const found: LayoutWarning[] = [];
       const outcomes = new Map<RelationRef, LabelOutcome>();
@@ -686,12 +802,17 @@ function draw(
         const closed: SegmentResidual[] = analyses
           .filter((analysis) => !analysis.holds)
           .map((analysis) => ({ segment: analysis.segment, reasons: analysis.reasons }));
-        if (open.length > 0 || !residualUnplaceable(closed)) {
+        const proof =
+          analyses.length > 0 &&
+          analyses.every(
+            (analysis) => !analysis.holds && analysis.reasons.length > 0 && !analysis.budget,
+          );
+        if (open.length > 0 || !proof) {
           outcomes.set(edge.id, { outcome: "label-budget-exhausted", segments: closed });
           found.push({
             code: "label-budget-exhausted",
             refs: [edge.id],
-            message: `the label of ${edge.id} still needs room after ${LABEL_ROUNDS} widening rounds`,
+            message: `the label of ${edge.id} still needs room after ${LABEL_ROUNDS} placement attempts`,
           });
           continue;
         }
@@ -710,10 +831,10 @@ function draw(
       break;
     }
     if (round === LABEL_ROUNDS - 1) {
-      // Out of rounds with labels still waiting for room: they are reported, not dropped.
+      // Out of attempts with labels still waiting for room: their requests
+      // are recorded — they classify the labels — but never applied, and no
+      // 13th placement runs: the final geometry is the 12th attempt's.
       labelOutcome = classifyLabels([...unplaced, ...waiting]);
-      for (const [key, amount] of lengthen) extraGaps.set(key, (extraGaps.get(key) ?? 0) + amount);
-      for (const [key, amount] of widen) siblingGaps.set(key, (siblingGaps.get(key) ?? 0) + amount);
       break;
     }
     for (const [key, amount] of lengthen) extraGaps.set(key, (extraGaps.get(key) ?? 0) + amount);
@@ -753,12 +874,17 @@ function buildView(
 
   const portOccurrences: Record<string, PortOccurrence> = {};
   const relationOccurrences: Record<string, RelationOccurrence> = {};
+  // L-R2/L-R9: a non-parallel port takes one occurrence; a parallel end on a
+  // port takes one occurrence per relation end, each with its own slot.
+  const parallel = parallelRelations(graph);
   for (const edge of graph.edges) {
     const pair = drawing.docks.get(edge.id)!;
     const route = drawing.routes.get(edge.id)!;
-    const endOccurrence = (dock: EdgeDocks["source"]): OccurrenceRef => {
+    const endOccurrence = (dock: EdgeDocks["source"], role: "source" | "target"): OccurrenceRef => {
       if (dock.port === undefined) return occurrenceOf(dock.entity);
-      const id = occurrenceRef(`p.${localIdOf(dock.port)}`);
+      const id = parallel.has(edge.id)
+        ? occurrenceRef(`p.${localIdOf(dock.port)}.${localIdOf(edge.id)}.${role}`)
+        : occurrenceRef(`p.${localIdOf(dock.port)}`);
       portOccurrences[id] ??= {
         id,
         port: dock.port,
@@ -777,8 +903,8 @@ function buildView(
       id,
       relation: edge.id,
       endpoints: [
-        { role: "source", occurrence: endOccurrence(pair.source) },
-        { role: "target", occurrence: endOccurrence(pair.target) },
+        { role: "source", occurrence: endOccurrence(pair.source, "source") },
+        { role: "target", occurrence: endOccurrence(pair.target, "target") },
       ],
       waypoints,
     };
@@ -831,20 +957,22 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
 
   const target = options.targetWidth;
   const phone = target <= PHONE_MAX_WIDTH;
-  // L-R5, measured after labels: both drawings are finalized (placement,
-  // docking with side growth, routing, L-R10 rounds) before the comparison.
-  // Left-to-right when `B_lr ≤ W`, else top-to-bottom when `B_tb ≤ W`, else
-  // the narrower drawing, top-to-bottom on an exact tie — at every width,
-  // the phone range included. An empty drawing (no entities, `B = 0`) takes
-  // the first branch: left-to-right.
+  // L-R5, measured after labels on the bounds of everything drawn: both
+  // drawings are finalized (placement, docking with side growth, routing,
+  // L-R10 attempts) before the comparison. Left-to-right when `B_lr ≤ W`,
+  // else top-to-bottom when `B_tb ≤ W`, else the narrower drawing,
+  // top-to-bottom on an exact tie — at every width, the phone range
+  // included. An empty drawing (no entities, `B = 0`) takes the first
+  // branch: left-to-right.
   const leftToRightDrawing = draw(graph, "left-to-right", metrics, options.measureText, labelSizes);
   const topToBottomDrawing = draw(graph, "top-to-bottom", metrics, options.measureText, labelSizes);
   const drawing = pickDrawing(leftToRightDrawing, topToBottomDrawing, target);
 
-  // L-R7: `s = min(1, max(0.75, W / B))`. The empty drawing takes zoom 1;
-  // `B = W / 0.75` gives exactly 0.75, and the drawing pans exactly when
-  // `B · s > W`, that is `B > W / 0.75`.
-  const width = drawing.placement.width;
+  // L-R7: `s = min(1, max(0.75, W / B))` on the chosen finalized width `B`.
+  // The empty drawing takes zoom 1; `B = W / 0.75` gives exactly 0.75, and
+  // the drawing pans exactly when `B · s > W`, that is `B > W / 0.75`. The
+  // reported width is `B`.
+  const width = boundsWidth(drawing);
   const zoom = width === 0 ? 1 : Math.min(1, Math.max(MIN_ZOOM, target / width));
   const view = buildView(document, graph, drawing, options.viewId ?? viewRef("layout"), zoom);
   return {
@@ -863,13 +991,9 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
 }
 
 function pickDrawing(leftToRight: Drawing, topToBottom: Drawing, target: number): Drawing {
-  return leftToRight.placement.width <= target
-    ? leftToRight
-    : topToBottom.placement.width <= target
-      ? topToBottom
-      : leftToRight.placement.width < topToBottom.placement.width
-        ? leftToRight
-        : topToBottom;
+  const leftWidth = boundsWidth(leftToRight);
+  const topWidth = boundsWidth(topToBottom);
+  return leftWidth <= target ? leftToRight : topWidth <= target ? topToBottom : leftWidth < topWidth ? leftToRight : topToBottom;
 }
 
 /**
@@ -927,7 +1051,7 @@ export function diagnoseLabels(
   return {
     status: "diagnosed",
     direction: drawing.placement.direction,
-    width: drawing.placement.width,
+    width: boundsWidth(drawing),
     outcomes: drawing.labelOutcomes,
   };
 }
