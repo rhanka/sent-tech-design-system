@@ -15,6 +15,7 @@ import {
   entityRef,
   formatDiagnostics,
   occurrenceRef,
+  portRef,
   relationRef,
   validateView,
   type Entity,
@@ -26,7 +27,9 @@ import {
 import { expect } from "vitest";
 
 import {
+  DEFAULT_LAYOUT_METRICS,
   layoutDocument,
+  placeEdgeLabels,
   relationRoute,
   type LayoutFit,
   type LayoutOptions,
@@ -49,6 +52,11 @@ export interface DocSpec {
   readonly containers?: Readonly<Record<string, readonly string[]>>;
   /** [relation local id, source local id, target local id, label?]. */
   readonly links: readonly (readonly [string, string, string, string?])[];
+  /**
+   * Semantic ports, port local id -> owner node local id. A link end naming a
+   * port local id targets that port instead of an entity.
+   */
+  readonly ports?: Readonly<Record<string, string>>;
   readonly names?: Readonly<Record<string, string>>;
   readonly revision?: number;
 }
@@ -83,6 +91,13 @@ export function buildDocument(spec: DocSpec): SemanticDocument {
       };
     }
   }
+  const ports: Record<string, SemanticDocument["ports"][string]> = {};
+  for (const [id, owner] of Object.entries(spec.ports ?? {})) {
+    const ref = portRef(id);
+    ports[ref] = { id: ref, profile: GENERIC_PROFILE_ID, type: "port", owner: entityRef(owner), name: id, direction: "inout", attributes: {} };
+  }
+  const endTarget = (name: string) =>
+    spec.ports?.[name] !== undefined ? portRef(name) : entityRef(name);
   for (const [id, source, target, label] of spec.links) {
     const relation = relationRef(id);
     relations[relation] = {
@@ -90,8 +105,8 @@ export function buildDocument(spec: DocSpec): SemanticDocument {
       profile: GENERIC_PROFILE_ID,
       type: "link",
       endpoints: [
-        { role: "source", target: entityRef(source) },
-        { role: "target", target: entityRef(target) },
+        { role: "source", target: endTarget(source) },
+        { role: "target", target: endTarget(target) },
       ],
       attributes: label === undefined ? {} : { label: { kind: "text", value: label } },
     };
@@ -104,7 +119,7 @@ export function buildDocument(spec: DocSpec): SemanticDocument {
     typeDefinitions: {},
     entities,
     relations,
-    ports: {},
+    ports,
     resources: {},
     extensions: [],
   };
@@ -318,5 +333,82 @@ export function shuffled(document: SemanticDocument, seed: number): SemanticDocu
     }
     return Object.fromEntries(entries);
   };
-  return { ...document, entities: shuffle(document.entities), relations: shuffle(document.relations) };
+  return {
+    ...document,
+    entities: shuffle(document.entities),
+    relations: shuffle(document.relations),
+    ports: shuffle(document.ports),
+  };
+}
+
+/** A text attribute's value, when it is one. */
+export function textAttribute(
+  attributes: Readonly<Record<string, unknown>>,
+  name: string,
+): string | undefined {
+  const value = attributes[name] as { readonly kind?: unknown; readonly value?: unknown } | undefined;
+  return value !== undefined && value.kind === "text" && typeof value.value === "string" ? value.value : undefined;
+}
+
+/**
+ * The renderer replay: `placeEdgeLabels` on a finalized view — routes read
+ * back with `relationRoute`, sizes from the given measurer, node and title
+ * shapes read back from the view, relation ids in sorted order. Returns every
+ * label's replayed box, keyed by relation id.
+ */
+export function replayLabelBoxes(
+  document: SemanticDocument,
+  view: ViewDocument,
+  measureText: TextMeasurer,
+): ReadonlyMap<string, Rect> {
+  const shapes: Rect[] = [];
+  for (const occurrence of Object.values(view.entityOccurrences)) {
+    const entity = document.entities[occurrence.entity];
+    if (entity === undefined) continue;
+    const base = document.typeDefinitions[entity.type]?.baseType ?? entity.type;
+    if (base === "container") {
+      const title = textAttribute(entity.attributes, "name") ?? "";
+      const height = measureText(title, "container-title").height + 2 * DEFAULT_LAYOUT_METRICS.titlePaddingY;
+      shapes.push({ x: occurrence.geometry.x, y: occurrence.geometry.y, width: occurrence.geometry.width, height });
+    } else {
+      shapes.push(occurrence.geometry);
+    }
+  }
+  const entries = Object.values(document.relations)
+    .filter((relation) => relation.type === "link")
+    .flatMap((relation) => {
+      const label = textAttribute(relation.attributes, "label");
+      if (label === undefined || label === "") return [];
+      const occurrence = Object.values(view.relationOccurrences).find((entry) => entry.relation === relation.id);
+      if (occurrence === undefined) throw new Error(`no occurrence for ${relation.id}`);
+      const route = relationRoute(view, occurrence.id);
+      if (route === undefined) throw new Error(`no route for ${relation.id}`);
+      return [{ id: relation.id, route, size: measureText(label, "edge-label") }];
+    })
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  const boxes = new Map<string, Rect>();
+  for (const [id, placement] of placeEdgeLabels(entries, shapes, DEFAULT_LAYOUT_METRICS.labelMargin)) {
+    if (placement !== undefined) boxes.set(id, placement.box);
+  }
+  return boxes;
+}
+
+/**
+ * The ids the renderer replay cannot hold: on a drawing the engine placed,
+ * none.
+ */
+export function replayUnheldLabels(
+  document: SemanticDocument,
+  view: ViewDocument,
+  measureText: TextMeasurer,
+): string[] {
+  const boxes = replayLabelBoxes(document, view, measureText);
+  const held = new Set(boxes.keys());
+  return Object.values(document.relations)
+    .filter((relation) => relation.type === "link")
+    .flatMap((relation) => {
+      const label = textAttribute(relation.attributes, "label");
+      return label === undefined || label === "" ? [] : [relation.id];
+    })
+    .filter((id) => !held.has(id));
 }
