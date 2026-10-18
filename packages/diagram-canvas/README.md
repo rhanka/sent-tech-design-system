@@ -1,12 +1,14 @@
 # @sentropic/diagram-canvas
 
-The headless **scene** and its **hit test** for a diagram view. Pure computation:
+The headless **scene** and its **hit test** for a diagram view, and the
+**layout engine** that produces a view from a semantic document. Pure computation:
 no DOM, no renderer, no framework, no design system package. One bare import
 specifier, `@sentropic/diagram-core`.
 
 This is the first slice of `GD-M2-CANVAS`. It delivers the `Scene` /
 `GeometryFrame` of the study's five objects (§4.1) and the geometric selection
-primitives of §7, and nothing else. What it deliberately leaves out is listed
+primitives of §7; the layout engine (SPEC_EVOL_DS_JSON_RENDER_STANDARD §10.5,
+L8) was added after it. What it deliberately leaves out is listed
 under *What is not covered yet*, with the lot that owns each item.
 
 ## Why this package is private
@@ -126,6 +128,8 @@ This slice does **not** pose it, and `tests/no-dom.test.ts` forbids the import s
 the omission is enforced rather than merely intended. The reason: this scene is
 built from **persisted view geometry**, where every rectangle carries its own
 width and height, so there is no layout to run and no drawn radius to derive.
+The layout engine (see Layout) does not change that: it writes such geometry
+into a `ViewDocument` and imports nothing from `@sentropic/graph`.
 
 When the canvas later hit-tests a **graph-rendered** scene — nodes sized from
 `nodeSizes` through `drawnRadius`, edges tessellated into curves — it MUST consume
@@ -144,9 +148,9 @@ rediscovered.
 | Annotations and circling | `GD-M2-CANVAS`, later |
 | Framework adapters (Svelte / React / Vue / Angular) | `GD-M2-DS-PRESENTATION` and the four DS packages |
 | Rendering: SVG, Canvas2D, WebGL, export | `@sentropic/graph`'s renderer and later slices |
-| Labels and text measurement | needs a font metric source or a DOM; not decided |
+| Labels in the scene | the layout engine measures text through an injected function and places labels (`edgeLabelPlacement`); `SceneFrame` still carries no label item |
 | The group box of a collapsed group, and aggregate edges | later; this lot evaluates the `collapsed` flag and nothing more |
-| Layout, projection, `LayoutOutcome.inverse` | `@sentropic/graph/processing`, already delivered |
+| Projection, `LayoutOutcome.inverse` | `@sentropic/graph/processing`, already delivered; the L-R1–L-R11 layout is here (see Layout) |
 | Lasso and polygon selection | later; point and rectangle are what a selection needs first |
 | A spatial index (quadtree, grid) | not yet warranted — see below |
 
@@ -164,13 +168,85 @@ exported.
 
 ## Layout
 
+`layoutDocument(document, options)` is the layout engine of SPEC §10.5: it
+implements the rules L-R1–L-R11, written in this repository from the rule text.
+Pure TypeScript in `src/layout/`, no DOM, no dependency beyond
+`@sentropic/diagram-core`.
+
+**Input.** A `diagram-core` `SemanticDocument` under `generic@1`: `node` and
+`container` entities, `link` relations, nesting through the `contains` tree, with
+no view and no geometry. It goes through `validateDocument` first; an invalid
+document is refused with those diagnostics, verbatim (`document-invalid`). A
+relation or entity the engine does not lay out (`association`, another profile)
+is refused by name, never dropped. `options` holds the profile registry, the
+host's content width (`targetWidth`, CSS px) and a **text measurer**: the engine
+has no font metric source, so the host injects one, and must draw labels with the
+same one. Tests use a fixed-width measurer.
+
+**Output.** A `diagram-core` `ViewDocument`, which `validateView` accepts, and
+no other structure to persist:
+
+- one entity occurrence per entity, with its bounds; containers have `z` below
+  nodes (outermost lowest), nodes `z = 0`;
+- one relation occurrence per `link`, whose `waypoints` are the whole route,
+  dock to dock, source to target (`relationRoute` reads it back); `contains` is
+  drawn by nesting and has no relation occurrence;
+- one port occurrence per semantic port a link targets, with the side, slot order
+  and anchor the docking chose;
+- `presentation.camera.zoom` is the L-R7 scale.
+
+The call also returns `fit` (direction, size at scale 1, zoom, `pans`, `phone`)
+and `warnings` for what it could not fully satisfy (`label-unplaced`,
+`route-obstructed`, `row-fill-partial`), reported rather than dropped.
+
+| Rule | What the engine does | Fixture |
+|---|---|---|
+| L-R1 lone edge at the centre | an edge alone on its side docks at that side's centre | `tests/layout/rules.test.ts` |
+| L-R2 shared side spread symmetrically | n slots at `(i - (n-1)/2) * s` from the centre; `s` widens for labels, narrows to `length/(n+1)`, and a node too short grows | idem |
+| L-R3 bends minimised after docking | A* on an orthogonal grid, cost `bends * 1e7 + length`; checked against an independent 0-1 BFS oracle | idem |
+| L-R4 row alignment and fill | top-to-bottom: the containers of a rank take its top and height; left-to-right: containers whose vertical spans overlap take a common top and height, members below are pushed down | idem |
+| L-R5 flow direction | left-to-right when that drawing fits `targetWidth` at scale 1, else top-to-bottom; no option forces it | idem |
+| L-R6 rank and order | longest path; edges taken in ascending relation id, the one closing a cycle (the greatest on it) reversed; barycentre sweeps, ties by entity id | idem |
+| L-R7 target width, phone fallback | at most 390 px: top-to-bottom; still too wide: zoom down to 0.75, then `pans` | idem |
+| L-R8 edges across containers | every entity is an obstacle except the ancestors of either end | idem |
+| L-R9 parallel edges | distinct slots, same id order at both ends; a grid unit used by a parallel edge is forbidden to the next | idem |
+| L-R10 edge labels | centred on the longest segment (`edgeLabelPlacement`); a label that does not fit, or meets a node or title, lengthens the gap its segment crosses | idem |
+| L-R11 legend | none: the view holds no legend occurrence, group or field, and the options have no switch | idem |
+
+Determinism: the same document laid out twice, and with its entity and relation
+records shuffled, gives byte-identical `serialiseView` output
+(`tests/layout/determinism.test.ts`). Time: a document of 40 nodes in 3 nesting
+levels (9 containers, 44 links, 4 labels, one cycle) lays out in a median of
+about 9–15 ms on the development machine (Node v22.22.1), against a 1000 ms
+budget in `tests/layout/performance.test.ts`, which prints the figure.
+
+Limits, stated rather than hidden:
+
+- A label on a segment that runs **alongside** a shape (across the flow) cannot be
+  cleared by lengthening; it is reported as `label-unplaced`. Seen once on the
+  40-node fixture laid out left to right (a back edge routed round the drawing).
+- A docking point on an entity occurrence is held as the first or last waypoint:
+  a relation occurrence endpoint drawn on an entity cannot hold one, and a port
+  occurrence may only draw the relation's own semantic port
+  (`diagram-core/src/validate.ts`, the `occurrence-endpoint-mismatch` check).
+  `buildScene` therefore adds a stub from the entity's centre to that first
+  waypoint (`src/scene.ts`), which lies inside the entity and is painted under it.
+- Cross positions come from barycentric isotonic placement per level, not a
+  global straightening pass: a long edge can bend around a rank where a lane is
+  not aligned with its docks. L-R3 holds for the docks it gets.
+- Semantic ports no link targets get no port occurrence.
+
+## Source tree
+
 ```
 src/transform.ts    the camera contract and the one world -> device composition
 src/geometry.ts     rectangles, points, segments, polylines; the two conventions
 src/visibility.ts   filter evaluation, the cascade, the exclusion reasons
 src/scene.ts        SceneFrame, port anchors, relation routes, paint order
 src/hit.ts          point, region and device-space hit testing
+src/layout/         the layout engine, L-R1–L-R11 (see Layout)
 tests/              8 suites; types-nominal.test.ts is a COMPILER test
+tests/layout/       one fixture per layout rule, contract, determinism, time budget
 ```
 
 ## Gates
