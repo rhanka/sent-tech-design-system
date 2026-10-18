@@ -4,17 +4,25 @@
  * rectangles, label boxes, zoom — never on a snapshot alone. Every view is
  * validated by `diagram-core` inside `lay()`.
  */
-import { VIEW_DOCUMENT_FIELDS, entityRef, occurrenceRef, relationRef } from "@sentropic/diagram-core";
+import {
+  VIEW_DOCUMENT_FIELDS,
+  defaultProfileRegistry,
+  entityRef,
+  occurrenceRef,
+  relationRef,
+} from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_LAYOUT_METRICS,
   bendCount,
+  diagnoseLabels,
   edgeLabelCandidates,
   edgeLabelPlacement,
   labelBoxOnSegment,
   placeEdgeLabels,
   rectsIntersect,
+  residualUnplaceable,
   type LayoutOptions,
   type Rect,
   type Vec2,
@@ -650,19 +658,35 @@ describe("L-R10 — a label sits centred on the longest segment and overlaps not
   });
 });
 
-describe("L-R10 — label-unplaced remains only for a case no gap can clear", () => {
+describe("L-R10 — a label with room left to try is budget-exhausted, never unplaced", () => {
   it("the 40-node fixture laid out left to right keeps exactly one: hand-off 4", () => {
     // `x4`'s "hand-off 4" label rides a route thrown over the top of the
-    // drawing: its longest holdable-length segments lie outside any rank gap
-    // (the top channel, stubs inside rank bands) or run alongside shapes no
-    // sibling gap separates (a title band spanning the lane, anchors sharing
-    // the shape's own member). Lengthening a rank gap moves lane and blocker
-    // together, and no sibling gap separates them either, so no widening the
-    // engine owns can clear it: it is reported, not dropped.
-    const { warnings } = lay(buildDocument(largeDocumentSpec()), 8000);
+    // drawing. Under the amended L-R10 the widening search still returns room
+    // to try for `x4` after the 12th round — the drawing keeps moving under it
+    // while other labels' widenings land — so it is `label-budget-exhausted`,
+    // never `label-unplaced`: the two outcomes are never merged.
+    // (Rewritten for the amended §10.5: the previous revision reported every
+    // outstanding label as `label-unplaced`; the amended residual predicate
+    // reserves that code for labels with no widening left on any segment.)
+    const document = buildDocument(largeDocumentSpec());
+    const { warnings } = lay(document, 8000);
     expect(warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
-      ["label-unplaced", relationRef("x4")],
+      ["label-budget-exhausted", relationRef("x4")],
     ]);
+    const diagnosis = diagnoseLabels(document, {
+      registry: defaultProfileRegistry,
+      measureText: measure,
+      targetWidth: 8000,
+    });
+    expect(diagnosis.status).toBe("diagnosed");
+    if (diagnosis.status !== "diagnosed") return;
+    expect(diagnosis.outcomes.get(relationRef("x4"))?.outcome).toBe("label-budget-exhausted");
+    // The defining condition of the budget code: a widening request is still
+    // outstanding, so the residual predicate does not hold.
+    expect(residualUnplaceable(diagnosis.outcomes.get(relationRef("x4"))!.segments)).toBe(false);
+    for (const [id, outcome] of diagnosis.outcomes) {
+      if (id !== relationRef("x4")) expect(outcome.outcome, id).toBe("placed");
+    }
   });
 
   it("the same fixture top to bottom at phone width carries none", () => {

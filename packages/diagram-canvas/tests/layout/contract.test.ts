@@ -80,10 +80,14 @@ describe("input", () => {
     ]);
   });
 
-  it("refuses a target width that is not a positive number", () => {
-    for (const targetWidth of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+  it("refuses a zero, negative or non-finite target width as target-width-invalid, with no view and no scale", () => {
+    for (const targetWidth of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
       const result = layoutDocument(buildDocument({ nodes: ["a"], links: [] }), { ...options, targetWidth });
       expect(result.status).toBe("refused");
+      if (result.status !== "refused") continue;
+      expect(result.refusals.map((refusal) => [refusal.code, refusal.path])).toEqual([["target-width-invalid", "targetWidth"]]);
+      expect("view" in result).toBe(false);
+      expect("fit" in result).toBe(false);
     }
   });
 

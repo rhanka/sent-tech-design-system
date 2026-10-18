@@ -21,14 +21,10 @@ import {
 import { describe, expect, it } from "vitest";
 
 import {
-  DEFAULT_LAYOUT_METRICS,
   layoutDocument,
-  placeEdgeLabels,
-  relationRoute,
-  type Rect,
   type TextMeasurer,
 } from "../../src/index.js";
-import { shuffled } from "./fixtures.js";
+import { replayUnheldLabels, shuffled } from "./fixtures.js";
 
 /** The dossier host's measurer: 7 px per character, 16 px lines. */
 const measure: TextMeasurer = (text) => ({ width: text.length * 7, height: 16 });
@@ -49,11 +45,6 @@ const documents: readonly (readonly [string, SemanticDocument])[] = [
   ["fixture", fixtureFile.documentId !== undefined ? fixtureFile : (fixtureFile.document ?? fixtureFile.scene!)],
 ];
 
-const textOf = (attributes: Readonly<Record<string, unknown>>, name: string): string | undefined => {
-  const value = attributes[name] as { readonly kind?: unknown; readonly value?: unknown } | undefined;
-  return value !== undefined && value.kind === "text" && typeof value.value === "string" ? value.value : undefined;
-};
-
 const laidOut = (document: SemanticDocument, targetWidth: number) => {
   const refused = validateDocument(document, { registry: defaultProfileRegistry });
   expect(hasErrors(refused)).toBe(false);
@@ -72,35 +63,7 @@ const laidOut = (document: SemanticDocument, targetWidth: number) => {
  */
 const replayHoldsEveryLabel = (document: SemanticDocument, targetWidth: number): void => {
   const result = laidOut(document, targetWidth);
-  const shapes: Rect[] = [];
-  for (const occurrence of Object.values(result.view.entityOccurrences)) {
-    const entity = document.entities[occurrence.entity];
-    if (entity === undefined) continue;
-    const base = document.typeDefinitions[entity.type]?.baseType ?? entity.type;
-    if (base === "container") {
-      const title = textOf(entity.attributes, "name") ?? "";
-      const height = measure(title, "container-title").height + 2 * DEFAULT_LAYOUT_METRICS.titlePaddingY;
-      shapes.push({ x: occurrence.geometry.x, y: occurrence.geometry.y, width: occurrence.geometry.width, height });
-    } else {
-      shapes.push(occurrence.geometry);
-    }
-  }
-  const entries = Object.values(document.relations)
-    .filter((relation) => relation.type === "link")
-    .flatMap((relation) => {
-      const label = textOf(relation.attributes, "label");
-      if (label === undefined || label === "") return [];
-      const occurrence = Object.values(result.view.relationOccurrences).find((entry) => entry.relation === relation.id);
-      if (occurrence === undefined) throw new Error(`no occurrence for ${relation.id}`);
-      const route = relationRoute(result.view, occurrence.id);
-      if (route === undefined) throw new Error(`no route for ${relation.id}`);
-      return [{ id: relation.id, route, size: measure(label, "edge-label") }];
-    })
-    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
-  const choices = placeEdgeLabels(entries, shapes, DEFAULT_LAYOUT_METRICS.labelMargin);
-  for (const entry of entries) {
-    expect(choices.get(entry.id), `${entry.id} at ${targetWidth} px`).toBeDefined();
-  }
+  expect(replayUnheldLabels(document, result.view, measure), `replay at ${targetWidth} px`).toEqual([]);
 };
 
 describe("h2a dossier diagrams", () => {
