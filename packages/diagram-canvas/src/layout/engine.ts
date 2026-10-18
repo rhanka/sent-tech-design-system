@@ -137,6 +137,7 @@ function draw(
     const outcome = routeEdges({ rects: placement.rects, requests, clearance: metrics.clearance });
 
     const lengthen = new Map<string, number>();
+    const waiting: RelationRef[] = [];
     unplaced = [];
     const accepted: Rect[] = [];
     const blockers: Rect[] = [
@@ -232,6 +233,7 @@ function draw(
       }
       const key = chosen.key;
       lengthen.set(key, Math.max(lengthen.get(key) ?? 0, amount));
+      waiting.push(edge.id);
     }
 
     drawing = {
@@ -248,6 +250,8 @@ function draw(
       ],
     };
     if (lengthen.size === 0) break;
+    // Out of rounds with labels still waiting for room: they are reported, not dropped.
+    if (round === LABEL_ROUNDS - 1) unplaced = [...unplaced, ...waiting];
     for (const [key, amount] of lengthen) extraGaps.set(key, (extraGaps.get(key) ?? 0) + amount);
   }
 
