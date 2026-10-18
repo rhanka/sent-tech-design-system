@@ -30,7 +30,10 @@
  * pair and is popped after every state of equal estimated pair. Requests are
  * routed in ascending relation id, so an earlier relation occupies the grid
  * first; the route is the parent chain of that goal, dock to dock with
- * collinear points removed. The returned route is lexicographically minimal:
+ * collinear points removed. Nothing is reserved before the final choice
+ * between the searched route and the fallback: the fixed route — searched
+ * or fallback elbow — then reserves every grid unit it traverses, so a
+ * fallback still penalises the routes that follow. The returned route is lexicographically minimal:
  * first the bend count, then the weighted length; among routes equal on both,
  * the heap discipline above selects the route. If the grid holds no route
  * admissible under L-R8 and L-R9 (the transversal ban included), the fallback
@@ -220,46 +223,47 @@ export function bendCount(points: readonly Vec2[]): number {
 
 /**
  * Frontier heap ordered by (estimated bends, estimated weighted length, state
- * index). Lengths are world-unit floats from placement geometry
- * (halves, thirds, …): two mathematically equal totals can differ by a few
- * ulps when summed in different orders, so equality is tested within
- * `LEN_EPS` — otherwise a floating-noise winner would break the specified
- * heap discipline (first-recorded parent kept on an exact pair tie). The
- * state index is the largest on a tie for the virtual goal, so it pops after
- * every state of equal estimated pair.
+ * index), with strict componentwise comparisons exactly as specified: an
+ * exact pair tie keeps the first-recorded parent, and the heap discipline
+ * above selects the route among routes equal on both. The state index is
+ * the largest on a tie for the virtual goal, so it pops after every state
+ * of equal estimated pair. The backing arrays are kept across requests with
+ * a logical count (never cleared, no `pop()`): only `count` resets.
  */
-const LEN_EPS = 1e-9;
-
 class LexHeap {
   private readonly bends: number[] = [];
   private readonly lens: number[] = [];
   private readonly states: number[] = [];
+  private count = 0;
 
   get size(): number {
-    return this.states.length;
+    return this.count;
   }
 
   clear(): void {
-    this.bends.length = 0;
-    this.lens.length = 0;
-    this.states.length = 0;
+    this.count = 0;
   }
 
   push(estBends: number, estLen: number, state: number): void {
     const bends = this.bends;
     const lens = this.lens;
     const states = this.states;
-    bends.push(estBends);
-    lens.push(estLen);
-    states.push(state);
-    let index = states.length - 1;
+    let index = this.count++;
+    if (index < bends.length) {
+      bends[index] = estBends;
+      lens[index] = estLen;
+      states[index] = state;
+    } else {
+      bends.push(estBends);
+      lens.push(estLen);
+      states.push(state);
+    }
     while (index > 0) {
       const parent = (index - 1) >> 1;
       const pb = bends[parent]!;
       const pl = lens[parent]!;
       const ps = states[parent]!;
-      const less =
-        estBends !== pb ? estBends < pb : Math.abs(estLen - pl) > LEN_EPS ? estLen < pl : state < ps;
+      const less = estBends !== pb ? estBends < pb : estLen !== pl ? estLen < pl : state < ps;
       if (!less) break;
       bends[index] = pb;
       lens[index] = pl;
@@ -276,12 +280,12 @@ class LexHeap {
     const lens = this.lens;
     const states = this.states;
     const top = states[0]!;
-    const lastB = bends.pop()!;
-    const lastL = lens.pop()!;
-    const lastS = states.pop()!;
-    if (states.length > 0) {
+    const length = --this.count;
+    const lastB = bends[length]!;
+    const lastL = lens[length]!;
+    const lastS = states[length]!;
+    if (length > 0) {
       let index = 0;
-      const length = states.length;
       for (;;) {
         const left = 2 * index + 1;
         if (left >= length) break;
@@ -294,14 +298,13 @@ class LexHeap {
           const rb = bends[right]!;
           const rl = lens[right]!;
           const rs = states[right]!;
-          const rightLess = rb !== lb ? rb < lb : Math.abs(rl - ll) > LEN_EPS ? rl < ll : rs < ls;
+          const rightLess = rb !== lb ? rb < lb : rl !== ll ? rl < ll : rs < ls;
           if (rightLess) child = right;
         }
         const cb = bends[child]!;
         const cl = lens[child]!;
         const cs = states[child]!;
-        const childLess =
-          cb !== lastB ? cb < lastB : Math.abs(cl - lastL) > LEN_EPS ? cl < lastL : cs < lastS;
+        const childLess = cb !== lastB ? cb < lastB : cl !== lastL ? cl < lastL : cs < lastS;
         if (!childLess) break;
         bends[index] = cb;
         lens[index] = cl;
@@ -429,8 +432,54 @@ export function routeEdges(input: {
   // Integer pair ids intern `pairKey` strings once per direction: occupancy
   // equality is by id, never by string compare on the hot path. The mapping
   // is a bijection, so the exact sharing/penalty semantics are unchanged.
+  // The primary store is an `Int32Array(2·nx·ny)` holding `firstPairId + 1`
+  // (0 when empty); a `Map` keeps only the extra pair ids of units used by
+  // more than one pair. Grid, costs and comparator are unchanged.
   const pairIds = new Map<string, number>();
-  const occupancy = new Map<number, number[]>();
+  const firstUser = new Int32Array(2 * nx * ny);
+  const extraUsers = new Map<number, number[]>();
+  const isOccupied = (unit: number): boolean => firstUser[unit]! !== 0;
+  const isUsedBy = (unit: number, pid: number): boolean => {
+    const first = firstUser[unit]!;
+    if (first === 0) return false;
+    if (first === pid + 1) return true;
+    const extra = extraUsers.get(unit);
+    return extra !== undefined && extra.includes(pid);
+  };
+  const addUser = (unit: number, pid: number): void => {
+    const first = firstUser[unit]!;
+    if (first === 0) {
+      firstUser[unit] = pid + 1;
+      return;
+    }
+    if (first === pid + 1) return;
+    const extra = extraUsers.get(unit);
+    if (extra === undefined) extraUsers.set(unit, [pid]);
+    else if (!extra.includes(pid)) extra.push(pid);
+  };
+  // Reserve every grid unit of an orthogonal grid path (consecutive points
+  // share an `x` or a `y`): the fallback elbow's units, like a searched
+  // route's, penalise later pairs.
+  const reserveGridPath = (points: readonly Vec2[], pid: number): void => {
+    for (let k = 1; k < points.length; k += 1) {
+      const a = points[k - 1]!;
+      const b = points[k]!;
+      const ai = xIndex.get(a.x);
+      const aj = yIndex.get(a.y);
+      const bi = xIndex.get(b.x);
+      const bj = yIndex.get(b.y);
+      if (ai === undefined || aj === undefined || bi === undefined || bj === undefined) continue;
+      if (aj === bj) {
+        const lo = Math.min(ai, bi);
+        const hi = Math.max(ai, bi);
+        for (let u = lo; u < hi; u += 1) addUser((aj * nx + u) * 2, pid);
+      } else if (ai === bi) {
+        const lo = Math.min(aj, bj);
+        const hi = Math.max(aj, bj);
+        for (let u = lo; u < hi; u += 1) addUser((u * nx + ai) * 2 + 1, pid);
+      }
+    }
+  };
   // Full simplified routes per unordered pair, dock to dock, joins included:
   // the L-R9 bans (shared segment, transversal crossing) are enforced against
   // these, and reserved through them.
@@ -496,11 +545,13 @@ export function routeEdges(input: {
         crossesSamePair(endPoint, request.end, earlier));
     if (terminalBlocked) {
       obstructed.push(request.id);
-      const full = simplifyRoute([request.start, startPoint, ...elbowFor(startPoint, endPoint, request.startExit), endPoint, request.end]);
+      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, full);
       const list = pairFull.get(request.pairKey) ?? [];
       list.push(full);
       pairFull.set(request.pairKey, list);
+      reserveGridPath([startPoint, ...elbow, endPoint], pid);
       continue;
     }
 
@@ -550,8 +601,8 @@ export function routeEdges(input: {
               const totalB = gb;
               const totalL = gl;
               // The virtual goal keeps the first parent achieving the
-              // smallest closing pair (lengths within `LEN_EPS` tie).
-              if (totalB < goalBends || (totalB === goalBends && totalL + LEN_EPS < goalLen)) {
+              // smallest closing pair on strict comparison.
+              if (totalB < goalBends || (totalB === goalBends && totalL < goalLen)) {
                 goalBends = totalB;
                 goalLen = totalL;
                 goalParent = state;
@@ -561,7 +612,7 @@ export function routeEdges(input: {
           } else {
             const totalB = gb + (h === arrival ? 0 : 1);
             const totalL = gl;
-            if (totalB < goalBends || (totalB === goalBends && totalL + LEN_EPS < goalLen)) {
+            if (totalB < goalBends || (totalB === goalBends && totalL < goalLen)) {
               goalBends = totalB;
               goalLen = totalL;
               goalParent = state;
@@ -590,8 +641,8 @@ export function routeEdges(input: {
           unit = (uj * nx + i) * 2 + 1;
           length = ys[uj + 1]! - ys[uj]!;
         }
-        const users = occupancy.get(unit);
-        if (users !== undefined && users.includes(pid)) continue;
+        const occupied = isOccupied(unit);
+        if (occupied && isUsedBy(unit, pid)) continue;
         // The candidate's current straight run, from its last bend (or the
         // start clearance point) to the new point: the transversal and
         // terminal-sharing bans are checked on this whole simplified segment,
@@ -618,16 +669,15 @@ export function routeEdges(input: {
           if (crossesSamePair(a1, a2, earlier) || sharesSamePair(a1, a2, earlier)) continue;
         }
         const nb = gb + (nh === h ? 0 : 1);
-        const nl = gl + length * (users === undefined ? 1 : 1 + OVERLAP_PENALTY);
+        const nl = gl + length * (occupied ? 1 + OVERLAP_PENALTY : 1);
         const next = (nj * nx + ni) * 4 + nh;
         if (stamp[next] === generation) {
           const rb = gBends[next]!;
           const rl = gLen[next]!;
           // Strictly smaller `(bends, weighted length)` only: on an exact
-          // pair tie (lengths within `LEN_EPS`) the first-recorded parent is
-          // kept — earliest popped predecessor, neighbours east, south, west,
-          // north.
-          if (nb > rb || (nb === rb && nl + LEN_EPS >= rl)) continue;
+          // pair tie the first-recorded parent is kept — earliest popped
+          // predecessor, neighbours east, south, west, north.
+          if (nb > rb || (nb === rb && nl >= rl)) continue;
         }
         if (closed[next] === generation) continue;
         stamp[next] = generation;
@@ -642,11 +692,13 @@ export function routeEdges(input: {
 
     if (goalParent < 0) {
       obstructed.push(request.id);
-      const full = simplifyRoute([request.start, startPoint, ...elbowFor(startPoint, endPoint, request.startExit), endPoint, request.end]);
+      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, full);
       const list = pairFull.get(request.pairKey) ?? [];
       list.push(full);
       pairFull.set(request.pairKey, list);
+      reserveGridPath([startPoint, ...elbow, endPoint], pid);
       continue;
     }
 
@@ -654,6 +706,9 @@ export function routeEdges(input: {
     for (let state = goalParent; state >= 0; state = parent[state]!) chain.push(state);
     chain.reverse();
     const corners: Vec2[] = [];
+    // No reservation happens above: units are collected below and reserved
+    // only at the final choice between this searched route and the fallback.
+    const pending: number[] = [];
     for (let index = 0; index < chain.length; index += 1) {
       const point = chain[index]! >> 2;
       const i = point % nx;
@@ -663,10 +718,7 @@ export function routeEdges(input: {
         const previous = chain[index - 1]! >> 2;
         const pi = previous % nx;
         const pj = (previous - pi) / nx;
-        const unit = pj === j ? (j * nx + Math.min(i, pi)) * 2 : (Math.min(j, pj) * nx + i) * 2 + 1;
-        const users = occupancy.get(unit);
-        if (users === undefined) occupancy.set(unit, [pid]);
-        else if (!users.includes(pid)) users.push(pid);
+        pending.push(pj === j ? (j * nx + Math.min(i, pi)) * 2 : (Math.min(j, pj) * nx + i) * 2 + 1);
       }
     }
     const full = simplifyRoute([request.start, ...corners, request.end]);
@@ -697,13 +749,16 @@ export function routeEdges(input: {
     }
     if (violates) {
       obstructed.push(request.id);
-      const fallback = simplifyRoute([request.start, startPoint, ...elbowFor(startPoint, endPoint, request.startExit), endPoint, request.end]);
+      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const fallback = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, fallback);
       const list = pairFull.get(request.pairKey) ?? [];
       list.push(fallback);
       pairFull.set(request.pairKey, list);
+      reserveGridPath([startPoint, ...elbow, endPoint], pid);
       continue;
     }
+    for (const unit of pending) addUser(unit, pid);
     routes.set(request.id, full);
     const list = pairFull.get(request.pairKey) ?? [];
     list.push(full);
