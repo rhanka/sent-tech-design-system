@@ -1,6 +1,6 @@
 /**
  * Amended §10.5 / AC-L8 edge cases (SPEC §10.5 L-R1–L-R11 as amended in
- * `fbc923b1`): one fixture per listed case, asserted on the geometry of the
+ * `0b785150`): one fixture per listed case, asserted on the geometry of the
  * `ViewDocument` the engine returns — never on warning absence alone. Every
  * view is validated by `diagram-core` inside `lay()`. Cases the existing
  * suites already pin (lone-edge centre, symmetric spread, narrower-wins, the
@@ -406,7 +406,7 @@ describe("L-R10 — segment order, contested segment, canonical gap", () => {
   });
 });
 
-describe("L-R10 — one label-unplaced fixture per residual reason (a)–(e)", () => {
+describe("L-R10 — one fixture per proof reason (a)–(d), one per budget exit", () => {
   // Every fixture below re-evaluates the residual predicate on the final
   // geometry: the warning carries `label-unplaced` with the relation as its
   // sole ref, and `residualUnplaceable` holds over the diagnosed segments.
@@ -441,24 +441,53 @@ describe("L-R10 — one label-unplaced fixture per residual reason (a)–(e)", (
 
   it("(b) no rank gap crosses or holds the segment", () => {
     // A lone labeled self-loop: the longest segment's widening search finds
-    // no rank gap at any containing level.
+    // no rank gap at any containing level. `0b785150` still evaluates
+    // T-sibling without a canonical gap: the self-loop lane shares one member
+    // at every tried rank, so the longest segment records (d) next to (b).
     const spec: DocSpec = { nodes: ["n1"], links: [["r1", "n1", "n1", "LLLL"]] };
     const { laid, diagnosis } = diagnosed(spec, 8000);
     expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([["label-unplaced", relationRef("r1")]]);
     const outcome = diagnosis.outcomes.get(relationRef("r1"))!;
-    expect(longestReasons(spec, "r1")).toEqual(["b"]);
+    expect(longestReasons(spec, "r1")).toEqual(["b", "d"]);
     expect(residualUnplaceable(outcome.segments)).toBe(true);
   });
 
   it("(c) a blocking shape spans the padded label on both sides", () => {
+    // `0b785150` restricts (c) to a blocker owned by the lane's own member or
+    // an ancestor: here the blocker is the lane's own node `n0`, grown wide by
+    // its two self-loops, spanning `r5`'s short vertical segment on both cross
+    // sides. The segment records exactly (c): long enough, no rank deficit,
+    // and no sibling gap separates a lane from itself.
     const spec: DocSpec = {
       nodes: ["n0", "n1", "n2"],
-      links: [["r0", "n0", "n1", "L".repeat(14)], ["r2", "n0", "n2", "L".repeat(20)], ["r4", "n0", "n0", "L".repeat(40)]],
+      links: [["r2", "n0", "n0", "LLLLLL"], ["r4", "n2", "n1", "L".repeat(36)], ["r5", "n0", "n0", "L".repeat(32)]],
     };
     const { laid, diagnosis } = diagnosed(spec, 8000);
-    expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([["label-unplaced", relationRef("r4")]]);
-    expect(longestReasons(spec, "r4")).toEqual(["c"]);
-    expect(residualUnplaceable(diagnosis.outcomes.get(relationRef("r4"))!.segments)).toBe(true);
+    expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
+      ["route-obstructed", relationRef("r5")],
+      ["label-budget-exhausted", relationRef("r2")],
+      ["label-unplaced", relationRef("r5")],
+    ]);
+    const outcome = diagnosis.outcomes.get(relationRef("r5"))!;
+    expect(outcome.outcome).toBe("label-unplaced");
+    const bySegment = new Map(outcome.segments.map((segment) => [segment.segment, segment.reasons]));
+    // The short horizontal stub closes under (b) next to (c); the long
+    // vertical hug of the grown node closes under (c) alone.
+    expect(bySegment.get(0)).toEqual(["b", "c"]);
+    expect(bySegment.get(1)).toEqual(["c"]);
+    expect(residualUnplaceable(outcome.segments)).toBe(true);
+    // Independently: on the final geometry `n0` spans `r5`'s segment-1 padded
+    // box on both cross sides, and `n0` is the lane's own entity.
+    const view = laid.view;
+    const node = rectOf(view, "n0");
+    const route = routeOf(view, "r5");
+    const size = measure("L".repeat(32), "edge-label");
+    const margin = DEFAULT_LAYOUT_METRICS.labelMargin;
+    const centreY = (route[1]!.y + route[2]!.y) / 2;
+    const paddedY = { from: centreY - size.height / 2 - margin, to: centreY + size.height / 2 + margin };
+    expect(node.y).toBeLessThanOrEqual(paddedY.from);
+    expect(node.y + node.height).toBeGreaterThanOrEqual(paddedY.to);
+    expect(node.width).toBeGreaterThan(size.width);
   });
 
   it("(d) the lane and the blocker share one member, so no sibling gap separates them", () => {
@@ -486,25 +515,129 @@ describe("L-R10 — one label-unplaced fixture per residual reason (a)–(e)", (
     }
   });
 
-  it("(e) the required lengthening exceeds the cap beside a grown shape", () => {
-    // `r4`'s 36-character label grows its ends' sides; the small `r2` label
-    // riding beside that grown shape needs more than four times its
-    // lengthening budget to clear it: the amount is rejected, not clamped.
+  it("budget exit 1 — a required amount over the cap is budget, never unplaced", () => {
+    // `0b785150`: (e) is a budget outcome. `r4`'s 36-character label grows
+    // its ends' sides; the small `r2` label riding beside that grown shape
+    // needs more than four times its lengthening budget to clear it: the
+    // amount is rejected for that transformation only, never clamped, and the
+    // label reports `label-budget-exhausted` — while `r5` stays
+    // `label-unplaced`, proving (e) never leaks into a proof.
     const spec: DocSpec = {
       nodes: ["n0", "n1", "n2"],
       links: [["r2", "n0", "n0", "LLLLLL"], ["r4", "n2", "n1", "L".repeat(36)], ["r5", "n0", "n0", "L".repeat(32)]],
     };
     const { laid, diagnosis } = diagnosed(spec, 8000);
-    expect(
-      laid.warnings.map((warning) => [warning.code, ...warning.refs]).sort(),
-    ).toEqual(
-      [["label-unplaced", relationRef("r2")], ["label-unplaced", relationRef("r5")], ["route-obstructed", relationRef("r5")]].sort(),
-    );
+    expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
+      ["route-obstructed", relationRef("r5")],
+      ["label-budget-exhausted", relationRef("r2")],
+      ["label-unplaced", relationRef("r5")],
+    ]);
     const outcome = diagnosis.outcomes.get(relationRef("r2"))!;
-    expect(outcome.outcome).toBe("label-unplaced");
-    expect(longestReasons(spec, "r2")).toEqual(["e"]);
-    expect(residualUnplaceable(outcome.segments)).toBe(true);
+    expect(outcome.outcome).toBe("label-budget-exhausted");
+    expect(outcome.segments.some((segment) => segment.reasons.includes("e"))).toBe(true);
     expect(residualUnplaceable(diagnosis.outcomes.get(relationRef("r5"))!.segments)).toBe(true);
+    // Independently: clearing the 684 px grown `n0` along the flow from `r2`'s
+    // segment-2 centre needs more than twice the distance to its nearer edge
+    // — over the `4 · (labelMain + 2m)` cap — so no admissible transformation
+    // exists for that dimension.
+    const view = laid.view;
+    const node = rectOf(view, "n0");
+    const route = routeOf(view, "r2");
+    const size = measure("LLLLLL", "edge-label");
+    const margin = DEFAULT_LAYOUT_METRICS.labelMargin;
+    const cap = 4 * (size.width + 2 * margin);
+    const centreX = (route[2]!.x + route[3]!.x) / 2;
+    const toNearerEdge = Math.min(centreX - node.x, node.x + node.width - centreX);
+    const required = 2 * (toNearerEdge + size.width / 2 + margin);
+    expect(cap).toBe(200);
+    expect(required).toBeGreaterThan(cap);
+  });
+
+  it("budget exit 2 — a progress-guard stall is budget, never unplaced", () => {
+    // `r3` (40 characters) needs its short stub lengthened, but lengthening
+    // the `k` rank gap twice over leaves the 8 px stub exactly as long: the
+    // guard withdraws the gap for `r3`, and with no other avenue the label
+    // reports `label-budget-exhausted`. Recomputed from the final geometry the
+    // deficit is substantial yet under the cap, and no segment records (e).
+    const spec: DocSpec = {
+      nodes: ["a", "b", "c"],
+      containers: { k: ["a", "b"] },
+      links: [["r1", "a", "c", "L".repeat(40)], ["r2", "b", "c", "L".repeat(40)], ["r3", "a", "b", "L".repeat(40)]],
+    };
+    const { laid, diagnosis } = diagnosed(spec, 8000);
+    expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
+      ["label-budget-exhausted", relationRef("r3")],
+    ]);
+    const outcome = diagnosis.outcomes.get(relationRef("r3"))!;
+    expect(outcome.outcome).toBe("label-budget-exhausted");
+    for (const segment of outcome.segments) expect(segment.reasons).not.toContain("e");
+    const view = laid.view;
+    const route = routeOf(view, "r3");
+    const size = measure("L".repeat(40), "edge-label");
+    const margin = DEFAULT_LAYOUT_METRICS.labelMargin;
+    const cap = 4 * (size.width + 2 * margin);
+    // The stub never grew: it still measures one clearance point, while its
+    // full deficit stands — requestable-looking, under the cap, yet with no
+    // request outstanding and no (e): the gap was withdrawn, the textbook
+    // stall signature.
+    const from = route[0]!;
+    const stub = Math.abs(route[1]!.x - from.x) + Math.abs(route[1]!.y - from.y);
+    const along = route[1]!.y === from.y ? size.width : size.height;
+    const deficit = along + 2 * margin - stub;
+    expect(stub).toBe(8);
+    expect(deficit).toBe(280);
+    expect(deficit).toBeLessThanOrEqual(cap);
+    const stalled = outcome.segments.find((segment) => segment.segment === 0)!;
+    expect(stalled.reasons).toEqual([]);
+  });
+
+  it("budget exit 3 — a request outstanding after 12 rounds is budget, never unplaced", () => {
+    // `r7`'s rank need halves every round (137, 68.5, …) — strict progress, so
+    // the guard never fires — but twelve attempts run out with a live request
+    // still recorded. The tail need recomputed from the final geometry is
+    // positive yet tiny and far under the cap, no segment records (e), and at
+    // least one segment stays open (empty reasons): outstanding, not proof.
+    const spec: DocSpec = {
+      nodes: ["a", "b", "c", "d", "e", "f", "g", "h"],
+      links: [
+        ["r0", "c", "f", "L".repeat(22)],
+        ["r1", "b", "g", "L".repeat(42)],
+        ["r2", "c", "a", "L".repeat(24)],
+        ["r3", "h", "g", "L".repeat(46)],
+        ["r4", "h", "g", "L".repeat(52)],
+        ["r5", "g", "h", "L".repeat(49)],
+        ["r6", "f", "b", "L".repeat(55)],
+        ["r7", "c", "f", "L".repeat(42)],
+        ["r8", "h", "d", "L".repeat(21)],
+      ],
+    };
+    const { laid, diagnosis } = diagnosed(spec, 8000);
+    expect(laid.warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
+      ["label-budget-exhausted", relationRef("r7")],
+    ]);
+    const outcome = diagnosis.outcomes.get(relationRef("r7"))!;
+    expect(outcome.outcome).toBe("label-budget-exhausted");
+    for (const segment of outcome.segments) expect(segment.reasons).not.toContain("e");
+    expect(outcome.segments.some((segment) => segment.reasons.length === 0)).toBe(true);
+    const view = laid.view;
+    const route = routeOf(view, "r7");
+    const size = measure("L".repeat(42), "edge-label");
+    const margin = DEFAULT_LAYOUT_METRICS.labelMargin;
+    const cap = 4 * (size.width + 2 * margin);
+    const shortfalls = route.slice(1).map((point, index) => {
+      const from = route[index]!;
+      const length = Math.abs(point.x - from.x) + Math.abs(point.y - from.y);
+      const along = point.y === from.y ? size.width : size.height;
+      return along + 2 * margin - length;
+    });
+    const tail = Math.max(...shortfalls);
+    expect(tail).toBeGreaterThan(0);
+    expect(tail).toBeLessThan(1);
+    expect(tail).toBeLessThanOrEqual(cap);
+    // Deterministic redraw: the same Zeno tail, the same single warning.
+    const again = lay(buildDocument(spec), 8000);
+    expect(again.warnings).toEqual(laid.warnings);
+    expect(again.fit.width).toBe(laid.fit.width);
   });
 });
 

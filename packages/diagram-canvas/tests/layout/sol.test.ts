@@ -146,11 +146,16 @@ describe("sol finding 2 — return edges use the wrong ranks for label lanes", (
   });
 
   it("places every label with no larger drawing", () => {
+    // `0b785150` evaluates T-sibling even without a canonical gap (no early
+    // return): `r5`'s gapless segment requests the `n0`–`n1` sibling widening
+    // (14.5 px) on top of the `n2`–`n3` one, so the drawing stands 216.5 px
+    // tall instead of 202 — still 315 px wide, every label placed, converging
+    // in fewer attempts.
     const { fit, warnings } = lay(document, 8000);
     expect(warnings).toEqual([]);
     expect(fit.direction).toBe("left-to-right");
     expect(fit.width).toBe(315);
-    expect(fit.height).toBe(202);
+    expect(fit.height).toBe(216.5);
   });
 
   it("the renderer replay holds every label and the routes stay minimal", () => {

@@ -139,22 +139,31 @@ describe("output", () => {
 
   it("docks a link that targets a semantic port through a port occurrence with side, order and anchor", () => {
     // The scene suites' own fixture: r1 joins port pa (on a) to port pb (on b).
+    // `0b785150`: r1 and r2 share the unordered entity pair, so r1 is parallel
+    // and each of its port ends takes its own occurrence identified by relation
+    // and role — never the shared port slot.
     const document = sampleDocument();
     const { view } = lay(document, WIDE);
     const ports = Object.values(view.portOccurrences);
     expect(ports.map((port) => port.port).sort()).toEqual(["port:pa", "port:pb"]);
     const relation = Object.values(view.relationOccurrences).find((occurrence) => occurrence.relation === "relation:r1")!;
     expect(relation.endpoints.map((endpoint) => endpoint.occurrence).sort()).toEqual([
-      occurrenceRef("p.pa"),
-      occurrenceRef("p.pb"),
+      occurrenceRef("p.pa.r1.source"),
+      occurrenceRef("p.pb.r1.target"),
     ]);
     const route = relationRoute(view, relation.id)!;
-    const pa = view.portOccurrences[occurrenceRef("p.pa")]!;
+    const pa = view.portOccurrences[occurrenceRef("p.pa.r1.source")]!;
     const owner = view.entityOccurrences[pa.ownerOccurrence]!;
     expect(route[0]).toEqual(portAnchorPoint(owner.geometry, pa.side, pa.anchor));
     expect(pa.side).toBe("east");
     expect(pa.anchor).toBeGreaterThan(0);
     expect(pa.anchor).toBeLessThan(1);
+    // The parallel companion r2 carries no port: it stays on entity occurrences.
+    const companion = Object.values(view.relationOccurrences).find((occurrence) => occurrence.relation === "relation:r2")!;
+    expect(companion.endpoints.map((endpoint) => endpoint.occurrence).sort()).toEqual([
+      occurrenceRef("e.a"),
+      occurrenceRef("e.b"),
+    ]);
   });
 
   it("routes a self-loop out of the flow exit side and back on the side before it", () => {
