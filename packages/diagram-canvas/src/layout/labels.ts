@@ -1,8 +1,16 @@
 /**
  * L-R10 — edge labels. "A label sits centred on the longest segment of its
- * route that can hold it without overlap." Segments are tried by decreasing
- * length; when none can hold the label, the engine widens the gap between
- * ranks, or between siblings, that the route crosses, until one segment can.
+ * route that can hold it without overlap." A segment can hold the label when
+ * its Manhattan length is at least `along + 2 · labelMargin` and the label
+ * box padded by `labelMargin` intersects no node rectangle, no container
+ * title band and no already-placed label box. Relations go in ascending
+ * relation id order; segments of one route by decreasing length, ties by
+ * ascending segment index. When no segment can hold a label, the engine
+ * (`engine.ts`) widens gaps by a terminating procedure: at most 12 rounds in
+ * total, one request per label per round, gaps combined by maximum. A label
+ * with a request outstanding after the 12th round is `label-budget-exhausted`;
+ * only a label closed by the residual predicate on every segment is
+ * `label-unplaced`.
  *
  * WHERE THE LABEL LIVES. `ViewDocument` has no field for a label position, and
  * none is needed: the rule makes the position a FUNCTION of the route, the

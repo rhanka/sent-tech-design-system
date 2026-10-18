@@ -95,7 +95,7 @@ export interface LayoutFit {
 }
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
-export type LayoutWarningCode = "label-unplaced" | "route-obstructed" | "row-fill-partial";
+export type LayoutWarningCode = "label-unplaced" | "label-budget-exhausted" | "route-obstructed" | "row-fill-partial";
 
 export interface LayoutWarning {
   readonly code: LayoutWarningCode;
