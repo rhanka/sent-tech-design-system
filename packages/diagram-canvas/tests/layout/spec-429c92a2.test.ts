@@ -5,7 +5,7 @@
  * fails on `90fedc2e` and passes after the fix. Every view is validated by
  * `diagram-core` inside `lay()`.
  */
-import { occurrenceRef, relationRef } from "@sentropic/diagram-core";
+import { entityRef, occurrenceRef, relationRef } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import { bendCount, routeEdges } from "../../src/index.js";
@@ -66,53 +66,53 @@ describe("429c92a2 port ids — sol pass-3 finding 1 (blocking collision)", () =
 describe("429c92a2 lexicographic cost — a route beyond the old BEND threshold", () => {
   // Weighted lengths past `BEND = 10^7` flip the old scalar
   // (`bends·BEND + length`) but never the `(bends, length)` pair: `r2`'s
-  // straight 0-bend corridor is penalty-weighted to 60M, its 3-bend detour to
-  // 20M. The scalar picks the detour (50M < 60M); the pair keeps the straight
-  // route (0 bends < 3 bends).
+  // straight 0-bend corridor is penalty-weighted to 72M, its 4-bend detour to
+  // 24M. The scalar picks the detour (64M < 72M); the pair keeps the straight
+  // route (0 bends < 4 bends).
   it("prefers fewer bends however long the weighted length", () => {
     const M = 1_000_000;
     const rects = new Map([
-      ["entity:a", { x: 0, y: 0, width: 64, height: 32 }],
-      ["entity:b", { x: 40 * M, y: 0, width: 64, height: 32 }],
-      ["entity:c", { x: 10 * M, y: 0, width: 64, height: 32 }],
-      ["entity:d", { x: 30 * M, y: 0, width: 64, height: 32 }],
-    ] as const);
+      [entityRef("a"), { x: 0, y: 0, width: 64, height: 32 }],
+      [entityRef("b"), { x: 48 * M, y: 0, width: 64, height: 32 }],
+      [entityRef("c"), { x: 10 * M, y: 0, width: 64, height: 32 }],
+      [entityRef("d"), { x: 34 * M, y: 0, width: 64, height: 32 }],
+    ]);
     const outcome = routeEdges({
-      rects: rects as never,
+      rects,
       clearance: 8,
       requests: [
         {
-          id: "relation:r1",
-          pairKey: "entity:a|entity:b",
+          id: relationRef("r1"),
+          pairKey: `${entityRef("a")}|${entityRef("b")}`,
           start: { x: 64, y: 16 },
           startExit: { x: 1, y: 0 },
-          end: { x: 40 * M, y: 16 },
+          end: { x: 48 * M, y: 16 },
           endExit: { x: -1, y: 0 },
           passable: new Set(),
         },
         {
-          id: "relation:r2",
-          pairKey: "entity:c|entity:d",
+          id: relationRef("r2"),
+          pairKey: `${entityRef("c")}|${entityRef("d")}`,
           start: { x: 10 * M + 64, y: 16 },
           startExit: { x: 1, y: 0 },
-          end: { x: 30 * M, y: 16 },
+          end: { x: 34 * M, y: 16 },
           endExit: { x: -1, y: 0 },
           passable: new Set(),
         },
       ],
     });
     expect(outcome.obstructed).toEqual([]);
-    const r1 = outcome.routes.get("relation:r1")!;
-    const r2 = outcome.routes.get("relation:r2")!;
+    const r1 = outcome.routes.get(relationRef("r1"))!;
+    const r2 = outcome.routes.get(relationRef("r2"))!;
     expect(isOrthogonal(r1)).toBe(true);
     expect(isOrthogonal(r2)).toBe(true);
     // `r1` detours around the `c,d` obstacles blocking its straight corridor
     // (4 bends, both old and new routers agree obstacle avoidance comes first).
     expect(bendCount(r1)).toBe(4);
-    // The lexicographic router keeps `r2`'s straight corridor despite its 60M
-    // penalty weight; the old scalar would detour (3 bends, 50M < 60M).
+    // The lexicographic router keeps `r2`'s straight corridor despite its 72M
+    // penalty weight; the old scalar detours (4 bends, 64M < 72M).
     expect(bendCount(r2)).toBe(0);
-    expect(r2).toEqual([{ x: 10 * M + 64, y: 16 }, { x: 30 * M, y: 16 }]);
+    expect(r2).toEqual([{ x: 10 * M + 64, y: 16 }, { x: 34 * M, y: 16 }]);
   });
 });
 
