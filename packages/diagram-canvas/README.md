@@ -197,24 +197,26 @@ no other structure to persist:
 
 The call also returns `fit` (direction, size at scale 1, zoom, `pans`, `phone`)
 and `warnings` for what it could not fully satisfy (`label-unplaced`,
-`route-obstructed`, `row-fill-partial`), reported rather than dropped.
+`label-budget-exhausted`, `route-obstructed`, `row-fill-partial`), reported
+rather than dropped. A zero, negative or non-finite `targetWidth` is refused
+as `target-width-invalid`, with no view and no scale.
 
 | Rule | What the engine does | Fixture |
 |---|---|---|
-| L-R1 lone edge at the centre | an edge alone on its side docks at that side's centre | `tests/layout/rules.test.ts` |
-| L-R2 shared side spread symmetrically | n slots at `(i - (n-1)/2) * s` from the centre; `s` widens for labels, narrows to `length/(n+1)`, and a node too short grows | idem |
-| L-R3 bends minimised after docking | A* on an orthogonal grid, cost `bends * 1e7 + length`; checked against an independent 0-1 BFS oracle | idem |
-| L-R4 row alignment and fill | top-to-bottom: the containers of a rank take its top and height; left-to-right: containers whose vertical spans overlap take a common top and height, members below are pushed down | idem |
-| L-R5 flow direction | left-to-right when that drawing fits `targetWidth` at scale 1, else top-to-bottom (subject to L-R7 when neither fits); no option forces it | idem |
-| L-R6 rank and order | longest path; edges taken in ascending relation id, the one closing a cycle (the greatest on it) reversed; barycentre sweeps, ties by entity id | idem |
-| L-R7 target width, phone fallback | L-R5 chooses at every width, phone included; neither fits: the narrower drawing wins (top-to-bottom on a tie); zoom down to 0.75, then `pans`; the page never scrolls horizontally | idem |
-| L-R8 edges across containers | every entity is an obstacle except the ancestors of either end | idem |
-| L-R9 parallel edges | distinct slots, same id order at both ends; a grid unit used by a parallel edge is forbidden to the next | idem |
-| L-R10 edge labels | centred on the longest segment that can hold the label (`placeEdgeLabels`, segments by decreasing length); when none can, the rank gap or the sibling gap the route crosses is widened until one can | idem |
-| L-R11 legend | none: the view holds no legend occurrence, group or field, and the options have no switch | idem |
+| L-R1 side choice and lone edge at the centre | flow side first when separated on that axis; cross side on along-flow overlap; greater centre-offset axis on double overlap (horizontal on a tie); ancestor pairs on the inner entity's nearest wall (ties east, south, west, north); self-loops out east/south, back north/west; a lone end at the exact centre | `tests/layout/rules.test.ts`, `tests/layout/amended.test.ts` |
+| L-R2 shared side spread symmetrically | slots by the other end's centre, ties by slot key (`~port`, else `relation#role`); `s` from `slotSpacing`, raised for labelled sides, node growth to `s(n+1)` with re-placement before routing | idem |
+| L-R3 bends minimised after docking, route tie-break | A* on boundaries, channel midlines and clearance points; bend count first, weighted length next (×3 on another pair's units, same-pair units forbidden); ties by frontier (estimated cost, then row, column, heading); checked against an independent 0-1 BFS oracle | idem |
+| L-R4 row constitution, alignment and fill | a row is one rank top-to-bottom, one overlap component left-to-right; rank start and rank extent, or common cross start and size, with push-down to minimum separation; at most 20 rounds, else `row-fill-partial` for that level | idem |
+| L-R5 flow direction, measured after labels | both drawings finalized (L-R10 rounds complete) before comparing placement widths: left-to-right when `B_lr ≤ W`, else top-to-bottom when `B_tb ≤ W`, else the narrower, top-to-bottom on a tie; a function of graph and `W` only | idem |
+| L-R6 rank, cycles, self-loops, sibling order | per-level lifted edges, same-member lifts skipped; self-loops skipped everywhere (no rank, no dummy, direction kept); cycles broken in ascending relation id (greatest on each cycle reversed, ranking only); longest-path rank; one dummy per intermediate rank (`~`-suffixed, after entities); barycentre from key order, at most 24 sweeps, (weight, key) sort, best seen kept | idem, `tests/layout/sol.test.ts` |
+| L-R7 target width, scale and phone fallback | `s = min(1, max(0.75, W / B))` on the chosen finalized width (`B = 0`: left-to-right, zoom 1, no pan); pans exactly when `B·s > W`; L-R5 chooses at every width | idem |
+| L-R8 edges across containers | every node and container is an obstacle, grown by `clearance`, except the strict ancestors of either end; segments run on grown boundaries at most; the only exception is `route-obstructed` | idem |
+| L-R9 parallel edges | distinct slots (relation-id tie-break, same at both ends); a grid unit used by an edge of the same unordered pair is forbidden to the next | idem, `tests/layout/sol.test.ts` |
+| L-R10 edge labels | centred, unrotated, on the longest holdable segment (decreasing length, ascending index; ascending relation id across labels); otherwise the 12-round procedure: rank lengthening and sibling widening, canonical gap (nearest, deepest, lowest rank), no-progress abandonment; residual predicate (a)–(e) reports `label-unplaced`, an outstanding request reports `label-budget-exhausted`, never merged | idem, `tests/layout/sol.test.ts` |
+| L-R11 legend | none: the view holds no legend occurrence, group or field, and the options have no switch | `tests/layout/rules.test.ts` |
 
-Determinism: the same document laid out twice, and with its entity and relation
-records shuffled, gives byte-identical `serialiseView` output
+Determinism: the same document laid out twice, and with its entity, relation
+and `contains` records shuffled, gives byte-identical `serialiseView` output
 (`tests/layout/determinism.test.ts`). Time: a document of 40 nodes in 3 nesting
 levels (9 containers, 44 links, 4 labels, one cycle) lays out in a median of
 about 9–15 ms on the development machine (Node v22.22.1), against a 1000 ms
@@ -222,12 +224,17 @@ budget in `tests/layout/performance.test.ts`, which prints the figure.
 
 Limits, stated rather than hidden:
 
-- A label no rank or sibling gap can clear is reported as `label-unplaced`:
-  lengthening moves the lane and the blocker together (the same member carries
-  both ends), the shape spans the lane past the label on both sides, or the
-  segment lies outside any rank gap. Seen once on the 40-node fixture laid out
-  left to right (`relation:x4`, a hand-off label thrown over the top of the
-  drawing), pinned in `tests/layout/rules.test.ts`.
+- A label is `label-unplaced` only when the residual predicate holds on the
+  final geometry: every segment closed for one of (a) across-flow and too
+  short, (b) no rank gap crosses or holds it, (c) a shape spans the padded
+  label on both sides, (d) lane and blocker share one member, (e) the need
+  exceeds four times the budget. One fixture per reason lives in
+  `tests/layout/amended.test.ts`, each re-evaluated with
+  `residualUnplaceable` and `diagnoseLabels`.
+- A label that still has a widening request after the 12th round is
+  `label-budget-exhausted`, never `label-unplaced`. Seen on the 40-node
+  fixture laid out left to right (`relation:x4`, a hand-off label thrown over
+  the top of the drawing), pinned in `tests/layout/rules.test.ts`.
 - A docking point on an entity occurrence is held as the first or last waypoint:
   a relation occurrence endpoint drawn on an entity cannot hold one, and a port
   occurrence may only draw the relation's own semantic port

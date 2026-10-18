@@ -5,7 +5,19 @@
  * injected function. See README, "Layout".
  */
 
-export { layoutDocument } from "./engine.js";
+export {
+  chooseRankGap,
+  diagnoseLabels,
+  layoutDocument,
+  residualUnplaceable,
+  type LabelOutcome,
+  type RankGapChoice,
+  type ResidualReason,
+  type SegmentResidual,
+} from "./engine.js";
+export { BARYCENTRE_SWEEPS, dummyKey, orderLevel, type LevelEdge, type LevelOrder } from "./rank.js";
+export { sideToward } from "./dock.js";
+export { ROW_FILL_ROUNDS } from "./place.js";
 export {
   edgeLabelCandidates,
   edgeLabelPlacement,
@@ -15,5 +27,5 @@ export {
   type LabelEntry,
   type LabelPlacement,
 } from "./labels.js";
-export { bendCount, simplifyRoute } from "./route.js";
+export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";

@@ -1,29 +1,29 @@
 /**
  * Docking: which side of its entity each edge end uses, and where on that side.
  *
- * L-R1 — an edge alone on its side docks at the centre of that side.
- * L-R2 — several edges on one side spread symmetrically about its centre: n
- *        slots at offsets (i - (n - 1) / 2) * s, so the offsets sum to zero and
- *        the middle slot, when n is odd, is the centre itself.
- * L-R9 — parallel edges (same two entities) are distinct ends, so they get
- *        distinct slots; their slot order is the relation id at BOTH ends, which
- *        keeps them from crossing each other.
- *
- * SIDE. An end docks on the side of its entity that faces the other end: along
- * the flow first (east/west left-to-right, south/north top-to-bottom), across it
- * when the two shapes overlap along the flow. A self-loop leaves by the flow's
- * exit side and comes back on the side before it. An edge between an entity and
- * its own container docks on the wall of the inner entity nearest the
- * container, and on the same wall of the container, from the inside.
- *
- * SLOT ORDER on a side is by the position of the other end along that side, then
- * by end key (relation id and role), which is what keeps the edges of one side
- * from crossing next to it. Ends that target the same semantic PORT share one
- * slot, because a port occurrence is one point.
- *
- * SPACING is `slotSpacing`, widened to a label's thickness when labelled edges
- * share the side (so their labels cannot overlap, L-R10), and narrowed to
- * `length / (n + 1)` when the side is too short, so every slot stays on the side.
+ * L-R1 — side choice and lone edge at the centre. An end's side is a function
+ * of the two entity rectangles and the direction only. Ordinary pair: the flow
+ * side first when the other entity is separated on that axis; the cross side
+ * when the entities overlap along the flow and are separated across it; when
+ * they overlap on both axes, the axis of the greater centre offset, horizontal
+ * on an exact tie, then east/south for a non-negative offset and west/north
+ * otherwise. Ancestor pair: both ends take the inner entity's nearest
+ * container wall (ties east, south, west, north); the container end exits
+ * inward, the inner end outward. Self-loop: the source end exits east
+ * (left-to-right) or south (top-to-bottom) and the target end enters north
+ * (left-to-right) or west (top-to-bottom). An end alone in its (entity, side)
+ * group docks at the exact centre of that side (anchor 0.5).
+ * L-R2 — shared side spread symmetrically: ends grouped by (entity, side);
+ * ends on one semantic port share one slot. Slots ordered by the other end's
+ * centre along the side, ties by slot key (`~<port-id>`, else
+ * `<relation-id>#<role>`). Offsets `(i − (n−1)/2) · s` from the side's start,
+ * summing to zero. Spacing `s` from `slotSpacing`, raised for labelled sides
+ * to the widest label thickness plus `labelMargin`; with `n ≥ 2` and
+ * `s · (n+1)` past the side length, the node grows to `s · (n+1)` and the
+ * drawing is re-placed before routing, the effective spacing then
+ * `min(s, length / (n+1))`.
+ * L-R9 — parallel edges (same two entities) get distinct slots; their slot
+ * tie-break is the relation id at BOTH ends, so they do not cross each other.
  */
 
 import type { EntityRef, PortRef, PortSide, RelationRef } from "@sentropic/diagram-core";

@@ -21,14 +21,21 @@
  * tune and no order dependence. A chain therefore comes out straight, which is
  * what lets a lone edge dock at both centres with no bend (L-R1, L-R3).
  *
- * L-R4 — ROW ALIGNMENT AND FILL. Sibling containers in one row are top-aligned
- * and stretched to the row height. Top-to-bottom, a row is a rank: every
- * container of the rank takes the rank's top and the rank's height.
- * Left-to-right, a rank is a column, so a row is a set of sibling containers
- * whose vertical spans overlap across columns: they take a common top and a
- * common height, and the members below them in each column are pushed down to
- * keep their separation. That fixed point is iterated; if it does not settle the
- * engine reports `row-fill-partial` rather than claiming the rule.
+ * L-R4 — ROW CONSTITUTION, ALIGNMENT AND FILL. A row is constituted per nesting
+ * level, among sibling containers only. Top-to-bottom: a row is one rank, all
+ * its containers; they take the rank's main-axis start and are stretched to
+ * the rank extent (the greatest natural main size in the rank).
+ * Left-to-right: a row is one connected component of the strict cross-axis
+ * (vertical) overlap relation between sibling containers, components formed
+ * over pairs in entity-id order. Row containers take a common cross start
+ * (the greatest in the row) and a common cross size (the greatest natural
+ * cross size in the row); members below them in each rank are pushed along
+ * the cross axis to restore the minimum separation (`nodeGap`, or
+ * `slotSpacing` next to a dummy). Alignment and push-down iterate to a fixed
+ * point for at most 20 rounds; with no change-free round the engine keeps the
+ * last geometry and reports `row-fill-partial` for that level. Container
+ * content keeps its origin (padding and title band unchanged) inside a
+ * stretched container.
  */
 
 import type { EntityRef } from "@sentropic/diagram-core";
@@ -110,7 +117,7 @@ export const ROOT = "root";
 export function siblingGapKey(levelKey: string, rank: number, left: string, right: string): string {
   return `${levelKey}#sibling#${rank}#${left}#${right}`;
 }
-const ROW_FILL_ROUNDS = 20;
+export const ROW_FILL_ROUNDS = 20;
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 

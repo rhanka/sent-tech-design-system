@@ -1,33 +1,36 @@
 /**
  * Orthogonal routing between docked ends, around obstacles.
  *
- * L-R3 — bends minimised after docking. The docks are fixed first (`dock.ts`);
- * the router then searches a route whose cost is `bends * BEND + length (+
- * overlap penalty)`, with `BEND` larger than any length the drawing can hold, so
- * the bend count is minimised first and the length second. The search is A* with
- * an admissible, consistent heuristic (an obstacle-free lower bound on the turns
- * still needed, plus the Manhattan distance), so the route it returns has the
- * fewest bends of any route on the grid.
- *
- * THE GRID. Its lines are every obstacle boundary (grown by the clearance), the
- * middle of every channel between two consecutive boundaries, and the two
- * clearance points of every dock. Any orthogonal route around rectangles can be
- * slid onto such lines without adding a bend, which is why minimising over the
- * grid minimises over the plane for the bend count.
+ * L-R3 — bends minimised after docking, route tie-break. Docks are fixed first
+ * (`dock.ts`); the router searches orthogonal routes on the grid formed by
+ * obstacle boundaries grown by `clearance`, the midline of every channel
+ * between two consecutive boundaries, and the clearance point of every dock.
+ * Cost is lexicographic: bend count first (one bend costs more than any length
+ * the drawing can hold), then weighted length, where a grid unit already used
+ * by an edge of another pair costs three times its length and a unit used by
+ * an edge of the same pair is forbidden (L-R9). The search is A* with an
+ * obstacle-free lower bound on remaining turns plus Manhattan distance, so the
+ * route returned has the fewest bends of any orthogonal route around the
+ * obstacles. Remaining ties resolve by the A* frontier order: increasing
+ * estimated total cost, then increasing state index ordered by (grid row, grid
+ * column, heading east, south, west, north). Requests are routed in ascending
+ * relation id, so an earlier relation occupies the grid first. If the grid
+ * holds no route, the engine draws the two-clearance-point elbow and reports
+ * `route-obstructed` for that relation: an accepted exception, not a claim
+ * that L-R8 held.
  *
  * L-R8 — edges across containers. Every entity is an obstacle except the strict
- * ancestors of either end (and an end that is the other end's container): an
- * edge may cross only the boundaries of its own ancestors. A route segment runs
- * ON a grown boundary at most, never through the interior of an obstacle.
+ * ancestors of either end: an edge may cross only the boundaries of its own
+ * ancestors. Every other node and container is an obstacle grown by
+ * `clearance`, and a route segment runs ON a grown boundary at most, never
+ * through an obstacle interior. The only accepted exception is the
+ * `route-obstructed` fallback above, reported per relation.
  *
  * L-R9 — parallel edges never share a segment. A grid unit used by an edge
- * between the same two entities is forbidden to the next one; a unit used by any
- * other edge only costs extra length, so unrelated routes avoid overlapping when
- * it costs no bend.
+ * between the same two entities is forbidden to the next such edge.
  *
  * A route is [dock, dock + exit * clearance, ...grid corners..., clearance point,
- * dock], with collinear points removed. When the grid holds no route at all the
- * engine falls back to a plain elbow and reports `route-obstructed`.
+ * dock], with collinear points removed.
  */
 
 import type { EntityRef, RelationRef } from "@sentropic/diagram-core";
