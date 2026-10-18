@@ -19,12 +19,18 @@ describe("determinism", () => {
       expect(twice).toBe(once);
     });
 
-    it(`shuffling the entity and relation records changes nothing (target ${width} px)`, () => {
+    it(`shuffling the entity, relation and contains records changes nothing (target ${width} px)`, () => {
       const reference = serialiseView(lay(document, width).view);
       for (const seed of [1, 7, 42, 2026]) {
         const copy = shuffled(document, seed);
-        // The shuffle is real: insertion order differs from the reference.
+        // The shuffle is real: insertion order differs from the reference,
+        // for entities and for relations (the `contains.*` nesting records
+        // among them).
         expect(Object.keys(copy.entities)).not.toEqual(Object.keys(document.entities));
+        expect(Object.keys(copy.relations)).not.toEqual(Object.keys(document.relations));
+        expect(Object.keys(copy.relations).filter((key) => key.startsWith("relation:contains."))).not.toEqual(
+          Object.keys(document.relations).filter((key) => key.startsWith("relation:contains.")),
+        );
         expect(serialiseView(lay(copy, width).view)).toBe(reference);
       }
     });
