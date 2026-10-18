@@ -63,7 +63,7 @@ export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
   labelMargin: 4,
 };
 
-/** L-R7: the phone range, in CSS px, inside which the drawing is always top-to-bottom. */
+/** L-R7: the phone range, in CSS px. It no longer forces a direction — L-R5 chooses at every width — but `fit.phone` still reports it. */
 export const PHONE_MIN_WIDTH = 320;
 export const PHONE_MAX_WIDTH = 390;
 /** L-R7: the drawing scales down to this at most, then pans inside the canvas. */
@@ -73,7 +73,13 @@ export interface LayoutOptions {
   /** The registry `validateDocument` reads. The engine itself only lays out `generic@1`. */
   readonly registry: ProfileRegistry;
   readonly measureText: TextMeasurer;
-  /** L-R7: the host's content width, in CSS px. */
+  /**
+   * L-R7: the effective viewport inner width, in CSS px — the content-box
+   * width of the viewport box the drawing is rendered into, measured by the
+   * renderer (or the host acting for it) at layout time, never a wider
+   * nominal host width. The renderer sets that box's content width to
+   * exactly this value and re-lays out when it changes.
+   */
   readonly targetWidth: number;
   /** The view reference of the produced view. Defaults to `view:layout`. */
   readonly viewId?: ViewRef;
@@ -83,7 +89,7 @@ export interface LayoutOptions {
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
 export interface LayoutFit {
   readonly direction: FlowDirection;
-  /** Drawing size at scale 1, world units. */
+  /** Finalized width `B` at scale 1, world units: the union width, not the placement width. */
   readonly width: number;
   readonly height: number;
   /** `presentation.camera.zoom` of the produced view: 1, or down to {@link MIN_ZOOM}. */
@@ -95,7 +101,7 @@ export interface LayoutFit {
 }
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
-export type LayoutWarningCode = "label-unplaced" | "route-obstructed" | "row-fill-partial";
+export type LayoutWarningCode = "label-unplaced" | "label-budget-exhausted" | "route-obstructed" | "row-fill-partial";
 
 export interface LayoutWarning {
   readonly code: LayoutWarningCode;

@@ -4,14 +4,25 @@
  * rectangles, label boxes, zoom — never on a snapshot alone. Every view is
  * validated by `diagram-core` inside `lay()`.
  */
-import { VIEW_DOCUMENT_FIELDS, entityRef, occurrenceRef } from "@sentropic/diagram-core";
+import {
+  VIEW_DOCUMENT_FIELDS,
+  defaultProfileRegistry,
+  entityRef,
+  occurrenceRef,
+  relationRef,
+} from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_LAYOUT_METRICS,
   bendCount,
+  diagnoseLabels,
+  edgeLabelCandidates,
   edgeLabelPlacement,
+  labelBoxOnSegment,
+  placeEdgeLabels,
   rectsIntersect,
+  residualUnplaceable,
   type LayoutOptions,
   type Rect,
   type Vec2,
@@ -21,6 +32,7 @@ import {
   buildDocument,
   centreOf,
   isOrthogonal,
+  largeDocumentSpec,
   lay,
   measure,
   minimalBends,
@@ -177,16 +189,26 @@ describe("L-R3 — once docked, the route has the fewest bends", () => {
 
 describe("L-R4 — sibling containers in one row are top-aligned and stretched to the row height", () => {
   it("top to bottom: the containers of one rank share the rank's top and its height", () => {
-    // Three unlinked containers: one rank, one row. k2 holds a two-node chain,
-    // so top-to-bottom it is the tallest.
+    // k1 and k2 share rank 0, one row; k2 holds a two-node chain, so it is the
+    // tallest. The m-chain makes left-to-right far wider than top-to-bottom,
+    // so L-R5 draws top-to-bottom below the left-to-right width.
     const document = buildDocument({
-      nodes: ["n1", "n2", "n3", "n4"],
-      containers: { k1: ["n1"], k2: ["n2", "n3"], k3: ["n4"] },
-      links: [["r1", "n2", "n3"]],
+      nodes: ["n1", "n2a", "n2b", "m1", "m2", "m3", "m4", "m5"],
+      containers: { k1: ["n1"], k2: ["n2a", "n2b"] },
+      links: [
+        ["r1", "n2a", "n2b"],
+        ["c1", "m1", "m2"],
+        ["c2", "m2", "m3"],
+        ["c3", "m3", "m4"],
+        ["c4", "m4", "m5"],
+      ],
     });
-    const { view, fit } = lay(document, 390);
+    // A width the left-to-right drawing exceeds but top-to-bottom fits at
+    // scale 1, so L-R5 (which chooses at every width) draws top-to-bottom.
+    const leftToRightWidth = lay(document, WIDE).fit.width;
+    const { view, fit } = lay(document, leftToRightWidth - 1);
     expect(fit.direction).toBe("top-to-bottom");
-    const rows = ["k1", "k2", "k3"].map((id) => rectOf(view, id));
+    const rows = ["k1", "k2"].map((id) => rectOf(view, id));
     const tallestNatural = rectOf(view, "k2").height;
     for (const rect of rows) {
       expect(rect.y).toBe(rows[0]!.y);
@@ -307,21 +329,79 @@ describe("L-R7 — target width and phone fallback", () => {
       nodes: ["root", ...Array.from({ length: count }, (_, index) => `leaf${index}`)],
       links: Array.from({ length: count }, (_, index) => [`r${index}`, "root", `leaf${index}`] as const),
     });
+  const wideName = (length: number): string => "n".repeat(length);
+  const wideFan = (count: number, length: number) => {
+    const leaves = Array.from({ length: count }, (_, index) => `leaf${index}`);
+    return buildDocument({
+      nodes: ["root", ...leaves],
+      names: { root: wideName(length), ...Object.fromEntries(leaves.map((leaf) => [leaf, wideName(length)])) },
+      links: leaves.map((leaf, index) => [`r${index}`, "root", leaf] as const),
+    });
+  };
 
-  it("from 320 to 390 px the drawing is top to bottom, even when left to right would fit", () => {
+  it("L-R5 chooses the direction at every width, the phone included", () => {
     const chain = buildDocument({ nodes: ["a", "b"], links: [["r1", "a", "b"]] });
     expect(lay(chain, WIDE).fit.width).toBeLessThan(320);
-    for (const width of [320, 350, 390]) {
+    for (const width of [320, 350, 390, 391]) {
       const { view, fit } = lay(chain, width);
-      expect(fit.phone).toBe(true);
-      expect(fit.direction).toBe("top-to-bottom");
-      expect(rectOf(view, "a").y + rectOf(view, "a").height).toBeLessThan(rectOf(view, "b").y);
+      expect(fit.phone).toBe(width <= 390);
+      expect(fit.direction).toBe("left-to-right");
+      expect(fit.zoom).toBe(1);
+      expect(fit.pans).toBe(false);
+      expect(rectOf(view, "a").x + rectOf(view, "a").width).toBeLessThan(rectOf(view, "b").x);
     }
-    expect(lay(chain, 391).fit.direction).toBe("left-to-right");
+  });
+
+  it("when neither direction fits at scale 1, the narrower drawing wins", () => {
+    // Three 44-character nodes in a chain: left-to-right far wider than
+    // top-to-bottom, both wider than 320 px.
+    const chain = buildDocument({
+      nodes: ["a", "b", "c"],
+      names: { a: wideName(44), b: wideName(44), c: wideName(44) },
+      links: [["r1", "a", "b"], ["r2", "b", "c"]],
+    });
+    const leftToRightWidth = lay(chain, WIDE).fit.width;
+    expect(leftToRightWidth).toBeGreaterThan(320);
+    const { view, fit } = lay(chain, 320);
+    expect(fit.direction).toBe("top-to-bottom");
+    expect(fit.width).toBeGreaterThan(320);
+    expect(fit.width).toBeLessThan(leftToRightWidth);
+    expect(fit.zoom).toBe(320 / fit.width);
+    expect(view.presentation.camera.zoom).toBe(fit.zoom);
+    expect(fit.pans).toBe(false);
+    expect(fit.width * fit.zoom).toBeLessThanOrEqual(320);
+  });
+
+  it("on a tie the drawing is top-to-bottom", () => {
+    // One node: the same width in both directions.
+    const single = buildDocument({ nodes: ["only"], links: [] });
+    const width = lay(single, WIDE).fit.width;
+    const { fit } = lay(single, width - 1);
+    expect(fit.direction).toBe("top-to-bottom");
+    expect(fit.zoom).toBe((width - 1) / width);
+    expect(fit.pans).toBe(false);
   });
 
   it("still too wide: scales down, no further than 0.75, then pans", () => {
-    const { view, fit } = lay(fan(8), 320);
+    // Eight 40-character leaves: left-to-right far narrower than
+    // top-to-bottom, both far wider than 320 px even at 0.75.
+    const { view, fit } = lay(wideFan(8, 40), 320);
+    expect(fit.direction).toBe("left-to-right");
+    expect(fit.width).toBeGreaterThan(320 / 0.75);
+    expect(fit.zoom).toBe(0.75);
+    expect(view.presentation.camera.zoom).toBe(0.75);
+    expect(fit.pans).toBe(true);
+  });
+
+  it("top-to-bottom past 0.75 pans too", () => {
+    // Two 54-character nodes: top-to-bottom narrower than left-to-right, both
+    // wider than 320 px even at 0.75.
+    const pair = buildDocument({
+      nodes: ["a", "b"],
+      names: { a: wideName(54), b: wideName(54) },
+      links: [["r1", "a", "b"]],
+    });
+    const { view, fit } = lay(pair, 320);
     expect(fit.direction).toBe("top-to-bottom");
     expect(fit.width).toBeGreaterThan(320 / 0.75);
     expect(fit.zoom).toBe(0.75);
@@ -330,7 +410,15 @@ describe("L-R7 — target width and phone fallback", () => {
   });
 
   it("slightly too wide: scales down just enough, and does not pan", () => {
-    const { view, fit } = lay(fan(4), 320);
+    // The 44-character chain of the narrower-wins test: top-to-bottom just
+    // over 320 px, left-to-right far over.
+    const chain = buildDocument({
+      nodes: ["a", "b", "c"],
+      names: { a: wideName(44), b: wideName(44), c: wideName(44) },
+      links: [["r1", "a", "b"], ["r2", "b", "c"]],
+    });
+    const { view, fit } = lay(chain, 320);
+    expect(fit.direction).toBe("top-to-bottom");
     expect(fit.width).toBeGreaterThan(320);
     expect(fit.width * 0.75).toBeLessThanOrEqual(320);
     expect(fit.zoom).toBe(320 / fit.width);
@@ -546,6 +634,64 @@ describe("L-R10 — a label sits centred on the longest segment and overlaps not
         expect(rectsIntersect(boxes[i]!.placement.box, boxes[j]!.placement.box)).toBe(false);
       }
     }
+  });
+
+  it("tries segments by decreasing length: the longest that can hold the label wins", () => {
+    const route: readonly Vec2[] = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 100 },
+      { x: 60, y: 100 },
+    ];
+    const size = { width: 40, height: 16 };
+    expect(edgeLabelCandidates(route)).toEqual([1, 2, 0]);
+    const alone = placeEdgeLabels([{ id: "e", route, size }], [], DEFAULT_LAYOUT_METRICS.labelMargin);
+    expect(alone.get("e")?.segment).toBe(1);
+    // A shape over the longest segment's label moves it to the next longest
+    // that can hold it, centred there.
+    const longestBox = labelBoxOnSegment(route, 1, size).box;
+    const blocked = placeEdgeLabels([{ id: "e", route, size }], [longestBox], DEFAULT_LAYOUT_METRICS.labelMargin);
+    expect(blocked.get("e")?.segment).toBe(2);
+    const second = route[2]!;
+    const third = route[3]!;
+    expect(blocked.get("e")?.centre).toEqual({ x: (second.x + third.x) / 2, y: (second.y + third.y) / 2 });
+  });
+});
+
+describe("L-R10 — a label with room left to try is budget-exhausted, never unplaced", () => {
+  it("the 40-node fixture laid out left to right keeps exactly one: hand-off 4", () => {
+    // `x4`'s "hand-off 4" label rides a route thrown over the top of the
+    // drawing. Under the amended L-R10 the widening search still returns room
+    // to try for `x4` after the 12th round — the drawing keeps moving under it
+    // while other labels' widenings land — so it is `label-budget-exhausted`,
+    // never `label-unplaced`: the two outcomes are never merged.
+    // (Rewritten for the amended §10.5: the previous revision reported every
+    // outstanding label as `label-unplaced`; the amended residual predicate
+    // reserves that code for labels with no widening left on any segment.)
+    const document = buildDocument(largeDocumentSpec());
+    const { warnings } = lay(document, 8000);
+    expect(warnings.map((warning) => [warning.code, ...warning.refs])).toEqual([
+      ["label-budget-exhausted", relationRef("x4")],
+    ]);
+    const diagnosis = diagnoseLabels(document, {
+      registry: defaultProfileRegistry,
+      measureText: measure,
+      targetWidth: 8000,
+    });
+    expect(diagnosis.status).toBe("diagnosed");
+    if (diagnosis.status !== "diagnosed") return;
+    expect(diagnosis.outcomes.get(relationRef("x4"))?.outcome).toBe("label-budget-exhausted");
+    // The defining condition of the budget code: a widening request is still
+    // outstanding, so the residual predicate does not hold.
+    expect(residualUnplaceable(diagnosis.outcomes.get(relationRef("x4"))!.segments)).toBe(false);
+    for (const [id, outcome] of diagnosis.outcomes) {
+      if (id !== relationRef("x4")) expect(outcome.outcome, id).toBe("placed");
+    }
+  });
+
+  it("the same fixture top to bottom at phone width carries none", () => {
+    const { warnings } = lay(buildDocument(largeDocumentSpec()), 360);
+    expect(warnings).toEqual([]);
   });
 });
 

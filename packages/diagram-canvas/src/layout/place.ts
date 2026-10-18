@@ -21,20 +21,30 @@
  * tune and no order dependence. A chain therefore comes out straight, which is
  * what lets a lone edge dock at both centres with no bend (L-R1, L-R3).
  *
- * L-R4 — ROW ALIGNMENT AND FILL. Sibling containers in one row are top-aligned
- * and stretched to the row height. Top-to-bottom, a row is a rank: every
- * container of the rank takes the rank's top and the rank's height.
- * Left-to-right, a rank is a column, so a row is a set of sibling containers
- * whose vertical spans overlap across columns: they take a common top and a
- * common height, and the members below them in each column are pushed down to
- * keep their separation. That fixed point is iterated; if it does not settle the
- * engine reports `row-fill-partial` rather than claiming the rule.
+ * L-R4 — ROW CONSTITUTION, ALIGNMENT AND FILL. A row is constituted per nesting
+ * level, among sibling containers only, once per placement attempt from the
+ * pre-row geometry, then fixed for that attempt's rounds. Top-to-bottom: a
+ * row is one rank, all its containers; they take the rank's main-axis start
+ * and are stretched to the rank extent (the greatest natural main size in
+ * the rank). Left-to-right: rows start as the connected components of the
+ * strict cross-axis (vertical) overlap relation between sibling containers
+ * (components over pairs in entity-id order), each split into
+ * rank-compatible rows — a row never holds two members of one rank. Row
+ * containers take a common cross start (the greatest in the row) and a
+ * common cross size (the greatest natural cross size in the row); members
+ * below them in each rank are pushed along the cross axis to restore the
+ * minimum separation (`nodeGap`, or `slotSpacing` next to a dummy, plus any
+ * L-R10 `siblingExtra` between the pair). Alignment and push-down iterate as
+ * one round for at most 20 rounds; with no change-free round the engine keeps
+ * the last geometry and reports `row-fill-partial` for that level. Container
+ * content keeps its origin (padding and title band unchanged) inside a
+ * stretched container.
  */
 
 import type { EntityRef } from "@sentropic/diagram-core";
 
 import type { Rect } from "../transform.js";
-import type { LayoutGraph } from "./graph.js";
+import { memberOf, type LayoutGraph } from "./graph.js";
 import { orderLevel, type LevelEdge } from "./rank.js";
 import type { FlowDirection, LayoutMetrics, LayoutWarning, TextMeasurer } from "./types.js";
 
@@ -46,6 +56,20 @@ export interface LevelGeometry {
   readonly region: Rect;
   /** Absolute main-axis interval of the gap after rank `rank`. */
   readonly gaps: readonly { readonly rank: number; readonly from: number; readonly to: number }[];
+  /** Adjacent members of each rank, in cross order: what L-R10 widens sideways. */
+  readonly siblings: readonly SiblingGap[];
+}
+
+/** Two adjacent members of one rank: the sibling gap L-R10 may widen. */
+export interface SiblingGap {
+  /** Key into `PlaceInput.extraSiblingGaps`. */
+  readonly key: string;
+  /** Rank index within the level. */
+  readonly rank: number;
+  /** The member before the gap in cross order. */
+  readonly left: string;
+  /** The member after the gap in cross order. */
+  readonly right: string;
 }
 
 export interface Placement {
@@ -68,6 +92,8 @@ export interface PlaceInput {
   readonly measureText: TextMeasurer;
   /** Extra gap after a rank, keyed `<level key>#<rank>`, requested by L-R10. */
   readonly extraGaps: ReadonlyMap<string, number>;
+  /** Extra separation between two siblings, keyed by `SiblingGap.key`, requested by L-R10. */
+  readonly extraSiblingGaps: ReadonlyMap<string, number>;
   /** Minimum node sizes requested by docking, when a side was too short for its slots (L-R2). */
   readonly minSizes: ReadonlyMap<EntityRef, { readonly width: number; readonly height: number }>;
 }
@@ -84,10 +110,17 @@ interface LevelLocal {
   readonly crossSize: number;
   readonly boxes: ReadonlyMap<string, Box>;
   readonly gaps: readonly { readonly rank: number; readonly from: number; readonly to: number }[];
+  readonly siblings: readonly SiblingGap[];
 }
 
-const ROOT = "root";
-const ROW_FILL_ROUNDS = 20;
+/** The level key of the drawing root: `Placement.levels` holds it at depth 0. */
+export const ROOT = "root";
+
+/** Key into `PlaceInput.extraSiblingGaps` for the gap between two adjacent members. */
+export function siblingGapKey(levelKey: string, rank: number, left: string, right: string): string {
+  return `${levelKey}#sibling#${rank}#${left}#${right}`;
+}
+export const ROW_FILL_ROUNDS = 20;
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 
@@ -122,7 +155,7 @@ export function slotSpacingFor(metrics: LayoutMetrics, labelThickness: number): 
 }
 
 export function place(input: PlaceInput): Placement {
-  const { graph, direction, metrics, measureText, extraGaps, minSizes } = input;
+  const { graph, direction, metrics, measureText, extraGaps, extraSiblingGaps, minSizes } = input;
   const leftToRight = direction === "left-to-right";
   const warnings: LayoutWarning[] = [];
   const rankOfEntity = new Map<EntityRef, number>();
@@ -152,13 +185,6 @@ export function place(input: PlaceInput): Placement {
 
   const titleHeight = new Map<EntityRef, number>();
   const contentOrigin = (id: EntityRef) => ({ x: metrics.containerPadding, y: metrics.containerPadding + titleHeight.get(id)! });
-
-  const memberOf = (entity: EntityRef, parent: EntityRef | undefined): EntityRef | undefined => {
-    for (let cursor: EntityRef | undefined = entity; cursor !== undefined; cursor = graph.nodes.get(cursor)?.parent) {
-      if (graph.nodes.get(cursor)?.parent === parent) return cursor;
-    }
-    return undefined;
-  };
 
   const levelLocals = new Map<string, LevelLocal>();
 
@@ -205,12 +231,24 @@ export function place(input: PlaceInput): Placement {
 
     const lifted: LevelEdge[] = [];
     for (const edge of graph.edges) {
-      const from = memberOf(edge.source.entity, parent);
-      const to = memberOf(edge.target.entity, parent);
+      const from = memberOf(graph, edge.source.entity, parent);
+      const to = memberOf(graph, edge.target.entity, parent);
       if (from === undefined || to === undefined || from === to) continue;
       lifted.push({ id: edge.id, from, to });
     }
     const order = orderLevel(sorted, lifted);
+    // Sibling gaps of this level, in cross order, with L-R10's requested widening.
+    const siblings: SiblingGap[] = [];
+    const siblingExtra = new Map<string, number>();
+    order.ranks.forEach((members, rank) => {
+      for (let index = 1; index < members.length; index += 1) {
+        const left = members[index - 1]!;
+        const right = members[index]!;
+        siblings.push({ key: siblingGapKey(key, rank, left, right), rank, left, right });
+        const extra = extraSiblingGaps.get(siblingGapKey(key, rank, left, right)) ?? 0;
+        if (extra > 0) siblingExtra.set(`${left}|${right}`, extra);
+      }
+    });
     for (const member of sorted) rankOfEntity.set(member, order.rankOf.get(member)!);
     for (const dummy of order.dummies) boxes.set(dummy, { main: 0, cross: 0, mainSize: 0, crossSize: metrics.slotSpacing });
 
@@ -240,9 +278,12 @@ export function place(input: PlaceInput): Placement {
     });
 
     // Cross axis: barycentric isotonic placement, keeping the L-R6 order.
+    // L-R10 may widen one sibling gap: the extra separation pushes exactly
+    // those two neighbours apart, and the lanes docked on them with them.
     const separation = (left: string, right: string) =>
       (boxes.get(left)!.crossSize + boxes.get(right)!.crossSize) / 2 +
-      (isDummy(left) || isDummy(right) ? metrics.slotSpacing : metrics.nodeGap);
+      (isDummy(left) || isDummy(right) ? metrics.slotSpacing : metrics.nodeGap) +
+      (siblingExtra.get(`${left}|${right}`) ?? 0);
     const centre = new Map<string, number>();
     for (const rank of order.ranks) {
       let running = 0;
@@ -285,31 +326,66 @@ export function place(input: PlaceInput): Placement {
     }
 
     // L-R4, left-to-right: rows across columns, then push-down within each column.
+    // Rows are constituted once from the pre-row geometry and fixed for the
+    // attempt's rounds; each component is split into rank-compatible rows so
+    // aligning a row can never superpose two of its own members.
     if (leftToRight) {
       const containers = sorted.filter((id) => isContainer(id));
-      let settled = containers.length < 2;
-      for (let round = 0; round < ROW_FILL_ROUNDS && !settled; round += 1) {
-        let changed = false;
-        const rowOf = new Map<string, string>(containers.map((id) => [id, id]));
-        const find = (id: string): string => {
-          let rootId = id;
-          while (rowOf.get(rootId) !== rootId) rootId = rowOf.get(rootId)!;
-          return rootId;
-        };
-        for (let i = 0; i < containers.length; i += 1) {
-          for (let j = i + 1; j < containers.length; j += 1) {
-            const a = boxes.get(containers[i]!)!;
-            const b = boxes.get(containers[j]!)!;
-            if (a.cross < b.cross + b.crossSize && b.cross < a.cross + a.crossSize) {
-              const ra = find(containers[i]!);
-              const rb = find(containers[j]!);
-              if (ra !== rb) rowOf.set(ra < rb ? rb : ra, ra < rb ? ra : rb);
-            }
+      const preRow = new Map<string, { start: number; end: number }>();
+      for (const id of containers) {
+        const box = boxes.get(id)!;
+        preRow.set(id, { start: box.cross, end: box.cross + box.crossSize });
+      }
+      const rowOf = new Map<string, string>(containers.map((id) => [id, id]));
+      const find = (id: string): string => {
+        let rootId = id;
+        while (rowOf.get(rootId) !== rootId) rootId = rowOf.get(rootId)!;
+        return rootId;
+      };
+      for (let i = 0; i < containers.length; i += 1) {
+        for (let j = i + 1; j < containers.length; j += 1) {
+          const a = preRow.get(containers[i]!)!;
+          const b = preRow.get(containers[j]!)!;
+          if (a.start < b.end && b.start < a.end) {
+            const ra = find(containers[i]!);
+            const rb = find(containers[j]!);
+            if (ra !== rb) rowOf.set(ra < rb ? rb : ra, ra < rb ? ra : rb);
           }
         }
-        const rows = new Map<string, string[]>();
-        for (const id of containers) (rows.get(find(id)) ?? rows.set(find(id), []).get(find(id))!).push(id);
-        for (const row of rows.values()) {
+      }
+      const components = new Map<string, string[]>();
+      for (const id of containers) (components.get(find(id)) ?? components.set(find(id), []).get(find(id))!).push(id);
+      const rankOfMember = (id: string): number => order.rankOf.get(id) ?? 0;
+      const rows: string[][] = [];
+      for (const component of components.values()) {
+        const members = [...component].sort((left, right) => rankOfMember(left) - rankOfMember(right) || byString(left, right));
+        const compatible: string[][] = [];
+        const ranksHeld: Set<number>[] = [];
+        for (const member of members) {
+          const rank = rankOfMember(member);
+          let placedMember = false;
+          for (let index = 0; index < compatible.length; index += 1) {
+            if (!ranksHeld[index]!.has(rank)) {
+              compatible[index]!.push(member);
+              ranksHeld[index]!.add(rank);
+              placedMember = true;
+              break;
+            }
+          }
+          if (!placedMember) {
+            compatible.push([member]);
+            ranksHeld.push(new Set([rank]));
+          }
+        }
+        rows.push(...compatible);
+      }
+      const pushGap = (left: string, right: string): number =>
+        (isDummy(left) || isDummy(right) ? metrics.slotSpacing : metrics.nodeGap) +
+        (siblingExtra.get(`${left}|${right}`) ?? 0);
+      let settled = rows.every((row) => row.length < 2);
+      for (let round = 0; round < ROW_FILL_ROUNDS && !settled; round += 1) {
+        let changed = false;
+        for (const row of rows) {
           if (row.length < 2) continue;
           const top = Math.max(...row.map((id) => boxes.get(id)!.cross));
           const bottom = Math.max(...row.map((id) => top + boxes.get(id)!.crossSize));
@@ -326,8 +402,7 @@ export function place(input: PlaceInput): Placement {
           for (let index = 1; index < rank.length; index += 1) {
             const before = boxes.get(rank[index - 1]!)!;
             const box = boxes.get(rank[index]!)!;
-            const gap = isDummy(rank[index - 1]!) || isDummy(rank[index]!) ? metrics.slotSpacing : metrics.nodeGap;
-            const minimum = before.cross + before.crossSize + gap;
+            const minimum = before.cross + before.crossSize + pushGap(rank[index - 1]!, rank[index]!);
             if (box.cross < minimum) {
               box.cross = minimum;
               changed = true;
@@ -368,7 +443,7 @@ export function place(input: PlaceInput): Placement {
       from: starts[rank]! + extents[rank]! - minMain,
       to: starts[rank + 1]! - minMain,
     }));
-    const local: LevelLocal = { mainSize: maxMain - minMain, crossSize: maxCross - minCross, boxes, gaps };
+    const local: LevelLocal = { mainSize: maxMain - minMain, crossSize: maxCross - minCross, boxes, gaps, siblings };
     levelLocals.set(key, local);
     return local;
   }
@@ -391,6 +466,7 @@ export function place(input: PlaceInput): Placement {
       depth,
       region,
       gaps: local.gaps.map((gap) => ({ rank: gap.rank, from: originMain + gap.from, to: originMain + gap.to })),
+      siblings: local.siblings,
     });
     for (const [id, box] of local.boxes) {
       const node = graph.nodes.get(id as EntityRef);

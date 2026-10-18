@@ -1,27 +1,32 @@
 /**
- * L-R6 — rank and sibling order, for the members of ONE nesting level.
+ * L-R6 — rank, cycles, self-loops and sibling order, for the members of ONE
+ * nesting level. Document insertion order is never used.
  *
- * The rule, as written: "Rank is the longest path from a source; a cycle is
- * broken by reversing the edge with the greatest relation id. Within a rank,
- * order minimises crossings (barycentre sweeps), ties broken by entity id.
- * Document insertion order is never used."
+ * SELF-LOOPS are skipped at every level: no rank, no dummy, no segment, and
+ * the entity's rank is unchanged. A reversal below never changes a relation's
+ * semantic direction, its docks or its route endpoints.
  *
- * CYCLES. Edges are taken in ascending relation id and added to a DAG; an edge
- * that would close a cycle is added reversed. Every edge smaller than it is
- * already in, so the edge that closes a cycle is the greatest relation id on
- * that cycle, which is the rule. Adding the reversed edge cannot close another
- * cycle (that would need a path both ways, i.e. a cycle already present).
+ * CYCLES. Lifted edges are processed in ascending relation id into a DAG; an
+ * edge is added as oriented unless its target already reaches its source in
+ * the DAG built so far, in which case it is added reversed. Each edge is
+ * processed once and reachability is a finite walk, so the procedure
+ * terminates and the result is acyclic. Adding the reversed edge cannot close
+ * another cycle (that would need a path both ways, i.e. a cycle already
+ * present).
  *
- * RANK. Longest path from a source, over the DAG: a source has rank 0, any other
- * member has 1 + the greatest rank of its predecessors.
+ * RANK. Longest path in that DAG: 0 with no predecessor, else `1 + max`
+ * predecessor rank, computed in topological order with the ready set in
+ * entity-id order. An edge spanning more than one rank gets one dummy per
+ * intermediate rank, its key sorting after every entity id.
  *
- * ORDER. Each rank starts sorted by key (entity reference; a long edge's dummy
- * keys sort after every entity). Barycentre sweeps alternate down and up; within
- * a sweep a member is placed by the mean position of its neighbours in the
- * adjacent rank, and a member with no neighbour there keeps its current index.
- * Ties are broken by key. The ordering with the fewest crossings seen is kept,
- * the earliest on a tie. Nothing reads an array position that came from a
- * document record.
+ * ORDER. Each rank starts sorted by key (entity id, dummies last) and is
+ * refined by at most 24 barycentre sweeps, alternating down (neighbours
+ * above) and up (neighbours below); a member's weight is the mean position
+ * of its neighbours in the adjacent rank, a member with no neighbour there
+ * keeps its current index, and members sort by (weight, key). Crossings are
+ * counted over adjacent-rank segments after each sweep; the earliest ordering
+ * with the fewest crossings seen is kept, stopping at 0. The objective is to
+ * reduce crossings: no global minimum is claimed.
  */
 
 export interface LevelEdge {
@@ -52,7 +57,7 @@ export interface LevelOrder {
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 
-const SWEEPS = 24;
+export const BARYCENTRE_SWEEPS = 24;
 
 function reaches(adjacency: ReadonlyMap<string, string[]>, from: string, to: string): boolean {
   if (from === to) return true;
@@ -177,7 +182,7 @@ export function orderLevel(members: readonly string[], edges: readonly LevelEdge
   let order = ranks.map((rank) => [...rank]);
   let best = order.map((rank) => [...rank]);
   let bestCrossings = countCrossings(best);
-  for (let sweep = 0; sweep < SWEEPS && bestCrossings > 0; sweep += 1) {
+  for (let sweep = 0; sweep < BARYCENTRE_SWEEPS && bestCrossings > 0; sweep += 1) {
     if (sweep % 2 === 0) for (let rank = 1; rank < order.length; rank += 1) reorder(order, rank, up, rank - 1);
     else for (let rank = order.length - 2; rank >= 0; rank -= 1) reorder(order, rank, down, rank + 1);
     const crossings = countCrossings(order);
