@@ -13,17 +13,24 @@
  * (left-to-right) or south (top-to-bottom) and the target end enters north
  * (left-to-right) or west (top-to-bottom). An end alone in its (entity, side)
  * group docks at the exact centre of that side (anchor 0.5).
- * L-R2 — shared side spread symmetrically: ends grouped by (entity, side);
- * ends on one semantic port share one slot. Slots ordered by the other end's
- * centre along the side, ties by slot key (`~<port-id>`, else
- * `<relation-id>#<role>`). Offsets `(i − (n−1)/2) · s` from the side's start,
+ * L-R2 — shared side spread symmetrically; L-R9 takes priority over port
+ * sharing. Side is fixed first: ends carrying the same semantic port are
+ * forced to one side — the side of the port's representative end, smallest by
+ * (relation id, role). A relation is parallel when another relation has the
+ * same unordered entity pair (direction ignored; two self-loops on one
+ * entity are parallel). Slot keys: a parallel end takes
+ * `<relation-id>#<role>` (never the port key); a non-parallel end on a port
+ * takes `~<port-id>`; otherwise `<relation-id>#<role>`. A slot's ordering
+ * position is the other-end centre of its representative end (smallest by
+ * relation id, role). Offsets `(i − (n−1)/2) · s` from the side's start,
  * summing to zero. Spacing `s` from `slotSpacing`, raised for labelled sides
  * to the widest label thickness plus `labelMargin`; with `n ≥ 2` and
- * `s · (n+1)` past the side length, the node grows to `s · (n+1)` and the
- * drawing is re-placed before routing, the effective spacing then
+ * `s · (n+1)` past the side length, the node grows to `s · (n+1)` effective
+ * from the next placement attempt, the docked spacing then
  * `min(s, length / (n+1))`.
- * L-R9 — parallel edges (same two entities) get distinct slots; their slot
- * tie-break is the relation id at BOTH ends, so they do not cross each other.
+ * L-R9 — parallel edges (same unordered entity pair) never share a slot, at
+ * either end, including on a shared port; their slot order is the same at
+ * both ends, so they do not cross each other.
  */
 
 import type { EntityRef, PortRef, PortSide, RelationRef } from "@sentropic/diagram-core";
@@ -118,6 +125,26 @@ interface PendingEnd {
   readonly label: TextSize | undefined;
 }
 
+/**
+ * Relations sharing their unordered entity pair with another relation
+ * (direction ignored; two self-loops on one entity are parallel). L-R2/L-R9
+ * test support: the engine's view builder uses the same set for its
+ * per-end `PortOccurrence` ids.
+ */
+export function parallelRelations(graph: LayoutGraph): ReadonlySet<RelationRef> {
+  const pairCount = new Map<string, number>();
+  for (const edge of graph.edges) {
+    const key = [edge.source.entity, edge.target.entity].sort().join("|");
+    pairCount.set(key, (pairCount.get(key) ?? 0) + 1);
+  }
+  const found = new Set<RelationRef>();
+  for (const edge of graph.edges) {
+    const key = [edge.source.entity, edge.target.entity].sort().join("|");
+    if ((pairCount.get(key) ?? 0) > 1) found.add(edge.id);
+  }
+  return found;
+}
+
 export function dockEdges(input: {
   readonly graph: LayoutGraph;
   readonly rects: ReadonlyMap<EntityRef, Rect>;
@@ -160,13 +187,20 @@ export function dockEdges(input: {
     }
   }
 
-  // Ends on one semantic port share the side of the port's first end.
+  const parallel = parallelRelations(graph);
+
+  // Ends on one semantic port share the side of the port's representative
+  // end: smallest by (relation id, role, source before target as spelled).
   const portSide = new Map<PortRef, PortSide>();
+  for (const end of [...ends].sort(
+    (left, right) => byString(left.edge, right.edge) || byString(left.role, right.role),
+  )) {
+    if (end.port === undefined) continue;
+    if (!portSide.has(end.port)) portSide.set(end.port, end.side);
+  }
   for (const end of ends) {
     if (end.port === undefined) continue;
-    const fixed = portSide.get(end.port);
-    if (fixed === undefined) portSide.set(end.port, end.side);
-    else end.side = fixed;
+    end.side = portSide.get(end.port)!;
   }
 
   const groups = new Map<string, PendingEnd[]>();
@@ -183,7 +217,14 @@ export function dockEdges(input: {
     const side = group[0]!.side;
     const rect = rects.get(entity)!;
     const vertical = side === "east" || side === "west";
-    const slotKey = (end: PendingEnd) => (end.port !== undefined ? `~${end.port}` : `${end.edge}#${end.role}`);
+    // L-R9 takes priority over port sharing: a parallel end never takes the
+    // port key, even when it carries a port.
+    const slotKey = (end: PendingEnd) =>
+      end.port !== undefined && !parallel.has(end.edge) ? `~${end.port}` : `${end.edge}#${end.role}`;
+    const representative = (members: readonly PendingEnd[]): PendingEnd =>
+      [...members].sort(
+        (left, right) => byString(left.edge, right.edge) || byString(left.role, right.role),
+      )[0]!;
     const position = (end: PendingEnd) => {
       const other = centreOf(rects.get(end.other)!);
       return vertical ? other.y : other.x;
@@ -191,8 +232,8 @@ export function dockEdges(input: {
     const slots = new Map<string, PendingEnd[]>();
     for (const end of group) (slots.get(slotKey(end)) ?? slots.set(slotKey(end), []).get(slotKey(end))!).push(end);
     const orderedKeys = [...slots.keys()].sort((left, right) => {
-      const a = position(slots.get(left)![0]!);
-      const b = position(slots.get(right)![0]!);
+      const a = position(representative(slots.get(left)!));
+      const b = position(representative(slots.get(right)!));
       return a - b || byString(left, right);
     });
     const thickness = group.reduce(

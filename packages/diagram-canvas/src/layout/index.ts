@@ -16,7 +16,7 @@ export {
   type SegmentResidual,
 } from "./engine.js";
 export { BARYCENTRE_SWEEPS, dummyKey, orderLevel, type LevelEdge, type LevelOrder } from "./rank.js";
-export { sideToward } from "./dock.js";
+export { parallelRelations, sideToward } from "./dock.js";
 export { ROW_FILL_ROUNDS } from "./place.js";
 export {
   edgeLabelCandidates,
