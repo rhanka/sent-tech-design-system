@@ -153,6 +153,7 @@ rediscovered.
 | Projection, `LayoutOutcome.inverse` | `@sentropic/graph/processing`, already delivered; the L-R1–L-R11 layout is here (see Layout) |
 | Lasso and polygon selection | later; point and rectangle are what a selection needs first |
 | A spatial index (quadtree, grid) | not yet warranted — see below |
+| The renderer's viewport part of L-R7 (measure the effective content width, set the box to exactly it, pass it as `W`, re-lay out on change) | no renderer lives in this package (L8): `targetWidth` carries the measured width in, covered by `tests/layout/ac-l8-geometry.test.ts`; the box-setting itself stays not covered |
 
 ### Why no spatial index
 
@@ -179,9 +180,11 @@ no view and no geometry. It goes through `validateDocument` first; an invalid
 document is refused with those diagnostics, verbatim (`document-invalid`). A
 relation or entity the engine does not lay out (`association`, another profile)
 is refused by name, never dropped. `options` holds the profile registry, the
-host's content width (`targetWidth`, CSS px) and a **text measurer**: the engine
-has no font metric source, so the host injects one, and must draw labels with the
-same one. Tests use a fixed-width measurer.
+effective viewport inner width (`targetWidth`, content-box CSS px, measured by
+the renderer — or the host acting for it — at layout time, never a wider nominal
+host width) and a **text measurer**: the engine has no font metric source, so
+the host injects one, and must draw labels with the same one. Tests use a
+fixed-width measurer.
 
 **Output.** A `diagram-core` `ViewDocument`, which `validateView` accepts, and
 no other structure to persist:
@@ -192,7 +195,8 @@ no other structure to persist:
   dock to dock, source to target (`relationRoute` reads it back); `contains` is
   drawn by nesting and has no relation occurrence;
 - one port occurrence per semantic port a link targets, with the side, slot order
-  and anchor the docking chose;
+  and anchor the docking chose — one shared occurrence per port, except parallel
+  ends, which each take their own occurrence identified by relation and role;
 - `presentation.camera.zoom` is the L-R7 scale.
 
 The call also returns `fit` (direction, size at scale 1, zoom, `pans`, `phone`)
@@ -204,15 +208,15 @@ as `target-width-invalid`, with no view and no scale.
 | Rule | What the engine does | Fixture |
 |---|---|---|
 | L-R1 side choice and lone edge at the centre | flow side first when separated on that axis; cross side on along-flow overlap; greater centre-offset axis on double overlap (horizontal on a tie); ancestor pairs on the inner entity's nearest wall (ties east, south, west, north); self-loops out east/south, back north/west; a lone end at the exact centre | `tests/layout/rules.test.ts`, `tests/layout/amended.test.ts` |
-| L-R2 shared side spread symmetrically | slots by the other end's centre, ties by slot key (`~port`, else `relation#role`); `s` from `slotSpacing`, raised for labelled sides, node growth to `s(n+1)` with re-placement before routing | idem |
+| L-R2 shared side spread symmetrically | slots by the representative end's other centre (smallest by relation id, role), ties by slot key; a parallel end never takes the port key (`~port` for a non-parallel port end, else `relation#role`); `s` from `slotSpacing`, raised for labelled sides, node growth to `s(n+1)` effective from the next attempt | idem, `tests/layout/sol-pass2.test.ts` |
 | L-R3 bends minimised after docking, route tie-break | A* on boundaries, channel midlines and clearance points; bend count first, weighted length next (×3 on another pair's units, same-pair units forbidden); ties by frontier (estimated cost, then row, column, heading); checked against an independent 0-1 BFS oracle | idem |
-| L-R4 row constitution, alignment and fill | a row is one rank top-to-bottom, one overlap component left-to-right; rank start and rank extent, or common cross start and size, with push-down to minimum separation; at most 20 rounds, else `row-fill-partial` for that level | idem |
-| L-R5 flow direction, measured after labels | both drawings finalized (L-R10 rounds complete) before comparing placement widths: left-to-right when `B_lr ≤ W`, else top-to-bottom when `B_tb ≤ W`, else the narrower, top-to-bottom on a tie; a function of graph and `W` only | idem |
+| L-R4 row constitution, alignment and fill | rows constituted once per attempt from the pre-row geometry — one rank top-to-bottom, one overlap component left-to-right split into rank-compatible rows (never two of one rank); rank start and rank extent, or common cross start and size, with push-down to the minimum separation including any L-R10 `siblingExtra`; at most 20 rounds, else `row-fill-partial` for that level | idem, `tests/layout/ac-l8-geometry.test.ts` |
+| L-R5 flow direction, measured after labels | both drawings finalized (L-R10 attempts complete) before comparing the bounds-union widths `B` (`xmax − xmin` over entity rectangles, dock-to-dock routes and placed label boxes): left-to-right when `B_lr ≤ W`, else top-to-bottom when `B_tb ≤ W`, else the narrower, top-to-bottom on a tie; a function of graph and `W` only | idem, `tests/layout/ac-l8-geometry.test.ts` |
 | L-R6 rank, cycles, self-loops, sibling order | per-level lifted edges, same-member lifts skipped; self-loops skipped everywhere (no rank, no dummy, direction kept); cycles broken in ascending relation id (greatest on each cycle reversed, ranking only); longest-path rank; one dummy per intermediate rank (`~`-suffixed, after entities); barycentre from key order, at most 24 sweeps, (weight, key) sort, best seen kept | idem, `tests/layout/sol.test.ts` |
-| L-R7 target width, scale and phone fallback | `s = min(1, max(0.75, W / B))` on the chosen finalized width (`B = 0`: left-to-right, zoom 1, no pan); pans exactly when `B·s > W`; L-R5 chooses at every width | idem |
+| L-R7 target width, scale and phone fallback | `W` is the effective viewport inner width; `s = min(1, max(0.75, W / B))` on the chosen finalized union width (`B = 0`: left-to-right, zoom 1, no pan); pans exactly when `B·s > W`; the reported width is `B`; L-R5 chooses at every width | idem, `tests/layout/ac-l8-geometry.test.ts` |
 | L-R8 edges across containers | every node and container is an obstacle, grown by `clearance`, except the strict ancestors of either end; segments run on grown boundaries at most; the only exception is `route-obstructed` | idem |
-| L-R9 parallel edges | distinct slots (relation-id tie-break, same at both ends); a grid unit used by an edge of the same unordered pair is forbidden to the next | idem, `tests/layout/sol.test.ts` |
-| L-R10 edge labels | centred, unrotated, on the longest holdable segment (decreasing length, ascending index; ascending relation id across labels); otherwise the 12-round procedure: rank lengthening and sibling widening, canonical gap (nearest, deepest, lowest rank), no-progress abandonment; residual predicate (a)–(e) reports `label-unplaced`, an outstanding request reports `label-budget-exhausted`, never merged | idem, `tests/layout/sol.test.ts` |
+| L-R9 parallel edges | a relation is parallel when another shares its unordered entity pair (direction ignored; two self-loops on one entity are parallel); never a shared slot at either end, including on a shared port; same slot order at both ends; a grid unit used by an edge of the same unordered pair is forbidden to the next | idem, `tests/layout/sol.test.ts`, `tests/layout/sol-pass2.test.ts` |
+| L-R10 edge labels | centred, unrotated, on the longest holdable segment (decreasing length, ascending index; ascending relation id across labels); otherwise at most 12 placement attempts, one composite request per label per attempt (rank plus every sibling amount, by maximum, effective next attempt; the 12th attempt's requests are recorded, never applied); canonical gap (nearest, deepest, lowest rank, earliest level); every blocker evaluated, both transformations independently; a cross-flow too-short segment is closed for requests; (c) only for a lane-owned blocker; the cap rejects one transformation only; progress-guard withdrawal is budget, never proof; `label-unplaced` only when every segment is proof-closed under (a)–(d), otherwise `label-budget-exhausted`, never merged | idem, `tests/layout/sol.test.ts`, `tests/layout/sol-pass2.test.ts` |
 | L-R11 legend | none: the view holds no legend occurrence, group or field, and the options have no switch | `tests/layout/rules.test.ts` |
 
 Determinism: the same document laid out twice, and with its entity, relation
@@ -224,13 +228,15 @@ budget in `tests/layout/performance.test.ts`, which prints the figure.
 
 Limits, stated rather than hidden:
 
-- A label is `label-unplaced` only when the residual predicate holds on the
-  final geometry: every segment closed for one of (a) across-flow and too
-  short, (b) no rank gap crosses or holds it, (c) a shape spans the padded
-  label on both sides, (d) lane and blocker share one member, (e) the need
-  exceeds four times the budget. One fixture per reason lives in
-  `tests/layout/amended.test.ts`, each re-evaluated with
-  `residualUnplaceable` and `diagnoseLabels`.
+- A label is `label-unplaced` only when every segment is proof-closed on the
+  final geometry: no requestable transformation and every failing dimension
+  under (a) across-flow and too short, (b) a flow-aligned deficit with no
+  crossing or holding gap, (c) a lane-owned shape spanning the padded label on
+  both sides, (d) lane and blocker sharing one member at every pairing. One
+  fixture per reason lives in `tests/layout/amended.test.ts`, each
+  re-evaluated with `residualUnplaceable` and `diagnoseLabels`; (e) over the
+  cap, the progress-guard stall and the request outstanding after 12 rounds
+  are the three `label-budget-exhausted` exits, pinned in the same file.
 - A label that still has a widening request after the 12th round is
   `label-budget-exhausted`, never `label-unplaced`. Seen on the 40-node
   fixture laid out left to right (`relation:x4`, a hand-off label thrown over
