@@ -21,3 +21,4 @@ export * from "./geometry.js";
 export * from "./visibility.js";
 export * from "./scene.js";
 export * from "./hit.js";
+export * from "./layout/index.js";
