@@ -16,7 +16,6 @@ import {
   copyRichTextDocument,
   createCaptureTracker,
   decideExternalUpdate,
-  isRepresentableWire,
   richTextDocumentsEqual,
 } from "./document.js";
 import {
@@ -310,43 +309,3 @@ describe("capture/readiness pure state", () => {
   });
 });
 
-describe("pinned single-segment criterion vectors (§6.6 condition 2)", () => {
-  it("the local check matches every recorded pinned verdict with provenance", async () => {
-    const { readFileSync } = await import("node:fs");
-    const { dirname, join } = await import("node:path");
-    const { fileURLToPath } = await import("node:url");
-    const here = dirname(fileURLToPath(import.meta.url));
-    const record = JSON.parse(
-      readFileSync(
-        join(here, "../tests/fixtures/representability-vectors.json"),
-        "utf8",
-      ),
-    ) as {
-      provenance: Record<string, unknown>;
-      vectors: {
-        id: string;
-        text: string;
-        plain: boolean;
-        markdown: boolean;
-      }[];
-    };
-    expect(record.provenance["h2aCommit"]).toBe("98060bd0a");
-    expect(record.provenance["h2aSourcePath"]).toBe(
-      "packages/focus/src/editing/codec.ts",
-    );
-    expect(record.provenance["codecSha256"]).toBe(
-      "ac936183aa96935b23ca621c5c0fe2502db70fa05dd28c1560d16b00d7a483a5",
-    );
-    expect(record.vectors.length).toBeGreaterThan(20);
-    for (const vector of record.vectors) {
-      expect(
-        isRepresentableWire(vector.text, "text/plain"),
-        `plain vector ${vector.id}`,
-      ).toBe(vector.plain);
-      expect(
-        isRepresentableWire(vector.text, "focus.markdown.p0@1"),
-        `markdown vector ${vector.id}`,
-      ).toBe(vector.markdown);
-    }
-  });
-});

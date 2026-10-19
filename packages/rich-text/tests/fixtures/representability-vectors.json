@@ -1,12 +1,13 @@
 {
   "provenance": {
     "method": "recorded pinned segmentation",
+    "status": "FE-3 host witness only (spec dcc0c41b, §11.3): retained for the host adapter, which evaluates the pinned assertParagraphText and range checks at export through the Focus codec itself. No DS test, gate or RT-0/RT-2 deliverable depends on this file, and no DS production code copies assertParagraphText or segmentMarkdown/segmentText. The DS reports only the §6.6 bridge condition.",
     "h2aCommit": "98060bd0a",
     "h2aSourcePath": "packages/focus/src/editing/codec.ts",
     "h2aFunction": "segmentMarkdown/segmentText/assertParagraphText",
     "codecSha256": "ac936183aa96935b23ca621c5c0fe2502db70fa05dd28c1560d16b00d7a483a5",
     "note": "Executed the pinned segmentMarkdown (lines 1,7-31 of codec.ts at the pin, @lezer/markdown 1.8.0 from the offline npm cache) and segmentText (lines 35-56) plus assertParagraphText (lines 58-66) over each exact wire text, recording the single-segment covering verdict for text/plain and text/markdown. Empty passes by the line-59 exception in both formats. Re-run with: git -C /home/antoinefa/src/h2a show 98060bd0a:packages/focus/src/editing/codec.ts | sha256sum, then recompute every verdict from the recorded text by reading that file.",
-    "dsConsumer": "packages/rich-text/src/document.ts isRepresentableWire (local equivalent, no Focus import)"
+    "dsConsumer": "none: no DS test or production module reads this file (spec dcc0c41b)"
   },
   "vectors": [
     { "id": "empty", "text": "", "plain": true, "markdown": true },

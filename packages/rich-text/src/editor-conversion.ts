@@ -27,8 +27,8 @@
 // recorded text without touching the bridge, so undo restores the byte-exact
 // source and re-reading an unchanged version costs no conversion and no
 // node serialisation at all. The wire cache never decides the flag: every
-// paragraph pays the §6.6 two-condition test on each emission and capture,
-// and an untouched paragraph passes it by construction.
+// paragraph pays the §6.6 single bridge condition on each emission and
+// capture, and an untouched paragraph passes it by construction.
 
 import type { JSONContent } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
@@ -41,7 +41,6 @@ import type {
   RichTextFormat,
 } from "./model.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
-import { isRepresentableWire } from "./document.js";
 
 /** Internal conversion counters (spec §11 reactivity witness, §13.3). Test
     hook only: `src/reactivity.test.ts` reads these across a typing burst.
@@ -318,14 +317,18 @@ type InlineChild = { type: string; text?: string; marks?: { type: string }[] };
 function normaliseInline(
   content: JSONContent[] | undefined,
 ): InlineChild[] {
+  // Marks are compared on every inline child, `hardBreak` included (spec
+  // §6.6): a `hardBreak` whose marks differ fails exactly as a differing
+  // string does; comparing only its node type and position is a failure of
+  // the test.
   return (content ?? []).map((child) => {
+    const marks = ((child as { marks?: { type?: string }[] }).marks ?? [])
+      .map((mark) => ({ type: mark.type ?? "" }))
+      .sort((left, right) => (left.type < right.type ? -1 : left.type > right.type ? 1 : 0));
     if (child.type === "text") {
-      const marks = ((child as { marks?: { type?: string }[] }).marks ?? [])
-        .map((mark) => ({ type: mark.type ?? "" }))
-        .sort((left, right) => (left.type < right.type ? -1 : left.type > right.type ? 1 : 0));
       return { type: "text", text: (child as { text?: string }).text ?? "", marks };
     }
-    return { type: child.type ?? "" };
+    return { type: child.type ?? "", marks };
   });
 }
 
@@ -350,16 +353,19 @@ function inlineContentEquals(
   });
 }
 
-/** Representability of one live paragraph for its candidate wire (§6.6).
-    `wire` is the untouched source bytes, the plain literal mapping, or the
-    bridge serialisation; `liveContent` is the paragraph's ordered inline
-    JSON. Empty (`P` empty and `W === ""`) is representable by the line-59
-    exception. For `text/plain` condition (1) is the literal mapping itself
-    and holds by construction, so only the pinned single-segment criterion
-    (via `isRepresentableWire`) decides. For Markdown-method `edited` wires
-    both hold exactly when the bridge re-parse deep-equals the live content
-    and the wire passes that same criterion; an untouched paragraph whose wire
-    entered as a host-segmented slice satisfies both by construction. */
+/** Representability of one live paragraph for its candidate wire (spec §6.6
+    single bridge condition). `wire` is the untouched source bytes, the plain
+    literal mapping, or the bridge serialisation; `liveContent` is the
+    paragraph's ordered inline JSON. Empty (`P` empty and `W === ""`) is
+    representable by the exactly-empty mapping. For `text/plain` the condition
+    is the literal mapping itself and holds by construction, so no edited
+    `text/plain` paragraph is DS-flagged. For `text/markdown` the paragraph is
+    representable exactly when the bridge re-parse deep-equals the live
+    content — same ordered children, same node types, same exact strings, and
+    the same marks on every inline child, `hardBreak` included; an untouched
+    paragraph whose wire entered as a host-segmented slice satisfies the
+    condition by construction. The pinned `assertParagraphText` and the range
+    checks are host-evaluated (§5.10) and never enter this flag. */
 export function isParagraphRepresentable(
   manager: MarkdownManager,
   liveContent: JSONContent[] | undefined,
@@ -368,12 +374,9 @@ export function isParagraphRepresentable(
   liveSize: number,
 ): boolean {
   if (wire === "" && liveSize === 0) return true;
-  if (format === "text/plain") {
-    return isRepresentableWire(wire, format);
-  }
+  if (format === "text/plain") return true;
   const parsed = parseMarkdownParagraph(manager, wire);
-  if (!inlineContentEquals(liveContent, parsed)) return false;
-  return isRepresentableWire(wire, format);
+  return inlineContentEquals(liveContent, parsed);
 }
 
 /** Parse one editable paragraph text into ProseMirror paragraph JSON.
@@ -481,8 +484,9 @@ export function documentToProseMirror(
     and records it for its version with a true flag by construction (§6.6);
     otherwise the paragraph re-serialises per paragraph through the bridge
     (literal `hardBreak` ⇔ `"\n"` for `text/plain`, bridge serialisation
-    without post-processing for Markdown), pays the §6.6 two-condition test
-    once, and records wire and flag while the identity leaves the touched set.
+    without post-processing for Markdown), pays the §6.6 single bridge
+    condition once, and records wire and flag while the identity leaves the
+    touched set.
     Preserved blocks return their `raw` verbatim with absent `raw`/
     `preservedKind` staying absent. Exact keys only (§5.3 surface rule). */
 interface ParagraphRead {

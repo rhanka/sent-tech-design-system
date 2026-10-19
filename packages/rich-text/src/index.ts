@@ -65,7 +65,6 @@ export {
   createCaptureTracker,
   createCaptureUnavailableError,
   decideExternalUpdate,
-  isRepresentableWire,
   richTextDocumentsEqual,
 } from "./document.js";
 export type { CaptureTracker } from "./document.js";
