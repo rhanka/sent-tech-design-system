@@ -24,7 +24,7 @@
  * No case is skipped.
  */
 import { describe, it, expect } from "vitest";
-import { TextSelection } from "@tiptap/pm/state";
+import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 import { redo, undo } from "@tiptap/pm/history";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
@@ -312,6 +312,182 @@ describe("undo restores the exact source and agrees with captures", () => {
     ]);
     expect(editor.getDocument().blocks).toEqual([
       paragraph("paragraph:a", "_emphasis_"),
+    ]);
+    editor.destroy();
+  });
+});
+
+describe("native provenance corrections (R9)", () => {
+  function trioSetup() {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "Beta"),
+          paragraph("paragraph:c", "Gamma"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:r9-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    return { editor, changes };
+  }
+
+  it("deleting a whole block by node selection announces delete, never merge", () => {
+    const { editor, changes } = trioSetup();
+    const view = editor.view;
+    let nodePos = -1;
+    view.state.doc.descendants((node, pos) => {
+      if (
+        nodePos === -1 &&
+        node.type.name === "paragraph" &&
+        node.attrs["paragraphId"] === "paragraph:b"
+      ) {
+        nodePos = pos;
+      }
+      return true;
+    });
+    expect(nodePos).toBeGreaterThan(-1);
+    view.dispatch(
+      view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos)),
+    );
+    expect(changes).toHaveLength(0);
+    view.dispatch(view.state.tr.deleteSelection());
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual(["paragraph:b"]);
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:a", "Alpha"),
+      paragraph("paragraph:c", "Gamma"),
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+  });
+
+  it("a native copy followed by a native paste in the same session announces internal", () => {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:a", "Hello")],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:r9copy-${++n}`,
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    // Native copy of the whole first paragraph through the DOM event.
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 1, 6)),
+    );
+    const copyEvent = new Event("copy", { bubbles: true, cancelable: true });
+    const copyTransfer = {
+      data: {} as Record<string, string>,
+      setData: function (type: string, value: string): void {
+        this.data[type] = value;
+      },
+      getData: function (type: string): string {
+        return this.data[type] ?? "";
+      },
+      clearData: function (): void {
+        this.data = {};
+      },
+      types: [] as string[],
+      effectAllowed: "",
+    };
+    (copyEvent as unknown as Record<string, unknown>)["clipboardData"] =
+      copyTransfer;
+    (copyEvent as unknown as Record<string, unknown>)["dataTransfer"] =
+      copyTransfer;
+    viewDom.dispatchEvent(copyEvent);
+    // Paste the copied text at the end through the native clipboard path.
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 6)),
+    );
+    const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
+    (pasteEvent as unknown as Record<string, unknown>)["clipboardData"] = {
+      getData: (type: string): string => (type === "text/plain" ? "Hello" : ""),
+      types: ["text/plain"],
+    };
+    viewDom.dispatchEvent(pasteEvent);
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("paste");
+    expect(changes[0]?.gesture.paste?.origin).toBe("internal");
+    editor.destroy();
+    element.remove();
+  });
+
+  it("pasting inside a paragraph names the modified block and the created tail", () => {
+    const { editor, changes } = setup("Alpha text");
+    const view = editor.view;
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 3)),
+    );
+    expect(changes).toHaveLength(0);
+    editor.paste({ text: "XY" });
+    expect(changes).toHaveLength(1);
+    const inserted = changes[0]?.gesture.paste?.insertedParagraphIds ?? [];
+    expect(inserted).toHaveLength(1);
+    // Complete affected in final order: modified head, inserted block,
+    // created tail — never the inserted identity alone.
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      inserted[0] as string,
+      ...(changes[0]?.gesture.affectedParagraphIds ?? []).filter(
+        (id) => id !== "paragraph:a" && id !== (inserted[0] as string),
+      ),
+    ]);
+    expect(changes[0]?.gesture.affectedParagraphIds).toHaveLength(3);
+    expect(changes[0]?.document.blocks.map((b) => b.text)).toEqual([
+      "Al",
+      "XY",
+      "pha text",
+    ]);
+    editor.destroy();
+  });
+
+  it("one transaction touching B then A reports affected in document order", () => {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "Beta"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:r9order-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    // Steps run B-then-A; the report follows the resulting document.
+    view.dispatch(view.state.tr.insertText("1", 12).insertText("2", 6));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:b",
+    ]);
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:a", "Alpha2"),
+      paragraph("paragraph:b", "Beta1"),
     ]);
     editor.destroy();
   });

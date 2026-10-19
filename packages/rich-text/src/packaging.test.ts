@@ -123,6 +123,21 @@ describe("core entry import (RT-0 half of RED-P)", () => {
   });
 });
 
+describe("build cleans stale outputs before compiling (R15)", () => {
+  it("the build script removes dist with node fs before tsc, with no new dependency", () => {
+    const manifest = JSON.parse(
+      readFileSync(join(SRC_DIR, "..", "package.json"), "utf8"),
+    ) as { scripts?: Record<string, string> };
+    const build = manifest.scripts?.["build"] ?? "";
+    // A stale `dist` (for example the removed hand-written `codec.js`)
+    // must never survive into a pack: `tsc` alone does not clean it.
+    expect(build).toContain("node -e");
+    expect(build).toContain("rmSync");
+    expect(build).toContain("dist");
+    expect(build).toContain("tsc -p tsconfig.json");
+  });
+});
+
 describe("P0 wiring smoke (v3 extension set, no DOM access)", () => {
   it("the P0 list carries UndoRedo from @tiptap/extensions, never the v2 history package", () => {
     expect(P0_EXTENSION_NAMES).toContain("@tiptap/extensions");
