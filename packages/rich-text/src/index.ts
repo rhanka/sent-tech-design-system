@@ -1,8 +1,13 @@
-// Neutral rich-text core entry point. Side-effect free on import: loading
-// this module touches no DOM global and no framework module (asserted by
-// `src/packaging.test.ts`, RT-0 half of RED-P). Every import specifier in
-// the core graph is relative: the core needs no runtime package, no
+// Pure rich-text entry (spec §4.2, entry ".").
+//
+// Side-effect free on import: loading this module touches no DOM global, no
+// `@tiptap/*` or `prosemirror-*` module and no framework module (asserted by
+// `src/packaging.test.ts`, RT-0 half of RED-P). Every import specifier in the
+// "." graph is relative: the pure entry needs no runtime package, no
 // framework module and no Node built-in.
+//
+// The Tiptap-bound factory lives in the "./editor" entry (`src/editor.ts`)
+// and is never re-exported here.
 
 export type {
   RichTextBlock,
@@ -49,35 +54,19 @@ export {
   createParagraphIdentityPlugin,
 } from "./identity.js";
 export type {
-  BridgePreservedKind,
-  DocumentFromSourceOptions,
-  SourceSegment,
-  TextPasteAnalysis,
-} from "./codec.js";
+  ExternalUpdateDecision,
+  ExternalUpdateInput,
+} from "./document.js";
 export {
-  analyzeTextPaste,
-  documentFromSource,
-  extractMarkdownImageAlt,
-  isBlockquoteLine,
-  isFencedCodeLine,
-  isHeadingLine,
-  isHorizontalRuleLine,
-  isListItemLine,
-  isMarkdownImageLine,
-  isMarkdownTableBlock,
-  segmentSource,
-  sourceFromDocument,
-} from "./codec.js";
+  copyRichTextDocument,
+  createCaptureTracker,
+  createCaptureUnavailableError,
+  decideExternalUpdate,
+  richTextDocumentsEqual,
+} from "./document.js";
+export type { CaptureTracker } from "./document.js";
 export type { RichTextStyleBinding } from "./theme.js";
 export {
   RICH_TEXT_CLASS_MAPPING,
   RICH_TEXT_TOKEN_PREFIX,
 } from "./theme.js";
-export type {
-  HeadlessEditor,
-  HeadlessEditorCallbacks,
-  HeadlessEditorOptions,
-  PastePayload,
-  RichTextSelectionSnapshot,
-} from "./editor.js";
-export { createHeadlessEditor } from "./editor.js";

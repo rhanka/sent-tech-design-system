@@ -1,25 +1,24 @@
 /**
- * RED 8 — module-graph scan half plus the runtime no-network scenario.
- * Spec §11 RED 8, §5.9. Environment: J plus a static source scan.
+ * RED 8 — module-graph scan half over the pure entry plus the runtime
+ * no-network scenario through "./editor". Spec §11 RED 8, §5.9.
+ * Environment: J plus a static source scan.
  *
  * Observable assertion: rendering with sentinel `messages` shows exactly the
  * sentinel strings (component half, RT-1); the module-graph scan here asserts
- * the core graph imports no HTTP client module, no host-side editing module,
- * no business dependency and no app alias; the runtime scenario arms request
- * interception and `fetch`/`XMLHttpRequest` sentinels from mount through
- * typing, paste and unmount and records zero calls. A global `fetch` call
- * needs no import, so the scan alone never satisfies the network half.
- *
- * RED state (RT-0): the scan runs against the stub sources (it holds there);
- * the runtime scenario mounts the headless editor, which is a stub, so that
- * case fails with `RT-0 RED: headless editor not implemented` until phase B
- * lands. No case is skipped.
+ * the pure-entry graph imports no HTTP client module, no host-side editing
+ * module, no business dependency and no app alias; the runtime scenario arms
+ * request interception and `fetch`/`XMLHttpRequest` sentinels from mount
+ * through typing, paste and unmount and records zero calls. A global `fetch`
+ * call needs no import, so the scan alone never satisfies the network half.
+ * The static scan is scoped to the import graph reachable from
+ * `src/index.ts` (a flat `src/` scan would now correctly fail on the
+ * Tiptap-bound `editor*.ts` files); the runtime scenario imports the editor
+ * entry dynamically inside that scenario only.
  */
 import { describe, it, expect } from "vitest";
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createHeadlessEditor } from "./editor.js";
 import type {
   RichTextChangeEvent,
   RichTextBlock,
@@ -33,10 +32,10 @@ const MESSAGES: RichTextMessages = {
   externalConflictLabel: "External change received",
 };
 
-// Tokens that must never appear in the core module graph: any HTTP client
-// surface, any host-side editing or business dependency, any app alias.
-// (The scan covers non-test sources only; test payloads legitimately carry
-// hostile strings.)
+// Tokens that must never appear in the pure-entry module graph: any HTTP
+// client surface, any host-side editing or business dependency, any app
+// alias. (The scan covers "."-reachable non-test sources only; the
+// "./editor" entry and test payloads legitimately carry other strings.)
 const FORBIDDEN_SOURCE_TOKENS = [
   "fetch(",
   "XMLHttpRequest",
@@ -48,20 +47,43 @@ const FORBIDDEN_SOURCE_TOKENS = [
   "$lib",
 ] as const;
 
-function coreSources(): { file: string; text: string }[] {
-  const dir = dirname(fileURLToPath(import.meta.url));
-  return readdirSync(dir)
-    .filter((file) => file.endsWith(".ts") && !file.endsWith(".test.ts"))
-    .map((file) => ({
-      file,
-      text: readFileSync(join(dir, file), "utf8"),
-    }));
+const SRC_DIR = dirname(fileURLToPath(import.meta.url));
+
+function specifiersOf(file: string): string[] {
+  const text = readFileSync(join(SRC_DIR, file), "utf8");
+  return [...text.matchAll(/from\s+["']([^"']+)["']/g)].map(
+    (match) => match[1] as string,
+  );
 }
 
-describe("module-graph scan (static)", () => {
+/** Non-test sources reachable from `src/index.ts` through relative imports. */
+function pureEntrySources(): { file: string; text: string }[] {
+  const seen = new Set<string>(["index.ts"]);
+  const queue = ["index.ts"];
+  while (queue.length > 0) {
+    const file = queue.pop() as string;
+    for (const specifier of specifiersOf(file)) {
+      if (!specifier.startsWith(".")) continue;
+      const target = `${specifier.replace(/\.js$/, "")}.ts`.replace(
+        /^\.\//,
+        "",
+      );
+      if (!seen.has(target)) {
+        seen.add(target);
+        queue.push(target);
+      }
+    }
+  }
+  return [...seen].map((file) => ({
+    file,
+    text: readFileSync(join(SRC_DIR, file), "utf8"),
+  }));
+}
+
+describe("module-graph scan (static, pure entry)", () => {
   for (const token of FORBIDDEN_SOURCE_TOKENS) {
-    it(`no core source contains "${token}"`, () => {
-      for (const { file, text } of coreSources()) {
+    it(`no pure-entry source contains "${token}"`, () => {
+      for (const { file, text } of pureEntrySources()) {
         expect(
           text.includes(token),
           `${file} must not contain "${token}"`,
@@ -91,6 +113,7 @@ describe("runtime network scenario (mount through unmount)", () => {
     }
     globalThis.XMLHttpRequest = RecordingXHR as typeof XMLHttpRequest;
     try {
+      const { createRichTextEditor } = await import("./editor.js");
       const changes: RichTextChangeEvent[] = [];
       let n = 0;
       const block: RichTextBlock = {
@@ -98,7 +121,7 @@ describe("runtime network scenario (mount through unmount)", () => {
         kind: "paragraph",
         text: "Alpha",
       };
-      const editor = createHeadlessEditor({
+      const editor = createRichTextEditor({
         document: { format: "focus.markdown.p0@1", blocks: [block] },
         messages: MESSAGES,
         allocateId: () => `paragraph:net-${++n}`,
