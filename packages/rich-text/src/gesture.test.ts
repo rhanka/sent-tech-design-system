@@ -18,13 +18,14 @@
  * cumulative result is decided solely by its own diff against the retained
  * baseline.
  *
- * RED state (RT-0): the headless editor is a stub, so every case fails with
- * `RT-0 RED: headless editor not implemented` until phase B lands. No case
- * is skipped.
+ * Tiptap entry: emitted-surface and A → B → A assertions run on the
+ * `"./editor"` events; the §5.6 echo/decision sub-assertions are
+ * additionally covered as a pure decision table in `document.test.ts`.
+ * No case is skipped.
  */
 import { describe, it, expect } from "vitest";
-import { createHeadlessEditor } from "./editor.js";
-import type { HeadlessEditor } from "./editor.js";
+import { createRichTextEditor } from "./editor.js";
+import type { RichTextEditor } from "./editor.js";
 import type {
   RichTextBlock,
   RichTextChangeEvent,
@@ -80,12 +81,12 @@ function paragraph(id: string, text: string): RichTextBlock {
 }
 
 function setup(textA: string): {
-  editor: HeadlessEditor;
+  editor: RichTextEditor;
   changes: RichTextChangeEvent[];
 } {
   const changes: RichTextChangeEvent[] = [];
   let n = 0;
-  const editor = createHeadlessEditor({
+  const editor = createRichTextEditor({
     document: {
       format: "focus.markdown.p0@1",
       blocks: [paragraph("paragraph:a", textA)],

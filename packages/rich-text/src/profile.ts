@@ -13,9 +13,9 @@
 //
 // Runtime note (packaging, spec §11 RED-P): this module composes no live
 // extension object. `createP0Extensions()` returns frozen descriptor data
-// naming the exact packages the runtime editor (RT-1+) instantiates, so the
-// neutral core imports no `@tiptap/*` runtime module and stays side-effect
-// free in Node. The P0 wiring smoke (`packaging.test.ts`) asserts the set is
+// naming the exact packages the `"./editor"` entry instantiates, so the pure
+// entry imports no `@tiptap/*` runtime module and stays side-effect free in
+// Node. The P0 wiring smoke (`packaging.test.ts`) asserts the set is
 // non-empty without touching the document.
 
 /** Content profile identifier carried by `RichTextDocument.format`. */
