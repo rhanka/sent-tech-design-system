@@ -1,0 +1,176 @@
+/**
+ * RED 3 — core plugin half: identity carriage through split, merge,
+ * undo/redo, internal paste; external paste cannot inject identity.
+ * Spec §11 RED 3, §5.2. Environment: J.
+ *
+ * Observable assertion: Enter-split keeps the leading `paragraphId` and gives
+ * the tail a fresh allocator-supplied ID (`gesture.split` names source and
+ * fresh tails); Backspace-merge keeps the leading ID, retires the consumed ID
+ * without ever reallocating it (`gesture.merge` names survivor and retired);
+ * undo of a delete restores the same ID and redo removes it again; internal
+ * copy/paste carries a fresh ID distinct from its source (`gesture.paste`
+ * names the inserted IDs with the correct origin); an external paste whose
+ * HTML carries `data-paragraph-id="paragraph:forged"` yields an
+ * allocator-supplied ID, never `paragraph:forged`. IDs are read from the
+ * emitted `RichTextDocument` blocks.
+ *
+ * RED state (RT-0): the identity plugin and the headless editor are stubs,
+ * so every case fails with an `RT-0 RED: … not implemented` error until
+ * phase B lands. No case is skipped.
+ */
+import { describe, it, expect } from "vitest";
+import { createHeadlessEditor } from "./editor.js";
+import type { HeadlessEditor } from "./editor.js";
+import type {
+  RichTextBlock,
+  RichTextChangeEvent,
+  RichTextDocument,
+} from "./model.js";
+import type { RichTextMessages } from "./messages.js";
+
+const MESSAGES: RichTextMessages = {
+  editorLabel: "Test editor",
+  placeholder: "Test placeholder",
+  preservedBlockLabel: "Preserved {kind} block",
+  externalConflictLabel: "External change received",
+};
+
+function paragraph(id: string, text: string): RichTextBlock {
+  return { paragraphId: id, kind: "paragraph", text };
+}
+
+function setup(initial: RichTextDocument) {
+  const changes: RichTextChangeEvent[] = [];
+  let n = 0;
+  const allocated: string[] = [];
+  const editor: HeadlessEditor = createHeadlessEditor({
+    document: initial,
+    messages: MESSAGES,
+    allocateId: () => {
+      const id = `paragraph:fresh-${++n}`;
+      allocated.push(id);
+      return id;
+    },
+    onChange: (event) => {
+      changes.push(event);
+    },
+  });
+  return { editor, changes, allocated };
+}
+
+const TWO_PARAGRAPHS: RichTextDocument = {
+  format: "focus.markdown.p0@1",
+  blocks: [paragraph("paragraph:a", "Alpha text"), paragraph("paragraph:b", "Beta text")],
+};
+
+describe("split carriage (Enter)", () => {
+  it("leading block keeps its identity, tail carries a fresh allocator ID, gesture.split names both", () => {
+    const { editor, changes } = setup(TWO_PARAGRAPHS);
+    editor.splitParagraph("paragraph:a", 5);
+    expect(changes).toHaveLength(1);
+    const event = changes[0];
+    expect(event?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+      "paragraph:fresh-1",
+      "paragraph:b",
+    ]);
+    expect(event?.document.blocks[0]?.text).toBe("Alpha");
+    expect(event?.document.blocks[1]?.text).toBe(" text");
+    expect(event?.gesture.kind).toBe("split");
+    expect(event?.gesture.split).toEqual({
+      sourceParagraphId: "paragraph:a",
+      newParagraphIds: ["paragraph:fresh-1"],
+    });
+    expect(event?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:fresh-1",
+    ]);
+    editor.destroy();
+  });
+});
+
+describe("merge carriage (Backspace at paragraph start)", () => {
+  it("leading identity survives, consumed identity is retired and never reallocated", () => {
+    const { editor, changes, allocated } = setup(TWO_PARAGRAPHS);
+    editor.mergeWithPrevious("paragraph:b");
+    expect(changes).toHaveLength(1);
+    const event = changes[0];
+    expect(event?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+    ]);
+    expect(event?.document.blocks[0]?.text).toBe("Alpha textBeta text");
+    expect(event?.gesture.kind).toBe("merge");
+    expect(event?.gesture.merge).toEqual({
+      survivingParagraphId: "paragraph:a",
+      retiredParagraphIds: ["paragraph:b"],
+    });
+    // A later split must not reallocate the retired identity.
+    editor.splitParagraph("paragraph:a", 5);
+    expect(allocated).not.toContain("paragraph:b");
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+      "paragraph:fresh-1",
+    ]);
+    editor.destroy();
+  });
+});
+
+describe("undo/redo identity restoration", () => {
+  it("undo of a delete restores the same identity; redo removes it again", () => {
+    const { editor, changes } = setup(TWO_PARAGRAPHS);
+    editor.deleteBlocks(["paragraph:b"]);
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(changes[0]?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+    ]);
+    editor.undo();
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.kind).toBe("undo");
+    expect(changes[1]?.document.blocks).toEqual(TWO_PARAGRAPHS.blocks);
+    editor.redo();
+    expect(changes).toHaveLength(3);
+    expect(changes[2]?.gesture.kind).toBe("redo");
+    expect(changes[2]?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+    ]);
+    editor.destroy();
+  });
+});
+
+describe("internal copy/paste identity", () => {
+  it("pasted blocks carry fresh identities distinct from their source, origin internal", () => {
+    const { editor, changes } = setup(TWO_PARAGRAPHS);
+    const payload = editor.copyToPayload(["paragraph:a"]);
+    editor.paste(payload);
+    expect(changes).toHaveLength(1);
+    const event = changes[0];
+    const ids = event?.document.blocks.map((b) => b.paragraphId) ?? [];
+    expect(ids).toContain("paragraph:a");
+    const inserted = event?.gesture.paste?.insertedParagraphIds ?? [];
+    expect(inserted).toHaveLength(1);
+    expect(inserted[0]).not.toBe("paragraph:a");
+    expect(ids.filter((id) => id === inserted[0])).toHaveLength(1);
+    expect(event?.gesture.paste?.origin).toBe("internal");
+    expect(event?.gesture.kind).toBe("paste");
+    editor.destroy();
+  });
+});
+
+describe("external paste cannot inject identity", () => {
+  it("a forged data-paragraph-id never survives; the block ID is allocator-supplied", () => {
+    const { editor, changes } = setup(TWO_PARAGRAPHS);
+    editor.paste({
+      html: '<p data-paragraph-id="paragraph:forged">Forged</p>',
+      text: "Forged",
+    });
+    expect(changes).toHaveLength(1);
+    const ids =
+      changes[0]?.document.blocks.map((b) => b.paragraphId) ?? [];
+    expect(ids).not.toContain("paragraph:forged");
+    expect(ids).toContain("paragraph:fresh-1");
+    expect(changes[0]?.gesture.paste?.origin).toBe("external");
+    editor.destroy();
+  });
+});
