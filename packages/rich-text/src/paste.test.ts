@@ -50,7 +50,7 @@
  * skipped.
  */
 import { describe, it, expect } from "vitest";
-import { TextSelection } from "@tiptap/pm/state";
+import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
@@ -125,6 +125,30 @@ function dispatchNativePaste(
 
 function documentText(document: RichTextDocument): string {
   return document.blocks.map((b) => b.text ?? b.raw ?? "").join("\n");
+}
+
+/** Dispatch a real `copy` event on the view DOM: the ProseMirror handler
+    serialises the live selection into the returned transfer (exact text
+    plus native `data-pm-slice` HTML, preserved markers included). */
+function captureNativeCopy(viewDom: HTMLElement): Record<string, string> {
+  const copyEvent = new Event("copy", { bubbles: true, cancelable: true });
+  const captured: Record<string, string> = {};
+  const copyTransfer = {
+    setData: (type: string, value: string): void => {
+      captured[type] = value;
+    },
+    getData: (type: string): string => captured[type] ?? "",
+    clearData: (): void => {
+      for (const key of Object.keys(captured)) delete captured[key];
+    },
+    types: ["text/html", "text/plain"],
+  };
+  (copyEvent as unknown as Record<string, unknown>)["clipboardData"] =
+    copyTransfer;
+  (copyEvent as unknown as Record<string, unknown>)["dataTransfer"] =
+    copyTransfer;
+  viewDom.dispatchEvent(copyEvent);
+  return captured;
 }
 
 describe("hostile paste is inert (native clipboard path)", () => {
@@ -331,6 +355,32 @@ describe("an open native slice stays inline (R10, native path)", () => {
     expect(editor.getDocument()).toEqual(changes[0]?.document);
     teardown();
   });
+
+  it("an inline open paste announces no inserted identity (N3, native path)", () => {
+    const { editor, changes, viewDom, teardown } = setup();
+    const view = editor.view;
+    // Cursor at the end of `Alpha` (text positions 1..6).
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 6)),
+    );
+    expect(changes).toHaveLength(0);
+    dispatchNativePaste(viewDom, {
+      html: '<p data-pm-slice="1 1 []">lp</p>',
+      text: "lp",
+    });
+    expect(changes).toHaveLength(1);
+    // Only the host paragraph survives: the planned fresh identity never
+    // entered the document, so nothing is announced as inserted and the
+    // modified block alone is affected.
+    expect(changes[0]?.document.blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:1",
+      "paragraph:2",
+    ]);
+    expect(changes[0]?.gesture.paste?.insertedParagraphIds).toEqual([]);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual(["paragraph:1"]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    teardown();
+  });
 });
 
 describe("non-paragraph paste refusal (refused whole, native path)", () => {
@@ -396,6 +446,62 @@ describe("non-paragraph paste refusal (refused whole, native path)", () => {
     expect(ids).toContain("paragraph:paste-1");
     expect(changes[0]?.gesture.paste?.origin).toBe("external");
     teardown();
+  });
+});
+
+describe("internal copy/paste keeps literal whitespace (N2, native path)", () => {
+  it("double spaces, tab and peripheral spaces survive a real copy then paste", () => {
+    const source = "  A  B\tC  ";
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:1", source)],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    // A real copy event: the ProseMirror handler serialises the selection
+    // into the transfer (exact text plus native `data-pm-slice` HTML).
+    view.dispatch(
+      view.state.tr.setSelection(
+        TextSelection.create(view.state.doc, 1, 1 + source.length),
+      ),
+    );
+    const captured = captureNativeCopy(viewDom);
+    // The clipboard carries the exact text and a native slice payload.
+    expect(captured["text/plain"]).toBe(source);
+    expect(captured["text/html"] ?? "").toContain("data-pm-slice");
+    // A real paste event at the paragraph end through the native path.
+    view.dispatch(
+      view.state.tr.setSelection(
+        TextSelection.create(view.state.doc, 1 + source.length),
+      ),
+    );
+    dispatchNativePaste(viewDom, {
+      text: captured["text/plain"],
+      html: captured["text/html"],
+    });
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("paste");
+    expect(changes[0]?.gesture.paste?.origin).toBe("internal");
+    // Nothing normalised: the paragraph carries the source twice, byte
+    // for byte (double spaces, tab, leading and trailing spaces).
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:1", `${source}${source}`),
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+    element.remove();
   });
 });
 
@@ -592,6 +698,76 @@ describe("paste spanning a preserved block is refused whole (native path)", () =
       ),
     );
     dispatchNativePaste(viewDom, { text: "replacement" });
+    expect(unsupported).toHaveLength(1);
+    expect(unsupported[0]?.rejectedKinds).toContain("table");
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(before);
+    editor.destroy();
+    element.remove();
+  });
+});
+
+describe("copying a preserved block refuses the paste whole (N7, native path)", () => {
+  it("pasting the copied preserved HTML reports the kind, inserts nothing", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const unsupported: RichTextUnsupportedPasteEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const before: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        paragraph("paragraph:1", "Alpha"),
+        {
+          paragraphId: "paragraph:kept",
+          kind: "preserved",
+          raw: "| a | b |",
+          preservedKind: "table",
+        },
+        paragraph("paragraph:2", "Beta"),
+      ],
+    };
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: before,
+      messages: MESSAGES,
+      allocateId: () => `paragraph:copied-${++n}`,
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onUnsupportedPaste: (event) => {
+        unsupported.push(event);
+      },
+    });
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    // Copy the preserved block natively: the clipboard HTML carries its
+    // preserved marker.
+    let preservedPos = -1;
+    editor.view.state.doc.descendants((node, pos) => {
+      if (node.type.name === "preservedBlock") preservedPos = pos;
+      return true;
+    });
+    expect(preservedPos).toBeGreaterThanOrEqual(0);
+    editor.view.dispatch(
+      editor.view.state.tr.setSelection(
+        NodeSelection.create(editor.view.state.doc, preservedPos),
+      ),
+    );
+    const captured = captureNativeCopy(viewDom);
+    expect(captured["text/html"] ?? "").toContain("data-preserved-block");
+    // Paste inside an ordinary paragraph: the preserved region is
+    // classified before its marker is stripped, so the whole payload is
+    // refused instead of flattening into a paragraph.
+    editor.view.dispatch(
+      editor.view.state.tr.setSelection(
+        TextSelection.create(editor.view.state.doc, 6),
+      ),
+    );
+    dispatchNativePaste(viewDom, {
+      text: captured["text/plain"],
+      html: captured["text/html"],
+    });
     expect(unsupported).toHaveLength(1);
     expect(unsupported[0]?.rejectedKinds).toContain("table");
     expect(changes).toHaveLength(0);

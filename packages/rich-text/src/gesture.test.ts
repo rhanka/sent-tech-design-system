@@ -440,8 +440,12 @@ describe("native provenance corrections (R9)", () => {
     expect(changes).toHaveLength(0);
     editor.paste({ text: "XY" });
     expect(changes).toHaveLength(1);
+    // Inserted identities come from the resulting document (N3): the pasted
+    // block plus the split tail the closed insertion created mid-paragraph.
     const inserted = changes[0]?.gesture.paste?.insertedParagraphIds ?? [];
-    expect(inserted).toHaveLength(1);
+    expect(inserted).toHaveLength(2);
+    expect(changes[0]?.document.blocks[1]?.paragraphId).toBe(inserted[0]);
+    expect(changes[0]?.document.blocks[2]?.paragraphId).toBe(inserted[1]);
     // Complete affected in final order: modified head, inserted block,
     // created tail — never the inserted identity alone.
     expect(changes[0]?.gesture.affectedParagraphIds).toEqual([

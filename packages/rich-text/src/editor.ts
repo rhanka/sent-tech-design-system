@@ -227,7 +227,13 @@ export function createRichTextEditor(
     element,
     extensions: [
       ...createP0EditorExtensions({ placeholder: options.messages.placeholder }),
-      createParagraphIdentityExtension(allocateFresh),
+      createParagraphIdentityExtension(allocateFresh, {
+        // Identities a select-all replacement consumed (N8, §5.2): retired
+        // inside the session, never reallocated.
+        onRetire: (ids) => {
+          for (const id of ids) retiredIds.add(id);
+        },
+      }),
       createPreservedGuardExtension(isPlainTextFormat),
     ],
     content: { type: "doc", content: [{ type: "paragraph" }] },
@@ -893,6 +899,16 @@ export function createRichTextEditor(
       const current = node?.attrs ?? {};
       const nextRaw = block.raw ?? "";
       const nextKind = block.preservedKind ?? "";
+      // Optional-property presence is refreshed even when no native
+      // attribute change is needed (N6): normalised attributes cannot tell
+      // a present-but-empty field from an absent one, so the `continue`
+      // below must not skip the presence record — otherwise the export
+      // keeps a stale field while the acknowledgement recorded its absence
+      // and the next external update false-conflicts.
+      seeds.preserved.set(block.paragraphId, {
+        hasRaw: block.raw !== undefined,
+        hasKind: block.preservedKind !== undefined,
+      });
       if (
         current["raw"] === nextRaw &&
         current["preservedKind"] === nextKind
@@ -904,10 +920,6 @@ export function createRichTextEditor(
         [PARAGRAPH_ID_ATTRIBUTE]: block.paragraphId,
         raw: nextRaw,
         preservedKind: nextKind,
-      });
-      seeds.preserved.set(block.paragraphId, {
-        hasRaw: block.raw !== undefined,
-        hasKind: block.preservedKind !== undefined,
       });
     }
     editor.view.dispatch(tr);
@@ -1033,7 +1045,9 @@ export function createRichTextEditor(
     }
     let planned: PastePlan;
     if (html !== "") {
-      planned = planHtmlPaste(view.state.schema, html, allocateFresh);
+      planned = planHtmlPaste(view.state.schema, html, allocateFresh, {
+        preserveWhitespace: documentFormat === "text/plain",
+      });
       if (documentFormat === "text/plain" && planned.outcome === "insert") {
         planned = {
           outcome: "insert",
@@ -1063,12 +1077,6 @@ export function createRichTextEditor(
       return;
     }
     if (planned.paragraphs.length === 0) return;
-    const inserted = planned.paragraphs.map(
-      (paragraph) =>
-        (paragraph.attrs as Record<string, unknown>)[
-          PARAGRAPH_ID_ATTRIBUTE
-        ] as string,
-    );
     const beforeIds = identitySet();
     lastDispatchChanged = false;
     suppressedAffected.clear();
@@ -1097,20 +1105,18 @@ export function createRichTextEditor(
       }
       return;
     }
+    // Inserted identities are read from the resulting document, after slice
+    // adjustment and identity repair (N3): a planned identity that never
+    // entered (an open slice inserted inline keeps the host paragraph, so
+    // its fresh identity is unused) is never announced, while a split tail
+    // the insertion created is. Order follows the resulting document.
     // Complete affected in final-document order: pasting inside a paragraph
     // splits it, so the split tail (fresh identity from the repair) and the
-    // modified head join the planned inserts.
+    // modified head join the inserted blocks.
     const afterIds = identitySet();
-    const insertedSet = new Set(inserted);
-    const freshTails = [...afterIds].filter(
-      (id) => !beforeIds.has(id) && !insertedSet.has(id),
-    );
-    for (const id of [...inserted, ...freshTails]) seeds.touched.add(id);
-    const affected = orderIdsByDocument([
-      ...inserted,
-      ...suppressedAffected,
-      ...freshTails,
-    ]);
+    const inserted = [...afterIds].filter((id) => !beforeIds.has(id));
+    for (const id of inserted) seeds.touched.add(id);
+    const affected = orderIdsByDocument([...inserted, ...suppressedAffected]);
     const after = displayedDocument();
     emitChange(
       "paste",

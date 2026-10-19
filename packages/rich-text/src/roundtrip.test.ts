@@ -243,6 +243,70 @@ describe("absent preservedKind stays absent", () => {
     });
     editor.destroy();
   });
+
+  it("dropping a present-but-empty preservedKind refreshes presence (N6)", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const conflicts: { incoming: RichTextDocument }[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+          {
+            paragraphId: "paragraph:k",
+            kind: "preserved",
+            raw: "| a |",
+            preservedKind: "",
+          },
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:presence-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        conflicts.push(event);
+      },
+    });
+    // Same document without the optional property: normalised native
+    // attributes are identical, but presence must still be refreshed —
+    // otherwise the export keeps `preservedKind: ""` while the
+    // acknowledgement recorded its absence.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+        { paragraphId: "paragraph:k", kind: "preserved", raw: "| a |" },
+      ],
+    });
+    expect(conflicts).toHaveLength(0);
+    expect(changes).toHaveLength(0);
+    const next = editor.getDocument();
+    expect("preservedKind" in (next.blocks[1] as object)).toBe(false);
+    expect(next.blocks[1]).toEqual({
+      paragraphId: "paragraph:k",
+      kind: "preserved",
+      raw: "| a |",
+    });
+    // A follow-up external update applies cleanly: no false divergence
+    // from the stale presence.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+        { paragraphId: "paragraph:k", kind: "preserved", raw: "| b |" },
+      ],
+    });
+    expect(conflicts).toHaveLength(0);
+    expect(editor.getDocument().blocks[1]).toEqual({
+      paragraphId: "paragraph:k",
+      kind: "preserved",
+      raw: "| b |",
+    });
+    editor.destroy();
+  });
 });
 
 describe("raw-only external change keeps paragraph instances (R13)", () => {

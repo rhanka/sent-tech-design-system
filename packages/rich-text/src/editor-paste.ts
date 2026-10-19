@@ -15,7 +15,10 @@ import { DOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import type { JSONContent } from "@tiptap/core";
 import type { Schema } from "@tiptap/pm/model";
 import type { MarkdownManager } from "@tiptap/markdown";
-import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
+import {
+  PARAGRAPH_ID_ATTRIBUTE,
+  PRESERVED_BLOCK_DOM_ATTRIBUTE,
+} from "./identity.js";
 
 export interface PastePayloadInput {
   text?: string;
@@ -176,12 +179,54 @@ function readSliceOpenness(root: HTMLElement): {
   };
 }
 
-/** Classify and parse an HTML clipboard payload through the P0 schema. */
+/** True when clipboard HTML carries ProseMirror's native slice marker
+    (`data-pm-slice="openStart openEnd …"`): the payload entered from a
+    ProseMirror view, so its whitespace parses with ProseMirror's own
+    preservation, never HTML collapsing (N2). Shape mirrors ProseMirror's
+    own `sliceData` detection in `parseFromClipboard`. */
+function hasNativeSliceMarker(root: HTMLElement): boolean {
+  const marker = root.querySelector("[data-pm-slice]");
+  const raw = marker?.getAttribute("data-pm-slice") ?? "";
+  return /^(\d+) (\d+)(?: -(\d+))? (.*)/.exec(raw) !== null;
+}
+
+/** Preserved-block kinds carried by clipboard HTML, read from the raw
+    payload before sanitising strips the marker (N7). Labels mirror the
+    drop path: the marker value, or `preservedBlock` when it is empty. */
+function preservedKindsIn(html: string): string[] {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  const kinds: string[] = [];
+  const selector = `[${PRESERVED_BLOCK_DOM_ATTRIBUTE}]`;
+  for (const element of template.content.querySelectorAll(selector)) {
+    const kind = element.getAttribute(PRESERVED_BLOCK_DOM_ATTRIBUTE);
+    const label = kind !== null && kind !== "" ? kind : "preservedBlock";
+    if (!kinds.includes(label)) kinds.push(label);
+  }
+  return kinds;
+}
+
+/** Classify and parse an HTML clipboard payload through the P0 schema.
+    Whitespace parses with ProseMirror's preservation for native slices
+    (`data-pm-slice`, as `parseFromClipboard` does with
+    `preserveWhitespace: !!(asText || sliceData)`) and for `text/plain`
+    targets (literal paragraphs never normalise whitespace, N2); foreign
+    HTML into Markdown keeps HTML collapsing. */
 export function planHtmlPaste(
   schema: Schema,
   html: string,
   allocateId: () => string,
+  options?: { preserveWhitespace?: boolean },
 ): PastePlan {
+  // A copied preserved region never flattens into paragraphs (N7): the
+  // marker is classified BEFORE `sanitizePastedHtml` strips it, and the
+  // whole payload is refused — mirroring the drop path, which refuses a
+  // slice carrying a preserved node before identity repair could re-label
+  // it. Paste never creates a preserved block (§6.3).
+  const preserved = preservedKindsIn(html);
+  if (preserved.length > 0) {
+    return { outcome: "refuse", rejectedKinds: preserved };
+  }
   const sanitized = sanitizePastedHtml(html);
   const holder = document.createElement("div");
   holder.innerHTML = sanitized.html;
@@ -214,7 +259,10 @@ export function planHtmlPaste(
     return { outcome: "refuse", rejectedKinds: refused };
   }
   const { openStart, openEnd } = readSliceOpenness(root);
-  const slice = DOMParser.fromSchema(schema).parseSlice(root);
+  const slice = DOMParser.fromSchema(schema).parseSlice(root, {
+    preserveWhitespace:
+      options?.preserveWhitespace ?? hasNativeSliceMarker(root),
+  });
   // Keep every representable inline slice content (R3): bare inline HTML
   // such as `<strong>bold</strong>` parses to top-level inline nodes, not
   // paragraphs — dropping them loses valid text and reports nothing.
