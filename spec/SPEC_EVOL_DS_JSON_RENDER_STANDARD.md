@@ -1,7 +1,7 @@
 # SPEC EVOL — DS-JSON-RENDER: one JSON in, one design-system component out, in any MCP Apps host (option E)
 
 **Status**: specification and traceability only. No implementation, no package, no workflow in this PR.
-**Date**: 2026-10-15, amended 2026-10-16 (twice) and 2026-10-19 (L8 node presentation, L-R12). **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4, the `track focus --format json` annex, and the cluster-mesh registry, Focus renderer and layout-engine precisions).
+**Date**: 2026-10-15, amended 2026-10-16 (twice) and 2026-10-19 (L8 node presentation, L-R12; revised the same day after the first review of L-R12). **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4, the `track focus --format json` annex, and the cluster-mesh registry, Focus renderer and layout-engine precisions).
 **Base measured**: `origin/main` = `30c13318` (DS). Other revisions read: h2a `origin/main` = `61ddcec9`;
 bpmn-canvas `origin/main` = `62ec95f` and local, **unpushed** branch `workbench/functions-20261004` = `e9f5f89`;
 A2UI repository pinned at commit `3b0e0373`.
@@ -1075,17 +1075,37 @@ carries no hint for any of them:
   rectangle* is the final rectangle minus the drawn border; the *label box* is the measurer's `node` size
   (§10.5 common terms), wrapped by the renderer only with that same measurer.
   - **(a) Surface against the canvas.** Node fill, node border, canvas background and dot grid come from
-    component tokens and from nothing else: `--st-component-diagramCanvas-nodeBackground`,
-    `--st-component-diagramCanvas-nodeBorder` (width `--st-component-diagramCanvas-nodeBorderWidth`, default
-    1 CSS px), `--st-component-diagramCanvas-canvasBackground`, and the dot grid
-    (`--st-component-diagramCanvas-canvasDot`; dot size and spacing are token-defined with it, drawn only on
-    the canvas, never inside a node). Node text takes the theme's semantic text token. Contrast is the WCAG
-    2.x ratio `(L1 + 0.05) / (L2 + 0.05)` over relative luminances, a translucent token composited over the
-    canvas background first. In every shipped theme and every colour scheme that theme defines, at least one
-    of the border against the canvas background and the fill against the canvas background reaches **3:1**
-    (WCAG 1.4.11, non-text contrast); a theme that reaches it by neither is non-conformant. The dot grid is
-    decoration: it carries no information, is exempt from the 3:1
-    test, and stays the weakest mark on the canvas — its token is still mandatory, so no theme hard-codes it.
+    component tokens and from nothing else. The intended aliases and defaults are concrete DS bindings, not
+    free colours: `--st-component-diagramCanvas-canvasBackground` aliases
+    `var(--st-semantic-surface-default)`; `--st-component-diagramCanvas-nodeBackground` aliases
+    `var(--st-semantic-surface-raised)`; `--st-component-diagramCanvas-nodeBorder` aliases
+    `var(--st-semantic-border-interactive)`, with width `--st-component-diagramCanvas-nodeBorderWidth`
+    defaulting to 1 CSS px; the dot grid takes `--st-component-diagramCanvas-canvasDot` aliasing
+    `var(--st-semantic-border-subtle)`, with `--st-component-diagramCanvas-canvasDotSize` defaulting to
+    1 CSS px and `--st-component-diagramCanvas-canvasDotSpacing` to 24 CSS px, drawn only on the canvas,
+    never inside a node. Node text takes `var(--st-semantic-text-primary)`. A theme may override an alias,
+    but the resolved value is what is checked. Contrast is the WCAG 2.x ratio `(L1 + 0.05) / (L2 + 0.05)`
+    over relative luminances, a translucent token composited over the canvas background first. In every
+    shipped theme and every colour scheme that theme defines, at least one of the border against the canvas
+    background and the fill against the canvas background reaches **3:1** (WCAG 1.4.11, non-text contrast);
+    a theme that reaches it by neither is non-conformant. Starting evidence, measured locally on 2026-10-19
+    from the token sources (`packages/tokens/src/semantic.ts`, `packages/tokens/src/foundation.ts`,
+    `packages/themes/src/semantic.dark.ts`; `sent-tech` uses those values directly and `forge` and
+    `entropic` override only `action.primary` on top of them, so their surface and border values are
+    inherited and identical today):
+    `border.strong` (`#94a3b8` light, `oklch(42% 0.016 250)` dark) against `surface.default` measures
+    2.56:1 light and 2.33:1 dark, and `surface.raised` against `surface.default` measures 1.00:1 light and
+    1.11:1 dark — neither pair reaches 3:1 in either scheme, on any of the three themes, so neither may be
+    the sole detachment path. The default border alias above, `border.interactive`
+    (`oklch(50% 0.134 242.749)` light, `oklch(72% 0.13 242)` dark), measures 5.94:1 light and 8.04:1 dark
+    against `surface.default` and is the weakest existing border token that passes in both schemes; the
+    default fill alias is therefore carried by the border path, as this sub-rule allows. AC-L8 requires a
+    resolved-token contrast matrix for every theme × scheme combination (see (a) there). The dot grid is
+    decoration: it carries no information and is exempt from the 3:1 test. "Weakest mark" is normative and
+    measurable: with `R(x)` the resolved contrast of `x` against the resolved canvas background, the dot
+    token must satisfy `1.00 < R(canvasDot) ≤ 1.50` and `R(canvasDot) < R(nodeBorder)` in every theme ×
+    scheme; the defaults above measure 1.23:1 light and 1.35:1 dark. The dot tokens are still mandatory, so
+    no theme hard-codes the grid.
   - **(b) Label placement.** The label box is centred in the inner rectangle on both axes, to within 1 CSS
     px, and each drawn line is centred. This holds for every label, short or long, wrapped or not: there is
     no top-aligned mode and no line-count threshold. Justification: node labels are identifiers, not prose; a
@@ -1102,8 +1122,10 @@ carries no hint for any of them:
     sentence keeps a stretched container's content at its origin — that sentence governs container content
     and is unchanged. A node's final rectangle can still exceed its natural size (L-R2 side growth); when it
     does, (b) centres the label in the final rectangle, not in the natural one, so growth — or any future row
-    stretch applied to nodes — leaves a short label visually centred instead of stranded at the top. No
-    L-R1–L-R11 text changes: the only point of contact is this placement reading of the final rectangle.
+    stretch applied to nodes — leaves a short label visually centred instead of stranded at the top. The
+    presentation equality is therefore drawn rectangle against `ViewDocument` geometry: a drawn node matches
+    its final rectangle, and it matches its natural size only where no L-R2 growth enlarged that rectangle.
+    No L-R1–L-R11 text changes: the only point of contact is this placement reading of the final rectangle.
   - **(d) i18n and themes.** No hard-coded language and no hard-coded colour in the presentation layer: label
     strings come only from the `SemanticDocument`; locale and theme arrive by host configuration (§6.5) under
     a theme id (§6.3), never from the envelope; every colour resolves to a `--st-*` token in light and dark
@@ -1127,12 +1149,20 @@ align/distribute entries, `LayoutConnectionBehavior` verdicts compared as geomet
 hidden by nodes) is L-R10's domain: a placed label's padded box intersects no node rectangle, no container
 title band and no already-placed label; gaps widen over up to 12 attempts to make room; and a label that
 still cannot be placed is reported `label-unplaced` or `label-budget-exhausted` — never drawn clipped,
-shortened or under a node. Finding 4 (a grid that ignores the LR direction, edges crossing under labels) is
-covered by L-R5 (direction chosen on finalized bounds, labels included), L-R6 (ranks and sibling order), L-R3
-with L-R8 (routes keep off obstacle interiors) and L-R9 (parallel routes share no segment and never cross
-transversally); the 2-column grid was the interim kit's own layout, not an engine mode (ad hoc kit, below).
-What was missing is an acceptance witness on a real dossier: AC-L8 (§15) now replays one. Findings 1 and 2
-are L-R12 above; no L-R1–L-R11 text changes for any of the four findings.
+shortened or under a node. Finding 4 splits in two. Its direction part (a grid that ignores the LR
+direction) is covered by L-R5 (direction chosen on finalized bounds, labels included) and L-R6 (ranks and
+sibling order); the 2-column grid was the interim kit's own layout, not an engine mode (ad hoc kit, below).
+Its crossing part (edges crossing under labels) is **not covered**, and the earlier broader reading is
+withdrawn: L-R8 makes entity rectangles obstacles, L-R9 bans a shared segment and a transversal crossing
+only between routes of the same unordered entity pair, and L-R10 checks a label box against node rectangles,
+title bands and other label boxes — no rule in L-R1–L-R11 makes another relation's route an obstacle for a
+label, or a label box an obstacle for routing, so a route may cross another edge's label without any warning.
+This is recorded as **gap G-L8-ROUTE-LABEL (open)**: at the AC-L8 pinned inputs it is observed, not asserted
+absent (see the `livrables-flux` and `architecture` witnesses in §15). It will be addressed by a follow-up
+amendment, L-R13 and later, on decision-dossier diagrams, which will be written on top of this branch
+(`spec/l8-node-presentation`); no avoidance behaviour is specified here. What was missing besides that gap
+is an acceptance witness on a real dossier: AC-L8 (§15) now replays five. Findings 1 and 2 are L-R12 above;
+no L-R1–L-R11 text changes for any of the four findings.
 
 **Ad hoc kit, outside the DS.** The current decision-dossier kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`
 and the copies made from it) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus
@@ -1479,33 +1509,109 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   canonical geometry, and permuting the insertion order of the document's entity, relation and `contains`
   records at the same width gives identical canonical geometry as well; at 320 CSS px the rendered component's
   viewport is at most 320 CSS px wide and the page's scrollable width does not grow, before and after panning
-  to both extremes; the release that ships `DiagramCanvas` passes the AC-L7a checks; the replayed dossier is an
-  L8 acceptance witness: from `/home/antoinefa/src/influence/dossier/influnified-analyse.dossier.json` (file
-  sha256 `499ed679…f4982d`, measured locally on 2026-10-19), `diagram:pipeline` is the diagram the
-  2026-10-19 findings describe — its mermaid source (sha256 `86d22f31…a984`, 669 bytes) measures 10 nodes, 9
-  edges, `flowchart LR`, the only one of the dossier's five diagrams at 10/9 (`cycle` 5/4, `donnees` 15/16,
-  `architecture` 21/21, `livrables-flux` 14/18) — and, converted node-for-node and edge-for-edge to a
-  `generic@1` document (fixture committed with the L8 tests, node, edge and label sets byte-identical to that
-  source; node labels from `Candidat` to `Payé`, 4–14 characters; all 9 edges labelled, 15–36 characters, the
-  longest `publication détectée automatiquement`), its layout reports no `label-unplaced` and no
-  `label-budget-exhausted`, every drawn edge label is the full source string (zero truncation: no ellipsis, no
-  clipping, no shortened string) and every placed label's padded box intersects no node rectangle (zero
-  labels occluded by a node), and the LR rank order is respected: ranks `applied` 0; `shortlisted`, `backup`
-  1; `selected`, `notsel` 2; `confirmed` 3; `attended`, `withdrawn` 4; `posted` 5; `paid` 6, with no edge
-  drawn from a higher rank to a lower one; L-R12 holds with one RED witness per sub-rule, each RED first (the
-  check fails on the witness, then passes on the conformant fixture): (a) for every shipped theme
-  (`sent-tech`, `forge`, `entropic`) in every colour scheme it defines, the border-against-canvas and
-  fill-against-canvas ratios are computed from the resolved `--st-component-diagramCanvas-*` tokens and at
-  least one is ≥ 3.00 — RED: the interim white-on-white surface (fill equal to the canvas background, border
-  below 3:1) fails this check, and mutating one theme's `nodeBorder` token to its `canvasBackground` value
-  fails it for that theme alone; (b) a short label (`Payé`) in a node whose final rectangle is taller than its
+  to both extremes. AC-L8 has two gates, and only the first is an L8 pass. The **offline regression gate**
+  runs on committed fixtures and local assets with the network disabled, by the documented command
+  `npm run --workspace @sentropic/diagram-core build` followed by
+  `npm run --workspace @sentropic/diagram-canvas test` from the repository root (the layout suites, the
+  dossier witnesses below and the L-R12 presentation checks of this criterion); it never contacts a CDN.
+  The **post-publication CDN gate** is AC-L7a and AC-L7b (the published tarball's `sri.json` against
+  jsDelivr-served bytes, the docs snippet loaded from jsDelivr with `integrity`, the skill template at the
+  published exact version): it runs only after publication, through the L7a workflow, and no offline AC-L8
+  result depends on it or asserts it. The replayed dossier gives five L8 acceptance witnesses, one per
+  influence diagram, all measured locally on 2026-10-19 from
+  `/home/antoinefa/src/influence/dossier/influnified-analyse.dossier.json` (file sha256
+  `499ed67968118739748dacb8d6c5a85d400bdc05546587afc517666675f4982d`) with the repository's test measurer.
+  Common conversion, committed with the L8 tests: one `generic@1` document per diagram at
+  `packages/diagram-canvas/tests/layout/influence-cycle.json`, `…/influence-pipeline.json`,
+  `…/influence-donnees.json`, `…/influence-architecture.json` and `…/influence-livrables-flux.json`; one
+  `node` entity per mermaid node (entity local id = mermaid id, `name` = bracket label), one `link` relation
+  per mermaid edge in source order with deterministic local id `r01`, `r02`, … (relation `relation:r01`, …,
+  so ascending string order is source order), endpoints and `label` byte-identical to the source (UTF-8, accents
+  preserved), no containers and no ports. Common inputs: measurer `measure` of
+  `packages/diagram-canvas/tests/layout/fixtures.ts` (8 CSS px per character for `node` and `container-title`,
+  7 for `edge-label`; heights 16, container-title 14) with `DEFAULT_LAYOUT_METRICS` (padding 12 × 8, minimum
+  64 × 32, rank gap 56, node gap 24, slot spacing 12, clearance 8, label margin 4), at the viewport widths
+  stated per witness below (`W = 4000` and `W = 320` for every witness, `W = 1280` where stated). The mermaid `flowchart LR` line never forces a
+  direction: direction, width `B`, zoom and pan are the L-R5/L-R7 outcomes at the pinned `W` (widths below are
+  the finalized union width `B` in CSS px). Common label checks at `W = 4000`: no `label-unplaced` and no
+  `label-budget-exhausted` beyond the permitted warnings below, the renderer replay holds every label, every
+  drawn edge label is the full source string (zero truncation: no ellipsis, no clipping, no shortened string)
+  and every placed label's padded box intersects no node rectangle (zero labels occluded by a node). Common
+  presentation checks at `W = 4000`: every drawn node's rectangle equals its `ViewDocument`
+  `entityOccurrences` geometry within 1 CSS px (the primary sizing equality), and its label-box centre is
+  within 1 CSS px of its inner rectangle's centre on both axes (L-R12(b)); equality with the natural size
+  `max(64, label width + 24) × max(32, label height + 16)` is asserted only where the final rectangle shows
+  no L-R2 growth. Route-against-label crossings are not asserted absent for any witness (gap
+  G-L8-ROUTE-LABEL, §10.5); the counts below are the observed gap evidence at `W = 4000`, not a pass/fail
+  condition. The five witnesses are: (1) `cycle` (source 381 bytes, sha256 `3cfb7653…d645`): 5 nodes, 4 edges,
+  all 4 edges labelled (node labels 8–29 characters, edge labels 22–36); at `W = 4000` left-to-right,
+  `B = 1669`, zoom 1, no pan; at `W = 320` top-to-bottom, `B = 256`, zoom 1, no pan; permitted warnings: none
+  at either width; ranks `brouillon` 0, `validation` 1, `active` 2, `closes` 3, `terminee` 4, with no edge
+  drawn from a higher rank to a lower one; no node grown, so drawn size equals natural size for all 5 nodes —
+  the no-growth equality witness; route-against-label crossings at `W = 4000`: 0. (2) `pipeline`, the diagram
+  the 2026-10-19 findings describe (source 669 bytes, sha256 `86d22f31…a984`): 10 nodes, 9 edges, all 9 edges
+  labelled (node labels `Candidat` to `Payé`, 4–14 characters; edge labels 15–36, the longest
+  `publication détectée automatiquement`); relation map `r01 applied→shortlisted`, `r02 applied→backup`,
+  `r03 shortlisted→selected`, `r04 shortlisted→notsel`, `r05 selected→confirmed`, `r06 confirmed→attended`,
+  `r07 attended→posted`, `r08 posted→paid`, `r09 confirmed→withdrawn`; at `W = 4000` left-to-right
+  (`B_lr = 1882 ≤ W`), zoom 1, no pan; at `W = 1280` top-to-bottom (`B_tb = 881.17 ≤ W < B_lr`), zoom 1, no
+  pan; at `W = 320` top-to-bottom on the same `B_tb`, zoom 0.75, pan; permitted warnings: none at any of the
+  three widths; ranks `applied` 0; `shortlisted`, `backup` 1; `selected`, `notsel` 2; `confirmed` 3;
+  `attended`, `withdrawn` 4; `posted` 5; `paid` 6, read on the chosen direction's main axis, with no edge
+  drawn from a higher rank to a lower one; grown finals at `W = 4000` include `applied` 88 × 60,
+  `shortlisted` 136 × 60 and `confirmed` 88 × 60 against 32 CSS px natural heights, so natural-size equality
+  is not asserted for them; crossings at `W = 4000`: 0. (3) `donnees` (source 906 bytes, sha256
+  `447d8ba2…2e21`): 15 nodes, 16 edges (`r01 agence→collaborateur` … `r16 candidature→paiement` in source
+  order), all 16 edges labelled (node labels 6–21 characters, edge labels 4–10); at `W = 4000` and at
+  `W = 1280` left-to-right, `B = 1008`, zoom 1, no pan; at `W = 320` top-to-bottom, `B = 924`, zoom 0.75, pan;
+  permitted warnings: none; ranks `agence`, `createur`, `fil` 0; `banque`, `cgu`, `collaborateur`, `compte`,
+  `entreprise` 1; `approbation`, `campagne` 2; `brief`, `candidature`, `seance` 3; `paiement`, `publication`
+  4; grown finals at `W = 4000` include `createur` 88 × 100 and `campagne` 88 × 80 against 32 CSS px natural
+  heights; crossings at `W = 4000`: 0. (4) `architecture` (source 1228 bytes, sha256 `176fc7df…a2d8`): 21 nodes, 21 edges (`r01 agence→dom` … `r21 github→gael` in source
+  order), all 21 edges labelled (node labels 3–29 characters, edge labels 4–25); at `W = 4000` left-to-right,
+  `B = 1429`, zoom 1, no pan; at `W = 1280` left-to-right, zoom 0.896, no pan; at `W = 320` left-to-right on
+  the same `B` (the top-to-bottom drawing is wider, so L-R5 keeps the narrower drawing), zoom 0.75, pan;
+  permitted warnings: exactly one, `route-obstructed` for `relation:r08` at each pinned width, and no label
+  warning; ranks `agence`, `client`, `createur`, `cron`, `github`, `routing` 0; `dom`, `gael` 1; `worker` 2;
+  `apify`, `assets`, `db`, `gmail`, `hidden`, `kit`, `meta`, `queue`, `resend`, `tiktok`, `wise`, `youtube` 3.
+  The worker/queue cycle is explicit: `r07 worker→queue` (`publie`) is ranked forward 2 → 3, while
+  `r08 queue→worker` (`déclenche`, with `r09 cron→worker` also `déclenche`) closes the cycle and is the one
+  relation reversed for ranking only under L-R6 — its semantic direction, docks and route endpoints are
+  unchanged, `queue` still ranks 3, and its drawn route is the L-R3 fallback elbow reported by that sole
+  `route-obstructed` warning; grown finals at `W = 4000` include `worker` 168 × 280 and `dom` 256 × 80 against
+  32 CSS px natural heights; crossings at `W = 4000`: 7 (gap evidence only). (5) `livrables-flux` (source
+  863 bytes, sha256 `71b3b6ba…f470`): 14 nodes, 18 edges (`r01 qa→l1`, `r02 qb→l1`, `r03 qb→l4`,
+  `r04 qc→l1`, `r05 qc→l2`, `r06 qd→l2`, `r07 qd→l3`, `r08 qe→l3`, `r09 qe→l5`, `r10 qf→l5`, `r11 qg→l5`,
+  `r12 qg→l6`, `r13 l1→l2`, `r14 l2→l4`, `r15 l3→l5`, `r16 l4→l6`, `r17 l5→l6`, `r18 l6→rest`), all 18 edges
+  labelled (node labels 5–43 characters, edge labels 7–12, eleven of them `alimente`); at `W = 4000`
+  left-to-right, `B = 2243`, zoom 1, no pan; at `W = 1280` top-to-bottom, `B = 1252`, zoom 1, no pan; at
+  `W = 320` top-to-bottom on the same `B`, zoom 0.75, pan; permitted warnings: none; ranks `qa`, `qb`, `qc`,
+  `qd`, `qe`, `qf`, `qg` 0; `l1`, `l3` 1; `l2`, `l5` 2; `l4` 3; `l6` 4; `rest` 5; grown finals at `W = 4000`
+  include `l5` 312 × 100 and `l1` 248 × 80 against 32 CSS px natural heights; crossings at `W = 4000`: 3,
+  including route `r03` (`qb→l4`) crossing the placed label box of `r02` (`qb→l1`, `alimente`) with no warning
+  — the recorded instance of gap G-L8-ROUTE-LABEL, not an AC-L8 failure; L-R12 holds with one RED witness per sub-rule, each RED first (the
+  check fails on the witness, then passes on the conformant fixture): (a) a resolved-token contrast matrix
+  with one row per theme × scheme combination — `sent-tech`, `forge` and `entropic`, each in light and dark
+  (six rows) — giving, from the resolved `--st-component-diagramCanvas-*` values (aliases chased to
+  `--st-semantic-*`, translucent values composited over the canvas background), the border-against-canvas
+  ratio, the fill-against-canvas ratio and the dot-against-canvas ratio, with pass requiring
+  `max(border, fill) ≥ 3.00` and the dot bound `1.00 < dot ≤ 1.50` with `dot < border` of L-R12(a); with the
+  L-R12(a) defaults every row reads border 5.94 light / 8.04 dark, fill 1.00 light / 1.11 dark, dot 1.23
+  light / 1.35 dark, so each row passes by the border path alone — RED: a negative fixture whose fill is
+  explicitly constrained below 3:1 and whose both detachment paths are mutated below 3:1 for one theme ×
+  scheme (its `nodeBackground` and `nodeBorder` both set to its `canvasBackground` value, both ratios 1.00)
+  fails the matrix for that row alone; mutating only the border, or only the fill, is not a RED witness,
+  since L-R12(a) passes on either path; (b) a short label (`Payé`) in a node whose final rectangle is taller than its
   natural size (the L-R2 side-growth fixture) has its label-box centre within 1 CSS px of the inner
   rectangle's centre on both axes, and a wrapped three-line label is centred as a block with each line centred
   — RED: the same short label drawn at the inner rectangle's top-left (the interim render) fails by more than
-  the vertical padding; (c) each node's drawn size equals `max(token minimum, measured label + 2 · token
-  padding)` per axis within 1 CSS px and grows with the label (the shortest and the longest label of one
-  fixture give different heights above the minimum) — RED: a fixed-height node (one height for both labels,
-  empty space under the short one) fails; (d) a scan of the `DiagramCanvas` presentation layer finds no colour
+  the vertical padding; (c) each node's drawn size equals its `ViewDocument` final rectangle per axis within
+  1 CSS px, on every fixture; on fixtures without L-R2 growth (the `cycle` witness, all 5 nodes) the drawn size
+  also equals `max(token minimum, measured label + 2 · token padding)` per axis and the drawn width grows
+  with the label (the shortest and the longest label of that fixture give different widths), while on grown
+  fixtures (`pipeline` `applied` 88 × 60 against an 88 × 32 natural size) the drawn size equals the final
+  rectangle and exceeds the natural size — RED: a fixed-size node (one size for both labels, empty space
+  under the short one, drawn size different from the final rectangle) fails; (d) a scan of the `DiagramCanvas` presentation layer finds no colour
   literal and no natural-language literal (every colour resolves to a `--st-*` token, as in P-FOCUS criterion
   3), and the same document renders under two themes and two locales with only token and measurer differences
   — RED: one hard-coded fill or one hard-coded string in the presentation layer fails the scan.
