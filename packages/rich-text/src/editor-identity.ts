@@ -43,13 +43,22 @@ export function createSessionAllocator(
   };
 }
 
+/** Hooks for the live identity plugin. */
+export interface LiveParagraphIdentityHooks {
+  /** Identities consumed by a select-all replacement (N8): every old block
+      identity that vanished with the replaced content, so the session
+      retires them and never reallocates them (§5.2). */
+  onRetire?: (ids: readonly string[]) => void;
+}
+
 /** Wrap the live plugin as a Tiptap extension so the editor factory can
     compose it with the P0 set. The fix-up transaction carries the
     `richTextIdentityFix` meta so the factory never emits it as a gesture. */
 export function createParagraphIdentityExtension(
   allocateId: () => string,
+  hooks?: LiveParagraphIdentityHooks,
 ): Extension {
-  const plugin = createLiveParagraphIdentityPlugin(allocateId);
+  const plugin = createLiveParagraphIdentityPlugin(allocateId, hooks);
   return Extension.create({
     name: "richTextParagraphIdentity",
     addProseMirrorPlugins() {
@@ -62,13 +71,55 @@ export function createParagraphIdentityExtension(
     preserved block carries a non-empty identity unique within the document.
     The first occurrence of an identity keeps it; later duplicates (split
     tails copied by ProseMirror, pasted slices carrying foreign attributes)
-    and empty attributes receive fresh allocator identities. */
+    and empty attributes receive fresh allocator identities — except the
+    select-all replacement below, which keeps the first paragraph identity
+    on the emptied block (N8, §5.2). */
 export function createLiveParagraphIdentityPlugin(
   allocateId: () => string,
+  hooks?: LiveParagraphIdentityHooks,
 ): Plugin {
   return new Plugin({
     key: paragraphIdentityPluginKey,
-    appendTransaction(_transactions, _oldState, newState) {
+    appendTransaction(_transactions, oldState, newState) {
+      // Select-all replacement (N8): the native select-all delete swaps the
+      // whole content for one empty paragraph whose identity attribute is
+      // empty. §5.2 keeps the first paragraph's identity on the emptied
+      // block instead of minting a fresh one: reuse the old first paragraph
+      // identity (no allocator call) and retire every other vanished
+      // identity. A lone empty paragraph can only arise this way with an
+      // empty attribute (a valid identity keeps itself below), so this
+      // pre-check never fires for mounts or external replacements, which
+      // carry their own identities.
+      const only =
+        newState.doc.childCount === 1 ? newState.doc.firstChild : null;
+      const onlyId =
+        only !== null && only !== undefined
+          ? only.attrs[PARAGRAPH_ID_ATTRIBUTE]
+          : undefined;
+      if (
+        only !== null &&
+        only !== undefined &&
+        only.type.name === "paragraph" &&
+        only.textContent === "" &&
+        onlyId === ""
+      ) {
+        const before: string[] = [];
+        oldState.doc.forEach((node) => {
+          if (node.type.name === "paragraph") {
+            const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
+            if (typeof id === "string" && id !== "") before.push(id);
+          }
+        });
+        const first = before[0];
+        if (first !== undefined) {
+          const tr = newState.tr;
+          tr.setNodeAttribute(0, PARAGRAPH_ID_ATTRIBUTE, first);
+          tr.setMeta(IDENTITY_FIX_META, true);
+          const vanished = before.filter((id) => id !== first);
+          if (vanished.length > 0) hooks?.onRetire?.(vanished);
+          return tr;
+        }
+      }
       const seen = new Set<string>();
       const repairs: { pos: number; id: string }[] = [];
       newState.doc.descendants((node, pos) => {

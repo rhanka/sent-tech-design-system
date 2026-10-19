@@ -19,7 +19,7 @@
  * `createRichTextEditor` from `./editor.js`. No case is skipped.
  */
 import { describe, it, expect } from "vitest";
-import { TextSelection } from "@tiptap/pm/state";
+import { AllSelection, TextSelection } from "@tiptap/pm/state";
 import { deleteSelection, splitBlock } from "@tiptap/pm/commands";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
@@ -269,5 +269,63 @@ describe("clear a field containing separators (text/plain, allowed locally)", ()
     expect(document?.blocks[0]?.text).toBe("");
     expect(editor.getDocument()).toEqual(document);
     editor.destroy();
+  });
+});
+
+describe("select-all delete keeps the first identity (N8)", () => {
+  it("AllSelection plus Backspace leaves one empty paragraph keeping the first identity, others retired", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const allocated: string[] = [];
+    // The script allocator would hand `paragraph:b` back first: session
+    // retirement must skip it.
+    const script = ["paragraph:b", "paragraph:next"];
+    let n = 0;
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:a", "A"), paragraph("paragraph:b", "B")],
+      },
+      messages: MESSAGES,
+      allocateId: () => {
+        const id = script[n] ?? `paragraph:later-${n}`;
+        n += 1;
+        allocated.push(id);
+        return id;
+      },
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    view.dispatch(view.state.tr.setSelection(new AllSelection(view.state.doc)));
+    viewDom.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Backspace",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    // One gesture, one event: the emptied block keeps the first identity
+    // with no fresh identity minted for it.
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks).toEqual([
+      { paragraphId: "paragraph:a", kind: "paragraph", text: "" },
+    ]);
+    expect(allocated).toHaveLength(0);
+    // The consumed identity is retired inside the session: the next split
+    // skips `paragraph:b` even though the allocator offers it first.
+    editor.splitParagraph("paragraph:a", 0);
+    expect(allocated).toEqual(["paragraph:b", "paragraph:next"]);
+    expect(editor.getDocument().blocks.map((b) => b.paragraphId)).toEqual([
+      "paragraph:a",
+      "paragraph:next",
+    ]);
+    editor.destroy();
+    element.remove();
   });
 });
