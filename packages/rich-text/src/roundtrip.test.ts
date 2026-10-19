@@ -32,6 +32,8 @@
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createHeadlessEditor } from "./editor.js";
 import {
   documentFromSource,
@@ -51,7 +53,10 @@ const MESSAGES: RichTextMessages = {
   externalConflictLabel: "External change received",
 };
 
-const CORPUS_URL = new URL("../tests/fixtures/p0-corpus.md", import.meta.url);
+const CORPUS_URL = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../tests/fixtures/p0-corpus.md",
+);
 const CORPUS = readFileSync(CORPUS_URL, "utf8");
 
 const EDIT_TARGET =

@@ -1,10 +1,15 @@
 // Opaque per-block identity attribute (spec §5.2).
-// RT-0: attribute-name data are fixed; the ProseMirror plugin factory is a
-// stub (phase B). The component treats identities as opaque: it never parses,
-// derives, sorts by or displays them as content. Fresh identities come only
-// through the host-injected allocator; the core default (`crypto.randomUUID`)
-// is acceptable only for non-manifest hosts, because deterministic seeding and
+//
+// The component treats identities as opaque: it never parses, derives,
+// sorts by or displays them as content. Fresh identities come only through
+// the host-injected allocator; the core default (`crypto.randomUUID`) is
+// acceptable only for non-manifest hosts, because deterministic seeding and
 // retired-ID non-reuse belong to the producer/host, never to the component.
+//
+// Runtime note (packaging, spec §11 RED-P): the live ProseMirror plugin is
+// composed in the runtime editor (RT-1+), which owns the `@tiptap/*`
+// imports. This module carries the attribute contract as data plus a
+// descriptor factory, so the neutral core stays runtime-import free.
 
 /** ProseMirror node attribute carrying the opaque block identity. */
 export const PARAGRAPH_ID_ATTRIBUTE = "paragraphId" as const;
@@ -20,13 +25,33 @@ export interface ParagraphIdentityPluginOptions {
   allocateId: () => string;
 }
 
-/** Build the identity-carriage plugin: split keeps the leading identity and
-    allocates fresh tail identities; merge retires consumed identities without
-    reallocating them; undo restores identities; pasted copies and external
-    payloads receive fresh identities after incoming identity attributes are
-    stripped (phase B). RT-0 RED stub: throws. */
+/** Data-level wiring of the identity-carriage plugin: the exact attribute
+    names the runtime plugin enforces plus the host allocator it calls.
+    Carriage rules (spec §5.2, implemented by the runtime editor and the
+    headless factory): split keeps the leading identity and allocates fresh
+    tail identities; merge retires consumed identities without reallocating
+    them; undo restores identities; pasted copies and external payloads
+    receive fresh identities after incoming identity attributes are
+    stripped. */
+export interface ParagraphIdentityPluginDescriptor {
+  pluginKey: "richTextParagraphIdentity";
+  paragraphIdAttribute: typeof PARAGRAPH_ID_ATTRIBUTE;
+  domAttribute: typeof PARAGRAPH_ID_DOM_ATTRIBUTE;
+  preservedBlockAttribute: typeof PRESERVED_BLOCK_DOM_ATTRIBUTE;
+  allocateId: () => string;
+}
+
+/** Describe the identity-carriage plugin wiring for the given allocator.
+    Pure data; the live ProseMirror plugin is composed in the runtime
+    editor against these exact attribute names. */
 export function createParagraphIdentityPlugin(
-  _options: ParagraphIdentityPluginOptions,
-): unknown {
-  throw new Error("RT-0 RED: paragraph-identity plugin not wired (phase B)");
+  options: ParagraphIdentityPluginOptions,
+): ParagraphIdentityPluginDescriptor {
+  return Object.freeze({
+    pluginKey: "richTextParagraphIdentity",
+    paragraphIdAttribute: PARAGRAPH_ID_ATTRIBUTE,
+    domAttribute: PARAGRAPH_ID_DOM_ATTRIBUTE,
+    preservedBlockAttribute: PRESERVED_BLOCK_DOM_ATTRIBUTE,
+    allocateId: options.allocateId,
+  });
 }

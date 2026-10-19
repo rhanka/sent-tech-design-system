@@ -1,5 +1,9 @@
 // Injected labels and messages (spec §5.7).
-// RT-0: type declarations and namespace data only. No runtime behaviour.
+//
+// The catalogue shape is fixed here; resolution happens host-side at
+// production/build time and the component only receives the resolved
+// `messages` object. The marker helpers below are pure functions over the
+// key namespace: they carry no language and touch no DOM.
 
 export interface RichTextMessages {
   editorLabel: string; // accessible name of the editing region
@@ -21,3 +25,18 @@ export const RICH_TEXT_MESSAGE_KEYS = [
 ] as const;
 
 export type RichTextMessageKey = (typeof RICH_TEXT_MESSAGE_KEYS)[number];
+
+/** Attribute carrying the untranslated-key reference on a marker element. */
+export const RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE =
+  "data-untranslated" as const;
+
+/** Visible marker text for a missing catalogue key, e.g.
+    `⟦untranslated:rich-text.editorLabel⟧` (spec §5.7). */
+export function formatUntranslatedMarker(key: RichTextMessageKey): string {
+  return `⟦untranslated:${RICH_TEXT_MESSAGE_NAMESPACE}.${key}⟧`;
+}
+
+/** Value of the marker's data attribute, e.g. `rich-text.editorLabel`. */
+export function untranslatedDataValue(key: RichTextMessageKey): string {
+  return `${RICH_TEXT_MESSAGE_NAMESPACE}.${key}`;
+}
