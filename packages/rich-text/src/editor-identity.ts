@@ -11,7 +11,16 @@
 
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
+import type { Transaction } from "@tiptap/pm/state";
+import type { EditorState } from "@tiptap/pm/state";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
+
+/** Meta that lets the explicit external-replacement path (mount and rule-4
+    application) replace preserved nodes. No user transaction carries it. */
+export const PRESERVED_REPLACE_META = "richTextAllowPreservedReplace";
+
+/** Meta carried by the identity repair transaction (never a gesture). */
+export const IDENTITY_FIX_META = "richTextIdentityFix";
 
 export const paragraphIdentityPluginKey = new PluginKey(
   "richTextParagraphIdentity",
@@ -80,8 +89,106 @@ export function createLiveParagraphIdentityPlugin(
       for (const repair of repairs) {
         tr.setNodeAttribute(repair.pos, PARAGRAPH_ID_ATTRIBUTE, repair.id);
       }
-      tr.setMeta("richTextIdentityFix", true);
+      tr.setMeta(IDENTITY_FIX_META, true);
       return tr;
+    },
+  });
+}
+
+/** Signature of one preserved block for the guard: identity plus the exact
+    verbatim payload. Any difference is a delete or a replace. */
+function preservedSignature(
+  state: EditorState,
+): Map<string, string> {
+  const signatures = new Map<string, string>();
+  state.doc.descendants((node) => {
+    if (node.type.name !== "preservedBlock") return true;
+    const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
+    if (typeof id === "string" && id !== "") {
+      signatures.set(
+        id,
+        `${typeof node.attrs["raw"] === "string" ? node.attrs["raw"] : ""}::${
+          typeof node.attrs["preservedKind"] === "string"
+            ? node.attrs["preservedKind"]
+            : ""
+        }`,
+      );
+    }
+    return true;
+  });
+  return signatures;
+}
+
+/** The preserved-block guard (§6.3): no user transaction deletes, replaces
+    or introduces a preserved node. Select-all delete and a paste spanning a
+    preserved block are filtered here; only a transaction carrying
+    `PRESERVED_REPLACE_META` (the explicit external-replacement path) may
+    replace one. Identity repairs carry their own meta and pass through. */
+export function createPreservedGuardPlugin(
+  isPlainText: () => boolean,
+): Plugin {
+  return new Plugin({
+    key: new PluginKey("richTextPreservedGuard"),
+    filterTransaction(tr: Transaction, state: EditorState): boolean {
+      if (tr.getMeta(PRESERVED_REPLACE_META) === true) return true;
+      if (tr.getMeta(IDENTITY_FIX_META) === true) return true;
+      const before = preservedSignature(state);
+      // The transaction under test already carries its steps: read the
+      // resulting document from a scratch state-free application is
+      // unnecessary — `tr.doc` is the post-transaction document.
+      const after = new Map<string, string>();
+      tr.doc.descendants((node) => {
+        if (node.type.name !== "preservedBlock") return true;
+        const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
+        if (typeof id === "string" && id !== "") {
+          after.set(
+            id,
+            `${typeof node.attrs["raw"] === "string" ? node.attrs["raw"] : ""}::${
+              typeof node.attrs["preservedKind"] === "string"
+                ? node.attrs["preservedKind"]
+                : ""
+            }`,
+          );
+        }
+        return true;
+      });
+      if (before.size !== after.size) return false;
+      for (const [id, signature] of before) {
+        if (after.get(id) !== signature) return false;
+      }
+      return true;
+    },
+    appendTransaction(
+      _transactions: readonly Transaction[],
+      _oldState: EditorState,
+      newState: EditorState,
+    ): Transaction | null {
+      // `text/plain` carries no marks (§6.1): strip any mark the P0 input
+      // rules or rich-text insertion left behind, keeping the characters.
+      if (!isPlainText()) return null;
+      let tr: Transaction | null = null;
+      newState.doc.descendants((node, pos) => {
+        if (!node.isText || node.marks.length === 0) return true;
+        if (tr === null) tr = newState.tr;
+        for (const mark of node.marks) {
+          tr = (tr as Transaction).removeMark(pos, pos + node.nodeSize, mark.type);
+        }
+        return true;
+      });
+      return tr;
+    },
+  });
+}
+
+/** Wrap the preserved guard as a Tiptap extension. */
+export function createPreservedGuardExtension(
+  isPlainText: () => boolean,
+): Extension {
+  const plugin = createPreservedGuardPlugin(isPlainText);
+  return Extension.create({
+    name: "richTextPreservedGuard",
+    addProseMirrorPlugins() {
+      return [plugin];
     },
   });
 }

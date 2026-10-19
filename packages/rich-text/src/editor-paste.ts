@@ -65,12 +65,16 @@ function withFreshId(paragraph: JSONContent, allocateId: () => string): JSONCont
   };
 }
 
-/** Classify and parse an HTML clipboard payload through the P0 schema. */
-export function planHtmlPaste(
-  schema: Schema,
-  html: string,
-  allocateId: () => string,
-): PastePlan {
+/** Sanitize pasted HTML to inert, identity-free markup: strip every pasted
+    identity attribute (rule 1, §5.2 — never trusted), unwrap pasted
+    preserved regions to their text (paste never creates a preserved block,
+    §6.3), drop inert elements with their content, and degrade images to
+    their alt text as plain paragraphs (§7 rule 4). Shared by the paste plan
+    and the `transformPastedHTML` pipeline layer so both paths agree. */
+export function sanitizePastedHtml(html: string): {
+  html: string;
+  imageSeen: boolean;
+} {
   const template = document.createElement("template");
   template.innerHTML = html;
   const root = template.content;
@@ -101,6 +105,23 @@ export function planHtmlPaste(
       image.remove();
     }
   }
+  const holder = document.createElement("div");
+  holder.appendChild(root);
+  return { html: holder.innerHTML, imageSeen };
+}
+
+/** Classify and parse an HTML clipboard payload through the P0 schema. */
+export function planHtmlPaste(
+  schema: Schema,
+  html: string,
+  allocateId: () => string,
+): PastePlan {
+  const sanitized = sanitizePastedHtml(html);
+  const holder = document.createElement("div");
+  holder.innerHTML = sanitized.html;
+  const root = holder;
+  const imageSeen = sanitized.imageSeen;
+
   // Rule 5 (§7): any non-paragraph block refuses the whole paste. Scan in
   // document order so `rejectedKinds` follows the clipboard order.
   const refused: string[] = [];
@@ -285,6 +306,43 @@ export function planTextPaste(
     return { outcome: "refuse", rejectedKinds: refused };
   }
   return { outcome: "insert", paragraphs, imageReported: imageSeen };
+}
+
+/** Classify a `text/plain` clipboard payload as literal text: no bridge, no
+    marks, no Markdown rules. Lines split ProseMirror-style (one or more line
+    breaks separate paragraphs, mirroring the default clipboard parser), so a
+    multi-paragraph copy round-trips its block boundaries. */
+export function planLiteralPaste(
+  text: string,
+  allocateId: () => string,
+): PastePlan {
+  if (text === "") return { outcome: "insert", paragraphs: [], imageReported: false };
+  const paragraphs: JSONContent[] = text
+    .split(/(?:\r\n?|\n)+/)
+    .map((line) =>
+      withFreshId(
+        line === ""
+          ? { type: "paragraph" }
+          : { type: "paragraph", content: [{ type: "text", text: line }] },
+        allocateId,
+      ),
+    );
+  return { outcome: "insert", paragraphs, imageReported: false };
+}
+
+/** Strip every mark from planned paragraph JSON (the `text/plain` HTML-paste
+    path: pasted rich text degrades to literal characters). */
+export function stripPlannedMarks(paragraphs: readonly JSONContent[]): JSONContent[] {
+  const stripNode = (node: JSONContent): JSONContent => {
+    const { marks: _dropped, ...rest } = node as JSONContent & {
+      marks?: unknown;
+    };
+    const content = Array.isArray(rest.content)
+      ? (rest.content as JSONContent[]).map(stripNode)
+      : rest.content;
+    return { ...rest, ...(content === undefined ? {} : { content }) };
+  };
+  return paragraphs.map(stripNode);
 }
 
 /** Build a ProseMirror slice from planned paragraph JSON for insertion. */
