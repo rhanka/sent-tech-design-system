@@ -1,5 +1,5 @@
 // `RichTextDocument` ↔ ProseMirror conversion for the "./editor" entry
-// (spec §4.2, §6.5).
+// (spec §4.2, §6.5, §6.6).
 //
 // The wire shape stays `RichTextDocument`: ProseMirror positions and Tiptap
 // JSON never leak past this module. Editable paragraphs convert per
@@ -7,8 +7,10 @@
 // serialise a whole document, so the DS never invents separators (§5.1).
 // Preserved `raw` slices travel verbatim in node attributes, never through
 // an AST. `text/plain` paragraphs are literal text: they are parsed without
-// the bridge and serialised from `textContent`, so no mark and no Markdown
-// input rule can alter them (§6.1).
+// the bridge and serialised child-by-child (`hardBreak` ⇔ `"\n"`, §6.6), so
+// no mark and no Markdown input rule can alter them (§6.1). A Markdown
+// paragraph's wire is exactly the bridge serialisation and its remount is
+// exactly the bridge parse (§6.6): no synthetic marker anywhere.
 //
 // Unedited paragraphs keep the exact host-segmented slice that entered: the
 // factory records the seed text per identity at mount and marks identities
@@ -24,7 +26,9 @@
 // content, an earlier visit, or a state restored by undo) returns its
 // recorded text without touching the bridge, so undo restores the byte-exact
 // source and re-reading an unchanged version costs no conversion and no
-// node serialisation at all.
+// node serialisation at all. The wire cache never decides the flag: every
+// paragraph pays the §6.6 two-condition test on each emission and capture,
+// and an untouched paragraph passes it by construction.
 
 import type { JSONContent } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
@@ -37,6 +41,7 @@ import type {
   RichTextFormat,
 } from "./model.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
+import { isRepresentableWire } from "./document.js";
 
 /** Internal conversion counters (spec §11 reactivity witness, §13.3). Test
     hook only: `src/reactivity.test.ts` reads these across a typing burst.
@@ -67,14 +72,20 @@ export function resetConversionCounters(): void {
     keeps the exact text by content key as the fallback for those rebuilds
     (undo restores the byte-exact source with no bridge call); it holds one
     small entry per distinct recorded version and is released on reseed and
-    teardown. `preserved` records absent/present presence of
-    `raw`/`preservedKind` per preserved identity, so an absent field stays
-    absent through the round trip (§5.6 equality). */
+    teardown. The flag travels with the wire: `versionFlags` / `versionFlagTexts`
+    record the §6.6 representability outcome computed when the wire was first
+    recorded, so a cache hit reuses the recorded flag with no bridge re-parse
+    — a hit never implies representable, it replays the recorded verdict.
+    `preserved` records absent/present presence of `raw`/`preservedKind` per
+    preserved identity, so an absent field stays absent through the round trip
+    (§5.6 equality). */
 export interface ConversionSeeds {
   texts: Map<string, string>;
   touched: Set<string>;
   versions: WeakMap<ProseMirrorNode, string>;
   versionTexts: Map<string, string>;
+  versionFlags: WeakMap<ProseMirrorNode, boolean>;
+  versionFlagTexts: Map<string, boolean>;
   preserved: Map<string, { hasRaw: boolean; hasKind: boolean }>;
 }
 
@@ -86,6 +97,8 @@ export function createConversionSeeds(
     touched: new Set(),
     versions: new WeakMap(),
     versionTexts: new Map(),
+    versionFlags: new WeakMap(),
+    versionFlagTexts: new Map(),
     preserved: new Map(),
   };
   reseedConversion(seeds, document);
@@ -106,6 +119,8 @@ export function reseedConversion(
   // version releases with its nodes.
   seeds.versions = new WeakMap<ProseMirrorNode, string>();
   seeds.versionTexts.clear();
+  seeds.versionFlags = new WeakMap<ProseMirrorNode, boolean>();
+  seeds.versionFlagTexts.clear();
   seeds.preserved.clear();
   for (const block of document.blocks) {
     if (block.kind === "paragraph") {
@@ -247,11 +262,15 @@ export function markTouchedFromTransaction(
   // no seed on read.
 }
 
-/** Serialise one paragraph node. `text/plain` is literal text with ProseMirror
-    leaf text: every `hardBreak` (Shift+Enter interior newline, §5.1) becomes
-    `"\n"`, so the exported text keeps the line break. No bridge call and no
-    mark interpretation; `focus.markdown.p0@1` goes through the bridge per
-    paragraph only. Counts the bridge call for the reactivity witness. */
+/** Serialise one paragraph node (§6.6 wire principle). `text/plain` is
+    literal text in child order (`hardBreak` ⇔ `"\n"`), whitespace byte-exact,
+    no bridge and no mark interpretation. `focus.markdown.p0@1` is exactly the
+    `@tiptap/markdown` bridge serialisation of that single paragraph, without
+    post-processing and without any synthetic marker: a literal `"  \n"`
+    sequence is ordinary text judged by the representability test, never
+    decoded into a break count, and bridge syntax (an interior hard break the
+    bridge emits between visible texts) stays bridge syntax. Counts the bridge
+    call for the reactivity witness. */
 export function serializeParagraphNode(
   manager: MarkdownManager,
   node: ProseMirrorNode,
@@ -261,149 +280,111 @@ export function serializeParagraphNode(
     return node.textBetween(0, node.content.size, "", "\n");
   }
   if (node.content.size === 0) return "";
-  // Break-only and whitespace-only paragraphs (N1 residual): the bridge
-  // drops them to `""`, so they are preserved explicitly here instead —
-  // one marker per `hardBreak` over the verbatim whitespace text. The
-  // marker choice matches the trailing-break convention below, and
-  // `restoreTrailingHardBreaks` inverts it (empty head included), so the
-  // export remounts with its breaks and re-exports byte-identical.
-  const degenerate = degenerateParagraphWire(node);
-  if (degenerate !== null) return degenerate;
   const json = node.toJSON() as JSONContent;
   if ((json as { type?: string }).type === "doc") {
     conversionCounters.documentSerialize += 1;
   }
   conversionCounters.paragraphSerialize += 1;
-  const output = manager.serialize(json);
-  // The bridge terminates a paragraph ending with a `hardBreak` with the
-  // break's own newline (`"Alpha  \n"`): that trailing `"\n"` is paragraph
-  // content, not a document separator, so it is kept — stripping it drops
-  // the break on the next mount (N1). Any other trailing newline is the
-  // document separator and is stripped as before. A pinned-contract refusal
-  // of the kept draft stays the host's export concern (spec §5.10); the
-  // draft is never rewritten here.
-  const lastChild = node.lastChild;
-  if (
-    output.endsWith("\n") &&
-    lastChild !== null &&
-    lastChild !== undefined &&
-    lastChild.type.name === "hardBreak"
-  ) {
-    return output;
-  }
-  return output.endsWith("\n") ? output.slice(0, -1) : output;
+  return manager.serialize(json);
 }
 
-/** Serialised form of one trailing `hardBreak`, exactly as the bridge emits
-    it: `manager.serialize` of a paragraph ending with a `hardBreak`
-    terminates with two spaces and a newline. */
-const TRAILING_HARD_BREAK_MARKER = "  \n";
-
-/** Wire text for a paragraph the Markdown bridge cannot represent (N1
-    residual): `node.textContent` holds no visible character while the node
-    is non-empty — break-only, whitespace-only, or both. The bridge
-    serialises every such node to `""`, so the text is built explicitly:
-    the whitespace text verbatim, then one trailing marker per `hardBreak`
-    (child order between text and breaks normalises to this shape, a stable
-    fixed point: the restore path below rebuilds the same order). Marks on
-    a whitespace-only run normalise away with the run — the bridge has no
-    syntax for them. Returns `null` for any other paragraph, including the
-    empty one (handled by the caller). */
-function degenerateParagraphWire(node: ProseMirrorNode): string | null {
-  if (node.textContent.trim() !== "") return null;
-  let breaks = 0;
-  let text = "";
-  let representable = true;
-  node.content.forEach((child) => {
-    if (child.type.name === "hardBreak") {
-      breaks += 1;
-    } else if (child.isText) {
-      text += child.text ?? "";
-    } else {
-      representable = false;
-    }
-  });
-  if (!representable) return null;
-  if (breaks === 0 && text === "") return null;
-  if (breaks === 0) return text;
-  return `${text}${TRAILING_HARD_BREAK_MARKER.repeat(breaks)}`;
-}
-
-/** Restore the trailing `hardBreak` nodes a paragraph text carries (N1):
-    the bridge drops a trailing break on parse (its marker spaces stay in
-    the text), so `"Alpha  \n"` would remount without its break. One
-    `hardBreak` is restored per trailing marker over the bridge parse of
-    the marker-free head, so capture-then-remount keeps the break and the
-    re-export is byte-identical. An empty head restores a bare break run
-    and a whitespace-only head restores its verbatim text ahead of the
-    breaks (N1 residual: the bridge parses both to no paragraph). Returns
-    `null` when the text carries no trailing marker or a non-blank head
-    does not parse to a single paragraph — the caller then keeps the bridge
-    output for the whole text untouched. The head re-parse is part of the
-    same logical paragraph parse (no counter). */
-function restoreTrailingHardBreaks(
+/** Bridge-only parse of one Markdown paragraph wire (§6.6): the inline
+    content of the single paragraph the bridge parses the text back to, or
+    `null` when the bridge yields no paragraph, more than one block, or a
+    non-paragraph block. No fallback, no literal-text rescue, no break
+    synthesis of any kind — a literal sequence that merely looks like a
+    former marker (for example `"  \n"`) is judged by the bridge alone.
+    Counts the bridge call for the reactivity witness. */
+export function parseMarkdownParagraph(
   manager: MarkdownManager,
-  paragraphId: string,
   text: string,
-): JSONContent | null {
-  let head = text;
-  let breaks = 0;
-  while (head.endsWith(TRAILING_HARD_BREAK_MARKER)) {
-    head = head.slice(0, -TRAILING_HARD_BREAK_MARKER.length);
-    breaks += 1;
-  }
-  if (breaks === 0) return null;
-  // Empty or whitespace-only head (N1 residual): the bridge parses it to
-  // no paragraph, so the break-only wire (`"  \n"`, `"  \n  \n"`) and the
-  // whitespace-plus-breaks wire rebuild explicitly here instead — a bare
-  // break run for an empty head, the verbatim whitespace text ahead of the
-  // breaks otherwise. This is the exact inverse of
-  // `degenerateParagraphWire` above.
-  if (head === "") {
-    const content: JSONContent[] = [];
-    for (let index = 0; index < breaks; index += 1) {
-      content.push({ type: "hardBreak" });
-    }
-    return {
-      type: "paragraph",
-      attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-      content,
-    };
-  }
-  if (head.trim() === "") {
-    const content: JSONContent[] = [{ type: "text", text: head }];
-    for (let index = 0; index < breaks; index += 1) {
-      content.push({ type: "hardBreak" });
-    }
-    return {
-      type: "paragraph",
-      attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-      content,
-    };
-  }
+): JSONContent[] | null {
+  conversionCounters.paragraphParse += 1;
   let parsed: (JSONContent & { content?: JSONContent[] }) | null = null;
   try {
-    parsed = manager.parse(head) as JSONContent & { content?: JSONContent[] };
+    parsed = manager.parse(text) as JSONContent & { content?: JSONContent[] };
   } catch {
     return null;
   }
-  const first = parsed?.content?.[0];
+  const blocks = parsed?.content ?? [];
+  if (blocks.length !== 1) return null;
+  const first = blocks[0];
   if (first === undefined || first.type !== "paragraph") return null;
-  const content: JSONContent[] = [...(first.content ?? [])];
-  for (let index = 0; index < breaks; index += 1) {
-    content.push({ type: "hardBreak" });
+  return [...(first.content ?? [])];
+}
+
+type InlineChild = { type: string; text?: string; marks?: { type: string }[] };
+
+function normaliseInline(
+  content: JSONContent[] | undefined,
+): InlineChild[] {
+  return (content ?? []).map((child) => {
+    if (child.type === "text") {
+      const marks = ((child as { marks?: { type?: string }[] }).marks ?? [])
+        .map((mark) => ({ type: mark.type ?? "" }))
+        .sort((left, right) => (left.type < right.type ? -1 : left.type > right.type ? 1 : 0));
+      return { type: "text", text: (child as { text?: string }).text ?? "", marks };
+    }
+    return { type: child.type ?? "" };
+  });
+}
+
+function inlineContentEquals(
+  live: JSONContent[] | undefined,
+  parsed: JSONContent[] | null,
+): boolean {
+  if (parsed === null) return false;
+  const left = normaliseInline(live);
+  const right = normaliseInline(parsed);
+  if (left.length !== right.length) return false;
+  return left.every((child, index) => {
+    const other = right[index] as InlineChild;
+    if (child.type !== other.type) return false;
+    if ((child.text ?? "") !== (other.text ?? "")) return false;
+    const leftMarks = (child.marks ?? []).map((mark) => mark.type).sort();
+    const rightMarks = (other.marks ?? []).map((mark) => mark.type).sort();
+    return (
+      leftMarks.length === rightMarks.length &&
+      leftMarks.every((mark, markIndex) => mark === rightMarks[markIndex])
+    );
+  });
+}
+
+/** Representability of one live paragraph for its candidate wire (§6.6).
+    `wire` is the untouched source bytes, the plain literal mapping, or the
+    bridge serialisation; `liveContent` is the paragraph's ordered inline
+    JSON. Empty (`P` empty and `W === ""`) is representable by the line-59
+    exception. For `text/plain` condition (1) is the literal mapping itself
+    and holds by construction, so only the pinned single-segment criterion
+    (via `isRepresentableWire`) decides. For Markdown-method `edited` wires
+    both hold exactly when the bridge re-parse deep-equals the live content
+    and the wire passes that same criterion; an untouched paragraph whose wire
+    entered as a host-segmented slice satisfies both by construction. */
+export function isParagraphRepresentable(
+  manager: MarkdownManager,
+  liveContent: JSONContent[] | undefined,
+  wire: string,
+  format: RichTextFormat,
+  liveSize: number,
+): boolean {
+  if (wire === "" && liveSize === 0) return true;
+  if (format === "text/plain") {
+    return isRepresentableWire(wire, format);
   }
-  return {
-    type: "paragraph",
-    attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-    ...(content.length === 0 ? {} : { content }),
-  };
+  const parsed = parseMarkdownParagraph(manager, wire);
+  if (!inlineContentEquals(liveContent, parsed)) return false;
+  return isRepresentableWire(wire, format);
 }
 
 /** Parse one editable paragraph text into ProseMirror paragraph JSON.
-    `text/plain` is literal (no bridge, no marks, no Markdown rules); the
-    Markdown profile falls back to a single literal text node when the bridge
-    does not return a single paragraph (editable host texts always do). */
+    `text/plain` is literal (no bridge, no marks, no Markdown rules): every
+    `"\n"` becomes one `hardBreak` in order, whitespace byte-exact (§5.1,
+    §6.6 `text/plain`). The Markdown profile is exactly the bridge parse
+    (§6.6 wire principle): a single parsed paragraph keeps its inline
+    content, and any other bridge outcome (no paragraph, several blocks, a
+    non-paragraph block) mounts as the empty paragraph. No literal-text
+    fallback and no break synthesis beside the bridge: keeping a parallel
+    private parse beside the bridge fails §6.6. */
 export function paragraphTextToProseMirror(
   manager: MarkdownManager,
   paragraphId: string,
@@ -417,10 +398,10 @@ export function paragraphTextToProseMirror(
     };
   }
   if (format === "text/plain") {
-    // Literal text with interior newlines as `hardBreak` nodes (§5.1): every
-    // `"\n"` strictly inside the text becomes a `hardBreak`; a leading or
-    // trailing newline yields a leading/trailing `hardBreak` (a draft the
-    // pinned contract refuses at export under §5.10, never trimmed here).
+    // Literal text with interior newlines as `hardBreak` nodes (§5.1, §6.6):
+    // every `"\n"` becomes a `hardBreak` in order; a leading or trailing
+    // newline yields a leading/trailing `hardBreak` (a draft the pinned
+    // contract refuses at export under §5.10, never trimmed here).
     const lines = text.split("\n");
     if (lines.length === 1) {
       return {
@@ -441,32 +422,24 @@ export function paragraphTextToProseMirror(
     };
   }
   conversionCounters.paragraphParse += 1;
-  // Trailing-break restore runs before the bridge parse (N1 residual): the
-  // bridge parses a break-only or whitespace-plus-breaks wire to no
-  // paragraph at all, so gating the restore on a successful full-text
-  // parse would leave the breaks unrestored. Texts without a trailing
-  // marker return `null` here and take the bridge path untouched.
-  const restored = restoreTrailingHardBreaks(manager, paragraphId, text);
-  if (restored !== null) return restored;
   try {
     const parsed = manager.parse(text) as JSONContent & {
       content?: JSONContent[];
     };
-    const first = parsed?.content?.[0];
-    if (first !== undefined && first.type === "paragraph") {
+    const blocks = parsed?.content ?? [];
+    if (blocks.length === 1 && blocks[0]?.type === "paragraph") {
       return {
         type: "paragraph",
         attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-        content: first.content,
+        content: (blocks[0] as { content?: JSONContent[] }).content,
       };
     }
   } catch {
-    // Fall through to the literal-text paragraph below.
+    // Any bridge failure mounts as the empty paragraph below.
   }
   return {
     type: "paragraph",
     attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-    content: [{ type: "text", text }],
   };
 }
 
@@ -499,22 +472,33 @@ export function documentToProseMirror(
   };
 }
 
-/** Read the ProseMirror document back into a `RichTextDocument`: a version
-    seen before returns its recorded exact text with no bridge call (this is
-    what makes undo restore the byte-exact source); an untouched paragraph
-    keeps its seed text byte-identical and records it for its version;
+/** Read the ProseMirror document back into a `RichTextDocument` plus the
+    per-paragraph cache meta the representability flag needs: a version seen
+    before returns its recorded exact text and its recorded flag with no
+    bridge call (this is what makes undo restore the byte-exact source and
+    what keeps the reactivity budgets: only the edited paragraph pays the
+    flag evaluation); an untouched paragraph keeps its seed text byte-identical
+    and records it for its version with a true flag by construction (§6.6);
     otherwise the paragraph re-serialises per paragraph through the bridge
-    (literal textContent for `text/plain`) and the version is recorded while
-    the identity leaves the touched set. Preserved blocks return their `raw`
-    verbatim with absent `raw`/`preservedKind` staying absent. Exact keys only
-    (§5.3 surface rule). */
-export function proseMirrorToDocument(
+    (literal `hardBreak` ⇔ `"\n"` for `text/plain`, bridge serialisation
+    without post-processing for Markdown), pays the §6.6 two-condition test
+    once, and records wire and flag while the identity leaves the touched set.
+    Preserved blocks return their `raw` verbatim with absent `raw`/
+    `preservedKind` staying absent. Exact keys only (§5.3 surface rule). */
+interface ParagraphRead {
+  id: string;
+  text: string;
+  representable: boolean;
+}
+
+function readDocumentWithMeta(
   manager: MarkdownManager,
   doc: ProseMirrorNode,
   format: RichTextFormat,
   seeds: ConversionSeeds,
-): RichTextDocument {
+): { blocks: RichTextBlock[]; paragraphs: ParagraphRead[] } {
   const blocks: RichTextBlock[] = [];
+  const paragraphs: ParagraphRead[] = [];
   doc.forEach((node) => {
     if (node.type.name === "preservedBlock") {
       const id = blockIdentityOf(node) ?? "";
@@ -538,35 +522,125 @@ export function proseMirrorToDocument(
     }
     if (node.type.name !== "paragraph") return;
     const id = blockIdentityOf(node) ?? "";
+    const liveJson = node.toJSON() as JSONContent & {
+      content?: JSONContent[];
+    };
+    const liveContent = liveJson.content;
+    const liveSize = node.content.size;
     // The node object is immutable: the same object is the same version, so
     // an unchanged paragraph is a cache hit with no serialisation and no
-    // conversion of any kind. The content-keyed fallback below runs only on
-    // a node miss (history rebuilds an undone version as new objects).
+    // conversion of any kind — wire and flag both replay the recorded
+    // verdict. The content-keyed fallback below runs only on a node miss
+    // (history rebuilds an undone version as new objects).
     const cached = seeds.versions.get(node);
     if (cached !== undefined) {
+      let flag = seeds.versionFlags.get(node);
+      if (flag === undefined) {
+        // Entries recorded before the flag cache existed: evaluate once and
+        // record, so later reads replay without a bridge call.
+        flag = isParagraphRepresentable(
+          manager,
+          liveContent,
+          cached,
+          format,
+          liveSize,
+        );
+        seeds.versionFlags.set(node, flag);
+      }
       blocks.push({ paragraphId: id, kind: "paragraph", text: cached });
+      paragraphs.push({ id, text: cached, representable: flag });
       return;
     }
     const contentKey = JSON.stringify(node.toJSON());
     const rebuilt = seeds.versionTexts.get(contentKey);
     if (rebuilt !== undefined) {
+      let flag = seeds.versionFlagTexts.get(contentKey);
+      if (flag === undefined) {
+        flag = isParagraphRepresentable(
+          manager,
+          liveContent,
+          rebuilt,
+          format,
+          liveSize,
+        );
+        seeds.versionFlagTexts.set(contentKey, flag);
+      }
       seeds.versions.set(node, rebuilt);
+      seeds.versionFlags.set(node, flag);
       blocks.push({ paragraphId: id, kind: "paragraph", text: rebuilt });
+      paragraphs.push({ id, text: rebuilt, representable: flag });
       return;
     }
     const seed = seeds.texts.get(id);
     if (!seeds.touched.has(id) && seed !== undefined) {
+      // Untouched seed: wire and flag by construction (§6.6), no bridge.
       seeds.versions.set(node, seed);
       seeds.versionTexts.set(contentKey, seed);
+      seeds.versionFlags.set(node, true);
+      seeds.versionFlagTexts.set(contentKey, true);
       blocks.push({ paragraphId: id, kind: "paragraph", text: seed });
+      paragraphs.push({ id, text: seed, representable: true });
       return;
     }
     const text = serializeParagraphNode(manager, node, format);
+    const flag = isParagraphRepresentable(
+      manager,
+      liveContent,
+      text,
+      format,
+      liveSize,
+    );
     seeds.versions.set(node, text);
     seeds.versionTexts.set(contentKey, text);
+    seeds.versionFlags.set(node, flag);
+    seeds.versionFlagTexts.set(contentKey, flag);
     seeds.texts.set(id, text);
     seeds.touched.delete(id);
     blocks.push({ paragraphId: id, kind: "paragraph", text });
+    paragraphs.push({ id, text, representable: flag });
   });
+  return { blocks, paragraphs };
+}
+
+/** Read the ProseMirror document back into a `RichTextDocument`: same wire
+    logic as the capture result, without the representability evaluation (so
+    re-reading an unchanged document costs no bridge re-parse). Preserved
+    blocks return their `raw` verbatim; exact keys only (§5.3). */
+export function proseMirrorToDocument(
+  manager: MarkdownManager,
+  doc: ProseMirrorNode,
+  format: RichTextFormat,
+  seeds: ConversionSeeds,
+): RichTextDocument {
+  const { blocks } = readDocumentWithMeta(manager, doc, format, seeds);
   return { format, blocks: [...blocks] };
+}
+
+/** Read the ProseMirror document back into a capture result (§6.6 reporting
+    surface): the document wires from the same conversion that produces the
+    emitted wire, plus `nonRepresentableParagraphIds` in document order
+    (identities only). Wire and flag come from the same per-version record, so
+    no paragraph pays a second bridge call here: a cache hit replays the
+    verdict computed when its wire was recorded, and a hit never implies
+    representable. Preserved blocks are never flagged. */
+export function proseMirrorToCaptureResult(
+  manager: MarkdownManager,
+  doc: ProseMirrorNode,
+  format: RichTextFormat,
+  seeds: ConversionSeeds,
+): { document: RichTextDocument; nonRepresentableParagraphIds: string[] } {
+  const { blocks, paragraphs } = readDocumentWithMeta(
+    manager,
+    doc,
+    format,
+    seeds,
+  );
+  const nonRepresentableParagraphIds: string[] = [];
+  for (const paragraph of paragraphs) {
+    if (!paragraph.representable) nonRepresentableParagraphIds.push(paragraph.id);
+  }
+  return {
+    document: { format, blocks: [...blocks] },
+    nonRepresentableParagraphIds,
+  };
 }

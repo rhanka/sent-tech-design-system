@@ -11,6 +11,7 @@
 
 export type {
   RichTextBlock,
+  RichTextCaptureResult,
   RichTextCaptureUnavailableMessage,
   RichTextCaptureUnavailableName,
   RichTextChangeEvent,
@@ -21,6 +22,7 @@ export type {
   RichTextGesture,
   RichTextGestureKind,
   RichTextReadiness,
+  RichTextRepresentability,
   RichTextUnsupportedPasteEvent,
 } from "./model.js";
 export {
@@ -58,10 +60,12 @@ export type {
   ExternalUpdateInput,
 } from "./document.js";
 export {
+  copyRichTextCaptureResult,
   copyRichTextDocument,
   createCaptureTracker,
   createCaptureUnavailableError,
   decideExternalUpdate,
+  isRepresentableWire,
   richTextDocumentsEqual,
 } from "./document.js";
 export type { CaptureTracker } from "./document.js";

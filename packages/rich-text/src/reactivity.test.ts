@@ -7,14 +7,15 @@
  * Observable assertion, over real operations (never test-wrapper counts):
  * across a typing burst the live ProseMirror view instance is stable and
  * nothing is destroyed; each keystroke issues exactly one paragraph bridge
- * serialisation for the visited-and-changed paragraph, zero paragraph
- * re-parses and zero whole-document conversions — even with several already
- * visited paragraphs, because conversions memoise the exact source per node
- * version; revisiting a known version (undo) costs no conversion at all.
- * Preserved blocks' `raw` values stay identical by value in every emitted
- * document. A stable DOM root, a single `onChange` count, or equality of one
- * `raw` string alone never satisfies this witness: the counters below
- * observe the conversion entries directly.
+ * serialisation plus one bridge re-parse for the §6.6 representability
+ * condition (1) on the visited-and-changed paragraph, and zero
+ * whole-document conversions — even with several already visited paragraphs,
+ * because conversions memoise the exact source per node version and only the
+ * edited paragraph pays the flag evaluation; revisiting a known version
+ * (undo) costs no conversion at all. Preserved blocks' `raw` values stay
+ * identical by value in every emitted document. A stable DOM root, a single
+ * `onChange` count, or equality of one `raw` string alone never satisfies
+ * this witness: the counters below observe the conversion entries directly.
  */
 import { describe, it, expect } from "vitest";
 import { createRichTextEditor } from "./editor.js";
@@ -108,12 +109,13 @@ describe("no whole-document reparse per keystroke (real conversions)", () => {
     editor.typeText("paragraph:b", "?");
     resetConversionCounters();
     editor.typeText("paragraph:a", ".");
-    // Exactly one paragraph serialisation (the changed one), zero
-    // re-parses, zero whole-document conversions: the already visited
+    // Exactly one paragraph serialisation (the changed one), one bridge
+    // re-parse for the §6.6 representability condition (1) on that edited
+    // paragraph, zero whole-document conversions: the already visited
     // paragraph B is a version-cache hit, not a second serialisation. A
     // `touched` set that is never cleared would serialise both.
     expect(conversionCounters.paragraphSerialize).toBe(1);
-    expect(conversionCounters.paragraphParse).toBe(0);
+    expect(conversionCounters.paragraphParse).toBe(1);
     expect(conversionCounters.documentSerialize).toBe(0);
     editor.destroy();
   });
@@ -146,11 +148,12 @@ describe("no whole-document reparse per keystroke (real conversions)", () => {
       editor.typeText("paragraph:a", char);
     }
     // Real conversions across the whole burst: exactly one paragraph
-    // serialisation per keystroke (the changed one), zero re-parses, zero
-    // whole-document conversions — the already visited paragraphs are
-    // immutable-node hits, never re-serialised.
+    // serialisation per keystroke (the changed one), one bridge re-parse per
+    // keystroke for the §6.6 representability condition (1) on that edited
+    // paragraph, zero whole-document conversions — the already visited
+    // paragraphs are immutable-node hits, never re-serialised.
     expect(conversionCounters.paragraphSerialize).toBe(burst.length);
-    expect(conversionCounters.paragraphParse).toBe(0);
+    expect(conversionCounters.paragraphParse).toBe(burst.length);
     expect(conversionCounters.documentSerialize).toBe(0);
     editor.destroy();
   });
@@ -198,9 +201,10 @@ describe("no whole-document reparse per keystroke (real conversions)", () => {
       blocks: [paragraph("paragraph:b", "second")],
     });
     // The node-keyed versions are replaced (old nodes release with them)
-    // and the content-keyed fallback is emptied.
+    // and the content-keyed fallback is emptied — wire and flag together.
     expect(seeds.versions).not.toBe(versions);
     expect(seeds.versionTexts.size).toBe(0);
+    expect(seeds.versionFlagTexts.size).toBe(0);
     expect([...seeds.texts.keys()]).toEqual(["paragraph:b"]);
     expect(seeds.touched.size).toBe(0);
   });

@@ -65,11 +65,19 @@ export interface RichTextGesture {
   };
 }
 
+/** Representability of the emitted wires (§6.6). Identities only: no text,
+    no diff, no Focus type. Empty when every paragraph is representable. */
+export interface RichTextRepresentability {
+  nonRepresentableParagraphIds: readonly string[];
+}
+
 export interface RichTextChangeEvent {
   /** The complete new controlled value. The only content the component emits. */
   document: RichTextDocument;
   /** Provenance of the single completed gesture that produced `document`. */
   gesture: RichTextGesture;
+  /** Paragraphs of `document` whose wire is non-representable (§6.6). */
+  representability: RichTextRepresentability;
 }
 
 /** A paste the profile refused. Carries kinds only: no pasted text, no HTML,
@@ -98,11 +106,18 @@ export interface RichTextReadiness {
   ready: boolean;
 }
 
+/** Capture result (§5.6, §6.6): the captured document plus the
+    representability of its wires for that same revision. */
+export interface RichTextCaptureResult {
+  document: RichTextDocument;
+  representability: RichTextRepresentability;
+}
+
 /** Deferred-capture surface (spec §5.6). Framework adapters expose this in
     their own idiom (a component reference in Svelte); the headless core
     factory exposes it directly on the editor object. */
 export interface RichTextEditorHandle {
-  captureDocument(): Promise<RichTextDocument>;
+  captureDocument(): Promise<RichTextCaptureResult>;
   readiness(): RichTextReadiness;
 }
 

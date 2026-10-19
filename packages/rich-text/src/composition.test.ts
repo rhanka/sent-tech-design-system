@@ -120,8 +120,8 @@ describe("mid-composition behaviour", () => {
     beginComposition(viewDom);
     editor.typeText("paragraph:1", " composed");
     let settled: RichTextDocument | null = null;
-    const pending = editor.captureDocument().then((document) => {
-      settled = document;
+    const pending = editor.captureDocument().then((result) => {
+      settled = result.document;
     });
     // Let the microtask queue flush: a mid-composition capture must still be
     // pending (never resolved with the pre-composition document).
@@ -181,8 +181,8 @@ describe("composition end flushes the pending DOM mutation first (R2)", () => {
     });
     expect(conflicts).toHaveLength(0);
     let settled: RichTextDocument | null = null;
-    const pending = editor.captureDocument().then((document) => {
-      settled = document;
+    const pending = editor.captureDocument().then((result) => {
+      settled = result.document;
     });
     await Promise.resolve();
     expect(settled).toBe(null);
@@ -243,8 +243,8 @@ describe("composition commit", () => {
     expect(conflicts).toHaveLength(0);
     expect(changes).toHaveLength(0);
     let settled: RichTextDocument | null = null;
-    const pending = editor.captureDocument().then((document) => {
-      settled = document;
+    const pending = editor.captureDocument().then((result) => {
+      settled = result.document;
     });
     await Promise.resolve();
     expect(settled).toBe(null);

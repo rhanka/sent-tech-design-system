@@ -499,8 +499,8 @@ describe("text/plain is literal text (no marks, no Markdown rules)", () => {
   });
 });
 
-describe("trailing Markdown hardBreak survives export and remount (N1)", () => {
-  it("capture then remount gives back the hardBreak", () => {
+describe("trailing Markdown hardBreak is flagged with the live draft preserved (§6.6)", () => {
+  it("capture keeps the bridge wire and flags without mutating", async () => {
     const changes: RichTextChangeEvent[] = [];
     const element = document.createElement("div");
     document.body.appendChild(element);
@@ -520,41 +520,54 @@ describe("trailing Markdown hardBreak survives export and remount (N1)", () => {
     const hardBreak = view.state.schema.nodes["hardBreak"];
     expect(hardBreak).toBeDefined();
     // Native Shift+Enter at the end of `Alpha`: one paragraph, one
-    // trailing hardBreak. The bridge output keeps the break's newline, so
-    // the event and the capture carry `"Alpha  \n"` — never a trimmed
-    // draft (a pinned-contract refusal stays the host's export concern).
+    // trailing hardBreak. The event and the capture carry the bridge wire
+    // `"Alpha  \n"` with the paragraph flagged; the live draft stays
+    // `[text("Alpha"), hardBreak]` and capture mutates nothing.
     view.dispatch(view.state.tr.insert(6, hardBreak!.create()));
     expect(changes).toHaveLength(1);
     expect(changes[0]?.document.blocks).toEqual([
       paragraph("paragraph:1", "Alpha  \n"),
     ]);
-    const captured = editor.getDocument();
-    expect(captured).toEqual(changes[0]?.document);
+    expect(changes[0]?.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    const first = await editor.captureDocument();
+    expect(first.document).toEqual(changes[0]?.document);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    let liveBreaks = 0;
+    editor.view.state.doc.descendants((node) => {
+      if (node.type.name === "hardBreak") liveBreaks += 1;
+      return true;
+    });
+    expect(liveBreaks).toBe(1);
+    const second = await editor.captureDocument();
+    expect(second.document).toEqual(first.document);
     editor.destroy();
     element.remove();
-    // Remount from the capture: the trailing hardBreak is back in the
-    // live document and the round trip is block-identical.
+    // Remounting the flagged wire follows the bridge parse (the trailing
+    // break is lost there): no remount equality is asserted for flagged rows.
     const remountedElement = document.createElement("div");
     document.body.appendChild(remountedElement);
     const remounted = createRichTextEditor({
-      document: captured,
+      document: first.document,
       messages: MESSAGES,
       allocateId: () => "paragraph:never-used",
       element: remountedElement,
     });
-    let found = false;
+    let remountedBreaks = 0;
     remounted.view.state.doc.descendants((node) => {
-      if (node.type.name === "hardBreak") found = true;
+      if (node.type.name === "hardBreak") remountedBreaks += 1;
       return true;
     });
-    expect(found).toBe(true);
-    expect(remounted.getDocument()).toEqual(captured);
+    expect(remountedBreaks).toBe(0);
     remounted.destroy();
     remountedElement.remove();
   });
 });
 
-describe("break-only Markdown paragraph survives capture, remount and the next edit (N1 residual)", () => {
+describe("break-only Markdown paragraph is flagged with the live draft preserved (§6.6)", () => {
   function countHardBreaks(view: EditorView): number {
     let count = 0;
     view.state.doc.descendants((node) => {
@@ -564,19 +577,7 @@ describe("break-only Markdown paragraph survives capture, remount and the next e
     return count;
   }
 
-  function remount(captured: RichTextDocument) {
-    const remountedElement = document.createElement("div");
-    document.body.appendChild(remountedElement);
-    const remounted = createRichTextEditor({
-      document: captured,
-      messages: MESSAGES,
-      allocateId: () => "paragraph:never-used",
-      element: remountedElement,
-    });
-    return { remounted, remountedElement };
-  }
-
-  it("an empty Markdown paragraph plus native Shift+Enter keeps its lone break", () => {
+  it("an empty Markdown paragraph plus a native break flags with an empty wire", async () => {
     const changes: RichTextChangeEvent[] = [];
     const element = document.createElement("div");
     document.body.appendChild(element);
@@ -595,35 +596,30 @@ describe("break-only Markdown paragraph survives capture, remount and the next e
     const view = editor.view;
     const hardBreak = view.state.schema.nodes["hardBreak"];
     expect(hardBreak).toBeDefined();
-    // Native Shift+Enter in the empty paragraph: the live document holds a
-    // lone `hardBreak`, so the event and the capture carry its wire text —
-    // never a trimmed empty paragraph.
+    // Direct native insertion in the empty paragraph (not the Shift+Enter
+    // key, so not the §6.6 no-op): the live document holds a lone
+    // `hardBreak`, the event and the capture carry the bridge wire `""`
+    // with the paragraph flagged, and the live draft is preserved.
     view.dispatch(view.state.tr.insert(1, hardBreak!.create()));
     expect(countHardBreaks(view)).toBe(1);
     expect(changes).toHaveLength(1);
     expect(changes[0]?.document.blocks).toEqual([
-      paragraph("paragraph:1", "  \n"),
+      paragraph("paragraph:1", ""),
     ]);
-    const captured = editor.getDocument();
-    expect(captured).toEqual(changes[0]?.document);
+    expect(changes[0]?.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    const first = await editor.captureDocument();
+    expect(first.document).toEqual(changes[0]?.document);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    expect(countHardBreaks(view)).toBe(1);
     editor.destroy();
     element.remove();
-    // Remount from the capture: the break is back with an empty head, and
-    // the round trip is block-identical.
-    const { remounted, remountedElement } = remount(captured);
-    expect(countHardBreaks(remounted.view)).toBe(1);
-    expect(remounted.getDocument()).toEqual(captured);
-    // The next edit still applies under the same identity.
-    remounted.typeText("paragraph:1", "B");
-    expect(remounted.getDocument().blocks[0]?.paragraphId).toBe(
-      "paragraph:1",
-    );
-    expect(remounted.getDocument().blocks[0]?.text).toContain("B");
-    remounted.destroy();
-    remountedElement.remove();
   });
 
-  it("Alpha plus Shift+Enter then a native deletion of Alpha keeps a break-only paragraph", () => {
+  it("Alpha plus break then a native deletion of Alpha flags with an empty wire", async () => {
     const changes: RichTextChangeEvent[] = [];
     const element = document.createElement("div");
     document.body.appendChild(element);
@@ -648,29 +644,78 @@ describe("break-only Markdown paragraph survives capture, remount and the next e
       paragraph("paragraph:1", "Alpha  \n"),
     ]);
     // Native deletion of `Alpha` (positions 1..6): the live paragraph holds
-    // only the trailing break.
+    // only the trailing break, flagged with the bridge wire `""`.
     view.dispatch(view.state.tr.delete(1, 6));
     expect(countHardBreaks(view)).toBe(1);
     expect(changes).toHaveLength(2);
     expect(changes[1]?.document.blocks).toEqual([
-      paragraph("paragraph:1", "  \n"),
+      paragraph("paragraph:1", ""),
     ]);
-    const captured = editor.getDocument();
-    expect(captured).toEqual(changes[1]?.document);
+    expect(changes[1]?.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    const first = await editor.captureDocument();
+    expect(first.document).toEqual(changes[1]?.document);
+    expect(countHardBreaks(view)).toBe(1);
     editor.destroy();
     element.remove();
-    // Remount from the capture: the lone break is back, the round trip is
-    // block-identical, and the next edit still applies.
-    const { remounted, remountedElement } = remount(captured);
-    expect(countHardBreaks(remounted.view)).toBe(1);
-    expect(remounted.getDocument()).toEqual(captured);
-    remounted.typeText("paragraph:1", "B");
-    expect(remounted.getDocument().blocks[0]?.paragraphId).toBe(
-      "paragraph:1",
-    );
-    expect(remounted.getDocument().blocks[0]?.text).toContain("B");
-    remounted.destroy();
-    remountedElement.remove();
+  });
+});
+
+describe("serialisation-equal divergence stays a conflict (§5.6 revision flag)", () => {
+  it("three spaces then an external C conflicts instead of overwriting", async () => {
+    const changes: RichTextChangeEvent[] = [];
+    const conflicts: { incoming: RichTextDocument; local: RichTextDocument }[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", "")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        conflicts.push(event);
+      },
+    });
+    // Three spaces with no host echo: the live content is `[text("   ")]`
+    // while the bridge serialises it to `""` (§6.6 whitespace-only row), so
+    // the displayed wire still equals the acknowledged wire — yet the typing
+    // transaction set the §5.6 revision flag and the paragraph is flagged.
+    editor.typeText("paragraph:1", "   ");
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks[0]?.text).toBe("");
+    expect(
+      changes[0]?.representability.nonRepresentableParagraphIds,
+    ).toEqual(["paragraph:1"]);
+    // An external `C` now evaluates under rule 3, not rule 4: the draft is
+    // kept live, exactly one conflict fires, and `C` is not applied.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:1", "C")],
+    });
+    expect(conflicts).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("");
+    // A rule-1 echo of the displayed revision clears the flag; the next
+    // external update is then evaluated on the cleared state and applies.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:1", "")],
+    });
+    expect(conflicts).toHaveLength(1);
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:1", "C")],
+    });
+    expect(conflicts).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("C");
+    editor.destroy();
+    element.remove();
   });
 });
 

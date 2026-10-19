@@ -12,11 +12,11 @@
  * imports `@sentropic/focus/editing` or any Focus type.
  *
  * Observable assertion: every emitted `RichTextChangeEvent` carries
- * `document` and `gesture` only — no `before`, `after`, `beforeAnchors`,
- * `anchors`, `transactions` or `changes` key exists at any level — and the
- * A → B → A sequence emits documents `B` then `A`, so the host-side
- * cumulative result is decided solely by its own diff against the retained
- * baseline.
+ * `document`, `gesture` and `representability` only — no `before`, `after`,
+ * `beforeAnchors`, `anchors`, `transactions` or `changes` key exists at any
+ * level — and the A → B → A sequence emits documents `B` then `A`, so the
+ * host-side cumulative result is decided solely by its own diff against the
+ * retained baseline. `representability` carries identities only (§6.6).
  *
  * Tiptap entry: emitted-surface and A → B → A assertions run on the
  * `"./editor"` events; the §5.6 echo/decision sub-assertions are
@@ -65,7 +65,11 @@ function collectKeys(value: unknown, out: Set<string> = new Set()): Set<string> 
 }
 
 function assertSurfaceShape(event: RichTextChangeEvent): void {
-  expect(Object.keys(event).sort()).toEqual(["document", "gesture"]);
+  expect(Object.keys(event).sort()).toEqual([
+    "document",
+    "gesture",
+    "representability",
+  ]);
   const keys = collectKeys(event);
   for (const forbidden of FORBIDDEN_KEYS) {
     expect(
@@ -284,7 +288,10 @@ describe("undo restores the exact source and agrees with captures", () => {
       paragraph("paragraph:b", "_untouched_"),
     ]);
     const captured = await editor.captureDocument();
-    expect(captured).toEqual(changes[1]?.document);
+    expect(captured.document).toEqual(changes[1]?.document);
+    expect(captured.representability).toEqual(
+      changes[1]?.representability,
+    );
     expect(editor.readiness()).toEqual({ composing: false, ready: true });
     editor.destroy();
   });

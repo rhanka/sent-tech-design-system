@@ -373,6 +373,50 @@ describe("select-all delete keeps the first identity (N8)", () => {
     element.remove();
   });
 
+  it("AllSelection plus Backspace with a break-only survivor reports the survivor (hardBreak included)", () => {
+    // Sol pass-5 N8 residue: a survivor holding only a `hardBreak` has empty
+    // `textContent` before and after, so a text-only comparison misses its
+    // modification. The affected list compares full inline content,
+    // `hardBreak` nodes included.
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:a", "\n"), paragraph("paragraph:b", "B")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    view.dispatch(view.state.tr.setSelection(new AllSelection(view.state.doc)));
+    viewDom.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Backspace",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(editor.getDocument().blocks).toEqual([
+      { paragraphId: "paragraph:a", kind: "paragraph", text: "" },
+    ]);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:b",
+    ]);
+    editor.destroy();
+    element.remove();
+  });
+
   it("AllSelection plus Backspace on three paragraphs reports the survivor then the removed, in document order", () => {
     const changes: RichTextChangeEvent[] = [];
     const element = document.createElement("div");

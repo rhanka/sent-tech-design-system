@@ -12,9 +12,11 @@
  */
 import { describe, it, expect } from "vitest";
 import {
+  copyRichTextCaptureResult,
   copyRichTextDocument,
   createCaptureTracker,
   decideExternalUpdate,
+  isRepresentableWire,
   richTextDocumentsEqual,
 } from "./document.js";
 import {
@@ -23,6 +25,7 @@ import {
 } from "./model.js";
 import type {
   RichTextBlock,
+  RichTextCaptureResult,
   RichTextDocument,
 } from "./model.js";
 
@@ -140,6 +143,7 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: acknowledged,
         incoming: copyRichTextDocument(displayed),
         composing: false,
+        hasUnacknowledgedLocalRevision: true,
       }),
     ).toBe("echo");
   });
@@ -151,6 +155,7 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: acknowledged,
         incoming: copyRichTextDocument(displayed),
         composing: true,
+        hasUnacknowledgedLocalRevision: true,
       }),
     ).toBe("echo");
   });
@@ -162,6 +167,7 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: copyRichTextDocument(displayed),
         incoming: documentOf([paragraph("paragraph:a", "Remote")]),
         composing: true,
+        hasUnacknowledgedLocalRevision: false,
       }),
     ).toBe("defer");
   });
@@ -173,6 +179,22 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: acknowledged,
         incoming: documentOf([paragraph("paragraph:a", "Remote")]),
         composing: false,
+        hasUnacknowledgedLocalRevision: true,
+      }),
+    ).toBe("conflict");
+  });
+
+  it("rule 3 — the revision flag alone forces a conflict on a wire-identical draft", () => {
+    // §5.6 serialisation-equal witness: displayed equals acknowledged wire
+    // for wire purposes, yet the flag records the unacknowledged revision.
+    const wireIdentical = copyRichTextDocument(acknowledged);
+    expect(
+      decideExternalUpdate({
+        displayed: wireIdentical,
+        lastAcknowledged: acknowledged,
+        incoming: documentOf([paragraph("paragraph:a", "Remote")]),
+        composing: false,
+        hasUnacknowledgedLocalRevision: true,
       }),
     ).toBe("conflict");
   });
@@ -184,6 +206,7 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: acknowledged,
         incoming: documentOf([paragraph("paragraph:a", "Remote")]),
         composing: false,
+        hasUnacknowledgedLocalRevision: false,
       }),
     ).toBe("apply");
   });
@@ -199,13 +222,19 @@ describe("external-update decision table (§5.6 rule order)", () => {
         lastAcknowledged: BASE,
         incoming: withRaw,
         composing: false,
+        hasUnacknowledgedLocalRevision: false,
       }),
     ).toBe("apply");
   });
 });
 
 describe("capture/readiness pure state", () => {
-  const current = (): RichTextDocument => copyRichTextDocument(BASE);
+  const BASE_RESULT: RichTextCaptureResult = {
+    document: BASE,
+    representability: { nonRepresentableParagraphIds: [] },
+  };
+  const current = (): RichTextCaptureResult =>
+    copyRichTextCaptureResult(BASE_RESULT);
 
   it("readiness is ready when idle", () => {
     const tracker = createCaptureTracker();
@@ -215,8 +244,9 @@ describe("capture/readiness pure state", () => {
   it("capture resolves immediately with a copy when ready", async () => {
     const tracker = createCaptureTracker();
     const settled = await tracker.capture(current);
-    expect(settled).toEqual(BASE);
-    expect(settled).not.toBe(BASE);
+    expect(settled).toEqual(BASE_RESULT);
+    expect(settled).not.toBe(BASE_RESULT);
+    expect(settled.document).not.toBe(BASE);
   });
 
   it("capture waits mid-composition and settles once with the commit", async () => {
@@ -228,13 +258,16 @@ describe("capture/readiness pure state", () => {
     });
     tracker.setComposing(true, current);
     expect(tracker.readiness()).toEqual({ composing: true, ready: false });
-    let settled: RichTextDocument | null = null;
-    const pending = tracker.capture(current).then((document) => {
-      settled = document;
+    let settled: RichTextCaptureResult | null = null;
+    const pending = tracker.capture(current).then((result) => {
+      settled = result;
     });
     expect(tracker.pendingCount).toBe(1);
     expect(settled).toBe(null);
-    const committed = documentOf([paragraph("paragraph:a", "Composed")]);
+    const committed: RichTextCaptureResult = {
+      document: documentOf([paragraph("paragraph:a", "Composed")]),
+      representability: { nonRepresentableParagraphIds: [] },
+    };
     tracker.setComposing(false, () => committed);
     await pending;
     expect(settled).toEqual(committed);
@@ -274,5 +307,46 @@ describe("capture/readiness pure state", () => {
     );
     expect(error.name).toBe(RICH_TEXT_CAPTURE_UNAVAILABLE_NAME);
     expect(error.message).toBe(RICH_TEXT_CAPTURE_UNAVAILABLE_MESSAGE);
+  });
+});
+
+describe("pinned single-segment criterion vectors (§6.6 condition 2)", () => {
+  it("the local check matches every recorded pinned verdict with provenance", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { dirname, join } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const here = dirname(fileURLToPath(import.meta.url));
+    const record = JSON.parse(
+      readFileSync(
+        join(here, "../tests/fixtures/representability-vectors.json"),
+        "utf8",
+      ),
+    ) as {
+      provenance: Record<string, unknown>;
+      vectors: {
+        id: string;
+        text: string;
+        plain: boolean;
+        markdown: boolean;
+      }[];
+    };
+    expect(record.provenance["h2aCommit"]).toBe("98060bd0a");
+    expect(record.provenance["h2aSourcePath"]).toBe(
+      "packages/focus/src/editing/codec.ts",
+    );
+    expect(record.provenance["codecSha256"]).toBe(
+      "ac936183aa96935b23ca621c5c0fe2502db70fa05dd28c1560d16b00d7a483a5",
+    );
+    expect(record.vectors.length).toBeGreaterThan(20);
+    for (const vector of record.vectors) {
+      expect(
+        isRepresentableWire(vector.text, "text/plain"),
+        `plain vector ${vector.id}`,
+      ).toBe(vector.plain);
+      expect(
+        isRepresentableWire(vector.text, "focus.markdown.p0@1"),
+        `markdown vector ${vector.id}`,
+      ).toBe(vector.markdown);
+    }
   });
 });
