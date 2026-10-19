@@ -1178,6 +1178,24 @@ Criteria:
 13. Light selection, discreet badge (F-R3, F-R7): the selected state's outline stays 1 px (or a light tint), and the
     recommendation badge changes neither the layout nor the selection.
 
+#### 11.2.1 Consumed Focus editing contract (pinned, by reference only)
+
+The DS rich text editor specified in [SPEC_EVOL_DS_RICH_TEXT_EDITOR.md](SPEC_EVOL_DS_RICH_TEXT_EDITOR.md) consumes
+the h2a Focus editing contract by pinned reference. This subsection records the pin and defines nothing: the return
+envelope, the editing manifest, paragraph identities, the diff, the reconciler, the digests and the schemas remain
+owned by h2a / `@sentropic/focus` (owner decision H-1, §1.1b) and are not redefined here.
+
+- Contract narrative: h2a `docs/focus/document-editing.md` at merge commit `98060bd0a`.
+- Pinned source state: `@sentropic/focus` 0.5.0 in source at `98060bd0a` (`schemaVersion: 1`; published availability
+  not asserted by this standard).
+- Consumed subpaths: `@sentropic/focus/editing`; schemas `@sentropic/focus/schemas/focus-edit-return.v1`
+  (`urn:sentropic:focus:FocusEditReturn:1.0.0`) and `@sentropic/focus/schemas/focus-editing-manifest.v1`
+  (`urn:sentropic:focus:FocusEditingManifest:1.0.0`); content profile identifier `focus.markdown.p0@1`.
+- DS side: the editor component carries opaque `paragraphId` attributes supplied and read by a host-side Focus
+  adapter (§5.2 of the rich text editor specification). No Focus type enters the DS package, and this standard
+  writes no second definition of the return. A pin bump is a versioned change recorded in both specifications in
+  the same delivery.
+
 ### 11.3 P-DATA: `<st-bar-chart>`
 
 The plain-data control case and the json-render comparison point (§6.2). Criteria: same rendered SVG as the Svelte
