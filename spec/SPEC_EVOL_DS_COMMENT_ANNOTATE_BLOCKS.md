@@ -1,0 +1,653 @@
+# SPEC EVOL — DS-COMMENT-ANNOTATE-BLOCKS: presentation and interaction blocks for the comment / annotate UX
+
+| Field | Value |
+| --- | --- |
+| Status | Specification only. No implementation, no package, no test execution is claimed by this document. |
+| Date | 2026-10-19 |
+| Branch | `spec/comment-annotate-blocks`, cut from `origin/main` (`Your branch is up to date with 'origin/main'` at authoring; Svelte package `@sentropic/design-system-svelte` 0.36.0 measured in `packages/components-svelte/package.json`) |
+| Target version | Next minor of `@sentropic/design-system-svelte`: **0.37.0**. React / Vue / Angular counterparts are at 0.38.0 measured; their parity lots are staged separately (§10) and do not change this target. |
+| Owner request | The comment / annotate UX is carried by the design system and by Focus (h2a), not by the consuming page. The consumer uses theme `@sentropic/design-system-theme-airbus` (`packages/theme-airbus`). Vocabulary is **"comment"** and **"annotate"** throughout; no other synonym for the feature is used in DS names, props or labels. Relayed through the hrpolnav session and h-cond. |
+| Boundary | **Provisional: h-cond accepted it pending its own double analysis, Track 01M5AFHYR4FDG8E7VNP9XYYT21.** The DS is presentation and interaction only. It ships no comment data model and no persistence (§0.2). |
+| Scope of this document | The DS side only: reuse versus new components, icons, labelled and split icon buttons, `CommentListItem`, the context menu, the element picker, framework parity plan, i18n, theming, lots with gates and RED witnesses, open questions, and the NOT-covered list. |
+| Related | FE-2 rich-text editor: `spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md` on branch `feat/rich-text-core` (paragraph identity and Tiptap constraints, read via `git show feat/rich-text-core:spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md`). Diagram hit targets: `packages/diagram-canvas`, `packages/diagram-core`. |
+
+## 0. How to read this specification
+
+### 0.1 Source tags
+
+Every load-bearing choice carries one primary tag. A proposition inside a settled item is tagged separately.
+
+| Tag | Meaning |
+| --- | --- |
+| `owner-brief` | Wording or need stated in the commissioning brief for this specification (the four DS-side needs in §1.1, the split-button screenshot reference, the anchor-opacity instruction). |
+| `measured` | Fact read on disk in this worktree at authoring: file path cited inline. |
+| `h-cond-plan` | Planned Focus field or behaviour relayed by h-cond as a working basis. Always cited as `unverified` and never frozen by this specification (§0.3, Appendix A). |
+| `fe2-spec` | Statement taken from FE-2, `spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md` on `feat/rich-text-core`. |
+| `ds-proposition` | A design choice made by this specification for the DS. It requires ratification where §15 states so and must never be reported as an owner requirement. |
+
+`SHALL` / `MUST NOT` state the proposed contract. They acquire force only at ratification.
+
+### 0.2 Ownership boundary (provisional, not negotiable inside this specification)
+
+| Owner | Owns | Does not own |
+| --- | --- | --- |
+| Focus (h2a, conductor h-cond) | The comment / annotation model; anchors; persistence and edit return. | The DS widgets, their theming, their keyboard behaviour. |
+| Design system (this specification) | Presentation and interaction blocks only: panels composition, icons and labelled icon buttons, the split icon button, `CommentListItem` rendering and local edit state, the context-menu surface, the element-picker overlay and its pick descriptor. | Any comment data model, any anchor semantics, any persistence, any edit-return shape, any Focus type. No Focus type, Track type, transport or business API enters a DS package. |
+
+Consequence: no component in §4–§9 imports `@sentropic/focus`, names a Focus return field, allocates a persistent comment identity, resolves an anchor to a document position, or writes to a document, a diagram model or storage. The host (Focus `focus-kit` or the consuming application) supplies data and callbacks; the DS renders and reports gestures. This mirrors the FE-2 boundary (`fe2-spec` §0.2): the DS carries opaque identity attributes that a host-side adapter supplies and reads, and computes no diff.
+
+### 0.3 The anchor type is not frozen — opaque anchor contract
+
+The DS side is specified against an **opaque `anchor` value plus a host-supplied `label` and `kind`** (§13 gives the single amendment point):
+
+- `anchor` is typed `unknown` in TypeScript (an opaque value the DS stores in no state, inspects in no branch, serialises in no way). The DS passes it back unchanged in callbacks.
+- `anchorLabel: string` and `kind: string` (with `kindLabel: string`) are display strings supplied by the host. The DS renders `kindLabel` in a badge and `anchorLabel` as the anchor link text. It never derives either from `anchor`.
+- The DS never switches on `kind`. A future frozen anchor contract changes exactly one place (§13); no component signature in §7–§9 needs to change except that one type alias.
+
+h-cond's planned fields are a working basis only, cited as `unverified` and not frozen. They are restated in Appendix A so a reviewer can see what the host expects to pass, without this specification depending on their shape.
+
+### 0.4 Evidence and verification marks
+
+- DS facts are measured on this worktree. Each claim names its file. A claim that could not be verified on disk is marked `unverified` or `source-gap` inline.
+- FE-2 facts are read through `git show feat/rich-text-core:spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md`; that branch was not checked out or modified.
+- The owner screenshot referenced in the brief (`…/images/3.png`, a split icon button: an icon button with an adjacent chevron dropdown) could not be opened as a DS source file from this worktree and is treated as `source-gap` for pixel values; the split-button contract in §5.3 is derived from the brief description and from measured DS menu primitives, not from pixel measurement of that image.
+- No network was used. Nothing under `.track/` is written by the lots in §14. No Python is used anywhere in the lots this specification defines (implementation, tests, jobs, one-off scripts): the DS stack is Node/TypeScript and native tooling already present (`measured`: root `package.json` scripts).
+
+## 1. Goal, scope, non-goals
+
+### 1.1 Goal
+
+Give the comment / annotate UX a complete DS presentation layer so that the consuming page (theme `@sentropic/design-system-theme-airbus`) and Focus hosts compose it without inventing controls:
+
+1. **Right side panel.** Reuse the existing side-panel component. Inside it, DS components for comment list items: editable, kind badge, anchor link (`owner-brief` need 1).
+2. **Icons with a hover label or tooltip** instead of text buttons: save, delete, cancel, annotate, circle, rectangle, note, comment (`owner-brief` need 2). The DS control style in the owner screenshot is a split icon button: a primary icon action with an adjacent chevron dropdown (§5.3).
+3. **A context menu (right-click)** for both a text selection and a diagram shape (`owner-brief` need 3).
+4. **An element picker**, like Claude's "select element" mode. Hovering highlights any block, and a click picks it. It must stay compatible with future Tiptap editing (FE-2) (`owner-brief` need 4).
+
+### 1.2 In scope (this specification)
+
+§4 reuse-versus-new per need; §5 icons, the labelled icon button and the split icon button; §6 right-panel composition; §7 `CommentListItem`; §8 the context menu; §9 the element picker; §10 framework parity; §11 i18n; §12 theming; §13 the anchor amendment point; §14 lots, gates and RED witnesses; §15 open questions; §16 NOT covered.
+
+### 1.3 Out of scope
+
+See §16 for the exhaustive list. In particular: the comment / annotation model, anchors, persistence and edit return (Focus); resolving an anchor to a selection or a shape (host); any mutation of a document or a diagram by the DS; a rich-text editing surface itself (FE-2 owns it).
+
+## 2. Starting point (measured)
+
+### 2.1 Panels (`measured`)
+
+- `packages/components-svelte/src/lib/ContextPanel.svelte` (`ContextPanelProps`: `title`, `subtitle`, `label`, `actions`, `footer`, `children`, `class`) renders an `<aside>` with header / scrollable body / footer grid and `--st-component-contextPanel-*` tokens. It is a content panel, not a positioning shell.
+- `packages/components-svelte/src/lib/UtilityPanel.svelte` (`UtilityPanelProps`: `mode: reserve | overlay | floating`, `side: left | right | bottom`, `title`, `label`, `collapsed`, `header`, `footer`, `children`) is the side-panel shell: `side="right"` is a first-class value, `collapsed` hides body and footer, floating/overlay modes add the panel shadow token.
+- `packages/components-svelte/src/lib/PanelStack.svelte` + `PanelSection.svelte` provide stacked collapsible sections inside a pane (`PANEL_STACK_MAX_SECTIONS = 4`, single scroll owner). They are available if the comment panel later needs sections (list / details), but need 1 does not require them.
+- All three are exported from the Svelte barrel `packages/components-svelte/src/lib/index.ts` (`ContextPanel`, `UtilityPanel`, `PanelStack`, `PanelSection`).
+
+### 2.2 Icons and icon buttons (`measured`)
+
+- `packages/components-svelte/src/lib/icons.ts`: the canonical DS icon set is a closed additive map `GLYPHS` with DS-owned names — currently `settings`, `eye`, `eye-off`, `layers`, `target`, `close`, `chevron-down`, `chevron-right` — mapped to lucide glyphs from `@lucide/svelte`. `IconName = keyof typeof GLYPHS`; `ICONS` and `ICON_NAMES` are exported. The file header states the rule this specification extends: "Names are ADDITIVE: new glyphs extend this map; existing names never change meaning", and consumers address icons by DS names, never by lucide component names.
+- `packages/components-svelte/src/lib/Icon.svelte` (`name: IconName`, `size` default 18, `strokeWidth` default 2.25, optional `title` as accessible name) renders the glyph decorative (`aria-hidden`) unless `title` is set.
+- `packages/components-svelte/src/lib/IconButton.svelte`: a `<button>` requiring `"aria-label": string`, with `size: sm | md | lg`, `variant: ghost | secondary | danger`, and `--st-component-iconButton-*` tokens. It renders children (the glyph) only; it has **no** tooltip or visible label of its own.
+- `packages/components-svelte/src/lib/Tooltip.svelte` (`content: string`, `placement: top | bottom`) shows `role="tooltip"` content on `:hover` and `:focus-within` of a wrapper span. `Toggletip.svelte` is a click-toggled bubble with its own trigger; it is not the hover-label mechanism for icon buttons.
+- `MenuTriggerButton.svelte` wraps `IconButton` with `aria-haspopup="menu"`, `aria-expanded`, `aria-controls` and a default `ChevronDownCircle` glyph. `ButtonGroup.svelte` (`attached` segmented look, `role="group"`) joins adjacent buttons with collapsed hairlines. `OverflowMenu.svelte`, `Menu.svelte`, `MenuPopover.svelte`, `Popper.svelte` and `Portal.svelte` are detailed in §2.3.
+- Gap against need 2: no DS icon exists for any of the eight actions, and no labelled-icon-button composition (icon button + hover/focus tooltip with the accessible name equal to the label) exists as a named DS block. `ChatComposer.svelte` shows the injected-label prop shape (`sendLabel`, `sendAriaLabel`, …) but with hard-coded French defaults in the current source — the shape to follow, not its default values.
+
+### 2.3 Menus and positioning (`measured`)
+
+- `packages/components-svelte/src/lib/Menu.svelte`: `MenuItem = MenuActionItem | MenuDividerItem | MenuGroupItem`; an action item is `{ label, value, disabled?, danger?, icon? }`. It renders `role="menu"` with roving-tabindex arrow/Home/End navigation, Enter/Space selection via `onselect(value)`, and optional `dismissOnSelect` handling of Escape and outside pointer-down. It has no positioning of its own.
+- `packages/components-svelte/src/lib/MenuPopover.svelte`: positions a panel against a `trigger: HTMLElement` (`placement: bottom-start | bottom-end | top-start | top-end`, `align` override), recomputes on scroll/resize, clamps `max-height` to the space actually available with an 8 px viewport margin and a 160 px floor, and closes on outside pointer-down / Escape (`closeOnOutside`, `closeOnEscape`). The trigger must be an element.
+- `packages/components-svelte/src/lib/OverflowMenu.svelte`: a self-contained ellipsis trigger + `role="menu"` list with the same item model, viewport-aware `max-height`, Arrow/Home/End navigation, Escape and outside-click close, and focus moving to the first item on open. Its positioning is CSS-absolute relative to its own wrapper; it is anchored to its trigger element, not to an arbitrary point or rectangle.
+- `packages/components-svelte/src/lib/Popper.svelte`: the general positioning primitive. `PopperProps` takes `anchor: HTMLElement | null`, `placement` (12 values), `offset`, `flip`, `shift`, `strategy: absolute | fixed`, `portal` (renders into `document.body` via `Portal`), `trapFocus` (opt-in), `closeOnEscape` + `onClose`. The exported pure `computePosition(anchorRect, panelWidth, panelHeight, options)` performs flip (opposite side when overflowing) and shift (cross-axis viewport clamp) arithmetic and is unit-testable without DOM. Focus capture/restore exists only under `trapFocus`.
+- `packages/components-svelte/src/lib/Portal.svelte`: teleports children to `document.body` (or a selector/element target); the container is `display: contents`. This is the mechanism §9 uses to draw the picker highlight outside the content DOM.
+- Gap against need 3: every existing menu is anchored to a trigger **element**. None opens at a host-supplied rectangle (a text-selection rect or diagram shape bounds) or at a pointer point, and none is driven by a `contextmenu` event or by Shift+F10 / ContextMenu key at such a target. The menu **list** is reusable; the **anchoring** is not covered.
+
+### 2.4 Lists, badges, fields (`measured`)
+
+- `Badge.svelte` (`tone: neutral | success | warning | error | info`, `shape: pill | circle`, `size: sm | md`) and `Tag.svelte` (same tones, optional dismiss) are the badge primitives. Both read `--st-component-badge-*` / `--st-component-tag-*` tokens with semantic fallbacks.
+- `StructuredList.svelte` renders a `<dl>` of key/value rows; `SelectableList.svelte` / `SelectableRow.svelte` render a `role="listbox"` with roving tabindex and selection. Neither is an editable comment item: no read/edit modes, no author/time header, no anchor link, no per-item actions. `ChatMessage.svelte` / `ChatThread.svelte` are chat-shaped (composer + thread) and carry no kind badge or anchor either.
+- `Textarea.svelte` is the DS multiline field (`value` bindable, `label`, `helperText`, `errorText`, `invalid`, field anatomy tokens). `Button.svelte` provides text buttons (`variant: primary | secondary | ghost | danger`, `size: sm | md | lg`).
+- Gap against need 1 (list items): no existing list item covers an editable comment with kind badge, anchor link, author/time slots and icon actions. A new component is required (§4, §7); the primitives above are its building blocks.
+
+### 2.5 Theming and the Airbus theme (`measured`)
+
+- Component styling reads `--st-component-<name>-*` custom properties with semantic fallbacks (for example `IconButton.svelte` reads `--st-component-iconButton-radius` falling back to a literal, text from `--st-semantic-text-primary`; `ContextPanel.svelte` reads `--st-component-contextPanel-surface` falling back to `--st-semantic-surface-raised`). A theme that emits no component token for a name renders the base appearance.
+- `packages/theme-airbus/src/index.ts` builds `airbusTheme` / `airbusDarkTheme` (`TenantTheme`, `id: "airbus"`) through `createComponent` from `@sentropic/design-system-themes`, overriding selected anatomy (measured overrides include `badge`, `tag`, `field`, `accordion`, `choice`, `toggle`, button secondary and card). It emits **no** dedicated `iconButton`, `tooltip`, `menu`, `contextPanel` or `utilityPanel` component-token overrides; those components therefore render under Airbus from their semantic fallbacks today. New tokens in §12 follow the same rule: component tokens only, each with a semantic or literal fallback, so Airbus coverage is by fallback until Airbus opts into an override.
+- No comment/annotate token, message or icon exists in `packages/theme-airbus` or in the base themes at authoring (`source-gap` for any claim beyond this absence; §12 states the additive token names).
+
+### 2.6 Diagram hit targets (`measured`)
+
+- `packages/diagram-canvas/src/hit.ts` is pure arithmetic over a `SceneFrame`: `hitTest(frame, point)` / `hitTestAll` return the topmost `Hit { kind, occurrence: OccurrenceRef, paintIndex, item }`; `hitTestRegion` answers rectangle catches; `hitTestAtDevicePoint` converts CSS-pixel tolerance through the camera zoom. `packages/diagram-canvas/src/scene.ts` defines `SceneNode` / `ScenePort` / `SceneEdge` items with world `rect` / `bounds` and the occurrence → entity reference. `packages/diagram-core` holds the semantic document with no geometry (`packages/diagram-core/src/document.ts`: geometry lives in a view).
+- Consequence for §8: a diagram host already can turn a pointer position into a shape and its bounds host-side. The DS context menu needs only the resulting **bounds rectangle and item list**; it must not import `diagram-canvas` / `diagram-core`, run a hit test, or mutate a scene. Both diagram packages are `private: true` (`measured` in their manifests and in `packages/diagram-canvas/src/index.ts`), so a published DS component cannot depend on them in any case.
+
+### 2.7 FE-2 paragraph identity and Tiptap constraints (`fe2-spec`)
+
+- FE-2 (`git show feat/rich-text-core:spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md`) defines the reusable controlled Tiptap editor. Its identity contract (§5.2 of that specification): the identity is the ProseMirror node attribute `paragraphId` on `paragraph` and `preservedBlock` nodes, rendered to the DOM as `data-paragraph-id` (and `data-preserved-block` on preserved blocks); a single opaque string, unique within the document, allocated by the host; the component never parses, derives, sorts by or displays it as content. Split keeps the leading paragraph's identity and allocates a fresh one for the tail; paste strips any incoming `data-paragraph-id` and allocates fresh identities.
+- FE-2 forbids leaking ProseMirror positions or Tiptap JSON into the wire contract, forbids the DS computing a per-paragraph diff, and requires every label from injected `messages` with the `untranslated` marker `⟦untranslated:rich-text.<key>⟧` plus `data-untranslated` (§5.7 of that specification). §11 adopts the same marker discipline under its own key namespace.
+- Consequence for §9: when the picked block is a paragraph of a `RichTextEditor` (FE-2), its identity is already in the DOM as `data-paragraph-id`. The picker reads that attribute and returns it; it allocates nothing and writes nothing into the ProseMirror view.
+
+### 2.8 Framework packages (`measured`)
+
+- `packages/components-svelte` (`@sentropic/design-system-svelte` 0.36.0), `packages/components-react` (`@sentropic/design-system-react` 0.38.0), `packages/components-vue` (`@sentropic/design-system-vue` 0.38.0), `packages/components-angular` (`@sentropic/design-system-angular` 0.38.0). React re-exports `Icon` / `IconButton` from a `catalog` module (`packages/components-react/src/Icon.tsx`, `IconButton.tsx`); the icon catalogue therefore has a per-framework counterpart to extend, not a single shared file.
+- DS practice visible in FE-2 and in the package layout: Svelte is delivered first; other frameworks follow as adapters behind their own stage gates, and an adapter whose gate has not passed is reported as not delivered, never listed as available. §10 follows that practice.
+
+## 3. Decisions
+
+One decision per item required by the commission. Each carries its source tag; a proposition part inside a decision is tagged separately. `CA-Dn` ids are used by the lots in §14.
+
+### CA-D1 — Reuse first; new components only where no existing block covers the need — `ds-proposition` (needs: `owner-brief` 1–4)
+
+§4 states, per need, whether the answer is an existing component, an additive extension (new prop or variant), or a new component. Extension is preferred over a new component wherever the existing contract can carry the need without changing its meaning. Only two blocks are new: `CommentListItem` (§7) and `AnnotateContextMenu` anchoring plus `ElementPicker` (§8, §9) — each because the measured gap is a missing contract (editable comment item; rectangle-anchored menu; picking mode), not a missing style.
+
+### CA-D2 — Eight additive DS icon names mapped to lucide glyphs — `owner-brief` need 2 (names and glyph mapping: `ds-proposition`)
+
+`packages/components-svelte/src/lib/icons.ts` gains eight entries in `GLYPHS` (§5.1). Existing names never change meaning; `IconName`, `ICONS` and `ICON_NAMES` extend by derivation. The same eight DS names are added to the React, Vue and Angular icon catalogues at their parity stage (§10), under the identical DS names.
+
+### CA-D3 — The labelled icon button is `IconButton` + `Tooltip` with the accessible name equal to the label — `ds-proposition`
+
+A named composition (§5.2) wraps `IconButton` in `Tooltip` so the label appears on hover and on focus, and the button's `aria-label` is exactly that label. No icon-only control ships without it in the comment / annotate surface.
+
+### CA-D4 — The split icon button composes existing primitives; it is one new component — `owner-brief` need 2 (screenshot shape: `source-gap` for pixels)
+
+`SplitIconButton` (§5.3) composes `ButtonGroup attached`, a primary labelled `IconButton`, `MenuTriggerButton` (chevron), `MenuPopover` + `Menu` (or `Popper` + `Menu` where the measured primitive requires it). It adds no new menu, popover or button behaviour; it fixes the split layout, the shared disabled state and the focus contract in one place.
+
+### CA-D5 — `CommentListItem` is a new component built from measured primitives — `ds-proposition`
+
+No existing list item carries read/edit modes with kind badge, anchor link, author/time slots and icon actions (§2.4). `CommentListItem` (§7) is new and composes `Badge`, `Textarea`, `Avatar` (host may substitute its own author rendering in the slot) and the §5.2 labelled icon buttons. Its `anchor` prop is the opaque value of §0.3.
+
+### CA-D6 — The context menu reuses the `Menu` list and gains rectangle anchoring — `ds-proposition`
+
+`AnnotateContextMenu` (§8) renders the existing `Menu` item model inside a `Popper`-positioned, `Portal`-rendered panel anchored to a host-supplied rectangle or point — never to a DS-owned document or diagram target. Items come from the host; selection is reported by value; the DS mutates nothing.
+
+### CA-D7 — The element picker is a host-toggled overlay mode that returns a descriptor and mutates no content DOM — `ds-proposition` (FE-2 identity rule: `fe2-spec`)
+
+`ElementPicker` (§9) draws its highlight in a `Portal` overlay outside the content DOM, resolves the nearest eligible block through a host predicate or selector, and on pick returns `{ element, bounds, identity }`. Inside a ProseMirror view it performs zero DOM writes: no class, attribute, style or node is added to editor content.
+
+### CA-D8 — Svelte first; React, Vue and Angular parity is staged and gated — `ds-proposition` (practice: §2.8)
+
+The 0.37.0 target ships Svelte. React, Vue and Angular follow in staged parity lots (§10, §14) and are not claimed as delivered before their gates pass.
+
+### CA-D9 — Every label is injected; the DS ships no natural-language catalogue — `ds-proposition` (marker discipline: `fe2-spec`)
+
+All user-visible and accessibility strings for the new blocks come from a host-supplied `messages` object (§11), under the key namespace `comment-annotate.*`, with the FE-2 marker form for a missing key. Component sources contain no hard-coded language for these strings.
+
+### CA-D10 — Component tokens only, each with a fallback; Airbus coverage is by fallback until it opts in — `measured` (§2.5)
+
+New styling reads `--st-component-<name>-*` tokens with semantic or literal fallbacks (§12). `packages/theme-airbus` needs no change for the blocks to render under Airbus; an Airbus-specific override is an additive follow-up in that package, never a precondition.
+
+## 4. Reuse versus new
+
+| Need (`owner-brief`) | Verdict | DS block | Basis (`measured` §2) |
+| --- | --- | --- | --- |
+| 1. Right side panel | Existing component, no change | `UtilityPanel` with `side="right"` (shell); `ContextPanel` inside it when a titled header/footer is wanted; `PanelStack`/`PanelSection` only if sections are later required | `UtilityPanel.svelte` already carries `side`, `mode`, `collapsed`; `ContextPanel.svelte` already carries title/actions/footer and a scrollable body |
+| 1. Comment list items (editable, kind badge, anchor link) | **New component** | `CommentListItem` (§7), composing `Badge`, `Textarea` and §5.2 buttons | No existing list item carries these modes or slots (§2.4) |
+| 2. Eight action icons | Additive extension | Eight new `IconName` entries in `icons.ts` (§5.1) | `icons.ts` is explicitly additive; lucide source already a dependency (`@lucide/svelte`) |
+| 2. Icon button with hover/focus label | Additive composition (new small component, no change to `IconButton` or `Tooltip`) | `LabelledIconButton` (§5.2): `Tooltip` wrapping `IconButton`, `aria-label` = label | `IconButton` has no label surface; `Tooltip` already shows on hover and `:focus-within` (§2.2) |
+| 2. Split icon button (icon + adjacent chevron dropdown) | **New component** composing existing primitives | `SplitIconButton` (§5.3): `ButtonGroup attached` + primary `LabelledIconButton` + `MenuTriggerButton` + `MenuPopover`/`Popper` + `Menu` | The split layout, shared disabled state and two-target focus contract exist nowhere as one block (§2.2, §2.3) |
+| 3. Context menu on a text selection | **New anchoring component**, existing list | `AnnotateContextMenu` (§8): `Menu` list in a `Popper` + `Portal` panel anchored to a host-supplied rect | Every existing menu anchors to a trigger element; none anchors to a rect/point (§2.3) |
+| 3. Context menu on a diagram shape | Same component, same contract | `AnnotateContextMenu` with host-supplied shape bounds | The host resolves the shape via `diagram-canvas` hit testing (§2.6); the DS receives only bounds + items |
+| 4. Element picker (hover highlight, click picks) | **New component** | `ElementPicker` (§9): `Portal` overlay highlight, host predicate/selector, pick descriptor | No picking mode, overlay highlight or pick descriptor exists in the DS (§2.3, §2.4) |
+| Kind badge | Existing component, no change | `Badge` (`tone`, `size="sm"` where dense) | Tones and sizes already cover a kind label (§2.4); tone choice stays host-supplied (Q1, §15) |
+| Edit field inside a list item | Existing component, no change | `Textarea` | Bindable value, label/helper/error and field tokens already exist (§2.4) |
+| Author avatar (optional) | Existing component, host may substitute | `Avatar` in the author slot | The slot (§7) accepts any host rendering; `Avatar.svelte` is the DS default |
+
+Reading rule: "existing component, no change" means the lot adds no prop and no variant to that component. "Additive extension" means existing consumers render byte-identically when the new prop/name is unused — the same additive discipline `Badge.svelte` documents for its `shape`/`size` props and `icons.ts` documents for its name map.
+
+## 5. Icons, the labelled icon button and the split icon button
+
+### 5.1 The eight DS icon names (`CA-D2`)
+
+Additive change to `packages/components-svelte/src/lib/icons.ts`: import the lucide glyphs and extend `GLYPHS`. DS names are lower-case, hyphenated where needed, and name the **action or object the owner listed**, so call sites read in the owner's vocabulary. The glyph column is the lucide component the DS name maps to at implementation; substituting an equivalent lucide glyph later is a visual change that keeps the DS name stable (the `icons.ts` header already guarantees this indirection).
+
+| DS name (`IconName`) | Owner term | Lucide glyph | Used by |
+| --- | --- | --- | --- |
+| `save` | save | `Save` | `CommentListItem` save action; host save controls |
+| `delete` | delete | `Trash2` | `CommentListItem` delete action (with `variant="danger"` on the button) |
+| `cancel` | cancel | `CircleX` | `CommentListItem` cancel action. Distinct from the existing `close` (`X`): `close` dismisses a surface, `cancel` abandons an edit; both stay available and neither is renamed |
+| `annotate` | annotate | `MessageSquarePlus` | Annotate entry points; split-button primary action where the host chooses it |
+| `circle` | circle | `Circle` | Diagram annotation geometry choice (host menu item icon) |
+| `rectangle` | rectangle | `RectangleHorizontal` | Diagram annotation geometry choice (host menu item icon) |
+| `note` | note | `StickyNote` | Note annotation choice (host menu item icon) |
+| `comment` | comment | `MessageSquare` | Comment entry points; panel affordances |
+
+Rules:
+
+- The change is purely additive: no existing key is renamed, removed or remapped. `ICON_NAMES` grows from 8 to 16 entries.
+- Menu items (`Menu.svelte`, `OverflowMenu.svelte`) accept an `icon` that is a component or a string (`measured`); hosts pass the DS glyph through `Icon` (`name="circle"` etc.) or the lucide component, following the existing menu icon mechanism. The DS does not add an icon field typed by `IconName` to `MenuItem` in this specification; if a later lot wants that, it is an additive prop on the item, not a breaking change.
+- Sizes follow `Icon.svelte` defaults (18 px, stroke 2.25) unless a host sets `size`/`strokeWidth`. No icon carries its own colour; colour comes from the button or menu token context.
+
+### 5.2 `LabelledIconButton`: icon button with a hover/focus label (`CA-D3`)
+
+New small component `packages/components-svelte/src/lib/LabelledIconButton.svelte`. It composes, and does not modify, `Tooltip.svelte` and `IconButton.svelte`.
+
+```ts
+type LabelledIconButtonProps = {
+  /** Hover/focus label AND accessible name. The two are the same string by contract. */
+  label: string;
+  /** DS icon rendered inside the button. */
+  icon: IconName;
+  size?: "sm" | "md" | "lg";        // forwarded to IconButton, default "sm" in dense item contexts
+  variant?: "ghost" | "secondary" | "danger"; // forwarded to IconButton
+  disabled?: boolean;
+  tooltipPlacement?: "top" | "bottom";        // forwarded to Tooltip
+  onclick?: (event: MouseEvent) => void;
+  class?: string;
+};
+```
+
+Contract:
+
+- The accessible name equals the label: the component sets `IconButton`'s required `aria-label` to `label`, and `Tooltip`'s `content` to the same `label`. There is no separate `ariaLabel` prop; a host that needs a longer accessible description uses `aria-describedby` on the underlying button through a future additive prop, never a divergent name.
+- The label shows on hover and on keyboard focus (`Tooltip` already keys on `:hover` and `:focus-within`, `measured`). Focus visibility keeps `IconButton`'s `:focus-visible` ring; the tooltip never replaces the focus indicator.
+- The glyph is decorative inside the button (`Icon` without `title`, hence `aria-hidden`): the button name carries the meaning, the glyph never duplicates it for assistive technology.
+- `disabled` forwards to the button; a disabled button shows no tooltip on hover in the base `Tooltip` (pointer events on a disabled button do not focus it) — hosts that must explain a disabled action wrap it in their own toggletip. This limitation is stated, not hidden.
+- The component renders exactly one `<button>`. It adds no text node visible beside the icon: the "instead of text buttons" requirement (`owner-brief` need 2) is met by keeping the label in the tooltip/accessibility layer only.
+
+### 5.3 `SplitIconButton`: primary action plus chevron menu (`CA-D4`)
+
+New component `packages/components-svelte/src/lib/SplitIconButton.svelte`, implementing the owner screenshot shape: a primary icon button with an adjacent chevron dropdown, rendered as one attached group.
+
+```ts
+type SplitIconButtonProps = {
+  /** Primary action label (tooltip + accessible name, via LabelledIconButton). */
+  label: string;
+  icon: IconName;
+  /** Menu trigger accessible name, e.g. the host's "more options" label (§11). */
+  menuLabel: string;
+  items: MenuItem[];                 // Menu.svelte item model, host-supplied
+  size?: "sm" | "md" | "lg";
+  variant?: "ghost" | "secondary" | "danger";
+  disabled?: boolean;                // disables BOTH targets
+  menuDisabled?: boolean;            // disables only the chevron target
+  menuPlacement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+  onPrimary?: (event: MouseEvent) => void;
+  onSelect?: (value: string) => void; // Menu onselect value, host-interpreted
+  class?: string;
+};
+```
+
+Composition and contract:
+
+- Layout: `ButtonGroup attached` (`measured`: joined buttons, outer corners only, hairline between) containing the primary `LabelledIconButton` and a `MenuTriggerButton` (chevron, `aria-haspopup="menu"`). The two targets are separately focusable and separately named; the group carries `role="group"` with a host-supplied group label where the pair needs one.
+- Menu: `MenuPopover` (trigger = the chevron element) containing `Menu` with `dismissOnSelect`. Where `MenuPopover`'s trigger-element anchoring is insufficient the implementation uses `Popper` with the same flip/shift behaviour; the choice between the two measured primitives is an implementation detail of the lot, fixed by whichever passes the §14 witnesses without changing this public contract. Menu keyboard behaviour (arrows, Home/End, Enter/Space, Escape, focus return to the chevron) is inherited from `Menu`/`MenuPopover` and is asserted, not re-implemented (§14).
+- The primary action never opens the menu; the chevron never fires the primary action. `disabled` disables both; closing the menu (Escape, outside pointer-down, selection when `dismissOnSelect`) returns focus to the chevron trigger, matching `OverflowMenu`'s measured close behaviour.
+- No item, label or value is built in. In the annotate UX the host typically sets the primary to `annotate` (create with the last-used geometry) and the menu items to `circle` / `rectangle` / `note` / `comment` entries — that mapping is a host choice shown here as an example, never a DS default.
+
+## 6. Right side panel composition (need 1, shell)
+
+No new panel component. The comment surface is composed as:
+
+```svelte
+<UtilityPanel side="right" mode="reserve" title={messages.panelTitle} label={messages.panelLabel}>
+  <ContextPanel title={messages.listTitle} actions={panelActions}>
+    <!-- one CommentListItem per host-supplied comment, host-ordered -->
+  </ContextPanel>
+</UtilityPanel>
+```
+
+- `UtilityPanel` (`side="right"`) is the shell the brief asks to reuse ("Reuse the existing side-panel component"). `mode` (`reserve` / `overlay` / `floating`) and `collapsed` stay host choices; the DS prescribes none of them.
+- `ContextPanel` supplies the titled header, the actions slot (for example a `SplitIconButton` for "annotate" plus an overflow for panel-level actions) and the single scrollable body. The list scrolls inside `ContextPanel`'s body (`measured`: `overflow: auto`); `CommentListItem` never owns page scroll.
+- If a host later needs a details section under the list, `PanelStack`/`PanelSection` (max 4 sections, single scroll owner, `measured`) is the prescribed composition — noted here so a host does not invent a second accordion. It is not part of the 0.37.0 lots.
+- The panel is a landmark (`<aside>` with `aria-label` from `label ?? title`, `measured` in both panel components). The host supplies the accessible panel name through injected messages (§11); the DS default strings inside the existing panel components ("Context panel" / "Utility panel") are pre-existing DS strings outside this specification's new-string rule and are always overridden by the host in this UX.
+
+## 7. `CommentListItem` (need 1, item)
+
+New component `packages/components-svelte/src/lib/CommentListItem.svelte` (`CA-D5`). It is a controlled rendering of one comment as the host presents it; it owns only local edit-draft state while editing. It is **not** an extension of `StructuredList` or `SelectableList`: those contracts (definition rows; listbox selection) would be broken by edit modes and per-item actions, so a purpose-built item composing their neighbouring primitives is the smaller change (§4).
+
+### 7.1 Props and slots
+
+```ts
+type CommentListItemProps = {
+  /** Opaque anchor value (§0.3). Never inspected; passed back in callbacks. */
+  anchor?: unknown;
+  /** Host-supplied anchor link text. Rendered only when `onAnchorActivate` is set. */
+  anchorLabel?: string;
+  /** Host-supplied kind token (opaque to the DS) and its badge text. */
+  kind: string;
+  kindLabel: string;
+  /** Badge tone for the kind. Host-supplied; the DS maps no kind to a tone (Q1). */
+  kindTone?: "neutral" | "success" | "warning" | "error" | "info";
+  /** Comment body text in read mode. Plain text; no HTML is rendered. */
+  body: string;
+  mode?: "read" | "edit";            // default "read"; controlled when supplied
+  /** Draft text for edit mode. Bindable in the Svelte sense; see §7.3. */
+  draft?: string;
+  editing?: boolean;                 // alias gate: host may drive mode via this flag
+  disabled?: boolean;
+  messages: CommentAnnotateMessages; // §11 — save/cancel/delete/edit labels etc.
+  onSave?: (detail: { anchor: unknown; draft: string }) => void;
+  onCancelEdit?: (detail: { anchor: unknown }) => void;
+  onDelete?: (detail: { anchor: unknown }) => void;
+  onStartEdit?: (detail: { anchor: unknown }) => void;
+  /** Host callback for the anchor link. The DS navigates nowhere itself. */
+  onAnchorActivate?: (detail: { anchor: unknown }) => void;
+  class?: string;
+  // Slots (Svelte snippets):
+  author?: Snippet;   // host rendering, e.g. Avatar + name. DS default: none.
+  time?: Snippet;     // host rendering, e.g. a <time> element. DS default: none.
+  actions?: Snippet;  // host extra actions appended after the DS actions.
+};
+```
+
+Slot rules:
+
+- `author` and `time` are **slots, not strings**: the DS prescribes no author model, no date format and no relative-time wording. The host renders name, avatar (`Avatar.svelte` is available) and timestamp; the DS only places them in the header row. When a slot is absent the header collapses to the kind badge and anchor row without empty placeholders.
+- `actions` appends host controls after the DS actions. Host controls placed there follow §5.2 if they are icon-only; the DS cannot enforce that inside a slot and states it as a host obligation.
+
+### 7.2 Read mode
+
+- Header row: `author` slot, `time` slot, then the kind badge: `Badge` with `tone={kindTone ?? "neutral"}` and text `kindLabel`. `kind` itself is never displayed; it is the host's opaque token echoed in callbacks, so two hosts may use different kind vocabularies over the same component.
+- Anchor row (only when `anchorLabel` and `onAnchorActivate` are both present): the anchor link. It is rendered as a `<button type="button">` styled as a link (the DS has no anchor-navigation component for an in-page jump, and a real `<a href>` would require a URL the DS must not invent). Activation (click, Enter, Space — native button behaviour) calls `onAnchorActivate({ anchor })` with the opaque value unchanged. The host scrolls, highlights or selects the target; the DS moves no focus and changes no selection. The link's accessible name is `anchorLabel`; its visible text is the same string, truncated with ellipsis under panel width with the full text kept in `title` only if the host supplies it — the DS adds no tooltip of its own here.
+- Body: `body` as plain text with preserved line breaks (`white-space: pre-wrap`). No HTML, Markdown or linkification is performed.
+- Actions row (read mode): an edit affordance appears only when `onStartEdit` is supplied: a `LabelledIconButton` with icon `comment` (or the host-chosen entry icon through a future additive prop — 0.37.0 fixes the DS affordance to the messages-driven edit label below) is **not** prescribed. Instead, read-mode editing starts through the host: double-click on the body, an explicit host button in the `actions` slot, or the context menu (§8). `CommentListItem` itself exposes `onStartEdit` as a callback the host wires to its own trigger, and renders a labelled edit icon button (`messages.editLabel`, icon `annotate`) in the actions row **only** when both `onStartEdit` is set and the host has not taken over the row via the `actions` slot alone. This keeps one visible edit entry per host choice and avoids two competing edit buttons.
+- Delete in read mode: rendered only when `onDelete` is set, as `LabelledIconButton` icon `delete`, `variant="danger"`, label `messages.deleteLabel`. Activation calls `onDelete({ anchor })` immediately. The DS shows **no confirmation dialog** (Q2, §15): whether deletion needs confirmation, and what it says, is a host/Focus decision; the DS neither deletes data nor pretends to confirm it.
+
+### 7.3 Edit mode
+
+- Entering edit mode (host sets `mode="edit"`, or the item's internal state flips through `onStartEdit` wiring in uncontrolled use) replaces the body with `Textarea` bound to the draft. The initial draft is `draft ?? body`. The textarea receives focus on entry and its content is selected only if the host requests it through a future additive prop; 0.37.0 places the caret at the end, the least surprising position for appending a correction.
+- Edit actions replace the read actions: save (`LabelledIconButton` icon `save`, label `messages.saveLabel`) and cancel (icon `cancel`, label `messages.cancelLabel`), plus delete (icon `delete`, `variant="danger"`, label `messages.deleteLabel`) when `onDelete` is set. All three are §5.2 buttons: tooltip on hover/focus, accessible name equal to the label, no visible text.
+- Save calls `onSave({ anchor, draft })` with the current draft. The component does **not** switch itself back to read mode on save in controlled use: the host confirms persistence (Focus owns it, §0.2) and then sets `mode="read"` with the new `body`. In uncontrolled use the component returns to read mode optimistically and the host reconciles through props; the lot must implement exactly one of these as the documented default — controlled — and treat uncontrolled as a convenience wrapper over it, never a second state machine.
+- Cancel calls `onCancelEdit({ anchor })` and discards the draft (restores `draft` to `body` on next entry). No callback carries the discarded text.
+- Empty-draft rule: save with a draft that is empty or whitespace-only is **disabled** (save button disabled) rather than an error, unless the host overrides it through a future additive `allowEmptySave` prop. Deletion, not an empty save, is the way to remove a comment. The DS shows no validation message for this case.
+- The DS persists nothing, debounces nothing and autosaves nothing. Every keystroke updates only the local draft binding; the host sees the text at save time (and live through the bindable `draft` if it binds it).
+
+### 7.4 Keyboard and focus behaviour
+
+- Tab order inside the panel is DOM order: anchor link (read mode) → edit/delete actions → next item. In edit mode: textarea → save → cancel → delete. No roving tabindex is introduced; a long comment list stays reachable item by item, matching the panel's scroll-owner design (§6).
+- `Escape` in edit mode cancels the edit (same as the cancel button) when the event target is the textarea or an edit action, and returns focus to the element that entered edit mode (the host trigger if it is still mounted, else the item's anchor link, else the item root made focusable only for this restore). `Escape` in read mode does nothing in the item; panel-level Escape handling stays with the host/panel.
+- `Ctrl+Enter` (and `Cmd+Enter` on macOS platforms, detected via `metaKey`) in the textarea saves, matching the save button. Plain `Enter` inserts a line break; the DS never repurposes it.
+- Focus is never trapped. Leaving the item by Tab while editing keeps the draft (no auto-cancel, no auto-save); the host is notified only through the bindings it holds.
+- When an item is removed by the host after delete, focus management is the host's list responsibility; the DS obligation is limited to not holding focus in a detached node: the item removes its listeners on destroy and never calls `focus()` after unmount.
+
+### 7.5 What the item never does
+
+It never renders `anchor` (no `JSON.stringify`, no attribute, no `data-*` echo), never derives `kindLabel` from `kind`, never formats `time`, never sorts or filters a list (there is no list component in this specification; the host maps its comments to items), and never disables the anchor link based on anchor content — a host that knows an anchor no longer resolves disables the link itself by omitting `onAnchorActivate` or by its own disabled handling (Q3 covers the unresolved-anchor presentation if the owner wants a DS state for it).
+
+## 8. Context menu (need 3)
+
+New component `packages/components-svelte/src/lib/AnnotateContextMenu.svelte`. One component serves both targets in the brief — a text selection and a diagram shape — because at the DS boundary both are the same thing: **a rectangle on screen plus a host-supplied item list**. The DS never learns which kind of target produced the rectangle.
+
+### 8.1 Props
+
+```ts
+type AnnotateContextMenuProps = {
+  open: boolean;                              // controlled; host opens/closes
+  /** Viewport rectangle to anchor to: a selection rect or shape bounds.
+      DOMRectReadOnly or the plain shape below; coordinates are client coords. */
+  anchorRect: { top: number; left: number; right: number; bottom: number;
+                width: number; height: number } | null;
+  /** Alternative anchor: a point (pointer position). Converted to a 0×0 rect. */
+  anchorPoint?: { x: number; y: number } | null;
+  items: MenuItem[];                          // Menu.svelte model, host-supplied
+  label: string;                              // menu accessible name (§11)
+  placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+  onSelect?: (value: string) => void;         // host interprets the value
+  onClose?: () => void;                       // DS requests close; host sets open=false
+  class?: string;
+};
+```
+
+Exactly one of `anchorRect` / `anchorPoint` is supplied per opening; `anchorRect` wins if both are set. The host typically builds `anchorRect` from `Selection.getRangeAt(0).getBoundingClientRect()` (union of `getClientRects()` for a multi-line selection — host choice) or from a diagram shape's device-space bounds (host converts world bounds through its camera, §2.6; the DS receives client coordinates only).
+
+### 8.2 Opening
+
+- The DS does not attach `contextmenu` listeners to host content. The **host** listens (on its text container or diagram surface), calls `preventDefault()` where it wants to replace the native menu, computes the rectangle, sets `items`, and sets `open = true`. This keeps the DS out of the host's event policy: which elements offer the menu, and whether the native menu is suppressed, are host decisions.
+- Keyboard opening is likewise host-initiated with a DS-defined contract: when the host's target has keyboard focus, `Shift+F10` or the `ContextMenu` key opens the menu with `anchorRect` set to the target's bounds (a focused shape's bounds, or the current selection rectangle; for a collapsed caret the host supplies the caret rectangle or the focused element's bounds). The lot ships a small exported helper, `isContextMenuKey(event: KeyboardEvent): boolean`, so every host implements the same key test (`event.key === "F10" && event.shiftKey || event.key === "ContextMenu"`) instead of copying it. The helper is pure and framework-free.
+- On open, focus moves to the first enabled menu item (the `OverflowMenu` measured behaviour). The element that had focus before opening is captured by the component for focus return (§8.4).
+
+### 8.3 Items and selection
+
+Items use the existing `MenuItem` model (`Menu.svelte`, `measured`): action items with `label`, `value`, optional `disabled`, `danger` and `icon`, plus dividers and group labels. The annotate host typically supplies items such as comment / annotate / circle / rectangle / note with the §5.1 icons — again a host mapping, never a DS default list. Selection calls `onSelect(value)` and, following `Menu`'s `dismissOnSelect` behaviour, requests close through `onClose`. Disabled items are skipped by keyboard navigation (inherited roving-tabindex logic in `Menu.svelte`).
+
+### 8.4 Closing, focus return, viewport collision
+
+- `Escape` closes (requests `onClose`) and returns focus to the element captured at open (or to a host-supplied return target through a future additive prop; 0.37.0 uses the captured element, falling back to no focus call if it was removed). Outside pointer-down closes without selecting. Both behaviours are inherited from the measured `Menu` + `MenuPopover`/`Popper` stack and are asserted by the lot witnesses rather than re-implemented where inheritance already covers them.
+- Viewport collision is covered by `Popper.computePosition` (`measured`): flip to the opposite side when the panel would overflow, shift along the cross axis to stay inside the viewport. The lot must wire the rectangle anchor into Popper's anchor-rect input (Popper today takes an `HTMLElement`; the lot either adds an internal rect-anchor path to `AnnotateContextMenu` using the exported pure `computePosition`, or extends `Popper` additively with an optional rect anchor — see the lot note in §14, CA-L3). `MenuPopover`'s available-space `max-height` clamp (8 px margin, 160 px floor, `measured`) is the fallback behaviour the menu list inherits for long item lists.
+- While open, scroll/resize of any scroll container repositions the panel (the measured Popper/MenuPopover listener pattern). If the anchor rectangle leaves the viewport entirely, the menu stays open at the clamped position; auto-close on scroll-away is a host policy, not a DS behaviour.
+
+### 8.5 Non-mutation guarantee
+
+Opening, navigating and selecting in the menu mutates no document and no diagram: the component writes only to its own portal subtree, reads `anchorRect` as values, and reports a `value` string. It never calls `Selection`, `Range`, `document.execCommand`, a ProseMirror view, or any diagram API. A host that maps "annotate" to creating an annotation does so in its `onSelect` handler after the DS has finished.
+
+## 9. Element picker (need 4)
+
+New component `packages/components-svelte/src/lib/ElementPicker.svelte`. A host-toggled picking mode over arbitrary host content: hovering highlights the nearest eligible block; a click picks it. The pattern is the "select element" mode the brief cites from Claude's tooling, specified here as a DS interaction with no tooling dependency.
+
+### 9.1 Props and pick descriptor
+
+```ts
+type ElementPickerPick = {
+  /** The picked element (live host DOM node). The DS keeps no copy. */
+  element: HTMLElement;
+  /** Bounding rectangle at pick time, client coordinates (DOMRect snapshot values). */
+  bounds: { top: number; left: number; right: number; bottom: number;
+            width: number; height: number };
+  /** FE-2 paragraph identity when the element carries one (§9.4); else undefined. */
+  identity?: string;
+  /** Host-derived identity from the `identify` callback, when supplied. */
+  hostIdentity?: unknown;
+};
+
+type ElementPickerProps = {
+  active: boolean;                            // host toggles the mode
+  /** Subtree the picker operates over. Defaults to document.body. */
+  root?: HTMLElement | null;
+  /** CSS selector for eligible blocks (see §9.2). */
+  selector?: string;
+  /** Predicate alternative; wins over `selector` when both are set. */
+  isEligible?: (element: HTMLElement) => boolean;
+  /** Optional host identity derivation, called once per pick. */
+  identify?: (element: HTMLElement) => unknown;
+  messages: CommentAnnotateMessages;          // §11 — picker instructions / announcements
+  onPick?: (pick: ElementPickerPick) => void;
+  onCancel?: () => void;
+  onHoverChange?: (element: HTMLElement | null) => void; // optional host echo
+  class?: string;
+};
+```
+
+### 9.2 Eligibility and hover resolution
+
+- An element is eligible when it matches `selector` (via `closest` semantics from the event target) or when `isEligible(element)` returns true for it or its nearest ancestor that satisfies the predicate. The host defines what a "block" is: for plain content a selector such as `p, li, h1, h2, h3, section, figure, [data-block]`; inside a `RichTextEditor` the FE-2 paragraphs (elements carrying `data-paragraph-id`, §9.4). The DS ships no default selector — a default would guess the host's document structure.
+- Hover handling listens on `root` in the capture phase for `pointermove`/`pointerover` (the lot fixes one; capture so host stop-propagation does not blind the picker) and resolves the nearest eligible ancestor of `event.target`. Moving within the same block does not re-trigger highlight work; moving to a new block moves the highlight; leaving `root` clears it.
+- The highlight never selects text, never focuses the hovered block, and never calls `preventDefault` on hover. Scrolling while active repositions the highlight against the last hovered element (recomputed from `getBoundingClientRect()` on scroll/resize, the Popper listener pattern).
+
+### 9.3 The overlay highlight (outside the content DOM)
+
+- The highlight is a single absolutely-positioned rectangle rendered through `Portal` into `document.body` (or a host overlay target via a future additive prop), with `position: fixed` coordinates copied from the hovered element's `getBoundingClientRect()`, `pointer-events: none`, and styling from component tokens only (§12): outline/border, translucent background, `z-index` above content and below menus/tooltips. It is a sibling of the content, never a child of it.
+- **ProseMirror rule (blocking, `fe2-spec`):** the picker performs zero writes inside a ProseMirror view — no `classList`, no `style`, no attribute, no inserted node on any editor descendant. All drawing happens in the portal overlay; all reading is `getBoundingClientRect()` / attribute reads. A `MutationObserver` witness over the editor subtree during a full hover+pick cycle must observe no DS-caused mutation (§14). This is what keeps the picker compatible with Tiptap in-place editing: ProseMirror's own DOM reconciliation is never disturbed, and undo/selection state is untouched.
+- The same rule covers non-editor content: the picker adds no class or attribute to hovered host elements either. Hosts that need a persistent "picked" mark render it themselves from the returned descriptor.
+
+### 9.4 FE-2 identity return
+
+When the picked element is a paragraph of a `RichTextEditor` (FE-2), its `data-paragraph-id` attribute (`fe2-spec` §5.2 of that specification: ProseMirror attribute `paragraphId` rendered as `data-paragraph-id`) is read and returned as `pick.identity`. This is the same identity Focus uses for its block/paragraph anchors (`h-cond-plan`, `unverified`: the block anchor reuses the h2a #378 node identity, identical to the FE-2 paragraph ids — Appendix A). The picker allocates no identity, strips none, and — when the picked block is not an editor paragraph — returns `identity: undefined` and lets the host derive `hostIdentity` through `identify` (for example a `data-*` id of its own, or a diagram occurrence reference for a shape rendered as DOM). SVG-rendered diagram shapes that are not `HTMLElement` blocks are out of the picker's element model; diagram picking stays with the host's hit testing (§2.6) feeding §8.
+
+### 9.5 Pick, cancel, keyboard equivalent, announcements
+
+- **Pick:** a primary-button click while a block is highlighted calls `onPick(descriptor)` and the host typically sets `active = false`. The picker calls `preventDefault()` (and stops propagation) on that click only, so the underlying block's own click behaviour (link navigation, button activation, editor caret placement) does not also fire. It does not move focus or selection as part of the pick.
+- **Cancel:** `Escape` while active calls `onCancel()`, clears the highlight and leaves focus where it was. The host toggles `active` off; the component also self-clears its overlay if `active` stays true (defensive, asserted in tests). Toggling `active` off by any means removes every listener the picker registered (asserted by the lifecycle witness pattern FE-2 uses: no listener, observer or task survives deactivation/unmount).
+- **Keyboard equivalent (blocking):** picking must not be pointer-only. While active, the picker maintains a keyboard candidate: `Tab` / `Shift+Tab` moves the candidate through eligible blocks in DOM order (starting from the currently focused element's block, or the first eligible block), arrow keys move to the previous/next eligible block where the host content has no conflicting arrow behaviour the host has claimed, `Enter` picks the candidate (same descriptor as a click), `Escape` cancels. The keyboard candidate and the hover highlight are the same visual overlay; moving the pointer takes the candidate over from the keyboard position. Focus itself is not stolen: key handling is scoped to `root` with a documented host opt-out (`isEligible`-style `keyHandling: "full" | "off"` additive prop reserved; 0.37.0 ships `full` handling active only while `active` is true, and the host disables the mode where it conflicts).
+- **Screen-reader announcement:** a visually-hidden `aria-live="polite"` region inside the portal overlay announces, through injected messages (§11): activation (`messages.pickerActiveLabel`, for example "element selection active" in the host's language), the highlighted block's host-supplied description when the host provides one through an additive `describe` callback (reserved; 0.37.0 announces the activation and the pick/cancel outcomes only — `messages.pickerPickedLabel` / `messages.pickerCancelledLabel` with no block content echoed, because block text announcement is a host content decision). The overlay rectangle itself is `aria-hidden`: it is a visual affordance, and the live region is the accessible equivalent.
+- Touch: a tap resolves like a click (first tap highlights and picks in one gesture; hosts on touch-first surfaces accept this or keep the mode desktop-scoped — stated as a host choice, not a DS promise of a two-step touch flow).
+
+## 10. Frameworks: Svelte first, staged parity
+
+Svelte is the delivery framework for 0.37.0 (`CA-D8`), per DS practice (§2.8) and the FE-2 precedent. The parity plan per framework:
+
+| Framework | Package (measured version) | Plan | Claimed when |
+| --- | --- | --- | --- |
+| Svelte | `@sentropic/design-system-svelte` 0.36.0 → **0.37.0** | All blocks in §5–§9 delivered here first, exported from the Svelte barrel (`packages/components-svelte/src/lib/index.ts`, one `export` per component, `measured` pattern). | The §14 gates pass on the Svelte lots. |
+| React | `@sentropic/design-system-react` 0.38.0 | Staged parity lot after the Svelte gate: same DS names, same props translated to React conventions (callbacks as props, `messages` object identity-stable), icon catalogue extended with the same eight names (its `catalog` module, §2.8). `AnnotateContextMenu`/`ElementPicker` port their logic; no Svelte runtime is imported. | Its own lot gate (component tests + the same RED witnesses translated) passes. Until then: **not delivered**, and docs/catalogues must not list it. |
+| Vue | `@sentropic/design-system-vue` 0.38.0 | Same staged parity, after React or in parallel as a separate lot; identical DS names and message keys. | Same rule: gate first, claim after. |
+| Angular | `@sentropic/design-system-angular` 0.38.0 | Staged parity last, following the measured Angular posture in FE-2 (partial compilation; its suite qualifies the module graph under JIT and a consumer AOT/linker build is the real gate). If resourcing defers Angular, the deferral is recorded in the lot and the Angular package simply lacks the blocks — it never ships a placeholder. | A real consumer AOT/linker build plus the translated witnesses pass; otherwise reported as deferred, not as delivered. |
+
+No framework-neutral helper package is created by this specification. The only pure helper, `isContextMenuKey` (§8.2), ships from the Svelte package as a named export and is re-implemented (three lines, test-pinned to the same key table) in each parity port rather than extracted prematurely; if a second shared helper appears, extraction into a neutral module becomes its own additive lot.
+
+## 11. i18n: injected labels, no hard-coded language
+
+- Every user-visible or accessibility string owned by the new blocks comes from one host-supplied messages object. Component sources contain no natural-language literal for these strings (the FE-2 RED-8 discipline: render with sentinel messages and scan the DOM; a source scan asserts no built-in label remains — applied per lot in §14).
+- Message shape (Svelte; parity ports keep the same keys):
+
+```ts
+type CommentAnnotateMessages = {
+  // CommentListItem
+  saveLabel: string;        // tooltip + accessible name of the save icon button
+  cancelLabel: string;      // cancel icon button
+  deleteLabel: string;      // delete icon button
+  editLabel: string;        // read-mode edit icon button (when rendered, §7.2)
+  // SplitIconButton / menus (per-call labels may override per instance)
+  menuLabel: string;        // default menu accessible name where a call site omits one
+  // AnnotateContextMenu
+  contextMenuLabel: string; // menu aria-label fallback
+  // ElementPicker
+  pickerActiveLabel: string;    // live-region announcement on activation
+  pickerPickedLabel: string;    // announcement after a pick
+  pickerCancelledLabel: string; // announcement after Escape/cancel
+  // Panel composition (§6) — supplied by the host at the composition site
+  panelTitle: string;
+  panelLabel: string;
+  listTitle: string;
+};
+```
+
+Per-instance props (`label`, `anchorLabel`, `kindLabel`, `menuLabel`, the menu `label`, item labels) are also host-supplied strings and follow the same rule. The DS fixes no wording, no locale and no pluralisation for any of them.
+
+- **Missing-key marker (fixed form):** when a key is absent from the supplied catalogue (host passes a partial object), the component renders the explicit marker `⟦untranslated:comment-annotate.<key>⟧` as the visible/accessible text and sets `data-untranslated="comment-annotate.<key>"` on the same element — the FE-2 marker discipline (`fe2-spec` §5.7 of that specification) under this specification's own namespace. The marker is never replaced by a hard-coded French or English string and never presented as a translation. `CommentAnnotateMessages` is typed with all keys required; the partial-catalogue case arises only when a host casts, and the marker is the defined behaviour then.
+- Changing `messages` (locale switch) re-renders labels in place: no remount, no state loss (an in-progress draft survives), caret/selection in the textarea preserved. Hosts resolve catalogues at build/production time; the DS ships no catalogue and fetches none. The host document `lang` is a host concern.
+
+## 12. Theming: component tokens only; Airbus coverage
+
+New styling reads component tokens with fallbacks, following the measured pattern (§2.5). No global (`--st-*` foundation/semantic) token is added or changed by these lots, and no component hard-codes a colour, shadow or radius that a token names.
+
+| Component | Component tokens (all new, additive) | Fallback behaviour |
+| --- | --- | --- |
+| `CommentListItem` | `--st-component-commentListItem-background`, `-border`, `-radius`, `-padding`, `-gap`, `-bodyText`, `-metaText`, `-anchorText` | Semantic surface/text/border fallbacks; renders the base appearance under every current theme, Airbus included |
+| `LabelledIconButton` | none of its own | Inherits `IconButton` (`--st-component-iconButton-*`) and `Tooltip` (`--st-component-tooltip-*`) tokens unchanged |
+| `SplitIconButton` | `--st-component-splitIconButton-divider` (the hairline between the two targets) | Falls back to `--st-semantic-border-subtle`; layout itself reuses `ButtonGroup`, `IconButton`, menu tokens |
+| `AnnotateContextMenu` | none of its own | Reuses `Menu`/`MenuPopover`/`Popper` tokens (`--st-component-menu-*`, `--st-component-popover-zIndex`) unchanged |
+| `ElementPicker` (overlay) | `--st-component-elementPicker-outline`, `-outlineWidth`, `-background`, `-radius`, `-zIndex` | Outline falls back to `--st-semantic-border-interactive`, background to a translucent semantic surface; must stay visible over text and diagram fills alike (contrast witnessed per theme in the lot) |
+
+Airbus check (`measured`, §2.5): `packages/theme-airbus` emits no `iconButton`/`tooltip`/`menu`/`contextPanel`/`utilityPanel` overrides and would emit none of the table's new tokens either, so under `@sentropic/design-system-theme-airbus` every block renders from semantic fallbacks — the same posture those components have today. That is sufficient coverage for 0.37.0 (`CA-D10`): the Airbus package needs no change, and a later Airbus override (for example a flatter item anatomy matching its measured `field`/`tag` style) is an additive change inside `packages/theme-airbus` only. Both Airbus modes (light `airbus`, dark `airbus-dark`) inherit this through their semantic layers; the picker overlay's dark-mode visibility is part of the §14 witness set, asserted on computed styles rather than assumed.
+
+## 13. The anchor amendment point (single, delimited)
+
+When Focus freezes its anchor contract, exactly **one** place in the DS changes:
+
+1. In `packages/components-svelte/src/lib/CommentListItem.svelte` (and its parity ports), the type of the `anchor` prop — today `unknown` — is replaced by the frozen host anchor type imported from the host/Focus package **at the composition site**, or the prop is narrowed through a generic parameter (`CommentListItem<Anchor>`) if the DS must stay Focus-import-free. The DS preference, stated now so the amendment is mechanical: keep the DS package free of any `@sentropic/focus` import (§0.2) and narrow through a **generic type parameter with `unknown` as its default**, so existing hosts compile unchanged and Focus hosts opt into the precise type.
+2. The callbacks `onSave` / `onCancelEdit` / `onDelete` / `onStartEdit` / `onAnchorActivate` carry `anchor` in their detail payloads; their payload types follow the same generic parameter automatically. No runtime code changes: the value was always passed through untouched.
+3. Nothing in `AnnotateContextMenu` or `ElementPicker` mentions the anchor type (the picker returns an element `identity` string, §9.4; turning it into an anchor is host work), so the amendment cannot spread there.
+
+Until that amendment, any DS code that branches on `anchor` content, renders it, or persists it is a specification violation, witnessed by a source scan in the lots (no `anchor` identifier appears outside prop declarations and callback payload forwarding in `CommentListItem`).
+
+Appendix A restates the h-cond planned fields (`unverified`) that the amendment is expected to type. If the frozen contract differs from Appendix A, Appendix A is updated in the same amendment commit and nowhere else.
+
+## 14. Lots, gates and RED witnesses
+
+Ordered lots. Each lot is RED-first: its witnesses are written and observed failing before the implementation, then passing. Commands use the measured workspace scripts (root `package.json`: `build`, `check`, `test`, `verify`; Svelte package test is `vitest run src`, `measured` in FE-2 §2.1). Target release: `@sentropic/design-system-svelte` **0.37.0** (next minor from 0.36.0) containing CA-L1…CA-L5; parity lots release with their own packages' next versions and are not part of the 0.37.0 claim. No lot writes under `.track/`, uses the network, or uses Python.
+
+### CA-L1 — Icons and `LabelledIconButton`
+
+- Files: [M] `packages/components-svelte/src/lib/icons.ts` (eight additive names, §5.1); [N] `packages/components-svelte/src/lib/LabelledIconButton.svelte`; [N] `LabelledIconButton.test.ts`; [M] `packages/components-svelte/src/lib/index.ts` (barrel export); icon catalogue assertion extended in [M] `packages/components-svelte/src/lib/Icon.test.ts` if the lot finds the catalogue test there, otherwise a new `icons.test.ts`.
+- RED witnesses (jsdom, `@testing-library/svelte`): `ICON_NAMES` contains exactly the eight new names plus the eight existing ones, with existing mappings unchanged; `LabelledIconButton` renders one `<button>` whose accessible name equals the supplied sentinel label, shows the tooltip text on focus and on hover, renders the glyph `aria-hidden`, and forwards `disabled`/`variant`/`size`.
+- Gate: `npm --workspace @sentropic/design-system-svelte run check` and the targeted `vitest run src` for the new/changed test files pass; existing Svelte suite shows no new failure.
+
+### CA-L2 — `SplitIconButton`
+
+- Files: [N] `packages/components-svelte/src/lib/SplitIconButton.svelte` + `SplitIconButton.test.ts`; [M] barrel export.
+- RED witnesses: primary click fires `onPrimary` and never opens the menu; chevron click/Enter/ArrowDown opens the menu and moves focus to the first enabled item; selection fires `onSelect(value)` and returns focus to the chevron; Escape closes with focus returned; `disabled` disables both targets; the two targets have distinct accessible names (primary label, `menuLabel`).
+- Gate: same workspace check + targeted tests; the menu keyboard assertions reuse the `Menu` item model unchanged (no fork of `Menu.svelte`).
+
+### CA-L3 — `AnnotateContextMenu`
+
+- Files: [N] `packages/components-svelte/src/lib/AnnotateContextMenu.svelte` + `AnnotateContextMenu.test.ts`; [N] the pure helper `isContextMenuKey` exported from the same module (or a sibling `context-menu-key.ts` if the lot prefers; the barrel exports it either way); [M] barrel exports. Lot note on positioning: implement rect anchoring on the exported pure `Popper.computePosition` inside the component, or add an optional rect-anchor prop to `Popper.svelte` — either is acceptable; silently forking flip/shift arithmetic into the new component is not.
+- RED witnesses: given a host rect, the panel renders in the portal at the computed position; a rect near the viewport bottom flips/shifts the panel inside the viewport (asserted on computed style against jsdom rect stubs, plus a real-layout check where the existing DS browser harness is available — `unverified` which harness the lot will use until it inspects the current docs app, stated here so the lot measures it first); `onSelect` carries the item `value`; Escape requests close and focus returns to the pre-open element; opening/navigating/selecting performs zero writes to a fixture document's selection and content (asserted via a `MutationObserver` log and an unchanged `Selection` string); `isContextMenuKey` accepts Shift+F10 and ContextMenu and rejects plain F10/Enter.
+- Gate: workspace check + targeted tests; no change to `Menu.svelte` item semantics (a diff there must be justified as additive or the lot fails its own gate).
+
+### CA-L4 — `CommentListItem`
+
+- Files: [N] `packages/components-svelte/src/lib/CommentListItem.svelte` + `CommentListItem.test.ts`; [N] the messages type in a sibling module (`comment-annotate-messages.ts`) shared by CA-L3/CA-L5 components; [M] barrel exports (component + `CommentAnnotateMessages` type).
+- RED witnesses: read mode renders kind badge text `kindLabel` (sentinel), anchor button with text `anchorLabel`, body as text (a `<script>`-shaped body string renders as text, never as markup); anchor activation carries the exact opaque `anchor` object by reference (`toBe` on the payload); edit mode shows the draft in a textarea, save fires `onSave` with `{ anchor, draft }`, cancel discards (re-entry shows `body`), `Ctrl+Enter` saves, `Escape` cancels with focus restored, whitespace-only draft disables save; delete fires `onDelete` with no dialog rendered; the `anchor` value appears nowhere in the rendered DOM (attribute/text scan); labels render from sentinel `messages` and a missing key renders `⟦untranslated:comment-annotate.<key>⟧` with `data-untranslated` set (§11).
+- Gate: workspace check + targeted tests; §13 source scan (no `anchor` branching) runs as a test or lint assertion in this lot.
+
+### CA-L5 — `ElementPicker`
+
+- Files: [N] `packages/components-svelte/src/lib/ElementPicker.svelte` + `ElementPicker.test.ts`; [M] barrel exports (component + `ElementPickerPick` type). Real-layout assertions (rect following, scroll repositioning) use the repository's existing browser harness pattern (puppeteer-core against a system Chromium, `measured` precedent in FE-2 §2.1) as a separate `ElementPicker.browser.test.mjs` excluded from the jsdom run by the same explicit-exclusion discipline FE-2 prescribes — the lot first measures how the current Svelte package excludes browser files and follows that, `unverified` until measured.
+- RED witnesses: with `active` and a selector fixture, hovering highlights the nearest eligible ancestor (overlay rect equals the block's stubbed/computed rect, overlay lives under `document.body`, not inside the fixture subtree); click picks with `{ element, bounds }` and the fixture's own click handler does not fire; a fixture paragraph carrying `data-paragraph-id` returns it as `identity` (§9.4) and the editor-fixture subtree shows zero DS mutations (`MutationObserver` log empty across hover+pick, ProseMirror-shaped fixture included); Escape cancels with no pick; keyboard: Tab/arrow candidate movement + Enter picks the same descriptor a click would; the live region announces the sentinel activation/picked/cancelled messages; deactivation/unmount removes all listeners (FE-2-style accounting on `root`, `document`, `window`).
+- Gate: workspace check + targeted jsdom tests + the browser witness file passing under its harness; the no-mutation witness is a release blocker, not a warning.
+
+### CA-L6 — Composition witness, docs and the 0.37.0 gate
+
+- Files: [N] a docs/showcase composition in the existing docs app (`apps/docs`) wiring §6 (UtilityPanel + ContextPanel + CommentListItem list + SplitIconButton + context menu + picker over a fixture page) with sentinel-free real injected messages in one language supplied by the docs host; [M] `packages/components-svelte/package.json` version 0.36.0 → 0.37.0 at release time only.
+- Witnesses: the composition renders under the base theme and under `@sentropic/design-system-theme-airbus` (both modes) with no missing-token visual break (picker overlay visible on both, asserted on computed outline/background); `npm run verify` at the root (licensing + check + test + `pack:smoke`, `measured`) passes with the new exports in the tarball; the licensing/notices state is unchanged unless a dependency was added (none is planned: lucide is already a dependency).
+- Gate: root `npm run verify` green; no React/Vue/Angular catalogue or doc lists the new blocks (§10 claim rule).
+
+### CA-L7… — Framework parity (staged, after CA-L6)
+
+One lot per framework in the §10 order (React, then Vue, then Angular), each translating the CA-L1…CA-L5 witnesses before implementing, each ending at its own package gate (Angular: plus a consumer AOT/linker build, §10). A parity lot that cannot be resourced is recorded as **deferred** in the release notes; the framework package then lacks the blocks and claims nothing.
+
+## 15. Open questions to the owner
+
+Only questions that cannot be settled from the sources are listed. Answer as « Q1 A », « Q2 B », etc. Each question blocks only the lot named; the rest of the lots proceed.
+
+**Q1 — Kind badge tone mapping (blocks CA-L4's default, not its structure).** §7 takes `kindTone` from the host and maps no kind to a tone, because the kind vocabulary itself is host/Focus-owned and unfrozen (§0.3). Options:
+- **A (recommended):** host-supplied tone per item, as specified. The DS stays kind-agnostic; Focus decides that, for example, its text/block/diagram kinds get distinct tones.
+- **B:** the DS fixes a tone per h-cond planned kind (`text` / `block` / `diagram`, Appendix A) now. Faster for the first host, but it freezes an `unverified` vocabulary into DS visuals and must be revisited at the §13 amendment.
+- **C:** no tone at all — every kind badge renders `neutral`. Simplest; loses the at-a-glance kind distinction in a mixed list.
+
+**Q2 — Delete confirmation ownership (blocks only the wording of §7.2's no-dialog rule).** §7.2 specifies no DS confirmation, because the DS deletes nothing (§0.2). Options:
+- **A (recommended):** confirmation, if wanted, is a host/Focus dialog around `onDelete`. The DS rule stands as written.
+- **B:** `CommentListItem` gains an inline confirm state (delete button turns into confirm/cancel icon pair for a few seconds). Self-contained, but the DS then owns a destructive-action policy and its labels/timeout need owner wording.
+- **C:** no confirmation anywhere, stated as a product rule. The DS rule stands and the host is told not to add one.
+
+**Q3 — Unresolved-anchor presentation (blocks nothing in 0.37.0 unless answered B).** When a host knows an anchor no longer resolves (its target was edited away), §7.5 leaves presentation to the host. Options:
+- **A (recommended):** host handles it (omits `onAnchorActivate` or styles its own state). No DS change.
+- **B:** `CommentListItem` gains an additive `anchorState: "resolved" | "unresolved"` prop rendering the anchor link disabled with an injected `messages.anchorUnresolvedLabel`. Small, but it starts typing anchor lifecycle in the DS before the §13 freeze.
+- **C:** the item renders an additional unresolved badge (host-supplied label) beside the kind badge. Most visible; same pre-freeze concern as B.
+
+**Q4 — Context-menu items for the diagram case: geometry actions in-menu or split-button only (blocks CA-L3's example fixtures, not its contract).** The contract (§8) is item-agnostic either way; the question is which surface the owner wants the first host to use for circle/rectangle/note. Options:
+- **A (recommended):** both surfaces allowed; the first host puts geometry choices in the context menu (right-click a shape → annotate as circle/rectangle/note) and keeps the split button for panel-level creation. §8's fixtures follow this.
+- **B:** geometry choices only in the split-button menu; the diagram context menu carries comment/annotate entries without geometry. One creation surface fewer to learn.
+
+## 16. NOT covered
+
+Exhaustive list of what this specification and its lots do **not** deliver. Anything not listed as delivered in §4–§14 and excluded here is `unknown` and must not be assumed.
+
+1. **Comment / annotation data model** — no comment type, no thread/reply structure, no resolved/open state, no ordering, no pagination. The host maps its model to `CommentListItem` props. (Focus-owned, §0.2.)
+2. **Anchors** — no anchor creation, resolution, re-anchoring after edits, or unresolved detection. The DS carries the opaque value only (§0.3, §13). The h-cond planned selectors (Appendix A) are not implemented, validated or frozen here.
+3. **Persistence and edit return** — no storage, no network, no save transport, no Focus return envelope, no diff. `onSave` hands the draft to the host; what happens next is Focus/host work.
+4. **Document or diagram mutation** — no text insertion, no selection changes, no shape creation or geometry editing. Diagram annotation geometry (a circle/rectangle/note drawn on a diagram or image) is created by the host/diagram surface after `onSelect`/`onPick`; the DS supplies icons and menu/picker surfaces only. `packages/diagram-canvas` / `packages/diagram-core` are not modified and not depended on.
+5. **Rich-text editing** — no editor, no Tiptap integration, no toolbar. FE-2 owns the editor; this specification only reads its published identity attribute in the picker (§9.4).
+6. **A comment list component** — no `CommentList`, threading indentation, grouping, filtering, sorting, search, or "load more". The host composes items inside the §6 panel.
+7. **Creation forms** — no "new comment" composer, no reply box beyond `CommentListItem` edit mode, no mention/autocomplete, no attachment or image upload.
+8. **Presence and collaboration** — no live cursors, no co-editing, no notifications, no unread counts (a host may render a `Badge` count itself; no block here computes one).
+9. **Confirmation, undo and history UI** — no delete confirmation (Q2), no undo toast, no comment history or audit view.
+10. **Native context-menu replacement policy** — the DS does not suppress the browser menu anywhere; the host decides per surface (§8.2). No touch long-press menu is specified (Q4 covers geometry placement only; a long-press gesture is a future additive host/DS decision).
+11. **Framework delivery beyond Svelte in 0.37.0** — React, Vue and Angular blocks are planned (§10) but explicitly **not covered** by the 0.37.0 claim; Angular may remain deferred past its parity lot without blocking Svelte.
+12. **Theme deliverables** — no new theme, no Airbus token overrides in `packages/theme-airbus` (§12 covers rendering by fallback). A measured Airbus visual pass over the new blocks is follow-up work in that package.
+13. **Docs and catalogue publication** — beyond the CA-L6 composition witness, no public docs page, catalogue entry or CDN artefact is specified or claimed.
+14. **Backend, MCP and h2a surfaces** — no endpoint, no MCP tool, no Focus UI. The consuming page and Focus integrate the blocks; their integration code is not DS work.
+15. **Accessibility certification** — the lots assert the keyboard/focus/announcement contracts in §7–§9 with the DS test stack; no external audit or WCAG conformance claim is made by this specification.
+
+## Appendix A. h-cond planned anchor fields — working basis, `unverified`, not frozen
+
+Restated from the commissioning brief so the §13 amendment has its expected input in one place. **None of this is a DS contract.** The DS implements none of it (§0.3); if Focus freezes a different shape, this appendix is rewritten by the amendment and no component contract changes except the §13 type.
+
+- **Common envelope:** `{ kind: text | block | diagram, ...selector, label }` — a `kind` discriminator, kind-specific selector fields, and a display `label`. DS correspondence today: `kind` → the opaque `kind` token, `label` → `anchorLabel`/`kindLabel` as the host splits them; the selector part never reaches the DS.
+- **text:** a W3C TextQuoteSelector `{ tab, sectionId, exact, prefix, suffix, lang }`, plus an `unanchored` fallback for text that no longer matches. DS correspondence: none — text anchoring and re-anchoring are Focus/host work; the DS only reports the picker/menu gestures that start a creation flow.
+- **block:** the Focus node identity of h2a #378 (`targetRef` / paragraph id). Stated by h-cond to be the same identity as the FE-2 rich-text editor's paragraph ids, so the picker stays compatible with Tiptap in-place editing. DS correspondence: §9.4 — when the picked block is a paragraph of a `RichTextEditor` (FE-2), the picker returns that identity (`data-paragraph-id`) in `pick.identity`. Verified on the DS side only up to the FE-2 attribute contract (`fe2-spec`); the identity's Focus meaning remains `unverified`.
+- **diagram:** `{ diagramId, targetIds[], frame: scene | image, geometry (circle | rect | note + coordinates) }`. DS correspondence: none beyond icons (`circle`, `rectangle`, `note`) and the context-menu surface (§8); diagram identity, frames and geometry are produced and stored host/Focus-side.
+
+## Appendix B. File map for the lots
+
+New files use `[N]`, modified files `[M]`. All paths are inside `packages/components-svelte` unless stated.
+
+| Lot | Files |
+| --- | --- |
+| CA-L1 | [M] `src/lib/icons.ts`; [N] `src/lib/LabelledIconButton.svelte`, `src/lib/LabelledIconButton.test.ts`; [M] `src/lib/index.ts` |
+| CA-L2 | [N] `src/lib/SplitIconButton.svelte`, `src/lib/SplitIconButton.test.ts`; [M] `src/lib/index.ts` |
+| CA-L3 | [N] `src/lib/AnnotateContextMenu.svelte`, `src/lib/AnnotateContextMenu.test.ts`; [M] `src/lib/index.ts`; possibly [M] `src/lib/Popper.svelte` (additive rect anchor only, §14 CA-L3 note) |
+| CA-L4 | [N] `src/lib/CommentListItem.svelte`, `src/lib/CommentListItem.test.ts`, `src/lib/comment-annotate-messages.ts`; [M] `src/lib/index.ts` |
+| CA-L5 | [N] `src/lib/ElementPicker.svelte`, `src/lib/ElementPicker.test.ts`, `src/lib/ElementPicker.browser.test.mjs`; [M] `src/lib/index.ts` |
+| CA-L6 | [N] composition under `apps/docs`; [M] `packages/components-svelte/package.json` (version, release step only) |
+| CA-L7+ | Per-framework counterparts under `packages/components-react`, `packages/components-vue`, `packages/components-angular` (names follow each package's measured conventions) |
+
+Export rule for every lot: each new component and public type is exported from the Svelte barrel `packages/components-svelte/src/lib/index.ts` in the same lot that introduces it (the measured one-export-per-component pattern, §2.8). No subpath export is created; none of these blocks pulls a heavy runtime (no Tiptap, no diagram package), so the barrel rule that FE-2 applies to its editor does not apply here.
+
+
