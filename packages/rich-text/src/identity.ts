@@ -7,9 +7,9 @@
 // retired-ID non-reuse belong to the producer/host, never to the component.
 //
 // Runtime note (packaging, spec §11 RED-P): the live ProseMirror plugin is
-// composed in the runtime editor (RT-1+), which owns the `@tiptap/*`
-// imports. This module carries the attribute contract as data plus a
-// descriptor factory, so the neutral core stays runtime-import free.
+// composed in the `"./editor"` entry, which owns the `@tiptap/*` imports.
+// This module carries the attribute contract as data plus a descriptor
+// factory, so the pure entry stays runtime-import free.
 
 /** ProseMirror node attribute carrying the opaque block identity. */
 export const PARAGRAPH_ID_ATTRIBUTE = "paragraphId" as const;

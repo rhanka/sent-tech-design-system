@@ -14,13 +14,13 @@
  * allocator-supplied ID, never `paragraph:forged`. IDs are read from the
  * emitted `RichTextDocument` blocks.
  *
- * RED state (RT-0): the identity plugin and the headless editor are stubs,
- * so every case fails with an `RT-0 RED: … not implemented` error until
- * phase B lands. No case is skipped.
+ * Tiptap entry: split/merge/undo/paste identity assertions exercise
+ * ProseMirror transactions and the live identity plugin through
+ * `createRichTextEditor` from `./editor.js`. No case is skipped.
  */
 import { describe, it, expect } from "vitest";
-import { createHeadlessEditor } from "./editor.js";
-import type { HeadlessEditor } from "./editor.js";
+import { createRichTextEditor } from "./editor.js";
+import type { RichTextEditor } from "./editor.js";
 import type {
   RichTextBlock,
   RichTextChangeEvent,
@@ -43,7 +43,7 @@ function setup(initial: RichTextDocument) {
   const changes: RichTextChangeEvent[] = [];
   let n = 0;
   const allocated: string[] = [];
-  const editor: HeadlessEditor = createHeadlessEditor({
+  const editor: RichTextEditor = createRichTextEditor({
     document: initial,
     messages: MESSAGES,
     allocateId: () => {

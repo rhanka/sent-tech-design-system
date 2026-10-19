@@ -1,25 +1,25 @@
 /**
  * Internal reactivity witness (spec §11, FE-8 surface §13.3). Environment: J.
- * Internal test only: it wraps the headless editor factory and the codec
- * segmentation entry with counters. It is never exported and never part of
- * the public API.
+ * Internal test only: it wraps the Tiptap-bound editor factory and the
+ * "./editor" conversion counters. It is never exported and never part of
+ * the public API; it imports "./editor" explicitly.
  *
  * Observable assertion: across a typing burst, exactly one editor
- * construction and zero destructions; zero whole-document
- * segmentation/parsing calls per keystroke (a keystroke touches only the
- * affected block); preserved blocks' `raw` values identical by value in
- * every emitted document. A stable DOM root, a single `onChange` count, or
- * equality of one `raw` string alone never satisfies this witness: the
- * counters below observe the factory and parsing calls directly.
- *
- * RED state (RT-0): the factory and the codec entries are stubs, so the
- * burst setup fails with an `RT-0 RED: … not implemented` error until
- * phase B lands. No case is skipped.
+ * construction and zero destructions; zero whole-document conversion or
+ * Markdown re-parse calls per keystroke (a keystroke touches only the
+ * affected block, as a ProseMirror transaction); preserved blocks' `raw`
+ * values identical by value in every emitted document. A stable DOM root, a
+ * single `onChange` count, or equality of one `raw` string alone never
+ * satisfies this witness: the counters below observe the factory and the
+ * conversion entries directly.
  */
 import { describe, it, expect } from "vitest";
-import { createHeadlessEditor } from "./editor.js";
-import type { HeadlessEditorOptions } from "./editor.js";
-import { segmentSource } from "./codec.js";
+import { createRichTextEditor } from "./editor.js";
+import type { RichTextEditorOptions } from "./editor.js";
+import {
+  conversionCounters,
+  resetConversionCounters,
+} from "./editor-conversion.js";
 import type {
   RichTextBlock,
   RichTextChangeEvent,
@@ -42,7 +42,7 @@ function preserved(id: string, raw: string, preservedKind: string): RichTextBloc
   return { paragraphId: id, kind: "preserved", raw, preservedKind };
 }
 
-function mountOptions(changes: RichTextChangeEvent[]): HeadlessEditorOptions {
+function mountOptions(changes: RichTextChangeEvent[]): RichTextEditorOptions {
   let n = 0;
   return {
     document: {
@@ -66,9 +66,9 @@ describe("no remount per keystroke", () => {
     let destructions = 0;
     const changes: RichTextChangeEvent[] = [];
     const options = mountOptions(changes);
-    const createCounted = (args: HeadlessEditorOptions) => {
+    const createCounted = (args: RichTextEditorOptions) => {
       constructions += 1;
-      return createHeadlessEditor(args);
+      return createRichTextEditor(args);
     };
     const editor = createCounted(options);
     const destroyCounted = () => {
@@ -87,27 +87,26 @@ describe("no remount per keystroke", () => {
 });
 
 describe("no whole-document reparse per keystroke", () => {
-  it("keystrokes issue zero whole-document segmentation calls", () => {
-    let segmentCalls = 0;
-    const segmentCounted: typeof segmentSource = (source, format) => {
-      segmentCalls += 1;
-      return segmentSource(source, format);
-    };
-    // Baseline: the counter observes the entry directly.
-    expect(typeof segmentCounted).toBe("function");
+  it("keystrokes issue zero whole-document conversion or re-parse calls", () => {
     const changes: RichTextChangeEvent[] = [];
-    const editor = createHeadlessEditor(mountOptions(changes));
-    const callsBefore = segmentCalls;
-    for (const char of "burst") {
+    const editor = createRichTextEditor(mountOptions(changes));
+    resetConversionCounters();
+    const burst = "burst";
+    for (const char of burst) {
       editor.typeText("paragraph:edit", char);
     }
-    expect(segmentCalls).toBe(callsBefore);
+    // One affected block per keystroke: exactly one paragraph serialisation
+    // per keystroke, zero paragraph re-parses, and zero whole-document
+    // conversions across the whole burst.
+    expect(conversionCounters.paragraphSerialize).toBe(burst.length);
+    expect(conversionCounters.paragraphParse).toBe(0);
+    expect(conversionCounters.documentSerialize).toBe(0);
     editor.destroy();
   });
 
   it("preserved blocks keep identical raw values in every emitted document", () => {
     const changes: RichTextChangeEvent[] = [];
-    const editor = createHeadlessEditor(mountOptions(changes));
+    const editor = createRichTextEditor(mountOptions(changes));
     for (const char of "burst") {
       editor.typeText("paragraph:edit", char);
     }

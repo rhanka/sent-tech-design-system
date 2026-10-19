@@ -1,43 +1,54 @@
 /**
- * RED-P — core half: the neutral entry is side-effect free and framework
- * free; the P0 wiring smoke. Spec §11 RED-P split rule, §4.2. Environment:
- * Node (jsdom globals present but untouched).
+ * RED-P — core half: the pure entry loads no editor runtime and no framework
+ * module. Spec §11 RED-P split rule, §4.2. Environment: Node (jsdom globals
+ * present but untouched).
  *
- * RT-0 owns only this core half: importing the neutral core entry loads no
- * DOM global and no framework module. The Svelte-subpath half (barrel
- * isolation, tarball and consumer checks, browser-harness absence) belongs to
- * RT-1 and is not referenced here: neither half uses a conditional skip and
- * RT-0 never imports the subpath. Every RT-0 test passes with no Svelte
- * subpath present.
- *
- * Observable assertion: importing the entry adds no element to the document
- * and resolves no `@tiptap/*`, `prosemirror-*` or framework module (static
- * import-graph scan: every non-test source specifier is relative or `node:`);
- * the entry re-exports the headless and P0 factory entry points; the P0
- * wiring smoke composes the v3 extension set without DOM access.
- *
- * RED state (RT-0): the import-graph assertions hold on the stubs; the P0
- * wiring smoke fails with `RT-0 RED: P0 extensions not wired` until phase B
- * lands. No case is skipped.
+ * RT-0 owns only this "." half: importing `@sentropic/design-system-rich-text`
+ * (the "." entry) touches no `document`/`window` and loads no Svelte, Tiptap
+ * or ProseMirror module, asserted over the transitive import graph reachable
+ * from `src/index.ts` only — a flat scan of every file under `src/` is not
+ * the assertion, because `src/editor.ts` and its `src/editor-*.ts` helpers
+ * legitimately import the editor runtime for "./editor". The Svelte-subpath
+ * half (barrel isolation, tarball and consumer checks, browser-harness
+ * absence) belongs to RT-1 and is not referenced here: neither half uses a
+ * conditional skip and RT-0 never imports the subpath. Every RT-0 test passes
+ * with no Svelte subpath present.
  */
 import { describe, it, expect } from "vitest";
-import { readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { readFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as entry from "./index.js";
 import { createP0Extensions, P0_EXTENSION_NAMES } from "./profile.js";
 
-function sourceSpecifiers(): { file: string; specifier: string }[] {
-  const dir = dirname(fileURLToPath(import.meta.url));
-  const found: { file: string; specifier: string }[] = [];
-  for (const file of readdirSync(dir)) {
-    if (!file.endsWith(".ts") || file.endsWith(".test.ts")) continue;
-    const text = readFileSync(join(dir, file), "utf8");
-    for (const match of text.matchAll(/from\s+["']([^"']+)["']/g)) {
-      found.push({ file, specifier: match[1] as string });
+const SRC_DIR = dirname(fileURLToPath(import.meta.url));
+
+/** Import specifiers of one source file. */
+function specifiersOf(file: string): string[] {
+  const text = readFileSync(join(SRC_DIR, file), "utf8");
+  return [...text.matchAll(/from\s+["']([^"']+)["']/g)].map(
+    (match) => match[1] as string,
+  );
+}
+
+/** Files reachable from `src/index.ts` through relative imports. */
+function pureEntryGraph(): string[] {
+  const seen = new Set<string>(["index.ts"]);
+  const queue = ["index.ts"];
+  while (queue.length > 0) {
+    const file = queue.pop() as string;
+    for (const specifier of specifiersOf(file)) {
+      if (!specifier.startsWith(".")) continue;
+      const target = `${specifier.replace(/\.js$/, "")}.ts`.replace(
+        /^\.\//,
+        "",
+      );
+      if (!seen.has(target)) {
+        seen.add(target);
+        queue.push(target);
+      }
     }
   }
-  return found;
+  return [...seen];
 }
 
 describe("core entry import (RT-0 half of RED-P)", () => {
@@ -47,18 +58,20 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     expect(document.body.innerHTML).toBe(before);
   });
 
-  it("every core import specifier is relative or node: (no runtime, no framework)", () => {
-    const rows = sourceSpecifiers();
+  it("every pure-entry import specifier is relative or node: (no runtime, no framework)", () => {
+    const rows = pureEntryGraph().flatMap((file) =>
+      specifiersOf(file).map((specifier) => ({ file, specifier })),
+    );
     expect(rows.length).toBeGreaterThan(0);
     for (const { file, specifier } of rows) {
       expect(
         specifier.startsWith(".") || specifier.startsWith("node:"),
-        `${file} imports "${specifier}": only relative or node: specifiers allowed in the core`,
+        `${file} imports "${specifier}": only relative or node: specifiers allowed in the pure entry`,
       ).toBe(true);
     }
   });
 
-  it("no core import specifier resolves to a framework or editor runtime", () => {
+  it("no pure-entry import specifier resolves to a framework or editor runtime", () => {
     // Note: profile.ts legitimately names the @tiptap/* packages as P0 data
     // strings; what must stay absent is any import of a runtime module.
     const runtimePrefixes = [
@@ -69,7 +82,10 @@ describe("core entry import (RT-0 half of RED-P)", () => {
       "react",
       "@angular/",
     ];
-    for (const { file, specifier } of sourceSpecifiers()) {
+    const rows = pureEntryGraph().flatMap((file) =>
+      specifiersOf(file).map((specifier) => ({ file, specifier })),
+    );
+    for (const { file, specifier } of rows) {
       for (const prefix of runtimePrefixes) {
         expect(
           specifier.startsWith(prefix),
@@ -79,13 +95,31 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     }
   });
 
-  it("the entry re-exports the headless and P0 factory entry points", () => {
-    expect(typeof entry.createHeadlessEditor).toBe("function");
-    expect(typeof entry.createP0Extensions).toBe("function");
-    expect(typeof entry.createParagraphIdentityPlugin).toBe("function");
-    expect(typeof entry.segmentSource).toBe("function");
-    expect(typeof entry.documentFromSource).toBe("function");
-    expect(typeof entry.sourceFromDocument).toBe("function");
+  it("the pure entry never reaches the editor entry", () => {
+    const graph = pureEntryGraph();
+    for (const file of graph) {
+      expect(
+        file === "editor.ts" || file.startsWith("editor-"),
+        `pure entry must not reach "${file}"`,
+      ).toBe(false);
+    }
+  });
+
+  it("the built pure entry exposes pure helpers and no editor factory or codec", async () => {
+    const built = (await import(
+      resolve(SRC_DIR, "../dist/index.js")
+    )) as Record<string, unknown>;
+    expect(typeof built["copyRichTextDocument"]).toBe("function");
+    expect(typeof built["richTextDocumentsEqual"]).toBe("function");
+    expect(typeof built["decideExternalUpdate"]).toBe("function");
+    expect(typeof built["createCaptureTracker"]).toBe("function");
+    expect(typeof built["createP0Extensions"]).toBe("function");
+    expect(typeof built["createParagraphIdentityPlugin"]).toBe("function");
+    expect("createRichTextEditor" in built).toBe(false);
+    expect("createHeadlessEditor" in built).toBe(false);
+    expect("segmentSource" in built).toBe(false);
+    expect("documentFromSource" in built).toBe(false);
+    expect("sourceFromDocument" in built).toBe(false);
   });
 });
 
@@ -95,7 +129,7 @@ describe("P0 wiring smoke (v3 extension set, no DOM access)", () => {
     expect(P0_EXTENSION_NAMES).not.toContain("@tiptap/extension-history");
   });
 
-  it("composing the P0 extensions returns a non-empty set without touching the document", () => {
+  it("composing the P0 extension descriptors returns a non-empty set without touching the document", () => {
     const before = document.body.innerHTML;
     const extensions = createP0Extensions();
     expect(extensions.length).toBeGreaterThan(0);

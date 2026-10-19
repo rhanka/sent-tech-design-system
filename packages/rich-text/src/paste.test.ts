@@ -29,13 +29,13 @@
  * component suite (RT-1 `RichTextEditor.test.ts` / browser suite); this file
  * asserts the core pipeline at the `RichTextDocument` level.
  *
- * RED state (RT-0): the headless editor is a stub, so every case fails with
- * `RT-0 RED: headless editor not implemented` until phase B lands. No case
- * is skipped.
+ * Tiptap entry: refusal/inert assertions exercise the ProseMirror clipboard
+ * path through `createRichTextEditor` from `./editor.js`. No case is
+ * skipped.
  */
 import { describe, it, expect } from "vitest";
-import { createHeadlessEditor } from "./editor.js";
-import type { HeadlessEditor } from "./editor.js";
+import { createRichTextEditor } from "./editor.js";
+import type { RichTextEditor } from "./editor.js";
 import type {
   RichTextBlock,
   RichTextChangeEvent,
@@ -63,7 +63,7 @@ function setup() {
     format: "focus.markdown.p0@1",
     blocks: [paragraph("paragraph:1", "Alpha"), paragraph("paragraph:2", "Beta")],
   };
-  const editor: HeadlessEditor = createHeadlessEditor({
+  const editor: RichTextEditor = createRichTextEditor({
     document: initial,
     messages: MESSAGES,
     allocateId: () => `paragraph:paste-${++n}`,

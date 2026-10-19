@@ -37,12 +37,31 @@ per-paragraph diff, retains no baseline, and imports no host-side editing
 module. The A → B → R1 → undo → R2 freeze sequence belongs to the h2a FE-3
 host adapter, not to this package.
 
-## `HeadlessEditor` (internal factory surface)
+## Entries: pure `"."` and Tiptap-bound `"./editor"`
 
-`createHeadlessEditor(options)` builds the headless editor: document in,
-document plus gesture out. It copies the supplied document, initialises the
-acknowledgement reference to that copy, and never mutates the caller's
-value. Every emitted document is an independent copy with exact keys.
+`src/index.ts` (entry `"."`) is pure: model, messages, P0 profile
+descriptors, identity attribute contract, document equality plus the §5.6
+decision function and capture/readiness state (`src/document.ts`), and the
+token mapping. It imports no `@tiptap/*`, `prosemirror-*`, framework or DOM
+module. `src/editor.ts` (entry `"./editor"`, with the `src/editor-*.ts`
+helpers) builds the real Tiptap `Editor` from the P0 extensions, carries
+`paragraphId` through a live ProseMirror plugin, converts
+`RichTextDocument` to and from ProseMirror, and converts editable paragraph
+Markdown through `@tiptap/markdown` per paragraph only.
+
+At the DS boundary the round-trip rule is block identity (§6.5): same order,
+same identities, every paragraph `text` and every preserved `raw`
+byte-identical. Full-source byte identity, separators included, is the FE-3
+host splice and is asserted nowhere here.
+
+## `createRichTextEditor` (Tiptap-bound factory surface)
+
+`createRichTextEditor(options)` from `"./editor"` builds the real Tiptap
+editor: document in, document plus gesture out. It copies the supplied
+document, initialises the acknowledgement reference to that copy, and never
+mutates the caller's value. Every emitted document is an independent copy
+with exact keys. Split, merge, undo/redo, paste parsing and Markdown
+conversion are ProseMirror/Tiptap behaviour, never re-implemented.
 
 - `getDocument()` / `getSelection()` — independent copies of the displayed
   document and the logical selection (`anchorParagraphId` plus
@@ -89,19 +108,17 @@ Gesture identifiers (`gestureId`) are component-allocated; fresh block
 identities come from the host-injected `allocateId` (default
 `crypto.randomUUID()`, acceptable only for non-manifest hosts).
 
-## Serialisation
+## Conversion (no DS source segmentation)
 
-`documentFromSource` segments the source into editable paragraphs (bare
-inline slice as `text`) and preserved blocks (verbatim slice as `raw`),
-with `text/plain` mirroring the pinned Focus `segmentText` exactly.
-`sourceFromDocument` emits the canonical LF form: block serialisations
-joined by a blank line with a single final newline (an emptied field
-emits `""`). Separators are structural gaps owned by the manifest
-host-side (spec §6.5) and the fixed `RichTextDocument` (§5.1) carries no
-separator storage, so sources with non-LF separators (CRLF gaps) or
-trailing blank lines do not survive this emission byte-identically; the
-host-side splice (preserved `raw` plus Focus segmentation) is the
-byte-identical path in production.
+The DS ships no source segmentation and no full-source serialiser (spec
+§6.5): the host Focus codec segments, and the host adapter splices returned
+paragraph texts and preserved `raw` slices back at their ranges. The
+`"./editor"` conversion preserves exactly the host-segmented blocks it is
+given (`RichTextDocument` → ProseMirror → `RichTextDocument`: same order,
+same identities, same texts, same `raw` values), and each editable
+paragraph's Markdown goes through `@tiptap/markdown` per paragraph only.
+Unedited paragraphs keep the exact host-segmented slice that entered, so no
+block-content normalisation can manufacture false amendments.
 
 ## Scripts
 
@@ -111,23 +128,33 @@ byte-identical path in production.
 - Package regression: `npm --workspace @sentropic/design-system-rich-text run test`
 
 Packaging follows `packages/codemirror`: `sideEffects: false`, `files:
-["dist"]`, single `"."` export, build `tsc -p tsconfig.json`, test `vitest
-run src`, Tiptap/ProseMirror as peers (`^3.0.0`), exact pins in
-`devDependencies` for qualification.
+["dist"]`, exports exactly `"."` and `"./editor"`, build `tsc -p
+tsconfig.json`, test `vitest run src`, Tiptap/ProseMirror as peers
+(`^3.0.0`), exact pins in `devDependencies` for qualification, and
+`@tiptap/markdown` as a runtime dependency reachable only from `"./editor"`.
 
 ## Layout
 
+- `src/index.ts` — pure `"."` entry (re-exports pure modules only)
 - `src/model.ts` — controlled document, gesture, readiness and event types
 - `src/messages.ts` — injected-label catalogue shape and marker helpers
-- `src/profile.ts` — P0 extension list, profile identifier, bridge config
-- `src/identity.ts` — paragraph-identity attribute contract and wiring
-- `src/codec.ts` — Markdown segmentation/serialisation entries
+- `src/profile.ts` — P0 extension descriptors as data, bridge config as data
+- `src/identity.ts` — paragraph-identity attribute contract as data
+- `src/document.ts` — pure document logic: exact-key copy, §5.6 equality and
+  decision, capture/readiness state
 - `src/theme.ts` — DS token bindings (data; applied by the adapter stylesheet)
-- `src/editor.ts` — headless editor factory (document in, document plus
-  gesture out, readiness signal, deferred capture)
-- `src/*.test.ts` — RT-0 tests (RED 1–3 core halves, RED 7, RED 8 scan,
-  internal reactivity witness, RED-P core half)
+- `src/editor.ts` — `"./editor"` entry: `createRichTextEditor`
+- `src/editor-extensions.ts` — P0 extension instantiation, `preservedBlock`
+- `src/editor-identity.ts` — live paragraph-identity ProseMirror plugin
+- `src/editor-conversion.ts` — `RichTextDocument` ↔ ProseMirror, per-paragraph
+  Markdown through `@tiptap/markdown`
+- `src/editor-paste.ts` — paste through the ProseMirror clipboard parser plus
+  the Markdown bridge, with whole-refusal classification
+- `src/*.test.ts` — RT-0 tests (document, editor, identity, gesture,
+  reactivity, roundtrip, paste, no-network, packaging)
 - `tests/fixtures/p0-corpus.md`, `tests/fixtures/list-corpus.md` — synthetic
   corpora (provenance stated in their headers)
+- `tests/fixtures/p0-corpus.segments.json` — recorded host segmentation of
+  the corpus (provenance stated in the file)
 
 Binding specification: `spec/SPEC_EVOL_DS_RICH_TEXT_EDITOR.md` (§12, lot RT-0).

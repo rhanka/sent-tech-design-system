@@ -13,14 +13,14 @@
  * paragraph emits a document where that paragraph has `text: ""` under the
  * same identity; it is never a removal.
  *
- * RED state (RT-0): `createHeadlessEditor` is a stub, so every case that
- * mounts the editor fails with `RT-0 RED: headless editor not implemented`
- * until phase B lands. No case is skipped.
+ * Tiptap entry: `createRichTextEditor` from `./editor.js` builds a real
+ * Tiptap `Editor` from the P0 extensions; inert-state and cleared-paragraph
+ * assertions run against ProseMirror state. No case is skipped.
  */
 import { describe, it, expect } from "vitest";
-import { createHeadlessEditor } from "./editor.js";
+import { createRichTextEditor } from "./editor.js";
 import type {
-  HeadlessEditorOptions,
+  RichTextEditorOptions,
   PastePayload,
 } from "./editor.js";
 import type {
@@ -50,7 +50,7 @@ function mountDocument(): RichTextDocument {
 
 function collectEvents() {
   const changes: RichTextChangeEvent[] = [];
-  const options: HeadlessEditorOptions = {
+  const options: RichTextEditorOptions = {
     document: mountDocument(),
     messages: MESSAGES,
     allocateId: (() => {
@@ -73,7 +73,7 @@ describe("read-only state (editable: false)", () => {
   it("typing mutates nothing and emits no onChange", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor({ ...options, editable: false });
+    const editor = createRichTextEditor({ ...options, editable: false });
     editor.typeText("paragraph:1", " intruder");
     expect(editor.getDocument()).toEqual(before);
     expect(changes).toHaveLength(0);
@@ -83,7 +83,7 @@ describe("read-only state (editable: false)", () => {
   it("hostile and plain pastes mutate nothing and emit no onChange", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor({ ...options, editable: false });
+    const editor = createRichTextEditor({ ...options, editable: false });
     editor.paste(HOSTILE_PAYLOAD);
     editor.paste({ text: "plain intruder" });
     expect(editor.getDocument()).toEqual(before);
@@ -94,7 +94,7 @@ describe("read-only state (editable: false)", () => {
   it("split, merge, undo and redo mutate nothing and emit no onChange", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor({ ...options, editable: false });
+    const editor = createRichTextEditor({ ...options, editable: false });
     editor.splitParagraph("paragraph:1", 5);
     editor.mergeWithPrevious("paragraph:2");
     editor.deleteBlocks(["paragraph:2"]);
@@ -110,7 +110,7 @@ describe("form-disabled state (disabled: true)", () => {
   it("typing, paste and mutation shortcuts mutate nothing and emit no onChange", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor({ ...options, disabled: true });
+    const editor = createRichTextEditor({ ...options, disabled: true });
     editor.typeText("paragraph:1", " intruder");
     editor.paste(HOSTILE_PAYLOAD);
     editor.splitParagraph("paragraph:1", 5);
@@ -124,7 +124,7 @@ describe("form-disabled state (disabled: true)", () => {
   it("disabled wins over an explicit editable: true", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor({
+    const editor = createRichTextEditor({
       ...options,
       editable: true,
       disabled: true,
@@ -142,7 +142,7 @@ describe("viewer lock fixture (editable: false, labelled)", () => {
     // through paste, not only through typing (spec §11 RED 1).
     const { options, changes } = collectEvents();
     const before = options.document;
-    const viewer = createHeadlessEditor({ ...options, editable: false });
+    const viewer = createRichTextEditor({ ...options, editable: false });
     viewer.paste(HOSTILE_PAYLOAD);
     viewer.paste({ text: "viewer plain paste" });
     expect(viewer.getDocument()).toEqual(before);
@@ -155,7 +155,7 @@ describe("state changes emit nothing and alter nothing", () => {
   it("setEditable/setDisabled change no block and emit no onChange", () => {
     const { options, changes } = collectEvents();
     const before = options.document;
-    const editor = createHeadlessEditor(options);
+    const editor = createRichTextEditor(options);
     editor.setEditable(false);
     editor.setDisabled(true);
     editor.setDisabled(false);
@@ -169,7 +169,7 @@ describe("state changes emit nothing and alter nothing", () => {
 describe("clearing a paragraph keeps the empty paragraph (never a removal)", () => {
   it("emits one document where the cleared block has text '' under the same identity", () => {
     const { options, changes } = collectEvents();
-    const editor = createHeadlessEditor(options);
+    const editor = createRichTextEditor(options);
     editor.clearParagraph("paragraph:1");
     expect(changes).toHaveLength(1);
     const next = changes[0]?.document;
