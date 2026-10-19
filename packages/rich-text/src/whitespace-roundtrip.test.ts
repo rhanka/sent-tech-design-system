@@ -68,7 +68,7 @@ function cleanup(mounted: Mounted): void {
 
 type ExpectedChild =
   | { kind: "text"; text: string; marks?: string[] }
-  | { kind: "hardBreak" };
+  | { kind: "hardBreak"; marks?: string[] };
 
 function liveChildren(
   editor: RichTextEditor,
@@ -83,7 +83,14 @@ function liveChildren(
       const children: ExpectedChild[] = [];
       node.content.forEach((child) => {
         if (child.type.name === "hardBreak") {
-          children.push({ kind: "hardBreak" });
+          const marks = (child.marks ?? [])
+            .map((mark) => mark.type.name)
+            .sort();
+          children.push(
+            marks.length > 0
+              ? { kind: "hardBreak", marks }
+              : { kind: "hardBreak" },
+          );
         } else if (child.isText) {
           const marks = (child.marks ?? [])
             .map((mark) => mark.type.name)
@@ -108,8 +115,10 @@ function textChild(text: string): ExpectedChild {
   return { kind: "text", text };
 }
 
-function hardBreakChild(): ExpectedChild {
-  return { kind: "hardBreak" };
+function hardBreakChild(...marks: string[]): ExpectedChild {
+  return marks.length > 0
+    ? { kind: "hardBreak", marks: [...marks].sort() }
+    : { kind: "hardBreak" };
 }
 
 function nativeCopyText(editor: RichTextEditor): string {
@@ -260,8 +269,8 @@ describe("ordered mixture space-break-space-break-space (§11.4, §6.6)", () => 
     const purity = expectPurityBaseline(mounted);
     const first = await mounted.editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", " \n \n "));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
-    expect(lastFlag(mounted)).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
+    expect(lastFlag(mounted)).toEqual([]);
     expect(liveChildren(editor, "paragraph:1")).toEqual([
       textChild(" "),
       hardBreakChild(),
@@ -348,7 +357,7 @@ describe("anchored mixture between visible anchors (§11.4, §6.6)", () => {
     const purity = expectPurityBaseline(mounted);
     const first = await mounted.editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", "A \n \n B"));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(editor, "paragraph:1")).toEqual([
       textChild("A "),
       hardBreakChild(),
@@ -429,7 +438,7 @@ describe("literal marker-like text (§11.4, §6.6)", () => {
     const purity = expectPurityBaseline(mounted);
     const first = await editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", "  \n"));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(editor, "paragraph:1")).toEqual([
       textChild("  "),
       hardBreakChild(),
@@ -463,7 +472,7 @@ describe("literal marker-like text (§11.4, §6.6)", () => {
     const purity = expectPurityBaseline(mounted);
     const first = await editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", "  \n  \n"));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
     expectCapturePure(mounted, purity);
     cleanup(mounted);
   });
@@ -599,25 +608,27 @@ describe("restoration sequence Shift+Enter capture/remount type B (§11.4, §6.6
     expectCapturePure(mounted, purity);
     const again = remountOf(first.document, "md-restore2");
     expect(liveChildren(again.editor, "paragraph:1")).toEqual([]);
-    cleanup(again);
-    editor.view.dispatch(
-      editor.view.state.tr.setSelection(TextSelection.create(editor.view.state.doc, 1)),
+    again.editor.view.dispatch(
+      again.editor.view.state.tr.setSelection(
+        TextSelection.create(again.editor.view.state.doc, 1),
+      ),
     );
-    editor.typeText("paragraph:1", "B");
-    expect(mounted.changes).toHaveLength(1);
-    expect(liveChildren(editor, "paragraph:1")).toEqual([textChild("B")]);
-    expect(lastFlag(mounted)).toEqual([]);
-    const purity2 = expectPurityBaseline(mounted);
-    const second = await editor.captureDocument();
+    again.editor.typeText("paragraph:1", "B");
+    expect(again.changes).toHaveLength(1);
+    expect(liveChildren(again.editor, "paragraph:1")).toEqual([textChild("B")]);
+    expect(lastFlag(again)).toEqual([]);
+    const purity2 = expectPurityBaseline(again);
+    const second = await again.editor.captureDocument();
     expect(second.document.blocks[0]).toEqual(paragraph("paragraph:1", "B"));
     expect(second.representability.nonRepresentableParagraphIds).toEqual([]);
-    expect(liveChildren(editor, "paragraph:1")).toEqual([textChild("B")]);
-    expectCapturePure(mounted, purity2);
+    expect(liveChildren(again.editor, "paragraph:1")).toEqual([textChild("B")]);
+    expectCapturePure(again, purity2);
     const third = remountOf(second.document, "md-restore3");
     expect(liveChildren(third.editor, "paragraph:1")).toEqual([textChild("B")]);
     const recaptured = await third.editor.captureDocument();
     expect(recaptured.document).toEqual(second.document);
     cleanup(third);
+    cleanup(again);
     cleanup(mounted);
   });
 
@@ -630,24 +641,144 @@ describe("restoration sequence Shift+Enter capture/remount type B (§11.4, §6.6
     const purity = expectPurityBaseline(mounted);
     const first = await editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", "\n"));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(editor, "paragraph:1")).toEqual([hardBreakChild()]);
     expectCapturePure(mounted, purity);
     const again = remountOf(first.document, "plain-restore2");
     expect(liveChildren(again.editor, "paragraph:1")).toEqual([hardBreakChild()]);
-    cleanup(again);
-    const end = paragraphEnd(editor, "paragraph:1");
-    editor.view.dispatch(
-      editor.view.state.tr.setSelection(TextSelection.create(editor.view.state.doc, end)),
+    const end = paragraphEnd(again.editor, "paragraph:1");
+    again.editor.view.dispatch(
+      again.editor.view.state.tr.setSelection(
+        TextSelection.create(again.editor.view.state.doc, end),
+      ),
     );
-    editor.typeText("paragraph:1", "B");
-    expect(liveChildren(editor, "paragraph:1")).toEqual([hardBreakChild(), textChild("B")]);
-    const second = await editor.captureDocument();
+    again.editor.typeText("paragraph:1", "B");
+    expect(liveChildren(again.editor, "paragraph:1")).toEqual([hardBreakChild(), textChild("B")]);
+    const second = await again.editor.captureDocument();
     expect(second.document.blocks[0]).toEqual(paragraph("paragraph:1", "\nB"));
-    expect(second.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(second.representability.nonRepresentableParagraphIds).toEqual([]);
     const third = remountOf(second.document, "plain-restore3");
     expect(liveChildren(third.editor, "paragraph:1")).toEqual([hardBreakChild(), textChild("B")]);
     cleanup(third);
+    cleanup(again);
+    cleanup(mounted);
+  });
+});
+
+describe("bold hardBreak mark witness (§11.4, §6.6)", () => {
+  function hardBreakRange(
+    editor: RichTextEditor,
+  ): { from: number; to: number } {
+    let from = -1;
+    editor.view.state.doc.descendants((node, pos) => {
+      if (node.type.name === "hardBreak" && from < 0) {
+        from = pos;
+        return false;
+      }
+      return true;
+    });
+    if (from < 0) throw new Error("hardBreak missing");
+    return { from, to: from + 1 };
+  }
+
+  it("text/markdown flags a bold hardBreak with the draft unchanged", async () => {
+    const mounted = mount(
+      "focus.markdown.p0@1",
+      [paragraph("paragraph:1", "A  \nB")],
+      "md-bold-break",
+    );
+    const { editor } = mounted;
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild(),
+      textChild("B"),
+    ]);
+    // Native Ctrl+B over only the break: apply the bold mark over the
+    // hardBreak range through a native transaction.
+    const bold = editor.view.state.schema.marks["bold"];
+    expect(bold).toBeDefined();
+    const range = hardBreakRange(editor);
+    editor.view.dispatch(
+      editor.view.state.tr.addMark(range.from, range.to, bold!.create()),
+    );
+    expect(mounted.changes.length).toBeGreaterThan(0);
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild("bold"),
+      textChild("B"),
+    ]);
+    const copyBefore = nativeCopyText(editor);
+    const purity = expectPurityBaseline(mounted);
+    const first = await editor.captureDocument();
+    expect(first.document.blocks[0]).toEqual(
+      paragraph("paragraph:1", "A  \nB"),
+    );
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([
+      "paragraph:1",
+    ]);
+    expect(lastFlag(mounted)).toEqual(["paragraph:1"]);
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild("bold"),
+      textChild("B"),
+    ]);
+    expect(nativeCopyText(editor)).toBe(copyBefore);
+    expectCapturePure(mounted, purity);
+    const second = await editor.captureDocument();
+    expect(second.document).toEqual(first.document);
+    expect(second.representability).toEqual(first.representability);
+    // The draft is unchanged by the flag and by capture: typing X
+    // immediately after the break in the live editor still yields a bold X.
+    const after = hardBreakRange(editor);
+    editor.view.dispatch(
+      editor.view.state.tr
+        .setStoredMarks([bold!.create()])
+        .insertText("X", after.to),
+    );
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild("bold"),
+      { kind: "text", text: "X", marks: ["bold"] },
+      textChild("B"),
+    ]);
+    cleanup(mounted);
+  });
+
+  it("text/markdown unmarked break round-trips unflagged", async () => {
+    const mounted = mount(
+      "focus.markdown.p0@1",
+      [paragraph("paragraph:1", "A  \nB")],
+      "md-unmarked-break",
+    );
+    const { editor } = mounted;
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild(),
+      textChild("B"),
+    ]);
+    const purity = expectPurityBaseline(mounted);
+    const first = await editor.captureDocument();
+    expect(first.document.blocks[0]).toEqual(
+      paragraph("paragraph:1", "A  \nB"),
+    );
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
+    expect(lastFlag(mounted)).toEqual([]);
+    expect(liveChildren(editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild(),
+      textChild("B"),
+    ]);
+    expectCapturePure(mounted, purity);
+    const again = remountOf(first.document, "md-unmarked-break2");
+    expect(liveChildren(again.editor, "paragraph:1")).toEqual([
+      textChild("A"),
+      hardBreakChild(),
+      textChild("B"),
+    ]);
+    const recaptured = await again.editor.captureDocument();
+    expect(recaptured.document).toEqual(first.document);
+    expect(recaptured.representability).toEqual(first.representability);
+    cleanup(again);
     cleanup(mounted);
   });
 });
@@ -662,7 +793,7 @@ describe("leading and trailing spaces (§11.4, §6.6)", () => {
     const purity = expectPurityBaseline(mounted);
     const first = await editor.captureDocument();
     expect(first.document.blocks[0]).toEqual(paragraph("paragraph:1", " mot"));
-    expect(first.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(first.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(editor, "paragraph:1")).toEqual([textChild(" mot")]);
     expectCapturePure(mounted, purity);
     cleanup(mounted);
@@ -807,7 +938,7 @@ describe("trailing break and whitespace-only (§11.4, §6.6)", () => {
     const purityTrailing = expectPurityBaseline(trailing);
     const firstTrailing = await trailing.editor.captureDocument();
     expect(firstTrailing.document.blocks[0]).toEqual(paragraph("paragraph:1", "Alpha\n"));
-    expect(firstTrailing.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(firstTrailing.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(trailing.editor, "paragraph:1")).toEqual([textChild("Alpha"), hardBreakChild()]);
     expectCapturePure(trailing, purityTrailing);
     cleanup(trailing);
@@ -817,7 +948,7 @@ describe("trailing break and whitespace-only (§11.4, §6.6)", () => {
     const purityWs = expectPurityBaseline(ws);
     const firstWs = await ws.editor.captureDocument();
     expect(firstWs.document.blocks[0]).toEqual(paragraph("paragraph:1", "   "));
-    expect(firstWs.representability.nonRepresentableParagraphIds).toEqual(["paragraph:1"]);
+    expect(firstWs.representability.nonRepresentableParagraphIds).toEqual([]);
     expect(liveChildren(ws.editor, "paragraph:1")).toEqual([textChild("   ")]);
     expectCapturePure(ws, purityWs);
     cleanup(ws);
