@@ -4,25 +4,41 @@
  * would create a non-paragraph block is refused whole. Spec §11 RED 7, §7.
  * Environment: J.
  *
+ * Every case below exercises the native clipboard path: a `paste` event
+ * carrying a `DataTransfer`-shaped `clipboardData` is dispatched on the live
+ * ProseMirror view DOM, so the ProseMirror paste pipeline (`handlePaste`
+ * over `transformPastedHTML` / the clipboard parser) applies the shared
+ * policy before insertion. A case calling only the `paste()` convenience
+ * method would not count — except the single internal-origin case, whose
+ * origin bit requires the exact payload object.
+ *
  * Observable assertions:
  * - Hostile payloads (`</script><script>`, `onerror` attributes,
  *   `javascript:` links, remote `<img>`, raw HTML): the resulting document
- *   contains no `script` element, no event-handler attribute, no link
+ *   and DOM contain no `script` element, no event-handler attribute, no link
  *   attribute and no `img`; scriptable content is dropped or present only as
  *   inert text.
  * - Image with `alt` inside an otherwise accepted paste: the `alt` text is
  *   inserted as plain text, `onUnsupportedPaste` reports the dropped image
  *   once, and `onChange` fires exactly once.
- * - Non-paragraph paste refusal: each payload that would create a
- *   non-paragraph block — (a) `text/plain` carrying a Markdown table,
- *   (b) `text/plain` carrying a fenced code block, (c) `text/html` carrying a
- *   `<table>` element, (d) `text/plain` carrying a heading or a list —
- *   produces exactly one `onUnsupportedPaste` with the expected
- *   `rejectedKinds`, zero `onChange` calls, a resulting `RichTextDocument`
- *   deep-equal to the pre-paste document (all significant fields, §5.6
- *   equality), and an unchanged selection. Creating a preserved block from
- *   the paste, or flattening the payload into paragraphs, fails the test.
+ * - Non-paragraph paste refusal (DS side only): each payload that would
+ *   create a non-paragraph block — (a) `text/plain` carrying a Markdown
+ *   table, (b) `text/plain` carrying a fenced code block, (c) `text/html`
+ *   carrying a `<table>` element, (d) `text/plain` carrying a heading or a
+ *   list — produces exactly one `onUnsupportedPaste` with the expected
+ *   `rejectedKinds` (refusal reported), zero `onChange` calls, a resulting
+ *   `RichTextDocument` deep-equal to the pre-paste document (all significant
+ *   fields, §5.6 equality; document unchanged), and the selection unchanged.
+ *   This test imports no `@sentropic/focus` module and computes no diff or
+ *   return; the host-side consequence of the same refusal is the FE-3
+ *   witness (§13.1). Creating a preserved block from the paste, or
+ *   flattening the payload into paragraphs, fails the test.
  *   Paragraph-only paste still inserts with fresh identities (RED 3).
+ * - Multi-paragraph copy keeps block boundaries: copying two paragraphs and
+ *   pasting through the native path inserts two paragraphs, not one joined
+ *   block.
+ * - A paste spanning a preserved block is refused whole with the block
+ *   intact (§6.3).
  *
  * DOM-level assertions (no `script` element, no handler attribute, no `img`
  * in the rendered tree) and the destructive-gesture span half belong to the
@@ -34,6 +50,7 @@
  * skipped.
  */
 import { describe, it, expect } from "vitest";
+import { TextSelection } from "@tiptap/pm/state";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
 import type {
@@ -59,6 +76,8 @@ function setup() {
   const changes: RichTextChangeEvent[] = [];
   const unsupported: RichTextUnsupportedPasteEvent[] = [];
   let n = 0;
+  const element = document.createElement("div");
+  document.body.appendChild(element);
   const initial: RichTextDocument = {
     format: "focus.markdown.p0@1",
     blocks: [paragraph("paragraph:1", "Alpha"), paragraph("paragraph:2", "Beta")],
@@ -67,6 +86,7 @@ function setup() {
     document: initial,
     messages: MESSAGES,
     allocateId: () => `paragraph:paste-${++n}`,
+    element,
     onChange: (event) => {
       changes.push(event);
     },
@@ -74,17 +94,40 @@ function setup() {
       unsupported.push(event);
     },
   });
-  return { editor, changes, unsupported, initial };
+  const viewDom =
+    (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+  const teardown = (): void => {
+    editor.destroy();
+    element.remove();
+  };
+  return { editor, changes, unsupported, initial, viewDom, teardown };
+}
+
+/** Dispatch a native `paste` event with clipboard payloads on the view DOM,
+    through the real ProseMirror paste pipeline. */
+function dispatchNativePaste(
+  viewDom: HTMLElement,
+  payload: { text?: string; html?: string },
+): void {
+  const event = new Event("paste", { bubbles: true, cancelable: true });
+  const data: Record<string, string> = {};
+  if (payload.text !== undefined) data["text/plain"] = payload.text;
+  if (payload.html !== undefined) data["text/html"] = payload.html;
+  (event as unknown as Record<string, unknown>)["clipboardData"] = {
+    getData: (type: string): string => data[type] ?? "",
+    types: Object.keys(data),
+  };
+  viewDom.dispatchEvent(event);
 }
 
 function documentText(document: RichTextDocument): string {
   return document.blocks.map((b) => b.text ?? b.raw ?? "").join("\n");
 }
 
-describe("hostile paste is inert", () => {
+describe("hostile paste is inert (native clipboard path)", () => {
   it("script elements never become content", () => {
-    const { editor, changes } = setup();
-    editor.paste({
+    const { editor, changes, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
       html: "<p>Hello</p><script>alert(1)</script>",
       text: "Hello",
     });
@@ -93,12 +136,16 @@ describe("hostile paste is inert", () => {
     );
     expect(text).not.toContain("<script");
     expect(text).not.toContain("alert(1)");
-    editor.destroy();
+    expect(viewDom.innerHTML).not.toContain("<script");
+    expect(editor.getDocument().blocks.every((b) => b.kind === "paragraph")).toBe(
+      true,
+    );
+    teardown();
   });
 
   it("event-handler attributes never survive", () => {
-    const { editor, changes } = setup();
-    editor.paste({
+    const { editor, changes, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
       html: '<p><img src="x" onerror="alert(1)">Caption</p>',
       text: "Caption",
     });
@@ -107,12 +154,14 @@ describe("hostile paste is inert", () => {
     );
     expect(text).not.toContain("onerror");
     expect(text).not.toContain("alert(1)");
-    editor.destroy();
+    expect(viewDom.innerHTML).not.toContain("onerror");
+    expect(viewDom.innerHTML).not.toContain("<img");
+    teardown();
   });
 
   it("scriptable link protocols never survive as attributes", () => {
-    const { editor, changes } = setup();
-    editor.paste({
+    const { changes, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
       html: '<p><a href="javascript:alert(1)">click</a> and <a href="data:text/html,<b>x</b>">other</a></p>',
       text: "click and other",
     });
@@ -122,12 +171,12 @@ describe("hostile paste is inert", () => {
     expect(text).not.toContain("javascript:");
     expect(text).not.toContain("data:text/html");
     expect(text).toContain("click");
-    editor.destroy();
+    teardown();
   });
 
   it("raw HTML is never assigned as markup: tags are dropped or inert text", () => {
-    const { editor, changes } = setup();
-    editor.paste({
+    const { changes, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
       html: '<div><style>p { color: red; }</style><p>Text</p></div>',
       text: "Text",
     });
@@ -136,14 +185,30 @@ describe("hostile paste is inert", () => {
     );
     expect(text).not.toContain("<style");
     expect(text).not.toContain("<div");
-    editor.destroy();
+    teardown();
+  });
+
+  it("a forged data-paragraph-id never survives the native path", () => {
+    const { editor, changes, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
+      html: '<p data-paragraph-id="paragraph:forged">Forged</p>',
+      text: "Forged",
+    });
+    expect(changes).toHaveLength(1);
+    const ids =
+      changes[0]?.document.blocks.map((b) => b.paragraphId) ?? [];
+    expect(ids).not.toContain("paragraph:forged");
+    expect(ids).toContain("paragraph:paste-1");
+    expect(changes[0]?.gesture.paste?.origin).toBe("external");
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    teardown();
   });
 });
 
-describe("image paste with alt text inside an otherwise accepted paste", () => {
+describe("image paste with alt text inside an otherwise accepted paste (native path)", () => {
   it("inserts the alt text as plain text, reports the dropped image once, emits one onChange", () => {
-    const { editor, changes, unsupported } = setup();
-    editor.paste({
+    const { changes, unsupported, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
       html: '<p>Before</p><img src="https://example.invalid/pic.png" alt="Sunset over the harbour"><p>After</p>',
       text: "Before\nSunset over the harbour\nAfter",
     });
@@ -160,11 +225,11 @@ describe("image paste with alt text inside an otherwise accepted paste", () => {
     for (const block of (changes[0]?.document as RichTextDocument).blocks) {
       expect(block.kind).toBe("paragraph");
     }
-    editor.destroy();
+    teardown();
   });
 });
 
-describe("non-paragraph paste refusal (refused whole)", () => {
+describe("non-paragraph paste refusal (refused whole, native path)", () => {
   const cases: {
     name: string;
     payload: { text?: string; html?: string };
@@ -202,9 +267,10 @@ describe("non-paragraph paste refusal (refused whole)", () => {
 
   for (const { name, payload, expectedKinds } of cases) {
     it(`${name}: one onUnsupportedPaste, zero onChange, document and selection unchanged`, () => {
-      const { editor, changes, unsupported, initial } = setup();
+      const { editor, changes, unsupported, initial, viewDom, teardown } =
+        setup();
       const selectionBefore = editor.getSelection();
-      editor.paste(payload);
+      dispatchNativePaste(viewDom, payload);
       expect(unsupported).toHaveLength(1);
       expect(unsupported[0]?.rejectedKinds).toEqual(
         expect.arrayContaining(expectedKinds),
@@ -212,19 +278,120 @@ describe("non-paragraph paste refusal (refused whole)", () => {
       expect(changes).toHaveLength(0);
       expect(editor.getDocument()).toEqual(initial);
       expect(editor.getSelection()).toEqual(selectionBefore);
-      editor.destroy();
+      teardown();
     });
   }
 
   it("paragraph-only paste still inserts with fresh identities", () => {
-    const { editor, changes, unsupported } = setup();
-    editor.paste({ text: "Inserted plain paragraph" });
+    const { changes, unsupported, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, { text: "Inserted plain paragraph" });
     expect(unsupported).toHaveLength(0);
     expect(changes).toHaveLength(1);
     const ids =
       changes[0]?.document.blocks.map((b) => b.paragraphId) ?? [];
     expect(ids).toContain("paragraph:paste-1");
     expect(changes[0]?.gesture.paste?.origin).toBe("external");
+    teardown();
+  });
+});
+
+describe("internal copy/paste origin (membership by payload identity)", () => {
+  it("the exact payload object pastes as internal; a lookalike copy pastes as external", () => {
+    const { editor, changes, teardown } = setup();
+    const payload = editor.copyToPayload(["paragraph:1"]);
+    editor.paste(payload);
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.paste?.origin).toBe("internal");
+    // A structurally identical payload that is not the registered object is
+    // external: membership is identity, never content comparison.
+    editor.paste({ ...payload });
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.paste?.origin).toBe("external");
+    teardown();
+  });
+});
+
+describe("multi-paragraph copy keeps block boundaries (native path)", () => {
+  it("copying two paragraphs pastes two paragraphs with fresh identities", () => {
+    const { editor, changes, viewDom, teardown } = setup();
+    const payload = editor.copyToPayload(["paragraph:1", "paragraph:2"]);
+    expect(payload.text).toBe("Alpha\n\nBeta");
+    expect(payload.html).toContain("<p");
+    dispatchNativePaste(viewDom, { text: payload.text, html: payload.html });
+    expect(changes).toHaveLength(1);
+    const event = changes[0];
+    const inserted = event?.gesture.paste?.insertedParagraphIds ?? [];
+    expect(inserted).toHaveLength(2);
+    expect(new Set(inserted).size).toBe(2);
+    expect(inserted).not.toContain("paragraph:1");
+    expect(inserted).not.toContain("paragraph:2");
+    const byId = new Map(
+      (event?.document.blocks ?? []).map((b) => [b.paragraphId, b] as const),
+    );
+    // Block boundaries survived: two consecutive inserted blocks carrying
+    // each source text exactly, never one joined `A\nB` paragraph.
+    const first = byId.get(inserted[0] as string);
+    const second = byId.get(inserted[1] as string);
+    expect(first?.kind).toBe("paragraph");
+    expect(second?.kind).toBe("paragraph");
+    expect(first?.text).toBe("Alpha");
+    expect(second?.text).toBe("Beta");
+    expect(event?.gesture.paste?.origin).toBe("external");
+    teardown();
+  });
+});
+
+describe("paste spanning a preserved block is refused whole (native path)", () => {
+  it("the preserved raw and identity survive, one report, zero onChange", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const unsupported: RichTextUnsupportedPasteEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const before: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        paragraph("paragraph:1", "Alpha"),
+        {
+          paragraphId: "paragraph:kept",
+          kind: "preserved",
+          raw: "| a | b |",
+          preservedKind: "table",
+        },
+        paragraph("paragraph:2", "Beta"),
+      ],
+    };
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: before,
+      messages: MESSAGES,
+      allocateId: () => `paragraph:span-${++n}`,
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onUnsupportedPaste: (event) => {
+        unsupported.push(event);
+      },
+    });
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    // Span the whole document, preserved block included, through the real
+    // ProseMirror selection.
+    editor.view.dispatch(
+      editor.view.state.tr.setSelection(
+        TextSelection.create(
+          editor.view.state.doc,
+          0,
+          editor.view.state.doc.content.size,
+        ),
+      ),
+    );
+    dispatchNativePaste(viewDom, { text: "replacement" });
+    expect(unsupported).toHaveLength(1);
+    expect(unsupported[0]?.rejectedKinds).toContain("table");
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(before);
     editor.destroy();
+    element.remove();
   });
 });

@@ -18,7 +18,12 @@
  * assertions run against ProseMirror state. No case is skipped.
  */
 import { describe, it, expect } from "vitest";
+import { TextSelection } from "@tiptap/pm/state";
 import { createRichTextEditor } from "./editor.js";
+import {
+  conversionCounters,
+  resetConversionCounters,
+} from "./editor-conversion.js";
 import type {
   RichTextEditorOptions,
   PastePayload,
@@ -162,6 +167,226 @@ describe("state changes emit nothing and alter nothing", () => {
     editor.setEditable(true);
     expect(editor.getDocument()).toEqual(before);
     expect(changes).toHaveLength(0);
+    editor.destroy();
+  });
+});
+
+describe("native invalidation through transaction steps and mapping", () => {
+  it("a native deletion is exported: the screen text and the document agree", () => {
+    const { options, changes } = collectEvents();
+    const editor = createRichTextEditor(options);
+    // Delete the `l` of `First paragraph` without any helper: a bare
+    // ProseMirror delete whose resulting range is empty.
+    const view = editor.view;
+    // Text offset 2 of `First paragraph` is the `r` of `First`.
+    view.dispatch(view.state.tr.delete(3, 4));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("type");
+    expect(changes[0]?.document.blocks[0]?.text).toBe("Fist paragraph");
+    expect(editor.getDocument().blocks[0]?.text).toBe(
+      changes[0]?.document.blocks[0]?.text,
+    );
+    editor.destroy();
+  });
+
+  it("a native mark change invalidates its block (one real serialisation)", () => {
+    const { options, changes } = collectEvents();
+    const editor = createRichTextEditor(options);
+    resetConversionCounters();
+    const view = editor.view;
+    const bold = view.state.schema.marks["bold"];
+    expect(bold).toBeDefined();
+    view.dispatch(view.state.tr.addMark(1, 6, bold!.create()));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("type");
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual(["paragraph:1"]);
+    // The mark step carries no positional map: without the from/to fallback
+    // nothing would serialise and the counter would stay at zero. The bold
+    // mark is real content, so the exported text carries it.
+    expect(conversionCounters.paragraphSerialize).toBe(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("**First** paragraph");
+    editor.destroy();
+  });
+});
+
+describe("preserved blocks survive user transactions", () => {
+  function preservedSetup() {
+    const changes: ReturnType<typeof collectEvents>["changes"] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const before: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        paragraph("paragraph:1", "Alpha"),
+        {
+          paragraphId: "paragraph:kept",
+          kind: "preserved",
+          raw: "| a | b |",
+          preservedKind: "table",
+        },
+        paragraph("paragraph:2", "Beta"),
+      ],
+    };
+    const editor = createRichTextEditor({
+      document: before,
+      messages: MESSAGES,
+      allocateId: (() => {
+        let n = 0;
+        return () => `paragraph:guard-${++n}`;
+      })(),
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    return {
+      editor,
+      changes,
+      before,
+      teardown: () => {
+        editor.destroy();
+        element.remove();
+      },
+    };
+  }
+
+  it("deleteBlocks over a preserved identity is a silent no-op", () => {
+    const { editor, changes, before, teardown } = preservedSetup();
+    editor.deleteBlocks(["paragraph:kept"]);
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(before);
+    teardown();
+  });
+
+  it("select-all followed by delete never removes the preserved block", () => {
+    const { editor, changes, before, teardown } = preservedSetup();
+    const view = editor.view;
+    view.dispatch(view.state.tr.delete(0, view.state.doc.content.size));
+    expect(changes).toHaveLength(0);
+    const next = editor.getDocument();
+    expect(next).toEqual(before);
+    expect(
+      next.blocks.find((b) => b.paragraphId === "paragraph:kept"),
+    ).toEqual(before.blocks[1]);
+    teardown();
+  });
+});
+
+describe("text/plain is literal text (no marks, no Markdown rules)", () => {
+  function plainSetup(text: string) {
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:1", text)],
+      },
+      messages: MESSAGES,
+      allocateId: (() => {
+        let n = 0;
+        return () => `paragraph:plain-${++n}`;
+      })(),
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    return {
+      editor,
+      changes,
+      viewDom,
+      teardown: () => {
+        editor.destroy();
+        element.remove();
+      },
+    };
+  }
+
+  it("markdown delimiters mount as literal characters, with no mark in the DOM", () => {
+    const { editor, viewDom, teardown } = plainSetup("**literal**");
+    expect(editor.getDocument().blocks[0]?.text).toBe("**literal**");
+    expect(viewDom.innerHTML).not.toContain("<strong>");
+    expect(viewDom.innerHTML).not.toContain("<em>");
+    teardown();
+  });
+
+  it("typing after literal delimiters keeps them literal", () => {
+    const { editor, changes, teardown } = plainSetup("**literal**");
+    editor.typeText("paragraph:1", "!");
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks[0]?.text).toBe("**literal**!");
+    expect(editor.getDocument().blocks[0]?.text).toBe("**literal**!");
+    teardown();
+  });
+
+  it("an external format change to text/plain switches later input to literal", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", "hello")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    editor.applyExternalUpdate({
+      format: "text/plain",
+      blocks: [paragraph("paragraph:1", "**plain**")],
+    });
+    expect(editor.getDocument().blocks[0]?.text).toBe("**plain**");
+    editor.typeText("paragraph:1", "!");
+    expect(editor.getDocument().blocks[0]?.text).toBe("**plain**!");
+    editor.destroy();
+  });
+});
+
+describe("external application re-anchors both selection ends", () => {
+  it("a range across two paragraphs survives a clean update with direction and offsets", () => {
+    const { options, changes } = collectEvents();
+    const editor = createRichTextEditor(options);
+    const view = editor.view;
+    // Anchor inside paragraph 1 at offset 1, head inside paragraph 2 at
+    // offset 2. Paragraph 1 text starts at 1; paragraph 2 text starts at
+    // 1 + ("First paragraph".length + 2).
+    const secondStart =
+      1 + ("First paragraph".length + 2);
+    view.dispatch(
+      view.state.tr.setSelection(
+        TextSelection.create(view.state.doc, 1 + 1, secondStart + 2),
+      ),
+    );
+    expect(editor.getSelection()).toEqual({
+      anchorParagraphId: "paragraph:1",
+      anchorOffset: 1,
+      headParagraphId: "paragraph:2",
+      headOffset: 2,
+    });
+    // Clean update changing only paragraph 1 (before the head): rule 4.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [
+        paragraph("paragraph:1", "First paragraph edited"),
+        paragraph("paragraph:2", "Second paragraph"),
+      ],
+    });
+    expect(changes).toHaveLength(0);
+    // Both ends re-anchored by identity with offsets bounded — never
+    // collapsed to a cursor.
+    expect(editor.getSelection()).toEqual({
+      anchorParagraphId: "paragraph:1",
+      anchorOffset: 1,
+      headParagraphId: "paragraph:2",
+      headOffset: 2,
+    });
+    expect(editor.getDocument().blocks[0]?.text).toBe(
+      "First paragraph edited",
+    );
     editor.destroy();
   });
 });

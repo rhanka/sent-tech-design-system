@@ -1,19 +1,22 @@
 /**
- * RED 8 — module-graph scan half over the pure entry plus the runtime
+ * RED 8 — forbidden-import scan over both module graphs plus the runtime
  * no-network scenario through "./editor". Spec §11 RED 8, §5.9.
  * Environment: J plus a static source scan.
  *
  * Observable assertion: rendering with sentinel `messages` shows exactly the
- * sentinel strings (component half, RT-1); the module-graph scan here asserts
- * the pure-entry graph imports no HTTP client module, no host-side editing
- * module, no business dependency and no app alias; the runtime scenario arms
- * request interception and `fetch`/`XMLHttpRequest` sentinels from mount
- * through typing, paste and unmount and records zero calls. A global `fetch`
- * call needs no import, so the scan alone never satisfies the network half.
- * The static scan is scoped to the import graph reachable from
- * `src/index.ts` (a flat `src/` scan would now correctly fail on the
- * Tiptap-bound `editor*.ts` files); the runtime scenario imports the editor
- * entry dynamically inside that scenario only.
+ * sentinel strings (component half, RT-1); the forbidden-import scan asserts
+ * that neither module graph — the transitive graph reachable from `"."`
+ * (`src/index.ts`) nor the transitive graph reachable from `"./editor"`
+ * (`src/editor.ts` and its `editor-*.ts` helpers) — imports an HTTP client
+ * module, `@sentropic/focus`, a Track type, an `apiPut`-shaped dependency
+ * or a `$lib` specifier (Focus, HTTP, app and network imports), so a
+ * forbidden import inside `editor-*.ts` fails RT-0; the runtime scenario
+ * arms request interception and `fetch`/`XMLHttpRequest` sentinels from
+ * mount through typing, paste and unmount and records zero calls. A global
+ * `fetch` call needs no import, so the scan alone never satisfies the
+ * network half. The "no Tiptap/ProseMirror" assertion is the separate RED-P
+ * check and stays in `packaging.test.ts` on `"."` only: `"./editor"`
+ * legitimately loads Tiptap/ProseMirror and is never failed for doing so.
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -32,10 +35,11 @@ const MESSAGES: RichTextMessages = {
   externalConflictLabel: "External change received",
 };
 
-// Tokens that must never appear in the pure-entry module graph: any HTTP
-// client surface, any host-side editing or business dependency, any app
-// alias. (The scan covers "."-reachable non-test sources only; the
-// "./editor" entry and test payloads legitimately carry other strings.)
+// Tokens that must never appear in either module graph: any HTTP client
+// surface, any host-side editing or business dependency, any Track type, any
+// app alias. (The scan covers non-test sources reachable from each entry
+// only; test payloads legitimately carry other strings. Tiptap/ProseMirror
+// specifiers are not forbidden here — see `packaging.test.ts` RED-P.)
 const FORBIDDEN_SOURCE_TOKENS = [
   "fetch(",
   "XMLHttpRequest",
@@ -43,6 +47,7 @@ const FORBIDDEN_SOURCE_TOKENS = [
   "http://",
   "https://",
   "@sentropic/focus",
+  "@sentropic/track",
   "apiPut",
   "$lib",
 ] as const;
@@ -56,10 +61,10 @@ function specifiersOf(file: string): string[] {
   );
 }
 
-/** Non-test sources reachable from `src/index.ts` through relative imports. */
-function pureEntrySources(): { file: string; text: string }[] {
-  const seen = new Set<string>(["index.ts"]);
-  const queue = ["index.ts"];
+/** Non-test sources reachable from one entry file through relative imports. */
+function entrySources(entry: string): { file: string; text: string }[] {
+  const seen = new Set<string>([entry]);
+  const queue = [entry];
   while (queue.length > 0) {
     const file = queue.pop() as string;
     for (const specifier of specifiersOf(file)) {
@@ -80,17 +85,36 @@ function pureEntrySources(): { file: string; text: string }[] {
   }));
 }
 
-describe("module-graph scan (static, pure entry)", () => {
-  for (const token of FORBIDDEN_SOURCE_TOKENS) {
-    it(`no pure-entry source contains "${token}"`, () => {
-      for (const { file, text } of pureEntrySources()) {
-        expect(
-          text.includes(token),
-          `${file} must not contain "${token}"`,
-        ).toBe(false);
-      }
-    });
+/** Both scanned graphs: `"."` (`src/index.ts`) and `"./editor"`
+    (`src/editor.ts` including its `editor-*.ts` helpers). */
+const SCANNED_GRAPHS = [
+  { entry: "index.ts", label: '"." graph (src/index.ts)' },
+  { entry: "editor.ts", label: '"./editor" graph (src/editor.ts)' },
+] as const;
+
+describe("forbidden-import scan (static, both graphs)", () => {
+  for (const { entry, label } of SCANNED_GRAPHS) {
+    for (const token of FORBIDDEN_SOURCE_TOKENS) {
+      it(`${label} contains no "${token}"`, () => {
+        const sources = entrySources(entry);
+        expect(sources.length).toBeGreaterThan(0);
+        for (const { file, text } of sources) {
+          expect(
+            text.includes(token),
+            `${file} (${label}) must not contain "${token}"`,
+          ).toBe(false);
+        }
+      });
+    }
   }
+
+  it('the "./editor" graph actually covers the editor helpers', () => {
+    const files = entrySources("editor.ts").map(({ file }) => file);
+    expect(files).toContain("editor-conversion.ts");
+    expect(files).toContain("editor-identity.ts");
+    expect(files).toContain("editor-paste.ts");
+    expect(files).toContain("editor-extensions.ts");
+  });
 });
 
 describe("runtime network scenario (mount through unmount)", () => {
