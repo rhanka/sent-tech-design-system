@@ -17,6 +17,8 @@
  */
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createHeadlessEditor } from "./editor.js";
 import type {
   RichTextChangeEvent,
@@ -47,12 +49,12 @@ const FORBIDDEN_SOURCE_TOKENS = [
 ] as const;
 
 function coreSources(): { file: string; text: string }[] {
-  const dir = new URL("./", import.meta.url);
+  const dir = dirname(fileURLToPath(import.meta.url));
   return readdirSync(dir)
     .filter((file) => file.endsWith(".ts") && !file.endsWith(".test.ts"))
     .map((file) => ({
       file,
-      text: readFileSync(new URL(file, dir), "utf8"),
+      text: readFileSync(join(dir, file), "utf8"),
     }));
 }
 
