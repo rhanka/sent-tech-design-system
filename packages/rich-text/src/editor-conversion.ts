@@ -267,7 +267,68 @@ export function serializeParagraphNode(
   }
   conversionCounters.paragraphSerialize += 1;
   const output = manager.serialize(json);
+  // The bridge terminates a paragraph ending with a `hardBreak` with the
+  // break's own newline (`"Alpha  \n"`): that trailing `"\n"` is paragraph
+  // content, not a document separator, so it is kept — stripping it drops
+  // the break on the next mount (N1). Any other trailing newline is the
+  // document separator and is stripped as before. A pinned-contract refusal
+  // of the kept draft stays the host's export concern (spec §5.10); the
+  // draft is never rewritten here.
+  const lastChild = node.lastChild;
+  if (
+    output.endsWith("\n") &&
+    lastChild !== null &&
+    lastChild !== undefined &&
+    lastChild.type.name === "hardBreak"
+  ) {
+    return output;
+  }
   return output.endsWith("\n") ? output.slice(0, -1) : output;
+}
+
+/** Serialised form of one trailing `hardBreak`, exactly as the bridge emits
+    it: `manager.serialize` of a paragraph ending with a `hardBreak`
+    terminates with two spaces and a newline. */
+const TRAILING_HARD_BREAK_MARKER = "  \n";
+
+/** Restore the trailing `hardBreak` nodes a paragraph text carries (N1):
+    the bridge drops a trailing break on parse (its marker spaces stay in
+    the text), so `"Alpha  \n"` would remount without its break. One
+    `hardBreak` is restored per trailing marker over the bridge parse of
+    the marker-free head, so capture-then-remount keeps the break and the
+    re-export is byte-identical. Returns `null` when the text carries no
+    trailing marker or the head does not parse to a single paragraph — the
+    caller then keeps the bridge output for the whole text untouched. The
+    head re-parse is part of the same logical paragraph parse (no counter). */
+function restoreTrailingHardBreaks(
+  manager: MarkdownManager,
+  paragraphId: string,
+  text: string,
+): JSONContent | null {
+  let head = text;
+  let breaks = 0;
+  while (head.endsWith(TRAILING_HARD_BREAK_MARKER)) {
+    head = head.slice(0, -TRAILING_HARD_BREAK_MARKER.length);
+    breaks += 1;
+  }
+  if (breaks === 0) return null;
+  let parsed: (JSONContent & { content?: JSONContent[] }) | null = null;
+  try {
+    parsed = manager.parse(head) as JSONContent & { content?: JSONContent[] };
+  } catch {
+    return null;
+  }
+  const first = parsed?.content?.[0];
+  if (first === undefined || first.type !== "paragraph") return null;
+  const content: JSONContent[] = [...(first.content ?? [])];
+  for (let index = 0; index < breaks; index += 1) {
+    content.push({ type: "hardBreak" });
+  }
+  return {
+    type: "paragraph",
+    attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
+    ...(content.length === 0 ? {} : { content }),
+  };
 }
 
 /** Parse one editable paragraph text into ProseMirror paragraph JSON.
@@ -317,6 +378,8 @@ export function paragraphTextToProseMirror(
     };
     const first = parsed?.content?.[0];
     if (first !== undefined && first.type === "paragraph") {
+      const restored = restoreTrailingHardBreaks(manager, paragraphId, text);
+      if (restored !== null) return restored;
       return {
         type: "paragraph",
         attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },

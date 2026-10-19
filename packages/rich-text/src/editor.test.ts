@@ -498,6 +498,61 @@ describe("text/plain is literal text (no marks, no Markdown rules)", () => {
   });
 });
 
+describe("trailing Markdown hardBreak survives export and remount (N1)", () => {
+  it("capture then remount gives back the hardBreak", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", "Alpha")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const hardBreak = view.state.schema.nodes["hardBreak"];
+    expect(hardBreak).toBeDefined();
+    // Native Shift+Enter at the end of `Alpha`: one paragraph, one
+    // trailing hardBreak. The bridge output keeps the break's newline, so
+    // the event and the capture carry `"Alpha  \n"` — never a trimmed
+    // draft (a pinned-contract refusal stays the host's export concern).
+    view.dispatch(view.state.tr.insert(6, hardBreak!.create()));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:1", "Alpha  \n"),
+    ]);
+    const captured = editor.getDocument();
+    expect(captured).toEqual(changes[0]?.document);
+    editor.destroy();
+    element.remove();
+    // Remount from the capture: the trailing hardBreak is back in the
+    // live document and the round trip is block-identical.
+    const remountedElement = document.createElement("div");
+    document.body.appendChild(remountedElement);
+    const remounted = createRichTextEditor({
+      document: captured,
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element: remountedElement,
+    });
+    let found = false;
+    remounted.view.state.doc.descendants((node) => {
+      if (node.type.name === "hardBreak") found = true;
+      return true;
+    });
+    expect(found).toBe(true);
+    expect(remounted.getDocument()).toEqual(captured);
+    remounted.destroy();
+    remountedElement.remove();
+  });
+});
+
 describe("external application re-anchors both selection ends", () => {
   it("a range across two paragraphs survives a clean update with direction and offsets", () => {
     const { options, changes } = collectEvents();
