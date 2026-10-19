@@ -61,6 +61,7 @@ import { isHistoryTransaction, redoDepth, undoDepth } from "@tiptap/pm/history";
 import type { EditorView } from "@tiptap/pm/view";
 import type { MarkdownManager } from "@tiptap/markdown";
 import type {
+  RichTextCaptureResult,
   RichTextChangeEvent,
   RichTextDocument,
   RichTextEditorHandle,
@@ -76,7 +77,6 @@ import {
   copyRichTextDocument,
   createCaptureTracker,
   decideExternalUpdate,
-  richTextDocumentsEqual,
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
@@ -92,6 +92,7 @@ import {
   createConversionSeeds,
   documentToProseMirror,
   markTouchedFromTransaction,
+  proseMirrorToCaptureResult,
   proseMirrorToDocument,
   reseedConversion,
 } from "./editor-conversion.js";
@@ -204,6 +205,11 @@ export function createRichTextEditor(
   let documentFormat: RichTextFormat = options.document.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
   let lastAcknowledged = copyRichTextDocument(options.document);
+  // §5.6 unacknowledged local revision: set by any user transaction that
+  // modifies the live content (every `emitChange`, including a wire-identical
+  // one), cleared only by a rule-1 acknowledgement or a rule-4 application.
+  // The §6.6 flag never touches it, and capture never touches it.
+  let hasUnacknowledgedLocalRevision = false;
   let deferredExternal: RichTextDocument | null = null;
   let gestureSequence = 0;
   let suppressEmit = false;
@@ -406,6 +412,24 @@ export function createRichTextEditor(
           paragraphs as JSONContent[],
         );
       },
+      // Narrow Markdown Shift+Enter no-op (§6.6 prevention stays minimal):
+      // in a `text/markdown` field only, Shift+Enter is a no-op when the
+      // inserted `hardBreak` would become the first child of its paragraph
+      // (caret at offset 0, including an empty paragraph). No transaction,
+      // no `onChange`, no history entry, caret and selection unchanged. Any
+      // other position, any other gesture (paste, split, merge, deletion),
+      // and every `text/plain` position insert normally and are only flagged
+      // at emission/capture, never repaired.
+      handleKeyDown: (view: EditorView, event: KeyboardEvent): boolean => {
+        if (tracker.destroyed || !isActive()) return false;
+        if (event.key !== "Enter" || !event.shiftKey) return false;
+        if (documentFormat !== "focus.markdown.p0@1") return false;
+        const { $from } = view.state.selection;
+        if ($from.parent.type.name !== "paragraph") return false;
+        if ($from.parentOffset !== 0) return false;
+        event.preventDefault();
+        return true;
+      },
       // `text/plain` is literal: typed characters insert verbatim and the
       // P0 Markdown input rules never fire. Direct props win over the
       // mark extensions' input-rule plugins.
@@ -434,6 +458,20 @@ export function createRichTextEditor(
   const displayedDocument = (): RichTextDocument =>
     proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
 
+  const displayedCaptureResult = (): RichTextCaptureResult => {
+    const { document, nonRepresentableParagraphIds } =
+      proseMirrorToCaptureResult(
+        manager(),
+        editor.state.doc,
+        documentFormat,
+        seeds,
+      );
+    return {
+      document,
+      representability: { nonRepresentableParagraphIds },
+    };
+  };
+
   // Frozen at teardown: `getDocument()` after destruction serves this copy
   // with no bridge and no cache, so the per-version caches can be released
   // while a retained handle still reads the last document.
@@ -446,13 +484,26 @@ export function createRichTextEditor(
     return displayedDocument();
   };
 
+  const currentCaptureResult = (): RichTextCaptureResult => {
+    if (tracker.destroyed && destroyedDocument !== null) {
+      return {
+        document: copyRichTextDocument(destroyedDocument),
+        representability: { nonRepresentableParagraphIds: [] },
+      };
+    }
+    return displayedCaptureResult();
+  };
+
   const emitChange = (
     kind: RichTextGestureKind,
     affectedParagraphIds: readonly string[],
     extra?: Partial<Pick<RichTextGesture, "split" | "merge" | "paste">>,
-    document?: RichTextDocument,
+    capture?: RichTextCaptureResult,
   ): void => {
     if (tracker.destroyed) return;
+    // Any completed gesture that reaches emission modified the live content,
+    // so it sets the §5.6 revision flag — including a wire-identical edit.
+    hasUnacknowledgedLocalRevision = true;
     gestureSequence += 1;
     const gesture: RichTextGesture = {
       gestureId: `gesture:${gestureSequence}`,
@@ -460,19 +511,26 @@ export function createRichTextEditor(
       affectedParagraphIds: [...affectedParagraphIds],
       ...extra,
     };
+    const result = capture ?? currentCaptureResult();
     callbacks.onChange?.({
-      document: document ?? currentDocument(),
+      document: result.document,
       gesture,
+      representability: result.representability,
     });
   };
 
   let lastDispatchChanged = false;
 
-  /** Top-level blocks of a document for native-gesture provenance. */
+  /** Top-level blocks of a document for native-gesture provenance. `text`
+      is the ProseMirror `textContent` (used for paste origin); `contentKey`
+      is the full inline content including `hardBreak` nodes (used for
+      survivor comparison, sol N8 residue: a break-only survivor has empty
+      `textContent` before and after, so `text` alone misses its modification
+      while `contentKey` catches it). */
   const nativeBlocksOf = (
     docNode: ProseMirrorNode,
-  ): { id: string; text: string }[] => {
-    const blocks: { id: string; text: string }[] = [];
+  ): { id: string; text: string; contentKey: string }[] => {
+    const blocks: { id: string; text: string; contentKey: string }[] = [];
     docNode.forEach((node) => {
       if (
         node.type.name === "paragraph" ||
@@ -480,7 +538,11 @@ export function createRichTextEditor(
       ) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && id !== "") {
-          blocks.push({ id, text: node.textContent });
+          blocks.push({
+            id,
+            text: node.textContent,
+            contentKey: JSON.stringify(node.toJSON()),
+          });
         }
       }
     });
@@ -664,15 +726,19 @@ export function createRichTextEditor(
     }
     if (removed.length > 0 && added.length === 0) {
       // A global delete empties the surviving first block in place: the
-      // removed identities plus every survivor whose text actually changed
-      // (N8 regression — the modified survivor `a` was missing), in final
-      // document order. A whole-block removal that leaves its neighbours
-      // byte-identical still reports only the removed identity.
-      const afterTextById = new Map(after.map((block) => [block.id, block.text]));
+      // removed identities plus every survivor whose full content actually
+      // changed (N8 residue — a break-only survivor has empty `textContent`
+      // before and after, so `text` alone misses it while `contentKey`
+      // including `hardBreak` nodes catches it), in final document order. A
+      // whole-block removal that leaves its neighbours byte-identical still
+      // reports only the removed identity.
+      const afterContentById = new Map(
+        after.map((block) => [block.id, block.contentKey]),
+      );
       const modifiedSurvivors = before
         .filter((block) => {
-          const next = afterTextById.get(block.id);
-          return next !== undefined && next !== block.text;
+          const next = afterContentById.get(block.id);
+          return next !== undefined && next !== block.contentKey;
         })
         .map((block) => block.id);
       return {
@@ -708,7 +774,7 @@ export function createRichTextEditor(
     if (editor.view.composing && !tracker.composing) {
       composingAffected.clear();
       composingChanged = false;
-      tracker.setComposing(true, currentDocument);
+      tracker.setComposing(true, currentCaptureResult);
     }
     if (tracker.composing || editor.view.composing) {
       markTouchedFromTransaction(
@@ -795,7 +861,9 @@ export function createRichTextEditor(
   /** Run one gesture method: dispatch ProseMirror transactions with emission
       suppressed, then emit exactly one event when a dispatched transaction
       changed the document. A gesture dispatched mid-composition accumulates
-      into the pending `composition-commit` and emits nothing itself. */
+      into the pending `composition-commit` and emits nothing itself. The
+      emitted document and flag come from the same conversion that produces
+      the wire (§6.6 reporting surface). */
   const runGesture = (
     kind: RichTextGestureKind,
     dispatch: () => void,
@@ -815,7 +883,7 @@ export function createRichTextEditor(
     }
     if (tracker.composing || editor.view.composing) return;
     if (!lastDispatchChanged) return;
-    const after = displayedDocument();
+    const after = displayedCaptureResult();
     const built = gesture();
     emitChange(kind, built.affected, built.extra, after);
   };
@@ -958,6 +1026,9 @@ export function createRichTextEditor(
         reseedConversion(seeds, incoming);
       }
       lastAcknowledged = copyRichTextDocument(incoming);
+      // Rule-4 application completes: the revision flag clears (§5.6). The
+      // replacement ran suppressed, so no emission set it back.
+      hasUnacknowledgedLocalRevision = false;
       deferredExternal = null;
       // Recording read: every block is seed-fresh, so this serialises
       // nothing and records each mount version's exact text. A later undo
@@ -1011,9 +1082,11 @@ export function createRichTextEditor(
       lastAcknowledged,
       incoming,
       composing: false,
+      hasUnacknowledgedLocalRevision,
     });
     if (decision === "echo") {
       lastAcknowledged = copyRichTextDocument(incoming);
+      hasUnacknowledgedLocalRevision = false;
       return;
     }
     if (decision === "conflict") {
@@ -1132,7 +1205,7 @@ export function createRichTextEditor(
     const inserted = [...afterIds].filter((id) => !beforeIds.has(id));
     for (const id of inserted) seeds.touched.add(id);
     const affected = orderIdsByDocument([...inserted, ...suppressedAffected]);
-    const after = displayedDocument();
+    const after = displayedCaptureResult();
     emitChange(
       "paste",
       affected,
@@ -1182,7 +1255,7 @@ export function createRichTextEditor(
     domComposing = true;
     composingAffected.clear();
     composingChanged = false;
-    tracker.setComposing(true, currentDocument);
+    tracker.setComposing(true, currentCaptureResult);
   };
   const handleCompositionEnd = (): void => {
     if (tracker.destroyed) {
@@ -1212,7 +1285,7 @@ export function createRichTextEditor(
     composingAffected.clear();
     composingChanged = false;
     if (changed) {
-      const after = displayedDocument();
+      const after = displayedCaptureResult();
       emitChange("composition-commit", affected, undefined, after);
     }
     if (deferredExternal !== null && !editor.view.composing) {
@@ -1220,7 +1293,7 @@ export function createRichTextEditor(
       deferredExternal = null;
       settleExternal(pending);
     }
-    tracker.setComposing(false, currentDocument);
+    tracker.setComposing(false, currentCaptureResult);
   };
   const domListeners: { type: string; handler: EventListener }[] = [];
   const listenDom = (type: string, handler: () => void): void => {
@@ -1428,7 +1501,7 @@ export function createRichTextEditor(
       // Only the blocks the undone transaction really touched: the version
       // cache restores their exact source, untouched blocks keep theirs.
       // Affected follow the resulting document order.
-      const after = displayedDocument();
+      const after = displayedCaptureResult();
       emitChange("undo", orderIdsByDocument([...suppressedAffected]), undefined, after);
     },
 
@@ -1446,7 +1519,7 @@ export function createRichTextEditor(
       }
       if (tracker.composing || editor.view.composing) return;
       if (!lastDispatchChanged) return;
-      const after = displayedDocument();
+      const after = displayedCaptureResult();
       emitChange("redo", orderIdsByDocument([...suppressedAffected]), undefined, after);
     },
 
@@ -1488,19 +1561,29 @@ export function createRichTextEditor(
     applyExternalUpdate(next: RichTextDocument): void {
       if (tracker.destroyed) return;
       const incoming = copyRichTextDocument(next);
-      // Rule 1 — echo: suppression of replacement plus acknowledgement.
-      // The format is part of the equality, so a format change falls through.
-      if (richTextDocumentsEqual(incoming, displayedDocument())) {
+      // §5.6 rule order via the pure decision (§5.6, never restated here).
+      const decision = decideExternalUpdate({
+        displayed: displayedDocument(),
+        lastAcknowledged,
+        incoming,
+        composing: tracker.composing || editor.view.composing,
+        hasUnacknowledgedLocalRevision,
+      });
+      // Rule 1 — echo: suppression of replacement plus acknowledgement
+      // (clears the revision flag). The format is part of the equality.
+      if (decision === "echo") {
         lastAcknowledged = incoming;
+        hasUnacknowledgedLocalRevision = false;
         return;
       }
       // Rule 2 — composition: defer, neither apply nor signal yet.
-      if (tracker.composing || editor.view.composing) {
+      if (decision === "defer") {
         deferredExternal = incoming;
         return;
       }
-      // Rule 3 — local divergence: never overwrite, surface the conflict.
-      if (!richTextDocumentsEqual(displayedDocument(), lastAcknowledged)) {
+      // Rule 3 — local divergence (wire difference or revision flag alone):
+      // never overwrite, surface the conflict.
+      if (decision === "conflict") {
         callbacks.onExternalConflict?.({
           incoming: copyRichTextDocument(incoming),
           local: displayedDocument(),
@@ -1512,8 +1595,8 @@ export function createRichTextEditor(
       applyExternalDocument(incoming);
     },
 
-    captureDocument(): Promise<RichTextDocument> {
-      return tracker.capture(currentDocument);
+    captureDocument(): Promise<RichTextCaptureResult> {
+      return tracker.capture(currentCaptureResult);
     },
 
     readiness(): RichTextReadiness {
@@ -1542,6 +1625,8 @@ export function createRichTextEditor(
       seeds.touched.clear();
       seeds.versions = new WeakMap<ProseMirrorNode, string>();
       seeds.versionTexts.clear();
+      seeds.versionFlags = new WeakMap<ProseMirrorNode, boolean>();
+      seeds.versionFlagTexts.clear();
       seeds.preserved.clear();
       lastNativeCopyText = null;
     },
