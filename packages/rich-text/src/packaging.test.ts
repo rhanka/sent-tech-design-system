@@ -22,15 +22,17 @@
  */
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import * as entry from "./index.js";
 import { createP0Extensions, P0_EXTENSION_NAMES } from "./profile.js";
 
 function sourceSpecifiers(): { file: string; specifier: string }[] {
-  const dir = new URL("./", import.meta.url);
+  const dir = dirname(fileURLToPath(import.meta.url));
   const found: { file: string; specifier: string }[] = [];
   for (const file of readdirSync(dir)) {
     if (!file.endsWith(".ts") || file.endsWith(".test.ts")) continue;
-    const text = readFileSync(new URL(file, dir), "utf8");
+    const text = readFileSync(join(dir, file), "utf8");
     for (const match of text.matchAll(/from\s+["']([^"']+)["']/g)) {
       found.push({ file, specifier: match[1] as string });
     }
