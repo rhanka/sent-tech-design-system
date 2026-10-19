@@ -1,7 +1,7 @@
 # SPEC EVOL — DS-JSON-RENDER: one JSON in, one design-system component out, in any MCP Apps host (option E)
 
 **Status**: specification and traceability only. No implementation, no package, no workflow in this PR.
-**Date**: 2026-10-15, amended 2026-10-16 (twice). **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4, the `track focus --format json` annex, and the cluster-mesh registry, Focus renderer and layout-engine precisions).
+**Date**: 2026-10-15, amended 2026-10-16 (twice) and 2026-10-19 (L8 node presentation, L-R12). **Owner decisions rendered**: 2026-10-15, relayed by the `design-system` conductor, and 2026-10-16, relayed by h-cond (H-1, H-3, H-4, the `track focus --format json` annex, and the cluster-mesh registry, Focus renderer and layout-engine precisions).
 **Base measured**: `origin/main` = `30c13318` (DS). Other revisions read: h2a `origin/main` = `61ddcec9`;
 bpmn-canvas `origin/main` = `62ec95f` and local, **unpushed** branch `workbench/functions-20261004` = `e9f5f89`;
 A2UI repository pinned at commit `3b0e0373`.
@@ -20,7 +20,9 @@ answers to Q-1, Q-2 and Q-3 (§17). The owner's answers of 2026-10-16 to H-1, H-
 9, 11.2, 14, 15 and 17 (source for each: owner via h-cond, 2026-10-16). The three further owner precisions of
 2026-10-16 (cluster-mesh registries, Focus renderer defaults, diagram layout-engine rules), relayed by h-cond the
 same day, are rendered in §§1.1c, 7, 8, 9, 10.5, 11.2, 14, 15 and 17 (source for each: owner via h-cond,
-2026-10-16).
+2026-10-16). The owner's feedback of 2026-10-19 on the interim Focus-kit diagram render (four findings:
+node contrast, label centring, edge labels, layout direction) is rendered in §10.5 (L-R12 and the coverage
+note) and §15 (AC-L8).
 **Glossary**: `d2d-cond` = the conductor session of the d2d repository (`airbus-genair-d2d`); `h-cond` = the
 conductor session of h2a. Both relay owner rules; neither is a repository.
 **Related**: [GD-BPMN-MODDLE (A′), PR #164](https://github.com/rhanka/sent-tech-design-system/pull/164) (open);
@@ -1063,18 +1065,74 @@ carries no hint for any of them:
   are never merged. No reason (e) (an amount over the cap) ever makes a label `label-unplaced`.
 - **L-R11 — legend.** No legend in L8: `generic@1` gives the engine no typed kind to explain. A legend comes with a
   profile that declares kinds.
+- **L-R12 — node presentation (owner feedback, 2026-10-19).** A *presentation* rule: it binds the
+  `DiagramCanvas` element that draws the geometry L-R1–L-R11 produce; it changes no engine geometry, and (c)
+  only restates at the presentation layer the sizing the engine already computes. The feedback (« blanc sur
+  blanc c pas terrible, et puis la ca mériterait d'être centré quand y a pas bcp de texte ») names the two
+  defects this rule closes: a node surface the canvas does not detach, and a short label left at the top-left
+  of a box taller than its text. Terms: the *final rectangle* is the node's rectangle in the produced
+  `ViewDocument` after every L-R1–L-R11 round (L-R2 side growth and L-R10 widening included); the *inner
+  rectangle* is the final rectangle minus the drawn border; the *label box* is the measurer's `node` size
+  (§10.5 common terms), wrapped by the renderer only with that same measurer.
+  - **(a) Surface against the canvas.** Node fill, node border, canvas background and dot grid come from
+    component tokens and from nothing else: `--st-component-diagramCanvas-nodeBackground`,
+    `--st-component-diagramCanvas-nodeBorder` (width `--st-component-diagramCanvas-nodeBorderWidth`, default
+    1 CSS px), `--st-component-diagramCanvas-canvasBackground`, and the dot grid
+    (`--st-component-diagramCanvas-canvasDot`; dot size and spacing are token-defined with it, drawn only on
+    the canvas, never inside a node). Node text takes the theme's semantic text token. Contrast is the WCAG
+    2.x ratio `(L1 + 0.05) / (L2 + 0.05)` over relative luminances, a translucent token composited over the
+    canvas background first. In every shipped theme and every colour scheme that theme defines, at least one
+    of the border against the canvas background and the fill against the canvas background reaches **3:1**
+    (WCAG 1.4.11, non-text contrast); a theme that reaches it by neither is non-conformant. The dot grid is
+    decoration: it carries no information, is exempt from the 3:1
+    test, and stays the weakest mark on the canvas — its token is still mandatory, so no theme hard-codes it.
+  - **(b) Label placement.** The label box is centred in the inner rectangle on both axes, to within 1 CSS
+    px, and each drawn line is centred. This holds for every label, short or long, wrapped or not: there is
+    no top-aligned mode and no line-count threshold. Justification: node labels are identifiers, not prose; a
+    threshold would flip a label from centred to top-aligned when one word is added, and any grown box (see
+    (c)) would reopen the reported defect for exactly the labels that cross it. Always-centred also keeps the
+    label's centre on the node's centre, where L-R1 docks a lone edge.
+  - **(c) Size to content.** A node's natural size is `max(token minimum, measured label + 2 · token padding)`
+    per axis; the §10.5 common-term defaults (minimum 64 × 32, padding 12 × 8) are the token defaults
+    (`--st-component-diagramCanvas-nodeMinWidth`, `…-nodeMinHeight`, `…-nodePaddingX`, `…-nodePaddingY`),
+    and the renderer's `LayoutMetrics` values equal them. The renderer draws the final rectangle exactly: it
+    imposes no fixed width or height, no uniform row height and no stretch of its own, so a node never keeps
+    empty space the engine did not put there. Interaction with L-R4, stated once: L-R4 as written stretches
+    sibling *containers* (a leaf node is centred in its rank band by L-R6, not stretched), and its closing
+    sentence keeps a stretched container's content at its origin — that sentence governs container content
+    and is unchanged. A node's final rectangle can still exceed its natural size (L-R2 side growth); when it
+    does, (b) centres the label in the final rectangle, not in the natural one, so growth — or any future row
+    stretch applied to nodes — leaves a short label visually centred instead of stranded at the top. No
+    L-R1–L-R11 text changes: the only point of contact is this placement reading of the final rectangle.
+  - **(d) i18n and themes.** No hard-coded language and no hard-coded colour in the presentation layer: label
+    strings come only from the `SemanticDocument`; locale and theme arrive by host configuration (§6.5) under
+    a theme id (§6.3), never from the envelope; every colour resolves to a `--st-*` token in light and dark
+    alike, and switching theme or colour scheme changes no geometry except through the measurer the host
+    injects.
 
 **Input.** The engine lays out a diagram-core `SemanticDocument` (`generic@1`: `node` and `container` entities,
 `link` relations, nesting through the `contains` tree), with no view and no geometry. This is the content h2a's
 `diagram` node carries (h-cond, 2026-10-17); no other diagram model is introduced.
 
-They attach to **L8** (§14): the `DiagramCanvas` engine implements L-R1–L-R11, and AC-L8 checks them. They reuse the
+They attach to **L8** (§14): the `DiagramCanvas` engine implements L-R1–L-R11, the `DiagramCanvas` element
+implements L-R12, and AC-L8 checks them all. They reuse the
 reverse-engineering programme already on main, where these capacities are inventoried: JointJS anchors, connection
 points and routers (`spec/SPEC_RE_JOINTJS_PARITY.md`: `anchor`, `link-anchor`, `connection-point`, `router` and
 `connector` families, the §4.7 pure magnet contract, Lot 5 scene geometry); xyflow handles and edge types
 (`spec/SPEC_RE_XYFLOW_PARITY.md`: `Handle` components and handle anchor bounds, the edge-geometry row covering the
 built-in path functions, markers and edge labels); bpmn-js docking and layout (`spec/SPEC_RE_BPMN_JS_PARITY.md`:
 align/distribute entries, `LayoutConnectionBehavior` verdicts compared as geometry, snapping and auto-place).
+
+**Findings 3 and 4 of the 2026-10-19 feedback need no new layout rule.** Finding 3 (edge labels truncated or
+hidden by nodes) is L-R10's domain: a placed label's padded box intersects no node rectangle, no container
+title band and no already-placed label; gaps widen over up to 12 attempts to make room; and a label that
+still cannot be placed is reported `label-unplaced` or `label-budget-exhausted` — never drawn clipped,
+shortened or under a node. Finding 4 (a grid that ignores the LR direction, edges crossing under labels) is
+covered by L-R5 (direction chosen on finalized bounds, labels included), L-R6 (ranks and sibling order), L-R3
+with L-R8 (routes keep off obstacle interiors) and L-R9 (parallel routes share no segment and never cross
+transversally); the 2-column grid was the interim kit's own layout, not an engine mode (ad hoc kit, below).
+What was missing is an acceptance witness on a real dossier: AC-L8 (§15) now replays one. Findings 1 and 2
+are L-R12 above; no L-R1–L-R11 text changes for any of the four findings.
 
 **Ad hoc kit, outside the DS.** The current decision-dossier kit (`sentropic/.tmp/focus-cluster-mesh-decision-kit`
 and the copies made from it) is ad hoc and outside the DS. It disappears when dossiers are rendered by the DS Focus
@@ -1296,7 +1354,7 @@ The reference value is the owner's to set in the host's `.env` or secrets manage
 | **L6** | DS (+ h2a) | pilot P-FOCUS, imposed renderer defaults F-R0–F-R7 (§11.2) | L3 | `@sentropic/focus` ≥ 0.4.0 with schema + validator published **and** `track focus --format json` published (both `unknown` until publication, §11.2) | **G6**: §11.2 criteria |
 | **L7a** | DS | first publication: `elements-publish.yml`, core + `BarChart` + catalogue + schemas, jsDelivr and SRI check, skill template switched to the CDN | L4 | — | **G7a**: AC-L7a. **Point of no return** |
 | **L7b** | DS | publication of `BpmnCanvas` and `DecisionDossier` (minor release), `diagram-core` made public, W5 | L7a, L5, L6 | — | **G7b**: AC-L7b |
-| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, **layout engine rules L-R1–L-R11 (§10.5)**, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
+| **L8** | DS | canvas exchange: generated `diagram-core` schemas, `DiagramCanvas` element, proposal events, **layout engine rules L-R1–L-R11 and node presentation rule L-R12 (§10.5)**, published by a minor release through the L7a workflow | L2, L7a | a generic diagram renderer (migration plan step A) | **G8**: AC-L8 |
 
 Splitting L7 keeps the value of L2–L4 (`BarChart` end to end, skill, MCP) from waiting on the two external
 preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fires.
@@ -1421,7 +1479,36 @@ preconditions of L5 and L6. The adapters of §12 are not lots until a trigger fi
   canonical geometry, and permuting the insertion order of the document's entity, relation and `contains`
   records at the same width gives identical canonical geometry as well; at 320 CSS px the rendered component's
   viewport is at most 320 CSS px wide and the page's scrollable width does not grow, before and after panning
-  to both extremes; the release that ships `DiagramCanvas` passes the AC-L7a checks.
+  to both extremes; the release that ships `DiagramCanvas` passes the AC-L7a checks; the replayed dossier is an
+  L8 acceptance witness: from `/home/antoinefa/src/influence/dossier/influnified-analyse.dossier.json` (file
+  sha256 `499ed679…f4982d`, measured locally on 2026-10-19), `diagram:pipeline` is the diagram the
+  2026-10-19 findings describe — its mermaid source (sha256 `86d22f31…a984`, 669 bytes) measures 10 nodes, 9
+  edges, `flowchart LR`, the only one of the dossier's five diagrams at 10/9 (`cycle` 5/4, `donnees` 15/16,
+  `architecture` 21/21, `livrables-flux` 14/18) — and, converted node-for-node and edge-for-edge to a
+  `generic@1` document (fixture committed with the L8 tests, node, edge and label sets byte-identical to that
+  source; node labels from `Candidat` to `Payé`, 4–14 characters; all 9 edges labelled, 15–36 characters, the
+  longest `publication détectée automatiquement`), its layout reports no `label-unplaced` and no
+  `label-budget-exhausted`, every drawn edge label is the full source string (zero truncation: no ellipsis, no
+  clipping, no shortened string) and every placed label's padded box intersects no node rectangle (zero
+  labels occluded by a node), and the LR rank order is respected: ranks `applied` 0; `shortlisted`, `backup`
+  1; `selected`, `notsel` 2; `confirmed` 3; `attended`, `withdrawn` 4; `posted` 5; `paid` 6, with no edge
+  drawn from a higher rank to a lower one; L-R12 holds with one RED witness per sub-rule, each RED first (the
+  check fails on the witness, then passes on the conformant fixture): (a) for every shipped theme
+  (`sent-tech`, `forge`, `entropic`) in every colour scheme it defines, the border-against-canvas and
+  fill-against-canvas ratios are computed from the resolved `--st-component-diagramCanvas-*` tokens and at
+  least one is ≥ 3.00 — RED: the interim white-on-white surface (fill equal to the canvas background, border
+  below 3:1) fails this check, and mutating one theme's `nodeBorder` token to its `canvasBackground` value
+  fails it for that theme alone; (b) a short label (`Payé`) in a node whose final rectangle is taller than its
+  natural size (the L-R2 side-growth fixture) has its label-box centre within 1 CSS px of the inner
+  rectangle's centre on both axes, and a wrapped three-line label is centred as a block with each line centred
+  — RED: the same short label drawn at the inner rectangle's top-left (the interim render) fails by more than
+  the vertical padding; (c) each node's drawn size equals `max(token minimum, measured label + 2 · token
+  padding)` per axis within 1 CSS px and grows with the label (the shortest and the longest label of one
+  fixture give different heights above the minimum) — RED: a fixed-height node (one height for both labels,
+  empty space under the short one) fails; (d) a scan of the `DiagramCanvas` presentation layer finds no colour
+  literal and no natural-language literal (every colour resolves to a `--st-*` token, as in P-FOCUS criterion
+  3), and the same document renders under two themes and two locales with only token and measurer differences
+  — RED: one hard-coded fill or one hard-coded string in the presentation layer fails the scan.
 
 ## 16. Risks (dossier pre-mortem) and mitigations
 
