@@ -19,15 +19,17 @@
 // Only the affected block is ever re-serialised, as a ProseMirror
 // transaction (§13.3).
 //
-// Exact source per node version: serialised texts are memoised by paragraph
-// identity plus node-content version. A version seen before (mount content,
-// an earlier visit, or a state restored by undo) returns its recorded text
-// without touching the bridge, so undo restores the byte-exact source and
-// re-reading an unchanged version costs no conversion.
+// Exact source per node version: serialised texts are memoised by the
+// immutable paragraph node object itself. A version seen before (mount
+// content, an earlier visit, or a state restored by undo) returns its
+// recorded text without touching the bridge, so undo restores the byte-exact
+// source and re-reading an unchanged version costs no conversion and no
+// node serialisation at all.
 
 import type { JSONContent } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import type { Transaction } from "@tiptap/pm/state";
+import { Mapping } from "@tiptap/pm/transform";
 import type { MarkdownManager } from "@tiptap/markdown";
 import type {
   RichTextBlock,
@@ -55,16 +57,24 @@ export function resetConversionCounters(): void {
   conversionCounters.documentSerialize = 0;
 }
 
-/** Seed texts plus the touched set for one editor session. `versions` maps
-    `paragraphId + "::" + node-version` to the exact text recorded for that
-    version, so a revisited version (including an undo restoration) returns
-    its exact source with no bridge call. `preserved` records absent/present
-    presence of `raw`/`preservedKind` per preserved identity, so an absent
-    field stays absent through the round trip (§5.6 equality). */
+/** Seed texts plus the touched set for one editor session. `versions` is keyed
+    by the immutable ProseMirror node object itself (never by a serialised
+    key), so retention follows the nodes ProseMirror itself retains: an
+    unchanged paragraph shares its node object across states (a cache hit
+    with no conversion and no node serialisation at all) and a dropped
+    history version releases its text with its nodes. History rebuilds an
+    undone version as new objects with identical content, so `versionTexts`
+    keeps the exact text by content key as the fallback for those rebuilds
+    (undo restores the byte-exact source with no bridge call); it holds one
+    small entry per distinct recorded version and is released on reseed and
+    teardown. `preserved` records absent/present presence of
+    `raw`/`preservedKind` per preserved identity, so an absent field stays
+    absent through the round trip (§5.6 equality). */
 export interface ConversionSeeds {
   texts: Map<string, string>;
   touched: Set<string>;
-  versions: Map<string, string>;
+  versions: WeakMap<ProseMirrorNode, string>;
+  versionTexts: Map<string, string>;
   preserved: Map<string, { hasRaw: boolean; hasKind: boolean }>;
 }
 
@@ -74,7 +84,8 @@ export function createConversionSeeds(
   const seeds: ConversionSeeds = {
     texts: new Map(),
     touched: new Set(),
-    versions: new Map(),
+    versions: new WeakMap(),
+    versionTexts: new Map(),
     preserved: new Map(),
   };
   reseedConversion(seeds, document);
@@ -91,7 +102,10 @@ export function reseedConversion(
 ): void {
   seeds.texts.clear();
   seeds.touched.clear();
-  seeds.versions.clear();
+  // A `WeakMap` has no clear: replace it so every previously recorded node
+  // version releases with its nodes.
+  seeds.versions = new WeakMap<ProseMirrorNode, string>();
+  seeds.versionTexts.clear();
   seeds.preserved.clear();
   for (const block of document.blocks) {
     if (block.kind === "paragraph") {
@@ -105,13 +119,6 @@ export function reseedConversion(
   }
 }
 
-/** Version key of one paragraph node: the stable string of its JSON form
-    (identity plus inline content and marks). Two reads of the same version
-    share the key; any content or mark change moves it. */
-function nodeVersionKey(node: ProseMirrorNode): string {
-  return JSON.stringify(node.toJSON());
-}
-
 function isBlockNode(node: ProseMirrorNode): boolean {
   return node.type.name === "paragraph" || node.type.name === "preservedBlock";
 }
@@ -122,15 +129,20 @@ function blockIdentityOf(node: ProseMirrorNode): string | null {
 }
 
 /** Mark every identity block a transaction change covers as touched, from
-    the ProseMirror step maps of that transaction. Deletions (empty resulting
+    the ProseMirror step maps of that transaction projected to the final
+    document. Every step range is mapped forward through the remaining step
+    maps of the same transaction plus any appended-transaction step maps, so
+    a multi-step edit invalidates the blocks it really covers in the final
+    document (not the intermediate positions). Deletions (empty resulting
     range), joins (boundary positions) and mark changes (steps with no map,
     such as add/remove-mark) are included: an empty new range marks the block
     containing the position plus its boundary neighbours, and map-less steps
-    fall back to their `from`/`to` range. */
+    fall back to their `from`/`to` range (mapped forward the same way). */
 export function markTouchedFromTransaction(
   touched: Set<string>,
   doc: ProseMirrorNode,
   transaction: Transaction,
+  appended: readonly Transaction[] = [],
 ): void {
   const size = doc.content.size;
   const clamp = (pos: number): number =>
@@ -190,20 +202,43 @@ export function markTouchedFromTransaction(
     markBlockAt(start);
   };
 
-  for (const step of transaction.steps) {
+  const steps = transaction.steps;
+  const appendedSteps = appended.flatMap((entry) =>
+    entry.steps.map((step) => step.getMap()),
+  );
+  for (let index = 0; index < steps.length; index += 1) {
+    const step = steps[index] as (typeof steps)[number];
+    // Forward projection to the final document: the remaining step maps of
+    // this transaction plus every appended-transaction step map. Identity
+    // repair appends (`setNodeAttribute`) carry position-preserving maps, so
+    // including them is a no-op for positions and keeps the projection exact
+    // when an append does shift content.
+    const forward = new Mapping();
+    for (let next = index + 1; next < steps.length; next += 1) {
+      forward.appendMap(steps[next]!.getMap());
+    }
+    for (const extra of appendedSteps) {
+      forward.appendMap(extra);
+    }
+    const project = (pos: number, assoc: 1 | -1): number =>
+      forward.map(pos, assoc);
     const map = step.getMap();
     let mapped = false;
     map.forEach((_oldStart, _oldEnd, newStart, newEnd) => {
       mapped = true;
       // Undo/redo maps can name ranges outside the resulting document;
       // positions are clamped before walking it.
-      markRange(newStart, newEnd);
+      markRange(project(newStart, 1), project(newEnd, -1));
     });
     if (!mapped) {
-      // Mark-only steps carry an empty map: fall back to the step range.
+      // Mark-only steps carry an empty map: fall back to the step range,
+      // projected forward the same way.
       const ranged = step as unknown as { from?: unknown; to?: unknown };
       if (typeof ranged.from === "number" && typeof ranged.to === "number") {
-        markRange(ranged.from, ranged.to);
+        markRange(
+          project(ranged.from, 1),
+          project(Math.max(ranged.from, ranged.to), -1),
+        );
       }
     }
   }
@@ -212,16 +247,19 @@ export function markTouchedFromTransaction(
   // no seed on read.
 }
 
-/** Serialise one paragraph node. `text/plain` is literal textContent with no
-    bridge call and no mark interpretation; `focus.markdown.p0@1` goes through
-    the bridge per paragraph only. Counts the bridge call for the reactivity
-    witness. */
+/** Serialise one paragraph node. `text/plain` is literal text with ProseMirror
+    leaf text: every `hardBreak` (Shift+Enter interior newline, §5.1) becomes
+    `"\n"`, so the exported text keeps the line break. No bridge call and no
+    mark interpretation; `focus.markdown.p0@1` goes through the bridge per
+    paragraph only. Counts the bridge call for the reactivity witness. */
 export function serializeParagraphNode(
   manager: MarkdownManager,
   node: ProseMirrorNode,
   format: RichTextFormat,
 ): string {
-  if (format === "text/plain") return node.textContent;
+  if (format === "text/plain") {
+    return node.textBetween(0, node.content.size, "", "\n");
+  }
   if (node.content.size === 0) return "";
   const json = node.toJSON() as JSONContent;
   if ((json as { type?: string }).type === "doc") {
@@ -249,10 +287,27 @@ export function paragraphTextToProseMirror(
     };
   }
   if (format === "text/plain") {
+    // Literal text with interior newlines as `hardBreak` nodes (§5.1): every
+    // `"\n"` strictly inside the text becomes a `hardBreak`; a leading or
+    // trailing newline yields a leading/trailing `hardBreak` (a draft the
+    // pinned contract refuses at export under §5.10, never trimmed here).
+    const lines = text.split("\n");
+    if (lines.length === 1) {
+      return {
+        type: "paragraph",
+        attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
+        content: [{ type: "text", text }],
+      };
+    }
+    const content: JSONContent[] = [];
+    lines.forEach((line, index) => {
+      if (index > 0) content.push({ type: "hardBreak" });
+      if (line !== "") content.push({ type: "text", text: line });
+    });
     return {
       type: "paragraph",
       attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
-      content: [{ type: "text", text }],
+      ...(content.length === 0 ? {} : { content }),
     };
   }
   conversionCounters.paragraphParse += 1;
@@ -346,20 +401,32 @@ export function proseMirrorToDocument(
     }
     if (node.type.name !== "paragraph") return;
     const id = blockIdentityOf(node) ?? "";
-    const versioned = `${id}::${nodeVersionKey(node)}`;
-    const cached = seeds.versions.get(versioned);
+    // The node object is immutable: the same object is the same version, so
+    // an unchanged paragraph is a cache hit with no serialisation and no
+    // conversion of any kind. The content-keyed fallback below runs only on
+    // a node miss (history rebuilds an undone version as new objects).
+    const cached = seeds.versions.get(node);
     if (cached !== undefined) {
       blocks.push({ paragraphId: id, kind: "paragraph", text: cached });
       return;
     }
+    const contentKey = JSON.stringify(node.toJSON());
+    const rebuilt = seeds.versionTexts.get(contentKey);
+    if (rebuilt !== undefined) {
+      seeds.versions.set(node, rebuilt);
+      blocks.push({ paragraphId: id, kind: "paragraph", text: rebuilt });
+      return;
+    }
     const seed = seeds.texts.get(id);
     if (!seeds.touched.has(id) && seed !== undefined) {
-      seeds.versions.set(versioned, seed);
+      seeds.versions.set(node, seed);
+      seeds.versionTexts.set(contentKey, seed);
       blocks.push({ paragraphId: id, kind: "paragraph", text: seed });
       return;
     }
     const text = serializeParagraphNode(manager, node, format);
-    seeds.versions.set(versioned, text);
+    seeds.versions.set(node, text);
+    seeds.versionTexts.set(contentKey, text);
     seeds.texts.set(id, text);
     seeds.touched.delete(id);
     blocks.push({ paragraphId: id, kind: "paragraph", text });

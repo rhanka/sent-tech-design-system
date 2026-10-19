@@ -245,6 +245,94 @@ describe("absent preservedKind stays absent", () => {
   });
 });
 
+describe("raw-only external change keeps paragraph instances (R13)", () => {
+  function rawSetup() {
+    const changes: RichTextChangeEvent[] = [];
+    const input: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+        {
+          paragraphId: "paragraph:k",
+          kind: "preserved",
+          raw: "| a |",
+          preservedKind: "table",
+        },
+      ],
+    };
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: input,
+      messages: MESSAGES,
+      allocateId: () => `paragraph:raw-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const paragraphNodeOf = () => {
+      let found: unknown = null;
+      editor.view.state.doc.descendants((node) => {
+        if (
+          found === null &&
+          node.type.name === "paragraph" &&
+          (node.attrs as Record<string, unknown>)["paragraphId"] ===
+            "paragraph:a"
+        ) {
+          found = node;
+        }
+        return true;
+      });
+      return found;
+    };
+    return { editor, changes, input, paragraphNodeOf };
+  }
+
+  it("a raw-only update dispatches a targeted change: paragraphs untouched, undo intact", () => {
+    const { editor, changes, paragraphNodeOf } = rawSetup();
+    editor.typeText("paragraph:a", "!");
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha!");
+    // Acknowledge the paragraph edit (rule 1 echo) so the later raw-only
+    // update applies under rule 4 with no local divergence.
+    editor.applyExternalUpdate(structuredClone(editor.getDocument()));
+    expect(changes).toHaveLength(1);
+    const before = paragraphNodeOf();
+    // External application limited to the preserved `raw`: no paragraph is
+    // rebuilt, so the acknowledged paragraph edit stays undoable on its text.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha!" },
+        {
+          paragraphId: "paragraph:k",
+          kind: "preserved",
+          raw: "| b |",
+          preservedKind: "table",
+        },
+      ],
+    });
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[1]).toEqual({
+      paragraphId: "paragraph:k",
+      kind: "preserved",
+      raw: "| b |",
+      preservedKind: "table",
+    });
+    expect(paragraphNodeOf()).toBe(before);
+    editor.undo();
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.kind).toBe("undo");
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha");
+    expect(editor.getDocument().blocks[1]).toEqual({
+      paragraphId: "paragraph:k",
+      kind: "preserved",
+      raw: "| b |",
+      preservedKind: "table",
+    });
+    editor.destroy();
+  });
+});
+
 describe("empty field", () => {
   it('the host-segmented empty field is one empty paragraph with text ""', () => {
     const changes: RichTextChangeEvent[] = [];

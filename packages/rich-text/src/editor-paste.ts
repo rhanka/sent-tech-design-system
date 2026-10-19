@@ -24,7 +24,16 @@ export interface PastePayloadInput {
 
 export type PastePlan =
   | { outcome: "refuse"; rejectedKinds: string[] }
-  | { outcome: "insert"; paragraphs: JSONContent[]; imageReported: boolean };
+  | {
+      outcome: "insert";
+      paragraphs: JSONContent[];
+      imageReported: boolean;
+      /** Native slice openness from `data-pm-slice` (R10): an open slice
+          stays inline at the drop/paste point instead of splitting blocks.
+          Closed clipboard content (no marker) stays `0, 0`. */
+      openStart: number;
+      openEnd: number;
+    };
 
 const REFUSAL_TAGS: { selector: string; kind: string }[] = [
   { selector: "table", kind: "table" },
@@ -33,8 +42,10 @@ const REFUSAL_TAGS: { selector: string; kind: string }[] = [
   { selector: "ul,ol,li,dl,dt,dd", kind: "list" },
   { selector: "blockquote", kind: "blockquote" },
   { selector: "hr", kind: "horizontalRule" },
-  { selector: "figure", kind: "image" },
 ];
+// `figure` is classified separately in `planHtmlPaste`: a figure holding
+// only images degrades to their alt texts, while a figure with remaining
+// structural content (caption or elements) refuses whole as `image`.
 
 /** Elements dropped with their content, silently: never content, never a
     refusal on their own. */
@@ -68,12 +79,16 @@ function withFreshId(paragraph: JSONContent, allocateId: () => string): JSONCont
 /** Sanitize pasted HTML to inert, identity-free markup: strip every pasted
     identity attribute (rule 1, §5.2 — never trusted), unwrap pasted
     preserved regions to their text (paste never creates a preserved block,
-    §6.3), drop inert elements with their content, and degrade images to
-    their alt text as plain paragraphs (§7 rule 4). Shared by the paste plan
+    §6.3), drop inert elements with their content, degrade images to their
+    alt text in their own context (§7 rule 4: inline content stays inline —
+    never a nested `<p>` — while block-level images become paragraphs), and
+    report whether a `figure` wrapper carries structural content beyond its
+    images (that block still refuses whole, R8). Shared by the paste plan
     and the `transformPastedHTML` pipeline layer so both paths agree. */
 export function sanitizePastedHtml(html: string): {
   html: string;
   imageSeen: boolean;
+  figureStructural: boolean;
 } {
   const template = document.createElement("template");
   template.innerHTML = html;
@@ -92,22 +107,73 @@ export function sanitizePastedHtml(html: string): {
   for (const element of root.querySelectorAll(INERT_SELECTORS)) {
     element.remove();
   }
-  // Images degrade to their alt text as plain paragraphs (§7 rule 4).
   let imageSeen = false;
+  // Figures first: an image inside a `figure` degrades to its alt text, but
+  // any remaining structural content (caption or elements) keeps the whole
+  // paste refused — image degradation and structural blocks are distinct.
+  let figureStructural = false;
+  for (const figure of root.querySelectorAll("figure")) {
+    const probe = figure.cloneNode(true) as HTMLElement;
+    for (const probeImage of probe.querySelectorAll("img")) {
+      probeImage.remove();
+    }
+    const restText = (probe.textContent ?? "").trim();
+    if (restText !== "" || probe.querySelectorAll("*").length > 0) {
+      figureStructural = true;
+    }
+    for (const image of figure.querySelectorAll("img")) {
+      imageSeen = true;
+      const alt = image.getAttribute("alt") ?? "";
+      if (alt !== "") {
+        image.replaceWith(document.createTextNode(alt));
+      } else {
+        image.remove();
+      }
+    }
+    if (!figureStructural) {
+      // The figure held only images: unwrap so the alt texts stay inline.
+      figure.replaceWith(...figure.childNodes);
+    }
+  }
+  // Images degrade to their alt text in their own context (§7 rule 4): an
+  // image inside a paragraph becomes text inside that paragraph (a nested
+  // `<p>` would restructure the HTML and drop its siblings); a block-level
+  // image becomes a paragraph of its own.
   for (const image of root.querySelectorAll("img")) {
     imageSeen = true;
     const alt = image.getAttribute("alt") ?? "";
-    if (alt !== "") {
+    if (alt === "") {
+      image.remove();
+      continue;
+    }
+    if (image.closest("p") !== null) {
+      image.replaceWith(document.createTextNode(alt));
+    } else {
       const paragraph = document.createElement("p");
       paragraph.textContent = alt;
       image.replaceWith(paragraph);
-    } else {
-      image.remove();
     }
   }
   const holder = document.createElement("div");
   holder.appendChild(root);
-  return { html: holder.innerHTML, imageSeen };
+  return { html: holder.innerHTML, imageSeen, figureStructural };
+}
+
+/** Read the native slice openness (`data-pm-slice="openStart openEnd …"`)
+    carried by ProseMirror-produced clipboard HTML. Foreign HTML carries no
+    marker and stays closed. */
+function readSliceOpenness(root: HTMLElement): {
+  openStart: number;
+  openEnd: number;
+} {
+  const marker = root.querySelector("[data-pm-slice]");
+  const raw = marker?.getAttribute("data-pm-slice") ?? "";
+  const match = /^(\d+) (\d+)/.exec(raw);
+  if (!match) return { openStart: 0, openEnd: 0 };
+  return {
+    openStart: Math.min(Number(match[1]), 1),
+    openEnd: Math.min(Number(match[2]), 1),
+  };
 }
 
 /** Classify and parse an HTML clipboard payload through the P0 schema. */
@@ -123,7 +189,9 @@ export function planHtmlPaste(
   const imageSeen = sanitized.imageSeen;
 
   // Rule 5 (§7): any non-paragraph block refuses the whole paste. Scan in
-  // document order so `rejectedKinds` follows the clipboard order.
+  // document order so `rejectedKinds` follows the clipboard order. A
+  // structural `figure` (caption or elements beyond degraded images)
+  // refuses as `image`: degradation and structural blocks are distinct.
   const refused: string[] = [];
   if (imageSeen) refused.push("image");
   const ordered = root.querySelectorAll(
@@ -136,18 +204,56 @@ export function planHtmlPaste(
     );
     if (entry) reportKind(refused, entry.kind);
   }
-  const refusing = refused.filter((kind) => kind !== "image");
+  if (sanitized.figureStructural) reportKind(refused, "image");
+  // A structural figure refuses through its `image` kind; plain image
+  // degradation (alt text kept) never refuses on its own.
+  const refusing = sanitized.figureStructural
+    ? [...refused]
+    : refused.filter((kind) => kind !== "image");
   if (refusing.length > 0) {
     return { outcome: "refuse", rejectedKinds: refused };
   }
+  const { openStart, openEnd } = readSliceOpenness(root);
   const slice = DOMParser.fromSchema(schema).parseSlice(root);
+  // Keep every representable inline slice content (R3): bare inline HTML
+  // such as `<strong>bold</strong>` parses to top-level inline nodes, not
+  // paragraphs — dropping them loses valid text and reports nothing.
+  // Consecutive top-level inline nodes form one paragraph of their own.
   const paragraphs: JSONContent[] = [];
+  let pendingInline: JSONContent[] = [];
+  const flushInline = (): void => {
+    if (pendingInline.length > 0) {
+      const inline = pendingInline;
+      pendingInline = [];
+      paragraphs.push(
+        withFreshId({ type: "paragraph", content: inline }, allocateId),
+      );
+    }
+  };
   slice.content.forEach((node) => {
     if (node.type.name === "paragraph") {
+      flushInline();
       paragraphs.push(withFreshId(node.toJSON() as JSONContent, allocateId));
+      return;
     }
+    if (node.isText) {
+      pendingInline.push(node.toJSON() as JSONContent);
+      return;
+    }
+    if (node.isInline) {
+      pendingInline.push(node.toJSON() as JSONContent);
+      return;
+    }
+    // Non-paragraph blocks were refused above; anything else is dropped.
   });
-  return { outcome: "insert", paragraphs, imageReported: imageSeen };
+  flushInline();
+  return {
+    outcome: "insert",
+    paragraphs,
+    imageReported: imageSeen,
+    openStart: paragraphs.length === 0 ? 0 : openStart,
+    openEnd: paragraphs.length === 0 ? 0 : openEnd,
+  };
 }
 
 const MARKDOWN_REFUSAL_TYPES: Record<string, string> = {
@@ -224,7 +330,15 @@ export function planTextPaste(
   text: string,
   allocateId: () => string,
 ): PastePlan {
-  if (text === "") return { outcome: "insert", paragraphs: [], imageReported: false };
+  if (text === "") {
+    return {
+      outcome: "insert",
+      paragraphs: [],
+      imageReported: false,
+      openStart: 0,
+      openEnd: 0,
+    };
+  }
   // Refusal is classified from the bridge's own lexer: with only the P0
   // extensions registered, the bridge parses table/code/list payloads to an
   // empty document, so the parsed shape alone cannot refuse them.
@@ -305,7 +419,13 @@ export function planTextPaste(
   if (refusing.length > 0) {
     return { outcome: "refuse", rejectedKinds: refused };
   }
-  return { outcome: "insert", paragraphs, imageReported: imageSeen };
+  return {
+    outcome: "insert",
+    paragraphs,
+    imageReported: imageSeen,
+    openStart: 0,
+    openEnd: 0,
+  };
 }
 
 /** Classify a `text/plain` clipboard payload as literal text: no bridge, no
@@ -316,7 +436,15 @@ export function planLiteralPaste(
   text: string,
   allocateId: () => string,
 ): PastePlan {
-  if (text === "") return { outcome: "insert", paragraphs: [], imageReported: false };
+  if (text === "") {
+    return {
+      outcome: "insert",
+      paragraphs: [],
+      imageReported: false,
+      openStart: 0,
+      openEnd: 0,
+    };
+  }
   const paragraphs: JSONContent[] = text
     .split(/(?:\r\n?|\n)+/)
     .map((line) =>
@@ -327,7 +455,13 @@ export function planLiteralPaste(
         allocateId,
       ),
     );
-  return { outcome: "insert", paragraphs, imageReported: false };
+  return {
+    outcome: "insert",
+    paragraphs,
+    imageReported: false,
+    openStart: 0,
+    openEnd: 0,
+  };
 }
 
 /** Strip every mark from planned paragraph JSON (the `text/plain` HTML-paste
@@ -345,13 +479,23 @@ export function stripPlannedMarks(paragraphs: readonly JSONContent[]): JSONConte
   return paragraphs.map(stripNode);
 }
 
-/** Build a ProseMirror slice from planned paragraph JSON for insertion. */
+/** Build a ProseMirror slice from planned paragraph JSON for insertion,
+    preserving the native slice openness (R10): an open slice stays inline
+    at the insertion point, while effectively inserted blocks still carry
+    their fresh identities. */
 export function sliceForParagraphs(
   schema: Schema,
   paragraphs: readonly JSONContent[],
+  openStart = 0,
+  openEnd = 0,
 ): Slice {
   const nodes = paragraphs.map((paragraph) =>
     schema.nodeFromJSON(paragraph),
   );
-  return new Slice(Fragment.from(nodes), 0, 0);
+  if (nodes.length === 0) return new Slice(Fragment.empty, 0, 0);
+  return new Slice(
+    Fragment.from(nodes),
+    Math.min(Math.max(openStart, 0), 1),
+    Math.min(Math.max(openEnd, 0), 1),
+  );
 }
