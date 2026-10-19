@@ -663,7 +663,22 @@ export function createRichTextEditor(
       }
     }
     if (removed.length > 0 && added.length === 0) {
-      return { kind: "delete", affected: removed };
+      // A global delete empties the surviving first block in place: the
+      // removed identities plus every survivor whose text actually changed
+      // (N8 regression — the modified survivor `a` was missing), in final
+      // document order. A whole-block removal that leaves its neighbours
+      // byte-identical still reports only the removed identity.
+      const afterTextById = new Map(after.map((block) => [block.id, block.text]));
+      const modifiedSurvivors = before
+        .filter((block) => {
+          const next = afterTextById.get(block.id);
+          return next !== undefined && next !== block.text;
+        })
+        .map((block) => block.id);
+      return {
+        kind: "delete",
+        affected: orderIdsByDocument([...modifiedSurvivors, ...removed]),
+      };
     }
     const affectedSet = new Set<string>();
     markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);

@@ -503,6 +503,61 @@ describe("internal copy/paste keeps literal whitespace (N2, native path)", () =>
     editor.destroy();
     element.remove();
   });
+
+  it("Markdown inline code keeps double spaces and tab through a real copy then paste", () => {
+    const inner = "A  B\tC";
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", `\`${inner}\``)],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    // A real copy event over the code-span content: the transfer carries
+    // the exact inner text plus native `data-pm-slice` HTML.
+    view.dispatch(
+      view.state.tr.setSelection(
+        TextSelection.create(view.state.doc, 1, 1 + inner.length),
+      ),
+    );
+    const captured = captureNativeCopy(viewDom);
+    expect(captured["text/plain"]).toBe(inner);
+    expect(captured["text/html"] ?? "").toContain("data-pm-slice");
+    // A real paste event at the end of the code span through the native
+    // path: the `data-pm-slice` marker keeps HTML whitespace collapsing
+    // off, even though the target format is Markdown (N2 residual).
+    view.dispatch(
+      view.state.tr.setSelection(
+        TextSelection.create(view.state.doc, 1 + inner.length),
+      ),
+    );
+    dispatchNativePaste(viewDom, {
+      text: captured["text/plain"],
+      html: captured["text/html"],
+    });
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("paste");
+    expect(changes[0]?.gesture.paste?.origin).toBe("internal");
+    // Nothing normalised: the code span carries the inner text twice, byte
+    // for byte (double space and tab intact).
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:1", `\`${inner}${inner}\``),
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+    element.remove();
+  });
 });
 
 describe("internal copy/paste origin (membership by payload identity)", () => {
