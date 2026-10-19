@@ -24,6 +24,8 @@
  * No case is skipped.
  */
 import { describe, it, expect } from "vitest";
+import { TextSelection } from "@tiptap/pm/state";
+import { redo, undo } from "@tiptap/pm/history";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
 import type {
@@ -153,6 +155,164 @@ describe("A → B → A sequence (DS half of the baseline witness)", () => {
     expect(editor.getSelection()).toEqual(selectionBefore);
     // The echo itself emits no change and no conflict.
     expect(changes).toHaveLength(1);
+    editor.destroy();
+  });
+});
+
+describe("native gesture provenance (commands and meta, never type)", () => {
+  it("a native split announces split with source and fresh tail", () => {
+    const { editor, changes } = setup("Alpha text");
+    const view = editor.view;
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 6)),
+    );
+    expect(changes).toHaveLength(0);
+    view.dispatch(view.state.tr.split(6));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("split");
+    expect(changes[0]?.gesture.split?.sourceParagraphId).toBe("paragraph:a");
+    expect(
+      changes[0]?.gesture.split?.newParagraphIds,
+    ).toHaveLength(1);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      changes[0]?.gesture.split?.newParagraphIds[0] as string,
+    ]);
+    assertSurfaceShape(changes[0] as RichTextChangeEvent);
+    editor.destroy();
+  });
+
+  it("a native join announces merge with survivor and retired", () => {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "Beta"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:native-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    // Boundary position of the second paragraph.
+    let boundary = -1;
+    view.state.doc.descendants((node, pos) => {
+      if (boundary === -1 && node.type.name === "paragraph" && pos > 0) {
+        boundary = pos;
+      }
+    });
+    view.dispatch(view.state.tr.join(boundary));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("merge");
+    expect(changes[0]?.gesture.merge).toEqual({
+      survivingParagraphId: "paragraph:a",
+      retiredParagraphIds: ["paragraph:b"],
+    });
+    expect(changes[0]?.document.blocks[0]?.text).toBe("AlphaBeta");
+    assertSurfaceShape(changes[0] as RichTextChangeEvent);
+    editor.destroy();
+  });
+
+  it("native history announces undo then redo, each limited to the changed block", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "Beta"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    editor.typeText("paragraph:a", " plus");
+    expect(changes).toHaveLength(1);
+    expect(undo(view.state, view.dispatch.bind(view))).toBe(true);
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.kind).toBe("undo");
+    expect(changes[1]?.gesture.affectedParagraphIds).toEqual(["paragraph:a"]);
+    expect(changes[1]?.document.blocks).toEqual([
+      paragraph("paragraph:a", "Alpha"),
+      paragraph("paragraph:b", "Beta"),
+    ]);
+    expect(redo(view.state, view.dispatch.bind(view))).toBe(true);
+    expect(changes).toHaveLength(3);
+    expect(changes[2]?.gesture.kind).toBe("redo");
+    expect(changes[2]?.gesture.affectedParagraphIds).toEqual(["paragraph:a"]);
+    expect(changes[2]?.document.blocks[0]?.text).toBe("Alpha plus");
+    for (const event of changes) assertSurfaceShape(event);
+    editor.destroy();
+  });
+});
+
+describe("undo restores the exact source and agrees with captures", () => {
+  it("undo invalidates only the edited block: untouched marker text is byte-exact in event and capture", async () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "_untouched_"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    editor.typeText("paragraph:a", " plus");
+    editor.undo();
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.kind).toBe("undo");
+    // Only the edited block was invalidated: the untouched marker variant
+    // survives byte-identically (no `*untouched*` normalisation).
+    expect(changes[1]?.document.blocks).toEqual([
+      paragraph("paragraph:a", "Alpha"),
+      paragraph("paragraph:b", "_untouched_"),
+    ]);
+    const captured = await editor.captureDocument();
+    expect(captured).toEqual(changes[1]?.document);
+    expect(editor.readiness()).toEqual({ composing: false, ready: true });
+    editor.destroy();
+  });
+
+  it("editing then undoing an emphasis paragraph restores its exact source", async () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:a", "_emphasis_")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    editor.typeText("paragraph:a", "!");
+    expect(changes).toHaveLength(1);
+    editor.undo();
+    expect(changes).toHaveLength(2);
+    expect(changes[1]?.gesture.kind).toBe("undo");
+    expect(changes[1]?.document.blocks).toEqual([
+      paragraph("paragraph:a", "_emphasis_"),
+    ]);
+    expect(editor.getDocument().blocks).toEqual([
+      paragraph("paragraph:a", "_emphasis_"),
+    ]);
     editor.destroy();
   });
 });

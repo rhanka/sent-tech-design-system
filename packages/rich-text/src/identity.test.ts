@@ -19,6 +19,8 @@
  * `createRichTextEditor` from `./editor.js`. No case is skipped.
  */
 import { describe, it, expect } from "vitest";
+import { TextSelection } from "@tiptap/pm/state";
+import { deleteSelection, splitBlock } from "@tiptap/pm/commands";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
 import type {
@@ -171,6 +173,101 @@ describe("external paste cannot inject identity", () => {
     expect(ids).not.toContain("paragraph:forged");
     expect(ids).toContain("paragraph:fresh-1");
     expect(changes[0]?.gesture.paste?.origin).toBe("external");
+    editor.destroy();
+  });
+});
+
+/**
+ * Empty `text/plain` paragraphs, DS block level (spec §5.10, §2.2 M8,
+ * RED 3 named witnesses). Both gestures are allowed locally; the
+ * assertions stop at block level (no full-source string, no separator
+ * stored, no `@sentropic/focus` import, no diff or return computed).
+ * Host agreement for these gestures is not claimed under the pin and lives
+ * only in FE-3 (§13.1).
+ */
+describe("Enter at end of paragraph (text/plain, allowed locally)", () => {
+  it("Enter with the caret at the end splits: leading keeps its identity, the empty tail is fresh, one split event", () => {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:a", "A")],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:enter-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    // Caret at the end of the paragraph, then the native Enter command.
+    editor.view.dispatch(
+      editor.view.state.tr.setSelection(
+        TextSelection.create(editor.view.state.doc, 2),
+      ),
+    );
+    expect(changes).toHaveLength(0);
+    const handled = splitBlock(
+      editor.view.state,
+      editor.view.dispatch.bind(editor.view),
+    );
+    expect(handled).toBe(true);
+    expect(changes).toHaveLength(1);
+    const event = changes[0];
+    expect(event?.document.blocks).toEqual([
+      paragraph("paragraph:a", "A"),
+      { paragraphId: "paragraph:enter-1", kind: "paragraph", text: "" },
+    ]);
+    expect(event?.gesture.kind).toBe("split");
+    expect(event?.gesture.split).toEqual({
+      sourceParagraphId: "paragraph:a",
+      newParagraphIds: ["paragraph:enter-1"],
+    });
+    expect(editor.getDocument()).toEqual(event?.document);
+    editor.destroy();
+  });
+});
+
+describe("clear a field containing separators (text/plain, allowed locally)", () => {
+  it("selecting and clearing the whole content leaves the single controlled empty block", () => {
+    const changes: RichTextChangeEvent[] = [];
+    let n = 0;
+    const editor = createRichTextEditor({
+      // Host-segmented from source `"A\n\nB"`: two paragraphs.
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:a", "A"), paragraph("paragraph:b", "B")],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:clear-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    editor.view.dispatch(
+      editor.view.state.tr.setSelection(
+        TextSelection.create(
+          editor.view.state.doc,
+          0,
+          editor.view.state.doc.content.size,
+        ),
+      ),
+    );
+    expect(changes).toHaveLength(0);
+    const handled = deleteSelection(
+      editor.view.state,
+      editor.view.dispatch.bind(editor.view),
+    );
+    expect(handled).toBe(true);
+    // The gesture is allowed: exactly one `onChange` whose document is the
+    // single controlled empty block — not dropped, not a placeholder, and
+    // not collapsed back to `["A", "B"]`.
+    expect(changes).toHaveLength(1);
+    const document = changes[0]?.document;
+    expect(document?.blocks).toHaveLength(1);
+    expect(document?.blocks[0]?.kind).toBe("paragraph");
+    expect(document?.blocks[0]?.text).toBe("");
+    expect(editor.getDocument()).toEqual(document);
     editor.destroy();
   });
 });

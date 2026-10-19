@@ -187,6 +187,64 @@ describe("editing half: one middle-paragraph edit preserves its surroundings", (
   });
 });
 
+describe("absent preservedKind stays absent", () => {
+  function mountWithoutKind() {
+    const changes: RichTextChangeEvent[] = [];
+    const conflicts: { incoming: RichTextDocument }[] = [];
+    const input: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+        // Received without `preservedKind`: absent must stay absent.
+        { paragraphId: "paragraph:k", kind: "preserved", raw: "| a |" },
+      ],
+    };
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: input,
+      messages: MESSAGES,
+      allocateId: () => `paragraph:absent-${++n}`,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        conflicts.push(event);
+      },
+    });
+    return { editor, changes, conflicts, input };
+  }
+
+  it("a preserved block received without preservedKind round-trips without it", () => {
+    const { editor, input } = mountWithoutKind();
+    const next = editor.getDocument();
+    expect(next).toEqual(input);
+    expect("preservedKind" in (next.blocks[1] as object)).toBe(false);
+    editor.destroy();
+  });
+
+  it("a raw-only update to that block applies under rule 4 instead of conflicting", () => {
+    const { editor, changes, conflicts } = mountWithoutKind();
+    // Without the absent/present distinction the mounted document would
+    // carry `preservedKind: ""`, diverge from the acknowledgement, and turn
+    // this clean update into a conflict.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:a", kind: "paragraph", text: "Alpha" },
+        { paragraphId: "paragraph:k", kind: "preserved", raw: "| b |" },
+      ],
+    });
+    expect(conflicts).toHaveLength(0);
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument().blocks[1]).toEqual({
+      paragraphId: "paragraph:k",
+      kind: "preserved",
+      raw: "| b |",
+    });
+    editor.destroy();
+  });
+});
+
 describe("empty field", () => {
   it('the host-segmented empty field is one empty paragraph with text ""', () => {
     const changes: RichTextChangeEvent[] = [];

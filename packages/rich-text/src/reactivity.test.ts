@@ -1,17 +1,20 @@
 /**
  * Internal reactivity witness (spec §11, FE-8 surface §13.3). Environment: J.
- * Internal test only: it wraps the Tiptap-bound editor factory and the
+ * Internal test only: it exercises the Tiptap-bound editor factory and the
  * "./editor" conversion counters. It is never exported and never part of
  * the public API; it imports "./editor" explicitly.
  *
- * Observable assertion: across a typing burst, exactly one editor
- * construction and zero destructions; zero whole-document conversion or
- * Markdown re-parse calls per keystroke (a keystroke touches only the
- * affected block, as a ProseMirror transaction); preserved blocks' `raw`
- * values identical by value in every emitted document. A stable DOM root, a
- * single `onChange` count, or equality of one `raw` string alone never
- * satisfies this witness: the counters below observe the factory and the
- * conversion entries directly.
+ * Observable assertion, over real operations (never test-wrapper counts):
+ * across a typing burst the live ProseMirror view instance is stable and
+ * nothing is destroyed; each keystroke issues exactly one paragraph bridge
+ * serialisation for the visited-and-changed paragraph, zero paragraph
+ * re-parses and zero whole-document conversions — even with several already
+ * visited paragraphs, because conversions memoise the exact source per node
+ * version; revisiting a known version (undo) costs no conversion at all.
+ * Preserved blocks' `raw` values stay identical by value in every emitted
+ * document. A stable DOM root, a single `onChange` count, or equality of one
+ * `raw` string alone never satisfies this witness: the counters below
+ * observe the conversion entries directly.
  */
 import { describe, it, expect } from "vitest";
 import { createRichTextEditor } from "./editor.js";
@@ -48,7 +51,9 @@ function mountOptions(changes: RichTextChangeEvent[]): RichTextEditorOptions {
     document: {
       format: "focus.markdown.p0@1",
       blocks: [
-        paragraph("paragraph:edit", "typed"),
+        paragraph("paragraph:a", "first"),
+        paragraph("paragraph:b", "second"),
+        paragraph("paragraph:c", "third"),
         preserved("paragraph:kept", "| a | b |\n| - | - |\n| 1 | 2 |", "table"),
       ],
     },
@@ -60,47 +65,57 @@ function mountOptions(changes: RichTextChangeEvent[]): RichTextEditorOptions {
   };
 }
 
-describe("no remount per keystroke", () => {
-  it("a typing burst constructs one editor and destroys none", () => {
-    let constructions = 0;
-    let destructions = 0;
+describe("no remount per keystroke (live view)", () => {
+  it("a typing burst keeps one live ProseMirror view", () => {
     const changes: RichTextChangeEvent[] = [];
-    const options = mountOptions(changes);
-    const createCounted = (args: RichTextEditorOptions) => {
-      constructions += 1;
-      return createRichTextEditor(args);
-    };
-    const editor = createCounted(options);
-    const destroyCounted = () => {
-      destructions += 1;
-      editor.destroy();
-    };
+    const editor = createRichTextEditor(mountOptions(changes));
+    const liveView = editor.view;
     for (const char of " burst text") {
-      editor.typeText("paragraph:edit", char);
+      editor.typeText("paragraph:a", char);
     }
-    expect(constructions).toBe(1);
-    expect(destructions).toBe(0);
+    // The real operation surface: the same live view served every
+    // keystroke — no reconstruction, no replacement.
+    expect(editor.view).toBe(liveView);
     expect(changes.length).toBeGreaterThan(0);
-    destroyCounted();
-    expect(destructions).toBe(1);
+    editor.destroy();
   });
 });
 
-describe("no whole-document reparse per keystroke", () => {
-  it("keystrokes issue zero whole-document conversion or re-parse calls", () => {
+describe("no whole-document reparse per keystroke (real conversions)", () => {
+  it("with several visited paragraphs, a keystroke serialises only its own paragraph", () => {
     const changes: RichTextChangeEvent[] = [];
     const editor = createRichTextEditor(mountOptions(changes));
+    // Visit two paragraphs so both versions are recorded.
+    editor.typeText("paragraph:a", "!");
+    editor.typeText("paragraph:b", "?");
     resetConversionCounters();
-    const burst = "burst";
-    for (const char of burst) {
-      editor.typeText("paragraph:edit", char);
-    }
-    // One affected block per keystroke: exactly one paragraph serialisation
-    // per keystroke, zero paragraph re-parses, and zero whole-document
-    // conversions across the whole burst.
-    expect(conversionCounters.paragraphSerialize).toBe(burst.length);
+    editor.typeText("paragraph:a", ".");
+    // Exactly one paragraph serialisation (the changed one), zero
+    // re-parses, zero whole-document conversions: the already visited
+    // paragraph B is a version-cache hit, not a second serialisation. A
+    // `touched` set that is never cleared would serialise both.
+    expect(conversionCounters.paragraphSerialize).toBe(1);
     expect(conversionCounters.paragraphParse).toBe(0);
     expect(conversionCounters.documentSerialize).toBe(0);
+    editor.destroy();
+  });
+
+  it("undo back to a recorded version costs no conversion", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor(mountOptions(changes));
+    editor.typeText("paragraph:a", "!");
+    expect(changes).toHaveLength(1);
+    resetConversionCounters();
+    editor.undo();
+    expect(changes).toHaveLength(2);
+    // The restored version is the recorded mount version: exact text with
+    // no bridge call.
+    expect(conversionCounters.paragraphSerialize).toBe(0);
+    expect(conversionCounters.paragraphParse).toBe(0);
+    expect(conversionCounters.documentSerialize).toBe(0);
+    expect(editor.getDocument().blocks[0]).toEqual(
+      paragraph("paragraph:a", "first"),
+    );
     editor.destroy();
   });
 
@@ -108,7 +123,7 @@ describe("no whole-document reparse per keystroke", () => {
     const changes: RichTextChangeEvent[] = [];
     const editor = createRichTextEditor(mountOptions(changes));
     for (const char of "burst") {
-      editor.typeText("paragraph:edit", char);
+      editor.typeText("paragraph:a", char);
     }
     expect(changes.length).toBeGreaterThan(0);
     const expected: RichTextDocument["blocks"][number] = preserved(
