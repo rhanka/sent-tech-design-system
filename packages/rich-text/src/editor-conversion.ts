@@ -261,6 +261,14 @@ export function serializeParagraphNode(
     return node.textBetween(0, node.content.size, "", "\n");
   }
   if (node.content.size === 0) return "";
+  // Break-only and whitespace-only paragraphs (N1 residual): the bridge
+  // drops them to `""`, so they are preserved explicitly here instead —
+  // one marker per `hardBreak` over the verbatim whitespace text. The
+  // marker choice matches the trailing-break convention below, and
+  // `restoreTrailingHardBreaks` inverts it (empty head included), so the
+  // export remounts with its breaks and re-exports byte-identical.
+  const degenerate = degenerateParagraphWire(node);
+  if (degenerate !== null) return degenerate;
   const json = node.toJSON() as JSONContent;
   if ((json as { type?: string }).type === "doc") {
     conversionCounters.documentSerialize += 1;
@@ -291,15 +299,48 @@ export function serializeParagraphNode(
     terminates with two spaces and a newline. */
 const TRAILING_HARD_BREAK_MARKER = "  \n";
 
+/** Wire text for a paragraph the Markdown bridge cannot represent (N1
+    residual): `node.textContent` holds no visible character while the node
+    is non-empty — break-only, whitespace-only, or both. The bridge
+    serialises every such node to `""`, so the text is built explicitly:
+    the whitespace text verbatim, then one trailing marker per `hardBreak`
+    (child order between text and breaks normalises to this shape, a stable
+    fixed point: the restore path below rebuilds the same order). Marks on
+    a whitespace-only run normalise away with the run — the bridge has no
+    syntax for them. Returns `null` for any other paragraph, including the
+    empty one (handled by the caller). */
+function degenerateParagraphWire(node: ProseMirrorNode): string | null {
+  if (node.textContent.trim() !== "") return null;
+  let breaks = 0;
+  let text = "";
+  let representable = true;
+  node.content.forEach((child) => {
+    if (child.type.name === "hardBreak") {
+      breaks += 1;
+    } else if (child.isText) {
+      text += child.text ?? "";
+    } else {
+      representable = false;
+    }
+  });
+  if (!representable) return null;
+  if (breaks === 0 && text === "") return null;
+  if (breaks === 0) return text;
+  return `${text}${TRAILING_HARD_BREAK_MARKER.repeat(breaks)}`;
+}
+
 /** Restore the trailing `hardBreak` nodes a paragraph text carries (N1):
     the bridge drops a trailing break on parse (its marker spaces stay in
     the text), so `"Alpha  \n"` would remount without its break. One
     `hardBreak` is restored per trailing marker over the bridge parse of
     the marker-free head, so capture-then-remount keeps the break and the
-    re-export is byte-identical. Returns `null` when the text carries no
-    trailing marker or the head does not parse to a single paragraph — the
-    caller then keeps the bridge output for the whole text untouched. The
-    head re-parse is part of the same logical paragraph parse (no counter). */
+    re-export is byte-identical. An empty head restores a bare break run
+    and a whitespace-only head restores its verbatim text ahead of the
+    breaks (N1 residual: the bridge parses both to no paragraph). Returns
+    `null` when the text carries no trailing marker or a non-blank head
+    does not parse to a single paragraph — the caller then keeps the bridge
+    output for the whole text untouched. The head re-parse is part of the
+    same logical paragraph parse (no counter). */
 function restoreTrailingHardBreaks(
   manager: MarkdownManager,
   paragraphId: string,
@@ -312,6 +353,34 @@ function restoreTrailingHardBreaks(
     breaks += 1;
   }
   if (breaks === 0) return null;
+  // Empty or whitespace-only head (N1 residual): the bridge parses it to
+  // no paragraph, so the break-only wire (`"  \n"`, `"  \n  \n"`) and the
+  // whitespace-plus-breaks wire rebuild explicitly here instead — a bare
+  // break run for an empty head, the verbatim whitespace text ahead of the
+  // breaks otherwise. This is the exact inverse of
+  // `degenerateParagraphWire` above.
+  if (head === "") {
+    const content: JSONContent[] = [];
+    for (let index = 0; index < breaks; index += 1) {
+      content.push({ type: "hardBreak" });
+    }
+    return {
+      type: "paragraph",
+      attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
+      content,
+    };
+  }
+  if (head.trim() === "") {
+    const content: JSONContent[] = [{ type: "text", text: head }];
+    for (let index = 0; index < breaks; index += 1) {
+      content.push({ type: "hardBreak" });
+    }
+    return {
+      type: "paragraph",
+      attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },
+      content,
+    };
+  }
   let parsed: (JSONContent & { content?: JSONContent[] }) | null = null;
   try {
     parsed = manager.parse(head) as JSONContent & { content?: JSONContent[] };
@@ -372,14 +441,19 @@ export function paragraphTextToProseMirror(
     };
   }
   conversionCounters.paragraphParse += 1;
+  // Trailing-break restore runs before the bridge parse (N1 residual): the
+  // bridge parses a break-only or whitespace-plus-breaks wire to no
+  // paragraph at all, so gating the restore on a successful full-text
+  // parse would leave the breaks unrestored. Texts without a trailing
+  // marker return `null` here and take the bridge path untouched.
+  const restored = restoreTrailingHardBreaks(manager, paragraphId, text);
+  if (restored !== null) return restored;
   try {
     const parsed = manager.parse(text) as JSONContent & {
       content?: JSONContent[];
     };
     const first = parsed?.content?.[0];
     if (first !== undefined && first.type === "paragraph") {
-      const restored = restoreTrailingHardBreaks(manager, paragraphId, text);
-      if (restored !== null) return restored;
       return {
         type: "paragraph",
         attrs: { [PARAGRAPH_ID_ATTRIBUTE]: paragraphId },

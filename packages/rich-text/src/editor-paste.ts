@@ -259,9 +259,12 @@ export function planHtmlPaste(
     return { outcome: "refuse", rejectedKinds: refused };
   }
   const { openStart, openEnd } = readSliceOpenness(root);
+  // Whitespace is preserved when the target is plain OR the payload carries
+  // a native slice marker (N2 residual): an explicit `false` for a Markdown
+  // target must not hide the marker, so this is a disjunction — never `??`.
   const slice = DOMParser.fromSchema(schema).parseSlice(root, {
     preserveWhitespace:
-      options?.preserveWhitespace ?? hasNativeSliceMarker(root),
+      options?.preserveWhitespace === true || hasNativeSliceMarker(root),
   });
   // Keep every representable inline slice content (R3): bare inline HTML
   // such as `<strong>bold</strong>` parses to top-level inline nodes, not

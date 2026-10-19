@@ -328,4 +328,94 @@ describe("select-all delete keeps the first identity (N8)", () => {
     editor.destroy();
     element.remove();
   });
+
+  it("AllSelection plus Backspace on two paragraphs reports the emptied survivor first, in document order", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:a", "A"), paragraph("paragraph:b", "B")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    view.dispatch(view.state.tr.setSelection(new AllSelection(view.state.doc)));
+    viewDom.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Backspace",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    // The document keeps the first identity emptied in place — and the
+    // affected list reunites the removed identity with the effectively
+    // modified survivor, in document order (N8 regression).
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(editor.getDocument().blocks).toEqual([
+      { paragraphId: "paragraph:a", kind: "paragraph", text: "" },
+    ]);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:b",
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+    element.remove();
+  });
+
+  it("AllSelection plus Backspace on three paragraphs reports the survivor then the removed, in document order", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [
+          paragraph("paragraph:a", "A"),
+          paragraph("paragraph:b", "B"),
+          paragraph("paragraph:c", "C"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    view.dispatch(view.state.tr.setSelection(new AllSelection(view.state.doc)));
+    viewDom.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Backspace",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(editor.getDocument().blocks).toEqual([
+      { paragraphId: "paragraph:a", kind: "paragraph", text: "" },
+    ]);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:b",
+      "paragraph:c",
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+    element.remove();
+  });
 });
