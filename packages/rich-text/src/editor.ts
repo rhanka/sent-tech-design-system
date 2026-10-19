@@ -243,8 +243,140 @@ export function createRichTextEditor(
         const text =
           data?.getData("text/plain") ?? data?.getData("Text") ?? "";
         if (html === "" && text === "") return false;
-        runPastePolicy(view, html, text, "external");
+        runPastePolicy(view, html, text, nativePasteOriginFor(html, text));
         return true;
+      },
+      // Drops go through the common paste/refusal policy: a dropped slice
+      // carrying a preserved block (empty, duplicated or fresh identity) or
+      // any non-paragraph block is refused whole before the identity repair
+      // could re-label it. Paragraph-only drops fall through to the default
+      // ProseMirror insertion, whose identities the live plugin renews.
+      handleDrop: (
+        view: EditorView,
+        event: DragEvent,
+        slice: Slice,
+      ): boolean => {
+        if (tracker.destroyed || !isActive()) return true;
+        const rejected: string[] = [];
+        slice.content.forEach((node) => {
+          if (node.type.name === "preservedBlock") {
+            const kind = node.attrs["preservedKind"];
+            const label =
+              typeof kind === "string" && kind !== ""
+                ? kind
+                : "preservedBlock";
+            if (!rejected.includes(label)) rejected.push(label);
+          } else if (
+            node.type.name !== "paragraph" &&
+            node.type.name !== "text"
+          ) {
+            if (!rejected.includes(node.type.name)) {
+              rejected.push(node.type.name);
+            }
+          }
+        });
+        if (rejected.length === 0) {
+          // Same classifiers as the paste path, allocation-free: the drop
+          // inserts through the default pipeline when allowed, so no
+          // allocator identity may be consumed by classification.
+          const data = event.dataTransfer;
+          const html = data?.getData("text/html") ?? "";
+          const text =
+            data?.getData("text/plain") ?? data?.getData("Text") ?? "";
+          const classify = (): string[] => {
+            const noop = (): string => "";
+            if (html !== "") {
+              const planned = planHtmlPaste(
+                view.state.schema,
+                html,
+                noop,
+              );
+              if (planned.outcome === "refuse") {
+                return [...planned.rejectedKinds];
+              }
+              return [];
+            }
+            if (text !== "") {
+              const planned = isPlainTextFormat()
+                ? planLiteralPaste(text, noop)
+                : planTextPaste(manager(), text, noop);
+              if (planned.outcome === "refuse") {
+                return [...planned.rejectedKinds];
+              }
+            }
+            return [];
+          };
+          try {
+            for (const kind of classify()) {
+              if (!rejected.includes(kind)) rejected.push(kind);
+            }
+          } catch {
+            // Classification never blocks the drop on internal error.
+          }
+        }
+        if (rejected.length > 0) {
+          const data = event.dataTransfer;
+          const html = data?.getData("text/html") ?? "";
+          const text =
+            data?.getData("text/plain") ?? data?.getData("Text") ?? "";
+          const types = data?.types ?? [];
+          const formats: ("text/html" | "text/plain")[] = [];
+          if (html !== "" || types.includes("text/html")) {
+            formats.push("text/html");
+          }
+          if (text !== "" || types.includes("text/plain")) {
+            formats.push("text/plain");
+          }
+          if (formats.length === 0) formats.push("text/html");
+          callbacks.onUnsupportedPaste?.({
+            rejectedKinds: rejected,
+            clipboardFormats: formats,
+          });
+          return true;
+        }
+        return false;
+      },
+      // ProseMirror returns before `handlePaste` while composing, so a paste
+      // during composition would bypass the policy: intercept it at the DOM
+      // level and run the same shared policy (preventing the browser default).
+      // Outside composition this stays inert and `handlePaste` owns the path.
+      handleDOMEvents: {
+        paste: (view: EditorView, raw: Event): boolean => {
+          if (tracker.destroyed || !isActive()) return false;
+          if (!view.composing && !tracker.composing) return false;
+          const data = (raw as ClipboardEvent).clipboardData;
+          if (!data) return false;
+          const html = data.getData("text/html") ?? "";
+          const text =
+            data.getData("text/plain") ?? data.getData("Text") ?? "";
+          if (html === "" && text === "") return false;
+          runPastePolicy(
+            view,
+            html,
+            text,
+            nativePasteOriginFor(html, text),
+          );
+          raw.preventDefault();
+          return true;
+        },
+        // Record the native copy text of this session: the next native
+        // paste carrying the same text entered from inside this session,
+        // independently of the stripped identities. Never prevents the
+        // browser copy itself.
+        copy: (view: EditorView): boolean => {
+          if (tracker.destroyed || !isActive()) return false;
+          try {
+            const slice = view.state.selection.content();
+            lastNativeCopyText = slice.content.textBetween(
+              0,
+              slice.content.size,
+              "\n\n",
+            );
+          } catch {
+            // Recording never blocks the copy.
+          }
+          return false;
+        },
       },
       // Defence in depth for any path that still parses clipboard input
       // outside `handlePaste`: identities never survive the transform.
@@ -296,7 +428,17 @@ export function createRichTextEditor(
   const displayedDocument = (): RichTextDocument =>
     proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
 
-  const currentDocument = displayedDocument;
+  // Frozen at teardown: `getDocument()` after destruction serves this copy
+  // with no bridge and no cache, so the per-version caches can be released
+  // while a retained handle still reads the last document.
+  let destroyedDocument: RichTextDocument | null = null;
+
+  const currentDocument = (): RichTextDocument => {
+    if (tracker.destroyed && destroyedDocument !== null) {
+      return copyRichTextDocument(destroyedDocument);
+    }
+    return displayedDocument();
+  };
 
   const emitChange = (
     kind: RichTextGestureKind,
@@ -339,6 +481,54 @@ export function createRichTextEditor(
     return blocks;
   };
 
+  // Last native copy (DOM `copy` gesture) in this session, text only: the
+  // single slot is overwritten by every copy and never accumulates, so a
+  // long session retains at most one payload. A native paste whose text
+  // equals this copy entered from inside this session (`internal`),
+  // independently of the (stripped and renewed) identities.
+  let lastNativeCopyText: string | null = null;
+
+  /** Origin of a native paste payload: `internal` when its text equals the
+      last native copy of this session, `external` otherwise. */
+  const nativePasteOriginFor = (
+    html: string,
+    text: string,
+  ): "internal" | "external" => {
+    void html;
+    if (lastNativeCopyText !== null && text === lastNativeCopyText) {
+      return "internal";
+    }
+    return "external";
+  };
+
+  /** Order identities in final-document order (spec §5.3: affected lists
+      follow the resulting document). Identities absent from the live
+      document (retired by a delete) keep their relative input order after
+      the present ones. */
+  const orderIdsByDocument = (ids: readonly string[]): string[] => {
+    const wanted = new Set(ids);
+    const ordered: string[] = [];
+    editor.state.doc.forEach((node) => {
+      if (
+        node.type.name === "paragraph" ||
+        node.type.name === "preservedBlock"
+      ) {
+        const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
+        if (typeof id === "string" && wanted.has(id)) {
+          wanted.delete(id);
+          ordered.push(id);
+        }
+      }
+    });
+    for (const id of ids) {
+      if (wanted.has(id)) {
+        wanted.delete(id);
+        ordered.push(id);
+      }
+    }
+    return ordered;
+  };
+
   /** Provenance of one native (unsuppressed) transaction, from ProseMirror
       commands and meta: paste meta first, history transactions next
       (imperative flag, else the undo/redo stack depths), then the structural
@@ -362,21 +552,36 @@ export function createRichTextEditor(
       const beforeIds = new Set(
         nativeBlocksOf(transaction.before).map((block) => block.id),
       );
-      const inserted = nativeBlocksOf(editor.state.doc)
+      const afterBlocks = nativeBlocksOf(editor.state.doc);
+      const inserted = afterBlocks
         .map((block) => block.id)
         .filter((id) => !beforeIds.has(id));
+      // Complete affected in final order: the split host paragraph keeps
+      // its identity while changing text, so the touched union (not the
+      // fresh identities alone) names the modified block and the tail.
+      const touched = new Set<string>();
+      markTouchedFromTransaction(touched, editor.state.doc, transaction);
+      const affected = orderIdsByDocument([...new Set([...inserted, ...touched])]);
+      const origin =
+        lastNativeCopyText !== null &&
+        afterBlocks
+          .filter((block) => inserted.includes(block.id))
+          .map((block) => block.text)
+          .join("\n\n") === lastNativeCopyText
+          ? "internal"
+          : "external";
       return {
         kind: "paste",
-        affected: inserted,
+        affected,
         extra: {
-          paste: { insertedParagraphIds: inserted, origin: "external" },
+          paste: { insertedParagraphIds: inserted, origin },
         },
       };
     }
     if (isHistoryTransaction(transaction)) {
       const affectedSet = new Set<string>();
       markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
-      const affected = [...affectedSet];
+      const affected = orderIdsByDocument([...affectedSet]);
       const directed = pendingHistory;
       pendingHistory = null;
       if (directed !== null) return { kind: directed, affected };
@@ -430,18 +635,25 @@ export function createRichTextEditor(
       const removedIndex = before.findIndex((block) => block.id === removedId);
       const survivor =
         removedIndex > 0 ? after[removedIndex - 1] : undefined;
+      // A whole-block removal (node selection) leaves the neighbour text
+      // untouched: only a true join concatenates the two texts into the
+      // survivor, so the merge announces only then.
       if (survivor !== undefined && beforeIds.has(survivor.id)) {
-        retiredIds.add(removedId);
-        return {
-          kind: "merge",
-          affected: [survivor.id],
-          extra: {
-            merge: {
-              survivingParagraphId: survivor.id,
-              retiredParagraphIds: [removedId],
+        const beforeSurvivor = before[removedIndex - 1] as { text: string };
+        const removedBlock = before[removedIndex] as { text: string };
+        if (survivor.text === `${beforeSurvivor.text}${removedBlock.text}`) {
+          retiredIds.add(removedId);
+          return {
+            kind: "merge",
+            affected: [survivor.id],
+            extra: {
+              merge: {
+                survivingParagraphId: survivor.id,
+                retiredParagraphIds: [removedId],
+              },
             },
-          },
-        };
+          };
+        }
       }
     }
     if (removed.length > 0 && added.length === 0) {
@@ -449,7 +661,7 @@ export function createRichTextEditor(
     }
     const affectedSet = new Set<string>();
     markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
-    return { kind: "type", affected: [...affectedSet] };
+    return { kind: "type", affected: orderIdsByDocument([...affectedSet]) };
   };
 
   /** Bookkeep one transaction (touched identities, composition, deferred
@@ -632,13 +844,92 @@ export function createRichTextEditor(
     editor.view.dispatch(tr);
   };
 
+  /** True when the incoming document differs from the displayed one only by
+      preserved `raw`/`preservedKind` values: same format, same block count,
+      same identities and kinds, every paragraph byte-identical, at least one
+      preserved value changed. */
+  const isRawOnlyPreservedChange = (
+    displayed: RichTextDocument,
+    incoming: RichTextDocument,
+  ): boolean => {
+    if (displayed.format !== incoming.format) return false;
+    if (displayed.blocks.length !== incoming.blocks.length) return false;
+    let preservedChanged = false;
+    for (let index = 0; index < displayed.blocks.length; index += 1) {
+      const left = displayed.blocks[index]!;
+      const right = incoming.blocks[index]!;
+      if (left.paragraphId !== right.paragraphId || left.kind !== right.kind) {
+        return false;
+      }
+      if (left.kind === "paragraph") {
+        if ((left.text ?? undefined) !== (right.text ?? undefined)) {
+          return false;
+        }
+        continue;
+      }
+      const rawSame = (left.raw ?? undefined) === (right.raw ?? undefined);
+      const kindSame =
+        (left.preservedKind ?? undefined) === (right.preservedKind ?? undefined);
+      if (!rawSame || !kindSame) preservedChanged = true;
+    }
+    return preservedChanged;
+  };
+
+  /** Targeted `raw`-only application (§5.6): one `setNodeMarkup` per changed
+      preserved block, outside history and under the allow-meta. Paragraph
+      nodes keep their instances, so a previously acknowledged paragraph edit
+      stays undoable on its text. */
+  const applyRawOnlyPreservedChange = (
+    incoming: RichTextDocument,
+  ): void => {
+    let tr = editor.state.tr;
+    tr.setMeta("addToHistory", false);
+    tr.setMeta(PRESERVED_REPLACE_META, true);
+    for (const block of incoming.blocks) {
+      if (block.kind !== "preserved") continue;
+      const target = blockPosition(block.paragraphId);
+      if (target === null || target.name !== "preservedBlock") continue;
+      const node = editor.state.doc.nodeAt(target.pos);
+      const current = node?.attrs ?? {};
+      const nextRaw = block.raw ?? "";
+      const nextKind = block.preservedKind ?? "";
+      if (
+        current["raw"] === nextRaw &&
+        current["preservedKind"] === nextKind
+      ) {
+        continue;
+      }
+      tr = tr.setNodeMarkup(target.pos, node?.type, {
+        ...(current as Record<string, unknown>),
+        [PARAGRAPH_ID_ATTRIBUTE]: block.paragraphId,
+        raw: nextRaw,
+        preservedKind: nextKind,
+      });
+      seeds.preserved.set(block.paragraphId, {
+        hasRaw: block.raw !== undefined,
+        hasKind: block.preservedKind !== undefined,
+      });
+    }
+    editor.view.dispatch(tr);
+  };
+
   const applyExternalDocument = (incoming: RichTextDocument): void => {
     const saved = selectionSnapshot();
+    const before = displayedDocument();
+    const rawOnly = isRawOnlyPreservedChange(before, incoming);
+    const prevFormat = documentFormat;
+    // The incoming format is effective for the plugins before the replace
+    // transaction (plain-text mark stripping, paste planning); restored when
+    // the replacement fails.
+    documentFormat = incoming.format;
     suppressEmit = true;
     try {
-      replaceDocument(incoming);
-      reseedConversion(seeds, incoming);
-      documentFormat = incoming.format;
+      if (rawOnly) {
+        applyRawOnlyPreservedChange(incoming);
+      } else {
+        replaceDocument(incoming);
+        reseedConversion(seeds, incoming);
+      }
       lastAcknowledged = copyRichTextDocument(incoming);
       deferredExternal = null;
       // Recording read: every block is seed-fresh, so this serialises
@@ -646,6 +937,9 @@ export function createRichTextEditor(
       // restoring one of these versions then hits the record instead of
       // re-serialising through the bridge.
       displayedDocument();
+    } catch (error) {
+      documentFormat = prevFormat;
+      throw error;
     } finally {
       suppressEmit = false;
     }
@@ -745,6 +1039,8 @@ export function createRichTextEditor(
           outcome: "insert",
           paragraphs: stripPlannedMarks(planned.paragraphs),
           imageReported: planned.imageReported,
+          openStart: planned.openStart,
+          openEnd: planned.openEnd,
         };
       }
     } else if (isPlainTextFormat()) {
@@ -773,13 +1069,19 @@ export function createRichTextEditor(
           PARAGRAPH_ID_ATTRIBUTE
         ] as string,
     );
+    const beforeIds = identitySet();
     lastDispatchChanged = false;
     suppressedAffected.clear();
     suppressEmit = true;
     try {
       view.dispatch(
         view.state.tr.replaceSelection(
-          sliceForParagraphs(view.state.schema, planned.paragraphs),
+          sliceForParagraphs(
+            view.state.schema,
+            planned.paragraphs,
+            planned.openStart,
+            planned.openEnd,
+          ),
         ),
       );
     } finally {
@@ -795,11 +1097,24 @@ export function createRichTextEditor(
       }
       return;
     }
-    for (const id of inserted) seeds.touched.add(id);
+    // Complete affected in final-document order: pasting inside a paragraph
+    // splits it, so the split tail (fresh identity from the repair) and the
+    // modified head join the planned inserts.
+    const afterIds = identitySet();
+    const insertedSet = new Set(inserted);
+    const freshTails = [...afterIds].filter(
+      (id) => !beforeIds.has(id) && !insertedSet.has(id),
+    );
+    for (const id of [...inserted, ...freshTails]) seeds.touched.add(id);
+    const affected = orderIdsByDocument([
+      ...inserted,
+      ...suppressedAffected,
+      ...freshTails,
+    ]);
     const after = displayedDocument();
     emitChange(
       "paste",
-      inserted,
+      affected,
       {
         paste: { insertedParagraphIds: inserted, origin },
       },
@@ -854,13 +1169,23 @@ export function createRichTextEditor(
       return;
     }
     domComposing = false;
-    // The deferred external update is re-evaluated first; pending captures
-    // resolve after, with the final document.
-    if (deferredExternal !== null && !editor.view.composing) {
-      const pending = deferredExternal;
-      deferredExternal = null;
-      settleExternal(pending);
+    // Wait until ProseMirror has flushed the DOM observer and the composed
+    // text is in the state: ProseMirror defers its own compositionend DOM
+    // read to a microtask, so force the synchronous flush here first. The
+    // resulting transaction lands while still composing and accumulates
+    // into the pending commit instead of arriving later as `type`.
+    try {
+      const observer = (
+        editor.view as unknown as {
+          domObserver?: { flush?: () => void };
+        }
+      ).domObserver;
+      observer?.flush?.();
+    } catch {
+      // An observer flush never blocks the commit.
     }
+    // §5.6 order: exactly one `composition-commit` first, then the deferred
+    // external re-evaluation, then readiness opening and capture settlement.
     const changed = composingChanged;
     const affected = [...composingAffected];
     composingAffected.clear();
@@ -868,6 +1193,11 @@ export function createRichTextEditor(
     if (changed) {
       const after = displayedDocument();
       emitChange("composition-commit", affected, undefined, after);
+    }
+    if (deferredExternal !== null && !editor.view.composing) {
+      const pending = deferredExternal;
+      deferredExternal = null;
+      settleExternal(pending);
     }
     tracker.setComposing(false, currentDocument);
   };
@@ -1017,23 +1347,41 @@ export function createRichTextEditor(
     },
 
     deleteBlocks(paragraphIds: readonly string[]): void {
-      const ranges = paragraphIds
+      // Deduplicate identities first: the same range deleted twice would
+      // remove the neighbour that slid into its positions (R6). Ranges are
+      // deduplicated too, so overlapping inputs still delete once.
+      const uniqueIds = [...new Set(paragraphIds)];
+      const ranges = uniqueIds
         .map((id) => blockPosition(id))
         .filter((target) => target !== null)
         .sort((left, right) => right.pos - left.pos);
-      if (ranges.length === 0) return;
+      const seenRanges = new Set<string>();
+      const deduped = ranges.filter((range) => {
+        const key = `${range.pos}:${range.size}`;
+        if (seenRanges.has(key)) return false;
+        seenRanges.add(key);
+        return true;
+      });
+      if (deduped.length === 0) return;
       // §6.3: a destructive span over a preserved block is refused whole —
       // a silent no-op with the preserved blocks intact. The
       // `filterTransaction` guard backstops every other user path.
-      for (const range of ranges) {
+      for (const range of deduped) {
         if (range.name === "preservedBlock") return;
       }
-      const removed = paragraphIds.filter((id) => blockPosition(id) !== null);
+      const positions = new Map(
+        uniqueIds.map((id) => [id, blockPosition(id)?.pos ?? Number.MAX_SAFE_INTEGER] as const),
+      );
+      // Affected follow the document order (ascending positions before the
+      // delete), never the input order.
+      const removed = uniqueIds
+        .filter((id) => blockPosition(id) !== null)
+        .sort((left, right) => (positions.get(left) ?? 0) - (positions.get(right) ?? 0));
       runGesture(
         "delete",
         () => {
           let tr = editor.state.tr;
-          for (const range of ranges) {
+          for (const range of deduped) {
             tr = tr.delete(range.pos, range.pos + range.size);
           }
           editor.view.dispatch(tr);
@@ -1058,8 +1406,9 @@ export function createRichTextEditor(
       if (!lastDispatchChanged) return;
       // Only the blocks the undone transaction really touched: the version
       // cache restores their exact source, untouched blocks keep theirs.
+      // Affected follow the resulting document order.
       const after = displayedDocument();
-      emitChange("undo", [...suppressedAffected], undefined, after);
+      emitChange("undo", orderIdsByDocument([...suppressedAffected]), undefined, after);
     },
 
     redo(): void {
@@ -1077,7 +1426,7 @@ export function createRichTextEditor(
       if (tracker.composing || editor.view.composing) return;
       if (!lastDispatchChanged) return;
       const after = displayedDocument();
-      emitChange("redo", [...suppressedAffected], undefined, after);
+      emitChange("redo", orderIdsByDocument([...suppressedAffected]), undefined, after);
     },
 
     copyToPayload(paragraphIds: readonly string[]): PastePayload {
@@ -1156,8 +1505,24 @@ export function createRichTextEditor(
         element.removeEventListener(type, handler);
       }
       domListeners.length = 0;
+      // Freeze the last displayed document first: the bridge is still
+      // available here, and a retained handle keeps reading it afterwards.
+      try {
+        destroyedDocument = displayedDocument();
+      } catch {
+        destroyedDocument = null;
+      }
       tracker.destroy();
       editor.destroy();
+      // Release the conversion caches with the teardown: version texts drop
+      // with their nodes, and no per-version seed survives through a
+      // retained handle — only the single frozen document above.
+      seeds.texts.clear();
+      seeds.touched.clear();
+      seeds.versions = new WeakMap<ProseMirrorNode, string>();
+      seeds.versionTexts.clear();
+      seeds.preserved.clear();
+      lastNativeCopyText = null;
     },
   };
 

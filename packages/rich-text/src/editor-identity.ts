@@ -95,28 +95,33 @@ export function createLiveParagraphIdentityPlugin(
   });
 }
 
-/** Signature of one preserved block for the guard: identity plus the exact
-    verbatim payload. Any difference is a delete or a replace. */
-function preservedSignature(
-  state: EditorState,
-): Map<string, string> {
-  const signatures = new Map<string, string>();
-  state.doc.descendants((node) => {
+/** Inventory of every preserved block for the guard: identity plus the exact
+    verbatim payload, one entry per node. Empty and duplicated identities are
+    included as their own entries, so a dropped or pasted copy carrying an
+    empty or copied identity cannot hide behind the id-keyed map: any added,
+    removed or altered preserved node changes the sorted inventory. */
+function preservedInventory(
+  doc: { descendants(
+    fn: (node: {
+      type: { name: string };
+      attrs: Record<string, unknown>;
+    }) => boolean | void,
+  ): void },
+): string[] {
+  const entries: string[] = [];
+  doc.descendants((node) => {
     if (node.type.name !== "preservedBlock") return true;
     const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
-    if (typeof id === "string" && id !== "") {
-      signatures.set(
-        id,
-        `${typeof node.attrs["raw"] === "string" ? node.attrs["raw"] : ""}::${
-          typeof node.attrs["preservedKind"] === "string"
-            ? node.attrs["preservedKind"]
-            : ""
-        }`,
-      );
-    }
+    const raw = node.attrs["raw"];
+    const kind = node.attrs["preservedKind"];
+    entries.push(
+      `${typeof id === "string" ? id : ""}::${
+        typeof raw === "string" ? raw : ""
+      }::${typeof kind === "string" ? kind : ""}`,
+    );
     return true;
   });
-  return signatures;
+  return entries.sort();
 }
 
 /** The preserved-block guard (§6.3): no user transaction deletes, replaces
@@ -132,31 +137,14 @@ export function createPreservedGuardPlugin(
     filterTransaction(tr: Transaction, state: EditorState): boolean {
       if (tr.getMeta(PRESERVED_REPLACE_META) === true) return true;
       if (tr.getMeta(IDENTITY_FIX_META) === true) return true;
-      const before = preservedSignature(state);
-      // The transaction under test already carries its steps: read the
-      // resulting document from a scratch state-free application is
-      // unnecessary — `tr.doc` is the post-transaction document.
-      const after = new Map<string, string>();
-      tr.doc.descendants((node) => {
-        if (node.type.name !== "preservedBlock") return true;
-        const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
-        if (typeof id === "string" && id !== "") {
-          after.set(
-            id,
-            `${typeof node.attrs["raw"] === "string" ? node.attrs["raw"] : ""}::${
-              typeof node.attrs["preservedKind"] === "string"
-                ? node.attrs["preservedKind"]
-                : ""
-            }`,
-          );
-        }
-        return true;
-      });
-      if (before.size !== after.size) return false;
-      for (const [id, signature] of before) {
-        if (after.get(id) !== signature) return false;
-      }
-      return true;
+      // The transaction under test already carries its steps: `tr.doc` is
+      // the post-transaction document. Every preserved node counts, empty or
+      // duplicated identities included, so a second preserved block smuggled
+      // in with an empty or copied identity still changes the inventory.
+      const before = preservedInventory(state.doc);
+      const after = preservedInventory(tr.doc);
+      if (before.length !== after.length) return false;
+      return before.every((entry, index) => entry === after[index]);
     },
     appendTransaction(
       _transactions: readonly Transaction[],

@@ -51,6 +51,9 @@
  */
 import { describe, it, expect } from "vitest";
 import { TextSelection } from "@tiptap/pm/state";
+import { Fragment, Slice } from "@tiptap/pm/model";
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+import type { EditorView } from "@tiptap/pm/view";
 import { createRichTextEditor } from "./editor.js";
 import type { RichTextEditor } from "./editor.js";
 import type {
@@ -229,6 +232,107 @@ describe("image paste with alt text inside an otherwise accepted paste (native p
   });
 });
 
+describe("inline slice content is kept, never dropped silently (R3, native path)", () => {
+  it("bare inline HTML inserts its text and reports nothing", () => {
+    const { changes, unsupported, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
+      html: "<strong>bold</strong>",
+      text: "bold",
+    });
+    expect(unsupported).toHaveLength(0);
+    expect(changes).toHaveLength(1);
+    expect(documentText(changes[0]?.document as RichTextDocument)).toContain(
+      "bold",
+    );
+    teardown();
+  });
+
+  it("an image inside a paragraph degrades inline without losing its siblings", () => {
+    const { changes, unsupported, viewDom, teardown } = setup();
+    dispatchNativePaste(viewDom, {
+      html: '<p>before<img alt="ALT">after</p>',
+      text: "beforeALTafter",
+    });
+    expect(changes).toHaveLength(1);
+    const text = documentText(changes[0]?.document as RichTextDocument);
+    expect(text).toContain("before");
+    expect(text).toContain("ALT");
+    expect(text).toContain("after");
+    expect(unsupported.map((event) => event.rejectedKinds).flat()).toContain(
+      "image",
+    );
+    teardown();
+  });
+});
+
+describe("structural figure refuses whole while pure image degrades (R8, native path)", () => {
+  it("a figure with a caption is refused whole, nothing inserted", () => {
+    const { editor, changes, unsupported, initial, viewDom, teardown } =
+      setup();
+    const selectionBefore = editor.getSelection();
+    dispatchNativePaste(viewDom, {
+      html: "<p>safe</p><figure>caption</figure>",
+      text: "safe\ncaption",
+    });
+    expect(unsupported).toHaveLength(1);
+    expect(unsupported[0]?.rejectedKinds).toContain("image");
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(initial);
+    expect(editor.getSelection()).toEqual(selectionBefore);
+    teardown();
+  });
+
+  it("a paste during composition still runs the refusal policy (R8, native path)", () => {
+    const { editor, changes, unsupported, initial, viewDom, teardown } =
+      setup();
+    viewDom.dispatchEvent(
+      new CompositionEvent("compositionstart", { bubbles: true }),
+    );
+    // ProseMirror returns before `handlePaste` while composing; the DOM
+    // interception still refuses the table payload.
+    dispatchNativePaste(viewDom, {
+      html: "<table><tr><td>one</td><td>two</td></tr></table>",
+      text: "one two",
+    });
+    expect(unsupported).toHaveLength(1);
+    expect(unsupported[0]?.rejectedKinds).toContain("table");
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(initial);
+    viewDom.dispatchEvent(
+      new CompositionEvent("compositionend", { bubbles: true }),
+    );
+    teardown();
+  });
+
+  // The browser default that would insert through without the interception
+  // above is `not covered (RT-1 browser witness)`: jsdom performs no native
+  // insertion, so only the policy outcome (refusal, no mutation) is observed
+  // here; the real during-composition browser insertion shape stays a
+  // browser witness.
+});
+
+describe("an open native slice stays inline (R10, native path)", () => {
+  it("pasting a 1 1 slice at a paragraph end inserts inline, never a new block", () => {
+    const { editor, changes, viewDom, teardown } = setup();
+    const view = editor.view;
+    // Cursor at the end of `Alpha` (text positions 1..6).
+    view.dispatch(
+      view.state.tr.setSelection(TextSelection.create(view.state.doc, 6)),
+    );
+    expect(changes).toHaveLength(0);
+    dispatchNativePaste(viewDom, {
+      html: '<p data-pm-slice="1 1 []">lp</p>',
+      text: "lp",
+    });
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks).toHaveLength(2);
+    expect(changes[0]?.document.blocks[0]?.text).toBe("Alphalp");
+    expect(changes[0]?.document.blocks[1]?.text).toBe("Beta");
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    teardown();
+  });
+});
+
 describe("non-paragraph paste refusal (refused whole, native path)", () => {
   const cases: {
     name: string;
@@ -337,6 +441,107 @@ describe("multi-paragraph copy keeps block boundaries (native path)", () => {
     expect(first?.text).toBe("Alpha");
     expect(second?.text).toBe("Beta");
     expect(event?.gesture.paste?.origin).toBe("external");
+    teardown();
+  });
+});
+
+describe("preserved drop refusal and duplicate-identity guard (R7, native path)", () => {
+  function keptSetup() {
+    const changes: RichTextChangeEvent[] = [];
+    const unsupported: RichTextUnsupportedPasteEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const before: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        paragraph("paragraph:1", "Alpha"),
+        {
+          paragraphId: "paragraph:kept",
+          kind: "preserved",
+          raw: "| a | b |",
+          preservedKind: "table",
+        },
+        paragraph("paragraph:2", "Beta"),
+      ],
+    };
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: before,
+      messages: MESSAGES,
+      allocateId: () => `paragraph:drop-${++n}`,
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onUnsupportedPaste: (event) => {
+        unsupported.push(event);
+      },
+    });
+    return {
+      editor,
+      changes,
+      unsupported,
+      before,
+      teardown: () => {
+        editor.destroy();
+        element.remove();
+      },
+    };
+  }
+
+  function keptNodeOf(editor: RichTextEditor): ProseMirrorNode {
+    let found: ProseMirrorNode | null = null;
+    editor.view.state.doc.descendants((node) => {
+      if (
+        found === null &&
+        node.type.name === "preservedBlock" &&
+        node.attrs["paragraphId"] === "paragraph:kept"
+      ) {
+        found = node;
+      }
+      return true;
+    });
+    expect(found).not.toBe(null);
+    return found as ProseMirrorNode;
+  }
+
+  it("a dropped slice carrying the preserved block is refused whole", () => {
+    const { editor, changes, unsupported, before, teardown } = keptSetup();
+    const view = editor.view;
+    // The slice a dragstart of the preserved table would carry: the live
+    // node with its (duplicated on drop) identity.
+    const slice = new Slice(Fragment.from([keptNodeOf(editor)]), 0, 0);
+    const drop = new Event("drop", { bubbles: true, cancelable: true });
+    (drop as unknown as Record<string, unknown>)["dataTransfer"] = {
+      getData: (): string => "",
+      types: [],
+    };
+    // The same prop ProseMirror consults on a drop (`view.props.handleDrop`,
+    // reached here directly because jsdom has no layout for `posAtCoords`).
+    const props = view.props as unknown as {
+      handleDrop?: (
+        view: EditorView,
+        event: Event,
+        slice: Slice,
+        moved: boolean,
+      ) => boolean;
+    };
+    expect(typeof props.handleDrop).toBe("function");
+    const handled = props.handleDrop?.(view, drop, slice, false);
+    expect(handled).toBe(true);
+    expect(unsupported).toHaveLength(1);
+    expect(unsupported[0]?.rejectedKinds).toContain("table");
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(before);
+    teardown();
+  });
+
+  it("a transaction duplicating a preserved identity is filtered", () => {
+    const { editor, changes, before, teardown } = keptSetup();
+    const view = editor.view;
+    view.dispatch(view.state.tr.replaceSelectionWith(keptNodeOf(editor)));
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(before);
     teardown();
   });
 });

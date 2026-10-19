@@ -189,6 +189,42 @@ describe("native invalidation through transaction steps and mapping", () => {
     editor.destroy();
   });
 
+  it("a multi-step native transaction projects every step range to the final document (R1)", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:a", "Alpha"), paragraph("paragraph:b", "Beta")],
+      },
+      messages: MESSAGES,
+      allocateId: (() => {
+        let n = 100;
+        return () => `paragraph:alloc-${++n}`;
+      })(),
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const view = editor.view;
+    // Two steps in one native transaction: `!` inside B, then 30 Xs at the
+    // start of A (shifting B by 30). The first step range must travel
+    // through the second step map before invalidation.
+    view.dispatch(
+      view.state.tr.insertText("!", 9).insertText("X".repeat(30), 1),
+    );
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks).toEqual([
+      { paragraphId: "paragraph:a", kind: "paragraph", text: `${"X".repeat(30)}Alpha` },
+      { paragraphId: "paragraph:b", kind: "paragraph", text: "B!eta" },
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual([
+      "paragraph:a",
+      "paragraph:b",
+    ]);
+    editor.destroy();
+  });
+
   it("a native mark change invalidates its block (one real serialisation)", () => {
     const { options, changes } = collectEvents();
     const editor = createRichTextEditor(options);
@@ -272,6 +308,37 @@ describe("preserved blocks survive user transactions", () => {
   });
 });
 
+describe("deleteBlocks deduplicates repeated identities and ranges (R6)", () => {
+  it("deleting the same identity twice removes only that block, once", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [
+          paragraph("paragraph:a", "Alpha"),
+          paragraph("paragraph:b", "Beta"),
+          paragraph("paragraph:c", "Gamma"),
+        ],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    editor.deleteBlocks(["paragraph:a", "paragraph:a"]);
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("delete");
+    expect(changes[0]?.gesture.affectedParagraphIds).toEqual(["paragraph:a"]);
+    expect(changes[0]?.document.blocks).toEqual([
+      paragraph("paragraph:b", "Beta"),
+      paragraph("paragraph:c", "Gamma"),
+    ]);
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    editor.destroy();
+  });
+});
+
 describe("text/plain is literal text (no marks, no Markdown rules)", () => {
   function plainSetup(text: string) {
     const changes: RichTextChangeEvent[] = [];
@@ -320,6 +387,91 @@ describe("text/plain is literal text (no marks, no Markdown rules)", () => {
     expect(changes[0]?.document.blocks[0]?.text).toBe("**literal**!");
     expect(editor.getDocument().blocks[0]?.text).toBe("**literal**!");
     teardown();
+  });
+
+  it("a native Shift+Enter hardBreak survives as an interior newline (R4)", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const conflicts: { incoming: RichTextDocument }[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:1", "Alpha")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        conflicts.push(event);
+      },
+    });
+    const view = editor.view;
+    const hardBreak = view.state.schema.nodes["hardBreak"];
+    expect(hardBreak).toBeDefined();
+    // Native Shift+Enter inside `Al|pha`: one paragraph, one hardBreak.
+    view.dispatch(view.state.tr.insert(3, hardBreak!.create()));
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.document.blocks).toHaveLength(1);
+    expect(changes[0]?.document.blocks[0]?.text).toBe("Al\npha");
+    expect(editor.getDocument()).toEqual(changes[0]?.document);
+    // The draft carries the break, so an external replacement now
+    // conflicts instead of silently overwriting the draft.
+    editor.applyExternalUpdate({
+      format: "text/plain",
+      blocks: [paragraph("paragraph:1", "Remote")],
+    });
+    expect(conflicts).toHaveLength(1);
+    expect(conflicts[0]?.local.blocks[0]?.text).toBe("Al\npha");
+    expect(editor.getDocument().blocks[0]?.text).toBe("Al\npha");
+    editor.destroy();
+    element.remove();
+  });
+
+  it("a plain paragraph carrying an interior newline mounts with its hardBreak (R4)", () => {
+    const { editor, teardown } = plainSetup("A\nB");
+    expect(editor.getDocument().blocks[0]?.text).toBe("A\nB");
+    let found = false;
+    editor.view.state.doc.descendants((node) => {
+      if (node.type.name === "hardBreak") found = true;
+      return true;
+    });
+    expect(found).toBe(true);
+    teardown();
+  });
+
+  it("an external format change to Markdown keeps incoming marks (R5)", () => {
+    const changes: RichTextChangeEvent[] = [];
+    const editor = createRichTextEditor({
+      document: {
+        format: "text/plain",
+        blocks: [paragraph("paragraph:1", "hello")],
+      },
+      messages: MESSAGES,
+      allocateId: () => "paragraph:never-used",
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    // The incoming format is effective for the plugins before the replace
+    // transaction: the bold mark survives the dispatch instead of being
+    // stripped by the stale plain-text guard.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:1", "**bold**")],
+    });
+    expect(editor.getDocument().format).toBe("focus.markdown.p0@1");
+    expect(editor.getDocument().blocks[0]?.text).toBe("**bold**");
+    editor.typeText("paragraph:1", "!");
+    // Native stored marks extend the bold run: the point is the incoming
+    // mark survived the format switch (a stale plain guard would export
+    // `bold!` with no marks at all).
+    expect(editor.getDocument().blocks[0]?.text).toBe("**bold!**");
+    expect(changes).toHaveLength(1);
+    editor.destroy();
   });
 
   it("an external format change to text/plain switches later input to literal", () => {

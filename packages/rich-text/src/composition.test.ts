@@ -135,6 +135,81 @@ describe("mid-composition behaviour", () => {
   });
 });
 
+describe("composition end flushes the pending DOM mutation first (R2)", () => {
+  it("a pending DOM mutation commits once, then the external update is re-evaluated, then captures resolve", async () => {
+    const order: string[] = [];
+    const changes: RichTextChangeEvent[] = [];
+    const conflicts: RichTextExternalConflictEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    let n = 0;
+    const editor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", "Alpha")],
+      },
+      messages: MESSAGES,
+      allocateId: () => `paragraph:r2-${++n}`,
+      element,
+      onChange: (event) => {
+        order.push("change");
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        order.push("conflict");
+        conflicts.push(event);
+      },
+    });
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    const teardown = (): void => {
+      editor.destroy();
+      element.remove();
+    };
+    beginComposition(viewDom);
+    // Pending DOM mutation: the composed text sits in the DOM, ProseMirror
+    // has not flushed its observer yet (no transaction dispatched).
+    const domParagraph = viewDom.querySelector("p");
+    const textNode = domParagraph?.firstChild;
+    expect(textNode?.nodeType).toBe(3);
+    if (textNode) textNode.nodeValue = "Alphaé";
+    // A deferred external update while composing: neither applied nor
+    // signalled yet.
+    editor.applyExternalUpdate({
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:1", "Remote")],
+    });
+    expect(conflicts).toHaveLength(0);
+    let settled: RichTextDocument | null = null;
+    const pending = editor.captureDocument().then((document) => {
+      settled = document;
+    });
+    await Promise.resolve();
+    expect(settled).toBe(null);
+    // End of composition before any flush: the handler flushes the DOM
+    // observer itself, so the commit carries the composed text.
+    endComposition(viewDom);
+    await pending;
+    // Exactly one `composition-commit` with the composed text — never a
+    // stale `Alpha` capture and never a trailing `type`.
+    expect(changes).toHaveLength(1);
+    expect(changes[0]?.gesture.kind).toBe("composition-commit");
+    expect(changes[0]?.document.blocks[0]?.text).toBe("Alphaé");
+    // §5.6 order: the commit first, then the external re-evaluation (the
+    // committed work conflicts with the remote update), then the captures
+    // resolve with the committed document.
+    expect(order).toEqual(["change", "conflict"]);
+    expect(conflicts).toHaveLength(1);
+    expect(conflicts[0]?.local.blocks[0]?.text).toBe("Alphaé");
+    expect(settled).toEqual(changes[0]?.document);
+    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alphaé");
+    teardown();
+  });
+});
+
 describe("composition commit", () => {
   it("exactly one composition-commit fires after the commit", () => {
     const { editor, changes, readinessLog, viewDom, teardown } = setup();
