@@ -1,0 +1,168 @@
+{
+  "provenance": {
+    "method": "recorded host segmentation",
+    "h2aCommit": "98060bd0a",
+    "h2aSourcePath": "packages/focus/src/editing/codec.ts",
+    "h2aFunction": "segmentMarkdown",
+    "codecSha256": "ac936183aa96935b23ca621c5c0fe2502db70fa05dd28c1560d16b00d7a483a5",
+    "corpus": "packages/rich-text/tests/fixtures/p0-corpus.md",
+    "preservedKindMapping": {
+      "ATXHeading1": "heading",
+      "ATXHeading2": "heading",
+      "ATXHeading3": "heading",
+      "ATXHeading4": "heading",
+      "ATXHeading5": "heading",
+      "ATXHeading6": "heading",
+      "SetextHeading1": "heading",
+      "SetextHeading2": "heading",
+      "Table": "table",
+      "FencedCode": "codeBlock",
+      "CodeBlock": "codeBlock",
+      "BulletList": "list",
+      "OrderedList": "list",
+      "Blockquote": "blockquote",
+      "HorizontalRule": "horizontalRule",
+      "HTMLBlock": "rawHtml",
+      "CommentBlock": "rawHtml",
+      "Image": "image"
+    },
+    "preservedKindNote": "Non-editable lezer top-level node names map to the DS preservedKind vocabulary through preservedKindMapping (image paragraphs: a top-level Paragraph failing the safe-inline set maps to image). DS test builds its input document from these recorded segments and segments nothing itself.",
+    "note": "Executed the pinned segmentMarkdown (lines 1,7-31 of codec.ts at the pin, transpiled with esbuild, @lezer/markdown 1.8.0 from the offline npm cache) over the exact corpus bytes, recording each top-level node name alongside."
+  },
+  "format": "focus.markdown.p0@1",
+  "segments": [
+    {
+      "order": 0,
+      "start": 0,
+      "end": 699,
+      "editable": false,
+      "text": "<!--\n  Synthetic round-trip corpus for RT-0 (RED 2 core half).\n  Provenance: synthetic, authored for this lot. Never the qualified real dossier.\n  Covers every P0 construct (plain, bold, italic, inline-code and hard-break\n  paragraphs, emphasis marker variants, two textually identical paragraphs,\n  accents/emoji) and every preserved construct (heading, table, fenced code,\n  list, image, raw HTML), with preserved blocks interleaved between editable\n  paragraphs so the editing half has surroundings to preserve.\n  The two \"CRLF paragraph\" stanzas below are separated by CRLF line endings\n  (bytes 0x0D 0x0A); the rest of the file uses LF. Ends with trailing blank\n  lines and a final newline.\n-->",
+      "preservedKind": "rawHtml"
+    },
+    {
+      "order": 1,
+      "start": 701,
+      "end": 768,
+      "editable": false,
+      "text": "# Preserved heading one: the editor keeps this slice byte-identical",
+      "preservedKind": "heading"
+    },
+    {
+      "order": 2,
+      "start": 770,
+      "end": 820,
+      "editable": true,
+      "text": "A plain editable paragraph introducing the corpus."
+    },
+    {
+      "order": 3,
+      "start": 822,
+      "end": 885,
+      "editable": true,
+      "text": "A paragraph with **bold**, *italic* and `inline code` together."
+    },
+    {
+      "order": 4,
+      "start": 887,
+      "end": 958,
+      "editable": true,
+      "text": "A paragraph with underscore markers: __strong__, _emphasis_ and `code`."
+    },
+    {
+      "order": 5,
+      "start": 960,
+      "end": 1004,
+      "editable": true,
+      "text": "The quick brown fox jumps over the lazy dog."
+    },
+    {
+      "order": 6,
+      "start": 1006,
+      "end": 1050,
+      "editable": true,
+      "text": "The quick brown fox jumps over the lazy dog."
+    },
+    {
+      "order": 7,
+      "start": 1052,
+      "end": 1113,
+      "editable": true,
+      "text": "Accents and emoji travel untouched: café, naïve, façade 🎉🚀."
+    },
+    {
+      "order": 8,
+      "start": 1115,
+      "end": 1202,
+      "editable": true,
+      "text": "A hard break follows inside this paragraph:  \nthis line continues after the hard break."
+    },
+    {
+      "order": 9,
+      "start": 1204,
+      "end": 1253,
+      "editable": false,
+      "text": "| Preserved | Table |\n| --- | --- |\n| one | two |",
+      "preservedKind": "table"
+    },
+    {
+      "order": 10,
+      "start": 1255,
+      "end": 1301,
+      "editable": false,
+      "text": "```\npreserved code fence\nsecond fence line\n```",
+      "preservedKind": "codeBlock"
+    },
+    {
+      "order": 11,
+      "start": 1303,
+      "end": 1348,
+      "editable": false,
+      "text": "- preserved bullet one\n- preserved bullet two",
+      "preservedKind": "list"
+    },
+    {
+      "order": 12,
+      "start": 1350,
+      "end": 1427,
+      "editable": true,
+      "text": "Middle paragraph kept for the editing half: the harness edits this line only."
+    },
+    {
+      "order": 13,
+      "start": 1429,
+      "end": 1448,
+      "editable": true,
+      "text": "CRLF paragraph one."
+    },
+    {
+      "order": 14,
+      "start": 1452,
+      "end": 1485,
+      "editable": true,
+      "text": "CRLF paragraph two with *italic*."
+    },
+    {
+      "order": 15,
+      "start": 1489,
+      "end": 1522,
+      "editable": false,
+      "text": "![preserved image](preserved.png)",
+      "preservedKind": "image"
+    },
+    {
+      "order": 16,
+      "start": 1524,
+      "end": 1576,
+      "editable": false,
+      "text": "<div class=\"preserved\">raw HTML stays verbatim</div>",
+      "preservedKind": "rawHtml"
+    },
+    {
+      "order": 17,
+      "start": 1578,
+      "end": 1634,
+      "editable": true,
+      "text": "A closing editable paragraph after the preserved blocks."
+    }
+  ]
+}
