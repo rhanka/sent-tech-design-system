@@ -14,9 +14,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * this theme ships `mode: "light"` only, as theme-canada/quebec do.
  *
  * Influnified colour reference (public site CSS custom properties):
- *   Pink (brand / primary buttons / active nav)  #e4575e   (--pink)
- *   Pink dark (hover)                            #c9444b   (--pink-dark)
- *   Pink tint (focus ring / tints)               #fbe5e7   (--pink-tint)
+ *   Pink (brand / focus border / indicators)     #e4575e   (--pink)
+ *   Pink dark (primary fills / hover)            #c9444b   (--pink-dark)
+ *   Pink tint (secondary hover / tints)           #fbe5e7   (--pink-tint)
  *   Tint (subtle surfaces)                       #fdf6f6   (--tint)
  *   Ink (headings / inverse)                     #070541   (--ink)
  *   Body (text)                                  #4a4869   (--body)
@@ -70,14 +70,21 @@ const influnifiedColor = {
     allChip: "#0e0d44" // sampled dark "All" chip (17-14-37 @ 240,168)
   },
   // System / status colours. Only error is a measured literal (#c0392b);
-  // the text tones are darkened from the sampled badge tints to keep
-  // WCAG AA on white (à confirmer).
+  // the text tones are darkened from the sampled badge tints so the RENDERED
+  // pairs reach WCAG AA — badge CSS mixes each tone at 14% over white, so the
+  // foregrounds are validated against that mix, not plain white (sol review).
   system: {
-    success: "#177245", // Active green darkened for AA on white
-    error: "#c0392b", // measured error literal
-    warning: "#a85a00", // Application Closed orange darkened for AA on white
-    info: "#2f5da8", // Completed blue darkened for AA on white
-    pending: "#7d6600" // Business Approval yellow darkened for AA on white
+    success: "#177245", // Active green darkened (4.86 on its badge mix, 5.95 on white)
+    error: "#c0392b", // measured error literal (fills + danger button: white on it is 5.44)
+    errorText: "#a93226", // error darkened for TEXT on its badge mix (5.29 on the mix, 6.62 on white)
+    warning: "#9a5200", // Closed orange darkened for TEXT on its badge mix (4.80 on the mix, 5.86 on white)
+    info: "#2f5da8", // Completed blue darkened (5.25 on its mix, 6.46 on white)
+    pending: "#7d6600", // Business Approval yellow darkened for AA on white (7.37)
+    // Accessible interactive rose: --pink-dark darkened so text set in it
+    // reaches AA on white (6.26), page (6.04), subtle (5.87) and tint (5.21).
+    // Used for link text/hover, secondary text and the primary hover fill
+    // (white on it is 6.26). Derived for contrast — à confirmer.
+    interact: "#a83a44"
   }
 } as const;
 
@@ -172,10 +179,20 @@ const foundation = {
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
-  // Control density from the measured marketing-site controls: default
-  // `.btn` padding .85rem 1.75rem at .95rem; small `.btn` .65rem 1.3rem at
-  // .9rem; full-width `.btn` .95rem 1.5rem at 1rem.
+  // FIELD density (shared control scale). Only the md padding is measured
+  // (`.field input`: 12px block / 16px inline); sm/lg paddings, heights,
+  // minimum widths and gaps are unmeasured for fields — à confirmer
+  // (kept from the button metrics so the shape stays coherent).
   density: {
+    sm: { controlHeight: "2.25rem", paddingBlock: "0.65rem", paddingInline: "1.3rem", gap: "0.5rem", minWidth: "2.25rem", fontSize: "0.9rem" },
+    md: { controlHeight: "2.75rem", paddingBlock: "0.75rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.75rem", fontSize: "0.95rem" },
+    lg: { controlHeight: "3.25rem", paddingBlock: "0.95rem", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3.25rem", fontSize: "1rem" }
+  },
+  // BUTTON density (F9 override): the button reads ONLY this scale, so the
+  // measured marketing-site `.btn` geometry never leaks into the fields.
+  // Measured: default `.btn` padding .85rem 1.75rem at .95rem; small `.btn`
+  // .65rem 1.3rem at .9rem; full-width `.btn` .95rem 1.5rem at 1rem.
+  buttonDensity: {
     sm: { controlHeight: "2.25rem", paddingBlock: "0.65rem", paddingInline: "1.3rem", gap: "0.5rem", minWidth: "2.25rem", fontSize: "0.9rem" },
     md: { controlHeight: "2.75rem", paddingBlock: "0.85rem", paddingInline: "1.75rem", gap: "0.5rem", minWidth: "2.75rem", fontSize: "0.95rem" },
     lg: { controlHeight: "3.25rem", paddingBlock: "0.95rem", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3.25rem", fontSize: "1rem" }
@@ -196,22 +213,29 @@ const foundation = {
   transition: { property: "background-color, border-color, color, outline-color", duration: "150ms", easing: "ease" },
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // Influnified FOCUS = a thick pink-tint OUTLINE plus a pink border
-  // (measured: `.field input:focus { outline: 3px solid var(--pink-tint);
-  // border-color: var(--pink); }` — no outline-offset declared).
+  // Influnified FOCUS = a thick OUTLINE plus a pink border. The measured
+  // outline (`3px solid var(--pink-tint)`, no offset) only reaches 1.13–3.0:1
+  // against the surfaces it sits on, so the COLOUR departs from the measured
+  // source: --ink reaches ≥ 3:1 on white (18.97), page (18.29), subtle (17.79),
+  // primary (3.99) and primary-hover (3.03). Width/offset stay measured (sol review).
   focus: {
     strategy: "outline",
     width: "3px",
     offset: "0",
-    color: influnifiedColor.pink.tint, // #fbe5e7 --pink-tint
+    color: influnifiedColor.ink.ink, // #070541 --ink (departure: --pink-tint fails non-text contrast)
     inset: "0"
   },
   // Influnified form fields are BOXED (outline): white fill, 1px
   // --border-strong stroke, 12px radius (measured `.field input`).
-  // `style: "outline"` makes the builder draw four equal borders.
+  // `style: "outline"` makes the builder draw four equal borders; the corner
+  // overrides pin the measured 12px (the builder default is the 20px card
+  // radius) and the stroke is re-mapped to --border-strong after the build
+  // (the builder wires outline strokes to border.subtle).
   field: {
     style: "outline",
     fillBg: influnifiedColor.canvas.surface, // #ffffff
+    radiusTop: "0.75rem", // 12px measured `.field input` corners
+    radiusBottom: "0.75rem", // 12px measured `.field input` corners
     underlineColor: influnifiedColor.canvas.borderStrong, // --border-strong (measured input stroke; unused for outline)
     underlineWidth: "1px",
     // Native <select>: redraw the chevron in brand pink with a 40px right
@@ -257,8 +281,8 @@ const foundation = {
     border: "transparent",
     borderWidth: "0",
     text: influnifiedColor.ink.body, // #4a4869 page links
-    activeBackground: influnifiedColor.pink.main, // #e4575e filled active page
-    activeText: influnifiedColor.canvas.surface, // white on pink
+    activeBackground: influnifiedColor.pink.dark, // #c9444b filled active page (white on it is 4.76)
+    activeText: influnifiedColor.canvas.surface, // white on pink-dark
     activeBorderWidth: "0",
     paddingBlock: "0.25rem", // 4px
     paddingInline: "0.75rem", // 12px
@@ -322,7 +346,7 @@ const foundation = {
     lineHeight: "1.5rem", // 24px
     textTransform: "none",
     minHeight: "1.5rem", // 24px
-    infoBackground: influnifiedColor.pink.main, // #e4575e
+    infoBackground: influnifiedColor.pink.dark, // #c9444b (white on it is 4.76; --pink is 3.61:1)
     infoText: influnifiedColor.canvas.surface // white
   },
   // Choice label treatment not observed (à confirmer); ink body label.
@@ -361,7 +385,7 @@ const semantic = {
     secondary: influnifiedColor.ink.body, // #4a4869 (--body)
     muted: influnifiedColor.ink.muted, // #6e6c8a (--muted)
     inverse: influnifiedColor.canvas.surface, // white on dark / pink surfaces
-    link: influnifiedColor.pink.dark // #c9444b --pink-dark (AA on white; brand pink #e4575e is 3.61:1)
+    link: influnifiedColor.system.interact // #a83a44 (departure: --pink-dark is 4.46:1 on subtle; this is 5.87)
   },
   border: {
     subtle: influnifiedColor.canvas.border, // #ece8f0 (--border)
@@ -369,18 +393,21 @@ const semantic = {
     interactive: influnifiedColor.pink.main // #e4575e (measured focus border-color)
   },
   action: {
-    primary: influnifiedColor.pink.main, // #e4575e (measured .btn)
-    primaryHover: influnifiedColor.pink.dark, // #c9444b (measured .btn:hover)
-    primaryText: influnifiedColor.canvas.surface, // white text on pink
+    // Text-bearing primary surfaces use the darker --pink-dark step: white on
+    // #e4575e is 3.61:1, white on #c9444b is 4.76:1 (sol review). The brand
+    // pink stays on non-text surfaces (focus border, indicators).
+    primary: influnifiedColor.pink.dark, // #c9444b (departure: --pink is 3.61:1 with white text)
+    primaryHover: influnifiedColor.system.interact, // #a83a44 (white on it is 6.26; measured hover #c9444b is now the rest fill)
+    primaryText: influnifiedColor.canvas.surface, // white text on pink-dark (4.76 rest, 6.26 hover)
     secondary: influnifiedColor.canvas.surface, // #ffffff (à confirmer — no secondary button observed)
     secondaryHover: influnifiedColor.pink.tint, // #fbe5e7
-    secondaryText: influnifiedColor.pink.dark, // #c9444b (AA on white)
-    danger: influnifiedColor.system.error // #c0392b measured literal
+    secondaryText: influnifiedColor.system.interact, // #a83a44 (departure: #c9444b is 3.96:1 on the hover tint; this is 5.21)
+    danger: influnifiedColor.system.error // #c0392b measured literal (white on it is 5.44)
   },
   feedback: {
     success: influnifiedColor.system.success,
     warning: influnifiedColor.system.warning,
-    error: influnifiedColor.system.error,
+    error: influnifiedColor.system.errorText, // text tone (badge text sits on the 14% mix: 5.29)
     info: influnifiedColor.system.info
   },
   status: {
@@ -418,6 +445,36 @@ const semantic = {
  * token model, so it is recorded in MAPPING.md (à confirmer) rather than
  * encoded here.
  */
+const builtComponent = createComponent(semantic, foundation);
+
+// Two rendered states need a correction the builder inputs cannot express,
+// so they are re-mapped on the built layer (emitted as component tokens and
+// consumed by Link / Input / Select / Textarea — verified in the test):
+//  - link hover: the builder wires it to action.primary (#c9444b), which is
+//    4.46:1 on subtle surfaces. The accessible rose (#a83a44) is 5.87:1 there.
+//  - field stroke: the builder wires boxed inputs to border.subtle (#ece8f0),
+//    but the measured `.field input` stroke is --border-strong (#ddd7e6).
+const component = {
+  ...builtComponent,
+  link: {
+    ...builtComponent.link,
+    hoverText: influnifiedColor.system.interact // #a83a44 (builder default action.primary is 4.46:1 on subtle)
+  },
+  control: {
+    ...builtComponent.control,
+    anatomy: {
+      ...builtComponent.control.anatomy,
+      field: {
+        ...builtComponent.control.anatomy.field,
+        borderTop: `1px solid ${influnifiedColor.canvas.borderStrong}`,
+        borderRight: `1px solid ${influnifiedColor.canvas.borderStrong}`,
+        borderBottom: `1px solid ${influnifiedColor.canvas.borderStrong}`,
+        borderLeft: `1px solid ${influnifiedColor.canvas.borderStrong}`
+      }
+    }
+  }
+} as const;
+
 export const influnifiedTheme: TenantTheme = {
   id: "influnified",
   label: "Influnified",
@@ -425,7 +482,7 @@ export const influnifiedTheme: TenantTheme = {
   tokens: {
     foundation,
     semantic,
-    component: createComponent(semantic, foundation)
+    component
   }
 };
 
