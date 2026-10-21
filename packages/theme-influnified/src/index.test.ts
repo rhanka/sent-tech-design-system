@@ -39,8 +39,9 @@ describe("influnifiedTheme", () => {
 
   it("emits Influnified brand colours and fonts in the compiled variables", () => {
     const css = compileTheme(influnifiedTheme);
-    // Brand pink action + ink text.
-    expect(css).toContain("--st-semantic-action-primary: #e4575e;");
+    // Accessible primary fill (pink-dark step: white on it is 4.76:1;
+    // brand pink #e4575e with white text is 3.61:1 — sol review) + ink text.
+    expect(css).toContain("--st-semantic-action-primary: #c9444b;");
     expect(css).toContain("--st-semantic-text-primary: #070541;");
     // Measured error literal and ink inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #c0392b;");

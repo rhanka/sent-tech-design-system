@@ -32,16 +32,30 @@ only, as theme-canada/quebec do for themes without a measured dark mode.
   (`outline: 3px solid var(--pink-tint); border-color: var(--pink)` — no
   outline-offset declared); error literal `#c0392b`.
 - App screenshots (light theme, app behind login so no app CSS was read):
-  `~/Images/Captures d'écran/Capture d'écran du 2026-10-12 17-*.png` and
-  `/home/antoinefa/src/influence/otter-images/*.png`.
+  `~/Images/Captures d’écran/` (typographic apostrophe U+2019, not ASCII) and
+  `/home/antoinefa/src/influence/otter-images/`. Full filenames per tone are
+  in the table below.
+- Sampling method (Node + pngjs, no Python): `/tmp/sample-influnified.cjs`
+  (kept outside the repo):
+  `node sample-influnified.cjs <png> <fx> <fy> [radiusPx]`. For each point it
+  samples a (2r+1)² box (default radius 12 → 25×25 px) around the fractional
+  coordinate, quantizes to 4 bits/channel (multiples of 16), keeps the top 6
+  quantized clusters by pixel count, and reports per cluster the count, the
+  quantized key, the median exact hex (up to 400 pixels) and a representative
+  coordinate. Each tone below is the median of the badge-fill cluster,
+  cross-checked against the exact center pixel (reproduced 2026-10-21:
+  Active `#dffeeb` n=86, Draft `#f2f3f3` n=109 in
+  `1791840827_CANNOTDETECTSHARE_snapshot.png`).
 
 ## Colour mapping
 
 | Sentropic role | Influnified token | Value |
 |---|---|---|
-| `action.primary` / `border.interactive` | `--pink` | `#e4575e` |
-| `action.primaryHover` / `text.link` | `--pink-dark` | `#c9444b` |
-| `focus.color` | `--pink-tint` | `#fbe5e7` |
+| `action.primary` (text-bearing fills) | `--pink-dark` (departure: `--pink` + white is 3.61:1; `--pink-dark` + white is 4.76:1) | `#c9444b` |
+| `action.primaryHover` | derived accessible rose (white on it is 6.26:1) — à confirmer | `#a83a44` |
+| `text.link` / `action.secondaryText` / link hover | derived accessible rose (5.87–6.26:1 on white/page/subtle; 5.21:1 on the secondary hover tint) — à confirmer | `#a83a44` |
+| `border.interactive` / indicators | `--pink` (non-text: 3.61:1 on white, kept measured) | `#e4575e` |
+| `focus.color` | `--ink` (departure: `--pink-tint` is 1.13–3.0:1; `--ink` is 3.03–18.97:1) | `#070541` |
 | `surface.subtle` | `--tint` | `#fdf6f6` |
 | `surface.inverse` / `text.primary` | `--ink` | `#070541` |
 | `text.secondary` | `--body` | `#4a4869` |
@@ -49,31 +63,38 @@ only, as theme-canada/quebec do for themes without a measured dark mode.
 | `surface.default` | `--page` | `#fffaf5` |
 | `surface.raised` | `--surface` | `#ffffff` |
 | `border.subtle` | `--border` | `#ece8f0` |
-| `border.strong` | `--border-strong` | `#ddd7e6` |
-| `action.danger` / `feedback.error` | error literal | `#c0392b` |
+| `border.strong` (incl. field stroke) | `--border-strong` | `#ddd7e6` |
+| `action.danger` | error literal (white on it is 5.44:1) | `#c0392b` |
+| `feedback.error` (badge/text tone) | error literal darkened for the 14% badge mix (5.29:1 on the mix) — à confirmer | `#a93226` |
+| `feedback.warning` | sampled orange darkened for the 14% badge mix (4.80:1 on the mix) — à confirmer | `#9a5200` |
+| badge info fill / pagination active fill | `--pink-dark` (white on it is 4.76:1) | `#c9444b` |
 | accent tint (Sentropic `cyan.10`) | `--gradient-panel` stop | `#e7e5ff` |
 
 ## Sampled app tones (screenshots — all `à confirmer`)
 
-Each value is the median of a pixel box sampled with a Node/pngjs script
-(`/tmp/sample-influnified.cjs`, kept outside the repo). Coordinates are
-`(x, y)` pixels in the stated file (image sizes: otter `1280x920`,
-`17-14-37` `1801x824`, `17-34-30` `1624x736`).
+Each value is the median of a pixel box sampled with the script described
+above (default radius 12 → 25×25 px; 4 bits/channel quantization; top-6
+clusters by count). Coordinates are `(x, y)` pixels in the stated file
+(image sizes: otter files `1280x920`,
+`Capture d’écran du 2026-10-12 17-14-37.png` `1801x824`,
+`Capture d’écran du 2026-10-12 17-34-30.png` `1624x736`).
 
 | Tone | File | Coords | Value |
 |---|---|---|---|
-| Draft badge bg | otter `1791840827_…snapshot.png` | (966, 396) | `#f2f3f3` |
-| Business Approval badge bg | otter `1791840827_…snapshot.png` | (975, 433) | `#fcfcc4` |
-| Application Closed badge bg | otter `1791840827_…snapshot.png` | (996, 475) | `#fcecd5` |
-| Active badge bg | otter `1791840827_…snapshot.png` | (970, 511) | `#dffeeb` |
-| Completed badge bg | otter `1791840827_…snapshot.png` | (956, 629) | `#dceafc` |
-| Posted badge bg | otter `1791840502_…snapshot.png` (Collab Dashboard) | (1011, 543) | `#eee5fd` |
-| Active nav pill bg | otter `1791840827_…snapshot.png` | (100, 308) | `#d94762` |
-| Impersonation banner | `…17-34-30.png` | (813, 20) | `#fe9900` |
-| Dark "All" chip | `…17-14-37.png` | (240, 168) | `#0e0d44` (≈ `--ink`) |
+| Draft badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (966, 396) | `#f2f3f3` |
+| Business Approval badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (975, 433) | `#fcfcc4` |
+| Application Closed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (996, 475) | `#fcecd5` |
+| Active badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (970, 511) | `#dffeeb` |
+| Completed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (956, 629) | `#dceafc` |
+| Posted badge bg | `1791840502_CANNOTDETECTSHARE_snapshot.png` (Collab Dashboard) | (1011, 543) | `#eee5fd` |
+| Active nav pill bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (100, 308) | `#d94762` |
+| Impersonation banner | `Capture d’écran du 2026-10-12 17-34-30.png` | (813, 20) | `#fe9900` |
+| Dark "All" chip | `Capture d’écran du 2026-10-12 17-14-37.png` | (240, 168) | `#0e0d44` (≈ `--ink`) |
 
-Cross-checks: Draft chip `#f2f3f4` in `17-14-37` @ (513, 56); Attended green
-`#cdfeee` in collab @ (1025, 617); Completed chip `#dae9fd` in `17-34-30` @
+Cross-checks: Draft chip `#f2f3f4` in
+`Capture d’écran du 2026-10-12 17-14-37.png` @ (513, 56); Attended green
+`#cdfeee` in `1791840502_CANNOTDETECTSHARE_snapshot.png` @ (1025, 617);
+Completed chip `#dae9fd` in `Capture d’écran du 2026-10-12 17-34-30.png` @
 (819, 82). Video-call compression shifts hues slightly (e.g. nav pill
 `#d94762` vs site pink `#e4575e`); the measured site tokens stay canonical.
 
@@ -81,13 +102,18 @@ Cross-checks: Draft chip `#f2f3f4` in `17-14-37` @ (513, 56); Attended green
 
 - All nine sampled app tones above (screenshot compression, no app CSS).
 - `cyan.50` `#8f84d8` / `cyan.70` `#55518f` — derived mid/dark lavenders.
-- `feedback.success` `#177245`, `feedback.warning` `#a85a00`,
-  `feedback.info` `#2f5da8`, `status.pending` `#7d6600` — sampled badge tints
-  darkened to keep WCAG AA on white (verified 5.95 / 5.09 / 6.46 / 5.57).
+- `feedback.success` `#177245` (5.95 on white, 4.86 on its badge mix),
+  `feedback.warning` `#9a5200` (5.86 on white, 4.80 on its badge mix),
+  `feedback.error` `#a93226` (6.62 on white, 5.29 on its badge mix),
+  `feedback.info` `#2f5da8` (6.46 on white, 5.25 on its mix),
+  `status.pending` `#7d6600` (7.37 on white) — sampled badge tints darkened
+  so the rendered pairs reach WCAG AA (sol review).
+- `action.primaryHover` / `text.link` / `action.secondaryText` `#a83a44` —
+  `--pink-dark` darkened for AA on white/page/subtle/tint (sol review).
 - The 8-colour categorical `data.*` palette — a coherent proposal from brand
   + sampled app hues, not an official scale.
 - `font.mono`, `motion.*`, `z.*`, `transition`, `cursor`, `iconSize`,
-  `disabledOpacity` — not tokenised publicly; Sentropic base values kept.
+  `disabledOpacity` (`0.55`) — not tokenised publicly; Sentropic base values kept.
 - Link underline treatment, `<select>` chevron colour, secondary button,
   tabs metrics, pagination / breadcrumb / alert / accordion / tag / badge /
   choice / search / toggle treatments — app patterns observed but no CSS read.
@@ -96,6 +122,30 @@ Cross-checks: Draft chip `#f2f3f4` in `17-14-37` @ (513, 56); Attended green
   gradient**, so `--gradient-panel` (`#ffe3e3 → #e7e5ff`) is recorded here and
   not encoded in the theme.
 - No dark mode: `mode: "light"` only (no dark theme observed anywhere).
+
+### Derived-value ledger (sol review — every value sourced or flagged)
+
+- `density.sm/md/lg paddingBlock/paddingInline`: md `0.75rem/1rem` (12/16px
+  measured `.field input`); sm/lg unmeasured for fields, kept from the button
+  metrics — à confirmer. `buttonDensity.sm/md/lg` carries the measured `.btn`
+  paddings (sm `.65rem/1.3rem @ .9rem`, md `.85rem/1.75rem @ .95rem`,
+  full-width `.95rem/1.5rem @ 1rem`).
+- `density.* controlHeight/minWidth/gap` (`2.25/2.75/3.25rem`,
+  `2.25/2.75/3.25rem`, `0.5rem`) and `fontSize` (`0.9/0.95/1rem`) — derived
+  from the measured `.btn` metrics, unmeasured for fields — à confirmer.
+- `spacing.*` (`0/0.25/0.5/0.75/1/1.5/2/3/4rem`) — standard rem scale kept
+  aligned with the Sentropic base for component-grid fidelity, not
+  brand-measured — à confirmer.
+- Typography line-heights: `control`/`field`/`label` `1.5` (unitless, matches
+  the Poppins body rhythm; not tokenised publicly — à confirmer); link
+  `inherit` (no measurement — à confirmer); card/choice/search/toggle
+  `1.5rem`/explicit values follow the measured 24px app rhythm where stated
+  in `index.ts`, otherwise the base render — à confirmer per leaf comment.
+- `surface.overlay` `rgb(7 5 65 / 0.6)` — ink-tinted modal backdrop, opacity
+  `0.6` not measured publicly — à confirmer.
+- `tabs`/`pagination`/`breadcrumb`/`alert`/`accordion`/`tag`/`badge`/
+  `choice`/`search`/`toggle` metrics — per-leaf sources or à confirmer flags
+  inline in `index.ts` (only field 12px corners/stroke/padding are measured).
 
 ## Typography
 
@@ -109,19 +159,24 @@ Cross-checks: Draft chip `#f2f3f4` in `17-14-37` @ (513, 56); Attended green
 ## Signatures anatomiques
 
 - **Fields**: `field.style = "outline"` — boxed inputs (white fill, 1px
-  `--border-strong` stroke, measured 12px radius), not a filled-underline.
+  `--border-strong` stroke re-mapped after the build, `radiusTop`/
+  `radiusBottom = 0.75rem` for the measured 12px), not a filled-underline.
 - **Radius**: pill CTAs/nav/chips (`999px`, measured `.btn`); inputs `0.75rem`
   (12px measured); cards `md = 1.25rem` (`--radius`), `lg = 1.75rem`
   (`--radius-lg`).
-- **Focus**: thick pink-tint outline (`3px`, `--pink-tint`) + pink border
-  (measured `.field input:focus`; no offset declared).
-- **Buttons**: primary = solid pink, hover pink-dark, pink-tinted shadow
+- **Focus**: thick `--ink` outline (`3px`, no offset — width/offset measured,
+  colour departs from `--pink-tint` for 3:1 contrast) + measured pink border.
+- **Buttons**: primary = solid `--pink-dark` fill (white text 4.76:1; `--pink`
+  + white is 3.61:1), hover accessible rose `#a83a44`, pink-tinted shadow
   (`0 8px 24px rgba(228,87,94,.28)`); secondary = white/pink-outline
-  (à confirmer).
+  (à confirmer), secondary text `#a83a44` (5.21:1 on the hover tint).
 - **Tabs**: segmented pill control (white active segment on pink-tint track)
   + underline sub-tabs (bottom pink filet) — metrics à confirmer.
 - **Badges/chips**: fully rounded pills; status tones sampled (table above).
-- **Density**: measured button paddings (md `.85rem/1.75rem` @ `.95rem`).
+- **Density**: field scale carries the measured `.field input` 12/16px
+  padding at md; `buttonDensity` carries the measured `.btn` paddings
+  (md `.85rem/1.75rem` @ `.95rem`) so button geometry never leaks into
+  fields — see the derived-value ledger for unmeasured leaves.
 - **Sidebar**: pink→lavender gradient panel with filled pink active pill
   (gradient recorded here; no token slot).
 
