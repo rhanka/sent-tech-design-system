@@ -42,10 +42,26 @@ only, as theme-canada/quebec do for themes without a measured dark mode.
   coordinate, quantizes to 4 bits/channel (multiples of 16), keeps the top 6
   quantized clusters by pixel count, and reports per cluster the count, the
   quantized key, the median exact hex (up to 400 pixels) and a representative
-  coordinate. Each tone below is the median of the badge-fill cluster,
-  cross-checked against the exact center pixel (reproduced 2026-10-21:
+  coordinate. Table coordinates are pixels; the script takes fractions, so
+  divide by the image size (`fx = x/W`, `fy = y/H`, default radius 12). Each
+  tone below is the median of the badge-fill cluster, cross-checked against
+  the exact center pixel (reproduced 2026-10-21:
   Active `#dffeeb` n=86, Draft `#f2f3f3` n=109 in
   `1791840827_CANNOTDETECTSHARE_snapshot.png`).
+- Reproduction record (pass-2 review, re-run 2026-10-22 with exact `x/W`,
+  `y/H` fractions, radius 12 — output medians match the table values above):
+  Closed `(996, 475)` centre exact `#faebd4`, badge cluster `n=106
+  quant=(256,240,208)` median `#fdecd5` rep `(985,477)`;
+  Completed `(956, 629)` centre exact `#d9eafd`, badge cluster `n=141
+  quant=(224,240,256)` median `#dce9fc` rep `(963,629)`;
+  nav pill `(100, 308)` centre exact `#d84760`, pill cluster `n=327
+  quant=(224,64,96)` median `#d84761` rep `(108,307)`;
+  All chip `(240, 168)` in `Capture d’écran du 2026-10-12 17-14-37.png`
+  (`1801x824`) centre exact `#0f0c47`, chip cluster `n=321
+  quant=(16,16,64)` median `#0e0d42` rep `(245,168)`.
+  The other five rows reproduce exactly as recorded (Draft `n=109`,
+  Business Approval `#fcfcc4 n=146`, Active `#dffeeb n=86`,
+  Posted `#eee5fd n=140`, banner `#fe9900 n=625`).
 
 ## Colour mapping
 
@@ -83,20 +99,20 @@ clusters by count). Coordinates are `(x, y)` pixels in the stated file
 |---|---|---|---|
 | Draft badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (966, 396) | `#f2f3f3` |
 | Business Approval badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (975, 433) | `#fcfcc4` |
-| Application Closed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (996, 475) | `#fcecd5` |
+| Application Closed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (996, 475) | `#fdecd5` |
 | Active badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (970, 511) | `#dffeeb` |
-| Completed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (956, 629) | `#dceafc` |
+| Completed badge bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (956, 629) | `#dce9fc` |
 | Posted badge bg | `1791840502_CANNOTDETECTSHARE_snapshot.png` (Collab Dashboard) | (1011, 543) | `#eee5fd` |
-| Active nav pill bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (100, 308) | `#d94762` |
+| Active nav pill bg | `1791840827_CANNOTDETECTSHARE_snapshot.png` | (100, 308) | `#d84761` |
 | Impersonation banner | `Capture d’écran du 2026-10-12 17-34-30.png` | (813, 20) | `#fe9900` |
-| Dark "All" chip | `Capture d’écran du 2026-10-12 17-14-37.png` | (240, 168) | `#0e0d44` (≈ `--ink`) |
+| Dark "All" chip | `Capture d’écran du 2026-10-12 17-14-37.png` | (240, 168) | `#0e0d42` (≈ `--ink`) |
 
 Cross-checks: Draft chip `#f2f3f4` in
 `Capture d’écran du 2026-10-12 17-14-37.png` @ (513, 56); Attended green
 `#cdfeee` in `1791840502_CANNOTDETECTSHARE_snapshot.png` @ (1025, 617);
 Completed chip `#dae9fd` in `Capture d’écran du 2026-10-12 17-34-30.png` @
 (819, 82). Video-call compression shifts hues slightly (e.g. nav pill
-`#d94762` vs site pink `#e4575e`); the measured site tokens stay canonical.
+`#d84761` vs site pink `#e4575e`); the measured site tokens stay canonical.
 
 ## À confirmer (derived or no published brand token)
 
@@ -126,8 +142,11 @@ Completed chip `#dae9fd` in `Capture d’écran du 2026-10-12 17-34-30.png` @
 ### Derived-value ledger (sol review — every value sourced or flagged)
 
 - `density.sm/md/lg paddingBlock/paddingInline`: md `0.75rem/1rem` (12/16px
-  measured `.field input`); sm/lg unmeasured for fields, kept from the button
-  metrics — à confirmer. `buttonDensity.sm/md/lg` carries the measured `.btn`
+  measured `.field input`); `sm.paddingInline` is `1rem` (the measured 16px —
+  Input/Select/Textarea read the sm inline leaf, Button reads `buttonDensity`
+  so its `1.3rem` is untouched — pass-2 review). Other sm/lg leaves are
+  unmeasured for fields, kept from the button metrics — à confirmer.
+  `buttonDensity.sm/md/lg` carries the measured `.btn`
   paddings (sm `.65rem/1.3rem @ .9rem`, md `.85rem/1.75rem @ .95rem`,
   full-width `.95rem/1.5rem @ 1rem`).
 - `density.* controlHeight/minWidth/gap` (`2.25/2.75/3.25rem`,
@@ -174,9 +193,10 @@ Completed chip `#dae9fd` in `Capture d’écran du 2026-10-12 17-34-30.png` @
   + underline sub-tabs (bottom pink filet) — metrics à confirmer.
 - **Badges/chips**: fully rounded pills; status tones sampled (table above).
 - **Density**: field scale carries the measured `.field input` 12/16px
-  padding at md; `buttonDensity` carries the measured `.btn` paddings
-  (md `.85rem/1.75rem` @ `.95rem`) so button geometry never leaks into
-  fields — see the derived-value ledger for unmeasured leaves.
+  padding (block at md, inline at sm — the leaves the components consume);
+  `buttonDensity` carries the measured `.btn` paddings
+  (md `.85rem/1.75rem` @ `.95rem`, sm `1.3rem` inline) so button geometry
+  never leaks into fields — see the derived-value ledger for unmeasured leaves.
 - **Sidebar**: pink→lavender gradient panel with filled pink active pill
   (gradient recorded here; no token slot).
 
