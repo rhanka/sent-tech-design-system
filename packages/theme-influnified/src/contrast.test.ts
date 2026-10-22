@@ -56,6 +56,28 @@ const WHITE = "#ffffff";
 const PAGE = semantic.surface.default; // #fffaf5
 const SUBTLE = semantic.surface.subtle; // #fdf6f6
 
+// Parse the compiled theme CSS into a `--var → value` map so tests resolve
+// the value the component CSS actually consumes (first defined variable in
+// the component's own `var(--a, var(--b, …))` fallback chain), not a
+// bypassed theme leaf.
+function emittedVars(): Map<string, string> {
+  const css = compileTheme(influnifiedTheme);
+  const vars = new Map<string, string>();
+  for (const line of css.split("\n")) {
+    const m = line.match(/^\s*(--[\w-]+):\s*(.+?);\s*$/);
+    if (m) vars.set(m[1], m[2]);
+  }
+  return vars;
+}
+
+function resolveVar(vars: Map<string, string>, ...names: string[]): string {
+  for (const name of names) {
+    const v = vars.get(name);
+    if (v !== undefined) return v;
+  }
+  throw new Error(`none of ${names.join(", ")} emitted`);
+}
+
 describe("influnifiedTheme contrast (sol review)", () => {
   it("primary text-bearing surfaces reach 4.5:1 (finding 1)", () => {
     // Primary buttons (rest + hover share the primary text leaf).
@@ -85,10 +107,35 @@ describe("influnifiedTheme contrast (sol review)", () => {
   });
 
   it("link and secondary-button states reach 4.5:1 (finding 4)", () => {
-    // Resting and hover links on white, page and subtle surfaces.
+    const vars = emittedVars();
+    // Resting links on white, page and subtle surfaces (semantic leaf, read
+    // directly by the resting-link rule).
     for (const surface of [WHITE, PAGE, SUBTLE]) {
       expect(ratio(semantic.text.link, surface)).toBeGreaterThanOrEqual(4.5);
-      expect(ratio(built.link.hoverText, surface)).toBeGreaterThanOrEqual(4.5);
+    }
+    // Hover links: Link.svelte resolves
+    // var(--st-component-link-anatomy-states-hover-text,
+    //     var(--st-component-link-hoverText, var(--st-semantic-action-primary)))
+    // so the test follows that exact chain — the flat hoverText leaf alone
+    // is a bypassed fallback (pass-2 finding 1).
+    const hoverText = resolveVar(
+      vars,
+      "--st-component-link-anatomy-states-hover-text",
+      "--st-component-link-hoverText",
+      "--st-semantic-action-primary"
+    );
+    expect(hoverText).toBe("#a83a44");
+    for (const surface of [WHITE, PAGE, SUBTLE]) {
+      expect(ratio(hoverText, surface)).toBeGreaterThanOrEqual(4.5);
+    }
+    // Breadcrumb links: Breadcrumb.svelte resolves
+    // var(--st-component-breadcrumb-linkText, var(--st-semantic-text-link))
+    // with no separate hover rule, so this one value is both resting and
+    // hover on white, page and subtle surfaces (pass-2 finding 1).
+    const crumbText = resolveVar(vars, "--st-component-breadcrumb-linkText", "--st-semantic-text-link");
+    expect(crumbText).toBe("#a83a44");
+    for (const surface of [WHITE, PAGE, SUBTLE]) {
+      expect(ratio(crumbText, surface)).toBeGreaterThanOrEqual(4.5);
     }
     // Secondary button: text on the resting fill and on the hover tint.
     expect(ratio(built.button.secondaryText, built.button.secondaryBackground)).toBeGreaterThanOrEqual(4.5);
@@ -110,9 +157,21 @@ describe("influnifiedTheme contrast (sol review)", () => {
     expect(built.control.anatomy.density?.md?.paddingInline).toBe("1rem");
     expect(built.button.anatomy.density?.md?.paddingBlock).toBe("0.85rem");
     expect(built.button.anatomy.density?.md?.paddingInline).toBe("1.75rem");
+    // Input/Select/Textarea consume the sm inline leaf (DSFR precedent), so
+    // it carries the measured `.field input` 16px — while the button keeps
+    // its measured 1.3rem via buttonDensity (pass-2 finding 3).
+    expect(built.control.anatomy.density?.sm?.paddingInline).toBe("1rem");
+    expect(built.button.anatomy.density?.sm?.paddingInline).toBe("1.3rem");
     // The corrections are emitted as component tokens the components consume.
     const css = compileTheme(influnifiedTheme);
     expect(css).toContain("--st-component-link-hoverText: #a83a44;");
+    expect(css).toContain("--st-component-link-anatomy-states-hover-text: #a83a44;");
+    expect(css).toContain("--st-component-breadcrumb-linkText: #a83a44;");
     expect(css).toContain("--st-component-control-anatomy-field-borderTop: 1px solid #ddd7e6;");
+    // Resolved Input geometry from the emitted CSS (consumer chain:
+    // vertical = density md block, horizontal = density sm inline → 12px/16px).
+    expect(css).toContain("--st-component-control-anatomy-density-md-paddingBlock: 0.75rem;");
+    expect(css).toContain("--st-component-control-anatomy-density-sm-paddingInline: 1rem;");
+    expect(css).toContain("--st-component-button-anatomy-density-sm-paddingInline: 1.3rem;");
   });
 });
