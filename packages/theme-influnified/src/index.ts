@@ -59,15 +59,15 @@ const influnifiedColor = {
   },
   // App-only sampled tones (screenshots, all à confirmer — see MAPPING.md).
   app: {
-    draftGrey: "#f2f3f3", // sampled Draft badge bg (otter 1791840827 @ 966,396)
-    approvalYellow: "#fcfcc4", // sampled Business Approval badge bg (@ 975,433)
-    closedOrange: "#fcecd5", // sampled Application Closed badge bg (@ 996,475)
-    activeGreen: "#dffeeb", // sampled Active badge bg (@ 970,511)
-    completedBlue: "#dceafc", // sampled Completed badge bg (@ 956,629)
-    postedPurple: "#eee5fd", // sampled Posted badge bg (collab 1791840502 @ 1011,543)
-    navPill: "#d94762", // sampled active nav pill (1791840827 @ 100,308)
-    banner: "#fe9900", // sampled impersonation banner (17-34-30 @ 813,20)
-    allChip: "#0e0d44" // sampled dark "All" chip (17-14-37 @ 240,168)
+    draftGrey: "#f2f3f3", // sampled Draft badge bg (otter 1791840827 @ 966,396; badge cluster n=109 median, centre exact #f5f2f2)
+    approvalYellow: "#fcfcc4", // sampled Business Approval badge bg (@ 975,433; badge cluster n=146 median, centre exact #fcfac3)
+    closedOrange: "#fdecd5", // sampled Application Closed badge bg (@ 996,475; badge cluster n=106 quant=(256,240,208) median, centre exact #faebd4 — pass-2 review)
+    activeGreen: "#dffeeb", // sampled Active badge bg (@ 970,511; badge cluster n=86 median, centre exact #e0feec)
+    completedBlue: "#dce9fc", // sampled Completed badge bg (@ 956,629; badge cluster n=141 quant=(224,240,256) median, centre exact #d9eafd — pass-2 review)
+    postedPurple: "#eee5fd", // sampled Posted badge bg (collab 1791840502 @ 1011,543; badge cluster n=140 median)
+    navPill: "#d84761", // sampled active nav pill (1791840827 @ 100,308; pill cluster n=327 quant=(224,64,96) median, centre exact #d84760 — pass-2 review)
+    banner: "#fe9900", // sampled impersonation banner (17-34-30 @ 813,20; cluster n=625 median, centre exact #fe9900)
+    allChip: "#0e0d42" // sampled dark "All" chip (17-14-37 @ 240,168; chip cluster n=321 quant=(16,16,64) median, centre exact #0f0c47 — pass-2 review)
   },
   // System / status colours. Only error is a measured literal (#c0392b);
   // the text tones are darkened from the sampled badge tints so the RENDERED
@@ -179,12 +179,16 @@ const foundation = {
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
-  // FIELD density (shared control scale). Only the md padding is measured
-  // (`.field input`: 12px block / 16px inline); sm/lg paddings, heights,
-  // minimum widths and gaps are unmeasured for fields — à confirmer
-  // (kept from the button metrics so the shape stays coherent).
+  // FIELD density (shared control scale). The md padding and the sm inline
+  // padding are measured (`.field input`: 12px block / 16px inline — the
+  // components read md.paddingBlock for the vertical padding and
+  // sm.paddingInline for the horizontal padding, so sm.paddingInline carries
+  // the measured 16px); other sm/lg leaves (heights, minimum widths, gaps,
+  // font sizes, sm/lg block and lg inline paddings) are unmeasured for
+  // fields — à confirmer (kept from the button metrics so the shape stays
+  // coherent). Buttons never read this scale (they read buttonDensity below).
   density: {
-    sm: { controlHeight: "2.25rem", paddingBlock: "0.65rem", paddingInline: "1.3rem", gap: "0.5rem", minWidth: "2.25rem", fontSize: "0.9rem" },
+    sm: { controlHeight: "2.25rem", paddingBlock: "0.65rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.25rem", fontSize: "0.9rem" },
     md: { controlHeight: "2.75rem", paddingBlock: "0.75rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.75rem", fontSize: "0.95rem" },
     lg: { controlHeight: "3.25rem", paddingBlock: "0.95rem", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3.25rem", fontSize: "1rem" }
   },
@@ -290,9 +294,11 @@ const foundation = {
     fontSize: "0.95rem", // 15.2px
     lineHeight: "1.5rem" // 24px
   },
-  // Breadcrumb treatment not observed (à confirmer); pink links, ink current.
+  // Breadcrumb treatment not observed (à confirmer); accessible rose links,
+  // ink current. The trail can sit on subtle surfaces, where --pink-dark is
+  // 4.46:1 — the accessible rose (#a83a44) is 5.87:1 there (pass-2 review).
   breadcrumb: {
-    linkText: influnifiedColor.pink.dark, // #c9444b (AA on white)
+    linkText: influnifiedColor.system.interact, // #a83a44 (departure: --pink-dark is 4.46:1 on subtle)
     text: influnifiedColor.ink.muted, // #6e6c8a trail text
     currentText: influnifiedColor.ink.ink, // #070541 current page
     separator: influnifiedColor.canvas.borderStrong, // #ddd7e6
@@ -377,7 +383,7 @@ const semantic = {
     default: influnifiedColor.canvas.page, // #fffaf5 warm off-white page
     subtle: influnifiedColor.pink.mist, // #fdf6f6 tint
     raised: influnifiedColor.canvas.surface, // #ffffff cards
-    inverse: influnifiedColor.ink.ink, // #070541 (≈ sampled dark "All" chip #0e0d44)
+    inverse: influnifiedColor.ink.ink, // #070541 (≈ sampled dark "All" chip #0e0d42)
     overlay: "rgb(7 5 65 / 0.6)" // modal backdrop (ink tint)
   },
   text: {
@@ -450,15 +456,28 @@ const builtComponent = createComponent(semantic, foundation);
 // Two rendered states need a correction the builder inputs cannot express,
 // so they are re-mapped on the built layer (emitted as component tokens and
 // consumed by Link / Input / Select / Textarea — verified in the test):
-//  - link hover: the builder wires it to action.primary (#c9444b), which is
-//    4.46:1 on subtle surfaces. The accessible rose (#a83a44) is 5.87:1 there.
+//  - link hover: the builder wires both the flat hoverText AND the anatomy
+//    hover text to action.primary (#c9444b), which is 4.46:1 on subtle
+//    surfaces. Link.svelte prefers the anatomy variable over the flat leaf,
+//    so both are re-mapped to the accessible rose (#a83a44, 5.87:1 on
+//    subtle — pass-2 review).
 //  - field stroke: the builder wires boxed inputs to border.subtle (#ece8f0),
 //    but the measured `.field input` stroke is --border-strong (#ddd7e6).
 const component = {
   ...builtComponent,
   link: {
     ...builtComponent.link,
-    hoverText: influnifiedColor.system.interact // #a83a44 (builder default action.primary is 4.46:1 on subtle)
+    hoverText: influnifiedColor.system.interact, // #a83a44 (builder default action.primary is 4.46:1 on subtle)
+    anatomy: {
+      ...builtComponent.link.anatomy,
+      states: {
+        ...builtComponent.link.anatomy.states,
+        hover: {
+          ...builtComponent.link.anatomy.states?.hover,
+          text: influnifiedColor.system.interact // #a83a44: the consumer resolves this var first (pass-2 review)
+        }
+      }
+    }
   },
   control: {
     ...builtComponent.control,
