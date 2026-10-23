@@ -224,4 +224,46 @@ describe("the executable constraints of generic@1", () => {
     expect(distinctErrorCodes(diagnostics)).toEqual(["limit-exceeded"]);
     expect(diagnostics[0]?.details).toEqual({ type: "container", seen: 65, max: 64 });
   });
+
+  it("reports unique-attribute duplicates in id order, independent of insertion order", () => {
+    const values: Record<string, string> = {
+      aaa: "Dup",
+      mmm: "Dup",
+      zzz: "Dup",
+      u1: "Unique 1",
+      u2: "Unique 2",
+    };
+    function withOrder(ids: readonly string[]): SemanticDocument {
+      const entities: Record<string, typeof root> = {};
+      for (const local of ids) {
+        const id = entityRef(local);
+        entities[id] = { ...root, id, attributes: { name: { kind: "text", value: values[local] as string } } };
+      }
+      return { ...document, typeDefinitions: {}, entities, ports: {}, relations: {}, extensions: [] };
+    }
+    const forward = withOrder(["zzz", "mmm", "aaa", "u2", "u1"]);
+    const reversed = withOrder(["u1", "u2", "aaa", "mmm", "zzz"]);
+    const forwardDiagnostics = validateDocument(forward, { registry });
+    const reversedDiagnostics = validateDocument(reversed, { registry });
+    expect(reversedDiagnostics).toEqual(forwardDiagnostics);
+    expect(forwardDiagnostics).toHaveLength(2);
+    expect(forwardDiagnostics.map((entry) => entry.code)).toEqual([
+      "unique-attribute-violation",
+      "unique-attribute-violation",
+    ]);
+    expect(forwardDiagnostics.map((entry) => entry.refs)).toEqual([
+      ["entity:mmm", "entity:aaa"],
+      ["entity:zzz", "entity:aaa"],
+    ]);
+    expect(forwardDiagnostics.map((entry) => entry.path)).toEqual([
+      "entities.entity:mmm.attributes.name",
+      "entities.entity:zzz.attributes.name",
+    ]);
+    for (const entry of forwardDiagnostics) {
+      expect(entry.message).toBe(
+        "attribute name must be unique among container entities; entity:aaa carries the same value",
+      );
+      expect(entry.details).toEqual({ attribute: "name", type: "container" });
+    }
+  });
 });
