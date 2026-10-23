@@ -21,11 +21,18 @@
       "svelte": "./dist/index.js",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./rich-text-editor": {
+      "svelte": "./dist/rich-text-editor/index.js",
+      "types": "./dist/rich-text-editor/index.d.ts",
+      "import": "./dist/rich-text-editor/index.js"
+    },
+    "./rich-text-editor.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
     "dist",
     "!dist/**/*.test.js",
+    "!dist/**/*.test.mjs",
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
@@ -33,11 +40,23 @@
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
+    "@sentropic/design-system-rich-text": "0.1.0",
     "@sentropic/design-system-themes": "0.11.0",
     "@sentropic/graph": "0.3.0"
   },
   "peerDependencies": {
-    "svelte": "^5.53.2"
+    "svelte": "^5.53.2",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extension-bold": "^3.0.0",
+    "@tiptap/extension-code": "^3.0.0",
+    "@tiptap/extension-document": "^3.0.0",
+    "@tiptap/extension-hard-break": "^3.0.0",
+    "@tiptap/extension-italic": "^3.0.0",
+    "@tiptap/extension-paragraph": "^3.0.0",
+    "@tiptap/extension-placeholder": "^3.0.0",
+    "@tiptap/extension-text": "^3.0.0",
+    "@tiptap/extensions": "^3.0.0",
+    "@tiptap/pm": "^3.0.0"
   },
   "scripts": {
     "build": "svelte-package",

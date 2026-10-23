@@ -6,6 +6,14 @@ export default defineConfig({
   plugins: [svelte(), svelteTesting()],
   test: {
     environment: "jsdom",
-    testTimeout: 20000
+    testTimeout: 20000,
+    // test.exclude keeps the real-browser harness out of the jsdom run
+    // (spec §11): RichTextEditor.browser.test.mjs runs through node
+    // directly, never through `vitest run src`.
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/rich-text-editor/*.browser.test.mjs"
+    ]
   }
 });
