@@ -1,0 +1,909 @@
+/**
+ * RED 1–4, 6–8 component halves: the Svelte adapter surface.
+ * Spec §11 RED 1–8 (component halves), §5–§7. Environment: J (jsdom shape of
+ * `packages/components-svelte/vite.config.ts`).
+ *
+ * The adapter owns mounting, prop/event idioms and lifecycle over the
+ * Tiptap-bound `"./editor"` factory; every gesture below runs against the
+ * component-owned editor (never a second instance). Real-selection, real-IME
+ * and real-network witnesses live in `RichTextEditor.browser.test.mjs`
+ * (environment B); this file never substitutes a jsdom case for them.
+ *
+ * RED state: fails because the subpath (`RichTextEditor.svelte`, `index.ts`)
+ * does not exist yet.
+ */
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render } from "@testing-library/svelte";
+import { tick } from "svelte";
+
+// jsdom implements no layout: `elementFromPoint` exists on neither
+// `Element.prototype` nor `Document.prototype` there, while ProseMirror's
+// mousedown path calls it on the editor root (the document in jsdom). Real
+// browsers provide it (the real click/mousedown paths are witnessed in the
+// browser suite, environment B); this shim keeps the jsdom assertions
+// focused on event-isolation, never on coordinate mapping.
+type ElementFromPointTarget = {
+  elementFromPoint?: ((x: number, y: number) => Element | null) | undefined;
+};
+for (const target of [Element.prototype, Document.prototype] as unknown as ElementFromPointTarget[]) {
+  if (typeof target.elementFromPoint !== "function") {
+    target.elementFromPoint = () => null;
+  }
+}
+import type {
+  RichTextBlock,
+  RichTextChangeEvent,
+  RichTextDocument,
+  RichTextMessages,
+  RichTextUnsupportedPasteEvent,
+} from "@sentropic/design-system-rich-text";
+import RichTextEditor from "./RichTextEditor.svelte";
+import type { RichTextEditorProps } from "./RichTextEditor.svelte";
+import RichTextEditorFixture from "./RichTextEditorFixture.svelte";
+
+const MESSAGES: RichTextMessages = {
+  editorLabel: "SENTINEL-EDITOR-LABEL",
+  placeholder: "SENTINEL-PLACEHOLDER",
+  preservedBlockLabel: "SENTINEL-PRESERVED-{kind}",
+  externalConflictLabel: "SENTINEL-CONFLICT",
+};
+
+const MARKDOWN: RichTextDocument["format"] = "focus.markdown.p0@1";
+const PLAIN: RichTextDocument["format"] = "text/plain";
+
+/** Fresh allocator per test: `test:id:<n>`, never a producer identity. */
+function makeAllocator(): () => string {
+  let sequence = 0;
+  return () => `test:id:${(sequence += 1)}`;
+}
+
+function paragraph(id: string, text: string): RichTextBlock {
+  return { paragraphId: id, kind: "paragraph", text };
+}
+
+function preserved(id: string, kind: string, raw: string): RichTextBlock {
+  return { paragraphId: id, kind: "preserved", preservedKind: kind, raw };
+}
+
+function twoParagraphs(): RichTextDocument {
+  return {
+    format: MARKDOWN,
+    blocks: [paragraph("paragraph:1", "First"), paragraph("paragraph:2", "Second")],
+  };
+}
+
+interface Collected {
+  changes: RichTextChangeEvent[];
+  conflicts: Array<{ incoming: RichTextDocument; local: RichTextDocument }>;
+  unsupported: RichTextUnsupportedPasteEvent[];
+  readiness: Array<{ composing: boolean; ready: boolean }>;
+}
+
+function collect(): Collected & {
+  props: (extra?: Partial<RichTextEditorProps>) => RichTextEditorProps;
+} {
+  const changes: RichTextChangeEvent[] = [];
+  const conflicts: Collected["conflicts"] = [];
+  const unsupported: RichTextUnsupportedPasteEvent[] = [];
+  const readiness: Collected["readiness"] = [];
+  const allocateId = makeAllocator();
+  return {
+    changes,
+    conflicts,
+    unsupported,
+    readiness,
+    props: (extra?: Partial<RichTextEditorProps>) => ({
+      value: twoParagraphs(),
+      messages: { ...MESSAGES },
+      allocateId,
+      onChange: (event) => {
+        changes.push(event);
+      },
+      onExternalConflict: (event) => {
+        conflicts.push(event);
+      },
+      onUnsupportedPaste: (event) => {
+        unsupported.push(event);
+      },
+      onReadinessChange: (event) => {
+        readiness.push({ ...event });
+      },
+      ...extra,
+    }),
+  };
+}
+
+function editableOf(container: HTMLElement): HTMLElement {
+  const editable = container.querySelector(".ProseMirror") as HTMLElement | null;
+  expect(editable).not.toBeNull();
+  return editable as HTMLElement;
+}
+
+/** Synthetic paste through the real ProseMirror clipboard path. */
+function dispatchPaste(
+  editable: HTMLElement,
+  payload: { html?: string; text?: string },
+): void {
+  const transfer = {
+    getData: (type: string): string => {
+      if (type === "text/html") return payload.html ?? "";
+      if (type === "text/plain" || type === "Text") return payload.text ?? "";
+      return "";
+    },
+    types: [
+      ...(payload.html !== undefined ? ["text/html"] : []),
+      ...(payload.text !== undefined ? ["text/plain"] : []),
+    ],
+  };
+  const event = new Event("paste", { bubbles: true, cancelable: true });
+  Object.defineProperty(event, "clipboardData", { value: transfer });
+  editable.dispatchEvent(event);
+}
+
+/** Every key of the event tree: the surface carries document, gesture and
+    representability only — no before/after, no diff, no Focus key (§5.3). */
+function allKeys(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(allKeys);
+  if (typeof value === "object" && value !== null) {
+    return Object.entries(value).flatMap(([key, entry]) => [key, ...allKeys(entry)]);
+  }
+  return [];
+}
+
+const FORBIDDEN_EVENT_KEYS = [
+  "before",
+  "after",
+  "beforeAnchors",
+  "anchors",
+  "transactions",
+  "changes",
+];
+
+function expectCleanSurface(event: RichTextChangeEvent): void {
+  expect(Object.keys(event).sort()).toEqual([
+    "document",
+    "gesture",
+    "representability",
+  ]);
+  for (const key of allKeys(event)) {
+    expect(
+      FORBIDDEN_EVENT_KEYS.includes(key),
+      `emitted surface must not carry "${key}"`,
+    ).toBe(false);
+  }
+}
+
+describe("editable/disabled states (RED 1, viewer case)", () => {
+  it("editable={false} is inert: typing, paste and shortcuts change nothing", async () => {
+    const collected = collect();
+    const { container, component } = render(RichTextEditor, {
+      props: collected.props({ editable: false, value: twoParagraphs() }),
+    });
+    const editor = component.getEditor();
+    expect(editor).not.toBeNull();
+    const before = editor?.getDocument();
+    // Simulated typing through the owned editor and through the DOM.
+    editor?.typeText("paragraph:1", "X");
+    editor?.paste({ text: "pasted" });
+    await fireEvent.keyDown(editableOf(container), { key: "Enter" });
+    dispatchPaste(editableOf(container), { text: "pasted" });
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+    expect(collected.unsupported).toHaveLength(0);
+    expect(editor?.getDocument()).toEqual(before);
+  });
+
+  it("the viewer lock is the named editable={false} case", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      // Viewer case: a host rendering for a viewer passes editable={false}.
+      props: collected.props({ editable: false, value: twoParagraphs() }),
+    });
+    const editor = component.getEditor();
+    editor?.typeText("paragraph:1", "viewer text");
+    editor?.undo();
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+    expect(editor?.getDocument().blocks[0]).toEqual(
+      paragraph("paragraph:1", "First"),
+    );
+  });
+
+  it("disabled={true} wins over editable and is inert", async () => {
+    const collected = collect();
+    const { container, component } = render(RichTextEditor, {
+      props: collected.props({
+        editable: true,
+        disabled: true,
+        value: twoParagraphs(),
+      }),
+    });
+    const editor = component.getEditor();
+    editor?.typeText("paragraph:1", "X");
+    editor?.paste({ text: "pasted" });
+    await fireEvent.keyDown(editableOf(container), { key: "Enter" });
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+    expect(editor?.getDocument().blocks).toHaveLength(2);
+  });
+});
+
+describe("no-change cycle (RED 2, component half)", () => {
+  it("mount, focus, blur and unmount emit nothing and keep block identity", async () => {
+    const collected = collect();
+    const input = twoParagraphs();
+    const { container, unmount } = render(RichTextEditor, {
+      props: collected.props({ value: input }),
+    });
+    const editable = editableOf(container);
+    editable.focus();
+    await tick();
+    editable.blur();
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+    expect(collected.readiness).toHaveLength(0);
+    unmount();
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+  });
+});
+
+describe("paragraph identity (RED 3, component half)", () => {
+  it("split names the source and the fresh tail; merge names survivor and retired", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({ value: twoParagraphs() }),
+    });
+    const editor = component.getEditor();
+    expect(editor).not.toBeNull();
+    editor?.splitParagraph("paragraph:1", "First".length);
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    const split = collected.changes[0] as RichTextChangeEvent;
+    expectCleanSurface(split);
+    expect(split.gesture.kind).toBe("split");
+    expect(split.gesture.split?.sourceParagraphId).toBe("paragraph:1");
+    expect(split.gesture.split?.newParagraphIds).toHaveLength(1);
+    const tail = split.gesture.split?.newParagraphIds[0] as string;
+    expect(tail).not.toBe("paragraph:1");
+    expect(split.document.blocks.map((block) => block.paragraphId)).toEqual([
+      "paragraph:1",
+      tail,
+      "paragraph:2",
+    ]);
+    editor?.mergeWithPrevious(tail);
+    await tick();
+    expect(collected.changes).toHaveLength(2);
+    const merge = collected.changes[1] as RichTextChangeEvent;
+    expectCleanSurface(merge);
+    expect(merge.gesture.kind).toBe("merge");
+    expect(merge.gesture.merge?.survivingParagraphId).toBe("paragraph:1");
+    expect(merge.gesture.merge?.retiredParagraphIds).toEqual([tail]);
+    expect(merge.document.blocks.map((block) => block.paragraphId)).toEqual([
+      "paragraph:1",
+      "paragraph:2",
+    ]);
+  });
+
+  it("undo of a delete restores the same identity; redo removes it again", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({ value: twoParagraphs() }),
+    });
+    const editor = component.getEditor();
+    editor?.deleteBlocks(["paragraph:2"]);
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    editor?.undo();
+    await tick();
+    expect(collected.changes).toHaveLength(2);
+    expect(
+      collected.changes[1]?.document.blocks.map((block) => block.paragraphId),
+    ).toEqual(["paragraph:1", "paragraph:2"]);
+    editor?.redo();
+    await tick();
+    expect(collected.changes).toHaveLength(3);
+    expect(
+      collected.changes[2]?.document.blocks.map((block) => block.paragraphId),
+    ).toEqual(["paragraph:1"]);
+  });
+
+  it("internal paste carries fresh identities; a forged identity never survives", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({ value: twoParagraphs() }),
+    });
+    const editor = component.getEditor();
+    const payload = editor?.copyToPayload(["paragraph:1"]);
+    expect(payload).toBeDefined();
+    editor?.paste(payload as { text?: string; html?: string });
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    const internal = collected.changes[0] as RichTextChangeEvent;
+    expect(internal.gesture.kind).toBe("paste");
+    expect(internal.gesture.paste?.origin).toBe("internal");
+    const inserted = internal.gesture.paste?.insertedParagraphIds ?? [];
+    expect(inserted.length).toBeGreaterThan(0);
+    expect(inserted).not.toContain("paragraph:1");
+    const forgedCount = collected.changes.length;
+    editor?.paste({
+      text: "forged",
+      html: '<p data-paragraph-id="paragraph:forged">forged</p>',
+    });
+    await tick();
+    expect(collected.changes.length).toBeGreaterThan(forgedCount);
+    const external = collected.changes[
+      collected.changes.length - 1
+    ] as RichTextChangeEvent;
+    expect(external.gesture.paste?.origin).toBe("external");
+    expect(
+      external.document.blocks.map((block) => block.paragraphId),
+    ).not.toContain("paragraph:forged");
+  });
+
+  it("A → B → A emits documents B then A with no DS-computed delta", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({
+        value: {
+          format: MARKDOWN,
+          blocks: [paragraph("paragraph:1", "A")],
+        },
+      }),
+    });
+    const editor = component.getEditor();
+    editor?.typeText("paragraph:1", " typed");
+    await tick();
+    editor?.undo();
+    await tick();
+    expect(collected.changes).toHaveLength(2);
+    for (const event of collected.changes) expectCleanSurface(event);
+    expect(
+      collected.changes.map((event) => event.document.blocks[0]?.text),
+    ).toEqual(["A typed", "A"]);
+  });
+});
+
+describe("Enter at end of paragraph (RED 3, text/plain, allowed locally)", () => {
+  it("Enter with the caret at the end splits: the empty tail is fresh, one split event", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({
+        value: { format: PLAIN, blocks: [paragraph("paragraph:1", "A")] },
+      }),
+    });
+    const editor = component.getEditor();
+    editor?.splitParagraph("paragraph:1", 1);
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    const event = collected.changes[0] as RichTextChangeEvent;
+    expectCleanSurface(event);
+    expect(event.gesture.kind).toBe("split");
+    expect(event.document.blocks).toEqual([
+      paragraph("paragraph:1", "A"),
+      {
+        paragraphId: event.gesture.split?.newParagraphIds[0] as string,
+        kind: "paragraph",
+        text: "",
+      },
+    ]);
+    expect(event.gesture.split?.sourceParagraphId).toBe("paragraph:1");
+  });
+});
+
+describe("clear a field containing separators (RED 3, text/plain, allowed locally)", () => {
+  it("selecting and clearing the whole content leaves the single controlled empty block", async () => {
+    const collected = collect();
+    const { container, component } = render(RichTextEditor, {
+      props: collected.props({
+        // Host-segmented input from the source "A\n\nB": two paragraphs.
+        // The DS test segments nothing and stores no separator.
+        value: {
+          format: PLAIN,
+          blocks: [paragraph("paragraph:1", "A"), paragraph("paragraph:2", "B")],
+        },
+      }),
+    });
+    const editable = editableOf(container);
+    editable.focus();
+    await tick();
+    await fireEvent.keyDown(editable, { key: "a", ctrlKey: true });
+    await fireEvent.keyDown(editable, { key: "Backspace" });
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    const event = collected.changes[0] as RichTextChangeEvent;
+    expectCleanSurface(event);
+    expect(event.document.blocks).toEqual([
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "" },
+    ]);
+  });
+});
+
+describe("Enter right after an interior newline (RED 3, text/plain, allowed locally)", () => {
+  it("the head keeps its trailing newline and the tail is fresh", async () => {
+    const collected = collect();
+    const { component } = render(RichTextEditor, {
+      props: collected.props({
+        // One host-segmented paragraph holding the interior newline (§5.1):
+        // mounts as one block, never two.
+        value: { format: PLAIN, blocks: [paragraph("paragraph:1", "A\nB")] },
+      }),
+    });
+    const editor = component.getEditor();
+    expect(
+      editor?.getDocument().blocks.map((block) => block.paragraphId),
+    ).toEqual(["paragraph:1"]);
+    // Caret immediately after the interior newline (offset 2 of "A\nB").
+    editor?.splitParagraph("paragraph:1", 2);
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    const event = collected.changes[0] as RichTextChangeEvent;
+    expectCleanSurface(event);
+    expect(event.gesture.kind).toBe("split");
+    expect(event.gesture.split?.sourceParagraphId).toBe("paragraph:1");
+    const tail = event.gesture.split?.newParagraphIds[0] as string;
+    expect(event.document.blocks).toEqual([
+      paragraph("paragraph:1", "A\n"),
+      paragraph(tail, "B"),
+    ]);
+  });
+});
+
+describe("echo acknowledgement (RED 4, J document half)", () => {
+  it("the controlled echo records acknowledgement without replacement, then C applies", async () => {
+    const collected = collect();
+    const docA: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "A")],
+    };
+    const docB: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "B")],
+    };
+    const docC: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "C")],
+    };
+    const { component, rerender } = render(RichTextEditor, {
+      props: collected.props({ value: docA }),
+    });
+    const editor = component.getEditor();
+    const instanceBefore = editor;
+    // Rewrite the single paragraph A → B through edit gestures.
+    editor?.clearParagraph("paragraph:1");
+    editor?.typeText("paragraph:1", "B");
+    await tick();
+    const typed = collected.changes[collected.changes.length - 1];
+    expect(typed?.document.blocks[0]?.text).toBe("B");
+    // Rule 1: the echo suppresses replacement and records acknowledgement.
+    await rerender(collected.props({ value: docB }));
+    await tick();
+    expect(collected.conflicts).toHaveLength(0);
+    expect(component.getEditor()).toBe(instanceBefore);
+    // Rule 4: C arrives with no intervening local edit and applies cleanly.
+    await rerender(collected.props({ value: docC }));
+    await tick();
+    expect(collected.conflicts).toHaveLength(0);
+    expect(component.captureDocument).toBeDefined();
+    const captured = await component.captureDocument();
+    expect(captured.document).toEqual(docC);
+  });
+
+  it("an update confined to a preserved raw applies without conflict", async () => {
+    const collected = collect();
+    const rawBefore = "| a |\n|---|\n| 1 |";
+    const rawAfter = "| a |\n|---|\n| 2 |";
+    const before: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [
+        paragraph("paragraph:1", "Intro"),
+        preserved("paragraph:2", "table", rawBefore),
+      ],
+    };
+    const after: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [
+        paragraph("paragraph:1", "Intro"),
+        preserved("paragraph:2", "table", rawAfter),
+      ],
+    };
+    const { container, rerender } = render(RichTextEditor, {
+      props: collected.props({ value: before }),
+    });
+    await rerender(collected.props({ value: after }));
+    await tick();
+    expect(collected.conflicts).toHaveLength(0);
+    expect(collected.changes).toHaveLength(0);
+    const region = container.querySelector(
+      '[data-preserved-block="table"]',
+    ) as HTMLElement | null;
+    expect(region).not.toBeNull();
+    expect(region?.textContent).toBe(rawAfter);
+  });
+});
+
+describe("serialisation-equal divergence (RED 4, J document half)", () => {
+  it("a wire-identical draft still conflicts: the revision flag decides, never wire equality", async () => {
+    const collected = collect();
+    const empty: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "")],
+    };
+    const external: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "C")],
+    };
+    const { component, rerender } = render(RichTextEditor, {
+      props: collected.props({ value: empty }),
+    });
+    const editor = component.getEditor();
+    // Three spaces: the live content is [text("   ")] while the bridge
+    // serialises it to "" — the displayed wire still equals the acknowledged
+    // wire, yet the typing transaction set the unacknowledged-local-revision
+    // flag (§5.6 witness).
+    editor?.typeText("paragraph:1", "   ");
+    await tick();
+    expect(editor?.view.state.doc.textContent).toBe("   ");
+    await rerender(collected.props({ value: external }));
+    await tick();
+    // Rule 3 fires: the spaces stay live, C is not applied, one conflict.
+    expect(collected.conflicts).toHaveLength(1);
+    expect(collected.conflicts[0]?.incoming).toEqual(external);
+    expect(editor?.view.state.doc.textContent).toBe("   ");
+    expect(editor?.getDocument().blocks[0]?.text).toBe("");
+  });
+});
+
+describe("parent selection isolation (RED 6)", () => {
+  it("typing, clicking and selecting inside the editor never reach the card handler", async () => {
+    const onCardSelect = vi.fn();
+    const collected = collect();
+    const { container } = render(RichTextEditorFixture, {
+      props: {
+        ...collected.props({ value: twoParagraphs() }),
+        onCardSelect,
+      },
+    });
+    const card = container.querySelector(
+      '[data-testid="editor-card"]',
+    ) as HTMLElement;
+    const editable = editableOf(container);
+    await fireEvent.keyDown(editable, { key: "a" });
+    await fireEvent.keyUp(editable, { key: "a" });
+    await fireEvent.click(editable);
+    await fireEvent.mouseDown(editable);
+    await fireEvent.mouseUp(editable);
+    await tick();
+    expect(onCardSelect).not.toHaveBeenCalled();
+    const outside = container.querySelector(
+      '[data-testid="outside-card"]',
+    ) as HTMLElement;
+    await fireEvent.click(outside);
+    expect(onCardSelect).toHaveBeenCalledTimes(1);
+    expect(card).not.toBeNull();
+  });
+});
+
+describe("hostile paste (RED 7, jsdom half)", () => {
+  it("scriptable markup is inert: no script, handler, link or image survives", async () => {
+    const collected = collect();
+    const { container, component } = render(RichTextEditor, {
+      props: collected.props({ value: twoParagraphs() }),
+    });
+    const editable = editableOf(container);
+    dispatchPaste(editable, {
+      html: '<p>Hello <img src="https://example.com/x.png" onerror="alert(1)" alt="pic"><a href="javascript:alert(2)">click</a></p><script>alert(3)</script>',
+      text: "Hello pic click",
+    });
+    await tick();
+    const editor = component.getEditor();
+    const after = editor?.getDocument();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector("[onerror]")).toBeNull();
+    expect(container.querySelector('a[href^="javascript:"]')).toBeNull();
+    const texts = (after?.blocks ?? [])
+      .map((block) => block.text ?? "")
+      .join("\n");
+    expect(texts).toContain("Hello");
+  });
+
+  it.each([
+    {
+      name: "markdown table",
+      payload: { text: "| a | b |\n|---|---|\n| 1 | 2 |" },
+      kinds: ["table"],
+    },
+    {
+      name: "fenced code block",
+      payload: { text: "```js\nconst x = 1;\n```" },
+      kinds: ["codeBlock"],
+    },
+    {
+      name: "html table element",
+      payload: { html: "<table><tr><td>x</td></tr></table>", text: "x" },
+      kinds: ["table"],
+    },
+    {
+      name: "heading line",
+      payload: { text: "# Title" },
+      kinds: ["heading"],
+    },
+    {
+      name: "list lines",
+      payload: { text: "- a\n- b" },
+      kinds: ["list"],
+    },
+  ])(
+    "a paste that would create $name is refused whole (DS side only)",
+    async ({ payload, kinds }) => {
+      const collected = collect();
+      const { component, container } = render(RichTextEditor, {
+        props: collected.props({ value: twoParagraphs() }),
+      });
+      const editor = component.getEditor();
+      const before = editor?.getDocument();
+      const selectionBefore = editor?.getSelection();
+      const changesBefore = collected.changes.length;
+      dispatchPaste(editableOf(container), payload);
+      await tick();
+      expect(collected.unsupported).toHaveLength(1);
+      expect(collected.unsupported[0]?.rejectedKinds).toEqual(
+        expect.arrayContaining(kinds),
+      );
+      expect(collected.changes).toHaveLength(changesBefore);
+      expect(editor?.getDocument()).toEqual(before);
+      expect(editor?.getSelection()).toEqual(selectionBefore);
+    },
+  );
+});
+
+describe("messages and lifecycle (RED 8, jsdom half)", () => {
+  it("renders exactly the injected sentinel strings, no built-in label", async () => {
+    const collected = collect();
+    const { container } = render(RichTextEditor, {
+      props: collected.props({
+        value: {
+          format: MARKDOWN,
+          blocks: [
+            paragraph("paragraph:1", ""),
+            preserved("paragraph:2", "table", "| a |"),
+          ],
+        },
+      }),
+    });
+    await tick();
+    const editable = editableOf(container);
+    expect(editable.getAttribute("aria-label")).toBe("SENTINEL-EDITOR-LABEL");
+    expect(editable.getAttribute("data-placeholder")).toBe(
+      "SENTINEL-PLACEHOLDER",
+    );
+    const region = container.querySelector(
+      '[data-preserved-block="table"]',
+    ) as HTMLElement | null;
+    expect(region?.getAttribute("aria-label")).toBe("SENTINEL-PRESERVED-table");
+    expect(container.querySelector(".st-rich-text-editor__status")?.textContent).toBe(
+      "SENTINEL-CONFLICT",
+    );
+  });
+
+  it("a missing key renders the untranslated marker with its data attribute", async () => {
+    const collected = collect();
+    const { container } = render(RichTextEditor, {
+      props: collected.props({
+        value: twoParagraphs(),
+        messages: {} as unknown as RichTextMessages,
+      }),
+    });
+    await tick();
+    const editable = editableOf(container);
+    expect(editable.getAttribute("aria-label")).toBe(
+      "⟦untranslated:rich-text.editorLabel⟧",
+    );
+    expect(editable.getAttribute("data-untranslated")).toBe(
+      "rich-text.editorLabel",
+    );
+    expect(
+      container
+        .querySelector(".st-rich-text-editor__status")
+        ?.getAttribute("data-untranslated"),
+    ).toBe("rich-text.externalConflictLabel");
+  });
+
+  it("the component source carries no built-in label literal", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { dirname, join } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "RichTextEditor.svelte"),
+      "utf8",
+    );
+    const markup = source.split("</script>").slice(-1)[0]?.split("<style")[0] ?? "";
+    const literals = [...markup.matchAll(/>([^<>{}]+)</g)]
+      .map((match) => (match[1] as string).trim())
+      .filter((text) => text.length > 0);
+    expect(literals).toEqual([]);
+    const labelled = [...markup.matchAll(/(aria-label|placeholder)="([^"]+)"/g)].map(
+      (match) => match[0],
+    );
+    expect(labelled).toEqual([]);
+  });
+
+  it("unmount removes every listener, observer and task it created", async () => {
+    const collected = collect();
+    const added: Array<{
+      target: EventTarget;
+      type: string;
+      listener: EventListener;
+      capture: boolean;
+    }> = [];
+    const removed: Array<{
+      target: EventTarget;
+      type: string;
+      listener: EventListener;
+      capture: boolean;
+    }> = [];
+    const originalAdd = EventTarget.prototype.addEventListener;
+    const originalRemove = EventTarget.prototype.removeEventListener;
+    const createdObservers: Array<{ disconnect: () => void } & object> = [];
+    const disconnected = new Set<object>();
+    const OriginalObserver = globalThis.MutationObserver;
+    const pendingTimers = new Set<unknown>();
+    const originalSetTimeout = globalThis.setTimeout;
+    const OriginalRAF =
+      typeof globalThis.requestAnimationFrame === "function"
+        ? globalThis.requestAnimationFrame.bind(globalThis)
+        : undefined;
+    let rafIds = 0;
+    const pendingRaf = new Set<number>();
+    try {
+      EventTarget.prototype.addEventListener = function (
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: AddEventListenerOptions | boolean,
+      ): void {
+        added.push({
+          target: this,
+          type,
+          listener: listener as EventListener,
+          capture:
+            typeof options === "boolean" ? options : (options?.capture ?? false),
+        });
+        originalAdd.call(this, type, listener, options);
+      };
+      EventTarget.prototype.removeEventListener = function (
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: EventListenerOptions | boolean,
+      ): void {
+        removed.push({
+          target: this,
+          type,
+          listener: listener as EventListener,
+          capture:
+            typeof options === "boolean" ? options : (options?.capture ?? false),
+        });
+        originalRemove.call(this, type, listener, options);
+      };
+      globalThis.MutationObserver = class extends OriginalObserver {
+        constructor(callback: MutationCallback) {
+          super(callback);
+          createdObservers.push(this);
+        }
+        override disconnect(): void {
+          disconnected.add(this);
+          super.disconnect();
+        }
+      } as typeof MutationObserver;
+      globalThis.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+        const id = originalSetTimeout(handler, timeout, ...(args as []));
+        pendingTimers.add(id);
+        return id;
+      }) as typeof setTimeout;
+      if (OriginalRAF !== undefined) {
+        globalThis.requestAnimationFrame = ((callback: FrameRequestCallback) => {
+          rafIds += 1;
+          pendingRaf.add(rafIds);
+          return OriginalRAF((time) => {
+            pendingRaf.delete(rafIds);
+            callback(time);
+          });
+        }) as typeof requestAnimationFrame;
+      }
+      const { container, unmount } = render(RichTextEditor, {
+        props: collected.props({ value: twoParagraphs() }),
+      });
+      const root = container.querySelector(
+        ".st-rich-text-editor",
+      ) as EventTarget;
+      await tick();
+      // A further keystroke before unmount still emits through the listener.
+      const editableBeforeUnmount = editableOf(container);
+      await fireEvent.keyDown(editableBeforeUnmount, { key: "a" });
+      const changesBefore = collected.changes.length;
+      unmount();
+      await tick();
+      await new Promise((resolve) => originalSetTimeout(resolve, 0));
+      const relevant = (entry: { target: EventTarget }): boolean =>
+        entry.target === root ||
+        entry.target === globalThis.document ||
+        entry.target === globalThis.window;
+      const addedRelevant = added.filter(relevant);
+      const removedRelevant = removed.filter(relevant);
+      expect(addedRelevant.length).toBeGreaterThan(0);
+      for (const entry of addedRelevant) {
+        expect(
+          removedRelevant.some(
+            (candidate) =>
+              candidate.target === entry.target &&
+              candidate.type === entry.type &&
+              candidate.listener === entry.listener &&
+              candidate.capture === entry.capture,
+          ),
+          `listener (${entry.type}) on ${
+            entry.target === root
+              ? "editor root"
+              : entry.target === globalThis.document
+                ? "document"
+                : "window"
+          } was not removed on unmount`,
+        ).toBe(true);
+      }
+      for (const observer of createdObservers) {
+        expect(disconnected.has(observer)).toBe(true);
+      }
+      // A keystroke after unmount mutates nothing and emits nothing. The
+      // unmounted DOM is detached, so the dispatch targets the retained
+      // node: any listener the teardown failed to remove would still fire.
+      await fireEvent.keyDown(editableBeforeUnmount, { key: "Enter" });
+      await tick();
+      expect(collected.changes).toHaveLength(changesBefore);
+    } finally {
+      EventTarget.prototype.addEventListener = originalAdd;
+      EventTarget.prototype.removeEventListener = originalRemove;
+      globalThis.MutationObserver = OriginalObserver;
+      globalThis.setTimeout = originalSetTimeout;
+      if (OriginalRAF !== undefined) {
+        globalThis.requestAnimationFrame = OriginalRAF;
+      }
+    }
+  });
+
+  it("a capture through a stale handle rejects with the neutral error", async () => {
+    const collected = collect();
+    const { component, unmount } = render(RichTextEditor, {
+      props: collected.props({ value: twoParagraphs() }),
+    });
+    unmount();
+    await tick();
+    await expect(component.captureDocument()).rejects.toMatchObject({
+      name: "RichTextCaptureUnavailable",
+      message: "rich-text.capture-unavailable",
+    });
+    expect(component.readiness()).toEqual({ composing: false, ready: false });
+  });
+
+  it("locale change re-renders labels in place without remount or change event", async () => {
+    const collected = collect();
+    const { component, container, rerender } = render(RichTextEditor, {
+      props: collected.props({
+        value: { format: MARKDOWN, blocks: [paragraph("paragraph:1", "")] },
+      }),
+    });
+    const before = component.getEditor();
+    await rerender(
+      collected.props({
+        value: { format: MARKDOWN, blocks: [paragraph("paragraph:1", "")] },
+        messages: { ...MESSAGES, placeholder: "SENTINEL-PLACEHOLDER-2" },
+      }),
+    );
+    await tick();
+    expect(component.getEditor()).toBe(before);
+    expect(collected.changes).toHaveLength(0);
+    expect(editableOf(container).getAttribute("data-placeholder")).toBe(
+      "SENTINEL-PLACEHOLDER-2",
+    );
+  });
+});
+
+
