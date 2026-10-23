@@ -206,11 +206,15 @@ const foundation = {
     control: { family: "'Montserrat', 'Segoe UI', system-ui, sans-serif", size: "0.95rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Poppins', 'Segoe UI', system-ui, sans-serif", size: "0.9375rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Poppins', 'Segoe UI', system-ui, sans-serif", size: "0.875rem", weight: "600", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    // Link underline treatment not observed on the measured sources (à confirmer).
+    // Resting underline (departure: no underline observed on the measured
+    // sources — à confirmer): link/body contrast is 1.38:1 inside
+    // secondary-tone Typography/captions, so colour alone cannot distinguish
+    // links (WCAG 1.4.1). Hover thickens since rest and hover share the same
+    // accessible-rose text colour.
     link: {
       family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
-      textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto",
-      textDecorationHover: "underline", decorationThicknessHover: "0.08em", decorationOffsetHover: "0.15em"
+      textDecoration: "underline", decorationThickness: "auto", decorationOffset: "auto",
+      textDecorationHover: "underline", decorationThicknessHover: "0.12em", decorationOffsetHover: "0.15em"
     }
   },
   disabledOpacity: "0.55", // not tokenised publicly (à confirmer)
