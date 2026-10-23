@@ -146,6 +146,33 @@ describe("influnifiedTheme contrast (sol review)", () => {
     expect(ratio(semantic.text.inverse, semantic.action.danger)).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("links are underlined at rest with a thicker hover (WCAG 1.4.1)", () => {
+    const vars = emittedVars();
+    // Resting rule: Link.svelte resolves
+    // var(--st-component-link-anatomy-typography-textDecoration, underline),
+    // so the emitted resting leaf must be underline — colour alone cannot
+    // distinguish links inside secondary-tone Typography/captions (1.38:1).
+    expect(
+      resolveVar(vars, "--st-component-link-anatomy-typography-textDecoration")
+    ).toBe("underline");
+    // Hover stays underlined (consumer chain:
+    // var(--st-component-link-anatomy-states-hover-decoration, underline))
+    // and thickens, since rest and hover share the same text colour.
+    expect(
+      resolveVar(vars, "--st-component-link-anatomy-states-hover-decoration")
+    ).toBe("underline");
+    const restThickness = resolveVar(
+      vars,
+      "--st-component-link-anatomy-typography-decorationThickness"
+    );
+    const hoverThickness = resolveVar(
+      vars,
+      "--st-component-link-anatomy-typography-decorationThicknessHover"
+    );
+    expect(hoverThickness).toBe("0.12em");
+    expect(hoverThickness).not.toBe(restThickness);
+  });
+
   it("field anatomy carries the measured corners, stroke and density (finding 5)", () => {
     const field = built.control.anatomy.field;
     expect(field?.radiusTop).toBe("0.75rem");
