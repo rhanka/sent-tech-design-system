@@ -98,6 +98,11 @@
     );
   }
 
+  .st-pagination button.st-pagination__page--active:hover:not(:disabled) {
+    background: var(--st-component-pagination-activeBackground, var(--st-semantic-action-primary));
+    color: var(--st-component-pagination-activeText, var(--st-semantic-action-primaryText));
+  }
+
   .st-pagination button:disabled {
     color: var(--st-component-pagination-disabledText, var(--st-semantic-text-muted));
     cursor: not-allowed;
