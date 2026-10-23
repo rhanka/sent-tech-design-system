@@ -7,8 +7,8 @@ Framework-neutral rich-text core for the design system (lot RT-0).
 RT-0 implementation: the neutral core (controlled document model, P0
 profile data, identity contract, Markdown bridge, token mapping and the
 headless editor factory) is implemented and covered by `src/*.test.ts`.
-The package is `private: true` until the RT-1 gate, when it flips to
-publishable in the same commit as its `LICENSE` and notices (spec §4.4).
+The package turned publishable at the RT-1 gate, in the same commit as
+its `LICENSE` and notices (spec §4.4).
 
 ## Content profile P0
 
