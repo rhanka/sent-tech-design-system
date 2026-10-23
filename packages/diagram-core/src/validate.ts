@@ -465,7 +465,15 @@ function validateConstraints(document: SemanticDocument, profile: Profile): read
       continue;
     }
     const seen = new Map<string, string>();
-    for (const entity of entities.filter((candidate) => candidate.type === constraint.entityType)) {
+    // Insertion order is not content: walk the constrained entities sorted by id
+    // in UTF-16 code-unit order, like every other sorted walk in this file and
+    // in `canonical.ts` (`Object.keys(...).sort()`). The first id in that order
+    // is the reference and is never reported.
+    const constrained = entities
+      .filter((candidate) => candidate.type === constraint.entityType)
+      .slice()
+      .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+    for (const entity of constrained) {
       const value = entity.attributes[constraint.attribute];
       if (value === undefined) continue;
       const key = tryCanonicalise(value, "value");
