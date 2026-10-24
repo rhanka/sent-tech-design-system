@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, tick, untrack } from "svelte";
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
   import type {
@@ -49,6 +49,12 @@
   let root: HTMLDivElement | undefined;
   let mountEl: HTMLDivElement | undefined;
   let core: CoreEditor | null = null;
+  // Last `value` reference handed to the §5.6 decision. A host that
+  // re-passes the identical reference (coarse prop update, unrelated
+  // re-render) supplies no new value, so re-evaluating it must not replay
+  // the decision: replaying the unchanged value would falsely acknowledge
+  // a silent draft or raise a spurious conflict.
+  let lastSeenValue: RichTextDocument | undefined;
 
   function provided(key: RichTextMessageKey): string | undefined {
     const candidate: unknown = messages?.[key];
@@ -74,11 +80,11 @@
     }
   }
 
-  /** Apply the injected catalogue to the live DOM: the editable root and
-      every preserved region. The placeholder extension decorates empty
-      paragraphs, never the editable root, so `data-placeholder` is owned
-      here; preserved regions are rendered by the core without accessible
-      names, so their labels are owned here too. Never remounts. */
+  /** Apply the injected catalogue to the live DOM: the editable root keeps
+      its accessible name, the actual placeholder paragraphs carry the
+      placeholder text and its missing-key marker, and every preserved
+      region keeps its label. Reads `messages`, `editable` and `disabled`
+      only — never `value`. Never remounts. */
   function syncChrome(): void {
     const view = core?.view;
     if (!view || !root) return;
@@ -88,7 +94,36 @@
     dom.setAttribute("aria-multiline", "true");
     dom.setAttribute("aria-label", editorLabel);
     markUntranslated(dom, "editorLabel");
-    dom.setAttribute("data-placeholder", resolveLabel("placeholder"));
+    // Distinct read-only and disabled semantics (§5.4): disabled is
+    // exposed, removed from the tab order and non-selectable (see the
+    // stylesheet); read-only stays focusable with its caret.
+    dom.setAttribute("aria-disabled", disabled ? "true" : "false");
+    dom.setAttribute("tabindex", disabled ? "-1" : "0");
+    // Reactive placeholder (§5.7): the live decoration text follows the
+    // catalogue through the core, and the displaying paragraphs carry it
+    // directly, so a locale switch re-renders with no document transaction
+    // and no change event.
+    const placeholder = resolveLabel("placeholder");
+    core?.setPlaceholder(
+      placeholder,
+      isMissing("placeholder")
+        ? untranslatedDataValue("placeholder")
+        : null,
+    );
+    const empties = root.querySelectorAll(
+      ".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]",
+    );
+    for (const empty of empties) {
+      empty.setAttribute("data-placeholder", placeholder);
+      if (isMissing("placeholder")) {
+        empty.setAttribute(
+          RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
+          untranslatedDataValue("placeholder"),
+        );
+      } else {
+        empty.removeAttribute(RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE);
+      }
+    }
     const preservedTemplate = resolveLabel("preservedBlockLabel");
     const preservedMissing = isMissing("preservedBlockLabel");
     const regions = root.querySelectorAll("[data-preserved-block]");
@@ -107,10 +142,6 @@
         region.removeAttribute(RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE);
       }
     }
-  }
-
-  export function getEditor(): CoreEditor | null {
-    return core;
   }
 
   export function captureDocument(): Promise<RichTextCaptureResult> {
@@ -134,6 +165,9 @@
     if (!mountTarget || !host) return;
     // Stable forwarders: the core captures its callbacks once, while the
     // props they read stay live, so a parent re-render never needs a remount.
+    // The mount document initialises the core and the acknowledgement
+    // reference, so it is recorded as seen without a §5.6 evaluation.
+    lastSeenValue = value;
     core = createRichTextEditor({
       document: value,
       messages: {
@@ -162,6 +196,12 @@
       host.addEventListener(type, stopAtBoundary);
     }
     syncChrome();
+    // Placeholder decorations land after the ProseMirror observer flush,
+    // past the synchronous mount sync: re-sync once settled so the
+    // displaying paragraph carries the marker with no transaction.
+    void tick().then(() => {
+      syncChrome();
+    });
     return () => {
       for (const type of stopTypes) {
         host.removeEventListener(type, stopAtBoundary);
@@ -171,12 +211,23 @@
     };
   });
 
-  // Controlled value: the core applies the §5.6 decision (echo / defer /
-  // conflict / apply) to the live instance. Never recreates the editor.
+  // Controlled value (§5.6): this effect tracks ONLY `value`. The update is
+  // applied inside `untrack` and chrome is re-synced there too, so a locale
+  // switch (messages change, value unchanged) never replays the unchanged
+  // value through the §5.6 decision — replaying would falsely acknowledge a
+  // silent draft or raise a spurious conflict. Never recreates the editor.
   $effect(() => {
-    if (!core) return;
-    core.applyExternalUpdate(value);
-    syncChrome();
+    const snapshot = value;
+    const instance = core;
+    // Same reference as the last evaluation: no new value, no §5.6
+    // replay. The chrome effect below still tracks messages, editable
+    // and disabled, so labels keep re-rendering on a locale switch.
+    if (!instance || snapshot === lastSeenValue) return;
+    lastSeenValue = snapshot;
+    untrack(() => {
+      instance.applyExternalUpdate(snapshot);
+      syncChrome();
+    });
   });
 
   $effect(() => {
@@ -184,8 +235,11 @@
     core?.setDisabled(disabled);
   });
 
-  // Locale switch: re-render labels in place, no remount, no change event.
+  // Locale and state chrome: re-render labels in place, no remount, no
+  // change event. Tracks `messages`, `editable` and `disabled` only —
+  // never `value`.
   $effect(() => {
+    if (!core) return;
     syncChrome();
   });
 

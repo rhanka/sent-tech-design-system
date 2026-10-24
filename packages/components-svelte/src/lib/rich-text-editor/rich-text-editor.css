@@ -1,7 +1,7 @@
 .st-rich-text-editor {
   display: flex;
   flex-direction: column;
-  gap: var(--st-component-richTextEditor-gap, 0.5rem);
+  gap: var(--st-component-richTextEditor-gap, var(--st-spacing-2, 0.5rem));
   min-width: 0;
 }
 
@@ -22,8 +22,11 @@
     --st-component-richTextEditor-caret,
     var(--st-semantic-text-primary)
   );
-  border-radius: var(--st-component-richTextEditor-radius, 0.5rem);
-  padding: var(--st-component-richTextEditor-padding, 0.75rem 1rem);
+  border-radius: var(--st-component-richTextEditor-radius, var(--st-radius-lg, 0.5rem));
+  padding: var(
+    --st-component-richTextEditor-padding,
+    var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem)
+  );
   outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -33,8 +36,14 @@
 .st-rich-text-editor .ProseMirror:focus-visible {
   outline: var(
     --st-component-richTextEditor-focusOutline,
-    var(--st-semantic-border-strong)
+    var(--st-focus-width, 2px) solid
+      var(--st-focus-color, var(--st-semantic-border-strong))
   );
+  outline-offset: var(--st-focus-offset, 2px);
+}
+
+.st-rich-text-editor .ProseMirror[aria-disabled="true"] {
+  user-select: none;
 }
 
 .st-rich-text-editor .ProseMirror ::selection {
@@ -68,8 +77,8 @@
     --st-component-richTextEditor-preservedBlockText,
     var(--st-semantic-text-secondary)
   );
-  border-radius: var(--st-component-richTextEditor-preservedBlockRadius, 0.25rem);
-  padding: var(--st-component-richTextEditor-preservedBlockPadding, 0.5rem);
+  border-radius: var(--st-component-richTextEditor-preservedBlockRadius, var(--st-radius-sm, 0.25rem));
+  padding: var(--st-component-richTextEditor-preservedBlockPadding, var(--st-spacing-2, 0.5rem));
   white-space: pre-wrap;
   overflow-wrap: break-word;
   user-select: none;
