@@ -30,6 +30,66 @@ for (const target of [Element.prototype, Document.prototype] as unknown as Eleme
     target.elementFromPoint = () => null;
   }
 }
+// ProseMirror's scroll/selection path queries layout boxes that jsdom does
+// not implement on text nodes and ranges. Real browsers provide them (the
+// real caret, scroll and composition paths are witnessed in the browser
+// suite, environment B); these shims keep the jsdom assertions focused on
+// documents and events, never on coordinate mapping.
+{
+  const textPrototype = globalThis.Text?.prototype as
+    | { getClientRects?: unknown; getBoundingClientRect?: unknown }
+    | undefined;
+  if (textPrototype && typeof textPrototype.getClientRects !== "function") {
+    Object.defineProperty(textPrototype, "getClientRects", {
+      value: () => [],
+      configurable: true,
+    });
+  }
+  if (textPrototype && typeof textPrototype.getBoundingClientRect !== "function") {
+    Object.defineProperty(textPrototype, "getBoundingClientRect", {
+      value: () => ({
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+      configurable: true,
+    });
+  }
+  const rangePrototype = globalThis.Range?.prototype as
+    | { getClientRects?: unknown; getBoundingClientRect?: unknown }
+    | undefined;
+  if (rangePrototype && typeof rangePrototype.getClientRects !== "function") {
+    Object.defineProperty(rangePrototype, "getClientRects", {
+      value: () => [],
+      configurable: true,
+    });
+  }
+  if (
+    rangePrototype &&
+    typeof rangePrototype.getBoundingClientRect !== "function"
+  ) {
+    Object.defineProperty(rangePrototype, "getBoundingClientRect", {
+      value: () => ({
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }),
+      configurable: true,
+    });
+  }
+}
 import type {
   RichTextBlock,
   RichTextChangeEvent,
@@ -37,9 +97,46 @@ import type {
   RichTextMessages,
   RichTextUnsupportedPasteEvent,
 } from "@sentropic/design-system-rich-text";
+import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
+import { TextSelection } from "@tiptap/pm/state";
 import RichTextEditor from "./RichTextEditor.svelte";
 import type { RichTextEditorProps } from "./RichTextEditor.svelte";
 import RichTextEditorFixture from "./RichTextEditorFixture.svelte";
+
+// Internal observation channel: the component exposes no editor object
+// (spec §11 keeps editor/view objects out of the public API), so tests
+// record the factory-constructed core instances and drive internal gestures
+// through them, while every public-surface assertion reads emitted
+// documents, capture results or the DOM.
+const { createdCores } = vi.hoisted(() => ({
+  createdCores: [] as CoreEditor[],
+}));
+vi.mock("@sentropic/design-system-rich-text/editor", async (importOriginal) => {
+  const actual =
+    await importOriginal<
+      typeof import("@sentropic/design-system-rich-text/editor")
+    >();
+  return {
+    ...actual,
+    createRichTextEditor: (
+      options: Parameters<typeof actual.createRichTextEditor>[0],
+    ) => {
+      const instance = actual.createRichTextEditor(options);
+      createdCores.push(instance);
+      return instance;
+    },
+  };
+});
+
+function lastCore(): CoreEditor {
+  const instance = createdCores[createdCores.length - 1];
+  expect(instance).toBeDefined();
+  return instance as CoreEditor;
+}
+
+function coreCount(): number {
+  return createdCores.length;
+}
 
 const MESSAGES: RichTextMessages = {
   editorLabel: "SENTINEL-EDITOR-LABEL",
@@ -176,10 +273,10 @@ function expectCleanSurface(event: RichTextChangeEvent): void {
 describe("editable/disabled states (RED 1, viewer case)", () => {
   it("editable={false} is inert: typing, paste and shortcuts change nothing", async () => {
     const collected = collect();
-    const { container, component } = render(RichTextEditor, {
+    const { container } = render(RichTextEditor, {
       props: collected.props({ editable: false, value: twoParagraphs() }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     expect(editor).not.toBeNull();
     const before = editor?.getDocument();
     // Simulated typing through the owned editor and through the DOM.
@@ -195,11 +292,11 @@ describe("editable/disabled states (RED 1, viewer case)", () => {
 
   it("the viewer lock is the named editable={false} case", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       // Viewer case: a host rendering for a viewer passes editable={false}.
       props: collected.props({ editable: false, value: twoParagraphs() }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     editor?.typeText("paragraph:1", "viewer text");
     editor?.undo();
     await tick();
@@ -211,20 +308,53 @@ describe("editable/disabled states (RED 1, viewer case)", () => {
 
   it("disabled={true} wins over editable and is inert", async () => {
     const collected = collect();
-    const { container, component } = render(RichTextEditor, {
+    const { container } = render(RichTextEditor, {
       props: collected.props({
         editable: true,
         disabled: true,
         value: twoParagraphs(),
       }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     editor?.typeText("paragraph:1", "X");
     editor?.paste({ text: "pasted" });
     await fireEvent.keyDown(editableOf(container), { key: "Enter" });
     await tick();
     expect(collected.changes).toHaveLength(0);
     expect(editor?.getDocument().blocks).toHaveLength(2);
+  });
+
+  it("read-only stays focusable with no disabled state; disabled is exposed and untabbable", async () => {
+    const collected = collect();
+    const input = twoParagraphs();
+    const { container, rerender } = render(RichTextEditor, {
+      props: collected.props({ editable: false, value: input }),
+    });
+    await tick();
+    const editable = editableOf(container);
+    expect(editable.getAttribute("aria-disabled")).toBe("false");
+    expect(editable.getAttribute("tabindex")).toBe("0");
+    // Live transition to disabled: exposed, removed from the tab order.
+    await rerender(collected.props({ editable: false, disabled: true, value: input }));
+    await tick();
+    const disabledEditable = editableOf(container);
+    expect(disabledEditable).toBe(editable);
+    expect(disabledEditable.getAttribute("aria-disabled")).toBe("true");
+    expect(disabledEditable.getAttribute("tabindex")).toBe("-1");
+    // Disabled stays inert through the transition; the transition itself
+    // emits nothing and changes nothing.
+    lastCore().typeText("paragraph:1", "X");
+    await tick();
+    expect(collected.changes).toHaveLength(0);
+    expect(lastCore().getDocument()).toEqual(input);
+    // Live transition back to editable: the disabled state clears.
+    await rerender(
+      collected.props({ editable: true, disabled: false, value: input }),
+    );
+    await tick();
+    expect(editableOf(container).getAttribute("aria-disabled")).toBe("false");
+    expect(editableOf(container).getAttribute("tabindex")).toBe("0");
+    expect(collected.changes).toHaveLength(0);
   });
 });
 
@@ -251,10 +381,10 @@ describe("no-change cycle (RED 2, component half)", () => {
 describe("paragraph identity (RED 3, component half)", () => {
   it("split names the source and the fresh tail; merge names survivor and retired", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({ value: twoParagraphs() }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     expect(editor).not.toBeNull();
     editor?.splitParagraph("paragraph:1", "First".length);
     await tick();
@@ -287,10 +417,10 @@ describe("paragraph identity (RED 3, component half)", () => {
 
   it("undo of a delete restores the same identity; redo removes it again", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({ value: twoParagraphs() }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     editor?.deleteBlocks(["paragraph:2"]);
     await tick();
     expect(collected.changes).toHaveLength(1);
@@ -310,10 +440,10 @@ describe("paragraph identity (RED 3, component half)", () => {
 
   it("internal paste carries fresh identities; a forged identity never survives", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({ value: twoParagraphs() }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     const payload = editor?.copyToPayload(["paragraph:1"]);
     expect(payload).toBeDefined();
     editor?.paste(payload as { text?: string; html?: string });
@@ -343,7 +473,7 @@ describe("paragraph identity (RED 3, component half)", () => {
 
   it("A → B → A emits documents B then A with no DS-computed delta", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({
         value: {
           format: MARKDOWN,
@@ -351,7 +481,7 @@ describe("paragraph identity (RED 3, component half)", () => {
         },
       }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     editor?.typeText("paragraph:1", " typed");
     await tick();
     editor?.undo();
@@ -367,12 +497,12 @@ describe("paragraph identity (RED 3, component half)", () => {
 describe("Enter at end of paragraph (RED 3, text/plain, allowed locally)", () => {
   it("Enter with the caret at the end splits: the empty tail is fresh, one split event", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({
         value: { format: PLAIN, blocks: [paragraph("paragraph:1", "A")] },
       }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     editor?.splitParagraph("paragraph:1", 1);
     await tick();
     expect(collected.changes).toHaveLength(1);
@@ -394,7 +524,7 @@ describe("Enter at end of paragraph (RED 3, text/plain, allowed locally)", () =>
 describe("clear a field containing separators (RED 3, text/plain, allowed locally)", () => {
   it("selecting and clearing the whole content leaves the single controlled empty block", async () => {
     const collected = collect();
-    const { container, component } = render(RichTextEditor, {
+    const { container } = render(RichTextEditor, {
       props: collected.props({
         // Host-segmented input from the source "A\n\nB": two paragraphs.
         // The DS test segments nothing and stores no separator.
@@ -422,14 +552,14 @@ describe("clear a field containing separators (RED 3, text/plain, allowed locall
 describe("Enter right after an interior newline (RED 3, text/plain, allowed locally)", () => {
   it("the head keeps its trailing newline and the tail is fresh", async () => {
     const collected = collect();
-    const { component } = render(RichTextEditor, {
+    render(RichTextEditor, {
       props: collected.props({
         // One host-segmented paragraph holding the interior newline (§5.1):
         // mounts as one block, never two.
         value: { format: PLAIN, blocks: [paragraph("paragraph:1", "A\nB")] },
       }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     expect(
       editor?.getDocument().blocks.map((block) => block.paragraphId),
     ).toEqual(["paragraph:1"]);
@@ -467,7 +597,7 @@ describe("echo acknowledgement (RED 4, J document half)", () => {
     const { component, rerender } = render(RichTextEditor, {
       props: collected.props({ value: docA }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     const instanceBefore = editor;
     // Rewrite the single paragraph A → B through edit gestures.
     editor?.clearParagraph("paragraph:1");
@@ -479,7 +609,7 @@ describe("echo acknowledgement (RED 4, J document half)", () => {
     await rerender(collected.props({ value: docB }));
     await tick();
     expect(collected.conflicts).toHaveLength(0);
-    expect(component.getEditor()).toBe(instanceBefore);
+    expect(lastCore()).toBe(instanceBefore);
     // Rule 4: C arrives with no intervening local edit and applies cleanly.
     await rerender(collected.props({ value: docC }));
     await tick();
@@ -533,10 +663,10 @@ describe("serialisation-equal divergence (RED 4, J document half)", () => {
       format: MARKDOWN,
       blocks: [paragraph("paragraph:1", "C")],
     };
-    const { component, rerender } = render(RichTextEditor, {
+    const { rerender } = render(RichTextEditor, {
       props: collected.props({ value: empty }),
     });
-    const editor = component.getEditor();
+    const editor = lastCore();
     // Three spaces: the live content is [text("   ")] while the bridge
     // serialises it to "" — the displayed wire still equals the acknowledged
     // wire, yet the typing transaction set the unacknowledged-local-revision
@@ -551,6 +681,171 @@ describe("serialisation-equal divergence (RED 4, J document half)", () => {
     expect(collected.conflicts[0]?.incoming).toEqual(external);
     expect(editor?.view.state.doc.textContent).toBe("   ");
     expect(editor?.getDocument().blocks[0]?.text).toBe("");
+  });
+});
+
+describe("locale change never replays the value (review finding 1)", () => {
+  const externalC = (): RichTextDocument => ({
+    format: MARKDOWN,
+    blocks: [paragraph("paragraph:1", "C")],
+  });
+
+  it.each([
+    ["focused", true],
+    ["blurred", false],
+  ])(
+    "whitespace draft survives a locale change, then conflicts on external update (%s)",
+    async (_label, focused) => {
+      const collected = collect();
+      const empty: RichTextDocument = {
+        format: MARKDOWN,
+        blocks: [paragraph("paragraph:1", "")],
+      };
+      const { container, rerender } = render(RichTextEditor, {
+        props: collected.props({ value: empty }),
+      });
+      const editor = lastCore();
+      editor.typeText("paragraph:1", "   ");
+      await tick();
+      expect(editor.view.state.doc.textContent).toBe("   ");
+      const editable = editableOf(container);
+      if (focused) editable.focus();
+      else {
+        editable.focus();
+        editable.blur();
+      }
+      await tick();
+      // Locale switch with the value unchanged: no replay, no conflict,
+      // no change event — the silent draft stays untouched.
+      await rerender(
+        collected.props({
+          value: empty,
+          messages: { ...MESSAGES, placeholder: "SENTINEL-PLACEHOLDER-2" },
+        }),
+      );
+      await tick();
+      expect(collected.conflicts).toHaveLength(0);
+      expect(collected.changes).toHaveLength(1);
+      expect(editor.view.state.doc.textContent).toBe("   ");
+      // The later external update conflicts instead of silently winning.
+      await rerender(collected.props({ value: externalC() }));
+      await tick();
+      expect(collected.conflicts).toHaveLength(1);
+      expect(collected.conflicts[0]?.incoming.blocks[0]?.text).toBe("C");
+      expect(collected.changes).toHaveLength(1);
+      expect(editor.view.state.doc.textContent).toBe("   ");
+    },
+  );
+
+  it.each([
+    ["focused", true],
+    ["blurred", false],
+  ])(
+    "ordinary text plus a locale change raises no spurious conflict (%s)",
+    async (_label, focused) => {
+      const collected = collect();
+      const start: RichTextDocument = {
+        format: MARKDOWN,
+        blocks: [paragraph("paragraph:1", "A")],
+      };
+      const { container, rerender } = render(RichTextEditor, {
+        props: collected.props({ value: start }),
+      });
+      const editor = lastCore();
+      editor.typeText("paragraph:1", " typed");
+      await tick();
+      const editable = editableOf(container);
+      if (focused) editable.focus();
+      else {
+        editable.focus();
+        editable.blur();
+      }
+      await tick();
+      // Same value, new catalogue: the update effect must not run, so no
+      // conflict surfaces for a change the host never made.
+      await rerender(
+        collected.props({
+          value: start,
+          messages: { ...MESSAGES, placeholder: "SENTINEL-PLACEHOLDER-2" },
+        }),
+      );
+      await tick();
+      expect(collected.conflicts).toHaveLength(0);
+      expect(editor.view.state.doc.textContent).toBe("A typed");
+      // The genuine divergence still surfaces exactly once afterwards.
+      await rerender(collected.props({ value: externalC() }));
+      await tick();
+      expect(collected.conflicts).toHaveLength(1);
+      expect(collected.conflicts[0]?.local.blocks[0]?.text).toBe("A typed");
+    },
+  );
+});
+
+describe("reactive placeholder (review finding 2)", () => {
+  it("a locale change re-renders the paragraph placeholder in place", async () => {
+    const collected = collect();
+    const empty: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "")],
+    };
+    const countBefore = coreCount();
+    const { container, rerender } = render(RichTextEditor, {
+      props: collected.props({ value: empty }),
+    });
+    await tick();
+    const instanceBefore = lastCore();
+    const showing = (): HTMLElement | null =>
+      container.querySelector(
+        ".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]",
+      ) as HTMLElement | null;
+    expect(showing()?.getAttribute("data-placeholder")).toBe(
+      "SENTINEL-PLACEHOLDER",
+    );
+    await rerender(
+      collected.props({
+        value: empty,
+        messages: { ...MESSAGES, placeholder: "SENTINEL-PLACEHOLDER-2" },
+      }),
+    );
+    await tick();
+    // No remount, no change event; the paragraph carries the new text.
+    expect(coreCount()).toBe(countBefore + 1);
+    expect(lastCore()).toBe(instanceBefore);
+    expect(collected.changes).toHaveLength(0);
+    expect(showing()?.getAttribute("data-placeholder")).toBe(
+      "SENTINEL-PLACEHOLDER-2",
+    );
+    expect(showing()?.getAttribute("data-untranslated")).toBeNull();
+    // Typing and deleting a character keeps the new catalogue text: the
+    // decoration rebuild reads the live value, not the mount string.
+    lastCore().typeText("paragraph:1", "x");
+    await tick();
+    lastCore().clearParagraph("paragraph:1");
+    await tick();
+    expect(showing()?.getAttribute("data-placeholder")).toBe(
+      "SENTINEL-PLACEHOLDER-2",
+    );
+  });
+
+  it("a missing placeholder renders the marker on the paragraph", async () => {
+    const collected = collect();
+    const { container } = render(RichTextEditor, {
+      props: collected.props({
+        value: { format: MARKDOWN, blocks: [paragraph("paragraph:1", "")] },
+        messages: {} as unknown as RichTextMessages,
+      }),
+    });
+    await tick();
+    const showing = container.querySelector(
+      ".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]",
+    );
+    expect(showing).not.toBeNull();
+    expect(showing?.getAttribute("data-placeholder")).toBe(
+      "⟦untranslated:rich-text.placeholder⟧",
+    );
+    expect(showing?.getAttribute("data-untranslated")).toBe(
+      "rich-text.placeholder",
+    );
   });
 });
 
@@ -587,7 +882,7 @@ describe("parent selection isolation (RED 6)", () => {
 describe("hostile paste (RED 7, jsdom half)", () => {
   it("scriptable markup is inert: no script, handler, link or image survives", async () => {
     const collected = collect();
-    const { container, component } = render(RichTextEditor, {
+    const { container } = render(RichTextEditor, {
       props: collected.props({ value: twoParagraphs() }),
     });
     const editable = editableOf(container);
@@ -596,7 +891,7 @@ describe("hostile paste (RED 7, jsdom half)", () => {
       text: "Hello pic click",
     });
     await tick();
-    const editor = component.getEditor();
+    const editor = lastCore();
     const after = editor?.getDocument();
     expect(container.querySelector("script")).toBeNull();
     expect(container.querySelector("img")).toBeNull();
@@ -638,10 +933,10 @@ describe("hostile paste (RED 7, jsdom half)", () => {
     "a paste that would create $name is refused whole (DS side only)",
     async ({ payload, kinds }) => {
       const collected = collect();
-      const { component, container } = render(RichTextEditor, {
+      const { container } = render(RichTextEditor, {
         props: collected.props({ value: twoParagraphs() }),
       });
-      const editor = component.getEditor();
+      const editor = lastCore();
       const before = editor?.getDocument();
       const selectionBefore = editor?.getSelection();
       const changesBefore = collected.changes.length;
@@ -675,7 +970,22 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
     await tick();
     const editable = editableOf(container);
     expect(editable.getAttribute("aria-label")).toBe("SENTINEL-EDITOR-LABEL");
-    expect(editable.getAttribute("data-placeholder")).toBe(
+    expect(editable.getAttribute("data-placeholder")).toBeNull();
+    // Tiptap decorates only the current empty node (showOnlyCurrent): move
+    // the caret into the empty first paragraph, as a user focusing the
+    // field does, before asserting the visible placeholder.
+    {
+      const core = lastCore();
+      const { state } = core.view;
+      core.view.dispatch(
+        state.tr.setSelection(TextSelection.create(state.doc, 1, 1)),
+      );
+      await tick();
+    }
+    const showing = container.querySelector(
+      ".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]",
+    );
+    expect(showing?.getAttribute("data-placeholder")).toBe(
       "SENTINEL-PLACEHOLDER",
     );
     const region = container.querySelector(
@@ -745,17 +1055,37 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
     }> = [];
     const originalAdd = EventTarget.prototype.addEventListener;
     const originalRemove = EventTarget.prototype.removeEventListener;
-    const createdObservers: Array<{ disconnect: () => void } & object> = [];
-    const disconnected = new Set<object>();
-    const OriginalObserver = globalThis.MutationObserver;
-    const pendingTimers = new Set<unknown>();
+    // Scheduled work tracked by actual id: an id leaves the pending set
+    // only when its callback runs or its cancellation lands. Firing after
+    // unmount is a violation, never a pass.
+    const pendingTimeouts = new Map<unknown, string>();
+    const pendingIntervals = new Map<unknown, string>();
+    const pendingRaf = new Map<number, string>();
+    const violations: string[] = [];
+    let unmounted = false;
     const originalSetTimeout = globalThis.setTimeout;
+    const originalClearTimeout = globalThis.clearTimeout;
+    const originalSetInterval = globalThis.setInterval;
+    const originalClearInterval = globalThis.clearInterval;
     const OriginalRAF =
       typeof globalThis.requestAnimationFrame === "function"
         ? globalThis.requestAnimationFrame.bind(globalThis)
         : undefined;
-    let rafIds = 0;
-    const pendingRaf = new Set<number>();
+    const OriginalCancelRAF =
+      typeof globalThis.cancelAnimationFrame === "function"
+        ? globalThis.cancelAnimationFrame.bind(globalThis)
+        : undefined;
+    // Every observer class the component may create (§5.9): construction
+    // and disconnection are recorded, and a callback firing after unmount
+    // is a violation.
+    const createdObservers: object[] = [];
+    const disconnected = new Set<object>();
+    const observerKinds = [
+      "MutationObserver",
+      "ResizeObserver",
+      "IntersectionObserver",
+    ] as const;
+    const originalObservers = new Map<string, unknown>();
     try {
       EventTarget.prototype.addEventListener = function (
         type: string,
@@ -785,31 +1115,93 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
         });
         originalRemove.call(this, type, listener, options);
       };
-      globalThis.MutationObserver = class extends OriginalObserver {
-        constructor(callback: MutationCallback) {
-          super(callback);
-          createdObservers.push(this);
-        }
-        override disconnect(): void {
-          disconnected.add(this);
-          super.disconnect();
-        }
-      } as typeof MutationObserver;
+      for (const kind of observerKinds) {
+        const Original = (globalThis as unknown as Record<string, unknown>)[
+          kind
+        ];
+        if (typeof Original !== "function") continue;
+        originalObservers.set(kind, Original);
+        const disconnectOf = (
+          Original as unknown as { prototype: { disconnect(): void } }
+        ).prototype.disconnect;
+        const Tracked = class extends (
+          Original as new (
+            callback: (...args: never[]) => void,
+          ) => object
+        ) {
+          constructor(callback: (...args: never[]) => void) {
+            super((...args: never[]) => {
+              if (unmounted) {
+                violations.push(`${kind} callback fired after unmount`);
+                return;
+              }
+              callback(...args);
+            });
+            createdObservers.push(this);
+          }
+          disconnect(): void {
+            disconnected.add(this);
+            disconnectOf.call(this);
+          }
+        };
+        (globalThis as unknown as Record<string, unknown>)[kind] = Tracked;
+      }
+      // Engine timers (Tiptap mount/create, async-delete queue,
+      // ProseMirror observer flush) carry no component callback: they
+      // settle silently, so they run normally and only their completion
+      // is tracked. A component callback firing after unmount would
+      // surface as an event, an observer violation or a listener below.
       globalThis.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
-        const id = originalSetTimeout(handler, timeout, ...(args as []));
-        pendingTimers.add(id);
+        const wrapped = (...inner: unknown[]): void => {
+          pendingTimeouts.delete(id);
+          (handler as (...called: unknown[]) => void)(...inner);
+        };
+        const id = originalSetTimeout(wrapped, timeout, ...(args as []));
+        pendingTimeouts.set(id, `timeout@${String(timeout)}`);
         return id;
-      }) as typeof setTimeout;
+      }) as unknown as typeof setTimeout;
+      globalThis.clearTimeout = ((id: unknown) => {
+        pendingTimeouts.delete(id);
+        return originalClearTimeout(id as ReturnType<typeof setTimeout>);
+      }) as typeof clearTimeout;
+      globalThis.setInterval = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+        const wrapped = (...inner: unknown[]): void => {
+          if (unmounted) {
+            violations.push(`interval (${String(timeout)}) fired after unmount`);
+            pendingIntervals.delete(id);
+            return;
+          }
+          (handler as (...called: unknown[]) => void)(...inner);
+        };
+        const id = originalSetInterval(wrapped, timeout, ...(args as []));
+        pendingIntervals.set(id, `interval@${String(timeout)}`);
+        return id;
+      }) as unknown as typeof setInterval;
+      globalThis.clearInterval = ((id: unknown) => {
+        pendingIntervals.delete(id);
+        return originalClearInterval(id as ReturnType<typeof setInterval>);
+      }) as typeof clearInterval;
       if (OriginalRAF !== undefined) {
         globalThis.requestAnimationFrame = ((callback: FrameRequestCallback) => {
-          rafIds += 1;
-          pendingRaf.add(rafIds);
-          return OriginalRAF((time) => {
-            pendingRaf.delete(rafIds);
+          const id = OriginalRAF((time) => {
+            pendingRaf.delete(id);
+            if (unmounted) {
+              violations.push("animation frame fired after unmount");
+              return;
+            }
             callback(time);
           });
+          pendingRaf.set(id, "animation-frame");
+          return id;
         }) as typeof requestAnimationFrame;
       }
+      if (OriginalCancelRAF !== undefined) {
+        globalThis.cancelAnimationFrame = ((id: number) => {
+          pendingRaf.delete(id);
+          return OriginalCancelRAF(id);
+        }) as typeof cancelAnimationFrame;
+      }
+      const beforeCores = coreCount();
       const { container, unmount } = render(RichTextEditor, {
         props: collected.props({ value: twoParagraphs() }),
       });
@@ -817,15 +1209,24 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
         ".st-rich-text-editor",
       ) as EventTarget;
       await tick();
+      expect(coreCount()).toBe(beforeCores + 1);
       // A further keystroke before unmount still emits through the listener.
       const editableBeforeUnmount = editableOf(container);
       await fireEvent.keyDown(editableBeforeUnmount, { key: "a" });
       const changesBefore = collected.changes.length;
+      const conflictsBefore = collected.conflicts.length;
+      const readinessBefore = collected.readiness.length;
       unmount();
+      unmounted = true;
       await tick();
       await new Promise((resolve) => originalSetTimeout(resolve, 0));
+      await new Promise((resolve) => originalSetTimeout(resolve, 50));
+      // Editor targets are inside the container (the ProseMirror element
+      // carries the core listeners): filtering to the root alone would let
+      // a leak on the editable element pass.
       const relevant = (entry: { target: EventTarget }): boolean =>
         entry.target === root ||
+        (entry.target instanceof Element && container.contains(entry.target)) ||
         entry.target === globalThis.document ||
         entry.target === globalThis.window;
       const addedRelevant = added.filter(relevant);
@@ -845,26 +1246,50 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
               ? "editor root"
               : entry.target === globalThis.document
                 ? "document"
-                : "window"
+                : entry.target === globalThis.window
+                  ? "window"
+                  : "editor DOM"
           } was not removed on unmount`,
         ).toBe(true);
       }
+      expect(createdObservers.length).toBeGreaterThan(0);
       for (const observer of createdObservers) {
         expect(disconnected.has(observer)).toBe(true);
       }
+      // Zero pending work: every scheduled task either ran or was
+      // cancelled, and nothing fires after unmount.
+      expect(pendingTimeouts.size).toBe(0);
+      expect(pendingIntervals.size).toBe(0);
+      expect(pendingRaf.size).toBe(0);
+      expect(violations).toEqual([]);
       // A keystroke after unmount mutates nothing and emits nothing. The
       // unmounted DOM is detached, so the dispatch targets the retained
       // node: any listener the teardown failed to remove would still fire.
       await fireEvent.keyDown(editableBeforeUnmount, { key: "Enter" });
       await tick();
+      await new Promise((resolve) => originalSetTimeout(resolve, 0));
       expect(collected.changes).toHaveLength(changesBefore);
+      expect(collected.conflicts).toHaveLength(conflictsBefore);
+      expect(collected.readiness).toHaveLength(readinessBefore);
+      expect(violations).toEqual([]);
+      expect(pendingTimeouts.size).toBe(0);
+      expect(pendingIntervals.size).toBe(0);
+      expect(pendingRaf.size).toBe(0);
     } finally {
       EventTarget.prototype.addEventListener = originalAdd;
       EventTarget.prototype.removeEventListener = originalRemove;
-      globalThis.MutationObserver = OriginalObserver;
+      for (const [kind, Original] of originalObservers) {
+        (globalThis as unknown as Record<string, unknown>)[kind] = Original;
+      }
       globalThis.setTimeout = originalSetTimeout;
+      globalThis.clearTimeout = originalClearTimeout;
+      globalThis.setInterval = originalSetInterval;
+      globalThis.clearInterval = originalClearInterval;
       if (OriginalRAF !== undefined) {
         globalThis.requestAnimationFrame = OriginalRAF;
+      }
+      if (OriginalCancelRAF !== undefined) {
+        globalThis.cancelAnimationFrame = OriginalCancelRAF;
       }
     }
   });
@@ -885,24 +1310,57 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
 
   it("locale change re-renders labels in place without remount or change event", async () => {
     const collected = collect();
-    const { component, container, rerender } = render(RichTextEditor, {
-      props: collected.props({
-        value: { format: MARKDOWN, blocks: [paragraph("paragraph:1", "")] },
-      }),
+    const empty: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "")],
+    };
+    const countBefore = coreCount();
+    const { container, rerender } = render(RichTextEditor, {
+      props: collected.props({ value: empty }),
     });
-    const before = component.getEditor();
+    const before = lastCore();
     await rerender(
       collected.props({
-        value: { format: MARKDOWN, blocks: [paragraph("paragraph:1", "")] },
+        value: empty,
         messages: { ...MESSAGES, placeholder: "SENTINEL-PLACEHOLDER-2" },
       }),
     );
     await tick();
-    expect(component.getEditor()).toBe(before);
+    expect(coreCount()).toBe(countBefore + 1);
+    expect(lastCore()).toBe(before);
     expect(collected.changes).toHaveLength(0);
-    expect(editableOf(container).getAttribute("data-placeholder")).toBe(
+    // The actual placeholder rendering follows the catalogue on the
+    // displaying paragraph; the editor root carries no placeholder text.
+    expect(editableOf(container).getAttribute("data-placeholder")).toBeNull();
+    const showing = container.querySelector(
+      ".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]",
+    );
+    expect(showing?.getAttribute("data-placeholder")).toBe(
       "SENTINEL-PLACEHOLDER-2",
     );
+    expect(
+      container.querySelector(".ProseMirror")?.getAttribute("aria-label"),
+    ).toBe("SENTINEL-EDITOR-LABEL");
+  });
+
+  it("the stylesheet carries a complete focus outline from the focus tokens", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { dirname, join } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const css = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "rich-text-editor.css"),
+      "utf8",
+    );
+    const focusRule = css.match(
+      /\.ProseMirror:focus-visible\s*\{([^}]*)\}/,
+    )?.[1];
+    expect(focusRule).toBeDefined();
+    // Complete outline: width, solid style and color in one declaration,
+    // reading the existing focus tokens — never a bare color fallback.
+    expect(focusRule).toContain("solid");
+    expect(focusRule).toContain("--st-focus-width");
+    expect(focusRule).toContain("--st-focus-color");
+    expect(focusRule).toContain("--st-focus-offset");
   });
 });
 

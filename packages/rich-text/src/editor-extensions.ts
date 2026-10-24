@@ -17,16 +17,31 @@ import { HardBreak } from "@tiptap/extension-hard-break";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { UndoRedo } from "@tiptap/extensions";
 import { Markdown } from "@tiptap/markdown";
-import { Node } from "@tiptap/core";
+import { Extension, Node, isNodeEmpty } from "@tiptap/core";
 import type { AnyExtension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import {
   PARAGRAPH_ID_ATTRIBUTE,
   PARAGRAPH_ID_DOM_ATTRIBUTE,
   PRESERVED_BLOCK_DOM_ATTRIBUTE,
 } from "./identity.js";
+import { RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE } from "./messages.js";
 
 export interface P0EditorExtensionOptions {
-  placeholder: string;
+  /** Placeholder text or a live reader. A function is read on every
+      placeholder-decoration build, so a locale switch re-renders the
+      visible placeholder with no document transaction (§5.7). */
+  placeholder: string | (() => string);
+  /** Live `data-untranslated` value for the placeholder-displaying
+      paragraphs, or null when the placeholder key is translated. Read on
+      every decoration build, so the missing-key marker survives the
+      ProseMirror re-renders that wipe manually set DOM attributes (§5.7).
+      The adapter owns the value through `setPlaceholder`. */
+  placeholderMarker: () => string | null;
+  /** Whether the editor is currently editable. The marker decorates only
+      when true, mirroring the placeholder's own `showOnlyWhenEditable`. */
+  isEditable: () => boolean;
 }
 
 /** Paragraph with the opaque identity attribute (spec §5.2): the attribute
@@ -99,6 +114,57 @@ const PreservedBlock = Node.create({
   },
 });
 
+/** Missing-placeholder marker (spec §5.7): a decoration-backed
+    `data-untranslated` on exactly the paragraph the placeholder decorates.
+    Manually set DOM attributes do not survive ProseMirror re-renders (a
+    re-render replaces the paragraph element and reapplies only decoration
+    attributes), so the marker lives in the decoration set beside the
+    placeholder text: it appears and disappears with the same builds, with
+    no document transaction. The adapter keeps the live value current
+    through `setPlaceholder`; when translated (null) no marker decorates. */
+export function createPlaceholderMarkerExtension(
+  getMarker: () => string | null,
+  isEditable: () => boolean,
+): AnyExtension {
+  const plugin = new Plugin({
+    key: new PluginKey("richTextPlaceholderMarker"),
+    props: {
+      decorations(state) {
+        const marker = getMarker();
+        if (marker === null || !isEditable()) return null;
+        // Mirror the placeholder's own rule (showOnlyCurrent): only the
+        // top-level textblock at the selection anchor displays.
+        const { anchor } = state.selection;
+        const resolved = state.doc.resolve(anchor);
+        const node =
+          resolved.depth > 0 ? resolved.node(1) : resolved.nodeAfter;
+        const nodeStart =
+          resolved.depth > 0 ? resolved.before(1) : anchor;
+        if (
+          node === null ||
+          node === undefined ||
+          !node.type.isTextblock ||
+          node.isLeaf ||
+          !isNodeEmpty(node)
+        ) {
+          return null;
+        }
+        return DecorationSet.create(state.doc, [
+          Decoration.node(nodeStart, nodeStart + node.nodeSize, {
+            [RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE]: marker,
+          }),
+        ]);
+      },
+    },
+  });
+  return Extension.create({
+    name: "richTextPlaceholderMarker",
+    addProseMirrorPlugins() {
+      return [plugin];
+    },
+  });
+}
+
 /** Instantiate the P0 extension set in `P0_EXTENSION_NAMES` composition
     order: document, paragraph (identity-carrying), text, bold, italic, code,
     hard break, undo/redo history, placeholder, Markdown bridge, and the
@@ -116,6 +182,10 @@ export function createP0EditorExtensions(
     HardBreak,
     UndoRedo,
     Placeholder.configure({ placeholder: options.placeholder }),
+    createPlaceholderMarkerExtension(
+      options.placeholderMarker,
+      options.isEditable,
+    ),
     Markdown,
     PreservedBlock,
   ];

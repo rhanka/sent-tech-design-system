@@ -11,7 +11,7 @@
  * `node_modules` symlink so bare imports resolve), served over a local HTTP
  * server, and driven with puppeteer-core. No network leaves the machine:
  * the build, the server and Chromium are all local, and the network half
- * asserts zero requests after mount. Run with:
+ * asserts zero non-harness requests from mount through unmount. Run with:
  *   node packages/components-svelte/src/lib/rich-text-editor/RichTextEditor.browser.test.mjs
  * optionally with CHROME_BIN set. Exit 0 on green, 1 with the failing
  * assertion printed.
@@ -122,6 +122,12 @@ const HARNESS_APP = `
     "locale-theme": {
       value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "hello")] },
     },
+    "placeholder-locale": {
+      value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "")] },
+    },
+    "disabled-states": {
+      value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "Alpha one"), paragraph("paragraph:2", "Beta two")] },
+    },
     network: {
       value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "net one"), paragraph("paragraph:2", "net two")] },
     },
@@ -166,6 +172,9 @@ const HARNESS_APP = `
     },
     setEditable(next) {
       editable = next;
+    },
+    setDisabled(next) {
+      disabled = next;
     },
     editor() {
       return editorRef;
@@ -291,36 +300,43 @@ async function openScenario(browser, base, scenario) {
   page.on("request", (request) => requests.push(`${request.method()} ${request.url()} ${request.resourceType()}`));
   await page.goto(`${base}/?scenario=${scenario}`, { waitUntil: "load", timeout: 30000 });
   await page.waitForFunction("window.__rtReady === true", { timeout: 30000 });
-  requests.length = 0;
-  await page.evaluate(() => {
-    window.__fetchCalls = [];
-  });
+  // No clearing: mount-time traffic stays observed through unmount. Only
+  // known harness assets (the locally served harness files) are excluded at
+  // assertion time; everything else, including mount fetches, is a finding.
   return {
     page,
     requests,
     async done(label) {
       const fetchCalls = await page.evaluate(() => window.__fetchCalls);
       assert(fetchCalls.length === 0, label, `fetch/XHR sentinel recorded ${fetchCalls.length} call(s): ${JSON.stringify(fetchCalls).slice(0, 300)}`);
-      assert(requests.length === 0, label, `network requests after mount: ${JSON.stringify(requests).slice(0, 500)}`);
+      const foreign = requests.filter((entry) => !entry.includes(base));
+      assert(foreign.length === 0, label, `non-harness network requests from mount through unmount: ${JSON.stringify(foreign).slice(0, 500)}`);
       assert(pageErrors.length === 0, label, `page errors: ${pageErrors.slice(0, 3).join(" | ")}`);
       await page.close();
     },
   };
 }
 
-const docOf = (page) => page.evaluate(() => window.__rt.editor().getEditor().getDocument());
+// Public-surface reads only: the component handle exposes capture (never an
+// editor object), so documents come from the deferred capture result.
+const docOf = (page) => page.evaluate(() => window.__rt.capture().then((result) => result.document));
 const changesOf = (page) => page.evaluate(() => window.__rt.events.changes);
 const conflictsOf = (page) => page.evaluate(() => window.__rt.events.conflicts);
 const selectionOf = (page) => page.evaluate(() => window.__rt.selection());
-const sameComponent = (page) =>
+// Identity is recorded before operations and compared after: a first call
+// made after the operation under test cannot witness a remount.
+const recordIdentity = (page) =>
   page.evaluate(() => {
-    if (window.__e1 === undefined) window.__e1 = window.__rt.editor();
-    return window.__e1 === window.__rt.editor();
+    window.__baselineEditor = window.__rt.editor();
+    return true;
   });
+const sameComponent = (page) =>
+  page.evaluate(() => window.__baselineEditor === window.__rt.editor());
 
 async function scenarioConflictFocused(browser, base) {
   const label = "conflict-focused";
   const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
   await page.click(".ProseMirror p:nth-child(2)");
   await page.keyboard.press("End");
   await page.keyboard.type(" XYZ");
@@ -350,6 +366,7 @@ async function scenarioConflictFocused(browser, base) {
     label,
     `caret moved across the external update (was ${JSON.stringify(afterType)}, now ${JSON.stringify(after)})`,
   );
+  assert(await sameComponent(page), label, "conflict update remounted the component");
   await done(label);
   ok(label);
 }
@@ -357,6 +374,7 @@ async function scenarioConflictFocused(browser, base) {
 async function scenarioConflictBlur(browser, base) {
   const label = "conflict-blur";
   const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
   await page.click(".ProseMirror p:nth-child(2)");
   await page.keyboard.type(" blur");
   await sleep(300);
@@ -376,6 +394,7 @@ async function scenarioConflictBlur(browser, base) {
   assert(conflicts.length === 1, label, `expected exactly one onExternalConflict after blur, saw ${conflicts.length}`);
   const displayed = await docOf(page);
   assert(displayed.blocks[1].text.includes("blur"), label, "local text was cleaned by the blur-time external update");
+  assert(await sameComponent(page), label, "blur-time conflict remounted the component");
   await done(label);
   ok(label);
 }
@@ -383,6 +402,7 @@ async function scenarioConflictBlur(browser, base) {
 async function scenarioClean(browser, base) {
   const label = "clean";
   const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
   await page.click(".ProseMirror p:nth-child(2)");
   await page.keyboard.press("End");
   await sleep(200);
@@ -420,6 +440,7 @@ async function scenarioClean(browser, base) {
 async function scenarioEcho(browser, base) {
   const label = "echo";
   const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
   await page.click(".ProseMirror p");
   await sleep(200);
   await page.keyboard.press("End");
@@ -660,10 +681,31 @@ async function scenarioPreservedGestures(browser, base) {
 async function scenarioLocaleTheme(browser, base) {
   const label = "locale-theme";
   const { page, done } = await openScenario(browser, base, label);
-  await page.click(".ProseMirror p");
+  await recordIdentity(page);
+  // Tall document so the editor scrolls: the scroll position is part of the
+  // locale/theme preservation contract.
+  const tall = Array.from({ length: 30 }, (_, index) => ({
+    paragraphId: `paragraph:${index + 1}`,
+    kind: "paragraph",
+    text: `scroll line ${index + 1} with enough words to wrap and grow the editor`,
+  }));
+  await page.evaluate((blocks) =>
+    window.__rt.setValue({ format: "focus.markdown.p0@1", blocks }), tall);
+  await sleep(400);
+  assert((await conflictsOf(page)).length === 0, label, "tall-document setup surfaced a conflict");
+  await page.click(".ProseMirror p:nth-child(15)");
   await page.keyboard.press("End");
   await sleep(200);
+  await page.evaluate(() => {
+    const editable = document.querySelector(".ProseMirror");
+    editable.style.height = "120px";
+    editable.style.overflow = "auto";
+    editable.scrollTop = 48;
+  });
+  await sleep(200);
   const before = await selectionOf(page);
+  const scrollBefore = await page.evaluate(() => document.querySelector(".ProseMirror").scrollTop);
+  assert(scrollBefore > 0, label, `editor scroll setup did not reach a nonzero position: ${scrollBefore}`);
   await page.evaluate(() =>
     window.__rt.setMessages({
       editorLabel: "SENTINEL-EDITOR-LABEL-2",
@@ -682,14 +724,201 @@ async function scenarioLocaleTheme(browser, base) {
     afterLocale && before && afterLocale.anchor.id === before.anchor.id && afterLocale.anchor.offset === before.anchor.offset,
     label, "locale switch moved the real selection",
   );
-  await page.evaluate(() => document.documentElement.setAttribute("data-st-theme", "sent-tech"));
+  const scrollAfterLocale = await page.evaluate(() => document.querySelector(".ProseMirror").scrollTop);
+  assert(scrollAfterLocale > 0, label, `editor scroll collapsed to zero across the locale switch: ${scrollAfterLocale}`);
+  assert(scrollAfterLocale === scrollBefore, label, `locale switch moved the editor scroll (${scrollBefore} -> ${scrollAfterLocale})`);
+  // Contrasting token sets through the real stylesheet path: two themes set
+  // the surface token to opposite colors and the computed style must follow.
+  await page.evaluate(() => {
+    const style = document.createElement("style");
+    style.setAttribute("data-testid", "rt-contrast-tokens");
+    style.textContent = [
+      '[data-st-theme="rt-contrast-a"] { --st-component-richTextEditor-surface: rgb(255, 0, 0); }',
+      '[data-st-theme="rt-contrast-b"] { --st-component-richTextEditor-surface: rgb(0, 0, 255); }',
+    ].join("\n");
+    document.head.appendChild(style);
+    document.documentElement.setAttribute("data-st-theme", "rt-contrast-a");
+  });
   await sleep(300);
+  const bgA = await page.evaluate(() => getComputedStyle(document.querySelector(".ProseMirror")).backgroundColor);
+  await page.evaluate(() => document.documentElement.setAttribute("data-st-theme", "rt-contrast-b"));
+  await sleep(300);
+  const bgB = await page.evaluate(() => getComputedStyle(document.querySelector(".ProseMirror")).backgroundColor);
+  assert(bgA.includes("255, 0, 0"), label, `contrast theme A did not paint the editor surface red: ${bgA}`);
+  assert(bgB.includes("0, 0, 255"), label, `contrast theme B did not paint the editor surface blue: ${bgB}`);
+  assert(bgA !== bgB, label, "switching token sets did not change the computed editor style");
   assert(await sameComponent(page), label, "theme switch remounted the component");
   const afterTheme = await selectionOf(page);
   assert(
     afterTheme && afterTheme.anchor.id === before.anchor.id && afterTheme.anchor.offset === before.anchor.offset,
     label, "theme switch moved the real selection",
   );
+  const scrollAfterTheme = await page.evaluate(() => document.querySelector(".ProseMirror").scrollTop);
+  assert(scrollAfterTheme > 0, label, `editor scroll collapsed to zero across the theme switch: ${scrollAfterTheme}`);
+  assert(scrollAfterTheme === scrollBefore, label, `theme switch moved the editor scroll (${scrollBefore} -> ${scrollAfterTheme})`);
+  await done(label);
+  ok(label);
+}
+
+async function scenarioPlaceholderLocale(browser, base) {
+  const label = "placeholder-locale";
+  const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
+  await page.click(".ProseMirror p");
+  await sleep(300);
+  const showing = await page.evaluate(() => {
+    const p = document.querySelector(".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]");
+    return p === null
+      ? null
+      : { placeholder: p.getAttribute("data-placeholder"), untranslated: p.getAttribute("data-untranslated") };
+  });
+  assert(showing !== null, label, "empty paragraph carries no placeholder decoration");
+  assert(showing.placeholder === "SENTINEL-PLACEHOLDER", label, `initial placeholder text mismatch: ${JSON.stringify(showing.placeholder)}`);
+  assert(showing.untranslated === null, label, `translated placeholder carries a marker: ${showing.untranslated}`);
+  const beforeContent = await page.evaluate(() => {
+    const p = document.querySelector(".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]");
+    return getComputedStyle(p, "::before").content;
+  });
+  assert(beforeContent.includes("SENTINEL-PLACEHOLDER"), label, `computed ::before does not render the placeholder: ${beforeContent}`);
+  await page.evaluate(() =>
+    window.__rt.setMessages({
+      editorLabel: "SENTINEL-EDITOR-LABEL",
+      placeholder: "SENTINEL-PLACEHOLDER-2",
+      preservedBlockLabel: "SENTINEL-PRESERVED-{kind}",
+      externalConflictLabel: "SENTINEL-CONFLICT",
+    }),
+  );
+  await sleep(300);
+  const after = await page.evaluate(() => {
+    const p = document.querySelector(".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]");
+    return {
+      placeholder: p.getAttribute("data-placeholder"),
+      untranslated: p.getAttribute("data-untranslated"),
+      content: getComputedStyle(p, "::before").content,
+    };
+  });
+  assert(after.placeholder === "SENTINEL-PLACEHOLDER-2", label, `locale switch did not re-render the paragraph placeholder: ${after.placeholder}`);
+  assert(after.untranslated === null, label, `translated placeholder carries a marker: ${after.untranslated}`);
+  assert(after.content.includes("SENTINEL-PLACEHOLDER-2"), label, `computed ::before kept the old locale: ${after.content}`);
+  assert(await sameComponent(page), label, "locale switch remounted the component");
+  assert((await page.evaluate(() => window.__rt.events.changes)).length === 0, label, "locale switch emitted a change");
+  // Missing key: the marker text and its data attribute sit on the
+  // displaying paragraph, and the computed content follows it.
+  await page.evaluate(() => window.__rt.setMessages({}));
+  // The marker is decoration-backed: it lands with the next decoration
+  // build after the catalogue switch, so poll instead of sleeping once.
+  await page.waitForFunction(
+    () => {
+      const p = document.querySelector(".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]");
+      return p !== null && p.getAttribute("data-untranslated") === "rich-text.placeholder";
+    },
+    { timeout: 5000 },
+  );
+  const missing = await page.evaluate(() => {
+    const p = document.querySelector(".ProseMirror p.is-empty, .ProseMirror p[data-placeholder]");
+    return {
+      placeholder: p.getAttribute("data-placeholder"),
+      untranslated: p.getAttribute("data-untranslated"),
+      content: getComputedStyle(p, "::before").content,
+    };
+  });
+  assert(missing.placeholder === "⟦untranslated:rich-text.placeholder⟧", label, `missing placeholder marker mismatch: ${missing.placeholder}`);
+  assert(missing.untranslated === "rich-text.placeholder", label, `missing placeholder marker attribute mismatch: ${missing.untranslated}`);
+  assert(missing.content.includes("untranslated:rich-text.placeholder"), label, `computed ::before does not render the marker: ${missing.content}`);
+  await done(label);
+  ok(label);
+}
+
+async function scenarioDisabledStates(browser, base) {
+  const label = "disabled-states";
+  const { page, done } = await openScenario(browser, base, label);
+  await recordIdentity(page);
+  // Host-like token base: semantic tokens come from the host theme, so the
+  // harness defines the fallback endpoint the outline chain resolves to.
+  await page.evaluate(() => {
+    const style = document.createElement("style");
+    style.setAttribute("data-testid", "rt-token-base");
+    style.textContent = ":root { --st-semantic-border-strong: rgb(51, 51, 51); }";
+    document.head.appendChild(style);
+  });
+  await sleep(100);
+  const stateOf = () => page.evaluate(() => ({
+    ariaDisabled: document.querySelector(".ProseMirror").getAttribute("aria-disabled"),
+    tabindex: document.querySelector(".ProseMirror").getAttribute("tabindex"),
+    userSelect: getComputedStyle(document.querySelector(".ProseMirror")).userSelect,
+  }));
+  const initial = await stateOf();
+  assert(initial.ariaDisabled === "false", label, `read-only state misreports aria-disabled: ${initial.ariaDisabled}`);
+  assert(initial.tabindex === "0", label, `read-only editor left the tab order: ${initial.tabindex}`);
+  // Editable baseline: typing emits exactly one change.
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await page.keyboard.type("Q");
+  await sleep(300);
+  const changesAfterQ = (await changesOf(page)).length;
+  assert(changesAfterQ === 1, label, `editable baseline emitted ${changesAfterQ} change(s), expected 1`);
+  // Disabled: exposed, untabbable, non-selectable, inert.
+  await page.evaluate(() => window.__rt.setDisabled(true));
+  await sleep(300);
+  const disabled = await stateOf();
+  assert(disabled.ariaDisabled === "true", label, `disabled state misses aria-disabled: ${disabled.ariaDisabled}`);
+  assert(disabled.tabindex === "-1", label, `disabled editor stays in the tab order: ${disabled.tabindex}`);
+  assert(disabled.userSelect === "none", label, `disabled text stays selectable (user-select: ${disabled.userSelect})`);
+  await page.keyboard.type("X");
+  await page.evaluate(() => {
+    const editable = document.querySelector(".ProseMirror");
+    const transfer = { getData: () => "", types: ["text/plain"] };
+    const event = new Event("paste", { bubbles: true, cancelable: true });
+    Object.defineProperty(event, "clipboardData", { value: transfer });
+    editable.dispatchEvent(event);
+  });
+  await sleep(300);
+  assert((await changesOf(page)).length === changesAfterQ, label, "disabled state accepted typing or paste");
+  assert(await sameComponent(page), label, "disabled transition remounted the component");
+  // Read-only: focusable with its caret, selectable, still inert.
+  await page.evaluate(() => {
+    window.__rt.setDisabled(false);
+    window.__rt.setEditable(false);
+  });
+  await sleep(300);
+  const readonly = await stateOf();
+  assert(readonly.ariaDisabled === "false", label, `read-only state reports disabled: ${readonly.ariaDisabled}`);
+  assert(readonly.tabindex === "0", label, `read-only editor left the tab order: ${readonly.tabindex}`);
+  assert(readonly.userSelect !== "none", label, "read-only text is not selectable");
+  // Keyboard focus: Tab from the outside button lands in the editor, which
+  // matches :focus-visible (a mouse click on a non-editable region does not
+  // request a visible indicator), so the focus-ring assertion below is real.
+  await page.click('[data-testid="outside"]');
+  await sleep(100);
+  await page.keyboard.press("Tab");
+  await sleep(200);
+  const focused = await page.evaluate(() => {
+    const active = document.activeElement;
+    return active !== null && active.closest(".st-rich-text-editor") !== null;
+  });
+  assert(focused, label, "read-only editor is not focusable");
+  // Visible focus outline from the focus tokens: solid, nonzero, colored.
+  const outline = await page.evaluate(() => {
+    const editable = document.querySelector(".ProseMirror");
+    const style = getComputedStyle(editable);
+    return { style: style.outlineStyle, width: style.outlineWidth, color: style.outlineColor };
+  });
+  assert(outline.style === "solid", label, `focus outline style is not solid: ${outline.style}`);
+  assert(outline.width !== "0px" && outline.width !== "", label, `focus outline has no width: ${outline.width}`);
+  await page.keyboard.type("Z");
+  await sleep(300);
+  assert((await changesOf(page)).length === changesAfterQ, label, "read-only state accepted typing");
+  const captured = await page.evaluate(() => window.__rt.capture());
+  assert(captured.document.blocks[0].text.includes("Q"), label, "disabled/read-only transitions altered the document");
+  assert(!captured.document.blocks[0].text.includes("X"), label, "disabled typing leaked into the document");
+  assert(!captured.document.blocks[0].text.includes("Z"), label, "read-only typing leaked into the document");
+  // Live selection over read-only text: select-all reports a real range.
+  await page.keyboard.down("Control");
+  await page.keyboard.press("a");
+  await page.keyboard.up("Control");
+  await sleep(200);
+  const selection = await selectionOf(page);
+  assert(selection !== null && selection.anchor !== null, label, "read-only text cannot be selected");
   await done(label);
   ok(label);
 }
@@ -728,42 +957,60 @@ async function main() {
   const chrome = findChrome();
   const { execFileSync } = await import("node:child_process");
   const work = mkdtempSync(join(tmpdir(), "rt-harness-"));
+  // Cleanup handles are established before any launch so a failure after
+  // this point still closes the server, the browser and both temp dirs.
+  let server;
+  let browser;
+  let profile;
+  const cleanup = async () => {
+    try {
+      if (browser !== undefined) await browser.close();
+    } catch { /* already closed */ }
+    try {
+      if (server !== undefined) server.close();
+    } catch { /* already closed */ }
+    try {
+      if (profile !== undefined) rmSync(profile, { recursive: true, force: true });
+    } catch { /* already removed */ }
+    try {
+      rmSync(work, { recursive: true, force: true });
+    } catch { /* already removed */ }
+  };
   try {
     writeHarnessFiles(work);
     symlinkSync(join(WORKTREE_ROOT, "node_modules"), join(work, "node_modules"), "dir");
     console.log("building harness with vite");
     execFileSync(join(WORKTREE_ROOT, "node_modules", ".bin", "vite"), ["build"], { cwd: work, stdio: "inherit" });
-    const port = 18731;
-    const server = await serveDirectory(join(work, "dist"), port);
+    // Ephemeral port: the OS assigns a free one, so parallel runs never
+    // collide on a fixed value.
+    server = await serveDirectory(join(work, "dist"), 0);
+    const address = server.address();
+    const port = typeof address === "object" && address !== null ? address.port : 0;
     const base = `http://127.0.0.1:${port}`;
     const puppeteer = (await import("puppeteer-core")).default;
     // Snap-confined Chromium cannot create its SingletonLock under $TMPDIR
     // (Permission denied, measured); /tmp is writable to it, so the throwaway
     // browser profile lives there, never in the session tmp root.
-    const profile = mkdtempSync("/tmp/rt-chrome-profile-");
-    const browser = await puppeteer.launch({
+    profile = mkdtempSync("/tmp/rt-chrome-profile-");
+    browser = await puppeteer.launch({
       executablePath: chrome,
       headless: true,
       userDataDir: profile,
       args: ["--no-sandbox", "--disable-dev-shm-usage"],
     });
-    try {
-      await scenarioConflictFocused(browser, base);
-      await scenarioConflictBlur(browser, base);
-      await scenarioClean(browser, base);
-      await scenarioEcho(browser, base);
-      await scenarioComposition(browser, base);
-      await scenarioCaptureUnmount(browser, base);
-      await scenarioPreservedGestures(browser, base);
-      await scenarioLocaleTheme(browser, base);
-      await scenarioNetwork(browser, base);
-    } finally {
-      await browser.close();
-      server.close();
-      rmSync(profile, { recursive: true, force: true });
-    }
+    await scenarioConflictFocused(browser, base);
+    await scenarioConflictBlur(browser, base);
+    await scenarioClean(browser, base);
+    await scenarioEcho(browser, base);
+    await scenarioComposition(browser, base);
+    await scenarioCaptureUnmount(browser, base);
+    await scenarioPreservedGestures(browser, base);
+    await scenarioLocaleTheme(browser, base);
+    await scenarioPlaceholderLocale(browser, base);
+    await scenarioDisabledStates(browser, base);
+    await scenarioNetwork(browser, base);
   } finally {
-    rmSync(work, { recursive: true, force: true });
+    await cleanup();
   }
   if (failures.length > 0) {
     console.error(`\n${failures.length} browser assertion(s) failed`);
