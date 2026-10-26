@@ -102,6 +102,7 @@ import { TextSelection } from "@tiptap/pm/state";
 import RichTextEditor from "./RichTextEditor.svelte";
 import type { RichTextEditorProps } from "./RichTextEditor.svelte";
 import RichTextEditorFixture from "./RichTextEditorFixture.svelte";
+import RichTextEditorNestedFixture from "./RichTextEditorNestedFixture.svelte";
 
 // Internal observation channel: the component exposes no editor object
 // (spec §11 keeps editor/view objects out of the public API), so tests
@@ -354,6 +355,67 @@ describe("editable/disabled states (RED 1, viewer case)", () => {
     await tick();
     expect(editableOf(container).getAttribute("aria-disabled")).toBe("false");
     expect(editableOf(container).getAttribute("tabindex")).toBe("0");
+    expect(collected.changes).toHaveLength(0);
+  });
+
+  it("a disabled editor takes no focus by pointer click or programmatic focus, across live transitions", async () => {
+    const collected = collect();
+    const input = twoParagraphs();
+    const { container, rerender } = render(RichTextEditor, {
+      props: collected.props({ disabled: true, value: input }),
+    });
+    await tick();
+    const editable = editableOf(container);
+    const inside = (): boolean =>
+      container.contains(globalThis.document.activeElement) &&
+      globalThis.document.activeElement !== null &&
+      globalThis.document.activeElement !== globalThis.document.body;
+    // Programmatic focus on a disabled editor lands nowhere inside.
+    editable.focus();
+    await tick();
+    expect(inside()).toBe(false);
+    // Pointer click on a disabled paragraph takes no focus either: the
+    // mousedown default (which moves focus) is prevented while disabled.
+    const mousedown = new MouseEvent("mousedown", {
+      bubbles: true,
+      cancelable: true,
+    });
+    const prevented = !editable.dispatchEvent(mousedown);
+    editable.click();
+    await tick();
+    expect(prevented).toBe(true);
+    expect(inside()).toBe(false);
+    // Live transition to enabled: the same gestures focus again.
+    await rerender(collected.props({ disabled: false, value: input }));
+    await tick();
+    editable.focus();
+    await tick();
+    expect(globalThis.document.activeElement).toBe(editable);
+    (globalThis.document.activeElement as HTMLElement | null)?.blur();
+    await tick();
+    // Live transition to read-only: still focusable with its caret.
+    await rerender(
+      collected.props({ editable: false, disabled: false, value: input }),
+    );
+    await tick();
+    editable.focus();
+    await tick();
+    expect(globalThis.document.activeElement).toBe(editable);
+    (globalThis.document.activeElement as HTMLElement | null)?.blur();
+    await tick();
+    // Live transition back to disabled: focus is refused again, and a
+    // focused editor loses focus on entering the disabled state.
+    editable.focus();
+    await tick();
+    expect(globalThis.document.activeElement).toBe(editable);
+    await rerender(
+      collected.props({ editable: false, disabled: true, value: input }),
+    );
+    await tick();
+    expect(inside()).toBe(false);
+    editable.focus();
+    await tick();
+    expect(inside()).toBe(false);
     expect(collected.changes).toHaveLength(0);
   });
 });
@@ -849,6 +911,84 @@ describe("reactive placeholder (review finding 2)", () => {
   });
 });
 
+describe("nested controlled updates (review finding P2-1)", () => {
+  it("a host $state update of value.blocks[0].text without replacing the reference reaches the editor", async () => {
+    const collected = collect();
+    const initial: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "Alpha one")],
+    };
+    const { component } = render(RichTextEditorNestedFixture, {
+      props: {
+        initial,
+        messages: { ...MESSAGES },
+        allocateId: makeAllocator(),
+        onChange: (event: RichTextChangeEvent) => {
+          collected.changes.push(event);
+        },
+        onExternalConflict: (event) => {
+          collected.conflicts.push(event);
+        },
+        onUnsupportedPaste: (event) => {
+          collected.unsupported.push(event);
+        },
+        onReadinessChange: (event) => {
+          collected.readiness.push({ ...event });
+        },
+      },
+    });
+    await tick();
+    const editor = lastCore();
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha one");
+    // In-place nested mutation: the reference never changes.
+    const before = (component as unknown as { currentValue(): RichTextDocument }).currentValue();
+    (component as unknown as { updateNestedText(text: string): void }).updateNestedText("HOST-C");
+    await tick();
+    const after = (component as unknown as { currentValue(): RichTextDocument }).currentValue();
+    expect(after).toBe(before);
+    expect(after.blocks[0]).toEqual(paragraph("paragraph:1", "HOST-C"));
+    expect(editor.getDocument().blocks[0]?.text).toBe("HOST-C");
+    expect(collected.conflicts).toHaveLength(0);
+  });
+
+  it("a nested update against a local draft raises the conflict path", async () => {
+    const collected = collect();
+    const initial: RichTextDocument = {
+      format: MARKDOWN,
+      blocks: [paragraph("paragraph:1", "Alpha one")],
+    };
+    const { component } = render(RichTextEditorNestedFixture, {
+      props: {
+        initial,
+        messages: { ...MESSAGES },
+        allocateId: makeAllocator(),
+        onChange: (event: RichTextChangeEvent) => {
+          collected.changes.push(event);
+        },
+        onExternalConflict: (event) => {
+          collected.conflicts.push(event);
+        },
+        onUnsupportedPaste: (event) => {
+          collected.unsupported.push(event);
+        },
+        onReadinessChange: (event) => {
+          collected.readiness.push({ ...event });
+        },
+      },
+    });
+    await tick();
+    const editor = lastCore();
+    editor.typeText("paragraph:1", " local");
+    await tick();
+    expect(collected.changes).toHaveLength(1);
+    (component as unknown as { updateNestedText(text: string): void }).updateNestedText("HOST-C");
+    await tick();
+    expect(collected.conflicts).toHaveLength(1);
+    expect(collected.conflicts[0]?.incoming.blocks[0]?.text).toBe("HOST-C");
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha one local");
+  });
+});
+
 describe("parent selection isolation (RED 6)", () => {
   it("typing, clicking and selecting inside the editor never reach the card handler", async () => {
     const onCardSelect = vi.fn();
@@ -1146,18 +1286,44 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
         };
         (globalThis as unknown as Record<string, unknown>)[kind] = Tracked;
       }
-      // Engine timers (Tiptap mount/create, async-delete queue,
-      // ProseMirror observer flush) carry no component callback: they
-      // settle silently, so they run normally and only their completion
-      // is tracked. A component callback firing after unmount would
-      // surface as an event, an observer violation or a listener below.
+      // Task ownership by scheduling stack: the adapter (`RichTextEditor.
+      // svelte`) and the neutral factory (`packages/rich-text/src/`) schedule
+      // no timer today, so any timer scheduled from those modules is a
+      // component task and must be cancelled on unmount. Engine timers
+      // (Tiptap mount/create, async-delete queue, ProseMirror observer
+      // flush) carry no component callback: they settle silently, so they
+      // run normally and only their completion is tracked. A component
+      // callback firing after unmount is a violation, never a pass — hence
+      // the unmounted guard on component-owned timeouts, and the teardown
+      // snapshot below that a drain cannot hide.
+      // Ownership by DIRECT scheduling site (first stack frame above this
+      // mock): the adapter (`RichTextEditor.svelte`) and the neutral factory
+      // (`packages/rich-text`, source-mapped to `src/`, built as `dist/`)
+      // schedule no timer today, so a timer scheduled directly from those
+      // modules is a component task. Engine timers scheduled deeper inside
+      // Tiptap/ProseMirror — even when the call chain passed through the
+      // factory during mount — classify as engine: their direct site is the
+      // engine module. Test files never count as component tasks.
+      const isComponentTask = (stack: string): boolean => {
+        const site = stack.split("\n")[2] ?? "";
+        return (
+          /rich-text-editor\/RichTextEditor\.svelte/.test(site) ||
+          /packages\/rich-text\/(src|dist)\/(?!.*\.test\.)/.test(site)
+        );
+      };
       globalThis.setTimeout = ((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
+        const stack = new Error().stack ?? "";
+        const owned = isComponentTask(stack);
         const wrapped = (...inner: unknown[]): void => {
           pendingTimeouts.delete(id);
+          if (unmounted && owned) {
+            violations.push(`timeout (${String(timeout)}) fired after unmount`);
+            return;
+          }
           (handler as (...called: unknown[]) => void)(...inner);
         };
         const id = originalSetTimeout(wrapped, timeout, ...(args as []));
-        pendingTimeouts.set(id, `timeout@${String(timeout)}`);
+        pendingTimeouts.set(id, `${owned ? "component" : "engine"} timeout@${String(timeout)}`);
         return id;
       }) as unknown as typeof setTimeout;
       globalThis.clearTimeout = ((id: unknown) => {
@@ -1216,23 +1382,66 @@ describe("messages and lifecycle (RED 8, jsdom half)", () => {
       const changesBefore = collected.changes.length;
       const conflictsBefore = collected.conflicts.length;
       const readinessBefore = collected.readiness.length;
+      // Retain the editor target identities BEFORE teardown: after unmount
+      // the editor DOM is detached, so `container.contains()` no longer
+      // recognises it and a retained ProseMirror listener would pass as
+      // irrelevant. Every listener target observed while mounted that is
+      // the root, inside the container, or the live ProseMirror element
+      // stays relevant after detachment.
+      const liveDom: unknown = lastCore().view.dom;
+      const retainedTargets = new Set<EventTarget>([
+        root,
+        editableBeforeUnmount,
+        globalThis.document,
+        globalThis.window,
+      ]);
+      if (liveDom instanceof EventTarget) retainedTargets.add(liveDom);
+      for (const entry of added) {
+        if (
+          entry.target === root ||
+          (entry.target instanceof Element &&
+            container.contains(entry.target))
+        ) {
+          retainedTargets.add(entry.target);
+        }
+      }
       unmount();
       unmounted = true;
       await tick();
+      // Component-owned work is asserted at teardown — before draining: a
+      // leaked component task still scheduled here fails instead of
+      // settling silently through the drains below. Engine timers settle
+      // through the drains and are asserted after them.
+      const teardownComponentPending = [...pendingTimeouts.entries()]
+        .filter(([, label]) => label.startsWith("component "))
+        .map(([id, label]) => `${String(id)}:${label}`);
+      expect(teardownComponentPending).toEqual([]);
       await new Promise((resolve) => originalSetTimeout(resolve, 0));
       await new Promise((resolve) => originalSetTimeout(resolve, 50));
-      // Editor targets are inside the container (the ProseMirror element
-      // carries the core listeners): filtering to the root alone would let
-      // a leak on the editable element pass.
+      // Relevance reads the retained identities, never the post-teardown
+      // tree: detached editor targets (the ProseMirror element carries the
+      // core listeners) stay covered after unmount.
       const relevant = (entry: { target: EventTarget }): boolean =>
-        entry.target === root ||
-        (entry.target instanceof Element && container.contains(entry.target)) ||
-        entry.target === globalThis.document ||
-        entry.target === globalThis.window;
+        retainedTargets.has(entry.target);
       const addedRelevant = added.filter(relevant);
       const removedRelevant = removed.filter(relevant);
-      expect(addedRelevant.length).toBeGreaterThan(0);
-      for (const entry of addedRelevant) {
+      // The upstream Safari workaround (`prosemirror-view`: `if (safari)
+      // view.dom.addEventListener("input", () => null)`) is anonymous, so
+      // even a correct `destroy()` cannot remove it; it fires no observable
+      // effect. jsdom reports `navigator.vendor === "Apple Computer"`, so
+      // the branch is taken here (in real Chromium it is not). Exactly that
+      // no-op is exempt — any other retained listener still fails.
+      const isUpstreamSafariNoop = (entry: {
+        type: string;
+        listener: EventListener;
+      }): boolean =>
+        entry.type === "input" &&
+        /^\(\s*\)\s*=>\s*null$/.test(Function.prototype.toString.call(entry.listener));
+      const ownedAdded = addedRelevant.filter(
+        (entry) => !isUpstreamSafariNoop(entry),
+      );
+      expect(ownedAdded.length).toBeGreaterThan(0);
+      for (const entry of ownedAdded) {
         expect(
           removedRelevant.some(
             (candidate) =>

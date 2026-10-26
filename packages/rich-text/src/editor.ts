@@ -1367,8 +1367,20 @@ export function createRichTextEditor(
 
     setPlaceholder(text: string, untranslated: string | null): void {
       if (tracker.destroyed) return;
+      if (livePlaceholder === text && livePlaceholderMarker === untranslated) {
+        return;
+      }
       livePlaceholder = text;
       livePlaceholderMarker = untranslated;
+      // Refresh the decorations with no document transaction: rebuilding
+      // the view state re-runs the placeholder and marker decoration builds
+      // against the stored values, without touching the document, history,
+      // selection, events or acknowledgement (§5.7).
+      try {
+        editor.view.updateState(editor.view.state);
+      } catch {
+        // A decoration refresh never blocks the stored update.
+      }
     },
 
     typeText(paragraphId: string, text: string): void {
