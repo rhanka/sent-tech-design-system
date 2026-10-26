@@ -13,7 +13,8 @@
  */
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { createRequire } from "node:module";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const RICH_TEXT_EDITOR_DIR = dirname(fileURLToPath(import.meta.url));
@@ -142,6 +143,240 @@ function adapterGraph(): ModuleGraph {
   ]);
 }
 
+/** Strip block and line comments (outside string literals) so JSDoc
+    `@import` tags and examples never count as edges. */
+function stripComments(text: string): string {
+  const noBlocks = text.replace(/\/\*[\s\S]*?\*\//g, "");
+  return noBlocks
+    .split("\n")
+    .map((line) => {
+      let quote: string | null = null;
+      for (let index = 0; index < line.length; index += 1) {
+        const char = line[index];
+        if (quote !== null) {
+          if (char === "\\") index += 1;
+          else if (char === quote) quote = null;
+        } else if (char === '"' || char === "'" || char === "`") {
+          quote = char;
+        } else if (char === "/" && line[index + 1] === "/") {
+          return line.slice(0, index);
+        }
+      }
+      return line;
+    })
+    .join("\n");
+}
+
+interface RuntimeSpecifiers {
+  runtime: string[];
+  typeOnly: string[];
+}
+
+/** Runtime import specifiers of one module's text. Whole-`import type`
+    statements are erased at build: recorded separately, never traversed.
+    Keyword guards keep `import`/`require` inside strings (reserved-word
+    lists, messages) out of the graph. */
+function runtimeSpecifiersOf(text: string): RuntimeSpecifiers {
+  const code = stripComments(text);
+  const typeOnly = new Set<string>();
+  const erasable = code.replace(
+    /(?<![\w$"'])import\s+type\s+[^'";]*?\sfrom\s*["']([^"']+)["']/g,
+    (_match, spec: string) => {
+      typeOnly.add(spec);
+      return "";
+    },
+  );
+  const runtime = new Set<string>();
+  const patterns = [
+    /(?<![\w$"'])(?:import|export)\s+[^'";]*?\sfrom\s*["']([^"']+)["']/g,
+    /(?<![\w$"'])import\s*["']([^"']+)["']/g,
+    /(?<![\w$"'])import\s*\(\s*["']([^"']+)["']\s*\)/g,
+    /(?<![\w$."'])require\s*\(\s*["']([^"']+)["']\s*\)/g,
+  ];
+  for (const pattern of patterns) {
+    for (const match of erasable.matchAll(pattern)) {
+      runtime.add(match[1] as string);
+    }
+  }
+  return { runtime: [...runtime], typeOnly: [...typeOnly] };
+}
+
+function isAssetPath(path: string): boolean {
+  const dot = path.lastIndexOf(".");
+  if (dot === -1) return false;
+  const ext = path.slice(dot).split("?")[0] as string;
+  return ASSET_EXTENSIONS.has(ext);
+}
+
+/** Resolve a relative specifier from an absolute importing file, or null
+    for a non-module asset. Throws when the target does not exist. */
+function resolveRelativeTarget(fromAbs: string, specifier: string): string | null {
+  const normalized = resolve(dirname(fromAbs), specifier);
+  if (/\.(ts|svelte|mjs|cjs|js)$/.test(normalized)) {
+    try {
+      readFileSync(normalized, "utf8");
+      return normalized;
+    } catch {
+      throw new Error(
+        `unresolved local import: "${specifier}" from "${fromAbs}"`,
+      );
+    }
+  }
+  const candidates = [
+    `${normalized}.ts`,
+    `${normalized}.svelte`,
+    `${normalized}.js`,
+    `${normalized}/index.ts`,
+    `${normalized}/index.js`,
+  ];
+  for (const candidate of candidates) {
+    try {
+      readFileSync(candidate, "utf8");
+      return candidate;
+    } catch {
+      /* next candidate */
+    }
+  }
+  throw new Error(
+    `unresolved local import: "${specifier}" from "${fromAbs}" (tried ${candidates.join(", ")})`,
+  );
+}
+
+function pickExportTarget(entry: unknown): string | null {
+  if (typeof entry === "string") return entry;
+  if (entry !== null && typeof entry === "object") {
+    for (const condition of ["import", "default", "node", "require", "types"]) {
+      const candidate = (entry as Record<string, unknown>)[condition];
+      if (typeof candidate === "string") return candidate;
+    }
+  }
+  return null;
+}
+
+/** ESM-conditions fallback for exports maps with no require/default target,
+    plus `#` package self-references. Returns null when not found (the
+    caller climbs or fails closed). */
+function resolveViaExportsMap(specifier: string, fromAbs: string): string | null {
+  if (specifier.startsWith("#")) {
+    let dir = dirname(fromAbs);
+    while (true) {
+      try {
+        const manifest = JSON.parse(
+          readFileSync(join(dir, "package.json"), "utf8"),
+        ) as { imports?: Record<string, unknown> };
+        if (manifest.imports?.[specifier] !== undefined) {
+          const target = pickExportTarget(manifest.imports[specifier]);
+          if (target !== null) return resolve(dir, target);
+        }
+        return null;
+      } catch {
+        const parent = dirname(dir);
+        if (parent === dir) return null;
+        dir = parent;
+      }
+    }
+  }
+  const parts = specifier.split("/");
+  const top = specifier.startsWith("@") ? parts.slice(0, 2).join("/") : parts[0] as string;
+  const sub = specifier.startsWith("@") ? parts.slice(2).join("/") : parts.slice(1).join("/");
+  let dir = dirname(fromAbs);
+  while (true) {
+    const base = join(dir, "node_modules", top);
+    try {
+      const manifest = JSON.parse(
+        readFileSync(join(base, "package.json"), "utf8"),
+      ) as { exports?: Record<string, unknown>; main?: unknown };
+      if (sub === "") {
+        if (manifest.exports !== undefined) {
+          const target = pickExportTarget(manifest.exports["."]);
+          if (target !== null) return resolve(base, target);
+          return null;
+        }
+        if (typeof manifest.main === "string") return resolve(base, manifest.main);
+        return resolve(base, "index.js");
+      }
+      if (manifest.exports !== undefined) {
+        const entry = manifest.exports[`./${sub}`];
+        if (entry !== undefined) {
+          const target = pickExportTarget(entry);
+          if (target !== null) return resolve(base, target);
+        }
+        return null;
+      }
+      return resolve(base, sub);
+    } catch {
+      /* not here: climb */
+    }
+    const parent = dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+/** Resolve a bare specifier from its importing file through `node_modules`
+    (fail closed). `node:`/`data:`/`blob:` and asset specifiers are not
+    modules and return null. */
+function resolveBareTarget(specifier: string, fromAbs: string): string | null {
+  if (
+    specifier.startsWith("node:") ||
+    specifier.startsWith("data:") ||
+    specifier.startsWith("blob:")
+  ) {
+    return null;
+  }
+  if (isAssetPath(specifier)) return null;
+  try {
+    return createRequire(fromAbs).resolve(specifier);
+  } catch {
+    const fallback = resolveViaExportsMap(specifier, fromAbs);
+    if (fallback !== null) return fallback;
+    throw new Error(`unresolved bare import: "${specifier}" from "${fromAbs}"`);
+  }
+}
+
+interface ResolvedConsumerGraph {
+  files: string[];
+  runtimeSpecifiers: string[];
+}
+
+/** Fresh resolved consumer graph from BUILT entries through relative and
+    bare imports into `node_modules`. Unlike the source walk above, a mocked
+    transitive bare dependency that loads Tiptap is traversed and therefore
+    observed. Every edge must resolve (fail closed). */
+function resolveConsumerGraph(roots: string[]): ResolvedConsumerGraph {
+  for (const root of roots) {
+    readFileSync(root, "utf8");
+  }
+  const seen = new Set<string>();
+  const runtimeSpecifiers: string[] = [];
+  const queue = [...roots];
+  while (queue.length > 0) {
+    const file = queue.pop() as string;
+    if (seen.has(file)) continue;
+    if (isAssetPath(file)) continue;
+    seen.add(file);
+    const { runtime } = runtimeSpecifiersOf(readFileSync(file, "utf8"));
+    for (const specifier of runtime) {
+      runtimeSpecifiers.push(specifier);
+      if (isAssetPath(specifier)) continue;
+      const target = specifier.startsWith(".")
+        ? resolveRelativeTarget(file, specifier)
+        : resolveBareTarget(specifier, file);
+      if (target !== null && !seen.has(target)) queue.push(target);
+    }
+    if (seen.size > 12000) {
+      throw new Error("consumer module graph exceeded 12000 files");
+    }
+  }
+  return { files: [...seen], runtimeSpecifiers };
+}
+
+function isEditorRuntimeSpecifier(specifier: string): boolean {
+  return (
+    specifier.startsWith("@tiptap/") || specifier.startsWith("prosemirror-")
+  );
+}
+
 describe("subpath entry (RT-1 half of RED-P)", () => {
   it("the subpath entry resolves and exposes the component", async () => {
     const entry = (await import("./index.js")) as Record<string, unknown>;
@@ -222,6 +457,63 @@ describe("barrel isolation (RT-1 half of RED-P)", () => {
       expect(
         Object.keys(barrel).some((key) => /richtext/i.test(key)),
       ).toBe(false);
+    },
+    120000,
+  );
+});
+
+describe("resolved consumer graphs (RED-P, fresh graphs with bare dependencies)", () => {
+  it(
+    "the barrel consumer graph loads no editor runtime",
+    () => {
+      // Fresh graph from the BUILT barrel through relative and bare
+      // imports into `node_modules`: a mocked transitive bare dependency
+      // that loads Tiptap is traversed here (the source walk above stops
+      // at bare edges), so it fails this test.
+      const graph = resolveConsumerGraph([
+        join(PACKAGE_DIR, "dist/index.js"),
+      ]);
+      // Non-vacuous: the barrel fans out over the component library and
+      // its dependencies (thousands of modules), so a small graph would
+      // mean the walk itself is broken.
+      expect(graph.files.length).toBeGreaterThan(100);
+      expect(graph.runtimeSpecifiers.length).toBeGreaterThan(0);
+      const runtimeHits = graph.runtimeSpecifiers.filter(
+        isEditorRuntimeSpecifier,
+      );
+      expect(
+        `editor-runtime edges in the barrel graph: ${JSON.stringify([...new Set(runtimeHits)].slice(0, 10))}`,
+      ).toBe("editor-runtime edges in the barrel graph: []");
+      const richTextHits = [...graph.files, ...graph.runtimeSpecifiers].filter(
+        (entry) => entry.includes("rich-text"),
+      );
+      expect(
+        `rich-text edges in the barrel graph: ${JSON.stringify(richTextHits.slice(0, 10))}`,
+      ).toBe("rich-text edges in the barrel graph: []");
+    },
+    120000,
+  );
+
+  it(
+    "the subpath consumer graph loads the editor runtime (positive control)",
+    () => {
+      // The same walk from the BUILT subpath entry must reach Tiptap/
+      // ProseMirror through the neutral entry: without this control, the
+      // barrel absence above would be vacuous.
+      const graph = resolveConsumerGraph([
+        join(PACKAGE_DIR, "dist/rich-text-editor/index.js"),
+      ]);
+      expect(graph.files.length).toBeGreaterThan(10);
+      const runtimeHits = [
+        ...new Set(
+          graph.runtimeSpecifiers.filter(isEditorRuntimeSpecifier),
+        ),
+      ];
+      expect(runtimeHits.length).toBeGreaterThan(0);
+      expect(
+        graph.files.some((file) => file.includes("design-system-rich-text")),
+        "the subpath graph must reach the neutral package",
+      ).toBe(true);
     },
     120000,
   );

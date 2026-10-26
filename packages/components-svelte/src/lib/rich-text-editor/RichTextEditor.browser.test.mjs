@@ -309,7 +309,29 @@ async function openScenario(browser, base, scenario) {
     async done(label) {
       const fetchCalls = await page.evaluate(() => window.__fetchCalls);
       assert(fetchCalls.length === 0, label, `fetch/XHR sentinel recorded ${fetchCalls.length} call(s): ${JSON.stringify(fetchCalls).slice(0, 300)}`);
-      const foreign = requests.filter((entry) => !entry.includes(base));
+      // Exact harness allowlist: only the served harness document and its
+      // own assets are exempt — never every URL containing the base. A
+      // same-origin injected image (`/injected.png`) or beacon (`/beacon`)
+      // shares the base but matches no entry below, so it fails. `data:`
+      // and `blob:` URLs are not network traffic.
+      const foreign = requests.filter((entry) => {
+        const parts = entry.split(" ");
+        const url = parts.slice(1, -1).join(" ");
+        if (url.startsWith("data:") || url.startsWith("blob:")) return false;
+        if (!url.startsWith(base)) return true;
+        let path;
+        try {
+          const parsed = new URL(url);
+          path = parsed.pathname + parsed.search;
+        } catch {
+          return true;
+        }
+        if (path === "/" || path === "/index.html") return false;
+        if (path.startsWith("/?scenario=")) return false;
+        if (path.startsWith("/assets/")) return false;
+        if (path.startsWith("/src/")) return false;
+        return true;
+      });
       assert(foreign.length === 0, label, `non-harness network requests from mount through unmount: ${JSON.stringify(foreign).slice(0, 500)}`);
       assert(pageErrors.length === 0, label, `page errors: ${pageErrors.slice(0, 3).join(" | ")}`);
       await page.close();
@@ -864,6 +886,25 @@ async function scenarioDisabledStates(browser, base) {
   assert(disabled.ariaDisabled === "true", label, `disabled state misses aria-disabled: ${disabled.ariaDisabled}`);
   assert(disabled.tabindex === "-1", label, `disabled editor stays in the tab order: ${disabled.tabindex}`);
   assert(disabled.userSelect === "none", label, `disabled text stays selectable (user-select: ${disabled.userSelect})`);
+  // Disabled takes no focus: neither a real pointer click on the paragraph
+  // (`tabindex="-1"` alone still lets the mousedown default move focus)
+  // nor a programmatic focus() lands inside the editor.
+  await page.click('[data-testid="outside"]');
+  await sleep(100);
+  await page.click(".ProseMirror p");
+  await sleep(200);
+  let disabledFocused = await page.evaluate(() => {
+    const active = document.activeElement;
+    return active !== null && active.closest(".st-rich-text-editor") !== null;
+  });
+  assert(!disabledFocused, label, "clicking a disabled paragraph focused the editor");
+  await page.evaluate(() => document.querySelector(".ProseMirror").focus());
+  await sleep(200);
+  disabledFocused = await page.evaluate(() => {
+    const active = document.activeElement;
+    return active !== null && active.closest(".st-rich-text-editor") !== null;
+  });
+  assert(!disabledFocused, label, "programmatic focus() landed in the disabled editor");
   await page.keyboard.type("X");
   await page.evaluate(() => {
     const editable = document.querySelector(".ProseMirror");
