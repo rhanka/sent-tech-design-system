@@ -20,7 +20,7 @@
 //                                 tarball file-list check, so neither can
 //                                 silently drift stale as components are
 //                                 added.
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -77,9 +77,28 @@ async function verifySvelte() {
   const entryPath = fileURLToPath(entryUrl);
   const distDir = entryPath.replace(/index\.js$/, "");
 
-  const svelteFiles = readdirSync(distDir).filter((file) => file.endsWith(".svelte"));
+  // Recursive: the rich-text adapter ships nested under dist/rich-text-editor/
+  // and a top-level readdir would verify only the barrel. Every shipped
+  // .svelte file, at any depth, goes through vitePreprocess + svelte/compiler.
+  const svelteFiles = [];
+  const walk = (dir, relative) => {
+    for (const entry of readdirSync(dir).sort()) {
+      const absolute = join(dir, entry);
+      const rel = relative ? relative + "/" + entry : entry;
+      if (statSync(absolute).isDirectory()) {
+        walk(absolute, rel);
+        continue;
+      }
+      if (entry.endsWith(".svelte")) svelteFiles.push(rel);
+    }
+  };
+  walk(distDir, "");
   if (svelteFiles.length === 0) {
     fail("@sentropic/design-system-svelte", "no .svelte files found under the installed dist/ - nothing was compiled");
+    return;
+  }
+  if (!svelteFiles.includes("rich-text-editor/RichTextEditor.svelte")) {
+    fail("@sentropic/design-system-svelte", "the installed tarball carries no rich-text-editor/RichTextEditor.svelte");
     return;
   }
 
@@ -108,6 +127,28 @@ async function verifySvelte() {
   }
 
   console.log("OK @sentropic/design-system-svelte: " + svelteFiles.length + " .svelte files preprocessed + compiled");
+
+  // The installed svelte tarball must resolve its rich-text dependency to the
+  // candidate local tarball, never to the registry and never to a workspace
+  // symlink: resolution (no import — Node cannot parse .svelte) plus a
+  // symlink check on the resolved package directory.
+  try {
+    const resolved = fileURLToPath(await import.meta.resolve("@sentropic/design-system-rich-text", entryUrl));
+    const packageDir = resolved.slice(0, resolved.indexOf("design-system-rich-text") + "design-system-rich-text".length);
+    if (lstatSync(packageDir, { throwIfNoEntry: false })?.isSymbolicLink()) {
+      fail("@sentropic/design-system-svelte", "rich-text resolves to a workspace symlink, not to the installed tarball");
+      return;
+    }
+    const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
+    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== "0.1.0") {
+      fail("@sentropic/design-system-svelte", "rich-text resolved to an unexpected package: " + manifest.name + "@" + manifest.version);
+      return;
+    }
+  } catch (error) {
+    fail("@sentropic/design-system-svelte", "rich-text subpath dependency does not resolve: " + String(error.message).split("\n")[0]);
+    return;
+  }
+  console.log("OK @sentropic/design-system-svelte: rich-text resolves to the candidate tarball");
 }
 
 // Actually `import()`s the compiled package (its peer runtime - react,
@@ -304,6 +345,32 @@ async function verifyGraphWorkerSubpaths() {
   );
 }
 
+async function verifyRichText() {
+  // Both entries resolve for real out of the installed tarball (never the
+  // workspace source): the pure entry carries the model without the editor
+  // runtime, and the Tiptap-bound entry exposes the factory.
+  const root = await import("@sentropic/design-system-rich-text");
+  if (typeof root.richTextDocumentsEqual !== "function") {
+    fail("@sentropic/design-system-rich-text", "missing richTextDocumentsEqual export (or not a function)");
+    return;
+  }
+  if (!Array.isArray(root.RICH_TEXT_MESSAGE_KEYS)) {
+    fail("@sentropic/design-system-rich-text", "missing RICH_TEXT_MESSAGE_KEYS export");
+    return;
+  }
+  if (typeof root.createRichTextEditor === "function") {
+    fail("@sentropic/design-system-rich-text", "the pure entry must not export the editor factory (entry split violated)");
+    return;
+  }
+  console.log("OK @sentropic/design-system-rich-text: pure entry imports without the editor runtime");
+  const editor = await import("@sentropic/design-system-rich-text/editor");
+  if (typeof editor.createRichTextEditor !== "function") {
+    fail("@sentropic/design-system-rich-text/editor", "missing createRichTextEditor export (or not a function)");
+    return;
+  }
+  console.log("OK @sentropic/design-system-rich-text/editor: createRichTextEditor import verified");
+}
+
 async function verifyDatavizCore() {
   const mod = await import("@sentropic/dataviz-core");
   if (typeof mod.validateModel !== "function") {
@@ -394,6 +461,7 @@ const verifiers = {
   "@sentropic/design-system-vue": verifyVue,
   "@sentropic/design-system-angular": verifyAngular,
   "@sentropic/graph": verifyGraph,
+  "@sentropic/design-system-rich-text": verifyRichText,
   "@sentropic/dataviz-core": verifyDatavizCore,
   "@sentropic/dataviz-svelte": verifyDatavizSvelte,
   "@sentropic/dataviz-react": verifyDatavizReact,

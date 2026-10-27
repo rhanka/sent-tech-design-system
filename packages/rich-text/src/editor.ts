@@ -154,6 +154,13 @@ export interface RichTextEditor extends RichTextEditorHandle {
   readonly view: EditorView;
   setEditable(editable: boolean): void;
   setDisabled(disabled: boolean): void;
+  /** Update the visible placeholder text with no document transaction,
+      no event and no acknowledgement: the next placeholder-decoration
+      build reads the new text, and the marker decoration reads the new
+      `untranslated` value (§5.7). Pass null when the placeholder key is
+      translated; pass the `data-untranslated` value while the catalogue
+      entry is missing. */
+  setPlaceholder(text: string, untranslated: string | null): void;
   typeText(paragraphId: string, text: string): void;
   clearParagraph(paragraphId: string): void;
   splitParagraph(paragraphId: string, offset: number): void;
@@ -201,6 +208,17 @@ export function createRichTextEditor(
   // internal paste. A `WeakSet` holds no copy after its last external
   // reference drops, so a long session never accumulates pastes.
   const internalPayloads = new WeakSet<PastePayload>();
+  // Live placeholder text read by the Placeholder extension on every
+  // decoration build: a locale switch updates it through `setPlaceholder`
+  // with no document transaction, so the visible placeholder re-renders
+  // in place (§5.7). The string captured at mount is never the source.
+  // The companion marker is decoration-backed for the same reason: a
+  // manually set DOM attribute does not survive the ProseMirror
+  // re-renders that follow it (the paragraph element is replaced and only
+  // decoration attributes are reapplied), so `data-untranslated` lives in
+  // the marker decoration beside the text and never in the DOM alone.
+  let livePlaceholder = options.messages.placeholder;
+  let livePlaceholderMarker: string | null = null;
   const seeds: ConversionSeeds = createConversionSeeds(options.document);
   let documentFormat: RichTextFormat = options.document.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
@@ -232,7 +250,11 @@ export function createRichTextEditor(
   const editor = new Editor({
     element,
     extensions: [
-      ...createP0EditorExtensions({ placeholder: options.messages.placeholder }),
+      ...createP0EditorExtensions({
+        placeholder: () => livePlaceholder,
+        placeholderMarker: () => livePlaceholderMarker,
+        isEditable: () => isActive(),
+      }),
       createParagraphIdentityExtension(allocateFresh, {
         // Identities a select-all replacement consumed (N8, §5.2): retired
         // inside the session, never reallocated.
@@ -1341,6 +1363,24 @@ export function createRichTextEditor(
       if (tracker.destroyed) return;
       disabled = next;
       editor.setEditable(isActive());
+    },
+
+    setPlaceholder(text: string, untranslated: string | null): void {
+      if (tracker.destroyed) return;
+      if (livePlaceholder === text && livePlaceholderMarker === untranslated) {
+        return;
+      }
+      livePlaceholder = text;
+      livePlaceholderMarker = untranslated;
+      // Refresh the decorations with no document transaction: rebuilding
+      // the view state re-runs the placeholder and marker decoration builds
+      // against the stored values, without touching the document, history,
+      // selection, events or acknowledgement (§5.7).
+      try {
+        editor.view.updateState(editor.view.state);
+      } catch {
+        // A decoration refresh never blocks the stored update.
+      }
     },
 
     typeText(paragraphId: string, text: string): void {
