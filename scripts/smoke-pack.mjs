@@ -49,7 +49,7 @@
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -109,6 +109,7 @@ function distFiles(pkgRelDir, ext) {
 }
 
 const rootManifest = readJson("package.json");
+const richTextManifest = readJson("packages/rich-text/package.json");
 const reactManifest = readJson("packages/components-react/package.json");
 const vueManifest = readJson("packages/components-vue/package.json");
 const angularManifest = readJson("packages/components-angular/package.json");
@@ -200,6 +201,32 @@ const packages = [
   {
     name: "@sentropic/design-system-svelte",
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...svelteComponentFiles()]; },
+    // RT-1: the nested rich-text subpath ships at real nested paths (never
+    // flat), and the browser harness plus every test artefact stays out of
+    // the published tarball.
+    extraRequiredFiles: [
+      "dist/rich-text-editor/RichTextEditor.svelte",
+      "dist/rich-text-editor/index.js",
+      "dist/rich-text-editor/index.d.ts",
+      "dist/rich-text-editor/rich-text-editor.css",
+    ],
+    absentFiles: [
+      "dist/rich-text-editor.js",
+      "dist/rich-text-editor.css",
+      "dist/rich-text-editor/RichTextEditor.browser.test.mjs",
+    ],
+    absentPatterns: ["\\.browser\\.test\\.", "\\.test\\.mjs$"],
+  },
+  {
+    name: "@sentropic/design-system-rich-text",
+    requiredFiles: [
+      "dist/index.js",
+      "dist/index.d.ts",
+      "dist/editor.js",
+      "dist/editor.d.ts",
+      "dist/profile.js",
+      "dist/theme.js",
+    ],
   },
   {
     name: "@sentropic/design-system-react",
@@ -302,11 +329,30 @@ const deepVerify = {
     // checked against the graph code in THIS commit, not against whatever was
     // published last. Exactly the same reason @sentropic/dataviz-core sits in
     // dataviz-svelte's closure at an as-yet unpublished 0.5.0.
-    closure: ["@sentropic/graph"],
+    //
+    // RT-1: @sentropic/design-system-rich-text joins the closure for the same
+    // reason at an as-yet unpublished 0.1.0 - the svelte tarball's dependency
+    // resolves to the candidate local tarball, never to the registry.
+    closure: ["@sentropic/graph", "@sentropic/design-system-rich-text"],
     peers: [
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
       ["@sveltejs/vite-plugin-svelte", rootManifest.devDependencies["@sveltejs/vite-plugin-svelte"]],
+    ],
+  },
+  // RT-1: the neutral rich-text package. No local closure (its only runtime
+  // dependency, @tiptap/markdown, ships from the registry); peers are the
+  // Tiptap v3 peer set at the DS lockfile-resolved versions (the exact
+  // devDependency pins, which the lockfile resolves 1:1), plus svelte for
+  // the adapter consumer built in the strict install below.
+  "@sentropic/design-system-rich-text": {
+    closure: [],
+    peers: [
+      ...Object.keys(richTextManifest.peerDependencies).map((name) => [
+        name,
+        richTextManifest.devDependencies[name],
+      ]),
+      ["svelte", rootManifest.devDependencies.svelte],
     ],
   },
   "@sentropic/design-system-react": {
@@ -476,16 +522,30 @@ function listTarball(tarball) {
 
 function verifyTarball(pkg, tarball) {
   const entries = new Set(listTarball(tarball));
-  const missing = pkg.requiredFiles.filter((file) => !entries.has(`package/${file}`));
+  const required = [...pkg.requiredFiles, ...(pkg.extraRequiredFiles ?? [])];
+  const missing = required.filter((file) => !entries.has(`package/${file}`));
 
   assert(
     missing.length === 0,
     `${pkg.name} tarball is missing expected files: ${missing.join(", ")}`,
   );
+
+  const presentForbidden = (pkg.absentFiles ?? []).filter((file) => entries.has(`package/${file}`));
+  assert(
+    presentForbidden.length === 0,
+    `${pkg.name} tarball publishes files it must not: ${presentForbidden.join(", ")}`,
+  );
+
+  const patterns = (pkg.absentPatterns ?? []).map((source) => new RegExp(source));
+  const matching = [...entries].filter((entry) => patterns.some((rx) => rx.test(entry)));
+  assert(
+    matching.length === 0,
+    `${pkg.name} tarball publishes files it must not: ${matching.join(", ")}`,
+  );
 }
 
-function installProject(tarballs, peerSpecs) {
-  const installDir = join(tmp, "install");
+function installProject(tarballs, peerSpecs, { strict = false, dirName = "install" } = {}) {
+  const installDir = join(tmp, dirName);
   mkdirSync(installDir);
   writeFileSync(
     join(installDir, "package.json"),
@@ -494,6 +554,10 @@ function installProject(tarballs, peerSpecs) {
 
   const peerArgs = [...peerSpecs.entries()].map(([name, version]) => `${name}@${version}`);
 
+  // The default install keeps --legacy-peer-deps (historical behaviour for
+  // every other package). The strict install drops the flag on purpose: it
+  // proves the declared peers resolve cleanly, exactly as a real consumer's
+  // `npm install` would see them.
   run(
     "npm",
     [
@@ -501,7 +565,7 @@ function installProject(tarballs, peerSpecs) {
       "--no-audit",
       "--no-fund",
       "--ignore-scripts",
-      "--legacy-peer-deps",
+      ...(strict ? [] : ["--legacy-peer-deps"]),
       ...tarballs,
       ...peerArgs,
     ],
@@ -622,6 +686,36 @@ try {
       deepTargets.map((pkg) => pkg.name),
     );
     run("node", [verifyPath], { cwd: installDir });
+  }
+
+  // RT-1 strict consumer: when this run installed BOTH editor tarballs (full
+  // run, or the svelte shard whose closure pulls the rich-text candidate),
+  // install them a second time WITHOUT --legacy-peer-deps and build a real
+  // consumer that imports the subpath and its stylesheet through the packed
+  // manifest exports and mounts the editor. A shard that packed only one of
+  // the two has no consumer to build; its tarball and entry checks above
+  // still ran unconditionally.
+  const svelteTarball = tarballCache.get("@sentropic/design-system-svelte");
+  const richTextTarball = tarballCache.get("@sentropic/design-system-rich-text");
+  if (svelteTarball !== undefined && richTextTarball !== undefined) {
+    const strictPeers = new Map();
+    for (const name of ["@sentropic/design-system-svelte", "@sentropic/design-system-rich-text"]) {
+      for (const [peerName, peerVersion] of deepVerify[name].peers) {
+        if (!strictPeers.has(peerName)) strictPeers.set(peerName, peerVersion);
+      }
+    }
+    strictPeers.set("jsdom", rootManifest.devDependencies.jsdom);
+    const strictDir = installProject(
+      [svelteTarball, richTextTarball],
+      strictPeers,
+      { strict: true, dirName: "install-strict" },
+    );
+    console.log("OK strict peer install (no --legacy-peer-deps)");
+    cpSync(join(root, "scripts", "smoke-pack-rich-text-consumer"), strictDir, { recursive: true });
+    run(process.execPath, [join(strictDir, "node_modules", "vite", "bin", "vite.js"), "build"], { cwd: strictDir });
+    run("node", ["mount-check.mjs"], { cwd: strictDir });
+  } else {
+    console.log("Strict rich-text consumer skipped (this shard packed no svelte+rich-text pair)");
   }
 
   console.log("OK package smoke test passed");
