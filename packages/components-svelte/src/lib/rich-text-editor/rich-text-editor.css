@@ -1,0 +1,98 @@
+.st-rich-text-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-component-richTextEditor-gap, var(--st-spacing-2, 0.5rem));
+  min-width: 0;
+}
+
+.st-rich-text-editor__surface {
+  min-width: 0;
+}
+
+.st-rich-text-editor .ProseMirror {
+  background: var(
+    --st-component-richTextEditor-surface,
+    var(--st-semantic-surface-default)
+  );
+  color: var(
+    --st-component-richTextEditor-text,
+    var(--st-semantic-text-primary)
+  );
+  caret-color: var(
+    --st-component-richTextEditor-caret,
+    var(--st-semantic-text-primary)
+  );
+  border-radius: var(--st-component-richTextEditor-radius, var(--st-radius-lg, 0.5rem));
+  padding: var(
+    --st-component-richTextEditor-padding,
+    var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem)
+  );
+  outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  min-height: var(--st-component-richTextEditor-minHeight, 6rem);
+}
+
+.st-rich-text-editor .ProseMirror:focus-visible {
+  outline: var(
+    --st-component-richTextEditor-focusOutline,
+    var(--st-focus-width, 2px) solid
+      var(--st-focus-color, var(--st-semantic-border-strong))
+  );
+  outline-offset: var(--st-focus-offset, 2px);
+}
+
+.st-rich-text-editor .ProseMirror[aria-disabled="true"] {
+  user-select: none;
+}
+
+.st-rich-text-editor .ProseMirror ::selection {
+  background: var(
+    --st-component-richTextEditor-selection,
+    var(--st-semantic-action-primary)
+  );
+}
+
+.st-rich-text-editor .ProseMirror p {
+  margin: 0;
+}
+
+.st-rich-text-editor .ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(
+    --st-component-richTextEditor-placeholder,
+    var(--st-semantic-text-muted)
+  );
+}
+
+.st-rich-text-editor [data-preserved-block] {
+  background: var(
+    --st-component-richTextEditor-preservedBlock,
+    var(--st-semantic-surface-subtle)
+  );
+  color: var(
+    --st-component-richTextEditor-preservedBlockText,
+    var(--st-semantic-text-secondary)
+  );
+  border-radius: var(--st-component-richTextEditor-preservedBlockRadius, var(--st-radius-sm, 0.25rem));
+  padding: var(--st-component-richTextEditor-preservedBlockPadding, var(--st-spacing-2, 0.5rem));
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  user-select: none;
+  cursor: default;
+}
+
+.st-rich-text-editor__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
