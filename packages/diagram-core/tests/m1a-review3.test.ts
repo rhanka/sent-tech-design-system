@@ -144,7 +144,7 @@ describe("pass-3 finding 2: P-CONTENT-DIAGRAM pin digest", () => {
     const preimage = contentDiagramPreimage(generic2Profile);
     const sha = contentDiagramDigest(generic2Profile);
     expect(sha).toMatch(/^[0-9a-f]{64}$/);
-    expect(sha).toBe("970d87747433976d1852b350ad5d3e07082e3b8748c7a82eb6340d7680a52f7b");
+    expect(sha).toBe("cb103606707577720eba48570c0e49aadd209d8e51a9a0bc2c725b7434f79283");
     expect(canonicalBytes(preimage)).not.toContain("notes");
     const registry = createProfileRegistry([generic2Profile]);
     const good = {
@@ -187,7 +187,7 @@ describe("pass-3 finding 2: P-CONTENT-DIAGRAM pin digest", () => {
     );
   });
 
-  it.fails("diverges from Engram cb10360670 on contains.parent entityTypes (ours 970d8774 without them)", async () => {
+  it("equals the Engram-governed generic@2 pin digest", async () => {
     const { contentDiagramDigest } = await import("../src/index.js");
     expect(contentDiagramDigest(generic2Profile)).toBe(
       "cb103606707577720eba48570c0e49aadd209d8e51a9a0bc2c725b7434f79283",
