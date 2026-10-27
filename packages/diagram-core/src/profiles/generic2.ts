@@ -108,10 +108,7 @@ export const generic2Profile: Profile = {
       label: "Contains",
       direction: "directed",
       roles: [
-        // No role-level entityTypes here: parenting through this hierarchy is
-        // governed by the parent-family constraint alone, so removing that
-        // constraint removes exactly its check (M3 §5.4).
-        { role: "parent", cardinality: { min: 1, max: 1 }, targets: ["entity"] },
+        { role: "parent", cardinality: { min: 1, max: 1 }, targets: ["entity"], entityTypes: ["container", "legend"] },
         { role: "child", cardinality: { min: 1, max: 1 }, targets: ["entity"] },
       ],
       hierarchy: {
