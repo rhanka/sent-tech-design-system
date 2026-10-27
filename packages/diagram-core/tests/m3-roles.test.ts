@@ -16,7 +16,7 @@ import {
   type Profile,
   type SemanticDocument,
 } from "../src/index.js";
-import { baseDocument, ent, explicitLegacyOptions, port, rel, scopedOptions } from "./m3-helpers.js";
+import { baseDocument, ent, port, rel, scopedOptions } from "./m3-helpers.js";
 import { readFixture, stateOf } from "./fixtures.js";
 
 const matrixProfile: Profile = {
@@ -141,16 +141,19 @@ function refinementDocument(): SemanticDocument {
 
 describe("endpoint kind refusal, unchanged", () => {
   it("reports role/source accepts entity, not a port, with the exact native object", () => {
-    const legacyProfile: Profile = { ...syntheticProfile, id: "synthetic@1", version: 1 };
+    // The kind check is adapter-independent, so both witnesses below run
+    // through verified scoped rows (§5.3.1): a synthetic legacy row is
+    // refused at the binding gate and never reaches this check.
+    const kindProfile: Profile = { ...syntheticProfile, id: "synthetic-kind@2", version: 2 };
     const legacyDocument: SemanticDocument = {
-      ...baseDocument(["synthetic@1"]),
+      ...baseDocument(["synthetic-kind@2"]),
       entities: {
-        "entity:e": ent("e", "synthetic@1", "process", { name: text("E") }),
-        "entity:q": ent("q", "synthetic@1", "process", { name: text("Q") }),
+        "entity:e": ent("e", "synthetic-kind@2", "process", { name: text("E") }),
+        "entity:q": ent("q", "synthetic-kind@2", "process", { name: text("Q") }),
       },
-      ports: { "port:p": port("p", "synthetic@1", "port", "e") },
+      ports: { "port:p": port("p", "synthetic-kind@2", "port", "e") },
       relations: {
-        "relation:r": rel("r", "synthetic@1", "kind-link", [
+        "relation:r": rel("r", "synthetic-kind@2", "kind-link", [
           { role: "source", target: "port:p" },
           { role: "target", target: "entity:q" },
         ]),
@@ -171,7 +174,7 @@ describe("endpoint kind refusal, unchanged", () => {
       },
     };
     const cases = [
-      { document: legacyDocument, options: explicitLegacyOptions([legacyProfile]) },
+      { document: legacyDocument, options: scopedOptions([kindProfile]) },
       { document, options: scopedOptions([syntheticProfile]) },
     ] as const;
     for (const { document: candidate, options } of cases) {
@@ -190,25 +193,51 @@ describe("endpoint kind refusal, unchanged", () => {
 });
 
 describe("endpoint family roles", () => {
-  it("refuses a refinement under the legacy adapter with the exact native object", () => {
-    const legacyProfile: Profile = { ...syntheticProfile, id: "synthetic@1", version: 1 };
-    const legacyRefinement: SemanticDocument = {
-      ...baseDocument(["synthetic@1"]),
+  it("refuses a non-member refinement with the exact native object through a verified scoped row", () => {
+    // §5.3.1 reserves legacy rows for the four retained @1 identities, so a
+    // synthetic legacy row is refused at the binding gate (see
+    // m1a-review3.test.ts). The family-role template is adapter-agnostic: a
+    // refinement outside the allowed family projects to the exact native
+    // diagnostic, with no seenChain added.
+    const witnessProfile: Profile = {
+      ...syntheticProfile,
+      id: "synthetic-type@2",
+      version: 2,
+      entityTypes: [
+        {
+          id: "process",
+          label: "Process",
+          attributes: [{ name: "name", kind: "text", required: true, maxLength: 200 }],
+        },
+        {
+          id: "task",
+          label: "Task",
+          attributes: [{ name: "name", kind: "text", maxLength: 200 }],
+        },
+      ],
+    };
+    const witnessRefinement: SemanticDocument = {
+      ...baseDocument(["synthetic-type@2"]),
       typeDefinitions: {
-        "custom-process": { id: "custom-process", profile: "synthetic@1", baseType: "process", attributes: [] },
+        "custom-process": {
+          id: "custom-process",
+          profile: "synthetic-type@2",
+          baseType: "task",
+          attributes: [],
+        },
       },
       entities: {
-        "entity:p": ent("p", "synthetic@1", "custom-process", { name: text("P") }),
-        "entity:q": ent("q", "synthetic@1", "process", { name: text("Q") }),
+        "entity:p": ent("p", "synthetic-type@2", "custom-process", { name: text("P") }),
+        "entity:q": ent("q", "synthetic-type@2", "process", { name: text("Q") }),
       },
       relations: {
-        "relation:r": rel("r", "synthetic@1", "link", [
+        "relation:r": rel("r", "synthetic-type@2", "link", [
           { role: "source", target: "entity:p" },
           { role: "target", target: "entity:q" },
         ]),
       },
     };
-    expect(validateDocument(legacyRefinement, explicitLegacyOptions([legacyProfile]))).toEqual([
+    expect(validateDocument(witnessRefinement, scopedOptions([witnessProfile]))).toEqual([
       {
         code: "endpoint-target-not-allowed",
         severity: "error",

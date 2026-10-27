@@ -30,6 +30,7 @@ import {
   type DeclarationAdapter,
   type ExecutorProfileBindings,
 } from "./bindings.js";
+import { retainedExecutorBindings } from "./profiles/index.js";
 import { tryCanonicalise } from "./canonical.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import {
@@ -1571,7 +1572,7 @@ export function validateDocument(document: SemanticDocument, options: Validation
     // No table, no guess (§5.3.1): implicit native compatibility is reserved
     // for exactly the four retained @1 identities. Every other profile, any
     // version, requires a verified bindings row selecting its adapter;
-    // Appendix C synthetic witnesses carry their explicit verified rows.
+    // synthetic witnesses carry their explicit verified scoped rows.
     for (const id of document.profileRefs) {
       if (!isRetainedLegacyProfileId(id)) {
         return [
@@ -1584,6 +1585,19 @@ export function validateDocument(document: SemanticDocument, options: Validation
         ];
       }
     }
+    // The packaged retained rows are the effective defaults: verify their
+    // pins against the supplied registry before native execution, so
+    // modified retained bytes refuse instead of running native checks.
+    // Only rows both referenced and registered are verified; an unregistered
+    // retained id keeps its existing unknown-profile diagnostic below.
+    const effectiveDefaults: ExecutorProfileBindings = {
+      schemaVersion: "1",
+      rows: retainedExecutorBindings.rows.filter(
+        (row) => document.profileRefs.includes(row.profileId) && options.registry.get(row.profileId) !== undefined,
+      ),
+    };
+    const defaultDiagnostics = verifyExecutorBindings(effectiveDefaults, options.registry);
+    if (defaultDiagnostics.length > 0) return defaultDiagnostics;
   }
   const diagnostics: Diagnostic[] = [];
 

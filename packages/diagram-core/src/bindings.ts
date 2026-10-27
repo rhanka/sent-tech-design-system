@@ -245,8 +245,7 @@ export function verifyExecutorBindings(
     if (
       row.declarationAdapter === LEGACY_CONSTRAINTS_ADAPTER &&
       !isRetainedLegacyProfileId(row.profileId) &&
-      imposed === undefined &&
-      registered.version !== 1
+      imposed === undefined
     ) {
       diagnostics.push(
         diagnostic({
