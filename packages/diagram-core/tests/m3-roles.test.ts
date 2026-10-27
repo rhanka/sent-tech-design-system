@@ -141,6 +141,21 @@ function refinementDocument(): SemanticDocument {
 
 describe("endpoint kind refusal, unchanged", () => {
   it("reports role/source accepts entity, not a port, with the exact native object", () => {
+    const legacyProfile: Profile = { ...syntheticProfile, id: "synthetic@1", version: 1 };
+    const legacyDocument: SemanticDocument = {
+      ...baseDocument(["synthetic@1"]),
+      entities: {
+        "entity:e": ent("e", "synthetic@1", "process", { name: text("E") }),
+        "entity:q": ent("q", "synthetic@1", "process", { name: text("Q") }),
+      },
+      ports: { "port:p": port("p", "synthetic@1", "port", "e") },
+      relations: {
+        "relation:r": rel("r", "synthetic@1", "kind-link", [
+          { role: "source", target: "port:p" },
+          { role: "target", target: "entity:q" },
+        ]),
+      },
+    };
     const document: SemanticDocument = {
       ...baseDocument(["synthetic@2"]),
       entities: {
@@ -155,8 +170,12 @@ describe("endpoint kind refusal, unchanged", () => {
         ]),
       },
     };
-    for (const options of [explicitLegacyOptions([syntheticProfile]), scopedOptions([syntheticProfile])]) {
-      expect(validateDocument(document, options)).toEqual([
+    const cases = [
+      { document: legacyDocument, options: explicitLegacyOptions([legacyProfile]) },
+      { document, options: scopedOptions([syntheticProfile]) },
+    ] as const;
+    for (const { document: candidate, options } of cases) {
+      expect(validateDocument(candidate, options)).toEqual([
         {
           code: "endpoint-target-not-allowed",
           severity: "error",
@@ -172,7 +191,24 @@ describe("endpoint kind refusal, unchanged", () => {
 
 describe("endpoint family roles", () => {
   it("refuses a refinement under the legacy adapter with the exact native object", () => {
-    expect(validateDocument(refinementDocument(), explicitLegacyOptions([syntheticProfile]))).toEqual([
+    const legacyProfile: Profile = { ...syntheticProfile, id: "synthetic@1", version: 1 };
+    const legacyRefinement: SemanticDocument = {
+      ...baseDocument(["synthetic@1"]),
+      typeDefinitions: {
+        "custom-process": { id: "custom-process", profile: "synthetic@1", baseType: "process", attributes: [] },
+      },
+      entities: {
+        "entity:p": ent("p", "synthetic@1", "custom-process", { name: text("P") }),
+        "entity:q": ent("q", "synthetic@1", "process", { name: text("Q") }),
+      },
+      relations: {
+        "relation:r": rel("r", "synthetic@1", "link", [
+          { role: "source", target: "entity:p" },
+          { role: "target", target: "entity:q" },
+        ]),
+      },
+    };
+    expect(validateDocument(legacyRefinement, explicitLegacyOptions([legacyProfile]))).toEqual([
       {
         code: "endpoint-target-not-allowed",
         severity: "error",

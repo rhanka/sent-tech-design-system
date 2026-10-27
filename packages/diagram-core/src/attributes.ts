@@ -17,7 +17,7 @@ import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import { type RefKind, refKindOf } from "./refs.js";
 
 export type ScalarAttributeKind = "text" | "boolean" | "date" | "quantity" | "enum" | "reference";
-export type AttributeKind = ScalarAttributeKind | "collection";
+export type AttributeKind = ScalarAttributeKind | "collection" | "struct";
 
 export type ScalarAttributeValue =
   | { readonly kind: "text"; readonly value: string }

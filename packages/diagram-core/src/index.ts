@@ -18,6 +18,7 @@ export * from "./document.js";
 export * from "./view.js";
 export * from "./state.js";
 export * from "./hash.js";
+export * from "./sha256.js";
 export * from "./canonical.js";
 export * from "./validate.js";
 export * from "./commands.js";

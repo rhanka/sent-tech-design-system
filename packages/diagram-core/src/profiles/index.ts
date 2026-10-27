@@ -43,10 +43,20 @@ export const m3ProfileRegistry: ProfileRegistry = createProfileRegistry([
  * The shipped `executor-profile-bindings@1` table (M3 §5.3.1): one verifying
  * row per shipped profile, with its imposed adapter. Consumers pass it
  * explicitly; absence of a table never silently selects an adapter for a
- * profile that declares new-format constraints.
+ * profile outside the four retained identities.
  */
 export const shippedExecutorBindings: ExecutorProfileBindings = embeddedExecutorBindings([
   ...completeProfiles,
   ...skeletonProfiles,
   generic2Profile,
+]);
+
+/**
+ * The packaged verified default rows for exactly the four retained @1
+ * identities (M3 §5.3.1), each with `legacy-constraints@1`. Every other
+ * profile, any version, requires its own verified row.
+ */
+export const retainedExecutorBindings: ExecutorProfileBindings = embeddedExecutorBindings([
+  ...completeProfiles,
+  ...skeletonProfiles,
 ]);
