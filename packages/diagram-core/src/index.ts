@@ -11,6 +11,8 @@ export * from "./refs.js";
 export * from "./diagnostics.js";
 export * from "./attributes.js";
 export * from "./profile.js";
+export * from "./bindings.js";
+export * from "./resolver.js";
 export * from "./profiles/index.js";
 export * from "./document.js";
 export * from "./view.js";
