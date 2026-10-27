@@ -552,6 +552,24 @@ function requireHierarchy(profile: Profile, hierarchyId: string, constraintPath:
   ];
 }
 
+/** A profile type with its transitive supertypes, self-first, cycle-guarded. */
+function profileAncestry(profile: Profile, typeId: string): readonly string[] {
+  const ancestry: string[] = [typeId];
+  const seen = new Set<string>([typeId]);
+  const stack: string[] = [typeId];
+  while (stack.length > 0) {
+    const current = stack.pop() as string;
+    const declared = profile.entityTypes.find((type) => type.id === current);
+    for (const superId of declared?.supertypes ?? []) {
+      if (seen.has(superId)) continue;
+      seen.add(superId);
+      ancestry.push(superId);
+      stack.push(superId);
+    }
+  }
+  return ancestry;
+}
+
 /** The unique selectable hierarchy for a scoped grouping, if exactly one exists. */
 export function selectGroupingHierarchy(
   profile: Profile,
@@ -564,8 +582,11 @@ export function selectGroupingHierarchy(
     const parent = relation.roles.find((role) => role.role === hierarchy.parentRole);
     const child = relation.roles.find((role) => role.role === hierarchy.childRole);
     if (parent === undefined || child === undefined) return false;
-    if (!roleAccepts(child, entityType)) return false;
-    if (withinType !== undefined && !roleAccepts(parent, withinType)) return false;
+    // Family-role satisfaction (§5.2) runs on resolved ancestry for parent
+    // and child alike: a refinement of an accepted family is accepted, so a
+    // hierarchy admitting `base` children selects for a `sub` constraint.
+    if (!roleAccepts(profile, child, entityType)) return false;
+    if (withinType !== undefined && !roleAccepts(profile, parent, withinType)) return false;
     return true;
   });
   if (candidates.length !== 1) return undefined;
@@ -576,11 +597,13 @@ export function selectGroupingHierarchy(
 }
 
 function roleAccepts(
+  profile: Profile,
   role: { readonly targets: readonly string[]; readonly entityTypes?: readonly string[] },
   entityType: string,
 ): boolean {
   if (!role.targets.includes("entity")) return false;
-  return role.entityTypes === undefined || role.entityTypes.includes(entityType);
+  if (role.entityTypes === undefined) return true;
+  return role.entityTypes.some((allowed) => profileAncestry(profile, entityType).includes(allowed));
 }
 
 function validateUniqueScope(
@@ -621,7 +644,14 @@ function validateUniqueScope(
 function isQualifiablePattern(source: string): boolean {
   if (source.length === 0 || source[0] !== "^") return false;
   if (!/^[\x00-\x7F]*$/.test(source)) return false;
-  if (!/(?<!\\)\$$/.test(source)) return false;
+  // The closing anchor is escaped only by an odd run of backslashes: an even
+  // run (including zero) leaves the `$` unescaped, so a pattern matching a
+  // trailing literal backslash still qualifies.
+  let backslashes = 0;
+  for (let index = source.length - 2; index >= 0 && source[index] === "\\"; index -= 1) {
+    backslashes += 1;
+  }
+  if (source[source.length - 1] !== "$" || backslashes % 2 === 1) return false;
   try {
     new RegExp(source);
     return true;
@@ -754,11 +784,17 @@ function validateSupertypes(profile: Profile): readonly Diagnostic[] {
       }
       if (stack.includes(superId)) {
         broken = true;
-        // Rotation-independent key: every root reaching this cycle reports the
-        // same members, so the cycle is refused once. Path, message and
-        // details all aim at the edge owner that closes it.
-        const members = [...new Set(stack.slice(stack.indexOf(superId)))].sort();
-        const key = members.join(">");
+        // Rotation-independent ordered key: the directed cycle in stack order,
+        // rotated so its smallest member (UTF-16) comes first. Every root
+        // reaching this directed cycle reports the same key, so the cycle is
+        // refused once; disjoint cycles and opposite directions keep distinct
+        // keys. JSON serialisation keeps the key unambiguous: no delimiter
+        // can collide with a member id. Path, message and details all aim at
+        // the edge owner that closes it.
+        const ordered = stack.slice(stack.indexOf(superId));
+        const smallest = [...ordered].sort()[0] as string;
+        const first = ordered.indexOf(smallest);
+        const key = JSON.stringify([...ordered.slice(first), ...ordered.slice(0, first)]);
         if (!reportedCycles.has(key)) {
           reportedCycles.add(key);
           diagnostics.push(

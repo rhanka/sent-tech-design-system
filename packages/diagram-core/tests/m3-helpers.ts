@@ -12,6 +12,7 @@ import {
   createProfileRegistry,
   documentRef,
   entityRef,
+  LEGACY_CONSTRAINTS_ADAPTER,
   portRef,
   relationRef,
   SCOPED_CONSTRAINTS_ADAPTER,
@@ -98,6 +99,21 @@ export function scopedOptions(profiles: readonly Profile[]): ValidationOptions {
 
 export function legacyOptions(profiles: readonly Profile[]): ValidationOptions {
   return { registry: createProfileRegistry(profiles) };
+}
+
+/**
+ * An explicit legacy-adapter run: every profile carries a verified
+ * `legacy-constraints@1` row. New-format profiles (§5.3.1) only run the
+ * retained native checks through such an explicit row — never by omitting
+ * the bindings table.
+ */
+export function explicitLegacyOptions(profiles: readonly Profile[]): ValidationOptions {
+  const registry = createProfileRegistry(profiles);
+  const bindings: ExecutorProfileBindings = {
+    schemaVersion: "1",
+    rows: profiles.map((profile) => bindingRowFor(profile, LEGACY_CONSTRAINTS_ADAPTER)),
+  };
+  return { registry, bindings };
 }
 
 /** The canonical valid generic@2 scene: legend l with keys k1/k2, container c with node n. */

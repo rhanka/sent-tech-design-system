@@ -16,7 +16,7 @@ import {
   type Profile,
   type SemanticDocument,
 } from "../src/index.js";
-import { baseDocument, ent, legacyOptions, port, rel, scopedOptions } from "./m3-helpers.js";
+import { baseDocument, ent, explicitLegacyOptions, port, rel, scopedOptions } from "./m3-helpers.js";
 import { readFixture, stateOf } from "./fixtures.js";
 
 const matrixProfile: Profile = {
@@ -155,7 +155,7 @@ describe("endpoint kind refusal, unchanged", () => {
         ]),
       },
     };
-    for (const options of [legacyOptions([syntheticProfile]), scopedOptions([syntheticProfile])]) {
+    for (const options of [explicitLegacyOptions([syntheticProfile]), scopedOptions([syntheticProfile])]) {
       expect(validateDocument(document, options)).toEqual([
         {
           code: "endpoint-target-not-allowed",
@@ -172,7 +172,7 @@ describe("endpoint kind refusal, unchanged", () => {
 
 describe("endpoint family roles", () => {
   it("refuses a refinement under the legacy adapter with the exact native object", () => {
-    expect(validateDocument(refinementDocument(), legacyOptions([syntheticProfile]))).toEqual([
+    expect(validateDocument(refinementDocument(), explicitLegacyOptions([syntheticProfile]))).toEqual([
       {
         code: "endpoint-target-not-allowed",
         severity: "error",
