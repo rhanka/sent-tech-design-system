@@ -535,18 +535,22 @@ function validateRelation(
     diagnostics.push(...resolution);
     if (resolution.length > 0) return;
 
-    // M3 §3.2.3: a hierarchy endpoint is owned by the relation's own profile.
-    // A foreign-family entity is refused without an admitted semantic join —
-    // and no such join exists in this lot. The retained native run is
-    // unchanged.
-    if (seenKind === "entity" && adapter !== LEGACY_CONSTRAINTS_ADAPTER && declared.hierarchy !== undefined) {
-      const target = document.entities[endpoint.target] as Entity | undefined;
+    // M3 §3.2.1 S-4: every scoped endpoint is owned by the relation's own
+    // profile. A foreign-family entity or port is refused without an admitted
+    // semantic join — and no such join exists in this lot. The check covers
+    // all relation types, not only hierarchy relations. The retained native
+    // run is unchanged.
+    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && (seenKind === "entity" || seenKind === "port")) {
+      const target =
+        seenKind === "entity"
+          ? (document.entities[endpoint.target] as Entity | undefined)
+          : (document.ports[endpoint.target] as SemanticPort | undefined);
       if (target !== undefined && target.profile !== relation.profile) {
         diagnostics.push(
           diagnostic({
             code: "endpoint-without-join",
             path: `${endpointPath}.target`,
-            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to entity ${endpoint.target} owned by profile ${target.profile} with no admitted semantic join`,
+            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to ${seenKind} ${endpoint.target} owned by profile ${target.profile} with no admitted semantic join`,
             refs: [endpoint.target],
             details: { profile: relation.profile, targetProfile: target.profile },
           }),
@@ -1045,21 +1049,48 @@ function checkRelationshipMatrix(
     .filter((relation) => relation.profile === profile.id)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
   for (const relation of relations) {
+    // §5.2: relation declaration, role, kind, cardinality and resolution
+    // prerequisites take precedence. A relation failing any of them already
+    // carries its own refusal from endpoint validation; comparing it against
+    // the matrix would add a secondary relationship-matrix-violation.
+    const declared = relationTypeOf(profile, relation.type);
+    if (declared === undefined) continue;
+    const sourceRole = roleOf(declared, constraint.sourceRole);
+    const targetRole = roleOf(declared, constraint.targetRole);
+    if (sourceRole === undefined || targetRole === undefined) continue;
     const sources = relation.endpoints.filter((endpoint) => endpoint.role === constraint.sourceRole);
     const targets = relation.endpoints.filter((endpoint) => endpoint.role === constraint.targetRole);
     if (sources.length !== 1 || targets.length !== 1) continue;
     const source = sources[0] as (typeof sources)[number];
     const target = targets[0] as (typeof targets)[number];
     if (refKindOf(source.target) !== "entity" || refKindOf(target.target) !== "entity") continue;
-    // §5.2: unknown type/kind/cardinality diagnostics take precedence. When an
-    // endpoint does not resolve, its own refusal is the diagnostic; comparing
-    // a fallback chain against the matrix would add a secondary violation.
+    if (!sourceRole.targets.includes("entity") || !targetRole.targets.includes("entity")) continue;
+    const counts = new Map<string, number>();
+    for (const endpoint of relation.endpoints) {
+      counts.set(endpoint.role, (counts.get(endpoint.role) ?? 0) + 1);
+    }
+    const sourceCount = counts.get(constraint.sourceRole) ?? 0;
+    const targetCount = counts.get(constraint.targetRole) ?? 0;
+    if (sourceCount < sourceRole.cardinality.min || sourceCount > sourceRole.cardinality.max) continue;
+    if (targetCount < targetRole.cardinality.min || targetCount > targetRole.cardinality.max) continue;
     const sourceEntity = document.entities[source.target] as Entity | undefined;
     const targetEntity = document.entities[target.target] as Entity | undefined;
     if (sourceEntity === undefined || targetEntity === undefined) continue;
     const sourceInfo = resolvedChainOfEntity(registry, resolver, sourceEntity);
     const targetInfo = resolvedChainOfEntity(registry, resolver, targetEntity);
     if (sourceInfo === undefined || targetInfo === undefined) continue;
+    if (
+      sourceRole.entityTypes !== undefined &&
+      !sourceRole.entityTypes.some((allowed) => sourceInfo.chain.includes(allowed))
+    ) {
+      continue;
+    }
+    if (
+      targetRole.entityTypes !== undefined &&
+      !targetRole.entityTypes.some((allowed) => targetInfo.chain.includes(allowed))
+    ) {
+      continue;
+    }
     if (tuples.has(`${relation.type}\n${sourceInfo.familyType}\n${targetInfo.familyType}`)) continue;
     diagnostics.push(
       diagnostic({
@@ -1146,6 +1177,16 @@ function checkBoundPair(
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
     if (relationTypeOf(profile, relation.type) === undefined) continue;
     checkRecord(`relations.${relation.id}`, relation.attributes);
+  }
+  // Ports carry structured attributes too: a bound pair on a port attribute
+  // is the same multiplicity fact as on an entity or relation. Records walk
+  // in UTF-16 id order and attributes keep the exact value path, like every
+  // other sorted walk in this file.
+  for (const port of Object.values(document.ports)
+    .filter((candidate) => candidate.profile === profile.id)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
+    if (portTypeOf(profile, port.type) === undefined) continue;
+    checkRecord(`ports.${port.id}`, port.attributes);
   }
   return diagnostics;
 }
@@ -1500,6 +1541,13 @@ function declaredProfile(
 }
 
 export function validateDocument(document: SemanticDocument, options: ValidationOptions): readonly Diagnostic[] {
+  // The native object guard runs before anything else reads the document: a
+  // non-object input returns the exact native diagnostic instead of throwing
+  // on `profileRefs` inside binding processing.
+  if (typeof document !== "object" || document === null) {
+    return [diagnostic({ code: "document-not-an-object", path: "document", message: "a document is an object" })];
+  }
+
   // A provided bindings table is verified before any document check runs; a
   // missing row or digest mismatch refuses the run instead of guessing.
   if (options.bindings !== undefined) {
@@ -1518,12 +1566,15 @@ export function validateDocument(document: SemanticDocument, options: Validation
       }
     }
   } else {
-    // No table, no guess: a profile that declares new-format constraints
-    // requires a verified bindings row selecting its adapter. Retained @1
-    // profiles (and constraint-free synthetics) keep the native run.
+    // No table, no guess (§5.3.1): implicit native compatibility is reserved
+    // for version-1 profiles — the four retained @1 rows and version-1
+    // synthetics such as the Appendix C endpoint witness. Every new-format
+    // profile (version 2 and above) requires a verified bindings row
+    // selecting its adapter, whatever its declaration contents: a scoped
+    // uniqueness or bare declaration must not silently run legacy checks.
     for (const id of document.profileRefs) {
       const registered = options.registry.get(id);
-      if (registered !== undefined && registered.constraints.some(isAddedConstraint)) {
+      if (registered !== undefined && registered.version !== 1) {
         return [
           diagnostic({
             code: "type-definition-conflict",
@@ -1536,10 +1587,6 @@ export function validateDocument(document: SemanticDocument, options: Validation
     }
   }
   const diagnostics: Diagnostic[] = [];
-
-  if (typeof document !== "object" || document === null) {
-    return [diagnostic({ code: "document-not-an-object", path: "document", message: "a document is an object" })];
-  }
 
   const version = document.schemaVersion;
   if (

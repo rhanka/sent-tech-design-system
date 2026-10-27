@@ -18,7 +18,7 @@
  */
 
 import type { AttributeSchema } from "./attributes.js";
-import { digestProfile } from "./bindings.js";
+import { digestProfile, stableStringify } from "./bindings.js";
 import type { SemanticDocument, TypeDefinition } from "./document.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import { entityTypeOf, type Profile, type ProfileId } from "./profile.js";
@@ -70,6 +70,13 @@ class RedeclarationThrown {
   ) {}
 }
 
+class ProfileConflictThrown {
+  constructor(
+    readonly typeId: string,
+    readonly attribute: string,
+  ) {}
+}
+
 export function createTypeResolver(document: SemanticDocument): TypeResolver {
   let revision = document.revision;
   let cache = new Map<string, TypeResolution>();
@@ -98,62 +105,96 @@ export function createTypeResolver(document: SemanticDocument): TypeResolver {
       };
     }
 
-    // Depth-first walk, base-first: every base resolves before the node that
-    // refines it, so a redeclaration sees the full inherited schema set.
+    // Depth-first walk, base-first, on an explicit stack with visited state:
+    // every base resolves before the node that refines it, so a
+    // redeclaration sees the full inherited schema set. No frame is ever
+    // entered twice and no call recurses, so a 5 000-deep additive chain
+    // resolves without a stack overflow (§5.1, §3.4).
     const ancestryBaseFirst: string[] = [];
     const merged: AttributeSchema[] = [];
+    const inheritedNames = new Set<string>();
     const seen = new Set<string>();
-    const stack: string[] = [];
+    const path: string[] = [];
+    const onPath = new Set<string>();
     let container = false;
 
-    const visit = (id: string): void => {
-      if (seen.has(id)) return;
-      if (stack.includes(id)) {
-        throw new CycleThrown([...stack.slice(stack.indexOf(id)), id]);
-      }
-      const node = nodeOf(profile, id);
-      if (node === undefined) {
-        throw new UnknownBaseThrown(stack[stack.length - 1] as string, id);
-      }
-      stack.push(id);
-      try {
-        const bases: readonly string[] =
-          node.kind === "definition"
-            ? [node.definition.baseType]
-            : ((entityTypeOf(profile, node.id)?.supertypes ?? []) as readonly string[]);
-        for (const base of bases) visit(base);
-        const inheritedNames = new Set(merged.map((schema) => schema.name));
-        const ownAttributes = node.kind === "definition" ? node.definition.attributes : [];
-        for (const schema of ownAttributes) {
+    interface Frame {
+      readonly id: string;
+      readonly node: ChainNode;
+      readonly bases: readonly string[];
+      nextBase: number;
+    }
+    const basesOf = (node: ChainNode): readonly string[] =>
+      node.kind === "definition"
+        ? [node.definition.baseType]
+        : ((entityTypeOf(profile, node.id)?.supertypes ?? []) as readonly string[]);
+    const processFrame = (frame: Frame): void => {
+      const { id, node } = frame;
+      if (node.kind === "definition") {
+        for (const schema of node.definition.attributes) {
           if (inheritedNames.has(schema.name)) {
-            const immediate = node.kind === "definition" ? node.definition.baseType : id;
-            throw new RedeclarationThrown(
-              node.kind === "definition" ? node.definition.id : id,
-              schema.name,
-              immediate,
-            );
+            throw new RedeclarationThrown(node.definition.id, schema.name, node.definition.baseType);
           }
         }
-        if (node.kind === "profile" && entityTypeOf(profile, node.id)?.container === true) {
+      } else {
+        if (entityTypeOf(profile, node.id)?.container === true) {
           container = true;
         }
-        const declaredAttributes =
-          node.kind === "profile" ? (entityTypeOf(profile, node.id)?.attributes ?? []) : ownAttributes;
-        for (const schema of declaredAttributes) {
-          if (!inheritedNames.has(schema.name)) {
-            merged.push(schema);
-            inheritedNames.add(schema.name);
+        // A profile subtype redeclaring an inherited attribute with an
+        // incompatible schema refuses resolution instead of silently
+        // retaining the first schema; the caller reports the typed refusal
+        // and skips the follow-on value checks for that chain.
+        const ownAttributes = entityTypeOf(profile, node.id)?.attributes ?? [];
+        for (const schema of ownAttributes) {
+          if (!inheritedNames.has(schema.name)) continue;
+          const inherited = merged.filter((candidate) => candidate.name === schema.name);
+          if (inherited.some((candidate) => stableStringify(candidate) !== stableStringify(schema))) {
+            throw new ProfileConflictThrown(node.id, schema.name);
           }
         }
-        seen.add(id);
-        ancestryBaseFirst.push(id);
-      } finally {
-        stack.pop();
       }
+      const declaredAttributes =
+        node.kind === "profile"
+          ? (entityTypeOf(profile, node.id)?.attributes ?? [])
+          : node.definition.attributes;
+      for (const schema of declaredAttributes) {
+        if (!inheritedNames.has(schema.name)) {
+          merged.push(schema);
+          inheritedNames.add(schema.name);
+        }
+      }
+      seen.add(id);
+      ancestryBaseFirst.push(id);
     };
 
     try {
-      visit(typeId);
+      const root = nodeOf(profile, typeId) as ChainNode;
+      const stack: Frame[] = [{ id: typeId, node: root, bases: basesOf(root), nextBase: 0 }];
+      path.push(typeId);
+      onPath.add(typeId);
+      while (stack.length > 0) {
+        const frame = stack[stack.length - 1] as Frame;
+        if (frame.nextBase < frame.bases.length) {
+          const baseId = frame.bases[frame.nextBase] as string;
+          frame.nextBase += 1;
+          if (seen.has(baseId)) continue;
+          if (onPath.has(baseId)) {
+            throw new CycleThrown([...path.slice(path.indexOf(baseId)), baseId]);
+          }
+          const base = nodeOf(profile, baseId);
+          if (base === undefined) {
+            throw new UnknownBaseThrown(frame.id, baseId);
+          }
+          stack.push({ id: baseId, node: base, bases: basesOf(base), nextBase: 0 });
+          path.push(baseId);
+          onPath.add(baseId);
+        } else {
+          processFrame(frame);
+          stack.pop();
+          path.pop();
+          onPath.delete(frame.id);
+        }
+      }
     } catch (thrown) {
       if (thrown instanceof CycleThrown) {
         const cycle = thrown.cycle.join(">");
@@ -190,6 +231,19 @@ export function createTypeResolver(document: SemanticDocument): TypeResolver {
               `type definition ${thrown.definitionId} redeclares ${thrown.attribute}, ` +
               `which base type ${thrown.baseType} already declares; refinements are additive only`,
             details: { attribute: thrown.attribute, baseType: thrown.baseType },
+          }),
+          failedType: typeId,
+        };
+      }
+      if (thrown instanceof ProfileConflictThrown) {
+        return {
+          ok: false,
+          diagnostic: diagnostic({
+            code: "attribute-conflict",
+            path: `profiles.${profile.id}.entityTypes.${thrown.typeId}.attributes.${thrown.attribute}`,
+            message: `inherited attribute ${thrown.attribute} has incompatible schemas on ${thrown.typeId}`,
+            refs: [],
+            details: { attribute: thrown.attribute, type: thrown.typeId },
           }),
           failedType: typeId,
         };

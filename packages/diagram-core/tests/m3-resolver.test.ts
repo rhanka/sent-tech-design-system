@@ -15,7 +15,7 @@ import {
   type Profile,
   type SemanticDocument,
 } from "../src/index.js";
-import { baseDocument, ent, legacyOptions, scopedOptions } from "./m3-helpers.js";
+import { baseDocument, ent, explicitLegacyOptions, scopedOptions } from "./m3-helpers.js";
 
 const resolverProfile: Profile = {
   id: "resolver@2",
@@ -228,7 +228,7 @@ describe("the shared resolver", () => {
       ...baseDocument(["resolver@2"]),
       entities: { "entity:bad": ent("bad", "resolver@2", "abs") },
     };
-    const diagnostics = validateDocument(document, legacyOptions([resolverProfile]));
+    const diagnostics = validateDocument(document, explicitLegacyOptions([resolverProfile]));
     expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
     expect(diagnostics[0]?.details).toEqual({ abstract: true });
   });
