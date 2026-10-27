@@ -305,7 +305,7 @@ describe("legend arms on generic@2", () => {
     ]);
   });
 
-  it("refuses a non-family parent through parent-family with the native type arm", () => {
+  it("refuses a non-family parent through the governed role restriction and parent-family", () => {
     const document = validGeneric2Document();
     const child = ent("m", "generic@2", "node", { name: text("M") });
     const broken: SemanticDocument = {
@@ -320,16 +320,15 @@ describe("legend arms on generic@2", () => {
       },
     };
     const expected = validateDocument(broken, options);
-    expect(expected).toEqual([
-      {
-        code: "endpoint-target-not-allowed",
-        severity: "error",
-        path: "relations.relation:nm.endpoints[0].target",
-        message: "role parent accepts entity types container, legend; entity:n is a node",
-        refs: ["entity:n"],
-        details: { seenType: "node", allowed: "container,legend" },
-      },
-    ]);
+    const arm = {
+      code: "endpoint-target-not-allowed",
+      severity: "error",
+      path: "relations.relation:nm.endpoints[0].target",
+      message: "role parent accepts entity types container, legend; entity:n is a node",
+      refs: ["entity:n"],
+      details: { seenType: "node", allowed: "container,legend" },
+    } as const;
+    expect(expected).toEqual([arm, arm]);
   });
 });
 
