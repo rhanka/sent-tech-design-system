@@ -224,11 +224,12 @@ describe("the shared resolver", () => {
   });
 
   it("leaves legacy validation bound to its native abstract shape", () => {
+    const legacyProfile: Profile = { ...resolverProfile, id: "resolver@1", version: 1 };
     const document: SemanticDocument = {
-      ...baseDocument(["resolver@2"]),
-      entities: { "entity:bad": ent("bad", "resolver@2", "abs") },
+      ...baseDocument(["resolver@1"]),
+      entities: { "entity:bad": ent("bad", "resolver@1", "abs") },
     };
-    const diagnostics = validateDocument(document, explicitLegacyOptions([resolverProfile]));
+    const diagnostics = validateDocument(document, explicitLegacyOptions([legacyProfile]));
     expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
     expect(diagnostics[0]?.details).toEqual({ abstract: true });
   });
