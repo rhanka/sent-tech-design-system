@@ -101,6 +101,13 @@ describe("generic@2 declaration shape", () => {
     });
     expect(generic2Profile.constraints).toEqual([
       {
+        kind: "hierarchy",
+        relationType: "contains",
+        hierarchyId: GENERIC2_CONTAINMENT_HIERARCHY,
+        parentRole: "parent",
+        childRole: "child",
+      },
+      {
         kind: "parent-family",
         hierarchyId: GENERIC2_CONTAINMENT_HIERARCHY,
         familyRoots: ["container", "legend"],

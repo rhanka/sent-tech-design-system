@@ -130,6 +130,13 @@ export const generic2Profile: Profile = {
     },
   ],
   constraints: [
+    {
+      kind: "hierarchy",
+      relationType: "contains",
+      hierarchyId: GENERIC2_CONTAINMENT_HIERARCHY,
+      parentRole: "parent",
+      childRole: "child",
+    },
     { kind: "parent-family", hierarchyId: GENERIC2_CONTAINMENT_HIERARCHY, familyRoots: ["container", "legend"] },
     {
       kind: "children-restricted",

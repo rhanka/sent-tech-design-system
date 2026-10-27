@@ -214,7 +214,12 @@ function checkReferenceTargetType(
   ];
 }
 
-/** K6: a structured value against its declared structured type, recursively. */
+/**
+ * K6: a structured value against its resolved effective structured type,
+ * recursively. The effective schema (M3 §2.3/§5.1) carries inherited fields;
+ * the direct declaration alone would miss them and misreport the ones the
+ * value does carry.
+ */
 function validateStructValue(
   schema: StructSchema,
   value: StructAttributeValue,
@@ -222,8 +227,11 @@ function validateStructValue(
   document: SemanticDocument,
   context: AttributeContext,
 ): readonly Diagnostic[] {
-  const declared = entityTypeOf(context.owner, value.type);
-  if (declared === undefined) {
+  // An unresolvable structured type keeps the A′ unknown-type arm at the
+  // value path; deeper K1/definition refusals are reported once at their own
+  // stage, never duplicated here.
+  const resolution = context.resolver.resolve(context.owner, value.type);
+  if (!resolution.ok) {
     return [
       diagnostic({
         code: "struct-type-unknown",
@@ -245,8 +253,9 @@ function validateStructValue(
       }),
     ];
   }
+  const effective = resolution.resolved.schemas;
   const diagnostics: Diagnostic[] = [];
-  const byName = new Map(declared.attributes.map((field) => [field.name, field] as const));
+  const byName = new Map(effective.map((field) => [field.name, field] as const));
   for (const name of Object.keys(value.fields).sort()) {
     const fieldSchema = byName.get(name);
     const fieldPath = `${path}.fields.${name}`;
@@ -275,7 +284,7 @@ function validateStructValue(
       diagnostics.push(...checkReferenceTargetType(document, context, slot, found.raw, location));
     }
   }
-  for (const fieldSchema of declared.attributes) {
+  for (const fieldSchema of effective) {
     if (fieldSchema.required === true && value.fields[fieldSchema.name] === undefined) {
       diagnostics.push(
         diagnostic({
@@ -526,6 +535,26 @@ function validateRelation(
     diagnostics.push(...resolution);
     if (resolution.length > 0) return;
 
+    // M3 §3.2.3: a hierarchy endpoint is owned by the relation's own profile.
+    // A foreign-family entity is refused without an admitted semantic join —
+    // and no such join exists in this lot. The retained native run is
+    // unchanged.
+    if (seenKind === "entity" && adapter !== LEGACY_CONSTRAINTS_ADAPTER && declared.hierarchy !== undefined) {
+      const target = document.entities[endpoint.target] as Entity | undefined;
+      if (target !== undefined && target.profile !== relation.profile) {
+        diagnostics.push(
+          diagnostic({
+            code: "endpoint-without-join",
+            path: `${endpointPath}.target`,
+            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to entity ${endpoint.target} owned by profile ${target.profile} with no admitted semantic join`,
+            refs: [endpoint.target],
+            details: { profile: relation.profile, targetProfile: target.profile },
+          }),
+        );
+        return;
+      }
+    }
+
     if (seenKind === "entity" && role.entityTypes !== undefined) {
       const target = document.entities[endpoint.target] as Entity;
       // A new-format role is satisfied iff the target's resolved chain contains
@@ -757,6 +786,25 @@ interface ChainedEntity {
   readonly familyType: string;
 }
 
+/**
+ * The resolved chain of a known entity, or `undefined` when its profile or
+ * type does not resolve. Unlike `chainOfEntity`, there is no fallback chain:
+ * callers that must not duplicate another stage's refusal use this.
+ */
+function resolvedChainOfEntity(
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  entity: Entity,
+): ChainedEntity | undefined {
+  const owner = registry.get(entity.profile);
+  if (owner === undefined) return undefined;
+  const resolution = resolver.resolve(owner, entity.type);
+  if (!resolution.ok) return undefined;
+  const familyType =
+    resolution.resolved.ancestry.find((id) => entityTypeOf(owner, id) !== undefined) ?? entity.type;
+  return { entity, chain: resolution.resolved.ancestry, familyType };
+}
+
 function chainOfEntity(
   document: SemanticDocument,
   registry: ProfileRegistry,
@@ -816,6 +864,12 @@ function validateAddedConstraint(
   entities: readonly Entity[],
 ): readonly Diagnostic[] {
   switch (constraint.kind) {
+    case "hierarchy":
+      // Declaration-level binding: qualification checks that the named
+      // relation type declares this hierarchy with these roles, and
+      // `validateHierarchies` enforces the tree/DAG shapes for every declared
+      // hierarchy. The constraint itself adds no per-document check.
+      return [];
     case "parent-family":
       return checkParentFamily(document, profile, options.registry, resolver, constraint);
     case "children-restricted":
@@ -997,8 +1051,14 @@ function checkRelationshipMatrix(
     const source = sources[0] as (typeof sources)[number];
     const target = targets[0] as (typeof targets)[number];
     if (refKindOf(source.target) !== "entity" || refKindOf(target.target) !== "entity") continue;
-    const sourceInfo = chainOfEntity(document, registry, resolver, source.target);
-    const targetInfo = chainOfEntity(document, registry, resolver, target.target);
+    // §5.2: unknown type/kind/cardinality diagnostics take precedence. When an
+    // endpoint does not resolve, its own refusal is the diagnostic; comparing
+    // a fallback chain against the matrix would add a secondary violation.
+    const sourceEntity = document.entities[source.target] as Entity | undefined;
+    const targetEntity = document.entities[target.target] as Entity | undefined;
+    if (sourceEntity === undefined || targetEntity === undefined) continue;
+    const sourceInfo = resolvedChainOfEntity(registry, resolver, sourceEntity);
+    const targetInfo = resolvedChainOfEntity(registry, resolver, targetEntity);
     if (sourceInfo === undefined || targetInfo === undefined) continue;
     if (tuples.has(`${relation.type}\n${sourceInfo.familyType}\n${targetInfo.familyType}`)) continue;
     diagnostics.push(
@@ -1037,33 +1097,28 @@ function checkBoundPair(
   constraint: Extract<AddedConstraint, { kind: "bound-pair" }>,
 ): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
-  const checkRecord = (
-    recordPath: string,
-    attributes: Readonly<Record<string, AttributeValue>>,
-    schemas: readonly AttributeSchema[] | undefined,
-  ): void => {
-    if (schemas === undefined) return;
-    for (const schema of schemas) {
-      if (schema.kind !== "struct" || !schema.targetTypes.includes(constraint.valueType)) continue;
-      const value = attributes[schema.name];
-      if (value?.kind !== "struct" || value.type !== constraint.valueType) continue;
+  // Every occurrence of the value type is checked, including values nested
+  // inside other K6 structs: a bound pair buried one level down is the same
+  // multiplicity fact as a top-level one.
+  const checkValue = (value: AttributeValue, valuePath: string): void => {
+    if (value.kind !== "struct") return;
+    if (value.type === constraint.valueType) {
       const lower = value.fields[constraint.lowerField];
       const upper = value.fields[constraint.upperField];
       if (
-        lower?.kind !== "quantity" ||
-        upper?.kind !== "quantity" ||
-        typeof lower.value !== "number" ||
-        typeof upper.value !== "number" ||
-        !Number.isFinite(lower.value) ||
-        !Number.isFinite(upper.value)
+        lower?.kind === "quantity" &&
+        upper?.kind === "quantity" &&
+        typeof lower.value === "number" &&
+        typeof upper.value === "number" &&
+        Number.isFinite(lower.value) &&
+        Number.isFinite(upper.value) &&
+        upper.value !== constraint.unboundedUpper &&
+        lower.value > upper.value
       ) {
-        continue;
-      }
-      if (upper.value !== constraint.unboundedUpper && lower.value > upper.value) {
         diagnostics.push(
           diagnostic({
             code: "multiplicity-invalid",
-            path: `${recordPath}.attributes.${schema.name}`,
+            path: valuePath,
             message: `multiplicity lower ${String(lower.value)} exceeds finite upper ${String(upper.value)}`,
             refs: [],
             details: { lower: lower.value, upper: upper.value, constraint: "bound-pair" },
@@ -1071,22 +1126,26 @@ function checkBoundPair(
         );
       }
     }
+    for (const name of Object.keys(value.fields).sort()) {
+      checkValue(value.fields[name] as AttributeValue, `${valuePath}.fields.${name}`);
+    }
+  };
+  const checkRecord = (recordPath: string, attributes: Readonly<Record<string, AttributeValue>>): void => {
+    for (const name of Object.keys(attributes).sort()) {
+      checkValue(attributes[name] as AttributeValue, `${recordPath}.attributes.${name}`);
+    }
   };
   for (const entity of Object.values(document.entities)
     .filter((candidate) => candidate.profile === profile.id)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
-    checkRecord(
-      `entities.${entity.id}`,
-      entity.attributes,
-      scopedRecordSchemas(resolver, profile, entity.type),
-    );
+    if (scopedRecordSchemas(resolver, profile, entity.type) === undefined) continue;
+    checkRecord(`entities.${entity.id}`, entity.attributes);
   }
   for (const relation of Object.values(document.relations)
     .filter((candidate) => candidate.profile === profile.id)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
-    const declared = relationTypeOf(profile, relation.type);
-    if (declared === undefined) continue;
-    checkRecord(`relations.${relation.id}`, relation.attributes, declared.attributes ?? []);
+    if (relationTypeOf(profile, relation.type) === undefined) continue;
+    checkRecord(`relations.${relation.id}`, relation.attributes);
   }
   return diagnostics;
 }
@@ -1448,6 +1507,23 @@ export function validateDocument(document: SemanticDocument, options: Validation
     if (bindingDiagnostics.length > 0) return bindingDiagnostics;
     for (const id of document.profileRefs) {
       if (adapterFor(options.bindings, id) === undefined) {
+        return [
+          diagnostic({
+            code: "type-definition-conflict",
+            path: `bindings.${id}`,
+            message: `no executor binding row selects an adapter for profile ${id}`,
+            details: { profile: id },
+          }),
+        ];
+      }
+    }
+  } else {
+    // No table, no guess: a profile that declares new-format constraints
+    // requires a verified bindings row selecting its adapter. Retained @1
+    // profiles (and constraint-free synthetics) keep the native run.
+    for (const id of document.profileRefs) {
+      const registered = options.registry.get(id);
+      if (registered !== undefined && registered.constraints.some(isAddedConstraint)) {
         return [
           diagnostic({
             code: "type-definition-conflict",
