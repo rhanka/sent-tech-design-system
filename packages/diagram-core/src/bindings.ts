@@ -44,8 +44,9 @@ export interface ExecutorProfileBindings {
 /**
  * The imposed adapter mapping (M3 §5.3.1): legacy rows are exactly the four
  * @1 profiles, completed rows use the scoped adapter. Verification refuses a
- * row that contradicts it — in particular a `generic@2 → legacy` row — so no
- * @2 execution ever silently falls back to the retained native checks.
+ * row that contradicts it — in particular a `generic@2`, `archimate@2` or
+ * `uml@2 → legacy` row — so no @2 execution ever silently falls back to the
+ * retained native checks.
  */
 const IMPOSED_ADAPTERS: Readonly<Record<string, DeclarationAdapter>> = {
   "generic@1": LEGACY_CONSTRAINTS_ADAPTER,
@@ -53,6 +54,8 @@ const IMPOSED_ADAPTERS: Readonly<Record<string, DeclarationAdapter>> = {
   "bpmn@1": LEGACY_CONSTRAINTS_ADAPTER,
   "uml@1": LEGACY_CONSTRAINTS_ADAPTER,
   "generic@2": SCOPED_CONSTRAINTS_ADAPTER,
+  "archimate@2": SCOPED_CONSTRAINTS_ADAPTER,
+  "uml@2": SCOPED_CONSTRAINTS_ADAPTER,
 };
 
 /** The imposed adapter for a shipped profile id, or `undefined` when none applies. */
