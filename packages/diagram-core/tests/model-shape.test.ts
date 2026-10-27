@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   CURRENT_SCHEMA_VERSION,
+  bindingRowFor,
   createProfileRegistry,
   documentContentHashInput,
   findOccurrence,
@@ -24,6 +25,7 @@ import {
   serialiseView,
   DEFAULT_PRESENTATION,
   GENERIC_PROFILE_ID,
+  LEGACY_CONSTRAINTS_ADAPTER,
   SEMANTIC_DOCUMENT_FIELDS,
   VIEW_DOCUMENT_FIELDS,
   createDocument,
@@ -241,20 +243,19 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
   });
 
   it("refuses to instantiate an abstract profile type, and says it is abstract", () => {
-    const abstractRegistry = createProfileRegistry([
-      {
-        id: "abstracted@1",
-        name: "abstracted",
-        version: 1,
-        completeness: "skeleton",
-        entityTypes: [{ id: "base", label: "Base", attributes: [], abstract: true }],
-        portTypes: [],
-        relationTypes: [],
-        constraints: [],
-        limits: {},
-        notes: ["SKELETON. A single abstract type, to prove abstract types cannot be instantiated."],
-      },
-    ]);
+    const abstracted = {
+      id: "abstracted@1",
+      name: "abstracted",
+      version: 1,
+      completeness: "skeleton",
+      entityTypes: [{ id: "base", label: "Base", attributes: [], abstract: true }],
+      portTypes: [],
+      relationTypes: [],
+      constraints: [],
+      limits: {},
+      notes: ["SKELETON. A single abstract type, to prove abstract types cannot be instantiated."],
+    } as const;
+    const abstractRegistry = createProfileRegistry([abstracted]);
     const instantiated: SemanticDocument = {
       documentId: documentRef("abstract"),
       schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -269,7 +270,13 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
       resources: {},
       extensions: [],
     };
-    const diagnostics = validateDocument(instantiated, { registry: abstractRegistry });
+    const diagnostics = validateDocument(instantiated, {
+      registry: abstractRegistry,
+      bindings: {
+        schemaVersion: "1",
+        rows: [bindingRowFor(abstracted, LEGACY_CONSTRAINTS_ADAPTER)],
+      },
+    });
     expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
     expect(diagnostics[0]?.details).toEqual({ abstract: true });
   });

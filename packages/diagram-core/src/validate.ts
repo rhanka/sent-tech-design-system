@@ -24,6 +24,7 @@ import {
 } from "./attributes.js";
 import {
   adapterFor,
+  isRetainedLegacyProfileId,
   LEGACY_CONSTRAINTS_ADAPTER,
   verifyExecutorBindings,
   type DeclarationAdapter,
@@ -66,8 +67,9 @@ export interface ValidationOptions {
   readonly registry: ProfileRegistry;
   /**
    * The `executor-profile-bindings@1` table (M3 §5.3.1). Absent means the
-   * retained native run: every profile uses `legacy-constraints@1`, so the
-   * four @1 profiles keep their exact native behaviour and diagnostics.
+   * retained native run for exactly the four @1 identities, so they keep
+   * their exact native behaviour and diagnostics. Every other profile, any
+   * version, requires a verified row.
    */
   readonly bindings?: ExecutorProfileBindings;
 }
@@ -1567,14 +1569,11 @@ export function validateDocument(document: SemanticDocument, options: Validation
     }
   } else {
     // No table, no guess (§5.3.1): implicit native compatibility is reserved
-    // for version-1 profiles — the four retained @1 rows and version-1
-    // synthetics such as the Appendix C endpoint witness. Every new-format
-    // profile (version 2 and above) requires a verified bindings row
-    // selecting its adapter, whatever its declaration contents: a scoped
-    // uniqueness or bare declaration must not silently run legacy checks.
+    // for exactly the four retained @1 identities. Every other profile, any
+    // version, requires a verified bindings row selecting its adapter;
+    // Appendix C synthetic witnesses carry their explicit verified rows.
     for (const id of document.profileRefs) {
-      const registered = options.registry.get(id);
-      if (registered !== undefined && registered.version !== 1) {
+      if (!isRetainedLegacyProfileId(id)) {
         return [
           diagnostic({
             code: "type-definition-conflict",

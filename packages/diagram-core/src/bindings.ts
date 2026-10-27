@@ -14,6 +14,7 @@
 
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import { hashContent } from "./hash.js";
+import { canonicalBytes, sha256Hex } from "./sha256.js";
 import type { Profile, ProfileId, ProfileRegistry } from "./profile.js";
 
 /** Which declaration/endpoint checks the executor runs for one profile. */
@@ -64,6 +65,20 @@ export function imposedAdapterFor(profileId: ProfileId): DeclarationAdapter | un
 }
 
 /**
+ * The four retained @1 identities (M3 §5.3.1): the only profiles whose
+ * legacy rows are admitted. Every other profile, any version, requires a
+ * verified row, and a legacy row outside this set is refused.
+ */
+export const RETAINED_LEGACY_PROFILE_IDS = ["generic@1", "archimate@1", "bpmn@1", "uml@1"] as const;
+
+export type RetainedLegacyProfileId = (typeof RETAINED_LEGACY_PROFILE_IDS)[number];
+
+/** Whether this profile id is one of the four retained legacy identities. */
+export function isRetainedLegacyProfileId(profileId: ProfileId): boolean {
+  return (RETAINED_LEGACY_PROFILE_IDS as readonly string[]).includes(profileId);
+}
+
+/**
  * The embedded `executor-profile-bindings@1` table for shipped profiles:
  * one verifying row per profile, with its imposed adapter. Every profile
  * without an imposed mapping is a caller error, refused loudly rather than
@@ -108,14 +123,45 @@ export function stableStringify(value: unknown): string {
   throw new Error(`stableStringify: unsupported ${typeof value}`);
 }
 
-/** The content digest a binding pin must carry for this profile object. */
+/**
+ * The P-CONTENT-DIAGRAM projection (§7.3.2): the closed preimage whose
+ * SHA-256 is the binding `contentDigest`. Keys in canonical (sorted) order;
+ * `name`, `version` and `notes` are excluded (identity is carried by
+ * `profile`), omitted limits hash as `null`, never `0` or dropped.
+ */
+export function contentDiagramPreimage(profile: Profile): Record<string, unknown> {
+  return {
+    completeness: profile.completeness,
+    constraints: [...profile.constraints],
+    entityTypes: [...profile.entityTypes],
+    limits: {
+      maxEntities: profile.limits.maxEntities ?? null,
+      maxRelations: profile.limits.maxRelations ?? null,
+      maxEndpointsPerRelation: profile.limits.maxEndpointsPerRelation ?? null,
+    },
+    portTypes: [...profile.portTypes],
+    profile: profile.id,
+    relationTypes: [...profile.relationTypes],
+  };
+}
+
+/** SHA-256 over the P-CONTENT-DIAGRAM canonical bytes (64 hex, no prefix). */
+export function contentDiagramDigest(profile: Profile): string {
+  return sha256Hex(canonicalBytes(contentDiagramPreimage(profile)));
+}
+
+/**
+ * The internal cache fingerprint: FNV-1a over the full declaration bytes.
+ * It scopes resolver caches and never gates trust; binding pins use the
+ * P-CONTENT-DIAGRAM SHA-256 above.
+ */
 export const digestProfile = (profile: Profile): string => hashContent(stableStringify(profile));
 
 /** One binding row for this profile object, with its verifying digest. */
 export function bindingRowFor(profile: Profile, declarationAdapter: DeclarationAdapter): ExecutorProfileBindingRow {
   return {
     profileId: profile.id,
-    profilePin: { id: profile.id, version: profile.version, contentDigest: digestProfile(profile) },
+    profilePin: { id: profile.id, version: profile.version, contentDigest: contentDiagramDigest(profile) },
     declarationAdapter,
   };
 }
@@ -184,7 +230,7 @@ export function verifyExecutorBindings(
     if (
       row.profilePin.id !== registered.id ||
       row.profilePin.version !== registered.version ||
-      row.profilePin.contentDigest !== digestProfile(registered)
+      row.profilePin.contentDigest !== contentDiagramDigest(registered)
     ) {
       diagnostics.push(
         diagnostic({
@@ -196,6 +242,22 @@ export function verifyExecutorBindings(
       );
     }
     const imposed = imposedAdapterFor(row.profileId);
+    if (
+      row.declarationAdapter === LEGACY_CONSTRAINTS_ADAPTER &&
+      !isRetainedLegacyProfileId(row.profileId) &&
+      imposed === undefined &&
+      registered.version !== 1
+    ) {
+      diagnostics.push(
+        diagnostic({
+          code: "type-definition-conflict",
+          path: rowPath,
+          message: `executor binding for ${row.profileId} must use ${SCOPED_CONSTRAINTS_ADAPTER}, not ${LEGACY_CONSTRAINTS_ADAPTER}`,
+          refs: [],
+          details: { profile: row.profileId },
+        }),
+      );
+    }
     if (imposed !== undefined && row.declarationAdapter !== imposed) {
       diagnostics.push(
         diagnostic({

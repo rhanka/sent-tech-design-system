@@ -729,27 +729,7 @@ function qualifyScalarShape(
 function validateSupertypes(profile: Profile): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const path = `profiles.${profile.id}`;
-
-  const collectInherited = (
-    typeId: string,
-    visiting: ReadonlySet<string>,
-    schemas: Map<string, AttributeSchema[]>,
-  ): void => {
-    if (visiting.has(typeId)) return;
-    const declared = profile.entityTypes.find((type) => type.id === typeId);
-    if (declared === undefined) return;
-    const visitingNext = new Set(visiting).add(typeId);
-    for (const superId of declared.supertypes ?? []) {
-      const superDeclared = profile.entityTypes.find((type) => type.id === superId);
-      if (superDeclared === undefined) continue;
-      collectInherited(superId, visitingNext, schemas);
-      for (const schema of superDeclared.attributes) {
-        const existing = schemas.get(schema.name);
-        if (existing === undefined) schemas.set(schema.name, [schema]);
-        else existing.push(schema);
-      }
-    }
-  };
+  const byId = new Map(profile.entityTypes.map((type) => [type.id, type] as const));
 
   // An invalid edge (unknown parent, cycle) is reported once per profile, and
   // its invalidity propagates: a type whose transitive closure contains a
@@ -757,68 +737,188 @@ function validateSupertypes(profile: Profile): readonly Diagnostic[] {
   // shared resolver refuses the descendants of a broken definition (C.2).
   const reportedUnknown = new Set<string>();
   const reportedCycles = new Set<string>();
+  // Memoized broken status per type id: whether its transitive closure holds
+  // an unknown or cyclic edge. Lets a shared DAG skip re-traversal while
+  // still propagating invalidity to every descendant root.
+  const memoBroken = new Map<string, boolean>();
+  // Memoized inherited schemas per type id (ancestors only, base-first).
+  const memoInherited = new Map<string, Map<string, AttributeSchema[]>>();
+
+  const reportUnknown = (holderId: string, superId: string, index: number): void => {
+    if (reportedUnknown.has(superId)) return;
+    reportedUnknown.add(superId);
+    diagnostics.push(
+      diagnostic({
+        code: "supertype-unknown",
+        path: `${path}.entityTypes.${holderId}.supertypes[${index}]`,
+        message: `supertype ${superId} is not declared`,
+        refs: [],
+        details: { supertype: superId },
+      }),
+    );
+  };
+
+  const reportCycle = (holderId: string, ordered: readonly string[]): void => {
+    // Rotation-independent ordered key: the directed cycle in path order,
+    // rotated so its smallest member (UTF-16) comes first. Every root
+    // reaching this directed cycle reports the same key, so the cycle is
+    // refused once; disjoint cycles and opposite directions keep distinct
+    // keys. JSON serialisation keeps the key unambiguous: no delimiter
+    // can collide with a member id. Path, message and details all aim at
+    // the edge owner that closes it.
+    const smallest = [...ordered].sort()[0] as string;
+    const first = ordered.indexOf(smallest);
+    const key = JSON.stringify([...ordered.slice(first), ...ordered.slice(0, first)]);
+    if (reportedCycles.has(key)) return;
+    reportedCycles.add(key);
+    diagnostics.push(
+      diagnostic({
+        code: "supertype-cycle",
+        path: `${path}.entityTypes.${holderId}.supertypes`,
+        message: `supertype chain for ${holderId} is cyclic`,
+        refs: [],
+        details: { type: holderId },
+      }),
+    );
+  };
+
+  interface WalkFrame {
+    readonly id: string;
+    readonly supers: readonly string[];
+    next: number;
+    broken: boolean;
+  }
+
+  const walkBroken = (rootId: string): boolean => {
+    const cached = memoBroken.get(rootId);
+    if (cached !== undefined) return cached;
+    const root = byId.get(rootId);
+    if (root === undefined) return true;
+    const direct = root.supertypes ?? [];
+    if (direct.length === 0) {
+      memoBroken.set(rootId, false);
+      return false;
+    }
+    let rootBroken = false;
+    const trail: string[] = [rootId];
+    const onTrail = new Set<string>([rootId]);
+    const stack: WalkFrame[] = [{ id: rootId, supers: direct, next: 0, broken: false }];
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1] as WalkFrame;
+      if (frame.next < frame.supers.length) {
+        const superId = frame.supers[frame.next] as string;
+        const edgeIndex = frame.next;
+        frame.next += 1;
+        const declared = byId.get(superId);
+        if (declared === undefined) {
+          frame.broken = true;
+          rootBroken = true;
+          reportUnknown(frame.id, superId, edgeIndex);
+          continue;
+        }
+        if (onTrail.has(superId)) {
+          frame.broken = true;
+          rootBroken = true;
+          reportCycle(frame.id, trail.slice(trail.indexOf(superId)));
+          continue;
+        }
+        const known = memoBroken.get(superId);
+        if (known !== undefined) {
+          if (known) {
+            frame.broken = true;
+            rootBroken = true;
+          }
+          continue;
+        }
+        trail.push(superId);
+        onTrail.add(superId);
+        stack.push({ id: superId, supers: declared.supertypes ?? [], next: 0, broken: false });
+      } else {
+        memoBroken.set(frame.id, frame.broken);
+        stack.pop();
+        const removed = trail.pop() as string;
+        onTrail.delete(removed);
+        if (frame.broken) {
+          rootBroken = true;
+          const parent = stack[stack.length - 1] as WalkFrame | undefined;
+          if (parent !== undefined) parent.broken = true;
+        }
+      }
+    }
+    memoBroken.set(rootId, rootBroken);
+    return rootBroken;
+  };
+
+  const inheritedOf = (rootId: string): Map<string, AttributeSchema[]> => {
+    const cached = memoInherited.get(rootId);
+    if (cached !== undefined) return cached;
+    // Postorder over the reachable subgraph, base-first: every base resolves
+    // before the node that refines it. Shared ancestors are visited once.
+    const reachable: string[] = [];
+    const seen = new Set<string>([rootId]);
+    const order: string[] = [];
+    const stack: { readonly id: string; next: number; readonly supers: readonly string[] }[] = [];
+    const rootDeclared = byId.get(rootId);
+    if (rootDeclared === undefined) {
+      const empty = new Map<string, AttributeSchema[]>();
+      memoInherited.set(rootId, empty);
+      return empty;
+    }
+    stack.push({ id: rootId, next: 0, supers: rootDeclared.supertypes ?? [] });
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1] as { readonly id: string; next: number; readonly supers: readonly string[] };
+      if (frame.next < frame.supers.length) {
+        const superId = frame.supers[frame.next] as string;
+        (frame as { next: number }).next += 1;
+        if (seen.has(superId)) continue;
+        const declared = byId.get(superId);
+        if (declared === undefined) continue;
+        seen.add(superId);
+        reachable.push(superId);
+        stack.push({ id: superId, next: 0, supers: declared.supertypes ?? [] });
+      } else {
+        order.push(frame.id);
+        stack.pop();
+      }
+    }
+    // `order` is base-first and ends with the root; drop the root itself so
+    // only ancestors contribute, then fold them base-first in declaration
+    // order through the memoized per-node maps.
+    for (const id of order) {
+      if (memoInherited.has(id)) continue;
+      const declared = byId.get(id);
+      if (declared === undefined) continue;
+      const merged = new Map<string, AttributeSchema[]>();
+      for (const superId of declared.supertypes ?? []) {
+        const parentInherited = memoInherited.get(superId);
+        if (parentInherited !== undefined) {
+          for (const [name, schemas] of parentInherited) {
+            const existing = merged.get(name);
+            if (existing === undefined) merged.set(name, [...schemas]);
+            else existing.push(...schemas);
+          }
+        }
+        const parent = byId.get(superId);
+        if (parent === undefined) continue;
+        for (const schema of parent.attributes) {
+          const existing = merged.get(schema.name);
+          if (existing === undefined) merged.set(schema.name, [schema]);
+          else existing.push(schema);
+        }
+      }
+      memoInherited.set(id, merged);
+    }
+    return memoInherited.get(rootId) ?? new Map<string, AttributeSchema[]>();
+  };
 
   for (const type of profile.entityTypes) {
     const supertypes = type.supertypes;
     if (supertypes === undefined || supertypes.length === 0) continue;
-    let broken = false;
-    const stack: string[] = [type.id];
-    const visit = (holderId: string, superId: string, index: number): void => {
-      const holderPath = `${path}.entityTypes.${holderId}.supertypes`;
-      const declared = profile.entityTypes.find((candidate) => candidate.id === superId);
-      if (declared === undefined) {
-        broken = true;
-        if (!reportedUnknown.has(superId)) {
-          reportedUnknown.add(superId);
-          diagnostics.push(
-            diagnostic({
-              code: "supertype-unknown",
-              path: `${holderPath}[${index}]`,
-              message: `supertype ${superId} is not declared`,
-              refs: [],
-              details: { supertype: superId },
-            }),
-          );
-        }
-        return;
-      }
-      if (stack.includes(superId)) {
-        broken = true;
-        // Rotation-independent ordered key: the directed cycle in stack order,
-        // rotated so its smallest member (UTF-16) comes first. Every root
-        // reaching this directed cycle reports the same key, so the cycle is
-        // refused once; disjoint cycles and opposite directions keep distinct
-        // keys. JSON serialisation keeps the key unambiguous: no delimiter
-        // can collide with a member id. Path, message and details all aim at
-        // the edge owner that closes it.
-        const ordered = stack.slice(stack.indexOf(superId));
-        const smallest = [...ordered].sort()[0] as string;
-        const first = ordered.indexOf(smallest);
-        const key = JSON.stringify([...ordered.slice(first), ...ordered.slice(0, first)]);
-        if (!reportedCycles.has(key)) {
-          reportedCycles.add(key);
-          diagnostics.push(
-            diagnostic({
-              code: "supertype-cycle",
-              path: holderPath,
-              message: `supertype chain for ${holderId} is cyclic`,
-              refs: [],
-              details: { type: holderId },
-            }),
-          );
-        }
-        return;
-      }
-      stack.push(superId);
-      (declared.supertypes ?? []).forEach((next, nextIndex) => visit(superId, next, nextIndex));
-      stack.pop();
-    };
-    supertypes.forEach((superId, index) => visit(type.id, superId, index));
+    const broken = walkBroken(type.id);
 
     // Inherited conflicts, once per field, after valid parents resolve.
     if (broken) continue;
-    const inherited = new Map<string, AttributeSchema[]>();
-    collectInherited(type.id, new Set(), inherited);
+    const inherited = inheritedOf(type.id);
     const own = new Map(type.attributes.map((schema) => [schema.name, schema] as const));
     for (const [name, candidates] of inherited) {
       const compared = [...candidates.map((schema) => stableStringify(schema))];
