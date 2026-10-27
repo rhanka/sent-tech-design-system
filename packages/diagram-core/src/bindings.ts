@@ -41,6 +41,44 @@ export interface ExecutorProfileBindings {
   readonly rows: readonly ExecutorProfileBindingRow[];
 }
 
+/**
+ * The imposed adapter mapping (M3 §5.3.1): legacy rows are exactly the four
+ * @1 profiles, completed rows use the scoped adapter. Verification refuses a
+ * row that contradicts it — in particular a `generic@2 → legacy` row — so no
+ * @2 execution ever silently falls back to the retained native checks.
+ */
+const IMPOSED_ADAPTERS: Readonly<Record<string, DeclarationAdapter>> = {
+  "generic@1": LEGACY_CONSTRAINTS_ADAPTER,
+  "archimate@1": LEGACY_CONSTRAINTS_ADAPTER,
+  "bpmn@1": LEGACY_CONSTRAINTS_ADAPTER,
+  "uml@1": LEGACY_CONSTRAINTS_ADAPTER,
+  "generic@2": SCOPED_CONSTRAINTS_ADAPTER,
+};
+
+/** The imposed adapter for a shipped profile id, or `undefined` when none applies. */
+export function imposedAdapterFor(profileId: ProfileId): DeclarationAdapter | undefined {
+  return (IMPOSED_ADAPTERS as Readonly<Record<ProfileId, DeclarationAdapter | undefined>>)[profileId];
+}
+
+/**
+ * The embedded `executor-profile-bindings@1` table for shipped profiles:
+ * one verifying row per profile, with its imposed adapter. Every profile
+ * without an imposed mapping is a caller error, refused loudly rather than
+ * guessed.
+ */
+export function embeddedExecutorBindings(profiles: readonly Profile[]): ExecutorProfileBindings {
+  return {
+    schemaVersion: "1",
+    rows: profiles.map((profile) => {
+      const imposed = imposedAdapterFor(profile.id);
+      if (imposed === undefined) {
+        throw new Error(`no imposed executor adapter for profile ${profile.id}; pass an explicit binding row`);
+      }
+      return bindingRowFor(profile, imposed);
+    }),
+  };
+}
+
 /** Key-sorted serialisation: a digest over declaration bytes, never over labels. */
 export function stableStringify(value: unknown): string {
   if (value === null) return "null";
@@ -150,6 +188,18 @@ export function verifyExecutorBindings(
           code: "type-definition-conflict",
           path: rowPath,
           message: `binding for ${row.profileId} does not match the registered bytes`,
+          details: { profile: row.profileId },
+        }),
+      );
+    }
+    const imposed = imposedAdapterFor(row.profileId);
+    if (imposed !== undefined && row.declarationAdapter !== imposed) {
+      diagnostics.push(
+        diagnostic({
+          code: "type-definition-conflict",
+          path: rowPath,
+          message: `executor binding for ${row.profileId} must use ${imposed}, not ${row.declarationAdapter}`,
+          refs: [],
           details: { profile: row.profileId },
         }),
       );

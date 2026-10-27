@@ -68,6 +68,8 @@ export type DiagnosticCode =
   // --- Limits and constraints -------------------------------------------
   | "limit-exceeded"
   // --- M3 semantic executor (shared K1/K2/K6 prerequisites + generic mechanisms)
+  /** A hierarchy endpoint targets a foreign-profile entity with no admitted semantic join (M3 §3.2.3). */
+  | "endpoint-without-join"
   | "legend-key-parent-invalid"
   | "tone-category-unknown"
   | "text-pattern-mismatch"

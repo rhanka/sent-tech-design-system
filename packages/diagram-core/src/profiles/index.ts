@@ -7,6 +7,7 @@
  * profiles and leave the skeletons out entirely.
  */
 
+import { embeddedExecutorBindings, type ExecutorProfileBindings } from "../bindings.js";
 import { createProfileRegistry, type ProfileRegistry } from "../profile.js";
 import { genericProfile } from "./generic.js";
 import { generic2Profile } from "./generic2.js";
@@ -33,6 +34,18 @@ export const defaultProfileRegistry: ProfileRegistry = createProfileRegistry([
  * native behaviour and diagnostics; a consumer opts into @2 explicitly.
  */
 export const m3ProfileRegistry: ProfileRegistry = createProfileRegistry([
+  ...completeProfiles,
+  ...skeletonProfiles,
+  generic2Profile,
+]);
+
+/**
+ * The shipped `executor-profile-bindings@1` table (M3 §5.3.1): one verifying
+ * row per shipped profile, with its imposed adapter. Consumers pass it
+ * explicitly; absence of a table never silently selects an adapter for a
+ * profile that declares new-format constraints.
+ */
+export const shippedExecutorBindings: ExecutorProfileBindings = embeddedExecutorBindings([
   ...completeProfiles,
   ...skeletonProfiles,
   generic2Profile,
