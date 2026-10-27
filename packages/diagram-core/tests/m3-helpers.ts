@@ -103,9 +103,9 @@ export function legacyOptions(profiles: readonly Profile[]): ValidationOptions {
 
 /**
  * An explicit legacy-adapter run: every profile carries a verified
- * `legacy-constraints@1` row. Version-1 profiles only run the retained
- * native checks through such an explicit row — never by omitting the
- * bindings table outside the four retained identities.
+ * `legacy-constraints@1` row. Only the four retained @1 identities verify
+ * such a row — every other profile, any version, is refused at the binding
+ * gate (§5.3.1), never by omitting the bindings table.
  */
 export function explicitLegacyOptions(profiles: readonly Profile[]): ValidationOptions {
   const registry = createProfileRegistry(profiles);

@@ -223,15 +223,25 @@ describe("the shared resolver", () => {
     expect(resolver.resolve(resolverProfile, "base")).not.toBe(first);
   });
 
-  it("leaves legacy validation bound to its native abstract shape", () => {
+  it("refuses an explicit legacy row for a non-retained @1 profile", () => {
+    // §5.3.1 reserves legacy rows for the four retained @1 identities: the
+    // binding gate refuses before any native abstract-shape check runs.
     const legacyProfile: Profile = { ...resolverProfile, id: "resolver@1", version: 1 };
     const document: SemanticDocument = {
       ...baseDocument(["resolver@1"]),
       entities: { "entity:bad": ent("bad", "resolver@1", "abs") },
     };
     const diagnostics = validateDocument(document, explicitLegacyOptions([legacyProfile]));
-    expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
-    expect(diagnostics[0]?.details).toEqual({ abstract: true });
+    expect(diagnostics).toEqual([
+      {
+        code: "type-definition-conflict",
+        severity: "error",
+        path: "bindings.rows[0]",
+        message: "executor binding for resolver@1 must use scoped-constraints@1, not legacy-constraints@1",
+        refs: [],
+        details: { profile: "resolver@1" },
+      },
+    ]);
   });
 
   it("validates an entity through the refinement chain, including text bounds", () => {

@@ -85,6 +85,47 @@ describe("pass-3 finding 1: no version-based binding bypass", () => {
     );
   });
 
+  it("refuses an explicit legacy row for a non-retained @1 profile", () => {
+    const profile = uniqueOnly("uniqueonly@1");
+    const registry = createProfileRegistry([profile]);
+    const bindings = {
+      schemaVersion: "1" as const,
+      rows: [bindingRowFor(profile, LEGACY_CONSTRAINTS_ADAPTER)],
+    };
+    const refused = [
+      {
+        code: "type-definition-conflict",
+        severity: "error",
+        path: "bindings.rows[0]",
+        message:
+          "executor binding for uniqueonly@1 must use scoped-constraints@1, not legacy-constraints@1",
+        refs: [],
+        details: { profile: "uniqueonly@1" },
+      },
+    ];
+    expect(verifyExecutorBindings(bindings, registry)).toEqual(refused);
+    expect(validateDocument(duplicatesOf(profile), { registry, bindings })).toEqual(refused);
+  });
+
+  it("refuses modified retained bytes on the no-table path", () => {
+    const modified: Profile = {
+      ...genericProfile,
+      limits: { ...genericProfile.limits, maxEntities: 123456 },
+    };
+    const document: SemanticDocument = {
+      ...baseDocument(["generic@1"]),
+    };
+    expect(validateDocument(document, { registry: createProfileRegistry([modified]) })).toEqual([
+      {
+        code: "type-definition-conflict",
+        severity: "error",
+        path: "bindings.rows[0]",
+        message: "binding for generic@1 does not match the registered bytes",
+        details: { profile: "generic@1" },
+      },
+    ]);
+  });
+
   it("keeps the retained @1 native run without a bindings table", () => {
     const document: SemanticDocument = {
       ...baseDocument(["generic@1"]),

@@ -242,7 +242,7 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
     expect(validateDocument(orphan, { registry }).map((entry) => entry.code)).toContain("unknown-entity-type");
   });
 
-  it("refuses to instantiate an abstract profile type, and says it is abstract", () => {
+  it("refuses an explicit legacy row for a non-retained @1 profile before abstract checks", () => {
     const abstracted = {
       id: "abstracted@1",
       name: "abstracted",
@@ -277,7 +277,17 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
         rows: [bindingRowFor(abstracted, LEGACY_CONSTRAINTS_ADAPTER)],
       },
     });
-    expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
-    expect(diagnostics[0]?.details).toEqual({ abstract: true });
+    // §5.3.1 reserves legacy rows for the four retained @1 identities: the
+    // binding gate refuses before any native abstract-shape check runs.
+    expect(diagnostics).toEqual([
+      {
+        code: "type-definition-conflict",
+        severity: "error",
+        path: "bindings.rows[0]",
+        message: "executor binding for abstracted@1 must use scoped-constraints@1, not legacy-constraints@1",
+        refs: [],
+        details: { profile: "abstracted@1" },
+      },
+    ]);
   });
 });
