@@ -18,6 +18,7 @@
  */
 
 import type { AttributeSchema } from "./attributes.js";
+import { digestProfile } from "./bindings.js";
 import type { SemanticDocument, TypeDefinition } from "./document.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import { entityTypeOf, type Profile, type ProfileId } from "./profile.js";
@@ -222,7 +223,11 @@ export function createTypeResolver(document: SemanticDocument): TypeResolver {
         revision = document.revision;
         cache = new Map<string, TypeResolution>();
       }
-      const key = `${profile.id}::${typeId}`;
+      // The entry is keyed by the immutable profile identity (id, version and
+      // declaration bytes), never by the id alone: two same-id profiles with
+      // different contents resolve from their own entries. Revision scoping
+      // below is retained unchanged.
+      const key = `${profile.id}::${digestProfile(profile)}::${typeId}`;
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
       const resolution = resolveInto(profile, typeId);

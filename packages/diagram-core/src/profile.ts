@@ -15,7 +15,7 @@
  * field and refuse to rely on them.
  */
 
-import type { AttributeSchema } from "./attributes.js";
+import type { AttributeSchema, QuantitySchema, TextSchema } from "./attributes.js";
 import { stableStringify, type DeclarationAdapter } from "./bindings.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 
@@ -101,6 +101,13 @@ export type UniqueAttributeScope = "document" | "siblings" | { readonly withinTy
  * the executor implements each one generically.
  */
 export type AddedConstraint =
+  | {
+      readonly kind: "hierarchy";
+      readonly relationType: string;
+      readonly hierarchyId: string;
+      readonly parentRole: string;
+      readonly childRole: string;
+    }
   | { readonly kind: "parent-family"; readonly hierarchyId: string; readonly familyRoots: readonly string[] }
   | {
       readonly kind: "children-restricted";
@@ -430,6 +437,32 @@ function validateM3Declarations(
         }
         break;
       }
+      case "hierarchy": {
+        const declaration = profile.relationTypes.find((type) => type.id === constraint.relationType);
+        const hierarchy = declaration?.hierarchy;
+        if (
+          declaration === undefined ||
+          hierarchy === undefined ||
+          hierarchy.id !== constraint.hierarchyId ||
+          hierarchy.parentRole !== constraint.parentRole ||
+          hierarchy.childRole !== constraint.childRole
+        ) {
+          diagnostics.push(
+            diagnostic({
+              code: "type-definition-conflict",
+              path: constraintPath,
+              message: `hierarchy constraint names relation type ${constraint.relationType}, which does not declare hierarchy ${constraint.hierarchyId} with roles ${constraint.parentRole}/${constraint.childRole}`,
+              refs: [],
+              details: {
+                check: "hierarchy-constraint-invalid",
+                relationType: constraint.relationType,
+                hierarchyId: constraint.hierarchyId,
+              },
+            }),
+          );
+        }
+        break;
+      }
       case "parent-family":
         diagnostics.push(...requireHierarchy(profile, constraint.hierarchyId, constraintPath));
         for (const root of constraint.familyRoots) {
@@ -598,42 +631,66 @@ function isQualifiablePattern(source: string): boolean {
 }
 
 export function qualifyAttributeSchema(schema: AttributeSchema, schemaPath: string): readonly Diagnostic[] {
-  if (schema.kind === "text") {
+  // A collection is only as qualifiable as its item schema: an invalid item
+  // grammar or bound refused at the item would otherwise pass qualification
+  // and have its match exception absorbed at value time (M3 §5.8).
+  if (schema.kind === "collection") {
+    const item = schema.item;
+    if (item.kind === "text" || item.kind === "quantity") {
+      return qualifyScalarShape(item, `${schemaPath}.item`, schema.name);
+    }
+    return [];
+  }
+  if (schema.kind === "text" || schema.kind === "quantity") {
+    return qualifyScalarShape(schema, schemaPath, schema.name);
+  }
+  return [];
+}
+
+/**
+ * Grammar and bound qualification shared by a top-level scalar schema and a
+ * collection item schema. `attributeName` names the owning attribute so the
+ * item refusal keeps the C.5 literal wording.
+ */
+function qualifyScalarShape(
+  shape: TextSchema | QuantitySchema,
+  shapePath: string,
+  attributeName: string,
+): readonly Diagnostic[] {
+  if (shape.kind === "text") {
     const patternInvalid =
-      (schema.pattern !== undefined &&
-        (schema.patternName === undefined || !isQualifiablePattern(schema.pattern))) ||
-      (schema.minLength !== undefined && schema.minLength < 0) ||
-      (schema.maxLength !== undefined && schema.maxLength < 0) ||
-      (schema.minLength !== undefined && schema.maxLength !== undefined && schema.minLength > schema.maxLength);
+      (shape.pattern !== undefined &&
+        (shape.patternName === undefined || !isQualifiablePattern(shape.pattern))) ||
+      (shape.minLength !== undefined && shape.minLength < 0) ||
+      (shape.maxLength !== undefined && shape.maxLength < 0) ||
+      (shape.minLength !== undefined && shape.maxLength !== undefined && shape.minLength > shape.maxLength);
     if (patternInvalid) {
       return [
         diagnostic({
           code: "type-definition-conflict",
-          path: schemaPath,
-          message: `text schema for ${schema.name} has an invalid pattern or length bounds`,
+          path: shapePath,
+          message: `text schema for ${attributeName} has an invalid pattern or length bounds`,
           refs: [],
-          details: { check: "text-pattern-invalid", attribute: schema.name },
+          details: { check: "text-pattern-invalid", attribute: attributeName },
         }),
       ];
     }
     return [];
   }
-  if (schema.kind === "quantity") {
-    const boundsInvalid =
-      (schema.min !== undefined && (typeof schema.min !== "number" || !Number.isFinite(schema.min))) ||
-      (schema.max !== undefined && (typeof schema.max !== "number" || !Number.isFinite(schema.max))) ||
-      (schema.min !== undefined && schema.max !== undefined && schema.min > schema.max);
-    if (boundsInvalid) {
-      return [
-        diagnostic({
-          code: "type-definition-conflict",
-          path: schemaPath,
-          message: `quantity schema for ${schema.name} has invalid numeric bounds`,
-          refs: [],
-          details: { check: "numeric-constraint-invalid", attribute: schema.name },
-        }),
-      ];
-    }
+  const boundsInvalid =
+    (shape.min !== undefined && (typeof shape.min !== "number" || !Number.isFinite(shape.min))) ||
+    (shape.max !== undefined && (typeof shape.max !== "number" || !Number.isFinite(shape.max))) ||
+    (shape.min !== undefined && shape.max !== undefined && shape.min > shape.max);
+  if (boundsInvalid) {
+    return [
+      diagnostic({
+        code: "type-definition-conflict",
+        path: shapePath,
+        message: `quantity schema for ${attributeName} has invalid numeric bounds`,
+        refs: [],
+        details: { check: "numeric-constraint-invalid", attribute: attributeName },
+      }),
+    ];
   }
   return [];
 }
@@ -664,37 +721,56 @@ function validateSupertypes(profile: Profile): readonly Diagnostic[] {
     }
   };
 
+  // An invalid edge (unknown parent, cycle) is reported once per profile, and
+  // its invalidity propagates: a type whose transitive closure contains a
+  // broken edge gets no descendant effective-schema check, exactly as the
+  // shared resolver refuses the descendants of a broken definition (C.2).
+  const reportedUnknown = new Set<string>();
+  const reportedCycles = new Set<string>();
+
   for (const type of profile.entityTypes) {
     const supertypes = type.supertypes;
     if (supertypes === undefined || supertypes.length === 0) continue;
-    // Unknown parents and cycles, reported per edge; descendants of a broken
-    // edge are suppressed, exactly as the resolver suppresses them.
+    let broken = false;
     const stack: string[] = [type.id];
     const visit = (holderId: string, superId: string, index: number): void => {
       const holderPath = `${path}.entityTypes.${holderId}.supertypes`;
       const declared = profile.entityTypes.find((candidate) => candidate.id === superId);
       if (declared === undefined) {
-        diagnostics.push(
-          diagnostic({
-            code: "supertype-unknown",
-            path: `${holderPath}[${index}]`,
-            message: `supertype ${superId} is not declared`,
-            refs: [],
-            details: { supertype: superId },
-          }),
-        );
+        broken = true;
+        if (!reportedUnknown.has(superId)) {
+          reportedUnknown.add(superId);
+          diagnostics.push(
+            diagnostic({
+              code: "supertype-unknown",
+              path: `${holderPath}[${index}]`,
+              message: `supertype ${superId} is not declared`,
+              refs: [],
+              details: { supertype: superId },
+            }),
+          );
+        }
         return;
       }
       if (stack.includes(superId)) {
-        diagnostics.push(
-          diagnostic({
-            code: "supertype-cycle",
-            path: holderPath,
-            message: `supertype chain for ${superId} is cyclic`,
-            refs: [],
-            details: { type: superId },
-          }),
-        );
+        broken = true;
+        // Rotation-independent key: every root reaching this cycle reports the
+        // same members, so the cycle is refused once. Path, message and
+        // details all aim at the edge owner that closes it.
+        const members = [...new Set(stack.slice(stack.indexOf(superId)))].sort();
+        const key = members.join(">");
+        if (!reportedCycles.has(key)) {
+          reportedCycles.add(key);
+          diagnostics.push(
+            diagnostic({
+              code: "supertype-cycle",
+              path: holderPath,
+              message: `supertype chain for ${holderId} is cyclic`,
+              refs: [],
+              details: { type: holderId },
+            }),
+          );
+        }
         return;
       }
       stack.push(superId);
@@ -704,6 +780,7 @@ function validateSupertypes(profile: Profile): readonly Diagnostic[] {
     supertypes.forEach((superId, index) => visit(type.id, superId, index));
 
     // Inherited conflicts, once per field, after valid parents resolve.
+    if (broken) continue;
     const inherited = new Map<string, AttributeSchema[]>();
     collectInherited(type.id, new Set(), inherited);
     const own = new Map(type.attributes.map((schema) => [schema.name, schema] as const));
