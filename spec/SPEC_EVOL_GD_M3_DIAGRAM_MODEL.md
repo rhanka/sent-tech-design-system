@@ -1,452 +1,414 @@
-# SPEC EVOL — GD-M3-DIAGRAM-MODEL: one metamodel across generic, archimate, bpmn, uml (r3)
+# SPEC EVOL — GD-M3-DIAGRAM-MODEL: one metamodel across generic, archimate, bpmn, uml (r4)
 
 | Field | Value |
 | --- | --- |
-| Status | Specification only. No implementation, no profile publication and no consumer switch-over is claimed by this document. |
-| Date | 2026-10-25 (r3; r2 was 2026-10-24 at `8d1727a1`, r1 was 2026-10-23 at `b8f5982c`) |
-| Branch | `spec/diagram-model-complete`, cut from `origin/main` |
-| Deliverable of this lot | This file only: `spec/SPEC_EVOL_GD_M3_DIAGRAM_MODEL.md`. Nothing else is written, including nothing under `.track/`. |
-| Language / tooling | This document is English. No network access is used by any lot defined here. No Python is used anywhere (implementation, tests, jobs, one-off scripts): the stack is Node/TypeScript and the native tooling already present. No attribution trailer is added to any commit. |
-| Governance | G2 (owner decision 2026-10-19): Engram governs profiles, schemas, fixtures and migrations as data. The Design System (DS) retains and publishes the generic `@sentropic/diagram-core` executor, layout and rendering. Consumers pin profiles; no second diagram metamodel. |
-| Pivot | `packages/diagram-core` (`SemanticDocument` / `ViewDocument`, transactional commands, versioned profiles) plus `bpmn-canvas` `profile-c14n/2`. This specification completes that pivot for every study family. It does not introduce a second model and it withdraws `architecture@1`. |
-| Executor assumption | The `unique-attribute` reporting-order fix at `610c0353` (duplicates reported in UTF-16 id order, independent of insertion order; first id in the order is the reference, refs `[reported, reference]`, PR #193) is merged before M1 starts. M1 does not reimplement it; §4.3 keeps that order rule inside each scope. |
-| Engram carrier | Engram work is carried by the gr-conductor session (repository `rhanka/engram`, local checkout `/home/antoinefa/src/graphify`). This repository defines the required Engram artefacts and the hand-off contract in §7; it does not write Engram code. |
+| Author revision | Round 5 plus the owner's targeted extra author round of 2026-10-27 for the relation-target fold finding only; artifact name r4 is retained. |
+| Status | Specification authored by Engram on 2026-10-27. No implementation, admission, package publication, consumer switch-over or review is claimed. |
+| Author / independent assessment | Sol 6.1 xhigh, specification author. Independent assessment belongs to Muse Wonder xhigh; the author supplies no assessment of their own text. |
+| Baseline | Copy of DS commit f6f3ba3790696754b6e08b13b62148ef3556bc4e, SHA-256 e7ca16aedeb752f7fcdc11673e4c8600450fa2b7f3b4ac224e493f718c24b9ef. |
+| Deliverable | Only /home/antoinefa/src/graphify/.graphify/scratch/design/ontology-guardian/m3/SPEC_EVOL_GD_M3_DIAGRAM_MODEL-r4.md. No repository is changed. |
+| Governance | G2: Engram governs profiles, schemas, fixtures, migrations, pins and digests. The Design System owns and publishes the diagram-core executor, layout and rendering. |
+| Pivot | SemanticDocument / ViewDocument; generic@2, archimate@2, the A′ generated BPMN family and uml@2. The @1 declarations remain immutable. bpmn-canvas profile-c14n/2 remains unchanged. |
+| Scope | Shared model, typed presentation/view data, profile deltas, validation, projection, measurement, migration and qualification contracts. Rendering, interactive UI, exports and editing have their separately owned roadmap gates in §10. |
+| Tooling | Node/TypeScript and native tools; zero Python. Offline execution with embedded JS/styles, no CDN and no network loads in composition, validation, layout or painting. Read-only authoring access to an additional matrix transcription source is recorded in §8.5. |
 
-## Owner orders
+## Owner orders and binding sources
 
-Owner order of 2026-10-23, verbatim:
+Owner order of 2026-10-25, verbatim as supplied for this round:
 
-> « je veux le modele de graph pas le graph hrpn … Pas de patchware engram doit avoir son modele complet selon la spec qui historiquement etait portee ici. »
+> « Attention on a deja cree une etude et un mode pour les diagrammes cote sentropic que tu devrais reprendre. Il couvrait aussi bpmn. »
 
-Owner order of 2026-10-25, rejecting the r2 question « generic@2 vs architecture@1 », verbatim:
+Owner decision of 2026-10-26: Sol authors r4; completed ArchiMate and UML profiles are **archimate@2 and uml@2**, with explicit migrations from immutable @1 skeletons. There is no same-id exact-pin dispatch. Owner decision of 2026-10-27 assigns authorship to Engram as guardian in place of the design system.
 
-> « Attention on a deja cree une etude et un mode[le] pour les diagrammes cote sentropic que tu devrais reprendre. Il couvrait aussi bpmn. Tes mots demontre qu il y a eu un oubli majeur »
+The owner relay of 2026-10-18 is transcribed exactly from its pinned file, including its spelling:
 
-Effect on this specification, normative:
+> « Les algo open licence libre ou algo public mais dans notre js a nous … On respect mais on libere au max et on a nos propres souches »
+>
+> « diagrammes gigogne (ouvrables) … Tout diagramme est un graph et toute representation est une forme de synthese. Il faut bie modeliser diagramme layout et skills de presentation »
+>
+> « L enjeu n est pas la taille mais la reactivité et l atomicité des editions … la acapacite offline sans cdn doit etre possible donc ok la 32Mo qd js embedb »
 
-1. The deliverable is the **graph model**, not one consumer graph. The HRPN graph, the HRPN scenes and the governance central scene are acceptance instances of the model (§8), never its definition.
-2. The design system is the **generic library**. Every rule below is stated for any consumer of the model. No rule names a consumer, a scene id, a zone id or a consumer tint vocabulary.
-3. The model is **complete for the validated diagrams with zero consumer patches**. After M1, the following are defects, not supported patterns:
-   - a preserved extension that carries standard card or zone slots (the measured instance is `hrpn.zone-slots@1`, `preserved-unvalidated`, one per zone);
-   - a document-local type refinement that exists only to carry standard card slots (the measured instance is `hrpn-card`, an additive refinement of `node`);
-   - a display title edited to dodge a global uniqueness rule (the measured instance is two zones titled « CI/CD » stored as « CI/CD · GENAI PCP PLATFORM » and « CI/CD · AIRBUS AWS », with the rendered title kept aside as `displayTitle`).
-   A document that still needs one of these three to validate is evidence that the model is incomplete, and the gap is fixed in the profile or the executor, never in the consumer.
-4. Engram carries the complete model as historically specified in this repository (`spec/SPEC_EVOL_GD_M2_MODEL.md`, `spec/SPEC_EVOL_GD_M2_DS_PRESENTATION.md`, `spec/SPEC_EVOL_GD_M2_CANVAS.md`, `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md`): versioned profiles, typed attributes, views and occurrences, commands and transactions, migration, fixtures. §7 states what Engram holds and what this repository keeps. Zero preserved extension, zero local refinement for standard slots, zero name hacks is the acceptance criterion; §8 enforces it per instance.
-5. **The r2 omission is corrected.** r2 treated « the complete model » as one profile and invented `architecture@1`, ignoring the existing `archimate@1`, `bpmn@1` and `uml@1` profiles and the owner-finalized governance-unification study. r3 reframes the complete model as the single metamodel covering every study family (§1). `architecture@1` is withdrawn and is never registered.
+The brief also supplies the sentence « Tout diagramme est un graph et toute representation est une forme de synthese. Il faut bien modeliser diagramme layout et skills de presentation ». Both sources bind the same three layers. “32 MB” is an **order of magnitude, not a ceiling**.
 
-## Binding source: the governance-unification study
-
-The binding source is `/home/antoinefa/src/sentropic/.tmp/governance-unification/study.md` (r10, owner-finalized 2026-10-19, sha256 `7e3a3d1cb863eafce347bceff2639d5fdbc12a6dc2515371b34c2524687c5335`). Every clause below that cites the study is traceable to that file at that digest. Two further owner sources in the same directory are binding and are pinned here at the digests computed from the files: `/home/antoinefa/src/sentropic/.tmp/governance-unification/owner-diagram-decisions-via-hcond.md` (owner verbatim arbitrations of 2026-10-18, sha256 `76eee3b4e91b34027c030c8c4c48006e0d387d224ffd4bd990085b557aa2a985`) and `/home/antoinefa/src/sentropic/.tmp/governance-unification/DS-DIAGRAM-MODULES-REQUIREMENTS.md` (final owner requirements for the two card modules, owner-validated 2026-10-21, validated on #711 at sentropic `4138a0ec`, sha256 `c65f5f3afc752b387d3ee2498f894fb6a8637fa7a845b9e0608b450b4325e944`). The project positions the study cites were also read when present under the same directory: `engram.md`, `decisions.md`, `reconciliation.md`.
-
-What the study binds, for this lot:
-
-- **§1.2 row 4 (line 47): no second diagram metamodel.** Keep `SemanticDocument` / `ViewDocument` (`@sentropic/diagram-core`) and the semantics of the existing profiles `generic@1`, `bpmn@1`, `archimate@1`, `uml@1`, plus bpmn-canvas `profile-c14n/2`. No competing entity-edge format.
-- **§1.2 row 10 and §4.1: graph / layout / presentation as three layers.** Every diagram is a graph (nested, openable); every representation is a synthesis. `SemanticDocument` is the graph, `ViewDocument` plus the L8 layout is the layout, and presentation skills are the third layer. Atomic transactions; offline without CDN (the 32 MB order of magnitude for an embedded JS bundle is accepted and is not a ceiling).
-- **N13 (around line 183): BPMN rendering and editing never lose extensions**, through the `bpmn@1` ↔ bpmn-moddle mapping (F1), DS mechanics and Engram governance.
-- **§7 M4 (line 295) and §9 G2: Engram profiles pinned by digest and the DS engine qualified together.** G2 verbatim: « Engram governs profiles, schemas, fixtures and migrations. The Design System retains and publishes the generic @sentropic/diagram-core executor, layout and rendering. Consumers pin profiles; no second diagram metamodel. »
-- **R-06 (line 312): no divergence** between bpmn-canvas, Focus, d2d and diagram-core, no loss of BPMN extensions, keep `profile-c14n/2` and fixture identity.
-- **Owner arbitrations of 2026-10-18** (`owner-diagram-decisions-via-hcond.md`, sha256 `76eee3b4e91b34027c030c8c4c48006e0d387d224ffd4bd990085b557aa2a985`), verbatim and binding: « Tout diagramme est un graph et toute representation est une forme de synthese. Il faut bien modeliser diagramme layout et skills de presentation » — model (graph), layout and presentation skill stay three separate layers (§1.2, §1.3 layer tags); « diagrammes gigogne (ouvrables) » — nested, openable diagrams (§4.1, §4.4); our own JS implementations of open algorithms (§1.2); offline use with no CDN, embedded JS budget up to 32 MB (§1.2, §10).
-
-DS sources for the historical model: `spec/SPEC_EVOL_GD_M2_MODEL.md`, `spec/SPEC_EVOL_GD_M2_DS_PRESENTATION.md`, `spec/SPEC_EVOL_GD_M2_CANVAS.md`, `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md`, `spec/SPEC_RE_BPMN_JS_PARITY.md`; code `packages/diagram-core/src/` (`profile.ts`, `profiles/generic.ts`, `profiles/skeletons.ts` for the archimate/uml/bpmn skeletons, `validate.ts`, `view.ts`, `migrate.ts`). BPMN canonicalization: `/home/antoinefa/src/bpmn-canvas/src/profile/canonical.ts` (`profile-c14n/2`, sha256 `287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba` at inspection). Engram G0 contracts: `/home/antoinefa/src/graphify/.graphify/scratch/design/ontology-guardian/SPEC-G0-guardian-contracts.md` (sha256 `e6362445f87d6581ac31224c2dc44e15214b3a7debc2afff2b3d25b8b37ff8f6` computed from the file at r3 authoring; the four frozen vectors of §7.3.5 are unchanged at 186/206/86/320 bytes).
-
-## 0. How to read this specification
-
-- `SHALL` / `MUST NOT` state the proposed contract. A clause tagged `frozen-requirement` restates an owner-validated value from `DS-DIAGRAM-MODULES-REQUIREMENTS.md` (owner-validated 2026-10-21, reference render sentropic PR #711 merged as `4138a0ec`) and is not re-opened here. A clause tagged `measured-code` states a fact read from a pinned file, with its locator. A clause tagged `decision` states a technical choice settled by this specification; its rationale is recorded next to it and it is not an open question. §9 settles the architecture landing with evidence and asks nothing; there is no open owner question in r3.
-- All card sizes are card pixels (CSS pixels at zoom 1). The atomic-card footprint is `460 × 200` in every state (`frozen-requirement`); §4.6 defines the state-dependent footprints and the fixed-axis policy that gives that sentence its exact meaning. No other size in this document is a card size.
-- “Card” means the atomic-card presentation of a leaf entity. “Container” means the wrapping-container presentation of a container-family entity. Neither word names a family type: §1.3 states where each presentation lives. “Fold” always means view state (§4), never a semantic attribute.
-- File paths are relative to this repository unless an absolute path is given. Engram paths are relative to `/home/antoinefa/src/graphify` unless stated otherwise.
-- **Normative scope.** This specification is normative for three things only: (a) the shared metamodel and view contract (`SemanticDocument` / `ViewDocument`, occurrences, folds, measurement input, layout hints), (b) the per-family profile deltas declared as Engram data, and (c) the `diagram-core` / `diagram-canvas` executor surface that validates and lays out (a) and (b). Everything downstream — xyflow node forms, consumer replacement and switch-over, draw.io export, rich-text editing, re-connectable edges, BPMN editing and rendering — is **not** normative here. §10 keeps milestones M2–M6 as a roadmap with gates and pointers to the separately authorised specifications that own those surfaces (`SPEC_EVOL_DS_DIAGRAM_CARDS.md` for components, the L8 dossier for draw.io, Track `01M5F3XSAJC2H6S9ZREP7JFFJ6` for edges, RT-1 for rich text, `SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` (A′) and `SPEC_RE_BPMN_JS_PARITY.md` for BPMN); no clause in §§3–8 depends on them, and no M1 gate requires them.
-
-## 1. Reframe: one metamodel, every family
-
-### 1.1 The single metamodel
-
-`decision` — The complete model is the single metamodel (`SemanticDocument` / `ViewDocument` in `@sentropic/diagram-core`) covering every study family, not one profile. A family is a versioned profile declared as data and governed by Engram (G2). The executor is family-neutral: it holds mechanisms, never family semantics. `generic@1`, `archimate@1`, `bpmn@1`, `uml@1` and the `profile-c14n/2` canonicalization are five rows of one system, not five models.
-
-```text
-Engram data (governed, pinned by digest)
-  generic@* | archimate@* | bpmn@* | uml@* | profile-c14n/2 | presentation fragment
-        \         |           |         |            |              /
-         +--------+-----------+---------+------------+-------------+
-                  |  profiles declare types, relations, constraints
-                  v
-DS executor (family-neutral, published by the DS)
-  SemanticDocument / ViewDocument + resolver, validation, commands,
-  migration, canonical serialisation, scene, layout, measurement
-                  |
-                  v
-Presentation skills (third layer, study §4.1)
-  card / container / legend rendering, themes, pictogram registry
-```
-
-Consequences, normative:
-
-- No second entity-edge format exists. A consumer that needs a new diagram kind declares a profile (or composes a governed stack) over this metamodel; it never invents a parallel document shape.
-- A profile major is a governance event in Engram (new version, new digests, corpus, migration reference). It is never a new executor and never a new metamodel.
-- `architecture@1` is withdrawn. It is not registered, not pinned and not migrated to. Architecture diagrams land as settled in §9.
-
-### 1.2 Three layers (study §4.1, row 10)
-
-| Layer | Carrier | Owner of the contract |
+| Source key | Immutable source / SHA-256 | Binding clauses |
 | --- | --- | --- |
-| Graph (nested, openable) | `SemanticDocument`: entities, relations, ports, type definitions, resources, preserved extensions. No geometry. | Engram governs the profile data; the DS executor validates it. |
-| Layout | `ViewDocument` (occurrences, groups, filters, presentation state) plus the deterministic L8 layout in `diagram-canvas`. Own JS strains; public/free algorithms reimplemented, never imported as a black box. | DS executor and layout. |
-| Presentation skills | Card/container/legend rendering, themes, pictogram registry, Focus dossier rendering, BPMN synthesis views. Each representation is a synthesis of a sub-graph for one intent. | DS components and themes; family semantics never live here. |
+| STUDY | /home/antoinefa/src/sentropic/.tmp/governance-unification/study.md, r10, 7e3a3d1cb863eafce347bceff2639d5fdbc12a6dc2515371b34c2524687c5335 | §1.2 point 4: one metamodel; N13: no BPMN extension loss; M4: profile pins and executor qualified together; R-06: no divergence across bpmn-canvas, Focus, d2d and diagram-core. |
+| G2 | /home/antoinefa/src/sentropic/.tmp/governance-unification/decisions.md:9, 731ecd6c0907332ad10ce4f7ae44e7eb812a91767ce60558fe9fb3847df7bcb8 | Engram data governance; DS executor ownership. |
+| OWNER | /home/antoinefa/src/sentropic/.tmp/governance-unification/owner-diagram-decisions-via-hcond.md, 76eee3b4e91b34027c030c8c4c48006e0d387d224ffd4bd990085b557aa2a985 | Three layers, nested/openable diagrams, own JS, offline, atomicity. |
+| REQUIREMENTS | /home/antoinefa/src/sentropic/.tmp/governance-unification/DS-DIAGRAM-MODULES-REQUIREMENTS.md, c65f5f3afc752b387d3ee2498f894fb6a8637fa7a845b9e0608b450b4325e944 | Owner-validated #711 geometry and behaviour; line 65 preserves 600 interactions and 240 stress toggles, worst interaction below 1.8 s, no idle work. |
+| G0 | /home/antoinefa/src/graphify/.graphify/scratch/design/ontology-guardian/SPEC-G0-guardian-contracts.md, e6362445f87d6581ac31224c2dc44e15214b3a7debc2afff2b3d25b8b37ff8f6 | Closed record/catalog/lineage, receipts, §5.5 admission, exact preimages. |
+| DS | sent-tech-design-system f6f3ba3790696754b6e08b13b62148ef3556bc4e; per-file hashes §8.5 | Read using git show revision:path. Historical M2 and A′ contracts are transcribed before extension below. |
+| PARITY | sent-tech-design-system 610c0353d899befeb59634b46b9d90f578661731 | PR #193 uniqueness order. This remains the parity baseline, never replaced by a moving main. |
+| KIT | sentropic 4138a0ecba9c5b37409abb5ac00f732d02b7dc8d:docs/governance/kit/src; file hashes §8.5 | The merged #711 bytes; scratch kit bytes are not this source. |
+| HRPN | airbus-genair-hrpolnav faf21b6f259f93a485994bbe03b4023763bf2597; full source root /home/antoinefa/src/airbus-genair-hrpolnav; per-file hashes §8.5 | Frozen ds-fixtures and separate producer bytes, each retrieved by git show revision:path. |
+| G0-CODE | Engram 618977a86a25c35e426a87f97cb9f3391cd1c654:src/ontology-guardian; file hashes §8.5 | Implemented G0 contracts after #408; data types, digest procedures and admission. This code supplies no production owner/namespace registry. |
 
-Atomicity and offline follow the study: every mutation is one transaction over `SemanticDocument` / `ViewDocument` with immediate local recomputation, and every standalone bundle embeds its JS/styles with no CDN dependency.
+## 0. Reading and evidence discipline
 
-### 1.3 Where each capability lives
+SHALL and MUST NOT are normative. frozen-requirement restates REQUIREMENTS; measured-code states a pinned observation; decision implements the supplied decisions and the contracts they require. Source bytes, specified behaviour and executed qualification are separate facts. An expected diagnostic is an oracle value, not a claim that a future executor has produced it.
 
-The table is the reframe. “Shared” means the family-neutral metamodel/view contract executed by `diagram-core` / `diagram-canvas` for every family. “Profile” means family semantics declared as Engram data (types, relation matrix, constraints, limits). “Presentation fragment” means family-neutral presentation data governed once and composed with any family; it is data, but it is not family semantics, and it never enters an `archimate`, `bpmn` or `uml` type declaration as a family attribute.
+An unverified item always names its owner in §11.2. It blocks only dependent claims and gates; it never becomes an admitted placeholder. No digest is invented. A full digest is 64 lowercase hexadecimal digits. This document's final file hash is computed externally, avoiding a self-hash.
 
-**Layer tagging (owner arbitration of 2026-10-18, normative).** Every capability also states its layer — **model** (graph: `SemanticDocument`, no geometry), **layout** (`ViewDocument` plus the L8 layout in `diagram-canvas`), or **presentation skill** (card/container/legend rendering, themes, pictogram registry). A capability that spans layers is split into its per-layer rows below; no presentation or layout field may sit in the graph model. Concretely: `SemanticDocument` carries only model-layer fields; fold state, footprints, measurement results, layout hints and authored-summary activation are layout-layer data and never semantic attributes; slot rendering, tone-to-token resolution and icon drawing are presentation-skill behaviour and never family semantics. The “Layer” column is part of the contract: an implementation that stores a layout or presentation field in `SemanticDocument`, or a family attribute in the presentation fragment, fails the leak rule.
+No consumer extension or local refinement may carry the standard presentation. D3-C still preserves genuinely foreign content as preserved-unvalidated, separately counted and never promoted to validated data. No network is needed by a consumer: all schemas, profile/matrix bytes, contract assets and fixtures are pinned locally before use.
 
-| Capability | Layer | Shared metamodel / view contract (executor mechanism) | Profile (family semantics, Engram data) | Presentation fragment (family-neutral data) |
-| --- | --- | --- | --- | --- |
-| Atomic card slots (stored text) | **model** | Typed-attribute mechanism over `SemanticDocument`; the executor validates any declared text slot generically (§3.2, §5.8). No geometry is stored. | A family declares leaf types (for example `node`, ArchiMate elements, BPMN flow nodes, UML classifiers). It declares no card slot as family semantics. | Slots `name`, `kicker`, `body`, `detail`, `footer`, `icon`, `tone`, `legendRef` with the bounds of §3.2, available to any leaf type that composes the fragment. The stored strings are model data; their drawing is a separate presentation row. |
-| Atomic card drawing | **presentation skill** | No executor field. The executor supplies the measured `LineLayout` (§4.6) the renderer consumes; it never draws. | No family content. | Rendering of the slots above (typography, accent bar, rule, footer pinning) is owned by `SPEC_EVOL_DS_DIAGRAM_CARDS.md` (M2, §10). An unknown `icon` name is a rendering diagnostic, never a semantic refusal (§3.3). |
-| Wrapping container slots (stored text) | **model** | Containment tree over `SemanticDocument` (§3.4); stored header text is validated as typed attributes. | A family declares which types may contain (for example generic `container`, BPMN `subProcess`/`participant`, UML `package`, ArchiMate `grouping`). | Slots `name`, `kicker`, `subtitle`, `footer`, `icon`, `tone`, `legendRef` with the bounds of §3.2, available to any container-family type that composes the fragment. |
-| Wrapping container drawing (expanded frame / collapsed card) | **presentation skill** | No executor field. Fold state that selects the form is layout data (row below); the frame drawing itself is a skill. | No family content. | One header component for expanded and collapsed forms, collapsed form at the atomic footprint, owned by the component specification (M2/M3, §10). |
-| Containment by any container, including refinements | **model** | One shared cycle-safe resolver (§5.1); family satisfaction for every `entityTypes` role (§5.2); tree/dag checks read hierarchy ids from constraint data. | Each family declares its hierarchy relation(s) and parent family roots as constraint data (§3.4, §5.4). BPMN composition slots (A′ K4) are the BPMN instance of the same rule. | No presentation content. |
-| Scoped uniqueness | **model** | Generic grouping by scope key (`document` / `siblings` / `withinType`) with the PR #193 order rule per scope (§5.3). | Each family declares which attribute is unique in which scope. `generic` declares legend scopes only; no family declares a global display-title uniqueness. | No presentation content. |
-| Labelled relations (stored label) | **model** | Relation declarations and label validation are semantic; the label is content, never a routing instruction (§3.5). | Each family declares its relation types, roles, cardinalities and label bounds (ArchiMate matrix, BPMN flows, UML relations, generic `link`/`association`). | No presentation content in the label itself. |
-| Styled relations (stored style) | **model** | Semantic `strokeStyle` is a typed relation attribute; the view override is layout data (next row). Absent means `solid` (§3.5.1). | Families declare whether a relation type carries the slot; the value space (`solid`/`dashed`) is generic. | The token-to-stroke mapping at draw time is presentation behaviour; the stored key is model data. |
-| Relation drawing and folded projection | **layout** | Relation occurrence, folded projection (§4.4), view `strokeStyle` override, derived aggregation (§4.5). Never a semantic attribute. | No family declares projection state. | Projected strokes reuse the relation presentation; aggregation grouping is computed at render time and never stored (§4.4.5). |
-| Legend as data (stored legend) | **model** | Legend binding resolution, scoped uniqueness of `category`/`order`, `order` sorting (§3.6). | No family owns the legend types. A document of any family may carry a legend; family profiles do not redeclare it. | Types `legend` / `legend-key` with header slots, `category`, `token`, `description`, `order` (§3.6), composed with the document's family profile. |
-| Legend drawing | **presentation skill** | No executor field. | No family content. | Swatch/token rendering and header drawing, owned by the component specification (M2). |
-| Folds and folded projection | **layout** | `VisualGroup.collapsed` bound per occurrence, outermost-visible representative, recomputation from a retained source view, folded geometry composition (§4.4). Fold is view state only. | No family declares fold state. A family never stores `collapsed` as a semantic attribute in the completed profiles. | Collapsed form reuses the card presentation (§4.6). The fold control itself is an M3 interactive behaviour (§10). |
-| Fixed footprints | **layout** | Footprint resolution from (type, view state), `fixedAxes` policy, docking overflow (§4.6). Footprints are never stored in `SemanticDocument`. | A family declares no footprint. | Footprints: leaf/collapsed `460 × 200` (`both`), legend-key height `64` (`height`), expanded computed (`none`) (§4.6). The values are frozen requirements; the box drawing is presentation. |
-| Measurement | **layout** | `LineMeasurer` request/result, per-slot measurements for every slot, call sequence (§4.6). Results are layout output, never semantic data. | No family declares metrics. | Slot allocations and roles (`kicker`, `title`, `body`, `detail`, `footer`, `subtitle`, `legend-label`, `edge-label`) bound the measurement; rendering consumes the same `LineLayout` (M2 gate). |
-| Layout hints | **layout** | `LayoutHints` (ordering, recursive grouping, stretch, gaps) as engine input (§4.7). Hints are per-call authored data, never stored in the semantic document. | No family declares hints. | No presentation content. |
-| Authored summaries (definitions) | **layout** | `summaryLabels` definitions are `ViewDocument` data (§4.5.1); activation is derived per folded state (§4.5.2) and never stored. | No family declares summaries. | Authored label text is view data in the document language (§3.7); its drawing on the aggregate stroke is presentation behaviour. |
-| Occurrences | **layout** | `ViewDocument` occurrences (entity/relation/port), N occurrences per entity, scene conservation. M2 §3.4 is unchanged. Occurrence geometry lives only in the view/layout. | A family declares what may be drawn (types), never how a drawing is identified. | No presentation content. |
+## 1. One metamodel and three separate layers
 
-**Leak rule (normative).** Card and legend presentation SHALL NOT leak into family semantics. Concretely: completing `archimate@1`, `bpmn@*` or `uml@1` adds no `kicker`, `body`, `detail`, `footer`, `icon`, `tone`, `subtitle` attribute to a family type, adds no `legend`/`legend-key` family type, and adds no card footprint to a family declaration. A family diagram that is drawn as cards composes the presentation fragment with its family profile at the document level (`profileRefs` plus the fragment pin in the stack, §7); the family profile bytes and digest do not contain the fragment. The synthetic-profile gate of §5.4 proves the executor contains no family or presentation literal.
+### 1.1 Family routing
 
-### 1.4 What “complete” means per family
+The complete model is SemanticDocument / ViewDocument across generic, archimate, bpmn and uml. A family is data over that model. A new profile major is neither a new executor nor a new metamodel.
 
-| Family | Complete means | Not claimed |
+| Family / artifact | Active target | Retained source | Scope |
+| --- | --- | --- | --- |
+| Generic cards | generic@2 plus diagram-presentation@1 (§3.2) | generic@1 | Cards, containers, labelled links, semantic categories and legends. |
+| ArchiMate | archimate@2; same presentation contract when drawn as cards | archimate@1 skeleton | Catalogue, ordered source/target relationship tuples, grouping, viewpoints. |
+| BPMN | bpmn@2, bpmndi@1, dc@1, di@1, bioc@1, color@1, sem@1 via A′ | bpmn@1 skeleton | Descriptor-generated semantics, F1, DI, extensions. |
+| UML class diagrams | uml@2; same presentation contract when drawn as cards | uml@1 skeleton | Classifiers, properties, operations, associations, multiplicities, packages and stereotype application. |
+| Canonicalization | profile-c14n/2 | Same bytes and fixtures | Identity only; never a document validator. |
+| Withdrawn proposal | architecture@1 is never registered, pinned or migrated to | No published predecessor | §9 landing is retained. |
+
+The native registry remains keyed by ProfileId (the pinned createProfileRegistry rejects duplicate ids: “a profile id is a version, not a name”). generic@1/@2, archimate@1/@2 and uml@1/@2 coexist as **different ids**. Pins authenticate bytes/version; they do not dispatch two incompatible declarations under one ProfileId.
+
+### 1.2 Layer ownership
+
+| Layer | Carrier | Data permitted |
 | --- | --- | --- |
-| `generic` | The successor of `generic@1` (§3.8) with native card/container slots via the presentation fragment, legend, scoped uniqueness, family parents, folded views and migration from `generic@1`. | No BPMN, ArchiMate or UML conformance. |
-| `archimate` | `archimate@1` completed from its skeleton (§3.9): element catalogue per layer/aspect, the versioned relation/source/target matrix, grouping containment, viewpoints as view filters. Card drawing composes the presentation fragment. | No card anatomy as ArchiMate semantics; no Open Group exchange claim beyond the declared namespaces. |
-| `bpmn` | The A′ completion (§3.10): profiles generated from bpmn-moddle descriptors (`bpmn@2` family), F1 moddle JSON ↔ `DiagramState` bijection, complete DI, extension preservation. `bpmn@1` stays readable as a skeleton (§6). | No rendering or editing parity (owned by `SPEC_RE_BPMN_JS_PARITY.md` lots); no second BPMN evaluator beside bpmn-canvas/d2d (§6). |
-| `uml` | `uml@1` completed from its skeleton (§3.11): classifiers, properties, operations, association/generalization/dependency with multiplicities, package containment. Activity/sequence/state are separate profiles when authorised. | UML does not reduce to PlantUML text; the pivot is a codec concern (GD-M4). |
-| `profile-c14n/2` | Unchanged canonicalization (§3.12). Identity is the c14n bytes → SHA-256; no re-canonicalization by any catalog or executor. | It is not a profile and not an evaluator; it never validates a document. |
+| Graph | SemanticDocument, profile data governed by Engram | Entities, relations, ports, semantic names/descriptions/categories, type/refinement definitions, resources and preserved foreign content. No drawing instructions. |
+| Layout | ViewDocument and DS layout input/output | Occurrences and geometry, folds, projection provenance, filters, authored summary definitions, recursive hints, measurements and fixed footprints. |
+| Presentation skill | Typed ViewDocument.presentation.diagram plus governed contract/theme assets | Card anatomy, icon selection, category→token bindings, legend order, relation occurrence strokeStyle, drawing roles and theme resolution. |
 
-### 1.5 Requirements of `DS-DIAGRAM-MODULES-REQUIREMENTS.md` mapped to this model
+Semantic “category” denotes a domain distinction; “token” denotes its rendering. A diagram may retain its categories while changing every token, icon, footprint and stroke without changing any semantic byte or semantic profile digest. Card title falls back to the semantic name by reference; it is not duplicated unless an explicitly authored view title differs.
 
-Source: `/home/antoinefa/src/sentropic/.tmp/governance-unification/DS-DIAGRAM-MODULES-REQUIREMENTS.md` (sha256 `c65f5f3afc752b387d3ee2498f894fb6a8637fa7a845b9e0608b450b4325e944`, owner-validated 2026-10-21 on #711 at sentropic `4138a0ec`). Every requirement below maps to a §1.3 capability row (with its layer) or is explicitly out of M3 normative scope with its roadmap pointer (§10). No requirement is left unmapped and no M1 gate depends on an out-of-scope row.
+### 1.3 No presentation in the graph
 
-| Requirement (paraphrased; values verbatim where frozen) | §1.3 capability / layer | Disposition in this specification |
+All standard drawing fields — kicker, body/detail line allocations, subtitle, footer, icon, token, order, legendRef, strokeStyle, footprint and collapsed — live in the view/presentation contract. They are not added to a family entity/relation schema. A domain attribute whose meaning happens to be text remains semantic, but it is read by a declared projection; a renderer never treats an arbitrary semantic attribute as a drawing instruction.
+
+Legend/category entities contain semantic names, category keys and descriptions. Their header adornments, key order and category→token map are view data. No “semantic presentation” exemption exists. The leak gate scans semantic declarations and fixture instances for the drawing fields, and asserts semantic-digest invariance after changing view presentation.
+
+### 1.4 Owner requirements, with their gates
+
+The fixed card is 460 × 200 CSS pixels at zoom 1, square-cornered and never enlarged to fit text or docks. Collapsed containers have that size at every depth. Header icon 70; gap 6; kicker 22/400 uppercase at drawing time; title 32/700, line-height 1.3; body 24/400, line-height 1.3, first glyph inset 14. Footer bottom 9.25; rule 1 screen pixel at every zoom. No ellipsis or clipping; overflow is diagnosed. Expanded subtitle→rule 4; rule→children 16; children→bottom 16. Expanded frames sharing a row align with zero deviation. The collapsed subtitle is centred in both axes with 16 side margins, without justification or stretching.
+
+One duotone pictogram family on its own subpath, 64-unit viewBox, includes brain/robot; its card rendering never mixes Lucide glyphs. The fold control uses the separately specified DS IconButton and focus-visible keyboard ring. Own JS algorithms, atomic edits, offline/no CDN and nested openable diagrams bind all gates.
+
+§4 defines model-facing footprints, measurement and projection; §10 M2 owns pixel parity, M3 interactive reflow and the **600 interactions including 240 stress toggles**, M4 xyflow/standalone, M5 exports and M6 editing. Moving an interaction gate out of M1 never withdraws its workload or 1.8-second budget.
+
+## 2. Source contracts, transcribed before extension
+
+DS paths in this section are read at DS unless a more specific revision is named.
+
+### 2.1 Native profiles and M2 invariants
+
+M2 model §3.4: one entity has N occurrences in one view and occurrences in several views; deleting an occurrence deletes a drawing; deleting its entity requires explicit policy. SemanticDocument excludes camera/geometry/components. Commands are transactional with inverses or a stated reason. Migration keeps the original and refuses an unknown major in write. References are nominal and not interchangeable.
+
+Native Profile (profile.ts): id, name, version, completeness; entityTypes, portTypes, relationTypes, constraints, limits; optional notes. Native role declaration: role, cardinality { min, max }, targets (entity/port), optional entityTypes. Native attribute values carry their kind; an undeclared attribute refuses attribute-not-in-schema. Document refinements are additive; redeclaring an inherited attribute refuses type-definition-conflict.
+
+| Pinned declaration | Exact starting contract |
+| --- | --- |
+| generic@1 | node: required name≤200, state, weight, duration, createdAt, pinned, tags, owner. container: required name≤200 and collapsed. port: in/out/inout, label≤80. link: source/target 1..1 entity/port, label≤120, weight. contains: tree containment, parent container. association: member 2..8, label≤120. Global container-name uniqueness and container count≤64. |
+| archimate@1 | element with name, required layer in strategy/business/application/technology/physical/motivation/implementation, optional aspect active/behaviour/passive/motivation; junction operator and/or; grouping name. Eleven relation names with 1..1 arity only. No matrix; no conformance claim. |
+| uml@1 | class, interface, package, property, operation. Class stereotypes are collection(text≤60), max 8; property multiplicity text≤20; association sourceMultiplicity/targetMultiplicity text≤20. generalization, dependency, packageContainment tree. No completed multiplicity/profile/stereotype rules. |
+| bpmn@1 | process, participant, lane, task, subProcess, event, gateway; flowPort; sequenceFlow, messageFlow, association, flowElementContainment; bpmn-containment tree. No event matrix/complete DI. |
+
+generic.ts SHA-256 b19967fe65483abdbf0e271f197e13691904e4b087c1542de23c52e2ad4f45c3 and skeletons.ts SHA-256 0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e remain immutable. New declarations go in new files; editing these historical files fails the preservation gate.
+
+### 2.2 Native view and diagnostic shapes
+
+view.ts transcribes PresentationState as { camera: { x, y, zoom }, grid?: { size, snap }, theme?: string }. ViewDocument has exactly viewId, semanticDocumentId, revision, entityOccurrences, relationOccurrences, portOccurrences, groups, filters, presentation. Its revision is the document revision when last changed, never ahead of the document. RelationOccurrence has id, relation, endpoints and optional waypoints. An endpoint has role and occurrence. VisualGroup has id, optional label/collapsed. §3.2 extends PresentationState; §4 extends endpoints/groups and adds only summaryLabels at the top level.
+
+diagnostics.ts transcribes Diagnostic as { code, severity: "error"|"warning", path, message, refs?: string[], details?: Record<string,string|number|boolean> }. Absence of refs/details is distinct from an empty object/array. Appendix C supplies literal new arms; unchanged native arrays are neither enriched nor globally sorted.
+
+### 2.3 A′ shared kernel prerequisites
+
+A′ K1 uses subtype/subsumption; K2 adds targetTypes?: TypeRef[] to a reference schema, checking both existence and target type (reference-target-type for a mismatch). K6 value is **{ kind: "struct", type: TypeRef, fields: Record<string, AttributeValue> }**, nested and validated against its declared effective type; its diagnostics are struct-type-unknown, struct-field-not-in-schema and struct-type-not-allowed. K8 overlays use qualified attribute names and active profileRefs; overlaying never redeclares a base attribute. K9 owns generated DI view schemas and shapes/edge occurrences, including verbatim waypoints. These mechanisms are shared, never reimplemented with family-specific branches.
+
+UML @2 depends explicitly on K1/K2/K6. This specification supplies their required declaration interpretation in §§3.9.1/3.11.1/A.4; it does not claim their executor/schema registration already exists. Their schema-major and publication qualification is the A′/DS kernel dependency, recorded unverified in §11.2. generic@2 card presentation does not depend on structured semantic attributes.
+
+## 3. Governed family and presentation contracts
+
+### 3.1 Semantic successors
+
+generic@2 is a replacement **base**, not a G0 child of generic@1. It removes collapsed, global container-name uniqueness and container count≤64, and raises link.label to 200. It retains the general node/port attributes and link weight. It adds semantic legend and legend-key types:
+
+| Type | Semantic attributes | Container capability |
 | --- | --- | --- |
-| Pivot format is the diagram-core document; Engram provides the profiles; no second model | Single metamodel (§1.1) — **model** | Normative here: §§1, 3, 7. |
-| Atomic card fixed `460 × 200`, never grows with text; square corners; accent bar/border | Fixed footprints — **layout** (box); card drawing — **presentation skill** | Footprint normative here (§4.6.1); corner/accent drawing owned by `SPEC_EVOL_DS_DIAGRAM_CARDS.md` (M2). |
-| Card header: icon 70, icon→text gap 6, kicker 22/400 uppercase, title 32/700 lh 1.3; body 24/400 lh 1.3, left inset +4 (14 to first glyph); rule 1 px staying 1 screen px at every zoom; footer pinned (bottom 9.25); no ellipsis ever, overflow diagnostic instead | Atomic card slots — **model** (stored strings); measurement — **layout**; drawing — **presentation skill** | Slot bounds and measurement/overflow contract normative here (§§3.2, 4.6); typography, rule and pinning rendering owned by the component specification (M2); the no-ellipsis rule is enforced here as the overflow result (§4.6.4). |
-| Wrapping card: one header component for all zones; same typography (title 32/700, kicker 22/400 uppercase not bold, subtitle 24/400); icon 70 same as cards; kicker carries the package name, title without package prefix; header follows actual content; expanded subtitle wraps under the icon; collapsed subtitle centred with 16 px side margins, no justification/stretching; side-by-side frames share top/height, rows/columns aligned 0 px deviation | Wrapping container slots — **model**; footprints/measurement — **layout**; header drawing — **presentation skill** | Slot and prefix rules normative here (§3.2.2: stored title never carries the prefix); footprint and centred-summary measurement normative here (§§4.1, 4.6); header component and alignment rendering owned by the component specification (M2), alignment asserted by its geometry gate. |
-| Icons: one blue duotone family on its own subpath, 64-unit viewBox, includes `brain`/`robot`, never Lucide inside cards | Atomic/container slots `icon` — **model** (registry name only); drawing — **presentation skill** | Name-only storage and shape grammar normative here (§3.3); the registry asset itself is DS presentation data (M2). |
-| Both modules usable as xyflow (Svelte Flow) custom nodes with handles, and standalone | Occurrences — **layout** contract only | **Out of M3 normative scope.** Roadmap M4 (§10), owned by its own specification. No clause in §§3–8 depends on xyflow node forms. |
-| Both modules embeddable in graphs and editable Tiptap-style | — | **Out of M3 normative scope.** Roadmap M6 (§10), gated on RT-1. No M1 gate requires editing. |
-| Expanded zone spacing: subtitle→rule 4 px; rule→children 16 px; children→bottom 16 px; edges route in gutters/frame/outside, never reserve empty height | Fixed footprints / measurement — **layout** | Spacing values normative as layout insets here (§4.6.1, §4.6.3); edge routing is the layout/routing surface of M1 (§4.6) with interactive re-routing in M3. |
-| Interactive fold/unfold in place (+/− DS IconButton, `:focus-visible` ring only), collapsed at `460 × 200` at every nesting level, reflow without collisions, edges re-route, Expand all / Collapse all, per-zone chips | Folds and folded projection — **layout** (state and projection); control rendering — **presentation skill** | Fold state, projection and footprint normative here (§§4.1, 4.4, 4.6); the interactive controls and reflow behaviour are roadmap M3 (§10) over that surface. |
-| Performance: no continuous work at idle; worst interaction under 1.8 s | — (system property) | **Out of M3 normative scope as a model clause.** The budget is asserted by the M3 behaviour gate over its enumerated finite interaction corpus (§10); the r2 “600/240” totals are withdrawn there as unenumerated prose. No timeout is ever raised. |
-| Edges re-connectable and labels editable inline as host-applied proposals (Track `01M5F3XSAJC2H6S9ZREP7JFFJ6`) | Labelled relations — **model** (stored label only) | **Out of M3 normative scope.** Roadmap M6 (§10). The stored label contract is normative here (§3.5); the editing interaction is not. |
-| Offline without CDN; own JS strains for open algorithms; atomic transactions | Three layers (§1.2) — cross-layer system property | Offline/atomicity normative as executor properties here (§§1.2, 5); bundle composition (32 MB order of magnitude, not a ceiling) is a delivery property recorded in §10, never a model field. |
+| node | name required text≤200; general @1 attributes unchanged; optional category text≤40 with key grammar | false |
+| container | name required text≤200; optional category text≤40 | true |
+| legend | name required text≤200; optional description text≤600 | true |
+| legend-key | name required text≤120; category required text≤40; optional description text≤200 | false |
 
+Category is domain data. No token, icon, order or footprint is an attribute of any of these types. contains permits parent roots container/legend, is a tree, and declares containment/parent/child as data. children-restricted confines a legend's children to legend-key; required-parent confines each key to a legend. category is unique within its legend. Key drawing order is validated in the view, not as a semantic unique-attribute constraint. Limits: maxEntities 100000, maxRelations 500000, maxEndpointsPerRelation 8. link source/target remain 1..1; association member 2..8.
 
-## 2. Starting point, measured
+### 3.2 Shared typed presentation fragment: diagram-presentation@1
 
-Every fact below carries its locator. Where a measurement contradicts the completed model, the completed model is the fix and the measurement is the evidence.
+#### 3.2.1 Identity and G0 application
 
-### 2.1 The historical model (M2) already specifies the shape
+diagram-presentation@1 is a **G0 contract artifact**, profileShape mechanism-descriptor, artifactKind contract. Its binding is exactly { artifactKind: "contract", schemaPin: Pin, compatibilityMatrixVersion: "1" }. It is not a diagram profile and MUST NOT appear in SemanticDocument.profileRefs, lineage.parents of a family, or a semantic P-PINS layer list. It uses the G0 contract-verdict receipt; theme data additionally requires theme-invariance. Contract/schema bytes are governed once by Engram, executed by the generic DS view validator. No third semantic profile shape is introduced.
 
-`spec/SPEC_EVOL_GD_M2_MODEL.md` (sha256 `5e7798a451c5b92cbbde6fbf85ea5f890c32c863ece3c73e5d9772efa9cff078`) settles the core and this lot does not re-open it: a typed semantic core with versioned profiles, not a property bag (decision D1-A, §1 of that spec); broad read-only import with unvalidated content kept as `preserved-unvalidated` and never promoted to a fact (decision D3-C); seven nominal, non-interchangeable reference types; a `SemanticDocument` that excludes positions, camera and components; a `ViewDocument` of occurrences, visual groups, filters and persistable presentation state; transactional commands with an inverse or a documented reason; versioned schema migration that keeps the original and refuses an unknown major in write; fixtures including named rejected cases with asserted diagnostics.
+G0 §2.3 is transcribed before application: S-1 permits additive types/relations and narrowing; S-2 forbids parent removal, widening and attribute redeclaration; S-3 refuses unresolved conflicts; S-4 refuses cross-profile endpoints without a module/join; S-5 prohibits network loading; S-6 forbids weakening a core gate; S-7 binds deterministic effective declarations/rules to ordered pins.
 
-`spec/SPEC_EVOL_GD_M2_MODEL.md` §3.4 is load-bearing: an entity has **N occurrences in one view** and occurrences in several views; removing an occurrence removes a drawing, nothing else; removing the entity demands an explicit policy. §4 is written against that rule, not against a one-occurrence assumption.
+Application is **not semantic stacking**. It joins a validated semantic context to a typed ViewDocument through nominal references, adds no semantic attribute/type, never redeclares name and never silently changes profile ownership. This is the executable module/join contract covering the references below. Family profile bytes, ProfileId and all three semantic digests are identical before/after application.
 
-`spec/SPEC_EVOL_GD_M2_DS_PRESENTATION.md` and `spec/SPEC_EVOL_GD_M2_CANVAS.md` settle the presentation and scene boundaries this lot respects: the DS layer never depends on the diagram model, the headless scene owns the world→device transform and the hit test, and `diagram-core` stores no transform. M1 does not move any of those boundaries.
+Closed input:
+{ familyPins: Pin[], semanticDocument: SemanticDocument, sourceView: ViewDocument, contractPin: Pin, semanticCategoryPins: Pin[], adapterPin: Pin }.
+familyPins are precisely the unique semantic profileRefs in their stored order. semanticCategoryPins is [] or the declared generic@2 pin when category entities of that profile are used by another family. That pin must already be in profileRefs/familyPins; it is not an implicit import. adapterPin identifies the qualified view-contract executor/schema adapter. Pin equality means equality of id, version and contentDigest, never just a display label. input.contractPin MUST equal sourceView.presentation.diagram.contractPin and the resolved diagram-presentation@1 contract pin. Resolve that contract's catalog entry and parse its ontology.compatibility.adapter exact pinned reference; it MUST equal input.adapterPin, and its bound schema asset MUST equal the contract artifactBinding.schemaPin. contractPin authenticates the presentation contract; adapterPin authenticates the catalog-selected executor/schema adapter. Both equalities are mandatory and neither input can select a different contract/schema.
 
-`spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` (A′, sha256 `7b29e147873287402a271d8b95e86bc0d39cd320152bbd8c6b1f6ef4c6e87505`) adds the kernel direction this lot reuses for hierarchy families: type constraints are satisfied by the named type or any subtype, and containment is a structural parent link, not a relation endpoint competing with a reference (§5, §6 K1/K4 of that spec). The executor change of §5.2 is the application of that already-decided rule, generalised by the shared resolver of §5.1. A′ also decides the BPMN completion path (§3.10): profiles generated from moddle descriptors, F1 as the exchange pivot, unknown-namespace content preserved, and `bpmn@1` superseded by the generated family (§6.1 keeps `bpmn@1` readable; it does not promise an automatic `bpmn@1` → `bpmn@2` document migration).
+Closed output union:
+{ outcome: "ok", view: ViewDocument, familyPins: Pin[], contractPin: Pin, presentationDigest: Digest, diagnostics: [] }
+or { outcome: "refused", diagnostics: Diagnostic[] } (no candidate view).
+presentationDigest is SHA-256 of RFC 8785 of the full presentation.diagram value; the contract pin is inside that value. It is an application digest, not any of G0's four semantic/catalog digests.
 
-### 2.2 The current executor, and the gaps it proves
+Execution, in order: resolve all pins locally and verify bytes; check input.contractPin against DiagramPresentation.contractPin, check adapterPin against the resolved contract catalog ontology.compatibility.adapter, and check the adapter's schema binding against artifactBinding.schemaPin; validate families independently (or their admitted G0 semantic stack); validate every occurrence against its owning family; validate the closed presentation shape; resolve selectors/references; validate slot bounds, category bindings and legend order; only then emit the effective view validation context. Unknown pin/schema/selector, an absent join, duplicate binding, unsupported contract version, conflict or invalid value refuses. No “last wins” rule and no consumer callback/schema augmentation exists. A family is selected by its resolved owner profile/type metadata, never a literal list of consumer or scene ids.
 
-Current code is `packages/diagram-core/src/` at the branch base (`8d1727a1`). Measured facts:
+#### 3.2.2 Closed persisted shape
 
-- `generic@1` is the only `complete` profile (`packages/diagram-core/src/profiles/generic.ts:17`, sha256 `b19967fe65483abdbf0e271f197e13691904e4b087c1542de23c52e2ad4f45c3`). `node` declares `name` (required, ≤ 200), `state`, `weight`, `duration`, `createdAt`, `pinned`, `tags`, `owner`. `container` declares `name` (required, ≤ 200) and `collapsed`. Neither declares `kicker`, `body`, `detail`, `footer`, `icon`, `subtitle` or `tone`, and `validateDocument` refuses an undeclared attribute as `attribute-not-in-schema` (`packages/diagram-core/src/validate.ts`, `packages/diagram-core/src/attributes.ts`). Standard card slots therefore cannot be stored as attributes today. **Gap C (card slots).**
-- The three skeletons live in `packages/diagram-core/src/profiles/skeletons.ts` (sha256 `0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e`). `bpmn@1` declares 7 entity types, 1 port type, 4 relation types (including `flowElementContainment`); `archimate@1` declares 3 entity types (`element`, `junction`, `grouping`), no port types, 11 relation names with arity only; `uml@1` declares 5 entity types, no port types, 4 relation types (including `packageContainment`). Each carries `completeness: "skeleton"` and notes that list what is NOT declared. No conformance is claimed for any of the three. **Gap F (family completion).**
-- The `contains` parent role accepts exactly `entityTypes: ["container"]` (`packages/diagram-core/src/profiles/generic.ts:78`), and the validator compares the target type by strict equality (`packages/diagram-core/src/validate.ts:329`, `role.entityTypes.includes(target.type)`). A document refinement of `container` therefore cannot parent: the diagnostic is `endpoint-target-not-allowed`. The same strict-equality test governs every role of every profile, so a refined BPMN `subProcess`, a refined ArchiMate `grouping` and a refined UML `package` fail identically. **Gap 1 (family parents).**
-- `generic@1` declares `{ kind: "unique-attribute", entityType: "container", attribute: "name" }` globally (`packages/diagram-core/src/profiles/generic.ts:102`), enforced over every container in the document (`packages/diagram-core/src/validate.ts`, `validateConstraints`). Two zones legitimately titled « CI/CD » collide as `unique-attribute-violation`. **Gap 2 (global uniqueness).**
-- `effectiveEntitySchemas` (`packages/diagram-core/src/validate.ts:48`) resolves **one** document refinement level only: a profile type returns its attributes; a document definition returns `[...base.attributes, ...definition.attributes]` where `base` must be a directly declared profile type. A refinement of a refinement fails with `unknown-entity-type` before endpoint-family acceptance matters, and the type-definition validation loop likewise requires a directly declared profile base. Canvas `readGraph` (`packages/diagram-canvas/src/layout/graph.ts`) resolves one level the same way. **Gap 1b (multi-level refinement).** §5.1 specifies the single shared resolver that closes it.
-- The text schema (`packages/diagram-core/src/attributes.ts`, `ScalarSchema` arm `text`) supports only `maxLength`. There is no declarative carrier for a minimum length, a character grammar or a pattern, and the quantity schema supports units only (no integer or bound carrier). The key-shape rule of §3.3 and the legend-order rule of §3.6 therefore have no implementation contract today. **Gap 4 (declarative constraints).** §3.3, §5.8 add the carriers.
-- Because of gaps 1 and 2, the measured HRPN target (`/home/antoinefa/src/airbus-genair-hrpolnav/docs/architecture/hrpn/engram/`, `README.md`, `build-engram.mjs`, `S2-target.semantic.json` sha256 `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91`) stores card slots in a document-local refinement `hrpn-card` (additive refinement of `node`, six text attributes), stores zone slots in 19 preserved extensions `hrpn.zone-slots@1` (`preserved-unvalidated`, source JSON with `kicker`, `subtitle`, `footer`, `icon`, `tint`, `displayTitle`), and stores the two « CI/CD » zones under suffixed names. The documents validate with zero diagnostics today precisely because the patches route around the gaps. **Gap 3 is the pair of workarounds; gaps 1 and 2 are its causes.**
-- Fold state today has two carriers: the semantic `container.collapsed` attribute and `VisualGroup.collapsed` in the view (`packages/diagram-core/src/view.ts:88`). The component specification (`spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md` at `97ecf69b`, §4.3) already decides the view carrier is the fold state; §4.1 below makes that a model rule and removes the semantic carrier from every completed profile.
-- The layout engine (`packages/diagram-canvas/src/layout/`) lays out `generic@1` only, reads only the `name` attribute per entity (`packages/diagram-canvas/src/layout/graph.ts`, `readGraph`), measures text through `TextMeasurer = (text, role) => TextSize` with roles `node | container-title | edge-label` (`packages/diagram-canvas/src/layout/types.ts:28`), and enlarges nodes for docking demand (`packages/diagram-canvas/src/layout/place.ts`, `packages/diagram-canvas/src/layout/engine.ts`). It accepts no fold input, no per-entity footprint and no measured header input, and it emits `groups: {}`. The measurer receives `(text, role)` and returns width/height: there is no entity measurement input, no available wrapping width, no toggle allocation and no shared line-layout result. **Gap M (measurement).** §4.6 specifies the replacement.
-- `packages/diagram-canvas/src/visibility.ts` already evaluates `VisualGroup.collapsed`: a member of a collapsed group is excluded as `group-collapsed`, a relation whose endpoint is hidden as `endpoint-hidden`, with every exclusion reported. The scene (`packages/diagram-canvas/src/scene.ts`) conserves occurrences (every occurrence is an item or an exclusion, exactly once). §4.4 keeps this cascade and adds the folded-edge projection it currently cannot express.
-- `ViewDocument.revision` (`packages/diagram-core/src/view.ts`) is defined as “the document revision this view was last changed at; never ahead of the document”, and `validateView` refuses `view.revision > document.revision` as `revision-divergence` (`packages/diagram-core/src/validate.ts:814`). The supplied HRPN view at revision 1 against a document at revision 1 validates; incrementing the view to 2 for a fold produces `revision-divergence`. **Gap R (fold revision).** §4.1 fixes the meaning.
-- Every profile-bearing record carries its own `profile` field: `Entity.profile`, `Relation.profile`, `SemanticPort.profile`, `TypeDefinition.profile` (`packages/diagram-core/src/document.ts:28–84`), plus the document-level `profileRefs`. Replacing `profileRefs` alone therefore leaves four record families pinned to the old profile. **Gap Mig (profile migration).** §3.13 enumerates every rewrite.
+The extension is **PresentationState.diagram?**, preserving camera/grid/theme unchanged. Every object below is closed. Pin/nominal references are the G0/M2 types. Keys of entities/legends refer to existing entity occurrence ids in the same view; a reference to a semantic entity is not accepted as an occurrence id.
 
-### 2.3 The review blockings this specification carries forward
+~~~ts
+type StrokeStyle = "solid" | "dashed";
+type DiagramForm = "card" | "container" | "legend" | "legend-key";
+interface PresentationText {
+  readonly title?: string;    // ≤200; key title ≤120; absent reads semantic name
+  readonly kicker?: string;   // ≤80
+  readonly body?: string;     // ≤400
+  readonly detail?: string;   // ≤400
+  readonly subtitle?: string; // ≤600; container/legend only
+  readonly footer?: string;   // ≤120
+}
+interface EntityPresentation {
+  readonly form: DiagramForm;
+  readonly text: PresentationText;
+  readonly icon?: string;          // key, 1..40; never SVG/path/URL
+  readonly categoryRef?: EntityRef; // semantic legend-key entity, not a token
+}
+interface LegendPresentation {
+  readonly order: readonly EntityRef[]; // each direct key once; authored order
+}
+interface CategoryTokenBinding {
+  readonly legendRef: EntityRef; // semantic legend
+  readonly category: string;     // key 1..40
+  readonly token: string;        // token-name 1..80
+}
+interface DiagramPresentation {
+  readonly contractPin: Pin;
+  readonly entities: Readonly<Record<string, EntityPresentation>>;
+  readonly legends: Readonly<Record<string, LegendPresentation>>;
+  readonly categoryTokens: readonly CategoryTokenBinding[];
+}
+~~~
 
-Independent review `scratchpad/rev/dcards-rev1.out` on the component specification, two blockings, restated as model requirements and carried into r3 together with the pass-2 findings that extend them (§11):
+All presentation fields are typed schema data. Partial<Record> is not an open JSON bag: unknown fields refuse. body/detail each carry one allocated content role; markup/executable content is not admitted. Legend-key text permits kicker/body/detail/footer so conversion preserves its authored strings without concatenation, truncation or a side ledger. Such retained text is available to accessibility/export; the swatch form need not draw the original card icon. Icon content is retained even when its drawing is retired.
 
-- **Blocking 1 — folded edge projection cannot produce a valid `ViewDocument`.** Retargeting a relation occurrence whose semantic endpoint sits inside a collapsed container (the review example: `CHAT → TOPIC` drawn to collapsed `MSGZ`) produces `occurrence-endpoint-mismatch`, because `packages/diagram-core/src/validate.ts` requires the drawn occurrence to draw exactly a semantic endpoint target. §4.4 defines the projected endpoint as view data with occurrence-level provenance, selects the outermost visible collapsed ancestor, and recomputes the projection from a retained source view on every transition. Every folded output SHALL pass `validateView`.
-- **Blocking 2 — the engine contract lacks the fixed-footprint measurement input it promises.** No per-entity footprint or measured header input exists, and placement enlarges nodes for docking, contradicting the fixed `460 × 200` card. §4.6 defines the exact measurement types and call sequence, state-dependent footprints, the fixed-axis policy and the overflow result; §5.6 assigns the implementation. A measurer that only observes role calls is explicitly insufficient (§4.6.5).
+RelationOccurrence.strokeStyle? is the **only** stroke carrier, default solid; no semantic fallback exists. The contract does not duplicate it in another table. A view-only stroke change keeps semantic bytes/revision/digests unchanged. Projection preserves the field's presence and value, including absent versus explicit solid.
 
-The same review records (item 4) that the three gaps of §2.2 do not justify weakening generic executor validation. This specification follows that: gaps 1 and 2 are closed by making the rules mean what they should mean for every profile (family acceptance through the shared resolver, scoped uniqueness), not by exempting one consumer.
+Footprints are governed contract/layout assets (§4.6), not EntityTypeDeclaration fields. Presentation edits replace a view and retain its document revision; they do not call update-entity-attributes.
 
-## 3. The completed profiles as Engram data
+#### 3.2.3 Selectors, conflict handling and four composition witnesses
 
-The semantic model remains the M2 model: a `SemanticDocument` (identity, schema version, monotonic revision, declared profiles, document type definitions, entities, relations, semantic ports, resources, preserved extensions) and no geometry. This section declares the completed profile content per family and the shared presentation fragment. Persisted-shape impact is gathered in §3.13: the additions are profile data and the view fields of §4.4/§4.5; the only semantic removal in the generic successor is the `container.collapsed` attribute, and the BPMN completion follows the A′ schema-major path of §3.10.
+Card selector: any non-container entity occurrence whose semantic type is valid in its owner family. Container selector: a valid type with inherited container capability. Legend/key selector: the corresponding semantic types declared by the admitted generic@2 module. Explicit form must satisfy its selector; no shape inference from an id/string/label. Every semantic endpoint remains owned/validated by its original profile.
 
-### 3.1 Reading the profile tables
+The generic@2 semantic legend module has no cross-profile endpoints: each contains relation involving its legend/keys has profile generic@2 and both endpoints owned by generic@2. View categoryRef/legendRef are cross-module references covered **only by this join**; they never widen the ArchiMate/BPMN/UML relation matrix. Applying generic@2 contains to a foreign-family entity is refused unless a separate admitted semantic join exists. No such semantic join is added here.
 
-Each family table lists entity types, port types, relation types and constraints. “Container family” is a declared property (`container: true` on the type declaration, §5.2), never an inference from an id. A document type definition that refines a container-family type inherits the capability through its base chain as resolved by the shared resolver (§5.1); a refinement of a leaf type never acquires it. Abstract types remain non-instantiable, as today.
+| Executable witness | Semantic input / resolved application | Required result |
+| --- | --- | --- |
+| P-GEN | generic@2 node n and container c; generic@2 legend l/key k; occurrence n uses card, categoryRef k; legend order [k] and matching binding | One family pin; no semantic attribute overlay; apply then validateView returns []; changing n's icon changes only presentationDigest. |
+| P-AM | archimate@2 application-component a; generic@2 l/k; profileRefs [archimate@2,generic@2]; occurrence a uses card/categoryRef k | Two independent family contexts, same contractPin; matrix still governs a's relations. No name redeclaration or cross-profile contains. |
+| P-BPMN | A′ task/subProcess occurrences in a generated DI view, with an optional generic@2 legend | Same contract after K9 view validation; DI and preserved extensions unchanged; presentation is a synthesis view, never a BPMN evaluator. |
+| P-UML | uml@2 class c/package p, optional generic@2 l/k; class card/package container | Same contract; multiplicity/stereotype semantics validate before application; no card attribute in uml@2. |
 
-The presentation fragment (§3.2–§3.3, §3.6) is not repeated inside each family table. A family type that is drawn as a card composes it at the document level; the family declaration itself does not gain the slots.
+Negative witnesses: omit generic@2 from P-AM profileRefs while retaining categoryRef k → dangling-reference at that view field; add name via a proposed semantic fragment stack → G0 attribute-redeclaration; a cross-profile contains with no semantic join → endpoint-without-join; two CategoryTokenBinding rows for one (legendRef,category) → typed view conflict, no output. Refusal objects are in Appendix C. A consumer cannot repair any witness with an extension.
 
-### 3.2 Presentation fragment: atomic-card slots
+### 3.3 Grammars and category resolution
 
-All slots are typed attributes validated against the composed effective schema, exactly as M2 requires: a value carries its kind, an undeclared attribute refuses as `attribute-not-in-schema`, and no slot is ever carried by an extension or a free property bag. Length bounds are set so the measured validated corpus fits without moving the frozen geometry; a longer text is a wording defect reported by measurement (§4.6), never a reason to enlarge a card.
+Key = minLength 1, maxLength 40, pattern "^[a-z][a-z0-9-]*$", patternName key.
+Token-name = minLength 1, maxLength 80, pattern "^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$", patternName token-name; in JSON the backslash is escaped. The token grammar includes every key, and additionally dotted paths. Dotted tokens are not keys; a single-segment key satisfies both. Empty/uppercase/whitespace/colour literals refuse. These are shape checks; a well-formed unknown icon validates the view and produces card-icon-unknown/zone-icon-unknown when drawn.
 
-#### 3.2.1 Atomic card (leaf presentation)
+Category values and category descriptions remain semantic. categoryTokens is a view map, whose (legendRef,category) must name a category of that legend. categoryRef selects a semantic key. Without an explicit categoryRef, generic node/container.category may select a category by key; families with no such domain attribute use the explicit categoryRef. The join schema declares this projection, and the engine does not special-case family names.
 
-| Attribute | Kind | Required | Meaning (presentation-neutral) |
-| --- | --- | --- | --- |
-| `name` | text ≤ 200 | yes | Title. The single identity-adjacent display string; it is content, never parsed, split or prefixed by an executor or a renderer. For family types the same slot name is the family name attribute where the family already declares it; composition does not duplicate it. |
-| `kicker` | text ≤ 80, key-shaped where §3.3 applies | no | Short code or family line above the title (for example a service code). Display case is a rendering transform under the host locale; the stored string is the authored string. |
-| `body` | text ≤ 400 | no | First body line (function line). One line of content; wrapping is measurement, not storage. |
-| `detail` | text ≤ 400 | no | Second body line (detail line), rendered in the secondary text role. The `body` / `detail` split carries the line role in the model, so measurement, rendering and editing read the same role. |
-| `footer` | text ≤ 120 | no | One pinned footer line (for example an owning service). Absent means no rule and no footer are drawn. |
-| `icon` | text ≤ 40, key grammar (§3.3) | no | Pictogram registry name (for example `server`, `brain`, `robot`). A name, never SVG data, never a path. An unknown name is a rendering diagnostic, not a semantic refusal (§3.3). |
-| `tone` | text ≤ 40, key grammar (§3.3) | no | Tone category key (for example `neutral`). A key into the document legend (§3.6) when the category-membership constraint applies, otherwise consumer category data; never a colour value. Absent means the neutral category. |
-| `legendRef` | reference, `refKind: "entity"` | no | Optional binding to the legend entity against which `tone` resolves (§3.6.3). Validated as a reference; family membership of the target is checked by the generic mechanism of §5.4. |
+Explicit categoryRef binds one key. Otherwise a single legend is the default; with several legends collect matching category keys. All matching view token bindings must agree for the unbound category to resolve; disagreement refuses tone-category-unknown/ambiguous; no match refuses undeclared. A legendRef of the wrong semantic type refuses bound-target-not-legend. Reordering record insertion, legends or binding rows never chooses a winner. categoryTokens does not enter contentDigest or P-RESULT of any semantic profile. Empty legends are valid and draw no key list.
 
-The `generic@1` general attributes `state`, `weight`, `duration`, `createdAt`, `pinned`, `tags` and `owner` carry over unchanged on generic `node`. They are not card chrome and no card renderer is required to display them. Other families keep their own general attributes; the fragment adds only the rows above.
+### 3.4 Hierarchies, ports and refined types
 
-Body cardinality (`decision`): a leaf card stores at most the two body lines above. The frozen card anatomy allocates exactly two body lines; a third line has no allocation to measure against and would reintroduce growth-by-text. Content needing more lines belongs in a container's `subtitle` (wrapped, §3.2.2) or in a child card. A profile that later needs longer leaf prose does so by a new major, not by widening these bounds silently.
+Hierarchy declaration/parent-family/children-restricted/required-parent constraints are data. The shared cycle-safe resolver (§5.1) determines inherited container capability and role family membership for @2 profiles. No hierarchy id, family name or scene literal occurs in executor branches.
 
-#### 3.2.2 Wrapping container (container presentation)
+Each tree child has at most one parent per hierarchy; hierarchy-multiple-parents/hierarchy-cycle retain their existing codes. A declared DAG may have several parents and remains acyclic. No profile depth cap smaller than its limits is introduced; traversals are iterative or explicitly bounded. Semantic containment and visual grouping are distinct. A child may be drawn without a drawing of its semantic parent. N drawings of one parent fold independently.
 
-| Attribute | Kind | Required | Meaning (presentation-neutral) |
-| --- | --- | --- | --- |
-| `name` | text ≤ 200 | yes | Title **without** any package prefix. A stored title that embeds a prefix (for example « H2A · … ») is producer content to migrate, never a string a renderer splits. |
-| `kicker` | text ≤ 80 | no | Package or family name carried by the header (for example `H2A`, `ENGRAM`). Same slot shape as the card kicker, so one header measurement and one header component serve both presentations. |
-| `subtitle` | text ≤ 600 | no | Wrapped description under the header when expanded; the centred summary content when collapsed (§4.2). One string; line breaking is measurement. |
-| `footer` | text ≤ 120 | no | Footer line shown by the collapsed card form (rule plus pinned footer). Carried as content when expanded; expanded frames draw no footer rule at the frame bottom. |
-| `icon` | text ≤ 40, key grammar (§3.3) | no | Pictogram registry name, same registry and same slot rules as the card icon. The container icon box is the card icon box (`frozen-requirement`: same size for groups and cards). |
-| `tone` | text ≤ 40, key grammar (§3.3) | no | Tone category key, same category space as the card tone. One key, one token resolution in both the expanded and collapsed forms, subject to §3.6 binding. |
-| `legendRef` | reference, `refKind: "entity"` | no | Optional legend binding, as on the card. |
+Ports retain semantic owner/direction/name/attributes; side/order/anchor belong to port occurrences. Binary links, visible self-links and 3–8-member associations conserve every endpoint and relation identity. Aggregation is only binary and style-compatible (§4.5). ArchiMate/UML have no semantic port in these completions.
 
-No completed profile declares a semantic `collapsed` attribute. The `generic@1` boolean is removed by the generic successor (§3.8, §3.13): fold is view state (§4.1), two views of one document fold differently, and a fold never bumps the document revision. BPMN collapsed sub-process state and UML/ArchiMate equivalents, where a family needs a semantic collapsed concept, are family attributes with family names; they are never the view fold carrier.
+### 3.5 Relation presentation
 
-#### 3.2.3 What a slot never carries
+A labelled relation's label is semantic authored content under the family's bound. Drawing style is RelationOccurrence.strokeStyle, default solid. No label parsing infers a dash or arrowhead. A projection copies a source occurrence's strokeStyle iff present and with identical value.
 
-- No colour value (hex, rgb, token value) is stored in any slot. Colour enters only as a category key (`tone`, legend `token` name in §3.6) resolved through design tokens at render time.
-- No geometry (size, position, folded height) is stored in any slot. Geometry is view data (§4).
-- No markup, no SVG, no URL and no executable content is stored in any slot. Imported content that a profile does not validate keeps the M2 levels `validated | preserved-unvalidated | unsupported` and is never promoted to a slot value.
-- No language-specific string is stored by the profile or the executor. Slots store authored content in the document's language; §3.7 states the localisation rule.
+Acceptance style inventories: S2-asbuilt 7 dashed/37 solid, S1-conversational 10/14, S3-agentfactory 3/33, fixture S2-target 0/54, A5 0/31. The oracle lists dashed relation ids (§8.7). Multiple drawings of one relation may choose different styles and summaries must disambiguate those drawings (§4.5).
 
-### 3.3 Icon and tone: registry names, category keys, and declarative text constraints
+### 3.6 Legend data and order
 
-`decision` — `icon` and `tone` are **open key spaces with a closed shape**, not closed enumerations in any profile.
+Legend name/description and key name/category/description live in generic@2. The semantic constraints require keys under legends and category uniqueness within a legend. The view stores header slots/icon, categoryTokens and each legend occurrence's explicit ordered key list. Each direct key must occur exactly once in that list. This list is the order: renaming ids or permuting source records does not reorder it. It is not encoded by ordinal entity ids. An absent legend presentation uses stable semantic-key-id order and is recorded as an unauthored order in the oracle; acceptance conversions supply the explicit authored list.
 
-- Shape: a key is 1–40 characters matching the language-neutral key form (lowercase ASCII letters, digits and hyphen, starting with a letter). The executor enforces the shape and the length; it does not enumerate the keys, because the pictogram registry and the tone category set are rendering and theme data that evolve without a profile major.
-- **Declarative carrier.** The shape is not prose: the text schema gains declarative constraints, validated generically by `attributes.ts` (§5.8). A text attribute schema MAY declare:
-  ```ts
-  { kind: "text", maxLength?: number, minLength?: number,
-    pattern?: string /* anchored RegExp source, ASCII, no flags */,
-    patternName?: string /* stable name recorded in diagnostics, e.g. "key" */ }
-  ```
-  The fragment declares `icon` and `tone` (and `legend-key.category`, `legend-key.token` under their own grammars below) with `minLength: 1` and `pattern: "^[a-z][a-z0-9-]*$"` (called `key` in diagnostics). `token` declares `patternName: "token-name"` with pattern `"^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)*$"` (dot-separated token path segments; the escaped dot is part of the stored pattern source), `minLength: 1`, `maxLength: 80`. A value that violates `minLength` or `pattern` refuses as `text-pattern-mismatch` (diagnostic code, §5.8, Appendix C) with `details: { pattern: <patternName>, length, maxLength? }`; the existing `text-too-long` code is unchanged for `maxLength`. A minimum-length failure without a pattern declares `patternName: "min-length"` and reports the same code with `details: { pattern: "min-length", length, minLength }` (the literal arm of Appendix C). Empty, uppercase, whitespace-bearing and colour-shaped values (`#fff`, `rgb(…)`) therefore refuse at semantic validation, while a well-formed but unknown icon name still validates (shape only) and is handled at render time. Token-name syntax is defined independently of the key grammar, so the two patterns are tested separately (§5.8): a dotted name is token-only; a single-segment hyphenated key satisfies both grammars and that overlap is asserted, never treated as a failure.
-- Icon resolution: the renderer resolves `icon` against the design-system pictogram registry delivered on its own subpath (one duotone family, 64-unit viewBox; the validated set includes `brain`, `robot`, `server`, `people`, `window`, `link`, `db`, `shield`, `cloud` and the remaining glyphs of the validated scenes). An unmapped name draws no icon, collapses the icon slot and raises the rendering diagnostic `card-icon-unknown` / `zone-icon-unknown`; it does not refuse the document. Semantic validation therefore stays stable when a glyph is added.
-- Tone resolution: the renderer resolves `tone` through the tone-token mapping in force (theme tokens, never a component-local colour). When the document declares a legend and the composed stack declares the category-membership constraint (§5.4), every non-neutral `tone` value in the document SHALL equal a declared legend category key under the binding rule of §3.6.3; §5.4 implements that check generically as `tone-category-unknown`. Without the constraint, a tone key is consumer category data and the executor checks its shape only. The validated HRPN category keys (`genair`, `specific`, `added`, `removed`, `risk`, `custom`, `outside`) and the governance keys (`neutral`, `proposal`, `identity`) are therefore all storable without a profile change, and none of them is named by any family profile: they enter as legend data (§3.6) in each corpus instance.
+The legacy semantic quantity order proposal is withdrawn: no display order is a graph attribute. The generic numeric schema mechanisms remain available (§5.8), including quantity-above-max, for actual domain quantities and UML numeric bounds.
 
-### 3.4 Containment: one hierarchy mechanism, family hierarchies as data
+### 3.7 Text and language
 
-Containment is the single hierarchy mechanism of the metamodel. Each family declares its own hierarchy relation(s) as data; the executor holds no hierarchy literal.
+Authored text is preserved in its document/view language. Kicker case conversion is rendering under the host locale, never a stored rewrite. Profiles/executor contain no localisation or consumer label table. Generated “N links”/fold controls are host-localised; summaryLabels stores authored text. A translation is a new authored instance. Every textual migration records its source/target and retains the exact original.
 
-1. **One mechanism, family relations.** A hierarchy is declared by a `hierarchy` constraint (`relationType`, `hierarchyId`, `parentRole`, `childRole`, §5.4) plus the relation declaration's `hierarchy` field. The generic successor declares `contains` / `containment`; BPMN declares its containment slot forest (A′ K4) and `flowElementContainment` during transition; ArchiMate declares grouping containment; UML declares `packageContainment`. Business containment, processing hierarchy and visual grouping stay distinct, as in M2: `VisualGroup` membership is not containment, a `link` is not containment, and no second hierarchy mechanism is added.
-2. **Family parents.** A hierarchy parent is accepted exactly when the target's effective type — as resolved by the shared chain resolver of §5.1 — is in the container family named by the `parent-family` constraint for that hierarchy (its base chain contains a type declared `container: true`). The `child` role accepts any declared entity type unless a `children-restricted` or inverse-parent constraint (§5.4) narrows it. A refined container therefore parents with no extension, no second relation type and no profile change, in every family. The executor mechanism (effective-type resolution over the base chain) is specified in §5.1–§5.2 and applies to every `entityTypes` constraint, not only to hierarchy parents.
-3. **Tree rule.** Each child has at most one hierarchy parent per hierarchy; a second parent refuses as `hierarchy-multiple-parents`; any cycle refuses as `hierarchy-cycle` with its members. Both diagnostics exist today and keep their codes. A family that declares `shape: "dag"` allows several parents and still refuses cycles.
-4. **Nesting depth.** Depth is the number of hierarchy ancestors (a top-level entity has depth 0). No completed profile imposes a depth cap below its entity limits: nesting is bounded only by acyclicity and by the profile limits (§3.8–§3.11). A collapsed container has the atomic footprint at every depth (§4.6). Executors and layout SHALL traverse containment iteratively or with an explicitly bounded stack, so depth is a data property, never a call-stack limit. (Measured need: the validated scenes nest to depth 4; the rule deliberately allows more rather than encoding today's deepest scene as a limit.)
-5. **Occurrence independence.** Containment is semantic. A container may be drawn expanded in one view and collapsed in another, and a child may have occurrences in a view where its parent has none (the drawing is then placed by the view, and §4.4 governs its edges). Deleting a container entity still requires the explicit occurrence / relation / port policy of the M2 command contract; nothing in this section adds a silent cascade.
+### 3.8 Generic publication
 
-Document type definitions keep the M2 rule: additive only, a redeclared base attribute refuses as `type-definition-conflict`. Refinements remain available for genuinely consumer-specific attributes. A refinement that re-declares a fragment slot name on a type that composes the fragment is a `type-definition-conflict` by that same rule once the composed schema declares the slots — which is the mechanism that makes the measured `hrpn-card` pattern unnecessary and, if retained, loudly redundant rather than silently divergent. Refinement resolution itself (chains, cycles, inherited conflicts) is defined once in §5.1 and used by validation, endpoint checks and layout classification alike.
+generic@2 is a complete declaration as specified in §3.1, with an independent base lineage and explicit generic@1→generic@2 migration. Its effective resolved declaration has no container-name uniqueness, no container count constraint and link.label maxLength 200. Its self-validation/corpus/admission are implementation evidence, still unverified until their owners supply receipts (§11.2).
 
-### 3.5 Relations, ports, and relation presentation
+### 3.9 ArchiMate completion: archimate@2
 
-No relation presentation is family semantics. Each family declares its relation types; the generic slots below compose with any directed or undirected relation that declares them.
+archimate@1 remains the immutable skeleton. archimate@2 is a replacement base with migration §3.13.2, not an in-place change and not a narrowing G0 child. Catalogue and pairwise matrix are materialized from the versioned 3.2 data transcribed in Appendix A.1; no independent source/target lists are used to imply their Cartesian product.
 
-| Concern | Generic successor | ArchiMate (completed) | BPMN (A′ generated) | UML (completed) |
-| --- | --- | --- | --- | --- |
-| Relation types | `link`, hierarchy `contains`, `association` (hyper, 2..8) | The 11 skeleton names with the versioned source/target matrix (§3.9) | Generated types per A′ §5: connectors are entities with typed references, projected to edges for display; `sequenceFlow`, `messageFlow`, associations as generated types | `association`, `generalization`, `dependency`, hierarchy `packageContainment` |
-| Label | `link.label` ≤ 200; `association.label` ≤ 120 | Per matrix; label slot where the matrix declares it | Generated from descriptors; condition/default as typed attributes, never as label text | `sourceMultiplicity` / `targetMultiplicity` as typed text, plus label where declared |
-| Ports | `port` (`in`/`out`/`inout`) | None in the skeleton; completion adds none unless the matrix requires it | Generated DI and flow ports per A′ K8/K9 | None |
+The external transcription source is pinned to archimatetool/archi 9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a, relationships.xml version="3.2". It supplies concrete machine-readable tuple data and its Ecore catalogue, not a new design. It is **not a claim of Open Group certification**. Engram must verify the source's normative suitability and licence closure before admission (unverified U-AM). The mandatory dependency is explicit rather than an arity-only “complete” assertion.
 
-- The `link` label bound rises from 120 to 200 in the generic successor so the longest labelled relations of the validated corpus store without truncation (`decision`; the bound is profile data, and the migration of §3.13 records it). A `link` without a label is valid; the label is content, never a routing instruction.
-- The business id of a relation survives every projection, including the folded projection of §4.4 and any junction-node projection of a hyper-relation. A projection never mints a new business relation.
+Each concrete catalogue type inherits abstract element (non-instantiable); layer/aspect are semantic constrained catalogue data derived from the pinned catalogue, not freely authored enum values that can contradict the chosen type. junction retains required operator and/or. grouping is container-capable; groupingContainment is a separate tree relation, not a matrix relationship and not a projection/fold carrier. Grouping and location have no invented layer. Viewpoints are typed entity-type/attribute filters, not semantic types.
 
-#### 3.5.1 Relation presentation: `strokeStyle` as a generic relation slot
+Matrix rule:
+{ kind: "relationship-matrix", matrixId: "archimate-3.2", sourceRole: "source", targetRole: "target", tuples: [{ relationType, sourceType, targetType }] }.
+The complete tuple set is Appendix A.1's executable transcription from immutable XML/keys. Missing tuple means disallowed, not unknown or permissive. Resolve a refinement to the nearest concrete catalogue ancestor; test the **ordered pair** and exact relation id together. Each relation still has one source/target; independent role typing only checks target kind and existence, then the matrix checks the pair. A declaration's source/target list may be broad; the pair test must still run.
 
-`decision` — Stroke style is **semantic presentation data on the relation**, with an optional view override. It is not a consumer field, not a renderer default and not inferred from the label. It composes with any family relation that declares it; BPMN sequence-flow line style, where BPMN semantics requires it, stays a generated BPMN attribute and is never replaced by this slot.
+Access mode is an enum write/read/unspecified/read-write on access (§3.9.2); junction connections must be of the same relationship type along the junction, with both operator values tested. Association direction remains a semantic relation property under the source schema; drawing arrowheads belong to the view. influence.strength has the source's unbounded text schema, with no invented truncation bound; no “strongest relation” algorithm silently invents or derives assertions. Matrix data may admit derived relationship kinds, but the executor validates an authored tuple and does not synthesize it.
 
-1. **Semantic slot.** Each generic `link` and each generic `association` MAY carry `strokeStyle: { kind: "enum", value: "solid" | "dashed" }`. Absent means `solid`. The slot is declared in the composed presentation data as an `enum` attribute with values `["solid", "dashed"]`; it is validated like every other attribute (an undeclared value refuses as `enum-value-not-allowed`). The meaning is presentation-neutral: `dashed` records that the relation is drawn with a dashed stroke (the corpus reading is “dormant, optional or not built”, `tint-legend.json` `relationStyles`); the model stores the style, never the consumer's reason for it.
-2. **View override.** `RelationOccurrence` gains an optional field `strokeStyle?: "solid" | "dashed"` (§4.4.2 inventory). When present it overrides the semantic value for that drawing only; when absent the drawing inherits the semantic value (or `solid`). The override is view data: changing it never mutates the `SemanticDocument` and never bumps `document.revision`. A folded projection (§4.4) preserves override presence exactly (§4.4.3): an untouched endpoint keeps its source bytes, and a projected endpoint derives its effective style at render time without materialising a value the source did not carry.
-3. **Rendering mapping.** The renderer maps `solid` to a continuous stroke and `dashed` to the dashed stroke of the diagram token set, at the same stroke width and colour resolution as every other relation. No other presentation (colour, width, arrowhead) is carried by this slot.
-4. **Corpus assertion (normative).** The re-expressed acceptance instances SHALL preserve the distinction per relation id: S2-asbuilt carries **7 dashed / 37 solid** of 44 links, S1-conversational **10 dashed / 14 solid** of 24, S3-agentfactory **3 dashed / 33 solid** of 36, S2-target **0 dashed / 54 solid** (fixture form) and A5 **0 dashed** in its 31 links (measured from `ds-fixtures/MANIFEST.md` and `tint-legend.json:relationStyles`). A conversion that validates semantically but drops or invents a dash fails the instance (§8). Fold and export round trips (§10, roadmap) assert the same per-id styles on the way back.
+The XML's Relationship pseudo-concept is represented by the generic relation-target endpoint carrier specified in §3.9.1. It is retained in every full-matrix case, never dropped or reified as an entity. Appendix A.4 supplies the complete declaration recipe; U-AM-ENDPOINT is qualification of that defined shared schema/migration, not an unspecified carrier. Element-only witnesses cannot satisfy full-profile admission.
 
-Semantic ports are unchanged in shape: a port belongs to an entity, has a direction (`in | out | inout`), a name and typed attributes; side, order and anchor are geometric and live on the port occurrence in a view. A `link` endpoint that targets a port is drawn through that port's occurrence (§4.4 covers its folded form, including the representative's port occurrence). Endpoint type constraints on every role are family constraints under §5.1–§5.2: naming a type accepts that type and its refinements. The n-ary case is normative: an `association` with 3–8 `member` endpoints projects **every endpoint independently** (§4.4.3); suppression requires an actual fold and is decided over the complete representative set, never over an ordered pair. Pair aggregation (§4.5) is restricted to the binary case and to compatible effective styles.
+Required witnesses: every allowed tuple has a positive case; every absent relation for each ordered type pair has a negative case; reversed source/target pairs use their own cells; catalogue/refinement/cycle and junction/access cases have explicit verdicts. Example cells are reproduced in Appendix A.1 and their literal diagnostic is in Appendix C. Conformance is never inferred from the number eleven.
 
-### 3.6 Legend as model data
 
-The legend is semantic presentation data: which categories exist, what each is called and which token paints it. It is not a drawing, a caption string or a set of sample cards, and it is not family semantics.
+#### 3.9.1 Shared relation-target endpoint carrier
 
-#### 3.6.1 Legend frame and header slots
+Source transcription: DS document.ts RelationEndpoint.target is EntityRef | PortRef; profile.ts EndpointTargetKind is "entity" | "port"; view.ts uses the existing OccurrenceRef and RelationOccurrence.relation. The pinned Ecore ArchimateRelationship.source/target refer to ArchimateConcept, which includes relationships. Appendix A.1 retains that source concept as @relation. The following is the required **generic schema extension of the same SemanticDocument/ViewDocument**, not another metamodel, a reified entity or an ArchiMate-only document shape:
 
-- A legend is one `legend` entity from the presentation fragment. `legend` declares the **same header slots as a container** — `name` (required, ≤ 200), `kicker` (≤ 80), `subtitle` (≤ 600), `footer` (≤ 120), `icon` (key grammar, ≤ 40), `tone` (key grammar, ≤ 40), `legendRef` — plus no slot of its own. This closes the measured gap: the A5 `LEGEND` container carries `kicker`, `subtitle` and `icon` in its `hrpn.zone-slots@1` extension (`{"icon":"window","kicker":"HRPN","subtitle":"Card tints and link styles of this scene"}`); under the completed model those three values are ordinary `legend` attributes and need no extension. A legend with no header content beyond `name` is valid; the header slots are optional exactly as on `container`.
-- Its categories are its key children through the hierarchy relation named by the composed stack, constrained by the legend constraints of §5.4 (in the generic composition: legend type `legend`, key type `legend-key`, hierarchy `containment`). An executor does not refuse a nested legend, but layout places legends by occurrence geometry as given.
-- Rendering a legend is a colour-key list (swatch plus label per category), placeable inside the diagram through the legend entity's occurrence geometry. It is never rendered as a set of atomic cards, and its keys never use the card footprint (§4.6 gives the legend-key footprint).
+~~~ts
+type EndpointTargetKind = "entity" | "port" | "relation";
+interface RelationEndpoint {
+  readonly role: string;
+  readonly target: EntityRef | PortRef | RelationRef;
+}
+interface RelationRoleDeclaration {
+  readonly role: string;
+  readonly cardinality: { readonly min:number; readonly max:number };
+  readonly targets: readonly EndpointTargetKind[];
+  readonly entityTypes?: readonly string[];
+}
+~~~
 
-#### 3.6.2 Legend keys and explicit ordering
+No new SemanticDocument top-level field, reference namespace, semantic target wrapper or catalog field is added. relation: references already exist. entityTypes restricts entity targets only; it neither coerces a relation into an entity nor implicitly permits it. A role must explicitly include "relation". Resolve a relation target by a single lookup in document.relations; verify its key/id/profile/type in its own admitted context. Never recursively resolve the target relation's endpoints to determine its kind. Forward references, self-references and cycles therefore terminate; they are allowed only if the profile's own matrix/constraints allow them. Cross-profile targets still need the G0 S-4 semantic join.
 
-Each key entity (type `legend-key` in the fragment) declares:
+For matrix classification, an entity resolves to its nearest concrete catalogue ancestor, a relation to @relation, and a port is disallowed by the ArchiMate roles. Test exactly the same tuple array, including both the Relationship row and column. @relation is a matrix discriminator, never a registered entity type or a wildcard for all entity types. An unknown/dangling target is diagnosed before matrix checking, once at relations.<relationId>.endpoints[i].target. Existing endpoint-target-not-allowed and dangling-reference arms extend to seenKind/expectedKind="relation" with their exact native messages/details; no seenChain appears. Legacy @1 adapters retain their pinned two-kind execution and arrays.
 
-| Attribute | Kind | Required | Meaning |
-| --- | --- | --- | --- |
-| `name` | text ≤ 120 | yes | Category label as displayed (authored content, §3.7). |
-| `category` | text ≤ 40, key grammar (§3.3) | yes | Category key, same key space as `tone` (§3.3). Unique **within its legend** (§5.3, scoped uniqueness). |
-| `token` | text ≤ 80, token-name grammar (§3.3) | yes | Design-token name that resolves the category colour (for example a semantic data-category token name). A token name, never a colour value. An unresolvable token name is a rendering diagnostic, not a semantic refusal. |
-| `description` | text ≤ 200 | no | Optional longer label for accessible text and export legends. |
-| `order` | quantity, unit `unit`, integer ≥ 0 (§5.8 numeric constraints) | yes | **Authored display order inside its legend.** Lower sorts first; ties refuse (see below). Order is an explicit field, never derived from the entity reference. |
+RelationOccurrenceEndpoint.occurrence and sourceOccurrence can, under the new schema adapter, resolve in entityOccurrences, portOccurrences **or relationOccurrences**, with exactly one occurrence namespace/key match. In the last case the drawn semantic target is drawn.relation. The view provenance field semanticTarget is EntityRef | PortRef | RelationRef (§4.4.2). Role membership is checked with the native message/refs/details transcribed in C.4; no new endpoint field is necessary. Kind/existence/provenance use direct lookup; fold classification alone uses the bounded occurrence worklist of §4.4.1, never recursive semantic-target resolution. Multiple occurrences of the same target relation remain distinct drawings and the authored endpoint selects one explicitly. Semantic references never depend on view visibility.
 
-`decision` (ordering) — Category order is the `order` field, sorted ascending, with the entity id (UTF-16 order) as a deterministic tie-break that never decides a distinct `order` value. Renaming an entity reference therefore never reorders a legend, and reordering a legend never requires renaming an id. Two keys in one legend with the same `order` value report `unique-attribute-violation` under the scoped-uniqueness constraint on `(legend, order)` declared in §5.4 — order is data with a uniqueness scope, exactly like `category`. Encoding authored order by renaming identity is withdrawn: it contradicts the M2 rule that every order that matters is an explicit field. A host that needs an authored order sets `order`; the reference itself is never the field. The numeric carrier is declarative (§5.8): `order` declares `integer: true, min: 0` on its quantity schema; `-1` and `0.5` refuse as `quantity-not-integer` / `quantity-below-min` (Appendix C) in every family that composes the fragment.
+This carrier includes the persisted fold provenance of §§4.4.1–4.4.4. A target relation occurrence that remains visible, including one whose own endpoints are projected, remains the attachment occurrence; it still draws the same RelationRef and requires no provenance on the attaching endpoint. If the target occurrence becomes internal to a folded container, its canonical representative is that visible collapsed container: the attaching endpoint stores occurrence = representative, semanticTarget = the original RelationRef, sourceOccurrence = the original relation occurrence. The target relation occurrence stays in relationOccurrences unchanged and is excluded from the scene as endpoint-hidden. The graph is unchanged; neither a relation entity nor a presentation field is introduced. Appendix B.7/C.6 supplies the worked ArchiMate fixture and diagnostics.
 
-A legend with zero keys is valid data and renders nothing. Duplicate category keys inside one legend refuse (§5.3); the same key in two different legends is governed by §3.6.3, not by the per-legend uniqueness scope.
+Layout/rendering is separately qualified in M2. For a still-visible relation target, an attachment uses the midpoint by arc length of that target occurrence's retained, finite, non-degenerate polyline, including waypoints, in view coordinates. Its target route is read once from the retained source view before any new routes are emitted; cyclic attachments do not recursively reroute one another. A missing/degenerate source route refuses that layout request and retains the source state; it cannot be fabricated as a semantic error or a corpus pass. For an internal target represented by a collapsed container, route to that container's anchor under §4.4.7; the hidden target's polyline is not used. A host suppression request without the canonical fold witness still refuses under C.4 relation-target-hidden. A valid fold with the defined representative does not emit that diagnostic.
 
-#### 3.6.3 Legend binding: deterministic resolution and conflict refusal
+**Migration witness:** register this extension only in the shared schema-2.0 migration/adapter already required by A′, with Engram/DS qualification under U-AM-ENDPOINT/U-KERNEL. Its endpoint step is identity on every pre-existing entity/port target and occurrence endpoint, including array order and absence/presence; the outer migration alone updates schemaVersion according to A′. There are no @1 relation targets to guess. Reject downgrade to 1.x while any relation target/attachment exists; otherwise restore the retained original. The independent family migration still maps every @1 element explicitly and changes profileRefs to archimate@2; it does not change a relation target into a fake element.
 
-A document MAY carry several legends (composed scenes, imported fragments). A bare `tone` key does not name its legend, so resolution SHALL be deterministic and never depend on insertion order or on a consumer tint table:
+Use the pinned archimate-skeleton-document.json identities (§8.5): map entity:actor→business-actor, entity:process→business-process, entity:component→application-component, retaining entity:junction. The three source relation endpoints migrate byte for byte. In a separate explicit fixture edit, retain id relation:flow, set its type to association and endpoints to entity:component / relation:assignment. The application-component→@relation cell contains o, so this added assertion is accepted by the specified pair predicate. Reversing those endpoints uses @relation→application-component, independently permitted by its own o cell; changing the type to access is rejected. Mapping is a specification witness, not an executed migration receipt.
 
-1. **Binding field.** `SemanticDocument` gains no field. Binding is expressed per entity by the optional `legendRef` attribute (§3.2) composed on `node`, container-family types and `legend`. When present, the entity's `tone` resolves against the legend entity it names, and against no other. The reference is validated as a reference (a dangling target reports `dangling-reference`; a target outside the legend family reports `tone-category-unknown` with `details.legendBinding: "bound-target-not-legend"`, Appendix C); it is not a tint table and it is stored in the document, so two hosts resolve the same document identically.
-2. **Single-legend default.** When an entity carries no `legendRef` and the document contains exactly one `legend` entity, its `tone` resolves against that legend. This is the common corpus case and needs no per-entity field.
-3. **Conflict refusal.** When an entity carries no `legendRef`, the document contains two or more legends, and those legends declare the same `category` with **different `token` values**, resolving that entity's `tone` reports `tone-category-unknown` with `details.legendBinding: "ambiguous"` (frozen contract, Appendix C) — resolution refuses rather than picking the first legend in record order. When the legends agree on the token for that category, resolution succeeds with that token (agreement is not ambiguity). When the entity's `tone` category is declared by no legend, the same code reports with `details.legendBinding: "undeclared"`. An entity MAY always disambiguate by setting `legendRef`. Legend entities themselves are included as value holders where the composed constraint lists them: a legend's own `tone` resolves by the same three rules.
-4. **No order dependence.** The check collects the set of `(category → token)` bindings across all legends in the document, sorted by legend entity id, and compares token values as data. Permuting record insertion order, legend order or key order never changes the verdict; the whole-array comparison test of §5.4 asserts this under reordered input.
+U-AM-ENDPOINT now concerns implementation, schema registration, migration/reload and routing receipts for this **defined** carrier; there is no remaining unspecified endpoint shape. Full archimate@2 declaration scope includes all 62 matrix concepts. No complete-profile admission/publication is asserted before those receipts and U-AM; a skeleton @2 is not published as a shortcut.
 
-The `tone` values used by cards and containers in the same document therefore resolve against declared categories with a stated binding, and the legend explains the document that carries it with no consumer-side tint table.
+#### 3.9.2 Complete declaration recipe
 
-### 3.7 Text, language and identifiers
+Appendix A.4 gives the deterministic native declaration expansion from the 61 catalogue rows and full tuples, including generic junction-incidence checking and grouping containment. accessMode is optional enum write/read/unspecified/read-write: the pinned IAccessRelationship constants are 0/1/2/3 respectively, including the previously omitted unspecified case. This is an explicit native projection of accessType, not source-schema identity; imports record the exact conversion. Absence is retained, with no authored default synthesized. influence.strength is optional text with **no invented maxLength**, as in the pinned Ecore. association.directed is optional boolean; view arrowheads still derive through presentation data.
 
-- Every text slot stores authored content in the language of the document. The profile, the executor and the renderers hold no language: no kicker table, no « N links » string, no fold label is built into the model. Strings a renderer must generate (aggregate counts, expand/collapse labels, diagnostics text) are host-supplied or host-localised, never stored in the semantic document. §4.5 carries the authored exception: an aggregate label the author wrote (`summaryLabels`) is stored as view data because it is authored content, not a generated string.
-- One document carries one language per slot. A translated diagram is a second document instance produced by its author or translator, sharing entity references where the host wants cross-language correspondence; the executor never rewrites a stored string in place and never holds two languages in one attribute. This keeps canonical bytes, hashes and migration reports single-language and auditable.
-- Case transforms (kicker uppercase) are rendering transforms under the host locale's case mapping. The stored string is never uppercased in the document.
-- New identifiers are language-neutral: profile ids, type ids, attribute names, category keys, icon names and token names are ASCII key forms (§3.3). Persisted values in another language remain readable forever; a rename of a persisted value is a migration with a report, never an in-place rewrite.
+### 3.10 BPMN generated family, without regression
 
-### 3.8 Generic successor (`generic@2`)
+A′ is transcribed unchanged: descriptors from bpmn-moddle 10.3.1 generate bpmn@2, bpmndi@1, dc@1, di@1, bioc@1, color@1, sem@1; semantics.json digest c274f46f773b5f557f7995fa70aae9d8a50384aedfcc6c3a5d166563a17a7c97. K1–K13 are shared mechanisms, including K2 references, K4 owner composition, K6 struct, K8 overlays, K9 DI and K11 preserved source.
 
-`decision` — The generic family completes as `generic@2`, the successor major of `generic@1`. No other generic major is created by this lot.
+F1 moddle JSON is the pivot. XML stays at test/exchange edges. Unknown namespace content, xmlns and xsi are preserved; no semantic/presentation conversion drops them. One ViewDocument per BPMNDiagram with its DI plane/root and shape/edge forms, labels/styles/overlays; DI waypoints stay verbatim. No generated artifact is hand-maintained here. A′ owns automatic-generation/bijection gates and separately determines its schema-major transition. bpmn@1 stays registered/readable and is never silently migrated or removed by this specification.
 
-| Item | `generic@2` declaration |
+Rendering/editing parity remains owned by SPEC_RE_BPMN_JS_PARITY and bpmn-canvas until its own gates pass. profile-c14n/2 and 610c0353 parity are separate invariants (§6). Generated BPMN admission requires all parity-library receipts and bijection evidence (§7.4), without a skeleton exemption.
+
+### 3.11 UML class-diagram completion: uml@2
+
+uml@1 remains the immutable skeleton. uml@2 is a replacement base with explicit migration §3.13.2. Activity/sequence/state are not added by this class-diagram lot. Classifier names, member names, visibility and multiplicity are domain content; drawing is diagram-presentation@1.
+
+| Declaration | Completed semantic content |
 | --- | --- |
-| Entity types | `node`, `container` (family types) composing the presentation fragment (§3.2); `legend`, `legend-key` available through the fragment composition, not as generic family types. `container: true` on `container` (and on `legend` through the fragment). |
-| Port types | `port` unchanged (`in`/`out`/`inout`, `label` ≤ 80). |
-| Relation types | `link` (label ≤ 200, `strokeStyle`), hierarchy `contains` (tree), `association` (label ≤ 120, `strokeStyle`, members 2..8). |
-| Constraints (all §5.4 data) | `hierarchy`, `parent-family`, `children-restricted`, inverse required-parent for keys, `category-membership`, `acyclic-hierarchy`; `unique-attribute` on `legend-key.category` scope `{ withinType: "legend" }` and on `legend-key.order` scope `{ withinType: "legend" }`; no `unique-attribute` on `name`; no `max-entities-of-type`. |
-| Limits | `maxEntities: 100000`, `maxRelations: 500000`, `maxEndpointsPerRelation: 8` as executor refusal limits, not scene guidance. |
-| Migration | §3.13.1 (supersession of `generic@1`). |
-| Completeness | `complete`. |
+| class | required name≤200; abstract boolean; optional visibility enum public/protected/private/package; isStatic boolean; stereotypes ordered collection of typed entity references to stereotype, max 8. |
+| interface | required name≤200; visibility; stereotypes on the same terms. |
+| package | required name≤200; container true; stereotypes on the same terms. |
+| property | required name≤200; typeName≤200 retained; multiplicity struct of declared multiplicity type; visibility; isDerived/isStatic booleans; stereotypes as above. |
+| operation | required name≤200; returnTypeName≤200 retained; visibility; isStatic; stereotypes as above. |
+| stereotype | required name≤60; extends: bounded collection of enum(class,interface,package,property,operation), 1..5, no duplicates. Its references are type-checked by K2; application is refused when the target's effective kind is outside extends. |
+| association | source/target each 1..1 classifier entity; optional sourceMultiplicity/targetMultiplicity structs; aggregation enum none/shared/composite on each end; at most one composite end. |
+| generalization | source/target classifier (class/interface), 1..1; acyclic generalization. |
+| dependency | source/target declared entity, 1..1; no fabricated subtype or cardinality semantics. |
+| packageContainment | parent package family, child declared entity, tree uml-package-containment. |
 
-The `generic@1` constraint `max-entities-of-type container ≤ 64` is **not** carried as a hard refusal. The validated corpus exceeds any small round container bound once scenes compose, and a count of frames is a layout and readability concern, not a semantic validity condition. Hosts that need a scene-size policy enforce it as a consumer bound (the Focus dossier precedent: 1–80 entities, ≤ 240 relations, recorded as consumer bounds, not as profile validity) and report it under their own diagnostic, never as a profile refusal. The executor mechanism for `max-entities-of-type` stays available to families that genuinely need it. §3.13.4 proves by resolve witness that the removed constraints are not inherited back through G0 stacking.
+The attribute type **multiplicity** is a K6 structured-value type, never an entity occurrence, string bag or PlantUML source:
+{ lower: quantity(unit="unit",integer=true,min=0),
+  upper: quantity(unit="unit",integer=true,min=-1),
+  isOrdered?: boolean, isUnique?: boolean }.
+upper = -1 is the single native UnlimitedNatural unbounded sentinel; otherwise upper≥lower. Both fields declare max 9007199254740991. A lower or finite upper must be a safe non-negative integer; -1 is allowed only for upper. The complete stored witness is:
+{ kind:"struct", type:"multiplicity", fields:{
+  lower:{kind:"quantity",value:0,unit:"unit"},
+  upper:{kind:"quantity",value:-1,unit:"unit"} } }.
+This uses the exact K6 value envelope rather than inventing a second structured-value shape. Value schemas permit the upper sentinel declaratively; the generic bound-pair constraint implements upper==-1 || lower<=upper with literal failure in Appendix C. Empty struct, lower=-1, upper=-2, fractional values, unknown fields, non-quantity kinds and lower>finite-upper refuse.
 
-### 3.9 ArchiMate completion (`archimate@1` completed from its skeleton)
+Migration recognises @1 strings n, n..m, n..*, and * (0..*) only, without trimming/guessing. It records original text plus the parsed target fields and keeps originalCanonical. A syntactically valid reversed range refuses. A stereotype string requires an explicit mapping to a declared stereotype entity; no new semantic assertion is guessed. The profile/stereotype mechanism means these declared class-diagram application rules; no claim of complete UML metamodel coverage is made.
 
-`decision` — ArchiMate diagrams land on `archimate@1` completed **in place** as the same profile id at a new governed version (Engram versioning, §7); no `archimate@2` is created by this lot unless the completed matrix itself breaks the skeleton's declared types, in which case the break is a new major decided in Engram with its migration reference. The skeleton's three types are the starting point, not the target.
+K1/K2/K6 and their qualified schema are hard prerequisites of this profile, not prose deferred behind a complete admission flag. Appendix A.2 fixes valid/rejected values and the generic scalar/struct diagnostics. The profile's admission stays unverified until these mechanisms and the class-diagram corpus have receipts.
 
-Completion delta (profile data only; executor changes are the shared mechanisms of §5):
 
-| Skeleton today (`skeletons.ts`) | Completed `archimate@1` |
-| --- | --- |
-| `element` (single type, `layer` enum 7 values, `aspect` enum) | Element catalogue: one entity type per ArchiMate element kind, each declaring its `layer`/`aspect` as constrained values and its family attributes. The skeleton `element` type is retained as the abstract supertype reading for skeleton documents (§6.2); new documents use the catalogue types. |
-| `junction` (`and`/`or`), `grouping` (name only) | `junction` unchanged; `grouping` gains `container: true` and parents through the ArchiMate hierarchy constraint. Grouping composes the container presentation (§3.2.2) when drawn as a frame. |
-| 11 relation names, 1..1 arity, no matrix | The same 11 ids with the **versioned source/target matrix**: each relation declares `entityTypes` per role from the catalogue, cardinalities per the ArchiMate specification, and `access` mode where the specification requires it. The matrix is data; the executor enforces it through the uniform family rule (§5.2). |
-| No hierarchy constraint | `hierarchy` + `parent-family` for grouping containment (`containment` hierarchy id in the ArchiMate namespace); `acyclic-hierarchy` over it. |
-| No ports | No port type is added. ArchiMate has no semantic port in this completion; occurrence geometry carries any drawn port. |
-| Fixture: one skeleton document | Conformance corpus: one valid fixture per matrix row class plus the rejected matrix cases with asserted diagnostics (§7 corpus). |
+#### 3.11.1 Closed declaration and qualification boundary
 
-Card drawing of an ArchiMate diagram composes the presentation fragment (§1.3). An ArchiMate element drawn as a card stores its `kicker`/`body`/`detail`/`footer`/`icon`/`tone` through the composed schema; the ArchiMate profile bytes contain none of those names. Viewpoints are `ViewDocument` filters (`entity-type` / `attribute-equals`), never new semantic types.
+Appendix A.4 fixes every attribute schema, role, hierarchy, constraint and declaration order for this class-diagram subset. Optional booleans/enums/structs remain absent when unauthored; there are no hidden defaults. sourceAggregation/targetAggregation are the exact association-end field names. Their default interpretation is none without materializing a value; at most one may be composite. A duplicate stereotype.extends entry refuses collection-unique rather than silently deduplicating. Generalization has its own acyclic DAG hierarchy (target=parent, source=child); package containment retains its separate tree.
 
-### 3.10 BPMN completion (A′ generated family; `bpmn@1` skeleton retained readable)
+The named multiplicity declaration is a kind-neutral, identity-abstract schema in the common type registry: its fields are required lower/upper quantities and optional isOrdered/isUnique booleans. Entity records cannot instantiate it (abstract-instantiated). A K6 struct has no entity identity; selecting this declaration validates its closed fields and bound-pair, and does not create an abstract Entity. This is the explicit schema interpretation required of the shared K6 adapter; it is included in the native entityTypes declaration bytes and thus in the unchanged G0 P-CONTENT-DIAGRAM projection. No ignored top-level structTypes field, free object, entity occurrence or out-of-band consumer type registry is introduced.
 
-`decision` — BPMN completes by the A′ path, not by hand-completing the `bpmn@1` skeleton. The hand-written skeleton was the M2 placeholder; the complete BPMN semantics are generated from the bpmn-moddle descriptors, because hand-writing ≈ 1 200 slots freezes a schema without multi-view proof (A′ §1.3).
+The same resolver checks every property and association end. Required struct fields use attribute-required-missing at .fields.lower/.fields.upper; non-quantity kinds use attribute-type-mismatch; required unit is unit. Each field's schema is fully present in Appendix A.4, with targetTypes=["multiplicity"] on all three struct slots. The generic bound-pair check applies after field validation, and reference-application after K2 resolution, with no duplicate secondary diagnostic for a missing/wrong-kind reference. Reference target/applicability uses K1 ancestry; stereotype.extends contains the five declared concrete base kinds.
 
-| Item | Completed state |
-| --- | --- |
-| Profiles | Generated profiles `bpmn@2`, `bpmndi@1`, `dc@1`, `di@1`, `bioc@1`, `color@1`, `sem@1` from the descriptor snapshot pinned in A′ §8 (bpmn-moddle 10.3.1 descriptors plus `semantics.json` sha256 `c274f46f773b5f557f7995fa70aae9d8a50384aedfcc6c3a5d166563a17a7c97`). `bpmn@1` is **not** hand-extended. |
-| Kernel | A′ K1–K13 (supertypes/subsumption, typed references, NCName ids, composition slots, unbounded descriptor-derived collections, structured values, body text, overlays, complete DI, preserved-extension source, numeric scalars, commands). Each mechanism is generic; no BPMN name appears in kernel code. |
-| Exchange | F1 moddle JSON end-to-end; XML only at the edges inside tests (A′ §1.2, owner decision 2026-10-15: F1 preserves unknown extensions, `xmlns`, `xsi`). |
-| DI / views | One `ViewDocument` per `BPMNDiagram`; plane as view root; shape/edge occurrence forms per A′ K9. `diagram-canvas` paints `edge` occurrences from their DI waypoints verbatim. |
-| `bpmn@1` | Stays registered and validatable as a `skeleton` (§6.1). A′ K10 removes the hand-written `bpmn@1` declaration only inside the A′ implementation lot that ships the generated family, and only under the gates of §6; this specification does not remove it. No automatic `bpmn@1` → `bpmn@2` document migration is promised (A′ K10 reasons 1–3 are normative here). |
-| Canonicalization | `profile-c14n/2` is untouched (§3.12). The generated profiles are pinned by G0 `contentDigest` (P-CONTENT-DIAGRAM); F1 JSON identity stays the c14n discipline of bpmn-canvas. The two digest systems are never interchanged (§7.3). |
+The pinned UML fixture (§8.5) supplies a concrete migration witness: property entity:order-total "1"→lower=1/upper=1; relation:order-customer source "0..*"→0/-1 and target "1"→1/1; original typed strings, ids, generalization and package endpoints survive in originalCanonical/operations. Its class stereotype text "entity" requires the caller's explicit stereotype mapping and an existing declared stereotype with extends including class. Omission returns unmapped-stereotype and the exact source; a supplied valid mapping permits the stated conversion. No source string is transformed into a guessed business stereotype entity. All source-profile references are rewritten only in the committed whole-state migration.
 
-BPMN rendering and editing parity are **not** part of this completion. They are owned by `SPEC_RE_BPMN_JS_PARITY.md` (planes 1–5, lots L0–L9) and by bpmn-canvas as the production editor until its harness proves parity. This specification supplies plane 1 (the model) and the executor mechanisms planes 2–3 consume; it claims no renderer, palette, context-pad or keyboard coverage. §6 states the no-regression gates that keep that boundary intact.
+The declaration recipe and scalar/struct/application oracles close the specification content; qualified K1/K2/K6 schema-2.0 registration, native adapter acceptance, the supplied mapping's actual identities, corpus execution and production pins remain unverified U-KERNEL/U-ID/U-DIAG/U-QUAL under their named owners. No complete UML-wide conformance, package release or executed admission is implied.
 
-### 3.11 UML completion (`uml@1` completed from its skeleton)
+### 3.12 Canonicalization
 
-`decision` — UML class-diagram semantics complete `uml@1` **in place** as the same profile id at a new governed version, on the same terms as §3.9. Activity, sequence and state diagrams are separate profiles when authorised; they are not folded into this completion.
+profile-c14n/2 remains exactly bpmn-canvas canonical.ts at SHA-256 287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba. It is RFC 8785 profile-value identity, with rawDigest/canonicalDigest/stableId under the existing mechanism. No catalog re-canonicalizes it and no DS executor reimplements it.
 
-| Skeleton today | Completed `uml@1` |
-| --- | --- |
-| `class`, `interface`, `package`, `property`, `operation` | Same ids, completed attributes: multiplicity as typed structured values (lower/upper, unbounded as data), visibility, derived/static markers, stereotype application as typed references to declared stereotype types. `package` gains `container: true`. |
-| `association` (directed, multiplicity as text), `generalization` (class/interface only), `dependency`, `packageContainment` (tree) | `association` with end multiplicities and aggregation kind as enums; `generalization` over classifiers; `dependency` unchanged in shape; `packageContainment` executed through the shared hierarchy mechanism with `parent-family` roots `["package"]`. |
-| Notes: “NOT declared: full multiplicity semantics, profiles and stereotype rules” | Those three are exactly the completion. PlantUML text remains a codec surface (GD-M4), never the model. |
+The sealed c14n oracle is profile-parity-corpus/1/cases/jcs-*.json and identity-stable-id.json (§6). W01–W12 and parity-corpus/canonical-vectors.json belong to their existing F1/workbench comparators and are not substituted for that oracle.
 
-### 3.12 `profile-c14n/2` (no change)
+### 3.13 Explicit migrations and supersession
 
-`profile-c14n/2` is the bpmn-canvas canonicalization (`/home/antoinefa/src/bpmn-canvas/src/profile/canonical.ts`): RFC 8785 canonical JSON over profile values, `rawDigest` over exact bytes, `canonicalDigest`, `stableId` under `profile-mechanism/1`. This specification changes none of it:
+#### 3.13.1 generic@1 → generic@2
 
-- No byte of its output changes for any existing input. Fixture identity (corpus manifests, sealed vectors, W01–W12 cases) is preserved bit-for-bit (§6 gates).
-- No executor in this repository re-implements it, and the Engram catalog never re-canonicalizes a c14n artifact (G0 §7.3). `diagram-core` content digests (P-CONTENT-DIAGRAM) and c14n digests answer different questions and are recorded under different names (§7.3).
-- The unique-attribute parity fixed at DS commit `610c0353` (Q-G0-2) is a `diagram-core` validator property; it is not a c14n property and c14n code does not acquire it.
+A migration is an explicit versioned transaction over DiagramState (semantic document plus **all retained views**) and a pinned presentation contract where presentation is moved. It retains originalCanonical and its SHA-256, from/to pins, ordered operations and unmigrated items { path, reason }. It never returns a valid-target claim on a partial candidate. If any blocking item exists, return the exact original state and report, no candidate and no writes.
 
-### 3.13 Migration and supersession
+Preflight resolves source refinements, validates all source inputs, plans every rewrite and every view-slot bound, detects reserved-name collisions, and validates the complete proposed target before committing any rewrite. Operations are ordered: profileRefs, typeDefinitions by UTF-16 id, entities, relations, ports by id, then views/occurrences by id. Record insertion does not change operation/report bytes.
 
-Two distinct version axes exist and are not conflated: the persisted **schema version** (`SemanticDocument.schemaVersion`, currently `1.1`; A′ proposes `2.0` for the BPMN kernel shapes under its own gate) and the **profile major/version**. This lot bumps profile identities. It does not bump the DS schema major: no `SemanticDocument` field is added or removed by the generic/archimate/uml completions. The view additions of §4.4.2 and §4.5 are optional fields on existing view records plus one optional field on `VisualGroup` and one optional record on `ViewDocument` (`summaryLabels`), readable by the current view validator's successor without a stored-shape break (a view without them is a valid unfolded view). The full persisted-shape inventory is: **semantic shape — no field added, one attribute removed from one generic type by profile data; view shape — `RelationOccurrenceEndpoint` gains two optional fields, `RelationOccurrence` gains one optional field, `VisualGroup` gains one optional field, `ViewDocument` gains one optional field.** The r2 sentences that counted otherwise are superseded by this inventory, and `VIEW_DOCUMENT_FIELDS` gains `summaryLabels` while still refusing transient keys (§5.6).
+1. Require generic@1 exactly once and generic@2 absent. Replace that reference in place, preserving unrelated refs/order. Rewrite every matching .profile on typeDefinitions/entities/relations/ports, not just entities. Post-scan leaves no source profile on migrated records.
+2. Resolve each source refinement's full chain. Compatible overlapping **semantic** attributes promote; genuinely additional domain attributes remain in a residual refinement with their values/schema, dependents rebased to their nearest retained ancestor. Remove a refinement only after all dependent records/values have valid destinations.
+3. A different-kind overlap **or any same-kind incompatible bound** is a blocking migration outcome, reason type-definition-conflict, detail incompatible-attribute-schema. The entire migration refuses before rewrites. There is no shadowing, truncation or promised successful retained redeclaration. Witness: source kicker≤200 with 100 characters cannot move into view kicker≤80; body≤600 with 500 characters cannot move into body≤400. Both retain the exact original and have no target candidate.
+4. Presentation-only source refinement/extension slots move into typed view presentation for each original occurrence, retaining every authored string; this conversion requires the corresponding retained views and contract pin. No source occurrence/view available → blocking missing-presentation-destination. Body/detail/footer/kicker/icon are not promoted into semantic @2 attributes. Domain tint/category meaning becomes semantic category/key data; its colour mapping moves to categoryTokens. A distinct conflicting target text/style refuses atomically.
+5. Remove semantic container.collapsed and report absent/false/true distinctly. Seed a new view fold only if explicitly requested by the caller; no semantic revision bump is caused by fold state. Never invent a semantic collapsed field.
+6. Preserve relation/port ids, endpoints, labels/general attributes; record link label bound 120→200 once, never rewrite labels. There is no @1 native stroke slot to synthesize. Existing view/source dash metadata maps per occurrence; absent remains absent.
+7. Preserve foreign resources/extensions. A separately authorised standard-slot conversion (A5 §8.4) consumes only the named slot extension after every field has a native destination. Generic migration alone never erases unrelated preserved content.
+8. Validate the full target semantic document and every view, including new references. Only [] permits outcome ok. Recovery restores originalCanonical byte for byte; it is not a reverse migrator guess.
 
-A profile migration is a registered, versioned function with the M2 contract: it produces a report (`from`, `to`, operations, unmigrated items with reasons) and keeps the original. “A migrated document validates” is a normative outcome: a migration that completes with an empty `unmigrated` list SHALL produce a document that `validateDocument` accepts with zero diagnostics under the target profile, with every business id and every non-profile content value retained. A migration that cannot reach that outcome lists the blocking items in `unmigrated` and does not present its output as a valid target document. A blocking collision (§3.13.3) refuses the migration atomically: the outcome is the retained original plus the report, never a mixed candidate that validates under neither profile.
+#### 3.13.2 archimate@1 → archimate@2; uml@1 → uml@2
 
-#### 3.13.1 Generic: `generic@1 → generic@2` (supersession)
+These are **required new-major migrations**, never same-id re-pin operations. The common transaction/preflight/profile-bearing-record/residual-refinement/atomic-refusal/recovery contract above applies.
 
-Operations run in **deterministic order**: profile references first, then type definitions sorted by id, then entities sorted by id, then relations sorted by id, then ports sorted by id. Record insertion order never changes the operation list or the output bytes (the reversed-insertion fixture of §5.7 asserts this). Every transformation is reported; no transformation is silent.
+ArchiMate input supplies a closed mapping { entityTypes: Record<EntityRef, CatalogueTypeId> }. Every @1 element requires one explicit concrete catalogue assignment; layer/aspect alone is not enough to infer it. grouping/junction keep their meanings and ids, with explicit mappings where the new source id spelling differs. Verify each authored relation against its exact ordered matrix tuple; a forbidden relation is a blocking relationship-matrix failure. No silent relation deletion, strongest-relation substitution or invented catalogue assertion is allowed. An unmapped @1 element reports missing-type-mapping; the original stays @1.
 
-1. **`profileRefs`**: replace `generic@1` with `generic@2`, preserving the position of the replaced entry and every unrelated profile reference unchanged. A document that declares no `generic@1` is not an input to this migration (`unmigrated`, reason `profile-not-declared` on the document path). A document declaring both `generic@1` and `generic@2` refuses migration (mixed majors are not created or consumed by migration; the author chooses the major per document).
-2. **Every profile-bearing record**: for each record whose `profile` field equals `generic@1`, rewrite that field to `generic@2` and record one operation `rewrite-profile` with the record path. The record families are, exhaustively: `typeDefinitions.*.profile`, `entities.*.profile`, `relations.*.profile`, `ports.*.profile` (semantic ports). Records naming any other profile are carried unchanged and are not reported as rewritten. After this step no record in the migrated document names `generic@1`; a post-migration scan that finds one is a migrator defect, and the §5.7 fixture asserts the scan is empty.
-3. **Type definitions — residual refinements retained (atomic remapping).** Migration never drops a definition wholesale and never drops a stored value:
-   - Resolve each definition's **source** chain first (against `generic@1` plus the document's own definitions, through the shared resolver of §5.1). A definition whose source chain does not resolve is listed in `unmigrated` with the resolver's diagnostic code and carried unchanged; the migration outcome is then “carried with unmigrated items” and its output is not claimed valid.
-   - Compute the overlap between the definition's additive attributes (over its whole source chain) and the attributes the target composed schema now declares on the effective base. Attributes with **no overlap** are consumer data: the definition is **retained as a residual refinement** over the target base, re-based deterministically (its `baseType` is rewritten to the nearest retained ancestor, or to the profile base type when every ancestor was removed), and every instance keeps its type id and every value. Dependent definitions that refined the re-based definition are re-based in id order in the same pass, so no `baseType` ever dangles.
-   - Attributes that overlap a now-native slot with the **same kind and a bound that accepts every stored value** are promoted: the value is carried onto each instance under the profile attribute name (with the single declared rename `tint` → `tone`, recorded per attribute as `rename-attribute tint->tone`, applying only inside a promoted overlap, never to a free-standing attribute), and the overlapping declaration is removed from the retained definition. A definition whose every additive attribute is promoted and which has no retained dependent is removed, with one operation `remap-refinement` per definition plus one `remap-instance` per rewritten entity recorded. A definition that retains any consumer attribute stays, and its instances keep their type id.
-   - If an overlapping attribute has a **different kind, or a bound that rejects a stored value**, that attribute is not promoted: it stays in the retained residual definition under its original name (shadowing is impossible because the target schema is consulted through the resolver, which reports the redeclaration; the migration therefore renames the retained attribute only when the resolver reports a true name collision with a different kind, recording `retain-renamed <old>-><new>` and rewriting instance keys accordingly). The migration still completes and validates; no value is truncated to fit a new bound and no consumer attribute is silently deleted.
-4. **Entities**: per entity, carry every attribute that the target composed schema still declares on the entity's effective type, unchanged. The new fragment slots are absent after migration (they are optional); migration never invents kicker, body, icon or tone content. Per `container` entity: drop the `collapsed` attribute. Record one operation `drop-attribute container.collapsed` per affected entity, with the dropped boolean in the operation detail, so a host can seed its first view's fold state (§4.2) from the report. The value is not carried into any semantic field. The three stored cases — attribute absent, `collapsed: false`, `collapsed: true` — are distinct report lines and are fixtured separately (§5.7).
-5. **Relations and ports**: carry endpoints, attributes and direction unchanged, except the `profile` rewrite of step 2. The raised `link` label bound (120 → 200) is recorded once as an operation `profile-bound-change link.label 120->200` on the profile path; no stored label is rewritten. A stored `strokeStyle` cannot exist in a `generic@1` document (the slot is new), so migration invents none: every migrated link is effectively `solid` until an author sets the slot.
-6. **Extensions, resources**: carry over unchanged. A preserved extension whose content duplicates the new slots (the measured `hrpn.zone-slots@1` pattern) is carried as preserved data and listed in the report as `preserved-duplicates-profile-slots` (informational operation detail, not an `unmigrated` item): removing it is the consumer switch-over edit witnessed in §8, so migration alone never deletes preserved content (decision D3-C).
+UML input supplies { stereotypes: Record<string,EntityRef> }. Rewrite all profile-bearing records. Parse @1 property multiplicity and association end multiplicities by §3.11; unchanged scalar/name/general attributes survive. Resolve each original stereotype text through the supplied mapping to an existing declared stereotype and validate its application; unknown/unmapped text blocks, not silently removed. Store each original notation and its exact typed conversion in operations, with original state recovery. An invalid range or unresolved stereotype leaves the original @1 state unchanged.
 
-An unknown profile major in a stored document refuses in write and is preserved for inspection, as today. `generic@1` remains registered and validatable after `generic@2` ships: migration is per-document and explicit, never a registry replacement. Recovery is the retained original: the report carries `originalCanonical` and its hash, and “recovery of the original” (restoring the pre-migration bytes from the report) is a fixtured operation, not a re-run of the migrator backwards.
+Coexistence/reload witnesses: register all six @1/@2 ids; validate each retained source using @1; migrate explicitly and validate @2; serialize/reload both; resolve each by its own ProfileId and pin; verify no duplicate-id registry failure, no adapter fallback and no source bytes changed.
 
-#### 3.13.2 ArchiMate and UML: completion in place
+#### 3.13.3 Collisions
 
-Completing `archimate@1` / `uml@1` in place (§3.9, §3.11) is a governed profile-version change, not a document migration: skeleton documents remain validatable under the skeleton pin forever (pins are immutable, §7), and a document that adopts the completed matrix re-pins to the completed version explicitly. Where the completed matrix narrows a skeleton acceptance (a relation the skeleton allowed by arity that the matrix forbids), the re-pin validation reports the matrix diagnostic; no silent document rewrite is performed. If Engram instead decides a new major for either family, the migration contract of §3.13.1 applies verbatim with the target id substituted (every `.profile` record rewritten, residual refinements retained, atomic collision refusal), and the fixture pair (same input under both targets) SHALL differ only in profile id strings and catalog relationships, never in content, counts or diagnostics.
+A target-reserved type id or semantic/view attribute collision is preflighted before changes. A genuinely additional consumer attribute survives residually. Any unresolvable name/kind/bound/target-value collision yields a deterministic unmigrated row and whole-state refusal. There is no mixed-major partial output. All strings consumed from A5 have the precise destinations of §8.4.
 
-#### 3.13.3 Reserved-name collisions (atomic)
+#### 3.13.4 Supersession is not composition ancestry
 
-If a document already declares a type definition, entity type usage or attribute that collides with a name a completed profile introduces (for example a document definition id `legend` or an attribute `order` on a key-like type), the collision is detected **before** any rewrite. A collision that would leave a retained record naming a removed profile, or a schema that validates under neither the source nor the target, is **blocking**: the migrator refuses the whole migration, returns the unchanged original plus a report whose `unmigrated` lists each colliding path with reason `type-definition-conflict` and detail `reserved-name-collision`, and performs no rewrite at all. There is no partial-output candidate. A collision that is purely nominal and resolvable by the residual-retention rule of step 3 (retain and, only on a true kind collision, rename with a recorded operation) is not blocking and follows that rule. A collision never produces a document that validates under neither profile.
+G0 S-2 forbids removal/widening/redeclaration in a stack child. Each replacement @2 is therefore a base with lineage { parents: [], mappings: [], migrations: [its explicit migration reference] }, stack [its own pin], no predecessor as a composition layer. A predecessor may become superseded with supersededBy plus migrationRef, while its bytes and registry readability remain immutable.
 
-#### 3.13.4 Supersession is not G0 stacking ancestry
-
-G0 defines `lineage.parents` as **composition layers** under narrowing-only stacking rules (G0 §2.3: S-1 a child may add types and narrow constraints; S-2 a child may not remove a parent type, widen a cardinality or redeclare an attribute). The generic successor removes the `collapsed` attribute and the container-name uniqueness and count constraints, widens the `link` label bound, and relaxes scoped uniqueness relative to `generic@1`. It therefore **cannot** be a G0 stacking child of `generic@1`, and this specification does not record it as one. The same test applies to any future major of any family.
-
-- `generic@2` is published as a **replacement major** related to `generic@1` by an explicit **migration/supersession relationship**: the catalog record for `generic@1` gains `supersededBy` pointing at the `generic@2` pin, paired with the migration reference of §3.13.1 (G0 §1.4: `supersededBy` is required iff lifecycle is `superseded`, and on a superseded record it is paired with a migration reference). The `generic@2` record classifies as a **base** (G0 §5.3: base binding, not the stacked `profile` binding): its `lineage.parents` is the empty list and its `stack` is the single-layer stack containing only its own pin. No delta, no derivation record and no parent pin names `generic@1` as a layer. ArchiMate/UML completions in place keep their existing lineage; a future new major of those families follows the same base rule.
-- **Resolve witness (normative).** Resolving the `generic@2` stack SHALL produce an effective profile in which (i) no `unique-attribute` constraint on container `name` exists, (ii) no `max-entities-of-type` constraint on `container` exists, and (iii) the `link` label bound is 200. A resolve that inherits any of the three from `generic@1` fails qualification. The §5.7 test asserts all three on the resolved declaration, proving the removed and relaxed constraints are not inherited back.
+ArchiMate/UML @1 completeness stays skeleton forever; supersession lifecycle metadata does not turn it complete. The fragment is a separate contract bound in the catalog envelope and view, not a semantic parent. Resolve witnesses assert generic@2's removed constraints do not return through ancestry and that archimate@2/uml@2 have the distinct ids throughout.
 
 ## 4. View model: folds, folded projections, measurement and layout hints
 
-The view remains the M2 `ViewDocument`: occurrences of entities, relations and ports, visual groups, filters and persistable presentation state, pointing at exactly one `SemanticDocument` and never ahead of its revision. This section adds the fold contract, the folded-edge projection that stays valid, the measurement input that layout consumes, and the generic layout hints that replace consumer packing. Transient state (hover, in-flight drag, marquee) stays out of the view, as today. Every rule in this section is family-neutral: it executes identically for generic, ArchiMate, BPMN (DI views) and UML documents, because it reads only occurrence, hierarchy and fold data.
+The view remains the M2 `ViewDocument`: occurrences of entities, relations and ports, visual groups, filters and persistable presentation state, pointing at exactly one `SemanticDocument` and never ahead of its revision. This section adds the fold contract, the folded-edge projection that stays valid, the measurement input that layout consumes, and the generic layout hints that replace consumer packing. Transient state (hover, in-flight drag, marquee) stays out of the view, as today. Every rule is family-neutral over declared synthesis occurrences; native DI/view schemas remain authoritative when no synthesis form is selected.
 
 ### 4.1 Fold state is view data, bound to occurrences
 
@@ -465,7 +427,7 @@ The view remains the M2 `ViewDocument`: occurrences of entities, relations and p
   For each entity occurrence in the view whose effective type (shared resolver, §5.1) is in the container family (`container: true` on its base chain), the view MAY hold one group whose `occurrence` equals that occurrence's id and whose `collapsed` is the fold state of **that drawing** in that view. The group id is `grp.<len>.<localId>` where `<localId>` is the local id of the **occurrence** (not the entity) and `<len>` is its length — the id form already used by the measured HRPN view, re-anchored from entity to occurrence. Group membership follows the existing derived rule: an entity occurrence belongs to the group named by its `EntityOccurrence.group`, and that group is the fold group of its hierarchy parent's occurrence in the same view. Membership itself is never duplicated as a member list.
 - **N occurrences (M2 §3.4).** The same container entity MAY have several occurrences in one view; each occurrence has its own fold group and may fold independently. Two views of one document fold independently, as before. A container occurrence with no fold group is expanded. A fold group whose `occurrence` names no entity occurrence of the view, or an occurrence whose effective type is outside the container family, reports `dangling-reference` / `occurrence-endpoint-mismatch` under the view validation of §5.6 (the group is view data and is validated as such).
 - Folding or unfolding is a view change. It is expressed by replacing the `ViewDocument` (§4.1.3), or by the host re-running layout with a new collapse input (§4.6) and replacing the view wholesale. It never mutates the `SemanticDocument`, never bumps `document.revision`, and never travels through an `update-entity-attributes` command. No completed profile's semantic `collapsed` attribute is a fold carrier (§3.2.2).
-- The rendering consequence is fixed: expanded, a container occurrence draws its header plus its visible children; collapsed, the same occurrence draws exactly one atomic card (`460 × 200`, §4.6) carrying the container's `kicker`, `name`, `subtitle` (as centred summary lines), `footer`, `icon` and `tone`, plus the fold control. No child occurrence of a collapsed container occurrence is a scene item (§4.4, step 1).
+- The rendering consequence is fixed: expanded, a container occurrence draws its header plus its visible children; collapsed, the same occurrence draws exactly one atomic card (`460 × 200`, §4.6) carrying the resolved typed presentation text (kicker/title/subtitle/footer), icon and category token, plus the fold control. No child occurrence of a collapsed container occurrence is a scene item (§4.4, step 1).
 
 #### 4.1.2 Why occurrence binding is required
 
@@ -475,7 +437,7 @@ With entity binding, two drawings of one container cannot fold differently, and 
 
 `decision` — `ViewDocument.revision` keeps its current meaning exactly: **the document revision this view was last changed at; never ahead of the document** (`packages/diagram-core/src/view.ts`, refused as `revision-divergence` when ahead). A fold-only change therefore **retains** that value:
 
-- Folding, unfolding, expand-all, collapse-all, changing a view `strokeStyle` override, editing a `summaryLabels` entry and re-projecting (§4.4) all produce a replacement view whose `revision` equals the source view's `revision` (which equals the document revision the view was built against). No fold operation increments `ViewDocument.revision`, and no fold operation requires a semantic command. The HRPN witness is normative: the supplied view at revision 1 folded in any way stays at revision 1 and validates; a fold that produced revision 2 against a document at revision 1 would refuse `revision-divergence` and is a defect.
+- Folding, unfolding, expand-all, collapse-all, changing an occurrence strokeStyle, editing a `summaryLabels` entry and re-projecting (§4.4) all produce a replacement view whose `revision` equals the source view's `revision` (which equals the document revision the view was built against). No fold operation increments `ViewDocument.revision`, and no fold operation requires a semantic command. The HRPN witness is normative: the supplied view at revision 1 folded in any way stays at revision 1 and validates; a fold that produced revision 2 against a document at revision 1 would refuse `revision-divergence` and is a defect.
 - View concurrency is **not** carried by `revision`. A host that needs optimistic concurrency over views uses a separate host revision: the canonical content hash of the view (the executor's canonical serialisation, §7.3 artifact digest discipline) or a host-minted view generation counter stored outside the `ViewDocument`. This specification gives that value no field name inside the view, because two hosts mint it differently and neither meaning is the document revision. Tests assert the observable contract: repeated fold/unfold at document revision 0 (and at revision 1 on the HRPN view) validates at every step with `view.revision === document.revision` throughout, and the semantic document bytes are unchanged by every fold (§5.6, §5.7).
 - A semantic change (any command that bumps `document.revision`) does not automatically rebase existing views: a view whose `revision` is behind the document revision is stale in the M2 sense and is rebuilt or re-projected by its host; `validateView` continues to refuse only the ahead case, as today.
 
@@ -487,7 +449,7 @@ With entity binding, two drawings of one container cannot fold differently, and 
 
 ### 4.3 Scoped uniqueness execution
 
-Scoped uniqueness is executed as §5.3 specifies. This section states only the view-visible consequence: no view rule depends on display-title uniqueness in any family. Two containers both titled « CI/CD », two ArchiMate elements with the same name, two BPMN tasks with the same name and two UML classes with the same name are all valid unless their family profile declares a scoped uniqueness over that attribute in that scope. Legend `category` and `order` uniqueness (§3.6) are the only title-adjacent uniqueness rules the completed compositions declare, and both are scoped `withinType: "legend"`.
+Scoped uniqueness is executed as §5.3 specifies. This section states only the view-visible consequence: no view rule depends on display-title uniqueness in any family. Two containers both titled « CI/CD », two ArchiMate elements with the same name, two BPMN tasks with the same name and two UML classes with the same name are all valid unless their family profile declares a scoped uniqueness over that attribute in that scope. Legend category uniqueness is semantic and scoped withinType: legend. Display order is the explicit ordered view key list (§3.6), never a semantic uniqueness rule.
 
 ### 4.4 Folded-edge projection that yields a valid `ViewDocument`
 
@@ -505,13 +467,17 @@ For a given view, let `containsParentEntity(entity)` be the semantic hierarchy p
   For a port occurrence, the representative is the visible representative of the port's owner occurrence, drawn through the representative's port occurrence bound to that representative when one exists in the view, otherwise through the representative occurrence itself (§4.4.2, port rule).
 - A relation occurrence is **internal** to a collapsed container occurrence when **every** endpoint's visible representative is that same occurrence **and at least one endpoint was actually hidden by a fold** (a visible self-link whose endpoints already coincide without any fold is untouched, never internal). Internal relations draw nothing in the folded view. A relation with at least one endpoint hidden and not internal is **projected**; a relation with no endpoint hidden is **untouched**. For an n-ary `association` the test runs over the complete representative set: internal iff the set has one element and a fold was involved; projected iff the set has more than one element and at least one endpoint was hidden; untouched otherwise. Each endpoint projects independently.
 
+For relation-target endpoints the preceding definitions have this finite extension. Begin with entity/port representatives and an empty map of internal relation occurrences to collapsed container occurrences. In each simultaneous round, an original endpoint naming a relation occurrence uses its mapped container if already classified internal, otherwise that relation occurrence itself; other endpoints use their entity/port representatives. Add an unclassified relation occurrence only when its complete representative set is one **collapsed container entity occurrence** and at least one endpoint is fold-dependent (an entity/port hidden by fold, or an already internal relation occurrence). Repeat until no addition; there are at most as many adding rounds as retained relation occurrences. Classification is independent of record order. A relation occurrence's representative is its mapped container if internal, otherwise itself, even if its own endpoints are projected. Relation-target cycles without a fold witness remain visible relation occurrences; the worklist never chooses an arbitrary container or loops through their semantic targets. An attaching relation is then classified/projected with exactly the same representative rule, allowing chains of internal relation targets to collapse in successive rounds.
+
+The fold witness for an internal relation occurrence comprises **all** its endpoint representatives and their entity ancestor walks or earlier worklist witnesses, not a semantic parent of the relation. Each dependency was classified in an earlier round, so this witness is finite and ends at the same outermost visible collapsed container. It is derived view state, never a stored field. For validation of a persisted projection, reconstruct original endpoint occurrence references as sourceOccurrence when present, otherwise occurrence; retained internal records are unchanged. Run the same worklist on those references and the stored fold groups. This recovers the representative without a retained source view, scene, route or new graph field. Missing/invalid provenance is refused before it can serve as a witness.
+
 #### 4.4.2 The projected occurrence (view data) — persisted-shape inventory
 
-The persisted view gains the following optional fields, and no others (§3.13 inventory; `VIEW_DOCUMENT_FIELDS` gains exactly `summaryLabels` — a test asserts the view field set still refuses a stray `hover`-style key):
+The persisted view gains the following optional fields, plus PresentationState.diagram of §3.2 (§3.13 inventory; `VIEW_DOCUMENT_FIELDS` gains exactly `summaryLabels` — a test asserts the view field set still refuses a stray `hover`-style key):
 
-1. On `RelationOccurrenceEndpoint`: `semanticTarget?: EntityRef | PortRef`. Present **iff** the drawn `occurrence` does not itself draw the semantic endpoint target for that role. Its value is the semantic relation's endpoint target for that role, copied verbatim. Absent means “the drawn occurrence draws the semantic target”, exactly as today.
+1. On `RelationOccurrenceEndpoint`: `semanticTarget?: EntityRef | PortRef | RelationRef`. Present **iff** the drawn `occurrence` does not itself draw the semantic endpoint target for that role. Its value is the semantic relation's endpoint target for that role, copied verbatim. A RelationRef is permitted only where the semantic role admits relation targets (§3.9.1). Absent means “the drawn occurrence draws the semantic target”, exactly as today.
 2. On `RelationOccurrenceEndpoint`: `sourceOccurrence?: OccurrenceRef`. Present **iff** `semanticTarget` is present. Its value is the **original endpoint occurrence** — the occurrence that drew the semantic target in the source view. This is the endpoint-occurrence provenance the reviews require: the projection never loses which drawing it came from, including when the same entity has several occurrences (the original is identified by occurrence id, not by entity id). On an unprojected endpoint both fields are absent.
-3. On `RelationOccurrence`: `strokeStyle?: "solid" | "dashed"` — the view override of §3.5.1. Absent means inherit the semantic value. Projection **preserves override presence exactly**: an untouched occurrence carries the source field or its absence byte-for-byte; a projected occurrence carries the source override when the source carried one and carries no field when the source carried none (the effective style is derived at render time, never materialised). §4.4.3 step 2 states the rule; the empty-collapse byte-identity witness of §5.6 enforces it.
+3. On `RelationOccurrence`: `strokeStyle?: "solid" | "dashed"` — the view style of §3.5. Absent means solid. Projection **preserves override presence exactly**: an untouched occurrence carries the source field or its absence byte-for-byte; a projected occurrence carries the source override when the source carried one and carries no field when the source carried none (the effective style is derived at render time, never materialised). §4.4.3 step 2 states the rule; the empty-collapse byte-identity witness of §5.6 enforces it.
 4. On `RelationOccurrence`: no aggregation field. Aggregation is derived, never stored (§4.5).
 5. On `VisualGroup`: `occurrence?: OccurrenceRef` — the fold binding of §4.1.1.
 6. On `ViewDocument`: `summaryLabels?: Readonly<Record<string, SummaryDefinition>>` — authored summary **definitions** (§4.5.1), distinct from their active projection (§4.5.2). Absent means no authored labels; derived count labels are computed at render time and never stored.
@@ -520,7 +486,7 @@ The persisted view gains the following optional fields, and no others (§3.13 in
 interface RelationOccurrenceEndpoint {
   readonly role: string;
   readonly occurrence: OccurrenceRef;
-  readonly semanticTarget?: EntityRef | PortRef;
+  readonly semanticTarget?: EntityRef | PortRef | RelationRef;
   readonly sourceOccurrence?: OccurrenceRef;
 }
 interface RelationOccurrence {
@@ -544,12 +510,12 @@ layoutFolded(document, sourceView, collapsedOccurrenceIds, hints?) -> ViewDocume
 ```
 
 - **Inputs.** `document`: the `SemanticDocument` (unchanged). `sourceView`: the retained view of that document in which **no endpoint is projected for fold reasons** — every relation endpoint either draws its semantic target or is an authored drawing with no `semanticTarget`. Callers MUST NOT pass an already-projected view as `sourceView`; the function refuses (diagnostic `occurrence-endpoint-mismatch`, detail `projection-source-projected`) if any input endpoint already carries `semanticTarget`. This is the rule that makes unfolding exact: a fold change is always `projectView(document, sourceView, newCollapsedSet)`, never “patch the previous projection”.
-- **Step 1 — hidden set.** Compute hidden-by-fold occurrences (§4.4.1) from `collapsedOccurrenceIds` (the set of container occurrences whose fold groups are collapsed in the output). Hidden entity occurrences stay in the output `ViewDocument` records (their geometry is the source geometry, retained so unfolding restores it byte-for-byte) and are excluded from the scene as `group-collapsed`, as today. Do not delete occurrences to fold.
+- **Step 1 — hidden set.** Compute hidden-by-fold entity/port occurrences and the complete internal-relation worklist (§4.4.1) from `collapsedOccurrenceIds` (the set of container occurrences whose fold groups are collapsed in the output), before emitting any projected endpoints. Hidden entity occurrences stay in the output `ViewDocument` records (their geometry is the source geometry, retained so unfolding restores it byte-for-byte) and are excluded from the scene as `group-collapsed`, as today. Internal relation occurrences also stay, unchanged. Do not delete occurrences to fold.
 - **Step 2 — per relation occurrence.** Let the semantic relation's endpoints be known from `document`. For each relation occurrence in `sourceView`:
   - Compute each endpoint's visible representative (§4.4.1) from the endpoint's **original** drawn occurrence (`endpoint.occurrence` in the source view). Every endpoint is handled independently, including each `member` of an n-ary association.
   - If the relation is internal (§4.4.1: complete representative set of one, with a fold involved), copy the occurrence record unchanged (original endpoints, no provenance fields, override presence unchanged) and let the scene exclude it as `endpoint-hidden` with its cause reported. It draws nothing.
-  - Else, for each endpoint whose original occurrence is hidden by fold: set the output endpoint's `occurrence` to the representative occurrence (for a port endpoint, the representative's port occurrence when one exists in the view, otherwise the representative's entity occurrence), set `semanticTarget` to the semantic endpoint target for that role, and set `sourceOccurrence` to the original `endpoint.occurrence`. Endpoints that are not hidden are copied unchanged and carry neither provenance field.
-  - Copy `waypoints` unchanged on the retained record. Copy the `strokeStyle` field **iff** the source occurrence carried it, with the same value; never add the field and never remove it. The effective style of a projected occurrence is derived at render time (view override if present, else semantic value, else `solid`) and is not stored.
+  - Else, for each endpoint whose original occurrence is hidden by fold, including a relation occurrence classified internal: set the output endpoint's `occurrence` to the representative occurrence (for a port endpoint, the representative's port occurrence when one exists in the view, otherwise the representative's entity occurrence; for an internal relation endpoint, its mapped container entity occurrence), set `semanticTarget` to the semantic endpoint target for that role, and set `sourceOccurrence` to the original `endpoint.occurrence`. In the relation arm these are respectively the original RelationRef and relation occurrence id. Endpoints that are not hidden are copied unchanged and carry neither provenance field, including attachments to a still-visible projected relation occurrence.
+  - Copy `waypoints` unchanged on the retained record. Copy the `strokeStyle` field **iff** the source occurrence carried it, with the same value; never add the field and never remove it. The effective style of a projected occurrence is derived at render time (occurrence strokeStyle if present, else solid) and is not stored.
 - **Step 3 — groups, filters, summaries, geometry hand-off.** Stamp fold groups for exactly `collapsedOccurrenceIds`; copy every filter unchanged (filters and folds combine, §4.4.6); carry `summaryLabels` **definitions** through unchanged (§4.5.1 — definitions are never dropped by projection; activation is derived per folded state, §4.5.2). Leave every other occurrence and presentation value unchanged, except geometry: entity occurrence geometry in the output of `layoutFolded` is the placed folded geometry (collapsed occurrences at `460 × 200`, expanded occurrences recomputed over visible children), while `projectView` alone leaves geometry as the source geometry and is therefore an intermediate, never a displayed view. The output keeps the source view's `viewId` only when the host replaces that view; a folded derivative that coexists with its source uses a new `viewId`. The output `revision` equals the source `revision` (§4.1.3).
 - **Restoration property (normative).** For any collapsed sets `A` and `B`, `projectView(document, sourceView, A)` followed by discarding the result and computing `projectView(document, sourceView, B)` is the only transition. In particular, `projectView(document, sourceView, ∅)` returns a view whose relation occurrences are **byte-identical** to the source view's (canonical serialisation, including `strokeStyle` presence and `summaryLabels` definitions), and repeated fold/unfold cycles `A → ∅ → A → ∅` produce identical bytes at each repetition. No `semanticTarget` or representative endpoint survives into a view whose collapsed set does not hide that endpoint, because the projection is recomputed, not patched. The r1 defect — expanding a previously projected view leaving `semanticTarget` and the ancestor endpoint intact, then failing `projection-not-folded` — cannot occur under this procedure, and §5.6 fixtures assert the cycle explicitly.
 
@@ -558,12 +524,12 @@ layoutFolded(document, sourceView, collapsedOccurrenceIds, hints?) -> ViewDocume
 `validateView` accepts a projected endpoint **iff** all of the following hold; otherwise it reports the stated diagnostic. The unprojected rule is unchanged: without `semanticTarget`, the drawn occurrence must draw exactly a semantic endpoint target for its role, else `occurrence-endpoint-mismatch`.
 
 - `semanticTarget` equals one of the semantic relation's endpoint targets for the endpoint's role (the same set the current check uses). Otherwise `occurrence-endpoint-mismatch`.
-- `sourceOccurrence` is present, names an occurrence of this view, and that occurrence draws `semanticTarget` (its entity/port equals `semanticTarget`). Otherwise `occurrence-endpoint-mismatch` with detail `provenance-missing` (absent) or `provenance-mismatch` (names a different target).
+- `sourceOccurrence` is present, names exactly one occurrence of this view, and that occurrence draws `semanticTarget`: its entity, port or relation field equals the nominal EntityRef, PortRef or RelationRef respectively. Resolve the appropriate occurrence map directly; a relation's endpoint entities are never substituted for its RelationRef. Otherwise `occurrence-endpoint-mismatch` with detail `provenance-missing` (absent) or `provenance-mismatch` (names a different target).
 - The drawn (`occurrence`) occurrence exists in the view and is not itself hidden by fold. Otherwise `dangling-reference` (missing) or `occurrence-endpoint-mismatch` with detail `representative-hidden`. Under §4.4.1 the representative is visible by construction, so `representative-hidden` witnesses a hand-written or stale projection, never a correct one.
-- Walking hierarchy parent **occurrences** from `sourceOccurrence` up to the drawn occurrence passes only through occurrences hidden by fold (every intermediate ancestor occurrence is folded or is a child of a folded occurrence), the drawn occurrence is folded (collapsed) itself, and it is the outermost folded occurrence on that walk. If the walk never reaches the drawn occurrence, reaches it without any folded occurrence, or stops at an inner folded occurrence while an outer one is also folded, the projection is spurious: `occurrence-endpoint-mismatch` with detail `projection-not-folded` (no fold on the walk) or `projection-not-outermost` (an inner representative was chosen). The nested defect — `TOPIC` selecting nearest collapsed ancestor `MSGZ` itself hidden beneath collapsed `PPROZ`, `PRODZ` and `GCP`, then rejected as `representative-hidden` — is refused at authoring time by the `projection-not-outermost` arm and never produced by §4.4.3.
-- The drawn entity is in the container family when `semanticTarget` differs from the drawn target (a projection target is always a container card, never a leaf card that happens to be an ancestor by geometry). Otherwise `occurrence-endpoint-mismatch` with detail `representative-not-container`.
+- For an entity source, walking hierarchy parent **occurrences** from `sourceOccurrence` up to the drawn occurrence passes only through occurrences hidden by fold; the drawn occurrence is collapsed and outermost. For a port source, start at its owner occurrence and apply the counterpart rule of §4.4.6. For a relation source, use the finite all-endpoint fold witness of §4.4.1: the source relation occurrence must be classified internal and the drawn occurrence must equal its mapped container. There is no fabricated semantic containment parent for a relation. A missing fold witness or an unrelated representative refuses `occurrence-endpoint-mismatch`/`projection-not-folded`; choosing an inner folded container when the witness reaches a higher folded container refuses `projection-not-outermost`. Thus a relation with projected but still-visible endpoints cannot be replaced by a container merely because one endpoint lies inside it. The nested entity case and every branch of a relation witness select the outermost visible representative.
+- For every changed drawing, including a RelationRef target, the representative entity has container capability (for a counterpart port, its owner entity has that capability). Otherwise `occurrence-endpoint-mismatch` with detail `representative-not-container`. This rule applies to the **fold representative**, not the semantic target's kind: a source relation occurrence has a relation field, while its valid collapsed representative is a container entity occurrence. A still-visible relation target uses its own relation occurrence with neither provenance field and is checked by the unprojected rule, without a container requirement.
 
-These checks make the folded view self-describing: a validator needs only the document, the view and the hierarchy tree — no layout output, no scene and no fold list. Appendix B works the review example end to end, including the nested form and a three-member association spanning two collapsed branches.
+These checks make the folded view self-describing: a validator needs only the document, the view and the hierarchy tree — no layout output, no scene and no fold list. Appendix B works the entity examples, the nested form, a three-member association spanning two collapsed branches and the ArchiMate relation-to-relation fold with RelationRef provenance.
 
 #### 4.4.5 Aggregation is derived, never stored — with authored labels as view data
 
@@ -582,38 +548,50 @@ The scene builder keeps its conservation rule. In a folded view: hidden occurren
 
 ### 4.5 Authored aggregate labels for collapsed overviews: definitions and active projection
 
-The #711 all-collapsed overview draws **authored** summary labels on its aggregate edges (the kit's `summaryLabels`), not only counts. A count-only rule loses that content while counts and semantic validity still pass, so the authored input is model data (view data, because it labels a folded drawing). r3 separates the two things r2 conflated: a **persistent definition** that is valid in the source view, and its **active projection** in a folded view.
+The #711 all-collapsed overview draws **authored** summary labels on its aggregate edges (the kit's `summaryLabels`), not only counts. A count-only rule loses that content while counts and semantic validity still pass, so the authored input is model data (view data, because it labels a folded drawing). Definitions validate in a retained source view; activation and uniqueness are resolved after occurrence projection.
 
-#### 4.5.1 Persistent definitions (valid in the source view)
+#### 4.5.1 Persistent definitions and occurrence scope
 
-```ts
+~~~ts
 interface SummaryDefinition {
-  /** Stable id of this definition, unique within the view. The aggregate key is (sourceOccurrence, targetOccurrence, strokeStyle). */
   readonly id: string;
-  readonly sourceOccurrence: OccurrenceRef; // an occurrence of the source view (never a representative)
-  readonly targetOccurrence: OccurrenceRef; // an occurrence of the source view
-  readonly label: string;                    // authored text, document language (§3.7)
-  /** Constituent semantic relations this label summarises, sorted, non-empty. Each relation has one
-      endpoint drawn by sourceOccurrence's entity subtree and the other by targetOccurrence's. */
-  readonly relationIds: readonly RelationRef[];
-  readonly strokeStyle?: "solid" | "dashed"; // the style this definition aggregates; absent means solid-only
+  readonly sourceOccurrence: OccurrenceRef;
+  readonly targetOccurrence: OccurrenceRef;
+  readonly label: string;
+  readonly relationIds: readonly RelationRef[]; // sorted, distinct, non-empty
+  readonly strokeStyle?: "solid" | "dashed";    // absent selects solid only
+  readonly relationOccurrences?: readonly OccurrenceRef[]; // sorted, distinct, optional disambiguation
 }
-```
+~~~
 
-- Storage: `ViewDocument.summaryLabels?: Readonly<Record<string, SummaryDefinition>>`, keyed by `SummaryDefinition.id`. A definition is **authored input**: a host or producer writes it against the source view; the projection (§4.4.3) carries definitions through unchanged and never invents, rewrites or drops one.
-- Source-view validation (`validateView` definition arm): `id` unique in the view; `sourceOccurrence` and `targetOccurrence` name entity occurrences of this view; `relationIds` is non-empty, sorted, names known relations, and for each named relation at least one endpoint target lies in the hierarchy subtree of `sourceOccurrence`'s entity and the other in the subtree of `targetOccurrence`'s entity (subtree = the entity plus its hierarchy descendants under the composed hierarchy), with the direction matching the definition's source/target order for directed relations; every relation whose endpoints satisfy that subtree condition for the pair is named (no omission, no extra). No folded state is consulted: a definition whose pair currently projects nothing (both endpoints visible and unrelated at the top level, as in the kit's `h2a:surfaces` child-to-child labels) is valid in the source view and simply inactive. Violations report `occurrence-endpoint-mismatch` with detail `summary-constituents-mismatch` (Appendix C gives the literal arms, including the inactive-valid case as a non-diagnostic witness).
-- Uniqueness of the aggregate key: at most one definition per `(sourceOccurrence, targetOccurrence, effectiveStyle)` triple, where `effectiveStyle` is `strokeStyle ?? "solid"`. Two definitions for the same triple refuse as `occurrence-endpoint-mismatch` with detail `summary-duplicate-key`, even when their labels differ. Definitions for the same pair with different styles are distinct aggregates (§4.5.3).
+Storage: ViewDocument.summaryLabels?, keyed by id. This is an authored **definition**, never persisted activation. Definitions survive projection byte for byte.
 
-#### 4.5.2 Active projection (derived per folded state, never stored)
+For definition D, source and target scopes are the occurrence subtrees rooted at D.sourceOccurrence/D.targetOccurrence through the view's fold groups, not all drawings of the underlying entity. Build candidates from binary source-view relation occurrences whose ordered endpoints lie in those two occurrence scopes and whose **effective occurrence strokeStyle equals D.strokeStyle ?? "solid"**. For an undirected binary relation normalize the representative pair by UTF-16 occurrence id; no normalization applies to a directed pair. Hyper-relations are excluded from binary summaries.
 
-For a folded view derived from the source, a definition is **active** for the ordered representative pair `(Rsrc, Rtgt)` and style `S` exactly when: the visible representative of `sourceOccurrence` is `Rsrc`, of `targetOccurrence` is `Rtgt`, `Rsrc ≠ Rtgt` or a fold is involved, and the set of relation ids whose occurrences project onto `(Rsrc, Rtgt)` with effective style `S` equals the definition's `relationIds` intersected with the relations that actually project in this state — with the normative tightening that an active definition SHALL name **exactly** the projecting set for its pair and style in that state, so a definition authored for one fold state that only partially matches another state is inactive there (the renderer falls back per §4.5.3) rather than mislabelled. Activation is computed at render time from the folded view plus the carried definitions; it is never persisted as a second record, and unfolding (collapsed set `∅`) deactivates every definition whose pair no longer arises while the definitions themselves remain stored for the next fold.
+If relationOccurrences is present, every listed occurrence must exist and be a candidate, and it is the complete selected candidate set for that scope/style. It cannot omit another matching occurrence of the same semantic relation unless that other occurrence lies in a different occurrence subtree. If absent, the scope/style must select at most one occurrence for each relation id; otherwise definition validation refuses summary-occurrence-ambiguous and the author must supply occurrence ids. relationIds must equal the sorted unique relation ids of the selected occurrence set, with no omission or extra. The source view needs no top-level relation between the two scope roots for the definition to be valid.
 
-#### 4.5.3 Rendering and aggregation compatibility
+Definition id and source triple (sourceOccurrence,targetOccurrence,effectiveStyle) are unique in the source view. Duplicate source triples report summary-duplicate-key. Constituent/style/scope mismatch reports summary-constituents-mismatch. A valid definition may be inactive in an expanded view: inactivity is not a diagnostic.
 
-- Aggregation groups projected occurrences by `(source representative occurrence, target representative occurrence, effective strokeStyle)`. A solid and a dashed relation therefore **never** merge into one stroke. The effective style of each occurrence is its view override if present, else its semantic `strokeStyle`, else `solid`.
-- For an aggregate group with an active authored definition (§4.5.2) of the same style, the renderer draws the definition's `label` (and that style's stroke). For a group without an active definition, the renderer MAY draw the derived count label. An authored label never hides its constituents: the definition's `relationIds` are the constituent ids, validated in the source view (§4.5.1) and re-derived in the folded state (§4.5.2).
-- Round trip: folded export and re-import (§10 roadmap) serialise each drawn aggregate as its authored label (when active) plus `relationIds` plus effective `strokeStyle`; re-import reconstructs the same definitions and the same per-relation `strokeStyle` values (§3.5.1). A round trip that returns counts in place of authored labels, merges mixed styles, or loses a constituent id fails.
-- Corpus assertion: each acceptance instance's all-collapsed overview view SHALL carry the authored definitions of its source overview (for A1, the `4138a0ec` overview labels; for A2–A5 folded overviews, the labels authored in their source figures where they exist), each validated as a definition in its source view and active in the overview state. An overview that renders only “N links” where the source authored a label fails the instance.
+#### 4.5.2 Resolve authored summaries after projection
+
+Compute projection and filter exclusions first. For each **drawn binary aggregate** form the key K = (projected source representative occurrence, projected target representative occurrence, effectiveStyle), preserving direction or using the undirected normalization above. Its members are the sorted occurrence ids; its semantic constituent set is the sorted unique relation ids. At least one actual fold projection is required for summary activation; visible self-links and ordinary unfolded edges do not acquire summaries.
+
+For each definition, map its source/target occurrence roots to representatives by §4.4, preserving its selected occurrence set. It is an activation candidate only if:
+(a) its key equals K;
+(b) every selected occurrence is drawn in K in this state;
+(c) the selected occurrence ids equal **all** members of K; and
+(d) relationIds equals the full constituent set of K.
+A partial overlap is inactive; no intersection silently turns it into an exact match. A definition omitting a dashed relation is valid for the solid-only candidate set and never labels the dashed group.
+
+After all candidates are computed, enforce **at most one candidate per active key K**, even when their source triples differed. If two definitions collide, report occurrence-endpoint-mismatch/summary-active-key-conflict for each candidate after the first (definition ids sorted UTF-16), include firstId and the representative pair/style as scalar details, and refuse the derived projection/layout result. There is no winning label selected by source proximity, insertion order or label text. Definitions remain retained unchanged in the source view.
+
+Witness: P contains C and relation C→X. Definitions (P,X,solid) and (C,X,solid) can both be source-valid. Folding P makes the same key and full member set; projection refuses with summary-active-key-conflict. Removing one definition restores the result. With N drawings of C, the occurrence-scoped rule prevents another drawing's relation from entering this key.
+
+#### 4.5.3 Drawing, conservation and round trips
+
+Solid and dashed occurrences never aggregate together. Style is the occurrence field or solid, with no semantic fallback. An aggregate with one active definition draws its authored label; an aggregate with none may draw the host-localized count. Constituent occurrence/relation ids remain available; no business relation is created, merged or deleted.
+
+Export/re-import serializes label, exact constituent ids, occurrence scope and style; it reconstructs definitions without replacing authored text with a count. A1's ten authored source labels and their derived constituent ids are pinned in §8.7; both source validity and overview activation are gates. Where source material has no authored summaries the oracle explicitly records an empty set, rather than inventing labels.
 
 ### 4.6 Fixed footprints and the measurement API
 
@@ -633,7 +611,7 @@ interface FootprintDecl {
 
 | Entity occurrence (in view state) | Footprint | `fixedAxes` | Source |
 | --- | --- | --- | --- |
-| Leaf occurrence (any family, any view) | fixed `460 × 200` | `both` | `frozen-requirement` |
+| Leaf occurrence (any family, selected card form) | fixed `460 × 200` | `both` | `frozen-requirement` |
 | Container-family occurrence, **collapsed** in this view | fixed `460 × 200` | `both` | `frozen-requirement` (collapsed wrapping card takes the atomic-card size at every nesting level) |
 | Container-family occurrence, **expanded** | computed: header height (§4.6.3) + children extent + frozen insets (rule gaps 4, content insets 16) | `none` (both axes are outputs) | `frozen-requirement` spacing values |
 | `legend` occurrence, collapsed | fixed `460 × 200` (it is a container-family fold) | `both` | §4.1 |
@@ -676,7 +654,7 @@ interface EntityMeasurementInput {
   readonly effectiveType: string;       // resolved by §5.1
   readonly folded: boolean;
   readonly toggle: boolean;             // true iff a fold control is rendered for this occurrence
-  readonly slots: Readonly<Partial<Record<TextRole, string>>>; // every §3.2 slot value present on the entity
+  readonly slots: Readonly<Partial<Record<TextRole, string>>>; // every §3.2 text role resolved for this occurrence
   readonly availableWidth: number;      // card inner width for this state (460 minus insets and, when toggle, the toggle allocation)
   readonly allocatedLines: Readonly<Partial<Record<TextRole, number>>>; // frozen allocation per slot for this state
 }
@@ -707,7 +685,7 @@ interface HeaderMeasurement {
 
 One `layoutDocument` / `layoutFolded` call performs, in order:
 
-1. **Resolve.** Read the document through the shared resolver (§5.1); classify each occurrence (leaf / container-expanded / container-collapsed / legend / legend-key) from (effective type, fold set). Refuse unsupported profiles/types by name, as today.
+1. **Resolve.** Read the document through the shared resolver (§5.1); classify each occurrence (leaf / container-expanded / container-collapsed / legend / legend-key) from (effective type, typed presentation form, fold set). Refuse unsupported profiles/types by name, as today.
 2. **Determine widths bottom-up.** For every expanded container/legend, determine its inner width by §4.6.2 (children footprints and hints known before any header measurement). Fixed occurrences take their fixed width.
 3. **Measure headers.** For every leaf and every container/legend occurrence, build its `EntityMeasurementInput` (folded form and expanded form are different inputs; a collapsed container is measured as a card with `folded: true`) and measure kicker/title/subtitle through `LineMeasurer`, producing a `HeaderMeasurement` per occurrence. Header measurements are computed **before** any child placement.
 4. **Place children bottom-up.** Expanded containers place their visible children using the children's footprints (fixed children at their fixed boxes; nested expanded containers recursively), then compute their own box as header height + children extent + insets. Collapsed occurrences place no children and take the `460 × 200` box. The supplied header measurements **affect child placement observably**: a taller measured subtitle header pushes the first child row down by exactly the header-height delta (asserted in §5.6 tests by two measurers differing only in subtitle line count).
@@ -742,266 +720,185 @@ Overflows surface as layout warnings (`card-overflow` for a card slot, `zone-ove
 
 A test that records that the measurer was invoked with each role, without asserting that the returned `LineLayout` changed placement, does not close blocking 2. §5.6 therefore requires: (a) two measurers differing only in measured subtitle height produce different first-child `y` by exactly that delta; (b) the `lines` returned at layout are the `lines` recorded in `LayoutResult.measurements` for every slot (same array content asserted through the layout fixture); (c) a toggle-bearing header wraps its title at the reduced width in both the measurement input and the emitted measurement. Role-call observation MAY be asserted additionally; it is never sufficient alone. The rendered-pixel sharing assertion is an M2 gate (§10), not an M1 gate.
 
-### 4.7 Generic layout hints replacing consumer packing (recursive)
+### 4.7 Recursive authored layout hints
 
-Consumer packing code (authored row/column trees, column stretch, zone spacing) is replaced by **generic layout input** — no consumer tree, zone id or scene flag enters the engine:
-
-```ts
+~~~ts
 interface LayoutGroup {
-  readonly id: string;
-  readonly direction: "rows" | "columns";
-  readonly members: readonly EntityRef[];
-  readonly groups?: readonly LayoutGroup[];   // recursive: a group contains groups
-  readonly stretch?: boolean;                  // scoped stretch for this group's computed boxes
-  readonly gapAfter?: number;                  // gap after this group, card pixels
+  readonly id:string;
+  readonly direction:"rows"|"columns";
+  readonly items:readonly (EntityRef | LayoutGroup)[];
+  readonly stretch?:boolean;
+  readonly gapAfter?:number;
 }
-
 interface LayoutHints {
-  /** Authored ordering of siblings where the host has an order to express. */
-  readonly ordering?: Readonly<Record<EntityRef, readonly EntityRef[]>>; // parent -> ordered child ids
-  /** Recursive grouping of roots or children into row/column bands, as data. Absent means engine grouping. */
-  readonly grouping?: readonly LayoutGroup[];
-  /** Stretch expanded containers (and their rows) to the group width. Never stretches a fixed card.
-      A group-local `stretch` overrides this global value for that group. */
-  readonly stretch?: boolean;
-  /** Gap between sibling cards across the flow (horizontal neighbour gap). */
-  readonly cardGapX?: number;
-  /** Gap between sibling cards along the flow (vertical neighbour gap). */
-  readonly cardGapY?: number;
-  /** Gap between sibling containers/zones across the flow. */
-  readonly zoneGapX?: number;
-  /** Gap between sibling containers/zones along the flow. Distinct from zoneGapX. */
-  readonly zoneGapY?: number;
-  /** Gap between ranks (along-flow band gap). */
-  readonly rankGap?: number;
+  readonly ordering?:Readonly<Record<EntityRef,readonly EntityRef[]>>;
+  readonly grouping?:readonly LayoutGroup[];
+  readonly stretch?:boolean;
+  readonly cardGapX?:number; readonly cardGapY?:number;
+  readonly zoneGapX?:number; readonly zoneGapY?:number;
+  readonly rankGap?:number;
 }
-```
+~~~
 
-- `LayoutOptions` gains `hints?: LayoutHints` (§5.6 file inventory). Defaults reproduce the current engine metrics (`rankGap` from `LayoutMetrics.rankGap`, card gaps from `nodeGap`, zone gaps defaulting to the corresponding card gap when unset), so an absent hint changes nothing. The r2 single `cardGap`/`zoneGap` scalars are superseded by the axis-split fields above; a caller that sets only the legacy intent sets both axes explicitly.
-- **Semantics.** `ordering` constrains sibling order where listed (unlisted siblings sort by reference after listed ones, deterministically); `grouping` constrains which siblings share a row/column band **recursively** (a `LayoutGroup` may contain sub-groups with their own direction, stretch and gap, which is the exact carrier for the HRPN authored trees — `kit.root` and the `PPROZ` subtree of `scene-metadata.mjs:139–148` translate group-for-group, §8.4 records the per-scene translations); `stretch` widens **computed** boxes (expanded containers) and their row bands to the group width and never alters a fixed `460 × 200` card or a fixed axis, with group-local `stretch` taking precedence over the global value inside that group; `cardGapX`/`cardGapY` space card neighbours on each axis independently, `zoneGapX`/`zoneGapY` space container neighbours independently (setting one axis never moves the other), and `rankGap` spaces bands. Existing `rankGap`/`nodeGap` metrics remain the engine tuning; the hints are the per-call authored surface on top of them. Frozen card footprints are preserved under every hint combination (asserted in §5.6).
-- **Corpus witnesses.** The HRPN packing behaviours map as data, not code: column stretch → `stretch: true` (global or group-local as the source scopes it); zone spacing (`zoneGapY: 96` in the adapter) → `zoneGapY: 96` with the card gaps at their scene values; authored row/column trees → `grouping` (recursive) plus `ordering` entries per scene. Each acceptance instance records the hints it was laid out with in its corpus manifest (§8); a layout that needs a consumer-side tree or a scene flag to reproduce the instance fails.
+items is the single ordered sequence: references and subgroups can interleave. Separate members/groups arrays cannot preserve a source order such as [left column, RUNZ, right column], so they are not a second authority. A root/flow group is scoped to the siblings named by its leaf references in that context; duplicate leaf membership in one context or a reference outside that sibling context refuses. Nested subgroup items are recursive. id is authored layout identity, never a semantic parent override.
+
+Rows stack items on y; columns stack on x. Item order is preserved. ordering gives sibling order within the named semantic parent; unlisted siblings follow in UTF-16 reference order. Local stretch overrides global stretch and widens computed expanded boxes only, never fixed cards/axes. gapAfter applies to that item/group on its parent's flow axis. Absent group gap inherits the corresponding call's card/zone/rank metric; absence is recorded, never replaced with an invented measured number.
+
+Axis gaps are independent: cardGapX/cardGapY and zoneGapX/zoneGapY; rankGap controls bands. Defaults retain the engine's existing metrics; a source with no authored hints supplies no numeric overrides. The oracle supplies the concrete translated HRPN kit.root and PPROZ/RUNZ/OUT/PRODZ trees (§8.7), including interleaving and local stretch. Those are input data; no consumer tree parser or scene flag enters the engine. No source coordinates are copied as layout input.
+
+The corpus asserts unchanged fixed footprints under all hints, expanded-width stretch only, disjoint x/y gap effects and identical placement from the same ordered tree under reordered record insertion.
 
 ### 4.8 Filters, presentation and legend placement
 
-View filters and presentation state are otherwise unchanged. The legend entity, when present, is placed by its occurrence geometry like any container; its keys are placed by the footprint of §4.6.1 inside it, ordered by `order` (§3.6.2). A host that prefers legend chrome outside the diagram omits the legend entity from the document and renders its own key list from consumer data — that is a consumer choice, and the generic figure never invents a legend the document does not declare (the model carries the legend, §3.6, or there is none).
+Existing camera/grid/theme/filter meanings remain unchanged. A legend is placed through its occurrence geometry; its keys follow that **legend occurrence's explicit ordered key list** (§3.6). Any in-canvas or surrounding legend drawing reads the same semantic legend/category entities and typed presentation data; it cannot substitute a consumer tint table or sample-card refinement.
 
-## 5. Executor changes (`diagram-core`, plus the layout surface in `diagram-canvas`)
+The fixed-footprint/measurement rules of §4.6 apply when diagram-presentation@1 selects card/container/legend/legend-key **synthesis forms**. They do not replace native BPMN DI dimensions/waypoints, UML-specific native shapes or an unmodified @1 view with a universal card box. A view with no presentation.diagram uses its pinned existing renderer/layout behaviour. A BPMN card synthesis is a separate view over the same semantic document, preserving its native DI views.
 
-This section is the implementation contract for milestone M1 (model half, including the prerequisite layout/projection surface that M1 gates depend on — see §10 for the order). Each change names its exact files, its behaviour and its RED test: the test is written first and observed failing against the current executor for the stated reason, then passes after the change. No change weakens an existing refusal: every new acceptance is paired with the refusal that bounds it. Every mechanism below is family-neutral and is exercised under renamed identifiers (§5.4) so no family or presentation literal can hide in the executor.
 
-Executor ownership follows G2: this repository implements and publishes the generic executor; Engram owns the profile data it executes (§7). Profile-content changes (§5.5) land as data in both places from the same hand-off (§7.3).
+## 5. Family-neutral executor mechanisms
 
-### 5.1 One shared, cycle-safe, profile-aware type resolver
+All changes below are requirements for implementation. No build or test run is claimed in this authoring task. Existing @1 source files remain untouched. A mechanism may not branch on consumer ids, titles, scene names, category vocabulary or family-specific type literals.
 
-This is the single resolver every other change uses. There is no second chain walk in validation, endpoint checks, migration or layout: a behaviour difference between call sites is a defect in the resolver, fixed once.
+### 5.1 Shared resolver
 
-- **Files:** `packages/diagram-core/src/validate.ts` [M] (the resolver lives beside `effectiveEntitySchemas` and replaces its body; exported for tests through the existing validation surface), `packages/diagram-core/src/profile.ts` [M] (no shape change; the resolver reads existing declarations plus the `container` flag of §5.2). Canvas consumes it, it does not reimplement it: `packages/diagram-canvas/src/layout/graph.ts` [M] calls the core resolver (§5.6).
-- **Contract.** Given `(document, profile, typeId)` the resolver returns one of:
-  ```ts
-  type ResolvedType =
-    | { readonly kind: "profile"; readonly chain: readonly string[];        // [typeId, ...ancestors], profile ids only
-        readonly schemas: readonly AttributeSchema[]; readonly container: boolean; readonly abstract: boolean }
-    | { readonly kind: "refinement"; readonly chain: readonly string[];    // [definitionId, base..., ...profile ancestors]
-        readonly schemas: readonly AttributeSchema[]; readonly container: boolean; readonly abstract: boolean }
-    | { readonly kind: "refused"; readonly diagnostic: Diagnostic };
-  ```
-  Resolution walks document `TypeDefinition.baseType` links iteratively (explicit stack, no recursion) until a profile type is reached, collecting schemas base-first so a derived schema is `[...baseSchemas, ...definitionSchemas]` at every level. `container` is true iff any profile type on the chain declares `container: true`. `abstract` describes the **reached profile type only**: a document refinement of an abstract profile type is a concrete, instantiable type (`abstract: false` on the refinement result) while direct instantiation of the abstract profile type itself stays refused — the distinction the current executor already implements and which the resolver preserves verbatim. A refinement never concretises an abstract base by naming it directly as an entity type; it concretises it by refining it.
-- **Refusals (all existing codes, no new code).** A base id declared by neither the document nor the profile → `unknown-entity-type` (details `{ type, profile }`, path `typeDefinitions.<id>.baseType` at the link that fails). A cycle in the document definition graph (including a self-refinement) → `type-definition-conflict` with details `{ cycle: "id+id+..." }` (members joined in walk order) on the first definition of the cycle in id order; the walk detects the cycle by visited set and never loops. An attribute redeclared at any level of the chain (same `name` as any base schema, profile or intermediate definition) → `type-definition-conflict` with details `{ attribute }` on the redeclaring definition (this is the inherited-name conflict: a chain `A refines B refines node` where `A` redeclares an attribute `B` added also refuses). A definition whose `profile` field names a different profile than the one being resolved against (cross-profile misuse) → `unknown-entity-type` with details `{ type, profile, declaredProfile }`: a definition is resolved only against its own declared profile, never silently against the caller's profile.
-- **What replaces what.** `effectiveEntitySchemas(document, profile, typeId)` keeps its exported name and its return shape (`{ schemas } | { diagnostic }`) and is reimplemented as a projection of the resolver, so existing callers are untouched. Attribute validation, endpoint family checks (§5.2), legend/tone constraint execution (§5.4), migration remapping (§3.13) and canvas classification (§5.6) all read `chain`, `schemas` and `container` from the resolver.
-- **RED tests:** `packages/diagram-core/tests/type-resolver.test.ts` [N] —
-  1. a refinement of a refinement of `container` resolves to a chain ending in `container` with concatenated schemas and `container: true` — fails today with `unknown-entity-type` (one-level walk);
-  2. chained attributes: values for attributes declared at each level validate, and an undeclared attribute still refuses `attribute-not-in-schema`;
-  3. a cycle `A→B→A` and a self-cycle `A→A` each refuse `type-definition-conflict` without hanging (test completes under the suite timeout);
-  4. a missing base refuses `unknown-entity-type`; an inherited redeclaration (grandchild redeclares a child-added attribute) refuses `type-definition-conflict`;
-  5. a definition declaring profile `bpmn@1` resolved against `generic@1` refuses (cross-profile misuse), while the same definition resolved against its own profile succeeds;
-  6. a concrete document refinement of an abstract profile type resolves with `abstract: false` and instantiates, while the abstract profile type itself refuses instantiation — the compatibility witness for the pinned executor behaviour.
+One resolver accepts (document, owning profile context, type id). It resolves profile types or additive document refinements, follows the full base chain with a visited set, returns the effective schema, nearest declared family type, inherited container capability and ordered ancestry, or a typed refusal. Unknown base, cross-owner base without an admitted join, a cycle or inherited attribute redeclaration refuses. A concrete document refinement of an abstract profile base remains instantiable; the abstract flag prohibits instantiating the base itself and is not inherited as a blanket prohibition.
 
-### 5.2 Hierarchy parents by type family (closes gap 1)
+All @2 endpoint checks, classification, hierarchy parents, typed references, matrix lookup, migration and layout use this resolver. Legacy @1 validation remains bound to its native behaviour (§5.3.1). Cached results are scoped to the document revision and exact profile context; a cache never crosses pins.
 
-- **Files:** `packages/diagram-core/src/profile.ts` [M], `packages/diagram-core/src/validate.ts` [M].
-- **Profile shape:** `EntityTypeDeclaration` gains `readonly container?: boolean` (`true` means the type is in the container family and may parent through a hierarchy relation whose parent-family constraint (§5.4) names its family root; absent means leaf family). `validateProfile` refuses `container: true` on an abstract type (`type-definition-conflict`, detail `abstract-container`): an abstract container has no occurrence to fold or to draw.
-- **Validation behaviour:** everywhere a role declares `entityTypes`, the check becomes family satisfaction through the resolver: the target entity satisfies the constraint when its effective base chain (§5.1) contains any declared type id. This replaces the strict-equality comparison at the current `validate.ts` endpoint check, for hierarchy parents and uniformly for every role of every profile (the A′ subsumption rule, §2.1). The diagnostic stays `endpoint-target-not-allowed` with the same path and refs; its `details` gain `seenChain` (the target's chain, joined with `>`) alongside the existing `seenType` / `allowed`, so a refusal explains the family it tested. `details` values remain scalars (Appendix C discipline).
-- **What does not change:** role cardinality, target-kind checks (`entity` vs `port`), hierarchy cycle and multiple-parent checks, and the refusal for a leaf-family parent (a `node` refinement used as a hierarchy parent still refuses `endpoint-target-not-allowed`).
-- **RED tests:** `packages/diagram-core/tests/hierarchy-family.test.ts` [N]:
-  1. a `container` refinement (and a refinement of that refinement) used as a hierarchy parent validates with zero diagnostics — fails today with `endpoint-target-not-allowed` on the HRPN-shaped fixture;
-  2. a `node` refinement used as a hierarchy parent still refuses `endpoint-target-not-allowed`;
-  3. a non-hierarchy role naming `container` (a synthetic test profile) accepts a refined container target and refuses a refined node target, proving the rule is uniform, not a hierarchy special case;
-  4. the same three cases under renamed family types (synthetic ArchiMate/BPMN/UML-shaped profiles) pass identically, proving no family literal is consulted.
+### 5.2 Type-family role satisfaction and matrix pairs
 
-### 5.3 Scoped uniqueness, legacy adapter, immutable published bytes
+For a new-format role's entityTypes, the target satisfies the role iff its resolved chain contains an allowed family root. Refined containers can parent through any hierarchy declared with that family. A leaf refinement cannot acquire container capability by geometry. The existing endpoint-target-not-allowed code/path/message/details are retained; no seenChain is inserted in it.
 
-- **Files:** `packages/diagram-core/src/profile.ts` [M], `packages/diagram-core/src/validate.ts` [M], `packages/diagram-core/src/diagnostics.ts` [M] (no new code; see below).
-- **Profile shape (new declarations):** the `unique-attribute` constraint gains a **mandatory** scope in the new declaration format:
-  ```ts
-  | { readonly kind: "unique-attribute"; readonly entityType: string; readonly attribute: string;
-        readonly scope: "document" | "siblings" | { readonly withinType: string } }
-  ```
-  `document` = across every entity of the type in the document (the explicit form of the historical behaviour, for new declarations only); `siblings` = across entities sharing the same hierarchy parent (top-level entities form one sibling set), resolved through the profile's hierarchy constraint (§5.4), never through an assumed relation id; `{ withinType }` = across entities contained (transitively) under the same ancestor of the named type — the legend scope of §3.6 is `{ withinType: "legend" }` applied to `legend-key.category` and, separately, to `legend-key.order`. A `unique-attribute` declaration without a scope in a **new-format** profile refuses at `validateProfile` (`type-definition-conflict`, detail `unique-scope-missing`): an unscoped uniqueness is exactly the defect being removed, so the new shape makes it unrepresentable.
-- **Validation behaviour:** `validateConstraints` groups by the scope key before comparing canonical values. Identity is never a uniqueness constraint: entity, relation, port and occurrence ids stay record keys checked as `duplicate-id` / `record-key-mismatch`, as today. Display titles (`name`, `kicker`, legend `name`) are unique nowhere in any completed composition.
-- **Order rule (PR #193, kept per scope).** Within each scope group, constrained entities are walked sorted by id in UTF-16 code-unit order; the first id in that order is the reference and is never reported; each subsequent duplicate reports `refs: [reportedId, referenceId]` (the `610c0353` discipline). Reordering record insertion never changes which entity is reported. The whole diagnostics array for a document is compared as an array in the tests, under reordered input. **Total ordering of the diagnostics array (normative):** diagnostics are emitted sorted by `(path, code, refs[0] ?? "", refs[1] ?? "")` in UTF-16 order, so two runs over permuted inputs produce byte-identical arrays; Appendix C fixtures assert that array, not a set.
-- **Diagnostic contract.** `unique-attribute-violation` keeps its code, severity `error`, path `entities.<id>.attributes.<attribute>` and refs order. Under the **new** contract its `details` gain exactly one new scalar: `scope` with value `"document"`, `"siblings"` or `"within:<typeId>"` (the `{ withinType }` object is flattened to a scalar string, because `Diagnostic.details` holds scalars only). Under the **legacy** contract (§5.3.1) no `scope` detail is added and the historical array is preserved byte-for-byte. Full frozen contracts in Appendix C.
-- **RED tests:** `packages/diagram-core/tests/scoped-uniqueness.test.ts` [N]:
-  1. two sibling `legend-key` entities with the same `category` under different legends validate; the same pair under one legend refuses `unique-attribute-violation` with `details.scope: "within:legend"`;
-  2. two `container` entities both named « CI/CD » validate under the generic successor (zero diagnostics);
-  3. a new-format test profile declaring `unique-attribute` without `scope` refuses in `validateProfile` (`unique-scope-missing`);
-  4. `siblings` scope: two same-named cards under different parents validate, under one parent refuse (synthetic profile), proving the scope key is the parent, not the document;
-  5. duplicate `order` values inside one legend refuse; the same values across two legends validate;
-  6. the legacy fixture of §5.3.1 produces the historical diagnostics array byte-for-byte (no `scope` detail), under reordered input.
+For relationship-matrix, role satisfaction is only a preliminary check. The executor then tests one tuple (relationType,resolvedSourceCatalogueType,resolvedTargetCatalogueType). It never computes a Cartesian product from independent lists. Missing tuple emits relationship-matrix-violation. Unknown type/kind/cardinality diagnostics take precedence; a pair check does not duplicate a failure for an unresolved endpoint. The Relationship pseudo-concept is classified through the shared relation-target carrier of §3.9.1; its implementation/qualification remains gated there.
 
-#### 5.3.1 Legacy compatibility adapter: published bytes never change
+### 5.3 Scoped uniqueness, without changing legacy arrays
 
-Every published profile's stored bytes are immutable: editing `packages/diagram-core/src/profiles/generic.ts` would change its G0 content digest (§7.3) and invalidate existing pins. The historical declarations are therefore preserved exactly, and interpretation goes through a **versioned compatibility adapter** selected by an **independent discriminator**, never by the absence of a field:
+New declaration:
+{ kind:"unique-attribute", entityType, attribute,
+  scope:"document"|"siblings"|{withinType:string} }.
+scope is mandatory for new-format declarations. document groups all effective members; siblings groups by the declared hierarchy parent (roots form one sibling group); withinType groups by the nearest ancestor of the declared type in that hierarchy. More than one possible grouping ancestor without a unique hierarchy selection refuses profile qualification.
 
-- **Discriminator.** Each profile artefact carries an explicit declaration-format identifier in its governed metadata (Engram record field `declarationFormat`, values `legacy-constraints@1` for every profile published before the scoped format, `scoped-constraints@1` for every new declaration). The executor bundle records the same binding per registered profile id in a pinned adapter table (`LEGACY_ADAPTER_BINDINGS`, part of the executor version, covered by the executor's own tests). A profile whose id is listed in that table is read through `LEGACY_PROFILE_ADAPTER = "legacy-constraints@1"`; every other profile is read as new-format. The table — not the presence or absence of `scope` — is the discriminator, so a malformed new profile that omits `scope` is never silently adopted as legacy: it hits the `unique-scope-missing` refusal of §5.3. Adding a profile to the legacy table after the scoped format ships requires a new adapter version and a fixture update, never a silent edit.
-- **Adaptation.** When the validator loads a legacy-bound profile, it normalises each unscoped `unique-attribute` constraint in memory to `scope: "document"` — the semantics that profile always had — and records the adaptation in the validation trace (profile id + adapter version), never in stored bytes. New-format profiles never pass through the adapter for this rule.
-- **Diagnostic projection.** Legacy validation projects its diagnostics through the legacy shape: `unique-attribute-violation` carries `details: { attribute, type }` exactly as at the branch base, with no `scope` key. New-format validation carries the `scope` scalar. The two projections are distinct code paths selected by the same adapter binding; a test asserts the legacy array byte-for-byte and the new array with its scalar, over the same duplicate input re-expressed under each format.
-- **Digest discipline.** A digest is always computed over stored bytes (through the G0 projection, §7.3), never over the adapted in-memory form. The same discipline applies to any other legacy shape the scoped format supersedes: interpretation is versioned, stored profile bytes are immutable.
+Within each group, constrained entities are walked in UTF-16 id order. The first is the never-reported reference; later duplicates have refs [reportedId,referenceId]. This is the **610c0353** PR #193 rule retained per group. New scoped uniqueness adds only the scalar scope detail, with the literal arm in Appendix C. category uniqueness is semantic; legend drawing order is a view list.
 
-### 5.4 Legend, tone and hierarchy rules as generic constraint execution
+There is **no global sort of native diagnostic arrays**. Native validation stage order is retained. For new checks only, visit declarations in declared order and records/occurrences in UTF-16 key order within that check. Append their findings at their declared stage. G0 may order its separate enriched diagnostic copies by its own comparator; the native array/report and original-index correspondence remain unchanged.
 
-- **Files:** `packages/diagram-core/src/validate.ts` [M], `packages/diagram-core/src/diagnostics.ts` [M] (adapter update, §5.4.1), `packages/diagram-core/src/profile.ts` [M] (constraint arms below).
-- **Constraint declarations (all data, governed by Engram, covered by the G0 content digest of §7.3).** The `ProfileConstraint` union gains:
-  ```ts
-  | { readonly kind: "hierarchy"; readonly relationType: string; readonly hierarchyId: string;
-      readonly parentRole: string; readonly childRole: string }
-  | { readonly kind: "parent-family"; readonly hierarchyId: string; readonly familyRoots: readonly string[] }
-  | { readonly kind: "children-restricted"; readonly parentFamilyRoots: readonly string[];
-      readonly childTypes: readonly string[]; readonly hierarchyId: string }
-  | { readonly kind: "required-parent"; readonly childTypes: readonly string[];
-      readonly parentFamilyRoots: readonly string[]; readonly hierarchyId: string }
-  | { readonly kind: "category-membership"; readonly valueTypes: readonly string[]; readonly attribute: string;
-      readonly legendType: string; readonly categoryType: string; readonly categoryAttribute: string;
-      readonly tokenAttribute: string; readonly neutralValue: string; readonly bindingAttribute: string;
-      readonly hierarchyId: string }
-  ```
-  Existing arms (`acyclic-hierarchy`, `unique-attribute`, `max-entities-of-type`) are unchanged except for the scoped form of `unique-attribute` in §5.3. `PROFILE` compositions declare: generic successor — `hierarchy(contains, containment, parent, child)`, `parent-family(containment, ["container", "legend"])`, `children-restricted(["legend"], ["legend-key"], containment)`, `required-parent(["legend-key"], ["legend"], containment)`, `category-membership(valueTypes: ["node", "container", "legend"], attribute: "tone", legendType: "legend", categoryType: "legend-key", categoryAttribute: "category", tokenAttribute: "token", neutralValue: "neutral", bindingAttribute: "legendRef", hierarchyId: "containment")`. ArchiMate/BPMN/UML compositions declare their own hierarchies and matrices under their own identifiers; none declares the legend constraints unless it composes the fragment.
-- **Behaviour.** The executor implements the generic mechanisms, each driven entirely by its constraint declaration; no type id, attribute name or relation id is literal in the mechanism:
-  (a) `children-restricted`: a hierarchy child whose parent's effective type is in `parentFamilyRoots` must have an effective type in `childTypes`; violations report `legend-key-parent-invalid` arm A (Appendix C).
-  (b) `required-parent` (the inverse direction): an entity whose effective type is in `childTypes` MUST have a hierarchy parent (under `hierarchyId`) whose effective type is in `parentFamilyRoots`. A key under a plain container, a key under a leaf, and an orphan key with no hierarchy parent each refuse — arms B, B and C of `legend-key-parent-invalid` respectively (Appendix C gives the three literal messages). This is the mechanism that enforces “keys live only under legends” in both directions; `children-restricted` alone leaves other parents unconstrained and is never presented as enforcing it.
-  (c) `category-membership`: as defined in §3.6.3, executed with every selector taken from the declaration (`legendType` identifies the legend family for the binding walk, `hierarchyId` identifies the containment walk that collects keys under each legend, `tokenAttribute` names the compared value, `bindingAttribute` names the per-entity legend reference). Violations report `tone-category-unknown`, including the `bound-target-not-legend` arm when `legendRef` names a non-legend entity. When the composed stack declares no `category-membership` constraint, no membership check runs at all (shape only, §3.3). When the constraint exists but the document contains no legend-family entity, every non-neutral value reports `undeclared`.
-  (d) `parent-family` + `hierarchy`: executed as in §5.2/§3.4 through the resolver. Icon names are not checked semantically (§3.3). Hierarchy cycle/multiple-parent checks read the hierarchy ids from the `hierarchy` constraint.
-- **Frozen diagnostic contracts.** Both new codes are frozen in Appendix C with path template, literal message, refs (content and order), scalar `details` keys and values, multiplicity and severity (`error` for both). `details` values are scalars only: in particular the uniqueness `scope` detail is the flattened scalar of §5.3, never the `{ withinType }` object. Tests compare whole diagnostic arrays (`code`, `severity`, `path`, `message`, `refs`, `details`) under reordered input and assert byte-identical arrays in the total order of §5.3.
-- **RED tests:** `packages/diagram-core/tests/profile-constraints.test.ts` [N]:
-  1. Under the generic composition: a legend with keys explains the tones used by its document (zero diagnostics); an undeclared tone in a legend-bearing document refuses `tone-category-unknown` (`legendBinding: "undeclared"`); a key parented by a plain `container` refuses `legend-key-parent-invalid` arm B; an orphan key refuses arm C; a non-key child under a legend refuses arm A; the same tone in a document whose stack omits the membership constraint validates (shape only). Each fails today (`unknown-entity-type` for the legend types, or no mechanism).
-  2. **Synthetic profile, different identifiers:** a profile declaring types `palette` (container family) / `swatch`, hierarchy relation `nesting`, value attribute `hue`, category attribute `code`, binding attribute `paletteRef`, with the same constraints under those names, enforces parenting (both directions), membership (including the ambiguous-binding refusal of test 4) and scoping identically. A build whose executor source contains the literal `"legend"`, `"tone"` or `"contains"` outside profile data, fixtures and messages fails this gate (source scan asserted in the test).
-  3. **Omitted constraints:** the synthetic profile minus `children-restricted`, `required-parent` and `category-membership` validates a `swatch` under a plain container, an orphan `swatch` and an undeclared `hue` — proving no rule leaks in by name matching.
-  4. **Ambiguous binding:** two legends declaring the same category with different tokens; an unbound entity using that tone refuses `tone-category-unknown` (`legendBinding: "ambiguous"`); the same entity with `legendRef` set to either legend validates; two legends agreeing on the token validate unbound; a `legendRef` naming a non-legend refuses `bound-target-not-legend`. Whole-array equality asserted under all insertion-order permutations of legends, keys and entities.
+#### 5.3.1 Explicit compatibility carrier, outside closed G0 records
 
-#### 5.4.1 Engram diagnostic-adapter handoff (versioned)
+The contract asset executor-profile-bindings@1 is a package-contained, hash-bound table:
+{ schemaVersion:"1", rows:[{ profileId, profilePin:Pin,
+  declarationAdapter:"legacy-constraints@1"|"scoped-constraints@1" }] }.
+Rows are unique by ProfileId; pin verifies bytes, never chooses between duplicate ProfileIds. Legacy rows are exactly generic@1, archimate@1, bpmn@1, uml@1. Completed rows generic@2, archimate@2, uml@2 use scoped-constraints@1; generated rows are added by their A′ lot under distinct ids. A missing row or digest mismatch refuses, never guesses from absence of scope.
 
-The three new codes (`legend-key-parent-invalid`, `tone-category-unknown`, `text-pattern-mismatch`) plus the numeric codes of §5.8 are not in the G0-frozen `DiagnosticCode` union (G0 source shape S-DSDIAG at `25c0f3d3`). They enter the system only through a **versioned Engram diagnostic adapter**:
+The table is an **asset** { role,path,mediaType,sha256 } in the G0 catalog envelope, bound through **bindings** { key,contract,required }. It is not a declarationFormat field of OntologyRecord or OntologyPayload; neither closed shape gains a field. Adapter identity/version is additionally the existing ontology.compatibility.adapter pinned string, not metadata placed beside compatibility.
 
-- Engram publishes a diagnostic-adapter revision that maps each new native `diagram-core` code to its G0 diagnostic variant, preserving the native code verbatim in `nativeCode`, every native field (`severity`, `path`, `message`, `refs`, scalar `details`) and the total order of §5.3. The adapter revision is pinned by digest in the catalog entry (§7.4); an executor build and an adapter revision are qualified together (study §7 M4).
-- Receipt round-trip fixtures (normative): for each new code, a native diagnostic serialised by `diagram-core`, carried through the adapter, and read back yields the identical native code, fields and order. A code with no adapter mapping refuses catalog admission (`missing-receipt` discipline, §7.4); it never acquires a second evaluator and never renames the native code.
-- BPMN diagnostics are unaffected: bpmn-canvas Report/2 codes keep their own adapter path and are never routed through the diagram adapter.
+Legacy rows run the pinned native @1 declaration/endpoint checks and native stage ordering. Internal normalization of an unscoped unique-attribute may use document scope, but serialization/digests use the untouched stored declarations and diagnostics project back to their exact legacy shape with no scope or seenChain. PR #193 ordering remains 610c0353, not an older pre-fix order.
 
-### 5.5 Completed profile declarations (data)
+Required distinction witness: a bpmn@1 process refined as custom-process still yields the native endpoint-target-not-allowed under the retained adapter; a new-format synthetic profile naming the process family accepts its refinement. Both outcomes are explicit. Loading @2 never silently changes a retained @1 verdict.
 
-- **Files:** `packages/diagram-core/src/profiles/generic.ts` [M] (add the `generic@2` declaration beside `genericProfile`, which stays untouched byte-for-byte), `packages/diagram-core/src/profiles/completed.ts` [N] (the completed declarations and the presentation-fragment composition data live here so no published file is ever edited; the module is the single transcription point of §7.3), `packages/diagram-core/src/profiles/skeletons.ts` [M] (completed `archimate@1` / `uml@1` declarations added beside the skeletons, which stay untouched; the BPMN generated profiles are **not** transcribed here — they are generated artefacts pinned by digest, §3.10), `packages/diagram-core/src/profiles/index.ts` [M] (register every completed profile; the registry holds the previous profiles plus the completed ones), `packages/diagram-core/src/profile.ts` [M] (the `footprint`, constraint-shape and schema additions).
-- **Generic successor declaration:** profile id `generic@2`, `completeness: "complete"`. Entity types `node`, `container` with the fragment slots of §3.2 (composed schema), `container: true` on `container`; fragment types `legend`, `legend-key` available through composition (§3.6, `order` with its numeric constraints). Port type `port` unchanged. Relation types `link` (label ≤ 200, `strokeStyle` enum), hierarchy relation (tree), `association` (label ≤ 120, `strokeStyle` enum) unchanged otherwise. Constraints as in §5.4. Limits as in §3.8. Notes state that fold is view state and that `generic@1` documents migrate by §3.13.
-- **ArchiMate / UML declarations:** the completed matrices of §3.9 / §3.11 as data in the same module discipline (skeleton bytes untouched, completed versions added beside them, each with its own governed version and digest). No card slot, legend type or footprint appears in either declaration.
-- **Profile shape additions:** `EntityTypeDeclaration` gains `readonly container?: boolean` (§5.2). The presentation data gains `FootprintDecl` (§4.6.1). `validateProfile` refuses a non-positive or non-finite footprint dimension (`limit-exceeded` on the profile path, detail `footprint`) and an unknown `fixedAxes` value (`type-definition-conflict`).
-- **RED tests:** `packages/diagram-core/tests/completed-profile.test.ts` [N]: the registry lists every completed id; `validateProfile` of each completed declaration is empty; each fragment slot validates at its bound and refuses one character past it (`text-too-long`); an undeclared slot (for example `subtitle` on a generic `node` without composition) still refuses `attribute-not-in-schema`; `generic@1`'s profile digest and validation results are unchanged (§5.3.1); the ArchiMate matrix fixtures and UML multiplicity fixtures validate/refuse as §3.9/§3.11 declare. Fails today (`unknown-profile` / missing export).
+### 5.4 Generic constraints and typed view checks
 
-### 5.6 View validation for folded projections; layout surface; measurement execution
+Semantic ProfileConstraint additions are closed:
 
-Core view change:
+~~~ts
+type AddedConstraint =
+  | { kind:"hierarchy"; relationType:string; hierarchyId:string; parentRole:string; childRole:string }
+  | { kind:"parent-family"; hierarchyId:string; familyRoots:readonly string[] }
+  | { kind:"children-restricted"; parentFamilyRoots:readonly string[]; childTypes:readonly string[]; hierarchyId:string }
+  | { kind:"required-parent"; childTypes:readonly string[]; parentFamilyRoots:readonly string[]; hierarchyId:string }
+  | { kind:"relationship-matrix"; matrixId:string; sourceRole:string; targetRole:string;
+      tuples:readonly {relationType:string;sourceType:string;targetType:string}[] }
+  | { kind:"bound-pair"; valueType:string; lowerField:string; upperField:string; unboundedUpper:number }
+  | { kind:"reference-application"; attribute:string; declarationType:string; allowedTypesField:string }
+  | { kind:"incident-type-uniformity"; matrixId:string; entityType:string; relationTypes:readonly string[] }
+  | { kind:"at-most-value"; relationType:string; attributes:readonly string[]; value:string; max:number }
+  | { kind:"collection-unique"; entityType:string; attribute:string };
+~~~
 
-- **Files:** `packages/diagram-core/src/view.ts` [M] (`RelationOccurrenceEndpoint.semanticTarget?` + `sourceOccurrence?`; `RelationOccurrence.strokeStyle?`; `VisualGroup.occurrence?`; `ViewDocument.summaryLabels?`; `VIEW_DOCUMENT_FIELDS` gains exactly `"summaryLabels"` — a test asserts the view field set still refuses a stray `hover`-style key), `packages/diagram-core/src/validate.ts` [M] (the checks of §4.4.4, the definition/activation checks of §4.5, fold-group binding validation of §4.1.1, and dependency-aware deletion support of §5.7, reusing `occurrence-endpoint-mismatch` and `dangling-reference`; no new `DiagnosticCode` for folds).
-- **RED tests:** `packages/diagram-core/tests/folded-view.test.ts` [N]:
-  1. the Appendix B document and folded view validate with zero diagnostics — fails today as `occurrence-endpoint-mismatch`;
-  2. the same view with `semanticTarget` removed refuses `occurrence-endpoint-mismatch` (the projection field is load-bearing, not decoration);
-  3. a `semanticTarget` naming a target of a different role, a representative that is not a collapsed ancestor, an inner (non-outermost) representative in a nested fold, and a representative in the leaf family each refuse with the §4.4.4 details (`projection-not-folded`, `projection-not-outermost`, `representative-not-container`, `representative-hidden`);
-  4. **nested collapse:** outer → inner → card with both containers collapsed (the HRPN `TOPIC`/`MSGZ`/`PPROZ` shape) projects the card's edges to the outer representative and validates; the inner representative is never drawn;
-  5. **repeated fold/unfold restores:** `projectView` cycles (collapse set A → ∅ → A → ∅) reproduce identical canonical bytes at each repetition, and the ∅ view's relation occurrences are byte-identical to the source view's, including `strokeStyle` presence and `summaryLabels` definitions (projection recomputed from the retained source, §4.4.2);
-  6. **multiple occurrences:** one container entity drawn twice, folded in one drawing only; edges to children of each drawing project (resp. do not project) independently, and unfolding restores each original endpoint occurrence by id;
-  7. **ports:** a link to a port inside a collapsed container projects to the representative (port counterpart where one exists, entity occurrence otherwise) with port provenance, validates, and restores;
-  8. **filters combined:** an endpoint hidden by a filter and by a fold at once produces the §4.4.6 exclusion; clearing the filter alone and clearing the fold alone each restore the correct drawing;
-  9. **revision:** every fold/unfold in tests 4–8 runs at document revision 0, and again on the HRPN-shaped fixture at revision 1, with `view.revision === document.revision` at every step and unchanged semantic bytes;
-  10. an internal relation occurrence in a folded view validates and is excluded by the scene as `endpoint-hidden` (asserted in `diagram-canvas` tests below);
-  11. **n-ary association:** a three-member association spanning two collapsed branches and one external entity projects each endpoint independently, validates, aggregates only within its single effective style, and restores; a visible self-link with no fold involved stays untouched;
-  12. **summaries:** a definition valid but inactive in the source view (§4.5.1, the kit `h2a:surfaces` shape) validates in the source, activates in the folded overview, refuses on a duplicate aggregate key (`summary-duplicate-key`) and on a constituent mismatch, and survives a fold/unfold cycle unchanged.
+Native acyclic-hierarchy/max-entities-of-type remain available. New scope replaces only the new-format unique-attribute arm. bound-pair is the generic comparison required by the UML multiplicity carrier; reference-application checks a declared application target set with no UML name hard-coded.
 
-Layout surface (`packages/diagram-canvas`), in the same milestone (M1 includes this surface; §10 orders the gates accordingly):
+incident-type-uniformity gathers relations in the declared relationTypes whose entity endpoint resolves to entityType (including refinements); zero/one distinct incident relation type passes, more than one refuses once per entity, in UTF-16 entity-id order. Distinct relation types and incident relation refs are sorted by UTF-16 solely inside this new check, never by sorting a diagnostic array. groupingContainment is absent from that relationTypes list. The literal junction arm in C.2 uses relationship-matrix-violation.
 
-- **Files:** `packages/diagram-canvas/src/layout/types.ts` [M] (`LineMeasurer`, `MeasureRequest`, `LineLayout`, `EntityMeasurementInput`, `SlotMeasurement`, `HeaderMeasurement`, `MeasurementOverflow`, recursive `LayoutHints` of §4; `LayoutOptions` gains `collapsed: readonly OccurrenceRef[]`, `hints?: LayoutHints`, and reads footprints from the composed presentation data; `TextMeasurer`/`TextSize` kept as a deprecated adapter that wraps a `LineMeasurer` for one release, never the other way), `packages/diagram-canvas/src/layout/graph.ts` [M] (read every fragment slot into the working graph through the shared core resolver — chained refinements classify correctly; keep the refusal for unsupported profiles/types by name; accept every completed family profile, not only the generic successor), `packages/diagram-canvas/src/layout/engine.ts` [M] (accept every completed profile alongside `generic@1`; stamp fold groups from the collapse input instead of emitting `groups: {}`; produce projected relation occurrences per §4.4.3 and placed folded geometry per §4.6.3 when a collapse input is present; run the §4.6.3 call sequence), `packages/diagram-canvas/src/layout/place.ts` [M] and `packages/diagram-canvas/src/layout/dock.ts` [M] (fixed footprints never enlarged; docking overflow per §4.6.5; recursive hints of §4.7 honoured), `packages/diagram-canvas/src/visibility.ts` [M] and `packages/diagram-canvas/src/scene.ts` [M] (projected edges are items, internal edges are `endpoint-hidden` exclusions; conservation asserted as today).
-- **Layout warnings:** `LayoutWarningCode` gains `docking-overflow`, `card-overflow`, `zone-overflow`. No other warning code is added.
-- **RED tests:** `packages/diagram-canvas/tests/layout/fixed-footprint.test.ts` [N] (a card with maximal docks keeps `460 × 200` and reports `docking-overflow`; a collapse-all layout emits `460 × 200` collapsed boxes, never the source expanded box; fails today by enlarged/retained geometry), `packages/diagram-canvas/tests/layout/folded-projection.test.ts` [N] (laying out an acceptance document with a collapse input returns a view that passes `validateView` and whose scene conserves occurrences; fails today because no collapse input exists), `packages/diagram-canvas/tests/layout/measurement.test.ts` [N] (the §4.6.6 assertions: header-height delta moves the first child row by exactly that delta under two measurers; emitted `measurements` carry every slot's `lines`; toggle headers wrap at the reduced width; legend-key height stays 64 at the legend-following width; an expanded header measured at its determined width), `packages/diagram-canvas/tests/layout/hints.test.ts` [N] (`stretch` widens expanded containers but never a fixed card; `zoneGapY` and `zoneGapX` move disjoint sibling sets; recursive `grouping` reproduces the recorded HRPN trees as data, group-local stretch included).
+at-most-value counts present enum fields equal to value on each declared relationType; count>max refuses once at that relation's attributes, with multiplicity-invalid and the C.2 exclusive-end arm. Absent aggregation fields contribute zero; invalid field kinds/enums refuse before this check. collection-unique compares canonical typed collection items left to right and emits collection-bound-exceeded at each later duplicate item, details {constraint:"collection-unique",firstIndex,duplicateIndex}; no item is removed. These mechanisms have no family-specific literals in the executor.
 
-### 5.7 Commands, migration registration and remaining core files
+generic@2 constraint values: hierarchy(contains,containment,parent,child); parent-family(containment,[container,legend]); children-restricted([legend],[legend-key],containment); required-parent([legend-key],[legend],containment); acyclic-hierarchy(containment); unique-attribute(legend-key,category,{withinType:legend}). ArchiMate declares groupingContainment and its matrix; UML declares packageContainment and multiplicity/stereotype constraints.
 
-- **Commands:** no new command kind. Slot edits travel through `update-entity-attributes`; legend keys are ordinary entities (`create-entity`, `delete-entity` with its explicit policy); folds mint no command (§4.1). `packages/diagram-core/src/commands.ts` [M] is extended only for **dependency-aware deletion and inverse restoration over the new view references**: deleting an entity occurrence cleans its fold group (`VisualGroup.occurrence`), its projected endpoints (`sourceOccurrence` / `semanticTarget` are rewritten only through re-projection from the retained source, never patched), and any `summaryLabels` definition that names the occurrence or a relation being deleted (the definition is removed with the deletion and restored by its inverse, byte-for-byte). Deleting a semantic relation removes it from every definition's `relationIds`; a definition that would become empty is removed with the deletion and restored by the inverse. Final-state validation after any such cascade SHALL pass; a delete that leaves a dangling fold group, provenance or constituent is a defect. RED tests: delete/undo witnesses on folded and summarised views (fold group, projected endpoint, summary definition each removed and restored exactly), plus the established round-trip: `packages/diagram-core/tests/commands-inverse.test.ts` [M] gains the `generic@2` case (a completed-profile document round-trips `command → inverse → initial content` byte-for-byte on canonical content with revisions normalised) and an assertion that the command-kind list gains no fold or legend kind.
-- **Migration:** `packages/diagram-core/src/migrate.ts` [M] registers the §3.13 profile migrations in a profile-migration registry parallel to the schema migrations (same report shape: `from`, `to`, operations, `unmigrated`, original retained, plus `adapter` naming `legacy-constraints@1` where the legacy interpretation was used). `packages/diagram-core/src/document.ts` [M] only in its documentation of the current schema version (no field change by this lot; the A′ `2.0` bump is governed by §6 gates). RED tests: `packages/diagram-core/tests/migrate-completed.test.ts` [N] —
-  1. a plain `generic@1` graph with a relation and a port migrates: every `.profile` field (document, entities, relations, ports, type definitions) rewritten, zero records still naming the source profile, output validates with zero diagnostics, ids and content retained, every transformation present in `operations`;
-  2. `collapsed` absent / `false` / `true` produce the three distinct report lines of §3.13.1 step 4;
-  3. a compatible refinement (the `hrpn-card` shape) is promoted where it overlaps and **retained residually** where it carries a consumer attribute (the `kicker` + `ticket` case: `ticket` schema and values survive, dependents re-based, output validates); a kind-conflicting overlap is retained renamed with its recorded operation; deleting a definition alone never happens;
-  4. a blocking reserved-name collision refuses atomically (original returned unchanged, no partial rewrite); mixed majors refuse; reversed record insertion yields identical operations and identical output bytes; the original is recoverable from the report byte-for-byte;
-  5. an unknown profile major refuses in write and is preserved; unrelated profiles in the same document are untouched;
-  6. **resolve witness:** the resolved `generic@2` declaration contains no container-name uniqueness, no container count limit, and `link` label bound 200 (§3.13.4).
-- **Diagnostics summary:** the `DiagnosticCode` union gains exactly the codes frozen in Appendix C through the adapter of §5.4.1 (`legend-key-parent-invalid`, `tone-category-unknown`, `text-pattern-mismatch`, `quantity-not-integer`, `quantity-below-min`). Folded-projection refusals reuse existing codes with new `details` values (§4.4.4), so consumers that switch on codes see no new refusal class for folds.
-- **Barrel and docs:** `packages/diagram-core/src/index.ts` [M] re-exports nothing new by name beyond the completed profiles and the resolver/measurement types (the new types ride the existing module exports); `packages/diagram-core/README.md` [M] records the completed model, the family/scope/constraint rules and the folded-view contract in English.
+Presentation category-membership, token agreement, key order, icon grammar and form-selector checks execute only in validateView/application against diagram-presentation@1. There is no semantic tokenAttribute or semantic category→token constraint. The view join references semantic categories and compares the typed view bindings.
 
-### 5.8 Declarative text and numeric constraints
+Synthetic witnesses rename legend/key/category/hierarchy to palette/swatch/code/nesting and give the same constraints; outcomes must be identical after nominal renaming. Removing an optional constraint removes exactly its check. This proves no field/type name alone triggers a rule.
 
-- **Files:** `packages/diagram-core/src/attributes.ts` [M] (the `text` schema arm gains `minLength?`, `pattern?`, `patternName?`; the `quantity` schema arm gains `integer?: boolean`, `min?: number`, `max?: number`; `validateScalar` checks length bounds then pattern for text, in that order, so a too-long value reports `text-too-long` and a malformed in-bounds value reports `text-pattern-mismatch`; for quantity it checks finiteness, then integrality (`quantity-not-integer`), then bounds (`quantity-below-min` / `quantity-above-max`), then unit — unit reporting keeps its named-case priority only where the existing order already guarantees it), `packages/diagram-core/src/diagnostics.ts` [M] (the new codes, through §5.4.1), `packages/diagram-core/src/profile.ts` [M] (`validateProfile` refuses a `pattern` that does not compile as an anchored ASCII RegExp, a `pattern` without a `patternName`, a `minLength` greater than a declared `maxLength`, or numeric bounds with `min > max`, as `type-definition-conflict` detail `text-pattern-invalid` / `numeric-constraint-invalid` — a profile with an unexecutable grammar is refused at qualification, never at document time).
-- **Behaviour:** patterns are matched against the whole value (the stored pattern source is used as given; profiles declare anchored sources, §3.3). Matching uses the host `RegExp` with no flags; no Unicode flag is added, so the ASCII grammar means the same bytes everywhere. Pattern validation runs for every text value of a schema that declares one, including collection items whose item schema declares one. Numeric constraints are part of the profile's declarative content and are covered by its `contentDigest` (§7.3): changing `integer` or `min` changes the digest.
-- **RED tests:** `packages/diagram-core/tests/text-keys.test.ts` [N]: empty value refuses `text-pattern-mismatch` (`pattern: "key"`); uppercase, embedded whitespace and `#fff` refuse; a well-formed unknown icon name validates; a dotted token validates under `token-name` and refuses under `key`, while a single-segment hyphenated key validates under **both** (the subset relation is asserted, never denied); a minimum-length-only schema refuses with `pattern: "min-length"`; a profile declaring a non-compiling pattern refuses in `validateProfile`. `packages/diagram-core/tests/numeric-constraints.test.ts` [N]: `order: -1` refuses `quantity-below-min`, `order: 0.5` refuses `quantity-not-integer`, `order: 0` and `order: 3` validate, and the same constraints under a renamed synthetic attribute refuse identically.
+#### 5.4.1 Diagnostic adapter and admission
 
-## 6. BPMN no-regression: behaviour, canonicalization, fixture identity
+Engram's diagnostic contract revision is a separate contract artifact/schema asset. It extends the accepted native diagram-code vocabulary with the inventory in Appendix C while preserving origin diagram-core, nativeCode verbatim, severity/path/message/refs/details, optional-field presence and native order through an indexed inverse mapping. Record it in envelope assets/bindings and the existing compatibility.adapter reference.
 
-Study N13 and R-06 bind this lot: BPMN rendering and editing never lose extensions, and bpmn-canvas, Focus, d2d and diagram-core never diverge. This section is the non-regression contract. It changes no BPMN behaviour; it states what must stay identical and where coordination happens.
+The frozen G0 S-DSDIAG union does not magically accept new codes. The matching diagnostic-schema/adapter qualification is a required S2 dependency, unverified U-DIAG until supplied. The old G0 record/catalog/preimages remain unchanged. Each new arm requires a native→G0 separate copy→native exact-byte witness; absence of the adapter/receipt refuses admission. Report/2 diagnostics keep their own native adapter and are never translated to diagram-core codes.
 
-### 6.1 What does not change
+### 5.5 Declaration, registry and publication units
 
-| Surface | Frozen property | Pinned evidence |
-| --- | --- | --- |
-| bpmn-canvas behaviour | Every existing bpmn-canvas test verdict, F1 codec verdict and layout verdict at the pinned bpmn-canvas revision stays as it is. This lot adds no BPMN rendering, editing or lint behaviour. | bpmn-canvas checkout `/home/antoinefa/src/bpmn-canvas` (HEAD `05f7378` at inspection, message “Record the conductor deferral…”); its suite is the oracle, not this spec. |
-| `profile-c14n/2` output | `canonicalize` / `rawDigest` / `canonicalDigest` / `stableId` in `/home/antoinefa/src/bpmn-canvas/src/profile/canonical.ts` (sha256 `287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba`) produce byte-identical output for every existing input. No re-canonicalization, no trailing-LF handling change, no number-token change. | Canonical vectors `tests/fixtures/parity-corpus/canonical-vectors.json` (sha256 `f238aef110a43381416fd0025326f883f760dc75510a9f0cc5817415eb02d1c6`) keep their digests. |
-| Fixture identity | Every existing bpmn-canvas fixture keeps its path and SHA-256. The corpus `tests/fixtures/corpus/*.bpmn` (10 files, §8.3) and the parity corpus `tests/fixtures/parity-corpus/cases/W*.json` (W01–W12 with variants, index sha256 `40284149ca3538b35250e5896694e7d15c80d3c3233241e0d7ac3d91266df03a`) are read, never rewritten, by any M1 lot. | Hashes computed from the files at inspection (§8.5 manifest); a mismatch aborts the lot as a fixture error. |
-| Unique-attribute parity (Q-G0-2) | The `diagram-core` order rule fixed at DS commit `610c0353` (UTF-16 id order, first id is the reference, refs `[reported, reference]`) holds inside every scope (§5.3) and is not reimplemented in bpmn-canvas, d2d or the catalog. | PR #193; §5.3 tests under reordered input. |
-| `bpmn@1` readability | Documents naming `bpmn@1` (skeleton) keep validating/refusing exactly as at `8d1727a1` until the separate A′ lot ships the generated family under its G0/G3 gates. This lot removes nothing from `skeletons.ts`. | Skeleton sha256 `0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e` unchanged by M1. |
-| d2d contracts | d2d keeps its private business profile, its `profile-c14n/2` bytes, its compatibility matrix (mechanismVersion × profile version × document version, one error code per case) and its JS/Python byte parity. The guardian holds pins and receipts only, never private content (d2d position §1–§3). | d2d position `evidence-astra/threads/ontology/d2d.md`: parity corpus `profile-corpus-v1.0.0` (198 files, manifest-pinned), `unicode-case/1` (UCD 15.0.0). |
+New files hold generic@2, archimate@2, uml@2 literals/data references; skeletons.ts and generic.ts retain their exact pinned bytes. Registry registration adds new ids and never duplicates @1. EntityTypeDeclaration gains container?; **no footprint/icon/token field**. The shared contract's footprint/slot/schema assets are separate.
 
-### 6.2 Regression gates (all must hold before any BPMN-adjacent claim)
+The semantic profile literal and its Engram source must project to identical P-CONTENT-DIAGRAM bytes. A family profile without its required source matrix, K6 carrier or admission evidence stays draft. §7 gives the exact G0 shape/receipt gate. “Complete” means declaration scope, never permission to skip a corpus or receipt.
 
-1. **bpmn-canvas suite unchanged.** The bpmn-canvas test suite at its pinned revision passes with the same verdicts before and after M1. M1 runs it read-only; it edits no file under `/home/antoinefa/src/bpmn-canvas`.
-2. **c14n vectors unchanged.** Every vector in `canonical-vectors.json` recomputes to its recorded digest; `profile-corpus` and `unicode-case` pins recompute identically.
-3. **Fixture hashes unchanged.** Every hash in §8.5 for bpmn-canvas and d2d-shared artefacts recomputes from the files. Any drift is a fixture error that stops the lot, never a test update.
-4. **Skeleton verdicts unchanged.** The `bpmn@1` skeleton fixtures (`fixtures/valid/bpmn-skeleton-document.json` and its rejected cases) produce the same diagnostics arrays (total order §5.3) before and after M1. The legacy adapter (§5.3.1) is the only permitted interpretation change, and it preserves those arrays byte-for-byte.
-5. **No second evaluator.** No M1 code validates BPMN semantics outside `diagram-core` (for DIA entries) and the bpmn-canvas/d2d libraries (for MECH/D2D entries). The Engram guardian executes no library (§7.4).
+### 5.6 View/layout execution surface
 
-### 6.3 Coordination points
+view.ts adds PresentationState.diagram?, optional summaryLabels, endpoint semanticTarget/sourceOccurrence, RelationOccurrence.strokeStyle?, VisualGroup.occurrence?. VIEW_DOCUMENT_FIELDS adds **only summaryLabels** because presentation already exists. The extended nested presentation field set adds only diagram. No hover, selection marquee or in-flight state is persisted.
 
-| Point | Owners | Contract |
-| --- | --- | --- |
-| F1 shape (moddle JSON) | bpmn-canvas (producer) ↔ DS (consumer via A′) | Alignment items F1-A1…A7 (A′ §4.4) stay `unknown` until bpmn-canvas publishes F1. M1 consumes no unpublished F1 shape. Owner decision 2026-10-15 (F1 preserves unknown extensions, `xmlns`, `xsi`) is the target; its lot is tests-first on the bpmn-canvas side. |
-| Generated BPMN profiles | Engram (governance) + DS (executor) + bpmn-canvas (oracle) | Descriptor snapshot pinned by SHA-256 (A′ §8); bijection `moddle JSON ↔ DiagramState` proven in the separate private package with bpmn-moddle as a pinned test dependency; gate G3 (no `bpmn@2` document persisted outside fixtures before the multi-view bijection passes). |
-| `profile-c14n/2` | bpmn-canvas + d2d (producers), Engram (pin holder) | Bytes are identity. Any c14n change is a new canonicalization version with its own vectors, never an in-place edit. |
-| Private d2d profile | d2d (owner) ↔ Engram (catalog) | Tenant-scoped catalog entries (digest, owner, stack, corpus ref) with no content exposure; adoption at or after d2d lot 6; no runtime MCP dependency in d2d import/lint/render/export paths. |
-| Watermark / licence | bpmn-canvas | `SENTROPIC_BPMN_WATERMARK_LICENSE` server-side protection (study N13) is untouched by this lot. |
+The view application and validateView execute §3.2 and §4. Folding is fold→measure→place→route from a retained source. Native revision retains document meaning. Layout input reads semantic names/content projections and typed presentation slots; it never searches arbitrary entity attributes for card chrome. LayoutOptions has collapsed occurrence ids, hints and injected LineMeasurer. Output carries measurements for all slots; the renderer consumes the same wrapped lines in M2. Fixed boxes never expand for docking; all edges are drawn or explicitly excluded under scene conservation.
 
-## 7. Engram side: what Engram holds, what the DS keeps (G2)
+Mandatory implementation witnesses: empty-collapse exact restoration; repeated A→∅→A→∅ equality; nested outermost representative; independently folded duplicate occurrences; ports/counterparts; n-ary endpoints; visible self-links; filter+fold cause retention; revision 0 and 1; invalid provenance; active-summary collisions; heterogeneous styles; deletion/undo; no semantic byte changes. Measurement witnesses assert actual first-child-y delta under a changed measured header, every emitted line array, toggle-reduced width, legend inner-width/64-height and recursive hint/axis independence. Merely observing a role callback is insufficient.
 
-Governance is G2, verbatim: « Engram governs profiles, schemas, fixtures and migrations. The Design System retains and publishes the generic @sentropic/diagram-core executor, layout and rendering. Consumers pin profiles; no second diagram metamodel. » The frozen guardian contracts (`SPEC-G0-guardian-contracts.md`, pinned in the oracle manifest of §8.5) apply: an ontology is a five-part record (versioned profile, conformance corpus, identity and digests, lineage record, catalog entry), no part alone is an ontology, and the guardian invents no third profile shape — the diagram shape stays the `diagram-core` `Profile`, the Engram shape stays the Engram `OntologyProfile`, referenced through explicit versioned adapters. This section states the completed-families instance of that contract. Engram artefacts are produced in the Engram repository by its own lots; this repository consumes them by pin.
+### 5.7 Commands, migrations and inverses
 
-### 7.1 What Engram must hold for each completed family
+No new semantic command kind. Domain edits use existing attribute commands; presentation edits replace a view and retain its revision. Semantic legends/keys use ordinary create/delete entity commands with explicit deletion policy. Folds are view changes, never semantic commands.
 
-All of the following, per family (`generic`, `archimate`, `bpmn` generated stack, `uml`), versioned and immutable once published (bytes under an id and version never change; any change is a new version):
+Dependency-aware deletion cleans categoryRef/categoryTokens/key-order entries, fold bindings, projected endpoints by source reprojection and summary definitions. Deleting a relation also preflights every semantic relation target and relation-occurrence attachment that names it: refuse under the existing deletion policy unless an explicitly authorized cascading transaction removes all dependents; its inverse restores those endpoints/occurrences byte for byte, including cyclic dependencies. No dangling attachment is committed. Deleting a semantic relation removes its ids/occurrences from definitions; empty definitions disappear, remaining definitions are revalidated. Any operation creating an active-summary conflict refuses atomically. The inverse restores every consumed view field/definition/optional-field presence byte for byte. The same applies to occurrence-only deletion without deleting the entity.
 
-1. **The profile definition as data**: the completed declaration of §3.8/§3.9/§3.10/§3.11 plus the presentation-fragment composition, serialized canonically (entity, port and relation types with roles and cardinalities, the `container` family flags, footprints, constraints with their scopes, limits, completeness, notes, declaration format §5.3.1). This is the normative declaration; the TypeScript literal in this repository is a transcription checked against it (§7.3), not a second authority. For BPMN the definition is the generated artefact set with its descriptor snapshot pin.
-2. **JSON schemas**: (a) the profile schema (what a profile document must satisfy, used by `validateProfile` qualification); (b) the `SemanticDocument` schema at the schema version this executor generation writes (unchanged shape by this lot, §3.13; the A′ `2.0` schemas join when that lot ships); (c) the `ViewDocument` schema including the `semanticTarget`/`sourceOccurrence` endpoint fields, the `strokeStyle` occurrence field, the fold-group `occurrence` field and the `summaryLabels` record of §4. Schemas are generated from or checked against the executor's validators by fixture, never hand-diverged.
-3. **The conformance corpus**: the §8 acceptance documents and views (valid instances), the rejected cases with asserted diagnostics (including the §5 cases: leaf parent, spurious and non-outermost projections, duplicate legend category and duplicate order in one legend, undeclared and ambiguous tone bindings, key under a plain container, orphan key, missing uniqueness scope in a new-format profile, malformed keys, negative/fractional legend order), and the command/inverse sequences. A profile without its green corpus is a draft outside the catalog and is not pinnable (§7.4 admission).
-4. **Migrations**: the registered profile migrations of §3.13 as versioned functions with their report contracts, plus the schema-migration references the lineage records need. Migration functions keep the original; an unknown major refuses in write.
-5. **The ontology record and catalog entry**: the complete G0 hand-off mapping of §7.4 (every field named there, with its value rule for these profiles). Publication is the G0 §5.5 admission gate (§7.4), never “green corpus” alone.
-6. **The diagnostic-adapter revision** of §5.4.1, pinned by digest, with its receipt round-trip fixtures.
+The profile-migration registry includes all three @1→@2 migrations (§3.13), separately from schema migrations. Reports include exact source/target pins, operations, unmigrated and originalCanonical/hash. An atomic refusal has no partial target. Reversed-insertion tests compare canonical target bytes and ordered operations. Unknown profile/schema major refuses write and preserves inspection.
 
-Engram also keeps its existing stewardship unchanged: no private consumer content is held guardian-side (private stacks are pins, digests and receipts only, including the d2d private profile), display labels are never identity, and preserved foreign content keeps its three levels and is never promoted.
+### 5.8 Scalar and structured validation
 
-### 7.2 What the DS keeps in this repository
+Text schema extension: minLength?, pattern? (anchored ASCII RegExp source, no flags), patternName?; patternName required with pattern. Invalid/non-anchored/non-compiling pattern or minLength>maxLength refuses profile qualification. Value validation checks maxLength first (existing text-too-long), then minLength/pattern (one text-pattern-mismatch). A dotted token and a hyphenated single key witness the correct grammar inclusion.
 
-- The **generic executor**: `packages/diagram-core` (validators including the shared resolver and the generic constraint mechanisms, commands with inverses, canonical serialisation, migration runtime, diagnostics) and `packages/diagram-canvas` (scene, visibility, transform, hit test, layout engine including the §5.6 fold, measurement and hints surface). The executor executes whatever pinned profile it is handed; it contains no family content beyond the transcription literals used by tests and by consumers that pin this repository's build before the Engram publication is qualified (the transitional state G2 allows: a pinned build-time copy, replaced by the pinned Engram artefact once its implementation and qualification evidence exist — two distinct evidence states, never conflated).
-- **Rendering contracts by reference**: the card/container/legend rendering contract is owned by `SPEC_EVOL_DS_DIAGRAM_CARDS.md`; this repository keeps the components, tokens, pictogram registry and themes that implement it (roadmap M2, §10). No runtime rendering path depends on a network or MCP call: consumers load pinned profiles offline at build or start time.
-- **This specification and its successors**, plus the executor's own unit fixtures. Conformance fixtures that Engram catalogs are mirrored here only as test inputs pinned by digest (§7.3), never edited into a local variant.
+Quantity schema extension: integer?, min?, max?. Existing kind/finiteness/unit checks keep native priority and codes, including quantity-unit-missing. Then new integrality/bound checks run in declared order: non-integer, below min, above max, one first new scalar failure per value. Numeric declaration min>max or non-finite bounds refuses qualification. quantity-above-max is included everywhere in the exact code inventory. Numeric safe-integer restrictions for multiplicity belong to its declared schema/constraint, not every domain quantity.
+
+K2/K6 validation follows the transcribed A′ carrier. Unknown structured type, unknown field and forbidden structured target type retain their A′ codes. A well-typed multiplicity whose finite upper is below lower produces multiplicity-invalid at the struct attribute path; wrong scalar kind/bound emits the scalar diagnostic first. Stereotype application is checked only after K2 resolves the referenced stereotype. No family-specific parser enters validateScalar.
+
+## 6. BPMN no-regression and identity gates
+
+### 6.1 Frozen boundaries
+
+bpmn@1 skeleton bytes and native verdict/diagnostic arrays stay unchanged through its explicit legacy adapter. New subsumption is version-bound, not retroactive. bpmn-canvas remains the production BPMN editor until its separate parity gates; this specification adds no second runtime evaluator.
+
+profile-c14n/2 output is unchanged for every input. The accepted sealed vectors are:
+tests/fixtures/profile-parity-corpus/profile-parity-corpus/1/cases/jcs-key-order.json,
+jcs-escapes.json, jcs-numbers.json and identity-stable-id.json.
+Their full file hashes and expected bytes/ids are in §8.5. The manifest/pin covers all corpus bytes before any gate runs.
+
+parity-corpus/canonical-vectors.json (SHA-256 f238aef110a43381416fd0025326f883f760dc75510a9f0cc5817415eb02d1c6) stays under its existing workbench comparator. It expects decimal 0.0000001 where RFC 8785 emits 1e-7; it has input/expected values, no recorded digest. It cannot be used as a profile-c14n/2 byte/digest oracle. W01–W12 are F1 document cases with their own verdicts, not uniformly profile artifacts.
+
+The diagram unique-attribute reference/order baseline remains DS 610c0353d899befeb59634b46b9d90f578661731 (PR #193). No seenChain and no global sorting is added to its native arrays.
+
+### 6.2 Required gates
+
+1. Recompute all manifest hashes (198 shared corpus files and the separate F1/workbench corpus), Unicode lock UCD 15.0.0 and descriptor/F1 pins before assertions. A mismatch is fixture error, not a changed expected result.
+2. Replay **jcs-*.json** using profile-c14n/2 and compare the exact expected canonical text, including 1e-7, UTF-16 key ordering, escaping and negative zero. Replay identity-stable-id.json using stable-id/1 and compare all four exact ids. Do not substitute the workbench vectors.
+3. Replay F1/W01–W12/native Report/2 and extension cases under their existing comparator and validator roles. Preserve unknown namespace payload, xmlns, xsi, DI, raw source and optional fields. Missing DI still yields required not-evaluated, never pass.
+4. Replay retained skeleton document/verdict/diagnostic arrays and profile digests exactly; custom-process remains a legacy endpoint refusal. Compare whole arrays in native order. PR #193 reversed-insertion duplicate-reference witness retains the 610c0353 order.
+5. Generated BPMN can claim completion only after A′ descriptor coverage=total, F1 round-trip, complete DI and §7.4 **per-library parity plus bijection** receipts all pass. Missing a required receipt at any completeness, including skeleton, refuses admission.
+
+### 6.3 Ownership and outstanding mappings
+
+Engram governs generated profile/corpus pins, DS implements shared kernel/view execution, bpmn-canvas owns F1 and canonicalization, d2d owns its private profile/evidence and the existing twin-library parity. The pinned d2d position leaves the generated-profile mapping unresolved. It is unverified U-D2D-MAP, owned jointly by Engram/d2d/DS, and its matrix cell remains partial. Private bodies stay owner-side; public pins/digests/receipt references never replace missing private evidence. No Python is run for this specification or added to implementation; existing twin receipts are supplied by their owners.
+
+## 7. Engram governance and DS execution
+
+### 7.1 Engram artifacts
+
+Engram holds exact versioned family declarations, the diagram-presentation@1 contract/schema and view assets, semantic/view schemas, profile migration functions/references, executable matrix data, corpus/oracle, full pins/digests, diagnostic-schema/adapter bindings, namespace/owner identity records and receipt references. No entry is admitted merely because its self-validation or corpus is green. It also holds the supersession metadata/migration relationships; replacements have empty composition ancestry.
+
+### 7.2 DS artifacts
+
+DS keeps family-neutral resolution/validation/commands/migration registration, view application/projection, layout/measurement/routing, published executor and presentation renderers/themes. A shipped data transcription is a digest-checked Engram artifact, not a competing author-owned profile. Consumers pin locally; painting/composition performs no MCP/network call.
+
 
 ### 7.3 Digests: G0 exact preimages, vectors, and the separate artifact digest
 
@@ -1024,13 +921,13 @@ Source: G0 P-CONTENT-DIAGRAM at `SPEC-G0-guardian-contracts.md` §7.2 (oracle-pi
 | --- | --- |
 | `completeness` | String (`skeleton` or `complete`), verbatim |
 | `constraints` | Array of the profile's executable constraint declarations, in declared order, each as its native JSON value |
-| `entityTypes` | Array of entity type declarations, in declared order, each as its native JSON value (labels, attribute schemas, `abstract` flags, and the M1 additions `container`, `footprint`, text `pattern`/`patternName`/`minLength`, numeric `integer`/`min`/`max` where declared) |
+| `entityTypes` | Array of entity type declarations, in declared order, each as its native JSON value (labels, attribute schemas, `abstract` flags, and the M1 additions `container`, text `pattern`/`patternName`/`minLength`, numeric `integer`/`min`/`max` where declared) |
 | `limits` | Closed object with exactly `maxEntities`, `maxRelations`, `maxEndpointsPerRelation`; each the declared number or **`null`** where the source omits it (omission hashed as `null`, never `0`, never dropped) |
 | `portTypes` | Array of port type declarations, in declared order (`[]` where none) |
 | `profile` | String `name@major` — the source `id` under this key (renamed; the value is identical) |
 | `relationTypes` | Array of relation type declarations, in declared order (labels, direction, roles with `min`/`max`, targets, entity types, attributes, `hierarchy` where declared) |
 
-Excluded (never hashed): `name`, `version`, `notes` as standalone fields (identity is carried by `profile`; human notes are outside the delegated projection), runtime code, file paths, the DS FNV drift value, view documents, occurrences, geometry, layout results, theme identifiers and token values, and every catalog field. Consequences, normative and fixtured (§7.3.5): changing `completeness`, a `container` flag, a `footprint`, a constraint `scope`, a text `pattern` or a numeric bound **changes** `contentDigest`; changing only `notes` **does not**. The transcription check of §7.3.6 uses this projection on both sides.
+Excluded (never hashed): `name`, `version`, `notes` as standalone fields (identity is carried by `profile`; human notes are outside the delegated projection), runtime code, file paths, the DS FNV drift value, view documents, occurrences, geometry, layout results, theme identifiers and token values, and every catalog field. Consequences, normative and fixtured (§7.3.5): changing `completeness`, a `container` flag, a constraint `scope`, a text `pattern` or a numeric bound **changes** `contentDigest`; changing only `notes` **does not**. The transcription check of §7.3.6 uses this projection on both sides.
 
 #### 7.3.3 P-PINS, P-DELTA, P-MAPPING
 
@@ -1053,7 +950,7 @@ An implementation must reproduce each digest from the exact bytes. A mismatch fa
 | V-MAPPING-1 (P-MAPPING, one rename) | `{"entries":[{"from":"a","kind":"rename","to":"b"}],"mappingId":"m1","version":"1.0.0"}` (86 bytes) | `b5770fd9b0623a047f65ed3d7811340afa965a623faaf0fd3e58babbc1be2516` |
 | V-DELTA-1 (P-DELTA, one add) | `{"base":{"contentDigest":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","id":"generic","version":"1.0.0"},"mappingRef":null,"operations":[{"declarationDigest":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","op":"add","subject":"c4-system"}],"retiredFixtures":[],"retiredRules":[]}` (320 bytes) | `436065f4f09c6de4dc7f25f8eb3821088e43f27c2f9454137fc19042bebff3e2` |
 
-Mutation fixtures (in addition to G0 §7.4 FX-DIG-*): for each completed profile, flipping `completeness`, toggling a `container` flag, changing a `footprint` dimension, changing a constraint `scope`, changing a text `pattern` and changing a numeric bound each change the computed `contentDigest`; editing only `notes` leaves it unchanged; omitting a limit vs declaring it `null`-equivalent is distinguished exactly as G0 prescribes (declared number vs `null`).
+Mutation fixtures (in addition to G0 §7.4 FX-DIG-*): for each completed profile, flipping `completeness`, toggling a `container` flag, changing a constraint `scope`, changing a text `pattern` and changing a numeric bound each change the computed `contentDigest`; editing only `notes` leaves it unchanged; omitting a limit vs declaring it `null`-equivalent is distinguished exactly as G0 prescribes (declared number vs `null`).
 
 #### 7.3.6 Transcription check and the separate artifact digest
 
@@ -1063,345 +960,5486 @@ Mutation fixtures (in addition to G0 §7.4 FX-DIG-*): for each completed profile
 - **Fixture hand-off:** each acceptance fixture (§8) is identified by its canonical SHA-256 as recorded in the corpus manifest. A hash mismatch at lot time aborts the lot's fixture step as a fixture error, not a test failure.
 - **Change flow:** a profile change is proposed as data in Engram, qualified against the corpus there, published as a new version with its digests, and only then transcribed or re-pinned here. This repository never edits a published profile's bytes in place, and Engram never edits executor code.
 
-### 7.4 Complete G0 hand-off mapping, DIA receipt and admission gate
 
-Admission is the G0 §5.5 gate, not “green corpus”, and no candidate without full admission evidence is ever described as pinnable, published or qualified: a candidate without full admission evidence stays a **draft outside the catalog** (§10 stages S1/S2/S3).
+**Presentation digest separation (r4).** No footprint/icon/stroke/categoryTokens/order/slot-allocation declaration is inside an entity/relation profile declaration. Applying or changing diagram-presentation@1 changes its contract/application digest and view bytes, not the semantic P-CONTENT-DIAGRAM/P-PINS/P-RESULT. The G0 P-CONTENT projection still hashes all *semantic* native declarations (including matrix tuples, container flags, numeric/struct/reference schemas) verbatim. Contract assets use their exact governed artifact digest and G0 contract binding. A schema change cannot be hidden as a notes-only edit.
 
-**Ontology record (G0 §1.4) and catalog payload (G0 §5.3) — value rules.** The table gives the rule for the completed diagram families; concrete identity values (namespace segment, owner handle, canonical references, executor pins) are **pinned lookups**: each names the Engram registry record or the qualified DS build from which the value is read verbatim at admission time, and the admission fixture records the value actually read. Prose descriptions in place of a read value fail admission.
 
-| G0 field | Value rule for the completed families |
+### 7.4 Exact G0 mapping, receipts and admission
+
+#### 7.4.1 Source types, before application
+
+Transcribed from G0 §§1.3/1.4/5.3, unchanged:
+
+~~~ts
+type Digest = string; // exactly 64 lowercase hex digits
+interface Pin { readonly id:string; readonly version:string; readonly contentDigest:Digest }
+type DigestEvidence =
+  | { readonly evidenceState:"resolved"; readonly digest:Digest }
+  | { readonly evidenceState:"unresolved" };
+interface ResultingDigests {
+  readonly contentDigest:Digest;
+  readonly pinsDigest:Digest;
+  readonly resultEvidence:DigestEvidence;
+}
+interface PrivateDerivationRef {
+  readonly base:Pin; readonly deltaDigest:Digest; readonly mappingRef?:Pin;
+}
+interface PrivateDerivationRecord extends PrivateDerivationRef {
+  readonly resultingDigests:ResultingDigests;
+}
+interface PrivateLineage {
+  readonly parents:readonly Pin[];
+  readonly derivationRef?:PrivateDerivationRef;
+  readonly mappings:readonly string[];
+  readonly migrations:readonly string[];
+}
+interface PublicDerivationRecord {
+  readonly base:Pin; readonly operations:readonly DeltaOperation[];
+  readonly resultingDigests:ResultingDigests;
+}
+interface PublicLineage {
+  readonly parents:readonly Pin[];
+  readonly derivation?:PublicDerivationRecord;
+  readonly mappings:readonly string[];
+  readonly migrations:readonly string[];
+}
+~~~
+
+Public/private lineage is discriminated by enclosing visibility, never by an added scope field inside lineage. Private record→reference mapping takes base/deltaDigest/mappingRef from lineage.derivationRef and resultingDigests from the **same enclosing candidate/entry digests**; mismatches refuse digest-mismatch. No private delta operation, rule body or business name crosses that boundary.
+
+Closed OntologyRecord fields, and only these:
+namespace, id, version, owner, lifecycle, completeness, visibility, profileShape, artifactKind, profileRef, corpusRef, digests, lineage, consumers, supersededBy?, migrationRef?, deprecatedReason?, deprecatedAt?, catalogEntryRef?.
+profileRef is exactly {canonicalRef,contentDigest}; corpusRef exactly {ref,digest}; digests exactly ResultingDigests. Draft may lack publication evidence; published requires corpusRef and resolved resultEvidence. Deprecated requires reason/date and may name a known successor; superseded requires supersededBy and migrationRef; draft/published have neither deprecation nor successor fields.
+
+Closed catalog envelope fields:
+format="sentropic.registry-entry/v1", contractVersion="1.1.4", kind, id, name, description, entryVersion, publisher, compatibility, parameters, bindings, assets, exactly one selected kind payload; optional qualified extensions/requiredExtensions. kind adds ontology to the native skill/mcp union without altering either original arm.
+publisher={packageName,packageVersion};
+compatibility={entryContract,packages:[{name,range}],schemaProfiles,requiredHostFeatures,optionalHostFeatures};
+parameters={schemaVersion,schema,defaults};
+binding={key,contract,required};
+asset={role,path,mediaType,sha256}.
+An ontology payload is not an envelope, and a DocumentSchema is not an asset/binding.
+
+Closed OntologyPayload fields:
+canonicalRef, namespace, owner, domain?, profileShape, artifactKind, profilePin, stack, digests, ruleSheets, lifecycle, deprecatedReason?, deprecatedAt?, supersededBy?, provenance, licenceClosure?, coverage?, lineage, conflictPolicy, completeness, corpusRef, receipts, migrations, consumers, compatibility, visibility, linkedTools, artifactBinding.
+provenance={sourceRef,sourceRevision} only; compatibility={renderer,adapter} pinned strings only.
+ruleSheets=[] here where no rule sheet applies; otherwise each public row has sheetPin/ruleIds/selections with full G0 SelectionMetadata, and private selections remain owner-side. No root declarationFormat or diagnosticAdapterPin is added.
+
+Exact artifactBinding arms (each carries its artifactKind discriminator):
+- base: basePin, bijectionEvidence={evidenceState:"resolved",receiptRef} or {evidenceState:"unresolved"}. **Non-BPMN bases also carry this field**, resolved to their base corpus receipt.
+- profile: profilePin, stack, relationMatrixRef required for private profiles and absent otherwise.
+- contract: schemaPin, compatibilityMatrixVersion.
+- theme: themeDigest, appliesTo.
+- mechanism: mechanismVersion, descriptorPins, compatibilityMatrixVersion.
+- corpus: manifestDigest, manifestRef, sealedVectorsDigest, caseCounts={publishedCases,localVectors}.
+
+No unknown property is admitted to any closed object. entryDigest is SHA-256 over the full G0 P-ENTRY and is computed **externally**, never embedded in record/payload/envelope.
+
+#### 7.4.2 Family field mapping and identity lookups
+
+| G0 location | Required mapping |
 | --- | --- |
-| `namespace` | Read verbatim from the Engram diagram namespace record (registry lookup `diagram.namespace` at admission); never derived from a display label. The read value is recorded in the admission fixture. |
-| `id` / `version` | Ontology id `generic` version `2`, `archimate` (completed version), `uml` (completed version), and the generated BPMN stack ids/versions of §3.10; the profile id strings are `generic@2`, `archimate@1` (completed version), `bpmn@2` stack, `uml@1` (completed version). |
-| `owner` | Read verbatim from the Engram owner registry (lookup by profile id at admission); publication without a resolved owner refuses (`missing-owner`). |
-| `lifecycle` | `draft` until §5.5 admission passes, then `published`; `generic@1` moves to `superseded` paired with `supersededBy` + migration reference (§3.13.4); skeleton pins stay `published` as skeletons forever. |
-| `completeness` | `complete` for the successor/completed/generated entries (never waives evidence, G0 R-3); `skeleton` only for the retained skeleton entries. |
-| `visibility` | `public` for the diagram families; d2d private entries stay `private:<tenant>` and are out of this table's scope. |
-| `profileShape` | `diagram-profile`. Root classification: the successor/completed bases use the G0 **base** binding (empty parents, §3.13.4); stacked compositions (family + presentation fragment) use the `profile` binding with their ordered stack. The two bindings are never mixed on one record. |
-| `artifactKind` / `artifactBinding` | `artifactKind: "profile"` for stacked entries, `"base"` for base entries, each with its corresponding closed binding variant (`{ profilePin, stack, relationMatrixRef? }` for `profile`, the base pin for `base`); `relationMatrixRef` present only where a private matrix requires it. |
-| `profileRef.canonicalRef` | Read verbatim from the Engram profile registry (the governed canonical reference, distinct from the catalog entry id); `profileRef.contentDigest` is the P-CONTENT-DIAGRAM digest (§7.3). In the payload this is `canonicalRef` with `profilePin` carrying `(id, version, contentDigest)`. |
-| `catalogEntryRef` | Reference to the §5 catalog entry of kind `ontology`; absent while the profile is a draft outside the catalog, required once admitted. |
-| `provenance` | Closed `{ sourceRef, sourceRevision }`: the dossier/spec source reference and the exact source revision (this specification at its r3 commit) that the entry was authored from. Licence closure and coverage are separate payload fields, never provenance fields. |
-| `stack` | For bases: the single-layer stack of §3.13.4. For card-drawn family documents: the ordered stack `[family pin, presentation-fragment pin]` (fragment last); `lineage.parents` lists the stack pins in order; `lineage.migrations` names the §3.13 migration references; `lineage.mappings` empty unless a governed mapping file exists. |
-| `conflictPolicy` | Exact pinned reference to the G0 §§2–4 stack/derive/merge conflict-handling record (id + version + digest read at admission); never a prose paraphrase and never a weakening. |
-| `compatibility` | Closed `{ renderer, adapter }` with **exact pinned references** (executor artefact id + version + digest read from the qualified DS build at admission; the profile-schema binding below). Version ranges appear only in the package envelope, never in ontology compatibility. Consumers pin the published executor version once qualified; a pinned build-time copy is the transitional state before qualification (two evidence states, never conflated). |
-| `linkedTools` | Array of exact string references to the linked invocation-tool entries (G0 §9) through which hosts consume the profile; empty only where Engram records no tool link yet, and then admission records that explicitly. |
-| `ruleSheets` | `[]` — no unit rule sheet composes over the diagram entries at M1. Where a sheet later applies, each entry is `{ sheetPin, ruleIds, selections }` with the public `SelectionMetadata` of G0 §5.3, and P-PINS takes only `sheetPin` in composed order (§7.3.3). |
-| Schema binding | Each governed schema asset is recorded in the entry's `assets` as `{ role, path, mediaType, sha256 }` (G0 exact asset shape) and bound from `bindings` as `{ key, contract, required }` (G0 exact binding shape), where `contract` is the pinned schema reference. Assets: profile schema, `SemanticDocument` schema, `ViewDocument` schema (§7.1 item 2). A schema change without a new asset digest fails admission. No `DocumentSchema`-shaped object is placed in either field. |
-| `corpusRef` | Closed `{ ref, digest }`: the conformance-corpus reference and its manifest digest (§8). Required for a published record; an ontology without a corpus is not admitted. |
-| `digests` / `resultEvidence` | Closed `{ contentDigest, pinsDigest, resultEvidence }` where `resultEvidence` is the G0 `DigestEvidence` over `resultDigest`: arm `resolved` (with the digest) is required for publication; arm `unresolved` (no digest value, no placeholder) is the only pre-admission state and never passes the gate. `entryDigest` is computed over the whole entry externally (P-ENTRY) and never embedded. |
-| `migrations` | Array with the §3.13 migration references (plus schema-migration references the lineage needs); empty only where no migration exists — not the case for the generic successor. |
-| `consumers` | Catalog ids / repository pins to notify before the major ships (layout engine, dossier binding, h2a dossier builder, HRPN and governance consumers, bpmn-canvas/d2d where a shared mechanism changes); publication requires the list present. |
-| `supersededBy` / `migrationRef` / `deprecatedReason` / `deprecatedAt` | Per lifecycle (§3.13.4): `supersededBy` required iff the predecessor is `superseded` (on the `generic@1` record), paired with `migrationRef`; deprecation fields only on a `deprecated` record. |
-| `licenceClosure` / `coverage` | Required iff the entry is an EXT pack entry; absent for these profile entries. Recorded explicitly as absent, not omitted by oversight. |
-| Diagnostic adapter | The §5.4.1 adapter pin (id, version, digest) recorded beside `compatibility`; its receipt round-trip fixtures are part of admission evidence. |
+| record namespace / payload namespace | Same resolved namespace identity, compared verbatim. Candidate namespace for these public diagram artifacts is diagram; the production registry lookup is unverified U-ID, owned by Engram. No fictitious diagram.namespace registry key is treated as evidence. |
+| record owner / payload owner | Same durable owner handle read from the admitted owner identity. G2 assigns responsibility to Engram; candidate handle engram. Actual registered handle/lookup receipt is unverified U-ID. A label is not a lookup. |
+| record id/version / payload profilePin | generic/2 ↔ native generic@2; archimate/2 ↔ archimate@2; uml/2 ↔ uml@2. Generated family ids/versions exactly §3.10. Every native/pin mapping is explicit, no stripping guessed at load time. Exact versions only, no ranges/tags/latest. |
+| contract record/payload | diagram-presentation/1, native contract label diagram-presentation@1; profileShape mechanism-descriptor, artifactKind contract, schemaPin with the same exact contract schema digest. Not a semantic stack layer. |
+| record profileRef / payload canonicalRef | Canonical reference read from the governing identity record; its digest equals payload profilePin.contentDigest and record digests.contentDigest. The catalog id remains a distinct identity. |
+| record corpusRef / payload corpusRef | Exact same {ref,digest}; required and hash-checked before corpus execution. |
+| base stack / lineage | stack=[ownPin]; lineage.parents=[]; mappings=[] unless a governed mapping exists; migrations=[the explicit predecessor migration]. basePin=ownPin; bijectionEvidence is required as above. |
+| semantic stacked entry | Only actual admitted additive/narrowing semantic modules; layers in stack order and lineage.parents equal to the predecessor layers (excluding the entry's own pin), S-1…S-7 enforced. Card presentation does not create such a stack. The two-layer fixture below is an isolated G0 narrowing specimen. |
+| migrations / migrationRef / supersededBy | Migration references in record/lineage/payload agree. On each superseded @1 entry, successor points at its @2 pin and migrationRef exists. Source profile bytes remain unchanged. |
+| digests | P-CONTENT-DIAGRAM/P-PINS/P-RESULT exactly §7.3. No unresolved arm contains digest/null/empty placeholder. |
+| provenance | sourceRef identifies this specification by exact file hash; sourceRevision is that immutable hash identifier, not an uncommitted branch name. It does not self-embed the current file hash here. |
+| compatibility | renderer/adapter are exact pinned reference strings to qualified DS executor and schema/diagnostic adapter. Before qualification a pinned build-time copy is explicitly transitional. No extra metadata beside compatibility. |
+| assets / bindings | Profile/semantic/view/presentation/diagnostic schemas and executor-profile-bindings@1 use exact asset/binding forms, package-contained relative paths, full raw-file SHA-256. The schema contract string names the corresponding immutable schema pin. |
+| consumers / linkedTools | Present arrays of actual consumer/tool identity references. The owner registry must resolve them before publication; no invocation grant follows from discovery. |
+| lifecycle/completeness/visibility | draft until full admission; then published, completeness complete for qualified replacements, public. Retained @1 stays skeleton as applicable. Skeleton never waives admission evidence. |
+| licenceClosure / coverage | Required iff EXT pack entry; absent for these DIA bases. Matrix/contract dependency licence evidence still belongs to its own artifact qualification; no laundering through an omitted EXT field. |
+| catalogEntryRef | Absent for draft; exact admitted catalog entry reference when present. No root entryDigest or declarationFormat is added. |
 
-**Specimen requirement.** Admission evidence includes one **schema-valid specimen** per binding kind (one base entry, one stacked entry) serialised in the closed G0 envelope shapes, with the pinned lookups resolved to the values read at admission. A specimen that fails envelope validation, carries a range in `compatibility`, or places a schema object in `assets`/`bindings` refuses admission. The specimen bytes are corpus fixtures; their digests join §8.5.
+Lookup algorithm: obtain the exact immutable record by the requested (namespace,id,version); verify its profileRef and digests against requested Pin; resolve its owner through the owner identity input; compare every mirrored field in the catalog payload; validate assets/bindings and reciprocal references; then execute §5.5 admission. Missing record/owner/canonical reference or lookup receipt refuses. Source G0-CODE intentionally contains no production registry; therefore this specification cannot assert that these lookups already succeeded. Candidate strings do not stand in for actual registered identities.
 
-**DIA `family-corpus` receipt (required receipt for these entries).** Under G0 §5.4 a `profile`/`base` entry with `profileShape diagram-profile` (family DIA) is admitted on **validator receipts**: for the completed families, exactly one receipt kind is required, the `family-corpus` arm, produced by the DS executor's own test run and stored by the guardian (the guardian executes no library itself):
+#### 7.4.3 Concrete closed-shape specimens
 
-| Receipt field | Value rule |
+Appendix A.3 serializes one base and one two-layer semantic narrowing entry, their matching records and resolved **fixture** identities. It uses computed digests of explicitly included specimen declarations; it has no placeholder digest. Its namespace/owner are fixture-namespace/fixture-owner, not claimed production identities. The base includes resolved bijectionEvidence to its fixture corpus receipt. The stacked entry includes profilePin/stack, and its lineage.parents names the base pin in stack order. It composes no presentation fields.
+
+These are serialization/field-mapping oracles. They do not claim executed schema validation, receipt issuance or S2 admission. The actual published base/contract records and production lookup/receipt values remain unverified U-ID/U-QUAL; no fixture alias may be shipped as a production canonical reference.
+
+#### 7.4.4 Receipts, ordinary DIA and generated-BPMN exception
+
+G0 Receipt common fields, exactly:
+receiptKind, corpusDigest, libraryId, libraryVersion, validatorRole, verdict, issuedAt, evaluatedStack, transitionQualification as required by role.
+evaluatedStack={stack,pinsDigest,resultEvidence}.
+validatorRole is transitional-oracle, retained-check or qualified-ds-execution.
+transitionQualification is {claim:"oracle-witness",parityMatrixDigest} for a transitional oracle, {claim:"reference-qualified",parityMatrixDigest,qualifiedExecutorPin,gateEvidenceRef} for qualified execution, absent for retained-check.
+
+| Artifact scope | Complete required receipt set |
 | --- | --- |
-| `receiptKind` | `family-corpus` |
-| `family` | `DIA` |
-| `corpusDigest` | Digest of the §8 corpus manifest the run covered |
-| `fixtureDigest` | Manifest digest of the DIA conformance corpus (same value as `corpusRef.digest` for this entry) |
-| `libraryId` / `libraryVersion` | The implementing library and its exact version (`@sentropic/diagram-core` + `diagram-canvas` executor build that ran the corpus) |
-| `validatorRole` | `qualified-ds-execution` once parity is proven under the study gates; `transitional-oracle` witnesses expected verdicts during transition only and never satisfies a switch to the reference role. The role actually executed is recorded; claiming `qualified-ds-execution` without `reference-qualified` transition evidence refuses admission. |
-| `transitionQualification` | Arm `reference-qualified` (`{ claim, parityMatrixDigest, qualifiedExecutorPin, gateEvidenceRef }`) iff `validatorRole` is `qualified-ds-execution`; arm `oracle-witness` iff `transitional-oracle`; absent iff `retained-check` (not applicable here). |
-| `verdict` | `pass` required; a required rule at `not-evaluated` never counts as pass for that rule. |
-| `evaluatedStack` | Closed `{ stack, pinsDigest, resultEvidence }`: the exact stack, its P-PINS digest, and the evaluated `resultDigest` in `DigestEvidence` form. Both this `resultEvidence` and the entry's `digests.resultEvidence` must be `resolved` with equal digests before any comparison (see gate). |
-| `severityPolicyDigest` | The selected digest where a rule sheet applies; **`null`** here (no rule sheet composes, `ruleSheets: []`), present as a field with that explicit null per the non-`bpmn-parity` selection-binding rule. |
-| `ruleVerdicts` | Present; `[]` only because no rule sheet applies. Each verdict, where present, carries `ruleId`, effective `severity` and `studyDisposition` where applicable. |
-| `issuedAt` | Date the receipt was produced by the library's own test run. |
+| Ordinary non-BPMN DIA base/profile | family-corpus from **each validator library in its declared qualification scope**; family DIA; fixtureDigest=corpusRef.digest; corpusDigest matches; severityPolicyDigest explicitly null where no sheet; ruleVerdicts present, [] only without sheets. Non-BPMN base bijectionEvidence names this corpus receipt. |
+| Generated-BPMN DIA | All bpmn-parity receipts: **each implementing library × each claimed proof set × each declared phase/readiness selection**, plus bpmn-bijection. Any additional ordinary DIA corpus obligation in its declared qualification scope is also retained. Bijection does not replace parity. |
+| Contract (presentation/view/diagnostic schema) | contract-verdict with schemaPin, compatibilityMatrixVersion, caseVerdicts (caseId and errorCode only on refusal), severityPolicyDigest (selected digest or explicit null). Includes schema validation and each compatibility-case verdict. |
+| Theme | theme-invariance with styledProfilePin, semanticDigestsBefore/After={contentDigest,pinsDigest,resultDigest}, equal field by field; severityPolicyDigest present. |
+| Mechanism/corpus | G0 mechanism-compat and all implementing-library corpus/parity receipts for the declared scope; sealed-vector/manifest evidence required. |
 
-No BPMN proof set (`published-corpus`, `local-expectations`), no bijection receipt and no other family's receipt is required of a DIA entry, and none may be presented in its place. Generated-BPMN DIA entries additionally carry their A′ bijection evidence under their own G0 arm; that evidence never substitutes for the `family-corpus` receipt of a non-BPMN entry.
+bpmn-parity proofBindings is exactly
+{ proofSet:"published-corpus"|"local-expectations",
+  corpusAuthority:{tag,manifestDigest}, unicodeLockDigest? ,
+  profilePin, severityPolicyDigest, ruleSheetPins, compiledLintEvidence }.
+compiledLintEvidence is {scope:"public",compiledOptions:S-COMPILED,settings:Setting[]} or {scope:"private-reference",ownerReceiptRef}. Private body/settings remain owner-side. Native full compiled options/bindings and selection metadata are preserved and verified against the independent producer selection. The Unicode lock is required for every text/case/prefix rule.
 
-**Admission gate (G0 §5.5, normative; replaces every “green corpus” formulation).** Admission refuses while any required receipt is missing, failed or mismatched, at any completeness including `skeleton`:
+ruleVerdicts rows: ruleId, native effective severity, verdict off/pass/diagnostic/not-evaluated, parity proven/open, optional studyDisposition. No warn→warning translation. The published corpus (176 cases) and local expectations (486 vectors, 68 identifiers shared) are distinct proof sets; both are required when both are claimed, never merged into a single count or receipt. The 198 files are the manifest's file count, not 176+486.
 
-1. First require resolved result evidence: `entry.digests.resultEvidence.evidenceState` and the receipt's `evaluatedStack.resultEvidence.evidenceState` must both be `resolved` with present, equal digest values. A `verdict: pass` receipt with an unresolved arm refuses explicitly; two unresolved arms never constitute a match.
-2. Then compare the evaluated stack in order, `pinsDigest`, and the resolved result digests field by field against the entry; refuse every mismatch (`FX-RCPT-MISMATCH` discipline). For public rule-sheet scopes, additionally recompute the selected `(phase, readinessPolicy)` policy digest over complete settings and compare it with the receipt's selection binding (vacuous here: no sheet, explicit `null` on both sides).
-3. A receipt with `verdict: fail`, a wrong `validatorRole` for the claimed qualification, a required rule at `not-evaluated`, or a `parity: open` rule presented as satisfying `qualified-ds-execution` each refuse exactly as a missing receipt does (`missing-receipt`). Profile self-validation green, corpus green, licence closure recorded and every applicable digest resolved are all required; no single one admits.
+bpmn-bijection fields: descriptorCoverage={covered,total} with equality, roundTripEvidenceRef, moddleTestPin (exact version/digest of latest bpmn-moddle selected as test dependency), severityPolicyDigest. It carries no proofBindings. Missing parity receipts refuse even with a passing bijection receipt.
 
-Development artifacts (§10 stage S1), the qualified profile publication (stage S2) and package publication (stage S3, owner gesture) are three distinct states; only S2 is catalog admission, and only S3 publishes a package.
+#### 7.4.5 G0 §5.5 admission, unchanged
 
-## 8. Coverage matrix and acceptance instances
+1. Derive required obligations from the **entry's declared qualification scope**, not a caller-supplied shortened receipt list. Match exact libraries/versions, proof sets and selections; duplicates cannot cover another obligation.
+2. Require entry and every required receipt resultEvidence to be resolved, digest present and equal. A pass with unresolved evidence refuses, as do two unresolved arms. Check stack order, every Pin and pinsDigest, corpus identity, all proof/selection bindings, required schema/matrix cases and compiled evidence.
+3. Recompute public policy digest from {phase,readinessPolicy,settings}, compare each selected rule severity/studyDisposition and require every required verdict row. Private runs check owner-side evidence by opaque reference with the same refusal discipline.
+4. Missing, failed, mismatched, unevaluated or wrong-role receipt refuses missing-receipt at every completeness, skeleton included. parity open cannot qualify a rule's reference execution. qualified-ds-execution requires reference-qualified gate evidence.
+5. Require self-validation, corpus validity, applicable licence closure, resolved digests, identity lookups and every dependent contract/adapter receipt. Only then publish/admit. The guardian stores receipts and executes no implementing library itself.
 
-Acceptance is a set of pure instances of the completed model. An instance qualifies only when **all** of the following hold, checked by the named gates:
+Removing any one generated-BPMN parity-library/proof-set receipt or its bijection receipt flips admission to missing-receipt; restoring it can restore admission only if all other evidence still matches. The same exhaustive-removal witness applies to ordinary DIA validators and contract/schema obligations.
 
-- `profileRefs` names exactly the family profile(s) plus, where cards are drawn, the presentation-fragment composition — never a consumer profile invented for the instance;
-- `extensions` carries no card/zone slot, title or tint (preserved foreign content under D3-C is the only permitted extension content, counted separately);
-- `typeDefinitions` carries no refinement that exists only to carry fragment slots (a retained residual refinement after §3.13 migration carries consumer data and names it);
-- every entity/relation type is declared by the composed stack; `validateDocument` and, per view, `validateView` return **zero diagnostics**, including on every folded view (§4.4);
-- display titles are stored literally (the two « CI/CD » zones are both stored as « CI/CD »);
-- relation presentation is stored per relation id (§3.5.1 counts) and authored aggregate definitions are stored as `summaryLabels` with constituent ids (§4.5);
-- geometry in each view is produced by the DS layout from the semantic document (expanded views, with the §4.7 hints recorded per instance) and by the §4.4 projection composed with §4.6 placement (folded views), never copied from a consumer layout as input.
 
-Counts below are typed counts (per resulting type), containment-relation counts and link counts separately — never a single entity total. A re-expression with a different typed count, a different containment count or a different link count is a different graph and fails the instance.
+## 8. Evidence matrix and acceptance oracle
 
-### 8.1 Pinned sources (what each column means)
+### 8.1 Status and layer semantics
 
-| Column | Pinned source | Identity |
-| --- | --- | --- |
-| #711 central scene | sentropic commit `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` (PR #711 merged), kit at `/home/antoinefa/src/sentropic/.tmp/governance-unification/kit/src/`: `governance-central.js` sha256 `1f7490ff48c02fced30a43bd03d8554b7d894bdfcf6cda43e6dd948f9254af50`, `governance-collapse.js` sha256 `585709daedd8bc8b46594394e88f9c2c24678edcd4e0f679933c1833eaff405d`, `presentation-scenes.json` sha256 `7c9fcab414ac469ce91db5783a4479c8b302bc7ae3242011bb87151e09e25140`; portable `docs/governance/governance-r11-portable.html` sha256 `831cbdee9bb5820e7e19ed55c942522a5848c402db9be0c89d87d02559bf6f35` (per `DS-DIAGRAM-MODULES-REQUIREMENTS.md`) | Builder `buildGovernanceCentral`; frames `h2a`, `surfaces`, `cluster-mesh`, `engram`, `design-system`; nested `cm-catalog`, `cat-mcp`, `cm-storage`, `cm-security`, `cm-cluster` |
-| Four HRPN scenes | `/home/antoinefa/src/airbus-genair-hrpolnav/docs/architecture/hrpn/ds-fixtures/` — `MANIFEST.md` sha256 `9558092fa2af669af9dcd4df6d9380e24a1cba723dbdd603ad2ebd86c6439a49`; `S2-asbuilt.json` `7abc427f7beca5b0f87947efc9df4daf6316f24725074f47f1da2b04be76ba2e`, `S2-target.json` `28a7271dd0bec89fa9ad435174a614ab4a40b346b10724da95736f9c55b574d9`, `S1-conversational.json` `d9f7f7cb80894b5301e11cc7b7f0fc2775d1933aa15013152001395d716a32c7`, `S3-agentfactory.json` `e362b9a8da84082e5389127ae463d282fb773ef8950f41017222e0b3ef9002fc`; `tint-legend.json` `cc47a3e3a2019af8c436ce28a34d0d52d71b8439cf55a44a33f1c0239752a26d`; `reference-renders.json` `7afee15ef473389452011d38fbaf8547973b5eed572440cc0c31ee8d921e25db` | Fixture form (`entities[]`/`relations[]`/`zoneHierarchy`/`profileMapping` → `generic@1`); counts: S2-asbuilt 41/17/44 (7 dashed), S2-target 51/22/54 (0 dashed), S1 23/17/24 (10 dashed), S3 37/15/36 (3 dashed) |
-| HRPN S2-target engram graph | `/home/antoinefa/src/airbus-genair-hrpolnav/docs/architecture/hrpn/engram/S2-target.semantic.json` sha256 `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91` + `S2-target.view.json` sha256 `82930614efe070bdb8e5acce3aecea29dfdb2d1ab625b7d376507f97fb6f8b50`; `MANIFEST.json` sha256 `54ef0dd0ac0e923aa99435625780902d07c3819e9c2c340868c921d1f956fd91` | Semantic form (`generic@1`, 19 containers + 37 `hrpn-card`, 51 `contains` + 31 `link`, revision 1, 7 default folds `MSGZ`, `VERTEXZ`, `INGZ`, `PCICD`, `OBSZ`, `GENSRC`, `AWSCI`) |
-| bpmn-canvas fixtures | `/home/antoinefa/src/bpmn-canvas/tests/fixtures/corpus/*.bpmn` (10 files: `comments`, `duplicate-id`, `extension-ok`, `io-specification-incomplete`, `no-di`, `notation`, `partial-di`, `rogue-extension`, `tiny`, `unresolved-reference`; full hashes in §8.5) + `tests/fixtures/parity-corpus/` (index sha256 `40284149ca3538b35250e5896694e7d15c80d3c3233241e0d7ac3d91266df03a`, cases W01–W12) + `canonical-vectors.json` `f238aef110a43381416fd0025326f883f760dc75510a9f0cc5817415eb02d1c6` | F1 / bpmn-moddle XML corpus; MIWG-adjacent extension cases included |
-| d2d fixtures | d2d position (`evidence-astra/threads/ontology/d2d.md`): parity corpus `profile-corpus-v1.0.0` (198 files, manifest-pinned, vendored by hash in bpmn-canvas at `/home/antoinefa/src/bpmn-canvas/tests/fixtures/profile-parity-corpus/profile-parity-corpus/1/manifest.json` sha256 `01b81fd9fb69f110a7f302631d6da92126bcb1672c67bea3ea68ff802df39faf`, pin file `/home/antoinefa/src/bpmn-canvas/tests/fixtures/profile-parity-corpus.pin.json` sha256 `d34ee889917b8c5ef14c8d7bbd3fa2b222d93f4ac61de4bd0b41deb5767378a2`) + `unicode-case/1` (UCD 15.0.0, pin `tests/fixtures/unicode-case-15.0.0.pin.json` sha256 `989aa11b6c138115a356c39867a26d8da281d2fd4b926508c72199b87fa4b762` in the bpmn-canvas checkout). The d2d private business profile body is never a public fixture. | Shared JS/Python parity corpus; private content stays owner-side (pins/digests/receipts only) |
+covered = verified evidence for the stated layer from the exact pinned bytes; partial = the correct family but a named missing conversion/implementation/receipt; absent = wrong family or no claim. **Target expressibility is a separate column**, never a current covered verdict. Canonical identity coverage is not semantic/view validity; rendering and interaction require their own gates.
 
-### 8.2 Coverage matrix
+A1 is merged #711. A2 is frozen S2-asbuilt, A3 frozen S2-target, A4a S1-conversational, A4b S3-agentfactory. A5 is the distinct Engram-form S2-target graph. Each is a separate corpus instance. Current HRPN producers are separate snapshots (§8.6); they do not replace frozen fixture payloads.
 
-Reading: **covered** = the row's completed contract expresses the column's content with zero extensions/refinements for standard slots and zero diagnostics; **partial** = the content is expressible today only with a named gap or a consumer patch; **absent** = the row does not claim the column (wrong family; claiming it would be a category error). Every cell names its pinned source and its missing element. “—” never appears: an absent cell still names why.
+### 8.2 Matrix
 
-**Layer tagging in this matrix (owner arbitration, normative).** A verdict without a layer tag is meaningless, so every verdict is a **model-layer** verdict unless the cell says otherwise: *covered* means the `SemanticDocument` content stores natively (model layer). Layout-layer coverage (folds, footprints, measurement, hints, occurrences — §4) is family-neutral and therefore identical for every row that reads *covered* at the model layer; it is never claimed by a *partial* or *absent* model cell. Presentation-skill coverage (card/container/legend drawing) is never claimed by any cell in this matrix: drawing is the M2 roadmap (§10) composing the presentation fragment, and a model *covered* cell is the precondition for it, not a substitute. No cell stores a layout or presentation field in the graph model; the leak rule of §1.3 governs every row.
+| Row / evidence layer | A1 | A2 | A3 | A4a | A4b | A5 | BPMN F1/W01–W12 | d2d |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| generic@1 model/view today | partial: card presentation external; no CI/CD duplicate assertion in #711 | partial: external tints/dashes | partial: external tints/dashes | partial: external tints/dashes | partial: external tints/dashes | partial: native validation [] relies on refinement, 19 slot extensions and suffixed names | absent: wrong family | absent: wrong family |
+| generic@2 + contract, specified target | partial: native conversion/executor receipts unverified | partial: same | partial: same | partial: same | partial: same | partial: §8.4 populated conversion; executor receipt unverified | absent: wrong family | absent: wrong family |
+| archimate@1 skeleton | absent: no ArchiMate assertion | absent: wrong family | absent: wrong family | absent: wrong family | absent: wrong family | absent: wrong family | absent: wrong family | absent: wrong family |
+| archimate@2 | absent: no producer matrix assertion | absent: same | absent: same | absent: same | absent: same | absent: same | absent: wrong family | absent: wrong family |
+| bpmn@1 skeleton | absent | absent | absent | absent | absent | absent | partial: arity only, no full DI/extension model | partial: placeholder cannot express private mechanism profile |
+| A′ generated BPMN model | absent | absent | absent | absent | absent | absent | partial: F1 publication/extension/DI and bijection qualification remain A′ evidence | partial: pinned generated-profile mapping missing (U-D2D-MAP) |
+| uml@1 / uml@2 | absent: no UML classifier assertion | absent | absent | absent | absent | absent | absent: wrong family | absent: wrong family |
+| profile-c14n/2 identity | absent: documents are not profile artifacts | absent | absent | absent | absent | absent | absent as a uniform F1-model claim; sealed JCS/stable-id cases are covered identity witnesses separately (§8.5) | covered identity of manifest-sealed profile artifacts; semantic model/layout coverage is not implied |
 
-| Row ↓ / Column → | #711 central scene | Four HRPN scenes (fixture form) | HRPN S2-target engram graph | bpmn-canvas fixtures | d2d fixtures |
+Sources for card cells: A1 KIT; A2/A3/A4a/A4b exact fixture hashes in §8.5; A5 exact semantic/view hashes. Sources for BPMN/d2d cells: A′, c14n code, sealed manifest/pin, F1/workbench index and pinned d2d position. No absent cell becomes partial by coercing cards into invented layer/aspect/classifier assignments. No generated mapping is described as already covered.
+
+Target scope: generic@2 plus the contract expresses A1–A5 without consumer refinements/extensions for standard presentation. Acceptance requires native execution of the concrete oracle below; the specification does not manufacture that execution evidence. ArchiMate/UML have their own A7 matrix/multiplicity corpora and admission dependencies, not synthetic coverage over HRPN card scenes.
+
+### 8.3 Counts and explicit additions
+
+| Instance | Source cards / frames / links | Added semantic legend / keys / contains | Target node / container / legend / legend-key | Target contains / link | Dashed / solid |
 | --- | --- | --- | --- | --- | --- |
-| `generic@1` (today, `complete`) | **partial [model]** — kit frames/cards map to `node`/`container`/`link`, but kicker/body/footer/icon/tone have no slot (Gap C) and the two « CI/CD » titles collide (Gap 2). Source: kit hashes §8.1. Missing: fragment slots, scoped uniqueness, legend types, folded projection. | **partial** — fixtures are authored for `generic@1` and validate, but tints/dashes live outside the profile (`tint-legend.json`, `style` field) and zone titles were uniquified by the generator. Source: MANIFEST `9558092fa2af669af9dcd4df6d9380e24a1cba723dbdd603ad2ebd86c6439a49`. Missing: native `tone`/`strokeStyle`, legend, folds. | **partial** — validates with zero diagnostics **only because** of `hrpn-card` + 19× `hrpn.zone-slots@1` + suffixed titles (§2.2). Source: semantic sha `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91`. Missing: the completed successor; the patches are the gap. | **absent** — BPMN semantics are not generic semantics; forcing the corpus through `generic@1` would drop every BPMN type. Source: corpus hashes §8.5. Missing: by design; see `bpmn@1` / A′ rows. | **absent** — same category boundary; d2d BPMN content is not generic content. Source: d2d position. Missing: by design. |
-| `generic@2` + fragment (completed, §3.8) | **covered [model]** — every frame/card/relation/legend category (`neutral`, `proposal`, `identity`) and every authored overview label (§4.5) stores natively; folded views validate (§4.4). Source: kit §8.1. Missing: none for content; rendering is M2 (§10). | **covered [model]** — cards/zones/links/tints/dashes store natively (`tone`, `strokeStyle`, legend); typed counts preserved per scene (§8.3). Source: ds-fixtures §8.1. Missing: none. | **covered [model]** — via the §8.4 ledger (33 `node` + 18 `container` + 1 `legend` + 4 `legend-key`; 51 `contains`, 31 `link`, 0 extensions, 0 refinements, revision-1 folds valid). Source: semantic/view hashes §8.1. Missing: none. | **absent** — generic completion adds no BPMN type and claims no BPMN fixture. Source: §3.10 boundary (corpus §8.1). Missing: by design (category boundary; BPMN content belongs to the `bpmn@1` / generated rows). | **absent** — generic completion adds no BPMN type and claims no d2d fixture. Source: d2d position §1 (corpus §8.1). Missing: by design (same category boundary). |
-| `archimate@1` skeleton (today) | **partial [model]** — frames read as `grouping`/`element` and relations by name, but there is no matrix, no catalogue and no card slot; claiming coverage would be arity-only. Source: `skeletons.ts` `0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e`. Missing: §3.9 completion. | **partial [model]** — zones/cards coerce to `element`/`grouping` with layer/aspect invented; tints, dashes, legend and folds have no carrier. Source: ds-fixtures §8.1. Missing: matrix + fragment composition (family bytes gain neither). | **partial [model]** — same coercion over the engram graph; the `hrpn-card` refinement has no ArchiMate reading. Source: semantic sha §8.1. Missing: §3.9 completion. | **absent** — ArchiMate claims no BPMN fixture. Source: skeleton notes (corpus §8.1). Missing: by design (category boundary). | **absent** — ArchiMate claims no d2d fixture. Source: d2d position §1 (corpus §8.1). Missing: by design (category boundary). |
-| `archimate@1` completed (§3.9) + fragment | **partial [model]** — the governance scene is **not** an ArchiMate model: its relations (`fulfills`, `routesTo`, … study §4.1) are governance-routing relations, not the ArchiMate matrix. It stays a generic diagram (A1, §8.3) even after ArchiMate completes. Source: study §4.1, kit §8.1. Missing: none — the cell is partial because the family is the wrong landing for this column (§9), not because the profile is incomplete. | **partial [model]** — HRPN scenes are card architecture diagrams without an ArchiMate matrix claim; they remain generic instances (A2–A4). An HRPN diagram that later asserts ArchiMate semantics re-pins here with its matrix validated. Source: ds-fixtures §8.1. Missing: an ArchiMate assertion by the producer (not a profile gap). | **partial [model]** — same landing reason as the fixture form. Source: semantic sha §8.1. Missing: producer assertion, not profile content. | **absent** — completed ArchiMate claims no BPMN fixture. Source: corpus §8.1. Missing: by design (category boundary). | **absent** — completed ArchiMate claims no d2d fixture. Source: d2d position §1 (corpus §8.1). Missing: by design (category boundary). |
-| `bpmn@1` skeleton (today) | **absent** — the governance scene contains no BPMN process; no cell is claimed. Source: kit §8.1. Missing: by design (no BPMN content in this column). | **absent** — HRPN card scenes are not BPMN processes. Source: ds-fixtures §8.1. Missing: by design (no BPMN content in this column). | **absent** — the engram graph contains no BPMN process. Source: semantic sha §8.1. Missing: by design (no BPMN content in this column). | **partial [model]** — element/sequence/message arity validates, but there is no containment rule, no event matrix, no DI and no extension preservation; 3 of 7 measured corpus files need preserved unknown namespaces (A′ §4.3). Source: corpus §8.1, skeleton notes. Missing: A′ generated family (K1–K13). | **partial [model]** — d2d consumes bpmn-moddle + the profile mechanism, not the hand-written skeleton; the skeleton neither reads its private profile nor its placement contract. Source: d2d position §1. Missing: the §3.10 mapping (skeleton as readable placeholder only). |
-| `bpmn@2` generated stack (A′, §3.10) | **absent** — the governance scene contains no BPMN process. Source: kit §8.1. Missing: by design (no BPMN content in this column). | **absent** — HRPN card scenes are not BPMN processes. Source: ds-fixtures §8.1. Missing: by design (no BPMN content in this column). | **absent** — the engram graph contains no BPMN process. Source: semantic sha §8.1. Missing: by design (no BPMN content in this column). | **covered [model]** *(at A′ completion, gated)* — descriptor coverage 100 %, F1 bijection, complete DI, unknown extensions preserved; MIWG `B.1.0`/`C.4.0`/`C.5.0` round-trip once F1-A1/A2 land. Until gate G3 passes the cell reads **partial** with that exact remainder. Source: A′ §§4–10, corpus §8.1. Missing today: F1 publication + G3 bijection. | **covered [model]** *(for the shared mechanism)* — d2d keeps bpmn-moddle + `profile-c14n/2` + its private profile; the generated stack is the diagram-core reading of the same descriptors, mapped explicitly (A′/d2d open point closed as: skeleton/generated profiles are views over the mechanism, never a second evaluator, §6.3). Private content is never re-modelled. Source: d2d position §4 (corpus §8.1). Missing: the pinned mapping artefact (Engram data) at A′ lot time. |
-| `uml@1` skeleton (today) | **absent** — no UML classifiers in the governance scene. Source: kit §8.1. Missing: by design (no UML content in this column). | **absent** — HRPN cards are not UML classifiers. Source: ds-fixtures §8.1. Missing: by design (no UML content in this column). | **absent** — the engram graph holds no UML classifiers. Source: semantic sha §8.1. Missing: by design (no UML content in this column). | **absent** — UML claims no BPMN fixture. Source: corpus §8.1. Missing: by design (category boundary). | **absent** — UML claims no d2d fixture. Source: d2d position §1 (corpus §8.1). Missing: by design (category boundary). |
-| `uml@1` completed (§3.11) + fragment | **absent** — completion adds no governance-scene claim; the scene holds no UML classifiers. Source: kit §8.1. Missing: by design (no UML content in this column). | **absent** — HRPN cards are not UML classifiers. Source: ds-fixtures §8.1. Missing: by design (no UML content in this column). | **absent** — the engram graph holds no UML classifiers. Source: semantic sha §8.1. Missing: by design (no UML content in this column). | **absent** — completed UML claims no BPMN fixture. Source: corpus §8.1. Missing: by design (category boundary). | **absent** — completed UML claims no d2d fixture. Source: d2d position §1 (corpus §8.1). Missing: by design (category boundary). |
-| `profile-c14n/2` | **absent** — c14n canonicalizes profile values; the kit scene is not a profile artefact. Source: canonical.ts §3.12 (kit §8.1). Missing: by design (not a profile; canonicalizes values, never validates a document). | **absent** — the HRPN fixtures are documents, not c14n artefacts. Source: ds-fixtures §8.1. Missing: by design (same boundary). | **absent** — the engram graph is a document, not a c14n artefact. Source: semantic sha §8.1. Missing: by design (same boundary). | **covered [model]** — every parity-corpus case and canonical vector is a c14n artefact; identity and vectors are frozen (§6). Source: parity corpus §8.1. Missing: none. | **covered [model]** — d2d identity *is* c14n bytes → SHA-256; corpus manifests and sealed vectors validate byte-identically (§6). Source: d2d position §1/§3 (corpus §8.1). Missing: none. |
+| A1 | 28 / 10 / 50 | 1 / 3 / 3 | 28 / 10 / 1 / 3 | 36 / 50 | 0 / 50 |
+| A2 S2-asbuilt | 41 / 17 / 44 | 1 / 4 / 4 | 41 / 17 / 1 / 4 | 58 / 44 | 7 / 37 |
+| A3 S2-target fixture | 51 / 22 / 54 | 1 / 4 / 4 | 51 / 22 / 1 / 4 | 73 / 54 | 0 / 54 |
+| A4a S1-conversational | 23 / 17 / 24 | 1 / 5 / 5 | 23 / 17 / 1 / 5 | 41 / 24 | 10 / 14 |
+| A4b S3-agentfactory | 37 / 15 / 36 | 1 / 5 / 5 | 37 / 15 / 1 / 5 | 53 / 36 | 3 / 33 |
+| A5 Engram S2-target | 37 / 19 / 31 | 0 / 0 / 0 (existing LEGEND and four samples retyped) | 33 / 18 / 1 / 4 | 51 / 31 | 0 / 31 |
 
-The matrix has no empty cell and no silent “covered”: the two gated BPMN cells state their remainder (F1 publication, G3) in the cell itself, and the ArchiMate-completed cells over card scenes state that their remainder is a producer assertion, not profile content. §9 draws the landing conclusion the matrix supports.
+A1 source contains is 33 (28 card parents plus five nested-frame parents); adding three key containments gives 36. New legends are roots: no unrecorded root-containment link is invented. A2–A4 source contains are 54/69/36/48 respectively, recomputed from non-null parents. Re-expression preserves every original node/frame/link id and adds only the explicitly counted legend/key/contains records. A5 is identity-preserving for every entity and relation, not a deletion of sample-card identities.
 
-### 8.3 The instances
+Expanded/folded layout uses DS geometry from the declared inputs, not source geometry as engine input. Source PNGs are comparison witnesses only. No card slot, standard category rendering or authored summary requires a consumer extension.
 
-| # | Instance (source of truth for content) | Content that must be re-expressed | Fold witness |
-| --- | --- | --- | --- |
-| A1 | Governance central scene: sentropic `4138a0ec`, kit `governance-central.js` (`buildGovernanceCentral`), plus `governance-collapse.js` fold behaviour and `presentation-scenes.json` scene dressing (oracle-pinned, §8.5). Landing: **generic successor** (§9). | Top frames `h2a`, `surfaces`, `cluster-mesh`, `engram`, `design-system`; nested frames `cm-catalog`, `cat-mcp`, `cm-storage`, `cm-security`, `cm-cluster`; every card with its kicker (package/family), title, body/detail lines, footer (`service: …`) and icon; every labelled relation (the relation set of the builder, counted in the oracle manifest); legend categories `neutral`, `proposal`, `identity` as one legend with `order` values | Expanded view; the all-collapsed overview with its authored summary definitions (§4.5, valid in the source view, active in the overview); at least one single-fold view per top frame; each folded view passes `validateView`; nested folds select the outermost representative (§4.4) |
-| A2 | HRPN scene S2-asbuilt (fixture corpus: 41 cards / 17 zones / 44 links, 7 dashed) | Cards, zones, containment and labelled links as a pure generic-successor instance; tints as `tone` keys explained by the scene legend; dashes as `strokeStyle` per id | Recorded default folds for the scene, re-expressed as `defaultFolds` input; folded view valid |
-| A3 | HRPN scene S2-target, fixture form (51 cards / 22 zones / 54 links, 0 dashed) | As A2. Kept as the regression form; it is not replaced by A5. | As A2 |
-| A4 | HRPN scenes S1-conversational (23/17/24, 10 dashed) and S3-agentfactory (37/15/36, 3 dashed) | As A2. Each scene that gains a native legend records its added legend/key entities and containment relations explicitly in its ledger (the fixture form carries no legend entity today; the legend is authored conversion data with its source-to-token mapping in §8.5, and the resulting typed counts — cards, zones, legend, keys, contains, links — are asserted per scene, never folded into the source counts). | As A2 |
-| A5 | HRPN S2-target graph, Engram form: `S2-target.semantic.json` (sha256 `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91`, 19 containers + 37 `hrpn-card`, 51 `contains` + 31 `link`, revision 1) + `S2-target.view.json` (7 default folds: `MSGZ`, `VERTEXZ`, `INGZ`, `PCICD`, `OBSZ`, `GENSRC`, `AWSCI`) | The same graph converted by the ledger of §8.4: refinements dissolved or retained residually per §3.13, extensions dissolved, titles literal, slots and legend native (§8.4 typed result) | The stored expanded geometry is replaced by DS layout (with recorded hints); the 7 default folds become the `defaultFolds` input and the folded view is projected per §4.4 (geometry per §4.6) and validates at revision 1 (§4.1.3) |
-| A6 | BPMN corpus (bpmn-canvas `tests/fixtures/corpus/*.bpmn` + parity corpus W01–W12) under the A′ generated stack | Descriptor coverage, F1 bijection and DI round-trip per A′ §§9–10; unknown extensions preserved and counted separately. This instance gates the BPMN row of the matrix; it is owned by the A′ lot and referenced here, never re-authored here. | Collapsed sub-process plane witness from the A′ multi-view fixture (§3.10 K9) |
-| A7 | ArchiMate matrix corpus + UML multiplicity corpus (§3.9/§3.11) | One valid fixture per matrix row class (ArchiMate) and per multiplicity form (UML), plus each rejected case with its asserted diagnostic. These corpora are authored with the completions; until they exist the corresponding matrix cells stay at their skeleton readings. | Grouping/package folds validate as generic view folds (§4.4) over the family hierarchies |
+### 8.4 A5 ledger: every authored field has a native destination
 
-A1's relation count is taken from the builder's relation table at the pinned commit; the oracle manifest records the exact count and the fixture digest (§7.3). No instance count in this table is asserted from prose: each is recomputed from its oracle bytes at gate time and compared with the manifest value.
+Source: semantic `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91`; view `82930614efe070bdb8e5acce3aecea29dfdb2d1ab625b7d376507f97fb6f8b50`; manifest `54ef0dd0ac0e923aa99435625780902d07c3819e9c2c340868c921d1f956fd91`.
 
-### 8.4 A5 conversion ledger: identity-preserving, typed counts, lossless
+The resulting semantic document has 56 entities, 82 relations, no standard-slot extension and no standard-slot refinement. Every source id survives. Its ViewDocument stores the standard presentation in presentation.diagram. Default folds are exactly PCICD, MSGZ, VERTEXZ, OBSZ, INGZ, GENSRC, AWSCI, resolved to existing occurrence ids in the produced view; document/view revision remains 1.
 
-A5's source form cannot be renamed in place: its legend is a `container` holding four sample cards, and its cards use a refinement. The conversion is therefore a **ledger**: every source entity maps to exactly one target entity with the **same entity id**, every source field names its disposition, and the ledger is part of the corpus fixture (checked, not narrated). Source bytes: 56 entities (19 `container`, 37 `hrpn-card`), 82 relations (51 `contains`, 31 `link`), 19 `hrpn.zone-slots@1` extensions, 1 type definition (`hrpn-card`), `profileRefs: ["generic@1"]`.
-
-| Source (id pattern) | Target type | Slot provenance (where each value comes from; every source field accounted) | Count |
-| --- | --- | --- | --- |
-| `entity:LEGEND` (`container`, name “Legend”) | `legend` (same id) | `name` from the entity; `kicker`/`subtitle`/`icon` from its zone-slots extension source (`HRPN` / “Card tints and link styles of this scene” / `window`); `footer`/`tone` absent (extension carries none) | 1 legend |
-| `entity:legend-genair`, `entity:legend-custom`, `entity:legend-outside`, `entity:legend-none` (`hrpn-card` children of `LEGEND`) | `legend-key` (same ids) | `name` + `category` + `token` + `order` + `description` from the mapping table in §8.5; **plus** the card's remaining authored fields: `kicker` → `description` prefix is **not** used — instead: the source card's `body` becomes `description`, its `detail` is appended to `description` as a second sentence (recorded per key in the ledger, e.g. `legend-genair.detail = "standard GenAiR code and service"` is preserved verbatim inside `description`), its `footer` becomes the key's accessible footer text carried in `description`'s ledger note, and its `icon` is retired as presentation metadata **explicitly recorded as retired** in the ledger (reason: legend keys render as swatch lines, never as cards, §3.6.1; the icon name itself is preserved in the ledger entry so no authored string is lost silently). `tint` → `category` by the declared mapping; `legend-none` maps to category `none` with the neutral token, recorded explicitly. | 4 legend keys |
-| Remaining 18 `container` entities | `container` (same ids) | Header slots from each entity's zone-slots extension source (`kicker`, `subtitle`, `footer`, `icon`); `tint` → `tone` by the declared rename (§3.13); `displayTitle`, where the extension carries one, becomes the entity `name` and the suffixed stored name is discarded (the two « CI/CD » zones both become `name: "CI/CD"`) | 18 containers |
-| Remaining 33 `hrpn-card` entities | `node` (same ids) | `kicker`/`body`/`detail`/`footer`/`icon` from the refinement attributes; `tint` → `tone` by the declared rename | 33 nodes |
-
-**Typed result (asserted separately, normative):** 33 `node` + 18 `container` + 1 `legend` + 4 `legend-key` = 56 entities; 51 `contains` relations (unchanged ids; the four LEGEND containment relations now target `legend-key` children under a `legend` parent, which the `children-restricted` + `required-parent` constraints accept); 31 `link` relations (unchanged ids, labels and endpoints; `strokeStyle` absent ⇒ `solid` for all 31, matching the source's all-solid target). Total entities (56), containment count (51) and link count (31) are asserted as three separate numbers alongside the four typed counts. Extensions after conversion: 0. Type definitions after conversion: 0 (the `hrpn-card` overlap promotes fully for A5; a consumer attribute would instead retain a residual definition per §3.13.1 and the ledger would record it — A5 has none). The ledger records, per entity, source type → target type, the extension/attribute each slot came from, and the disposition of every retired field, so a slot or a string with no provenance fails the conversion review. The same ledger discipline applies to A2–A4: each zone-slots or tint value names its target slot, each dashed relation names its `strokeStyle`, each added legend names its source-to-token mapping, and typed counts (including the added legend/keys and their containment relations) are asserted against the manifest. A conversion with no ledger does not qualify as a corpus fixture.
-
-### 8.5 Oracle manifest: populated, hashes computed from the files
-
-Acceptance and normative sources are frozen in an **oracle manifest** — a corpus artifact (Engram-governed, §7.1) whose entries are `(revision, path, sha256)` triples plus the derived expectations. A gate that reads a source not in the manifest, or whose bytes hash differently, fails as a fixture error before any assertion runs. The entries below are populated at r3 authoring time with hashes computed from the files (the “shall contain” form of r2 is withdrawn). “Source-gap”, “missing source” and “unverified” are the recorded states for any entry that cannot be pinned; a gate never substitutes a mutable path for a missing pin. Entries whose hash could not be computed in this lot are marked `unverified` with the reason, never given an invented hash.
-
-| Entry | Revision / path | sha256 (computed) | Derived expectations recorded beside the pin |
-| --- | --- | --- | --- |
-| study | r10, `/home/antoinefa/src/sentropic/.tmp/governance-unification/study.md` | `7e3a3d1cb863eafce347bceff2639d5fdbc12a6dc2515371b34c2524687c5335` | Rows 4/10, N13, M4/G2, R-06 as cited in the header |
-| G0 | `/home/antoinefa/src/graphify/.graphify/scratch/design/ontology-guardian/SPEC-G0-guardian-contracts.md` | `e6362445f87d6581ac31224c2dc44e15214b3a7debc2afff2b3d25b8b37ff8f6` | P-CONTENT-DIAGRAM/P-PINS/P-RESULT preimages and the four frozen vectors (§7.3.5) asserted from these bytes (vectors unchanged at 186/206/86/320 bytes) |
-| M2 model | `spec/SPEC_EVOL_GD_M2_MODEL.md` @ r3 base | `5e7798a451c5b92cbbde6fbf85ea5f890c32c863ece3c73e5d9772efa9cff078` | §3.4 N-occurrence rule, D1-A/D3-C decisions |
-| BPMN coverage (A′) | `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` @ r3 base | `7b29e147873287402a271d8b95e86bc0d39cd320152bbd8c6b1f6ef4c6e87505` | A′ family rule, K1–K13, F1-A1…A7, G0/G3 gates |
-| generic@1 bytes | `packages/diagram-core/src/profiles/generic.ts` @ `8d1727a1` | `b19967fe65483abdbf0e271f197e13691904e4b087c1542de23c52e2ad4f45c3` | Digest-unchanged witness (§5.3.1) |
-| skeletons bytes | `packages/diagram-core/src/profiles/skeletons.ts` @ `8d1727a1` | `0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e` | Skeleton verdicts unchanged (§6.2 gate 4) |
-| c14n code | `/home/antoinefa/src/bpmn-canvas/src/profile/canonical.ts` | `287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba` | `profile-c14n/2` byte identity (§6) |
-| kit central | sentropic `4138a0ec`, `kit/src/governance-central.js` | `1f7490ff48c02fced30a43bd03d8554b7d894bdfcf6cda43e6dd948f9254af50` | Relation count from the builder table; frame/card inventory for A1 |
-| kit collapse | sentropic `4138a0ec`, `kit/src/governance-collapse.js` | `585709daedd8bc8b46594394e88f9c2c24678edcd4e0f679933c1833eaff405d` | Outermost-representative precedent; overview summary labels for A1 |
-| kit scenes | sentropic `4138a0ec`, `kit/src/presentation-scenes.json` | `7c9fcab414ac469ce91db5783a4479c8b302bc7ae3242011bb87151e09e25140` | Scene dressing for A1 |
-| HRPN manifest | `docs/architecture/hrpn/ds-fixtures/MANIFEST.md` (airbus-genair-hrpolnav) | `9558092fa2af669af9dcd4df6d9380e24a1cba723dbdd603ad2ebd86c6439a49` | Per-scene card/zone/link, solid/dashed, tint counts (§8.3) |
-| HRPN S2-asbuilt | `ds-fixtures/S2-asbuilt.json` | `7abc427f7beca5b0f87947efc9df4daf6316f24725074f47f1da2b04be76ba2e` | 41/17/44, 7 dashed |
-| HRPN S2-target (fixture) | `ds-fixtures/S2-target.json` | `28a7271dd0bec89fa9ad435174a614ab4a40b346b10724da95736f9c55b574d9` | 51/22/54, 0 dashed |
-| HRPN S1 | `ds-fixtures/S1-conversational.json` | `d9f7f7cb80894b5301e11cc7b7f0fc2775d1933aa15013152001395d716a32c7` | 23/17/24, 10 dashed |
-| HRPN S3 | `ds-fixtures/S3-agentfactory.json` | `e362b9a8da84082e5389127ae463d282fb773ef8950f41017222e0b3ef9002fc` | 37/15/36, 3 dashed |
-| HRPN tint legend | `ds-fixtures/tint-legend.json` | `cc47a3e3a2019af8c436ce28a34d0d52d71b8439cf55a44a33f1c0239752a26d` | Source-to-token mapping: `genair`/`specific`/`added`/`removed`/`risk`/`custom`/`outside`/`none` → governed token names (recorded verbatim in the corpus artefact; the mapping table itself is Engram data, hashed with the corpus) |
-| HRPN renders | `ds-fixtures/reference-renders.json` | `7afee15ef473389452011d38fbaf8547973b5eed572440cc0c31ee8d921e25db` | Reference geometry witnesses (never layout input) |
-| A5 semantic | `engram/S2-target.semantic.json` | `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91` | Ledger §8.4; typed result 33+18+1+4; 51/31 |
-| A5 view | `engram/S2-target.view.json` | `82930614efe070bdb8e5acce3aecea29dfdb2d1ab625b7d376507f97fb6f8b50` | 7 default folds; revision 1 |
-| A5 manifest | `engram/MANIFEST.json` | `54ef0dd0ac0e923aa99435625780902d07c3819e9c2c340868c921d1f956fd91` | Counts 19/37/31, folds list |
-| bpmn corpus (10 files) | `/home/antoinefa/src/bpmn-canvas/tests/fixtures/corpus/*.bpmn` | `comments 0f3b5609248ed3eb3cb6f63b8cf2c7f2ee8f4036fb9de8d52ff3d9732f731d30`, `duplicate-id 0b3bc8a15b3a2a265e93f4106d5f1d168973d5f343240ea17411581f63df6151`, `extension-ok 0f47cd0cb28482cddbbb1ed4210c1ac5ee8c0387320028186d00a62080934a69`, `io-specification-incomplete ff99f2ed6e1a826d90b249a701aa29055416347c19967b6ce2f81d2be3efcf7f`, `no-di f092763b04317e16565f83dfa84be412778d6372f2bbbed5715917375c2fad5f`, `notation 9d39d6cf37f477ee14451b035dec7e1605f6da765df90c3d51441e4f870f763d`, `partial-di 73c526076bfb556a7974419b4f28f7e5f512b812a9a6fe3a08afe3acd4f73795`, `rogue-extension 3db5a5412a5f48f14b9c6e76f1c3a7cb1760941d01ce543031c66a88e9753cef`, `tiny 29142ab44afc7c4d55049d2ee27bc72af2dcb36785020c634d9aa853c7f92350`, `unresolved-reference 43da5729c80c31fd46e0ef1c5673ce7b83e46dc01a52addf3f3daed7c9d43b0c` | F1 verdicts per file (A′ §4.3 method) |
-| bpmn parity index | `tests/fixtures/parity-corpus/index.json` | `40284149ca3538b35250e5896694e7d15c80d3c3233241e0d7ac3d91266df03a` | W01–W12 valid/invalid partition (§8.1) |
-| bpmn vectors | `tests/fixtures/parity-corpus/canonical-vectors.json` | `f238aef110a43381416fd0025326f883f760dc75510a9f0cc5817415eb02d1c6` | c14n digest witnesses (§6.2 gate 2) |
-| unicode pin | `tests/fixtures/unicode-case-15.0.0.pin.json` (bpmn-canvas) | `989aa11b6c138115a356c39867a26d8da281d2fd4b926508c72199b87fa4b762` | `unicode-case/1` UCD 15.0.0 lock |
-| d2d corpus | `profile-corpus-v1.0.0` (198 files, vendored by hash) at `/home/antoinefa/src/bpmn-canvas/tests/fixtures/profile-parity-corpus/profile-parity-corpus/1/manifest.json` + pin `/home/antoinefa/src/bpmn-canvas/tests/fixtures/profile-parity-corpus.pin.json` | manifest `01b81fd9fb69f110a7f302631d6da92126bcb1672c67bea3ea68ff802df39faf`; pin `d34ee889917b8c5ef14c8d7bbd3fa2b222d93f4ac61de4bd0b41deb5767378a2` | JS/Python byte parity; compatibility-matrix verdicts |
-| owner diagram decisions | `/home/antoinefa/src/sentropic/.tmp/governance-unification/owner-diagram-decisions-via-hcond.md` (2026-10-18) | `76eee3b4e91b34027c030c8c4c48006e0d387d224ffd4bd990085b557aa2a985` | Three-layer arbitration, nested diagrams, own JS strains, offline 32 MB (§§1.2, 1.3) |
-| requirements | `/home/antoinefa/src/sentropic/.tmp/governance-unification/DS-DIAGRAM-MODULES-REQUIREMENTS.md` (owner-validated 2026-10-21) + `SPEC_EVOL_DS_DIAGRAM_CARDS.md` @ `97ecf69b` | requirements `c65f5f3afc752b387d3ee2498f894fb6a8637fa7a845b9e0608b450b4325e944`; component specification digest recorded in the corpus artefact at M1 lot time | Frozen `460 × 200`, spacing values, overflow/icon diagnostic names (§1.5 mapping) |
-| reviews closed | `scratchpad/rev/dmodel-rev2.out`; Engram `review-M3-sol-r2.out`, `review-M3-astra-r2.out` (graphify m3/) | hashes computed at M1 lot time from those files; r3 §11 asserts coverage against their text | §11 traceability |
-
-Each entry also records, in the corpus artefact: source-to-slot mapping (which source field feeds which §3.2/§3.6 slot), source-to-token mapping for legend conversion (tint/category → token name), default folds per scene, recursive layout hints per scene (§4.7 — the HRPN trees translated group-for-group, including `kit.root` and the `PPROZ` subtree, with per-group direction/stretch/gaps), and expected diagnostics per fixture (zero for valid instances; the asserted diagnostic arrays for rejected cases). No entry in this table is left `unverified`: every hash above was computed from the file at r3 authoring, and a gate recomputes each one before asserting its derived expectations.
-
-### 8.6 Where the instances live and who checks them
-
-The instances are authored once as Engram corpus fixtures (§7.1, item 3) and consumed in this repository by path plus digest. The M1 gate checks semantic and view validity (zero diagnostics, zero slot-carrying extensions, typed counts, per-id stroke styles, authored definitions); the roadmap gates of §10 check rendering and interaction against the same pinned instances. No instance file is copied into this repository as a locally edited variant: a correction to an instance is a corpus change in Engram with a new digest.
-
-## 9. Architecture landing: settled with evidence, no owner question
-
-The r2 question (« `generic@2` vs `architecture@1` ») is withdrawn. `architecture@1` is never registered. The matrix of §8.2 settles the landing without a trade-off left for the owner:
-
-**Settled.** Card architecture diagrams — the #711 central scene (A1), the four HRPN scenes (A2–A4) and the HRPN S2-target engram graph (A5) — land on the **generic successor (`generic@2` + presentation fragment)**. ArchiMate diagrams land on **`archimate@1` completed from its skeleton** (§3.9) and compose the same fragment when drawn as cards. The two landings coexist on the one metamodel; neither is the other's successor and no document migrates between them to change its drawing.
-
-Evidence, each item checkable against the pinned sources:
-
-1. **Content.** A1/A2–A5 use only `node`/`container`-shaped entities, `contains` containment and labelled `link`s (plus the legend). None asserts an ArchiMate relation, layer/aspect assignment or viewpoint. Forcing them onto the ArchiMate matrix would invent semantics the producers never claimed — the matrix cells for `archimate@1` completed over those columns therefore read **partial with “producer assertion missing”**, while the generic-successor cells read **covered with “missing: none”** (§8.2). A landing is chosen by which row covers the content, not by the word “architecture”.
-2. **Measured validity.** The HRPN fixtures are authored for `generic@1` (`profileMapping` in every fixture, MANIFEST `9558092fa2af669af9dcd4df6d9380e24a1cba723dbdd603ad2ebd86c6439a49`) and the engram graph declares `profileRefs: ["generic@1"]` (semantic sha `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91`). The generic successor is the only completion under which those bytes migrate by the value-preserving path of §3.13.1 (including the literal « CI/CD » titles). An ArchiMate landing would require a cross-family document rewrite with no source assertion to justify it.
-3. **Leak rule.** Putting the card anatomy into `archimate@1` as family attributes would violate §1.3 (card presentation in family semantics) and would have to be repeated for BPMN and UML card drawings. Composing one fragment with whichever family a document declares keeps each family's bytes free of presentation and keeps the fragment governed once.
-4. **Study.** The study's central diagram is itself a `governance-routing` instance projected on `generic@1` (study §4.1), and its architecture need (N12) is “reuse `SemanticDocument`; the DS renders a `ViewDocument`” — a generic-metamodel statement, with ArchiMate governance assigned to Engram profile stewardship (C07), not to a separate drawing model.
-
-Retained obligations, stated without overstatement: under this landing `generic@1` remains registered, resolvable and regression-tested forever (pins are immutable), exactly as `archimate@1` skeleton pins do. The cost difference against the withdrawn alternative is therefore not “one profile versus two to keep alive” — both families stay alive under either landing — but **one card-presentation governance (the fragment) versus three copies of it**, plus the absence of an invented cross-family migration. §§3–8 are normative under this landing as written; no section is parametric in a withdrawn id.
-
-## 10. Milestones, gates and publication stages
-
-Milestones run in order; a gate is a set of **named executable commands with exit 0** plus the named witnesses. No milestone is reported done on a partial gate. The layout/projection surface that folded-view gates depend on is **inside M1**, so no M1 gate waits for M3 work, and no gate is stated against geometry that no earlier milestone produces.
-
-**Publication stages (distinct; never conflated):**
-
-- **S1 — Development artifacts.** Code, tests and draft profile data in this repository and draft corpus data in Engram. A draft is outside the catalog (§7.4); S1 artifacts are never called pinnable, published or qualified.
-- **S2 — Qualified profile publication.** The G0 §5.5 admission gate (§7.4) passes in Engram: self-validation green, corpus green, licence closure recorded, digests resolved, DIA `family-corpus` receipt present and matching, diagnostic-adapter fixtures green. Only S2 makes a completed profile pinnable by consumers.
-- **S3 — Package publication.** Making a package (including a private package) public or releasing a version. Always an owner gesture; no gate below implies it.
-
-| Milestone | Delivers (normative scope of this spec in **bold**) | Gate (all must hold; commands are run from the repository root) |
+| Source | Semantic destination | Typed view destination / disposition |
 | --- | --- | --- |
-| **M1 — Model, executor and folded views (all families)** | **Completed profile declarations (§5.5); shared resolver (§5.1); family parents (§5.2); scoped uniqueness + legacy adapter (§5.3); generic constraint mechanisms incl. legend/tone (§5.4) with the diagnostic adapter (§5.4.1); text/numeric constraints (§5.8); folded-view validation and projection (§5.6 core, §4.4); measurement + layout surface incl. fixed footprints, recursive hints (§5.6 layout, §§4.6/4.7); profile migration (§5.7); S1 Engram artifacts of §7.1 (draft, outside catalog); corpus instances A1–A5 (+ A7 corpora as authored) with the populated oracle manifest (§8.5). BPMN generated-stack work (A6) proceeds in its own A′ lot and is gated there; M1 claims no BPMN completion.** | Every §5 RED test green after having been observed RED; `validateProfile` of each completed declaration empty; A1–A5 semantic documents validate with zero diagnostics, zero slot-carrying extensions, typed counts and per-id stroke styles as in §8; every folded view of A1–A5 (including nested, multi-occurrence, port, n-ary and filter+fold fixtures) passes `validateView`; Appendix B folded views validate; summary definitions validate in their source views and activate in their overviews (§4.5); transcription digest check (§7.3.6) and frozen vectors (§7.3.5) green; `generic@1` and skeleton digests and validation results unchanged (§5.3.1, §6.2). Commands: `npm run build`, `npm run check`, `npm test` (workspace tests for `diagram-core` and `diagram-canvas` run in series as part of the root test script); §6.2 BPMN gates 2–4 re-run read-only; publishable-package count unchanged; no Python introduced. S2 admission is **not** part of the M1 gate: M1 ends at S1 with the admission evidence prepared. |
-| **M2 — Cards render from the model** *(roadmap; normative contract in `SPEC_EVOL_DS_DIAGRAM_CARDS.md`)* | Atomic card and wrapping container (collapsed form is the atomic card) rendered directly from fragment slots for every family that composes them, consuming the shared `LineLayout` of §4.6; pictogram resolution by registry name; tone resolution through tokens and the document legend; colour-key legend rendering | Pointer gate (owned by the component spec): pixel-parity witnesses, slot-for-slot rendering of A1/A5 with no consumer adapter, overflow and unknown-icon diagnostics, and the rendered-pixel sharing assertion deferred from M1 (§4.6.6). Recorded here as a dependency of M3, with no normative clause in this spec. |
-| **M3 — Interactive fold, layout and routing** *(roadmap behaviour over the M1 normative surface)* | Fold/unfold in place (per-container control, expand-all/collapse-all, per-zone chips) driving the M1 projection; re-routing; derived aggregation with authored summaries | Behaviour gate over M1 surfaces: every folded view of A1–A5 passes `validateView` (M1 already asserts this; M3 asserts it through the interactive controls, not only through `projectView` calls); scene conservation on every fold state; fixed footprints never enlarged (`docking-overflow` witnessed); reflow without collisions on every fold toggle. **Finite interaction corpus:** the versioned fixture listing, per instance, every fold toggle of every container occurrence, every chip toggle, expand/collapse-all in both orders, and one representative edge inspection per relation — enumerated in the corpus artefact with its count (the r2 “600/240” totals are withdrawn as unenumerated prose; the M3 lot publishes the enumerated list and its measured worst interaction under the 1.8 s budget over that list, with no continuous work at idle and timeouts never raised). |
-| **M4 — xyflow nodes and consumer switch-over** *(roadmap; separate authorisations)* | xyflow (Svelte Flow) node forms and consumer import switch-over. **Owned by their own specifications; no normative content here.** | Roadmap pointer only: the owning spec's gate applies (plain-import module-graph checks, consumer hack inventory empty in the switched consumers). Nothing in §§3–8 depends on this milestone. |
-| **M5 — Exports** *(roadmap)* | draw.io export keeping folds as collapsible groups, plus static exports rendering the supplied view exactly. **Owned by the L8 dossier / converter spec.** BPMN XML export stays at the A′ test edge. | Roadmap pointer only: the owning spec's round-trip witness applies (folded + expanded export/re-import re-validates with same typed counts, same per-id `strokeStyle`, same summary definitions with constituent ids). |
-| **M6 — Editing** *(roadmap)* | Rich-text editing gated on RT-1, then editable/re-connectable edges as host-applied proposals over `diagram-core` commands (Track `01M5F3XSAJC2H6S9ZREP7JFFJ6`). BPMN editing stays in bpmn-canvas until the parity harness of `SPEC_RE_BPMN_JS_PARITY.md` proves otherwise. **Owned by RT-1, the edge-editing spec and the parity lots.** | Roadmap pointer only: RT-1 gate green before any editing lot starts; refused proposals change nothing. |
+| LEGEND container name | legend.name, same entity id | extension kicker="HRPN", subtitle="Card tints and link styles of this scene", icon="window" become its occurrence presentation text/icon. No string is dropped. |
+| Four legend sample cards | Same ids retyped legend-key; name unchanged; category from explicit table below; description from body | Original kicker/body/detail/footer/icon values retained individually in legend-key EntityPresentation. Icon drawing is retired for swatch form; its name remains stored. Explicit order list is genair,custom,outside,none. |
+| 18 other containers | Same ids/types; literal displayTitle becomes name for PCICD/AWSCI | Every zone-slots kicker/subtitle/footer/icon moves to its occurrence presentation. Tint meaning becomes category data; drawing token stays in view. The generated name suffix used solely to avoid uniqueness is retired with its exact original in migration operations/originalCanonical; no authored display string is retired. |
+| 33 other hrpn-card | Same ids become node; semantic name unchanged; tint meaning retained as category | Every kicker/body/detail/footer/icon moves to each original occurrence. The consumed refinement is removed only after all instances/dependents have destinations. |
+| contains / link | Same 51/31 ids, endpoints, labels and general attributes | Occurrence style absent stays absent (effective solid). Source view geometry is replaced only by authorised DS layout; original state remains recoverable. |
+| resources and foreign extensions | Preserved unchanged | No presentation conversion erases unrelated data. |
 
-Staging rules: Svelte is the first framework for the roadmap component work; other frameworks follow the same contracts per stage and are never claimed delivered from types alone. draw.io and edge editing stay out of M1 scope even when a consumer asks early; their absence blocks no M1 gate.
+The four complete resulting records below give their exact authored values. S denotes the semantic legend-key fields; P denotes that key's typed occurrence presentation. Strings in these records remain in English exactly as in the source. An accessible exporter can read all original text directly from the resulting native document/view pair; a side-ledger note is not its only destination.
 
-## 11. Review traceability: surviving findings and their status in r3
+~~~json
+[
+  {
+    "S": {
+      "id": "entity:legend-genair",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "GenAiR standard"
+        },
+        "category": {
+          "kind": "text",
+          "value": "genair"
+        },
+        "description": {
+          "kind": "text",
+          "value": "GenAiR template, unchanged"
+        }
+      }
+    },
+    "P": {
+      "form": "legend-key",
+      "text": {
+        "kicker": "TINT · BLUE",
+        "body": "GenAiR template, unchanged",
+        "detail": "standard GenAiR code and service",
+        "footer": "tint: genair"
+      },
+      "icon": "window",
+      "categoryRef": "entity:legend-genair"
+    }
+  },
+  {
+    "S": {
+      "id": "entity:legend-custom",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "GenAiR customisation"
+        },
+        "category": {
+          "kind": "text",
+          "value": "custom"
+        },
+        "description": {
+          "kind": "text",
+          "value": "within the template frame"
+        }
+      }
+    },
+    "P": {
+      "form": "legend-key",
+      "text": {
+        "kicker": "TINT · GREEN",
+        "body": "within the template frame",
+        "detail": "configured, data services included",
+        "footer": "tint: custom"
+      },
+      "icon": "window",
+      "categoryRef": "entity:legend-custom"
+    }
+  },
+  {
+    "S": {
+      "id": "entity:legend-outside",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Specific for HRPN"
+        },
+        "category": {
+          "kind": "text",
+          "value": "outside"
+        },
+        "description": {
+          "kind": "text",
+          "value": "added outside the template"
+        }
+      }
+    },
+    "P": {
+      "form": "legend-key",
+      "text": {
+        "kicker": "TINT · YELLOW",
+        "body": "added outside the template",
+        "detail": "not provided by GenAiR",
+        "footer": "tint: outside"
+      },
+      "icon": "window",
+      "categoryRef": "entity:legend-outside"
+    }
+  },
+  {
+    "S": {
+      "id": "entity:legend-none",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Managed service"
+        },
+        "category": {
+          "kind": "text",
+          "value": "none"
+        },
+        "description": {
+          "kind": "text",
+          "value": "Google or third-party"
+        }
+      }
+    },
+    "P": {
+      "form": "legend-key",
+      "text": {
+        "kicker": "NO TINT",
+        "body": "Google or third-party",
+        "detail": "managed service: no fill",
+        "footer": "tint: none"
+      },
+      "icon": "window",
+      "categoryRef": "entity:legend-none"
+    }
+  }
+]
+~~~
 
-Sources: DS Astra pass 2 (`/home/antoinefa/src/sent-tech-design-system/scratchpad/rev/dmodel-rev2.out`, findings R2-1…R2-18 over r2 `8d1727a1`), Engram Sol r2 (`/home/antoinefa/src/graphify/.graphify/scratch/design/ontology-guardian/m3/review-M3-sol-r2.out`) and Engram Astra r2 (`review-M3-astra-r2.out` in the same directory). “Survives” means the finding still applies under the one-metamodel reframe and is closed by the cited r3 section. “Moot” means the reframe removes the premise; the reason is stated and no section pretends to close it. Findings the two Engram reviews number differently are mapped to the R2 numbering where they coincide; Engram-only items are listed as E-sol/E-astra rows.
+All four original names, kickers, body/detail lines, footers, icon names and tint presence are accounted for. In particular "TINT · BLUE" and "tint: genair" are native P.text.kicker/footer values; none has been folded into an undefined description note. The absence of tint on legend-none remains an absence in the archived source; the explicit semantic category none comes from its role as the no-tint legend key. Each source field→destination path is recorded, not merely each entity's count.
 
-| Finding | Status in r3 | Closing section(s) / moot reason |
+### 8.5 Raw-byte source pins
+
+A source pin is SHA-256 over exact file bytes; it is not a G0 profile contentDigest. DS files are always retrieved with git show DS:path. KIT files are retrieved with git show 4138a0ec:path, never the scratch kit. The table below is generated from the read bytes. Paths sharing a repository/revision use that exact revision for every row.
+
+| Repository / immutable revision or snapshot | Path | Raw SHA-256 |
 | --- | --- | --- |
-| R2-1 — exact fold restoration (`strokeStyle` materialisation; folded-only storage unrecoverable) | **Survives — closed** | §4.4.2 (override presence preserved; retained source required, folded-only storage not supported), §4.4.3 step 2, §5.6 test 5 (empty-collapse byte identity incl. definitions) |
-| R2-2 — authored summaries invalid in the source view; field inventory miscounted | **Survives — closed** | §4.5.1 definitions valid inactive in the source (kit `h2a:surfaces` witness), §4.5.2 activation derived, §3.13 inventory (2 endpoint + 1 relation + 1 group + 1 view fields), §5.6 test 12 |
-| R2-3 — folded geometry never produced (4340×3050 retained vs 460×200) | **Survives — closed** | §4.4.3 (`layoutFolded = fold → measure → place → route`; source geometry retained, folded geometry placed), §4.6.1/§4.6.3, §5.6 fixed-footprint tests |
-| R2-4 — migration drops residual content; dependents dangle; collisions mixed-invalid | **Survives — closed** | §3.13.1 step 3 (residual retention, deterministic re-basing, promote-only-overlap), §3.13.3 (blocking collisions atomic), §5.7 migration tests 3–4 |
-| R2-5 — legacy discriminator is the missing field; legacy diagnostics gain `scope` | **Survives — closed** | §5.3.1 (pinned adapter table + `declarationFormat` as the discriminator; legacy projection without `scope`), §5.3 tests 3/6 |
-| R2-6 — legend constraints enforce the wrong direction; membership selectors missing; `legendRef` target unchecked | **Survives — closed** | §5.4 (`required-parent` inverse mechanism + full membership selectors incl. `legendType`/`hierarchyId`/`tokenAttribute`; `bound-target-not-legend` arm), §5.4 tests 1–2 |
-| R2-7 — measurements emitted only for headers; measurer lacks allocation/state; expanded width unresolved | **Survives — closed** | §4.6.2 (`SlotMeasurement` for every slot; `MeasureRequest.allocatedLines`/`folded`; width determination before header measurement), §4.6.3 steps 2/7, §5.6 measurement tests |
-| R2-8 — oracle manifest still a promise | **Survives — closed** | §8.5 populated manifest (every hash computed from the file at r3 authoring; no `unverified` entry remains) |
-| R2-9 — G0 compatibility ranges; schema objects in closed `assets`/`bindings`; identity placeholders | **Survives — closed** | §7.4 (exact pinned `compatibility`; G0-shaped `{role,path,mediaType,sha256}` assets + `{key,contract,required}` bindings; namespace/owner/canonical refs as pinned lookups recorded at admission; schema-valid specimen required) |
-| R2-10 — hints cannot encode nested trees; `zoneGap` loses the axis distinction | **Survives — closed** | §4.7 (recursive `LayoutGroup` with scoped direction/stretch/gaps; axis-split `cardGapX/Y`, `zoneGapX/Y`; per-scene translations recorded in §8.5) |
-| R2-11 — A5 ledger drops key `kicker`/`detail`/`footer`/`icon`; A2–A4 legend accounting missing | **Survives — closed** | §8.4 (every source field dispositioned: `detail` preserved in `description`, `icon` retired explicitly in the ledger; per-scene added-legend counts asserted) |
-| R2-12 — legend `order` integer/≥0 has no carrier | **Survives — closed** | §3.6.2 + §5.8 (declarative `integer`/`min`/`max` on quantity schemas, digest-covered), numeric-constraints tests (`-1`, `0.5` refuse) |
-| R2-13 — Appendix C placeholders (“per arm”, “template kept”) | **Survives — closed** | Appendix C (literal message + scalar detail values per arm, incl. orphan/wrong-parent forms; total diagnostics order §5.3; whole-array fixtures) |
-| R2-14 — M1 depends on M2 rendering (layout lines = renderer lines) | **Survives — closed** | §4.6.3 step 7 + §4.6.6 (M1 asserts emitted measurements only), §10 M2 pointer gate owns the rendered-pixel sharing assertion |
-| R2-15 — fold rules binary; n-ary association and fold-free self-links undefined; mixed-style aggregation | **Survives — closed** | §3.5/§4.4.1 (per-endpoint projection, complete-set internal test with an actual fold), §4.5.3 (aggregation keyed by effective style; duplicate-key refusal §4.5.1), §5.6 tests 11–12 |
-| R2-16 — maintenance comparison overstates A (retained `generic@1` obligations) | **Moot as a decision input; retained as a cost note** | The A/B choice no longer exists (§9 settled landing). §9 states the retained-pin obligations under the settled landing and the real cost difference (one fragment governance). No section compares the withdrawn options. |
-| R2-17 — grammar test demands hyphenated key fail `token-name` (impossible; token grammar subsumes key) | **Survives — closed** | §3.3 + §5.8 tests (dotted = token-only; single-segment key satisfies both, asserted as overlap) |
-| R2-18 — resolver `abstract: false` on refinements contradicts inherited-abstractness prose | **Survives — closed** | §5.1 (`abstract` = reached profile type; refinement of an abstract base is concrete), §5.1 test 6 (compatibility witness) |
-| E-sol 11 / E-astra 10 (handoff part) — G0 record cannot be constructed (base vs profile binding; specimen missing) | **Survives — closed** | §7.4 (base vs stacked binding separated per §3.13.4; schema-valid specimen as admission evidence) |
-| E-sol 12 — new diagnostic codes have no G0 adapter handoff | **Survives — closed** | §5.4.1 (versioned diagnostic-adapter revision, pinned, with receipt round-trip fixtures per new code; admission refuses unmapped codes) |
-| E-astra 6 — new view references break “commands unchanged” (dangling fold groups/summaries on delete) | **Survives — closed** | §5.7 (dependency-aware deletion + inverse restoration over `VisualGroup.occurrence`, provenance and `summaryLabels`; delete/undo witnesses) |
-| E-sol 16 — `resultDigest` “changes when” contradicts P-RESULT | **Survives — closed** | §7.3 preamble + §7.3.1 table (result changes exactly when its effective preimage changes) |
-| Pass-1 findings 1–17, A1–A7, B1–B9 closed in r2 (digests, outermost representative, dashed carrier, fold revision, resolver, supersession, binding/order, scope discipline) | **Survive where the reframe keeps their mechanism; otherwise subsumed** | Digests §7.3; representative §4.4.1; `strokeStyle` §3.5.1; revision §4.1.3; resolver §5.1; supersession §3.13.4 (generic only — ArchiMate/UML complete in place, BPMN by generation); legend binding/order §3.6; normative scope §0/§10. The r2 parametric-`PROFILE_ID` device itself is **moot**: replaced by per-family declarations (§3.8–§3.11) with no withdrawn id anywhere. |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/profile.ts` | `ee4299f403e84041254537bdbb0c058079200be6b668230200f241a86dc30223` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/document.ts` | `300f05718298f7debbc15ffc36dd587b918724ca6f5ab310b297049a59dddf38` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/fixtures/valid/archimate-skeleton-document.json` | `8395ccc32ac25ae1354271817a3358bfe6f96243ecdfe2e5ef45ae1f48683951` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/fixtures/valid/uml-skeleton-document.json` | `eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/attributes.ts` | `25574ecc699b8e08a6cc30f72b0923cc0b04c32071057a8a2edeb4beb779a21e` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/view.ts` | `767faaf9b0b5ba001aa0ac2e621de41dc5117a8386dd719dc91dbf6c01fb8598` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/validate.ts` | `ab0ee3df80a427e8199b5204fb8652e4b86d03a2ebcf7b52860f78937ad120f3` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/profiles/generic.ts` | `b19967fe65483abdbf0e271f197e13691904e4b087c1542de23c52e2ad4f45c3` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/profiles/skeletons.ts` | `0a01fd2569e68c2b99ca754f28dc7cbbbd9a1d491ffa9981161cae3bbf56b54e` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `packages/diagram-core/src/diagnostics.ts` | `fdd5e6a39cab036c8e552d2e0db46759ddb164a535f00a9fe848a9c0555c92a4` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `spec/SPEC_EVOL_GD_M2_MODEL.md` | `5e7798a451c5b92cbbde6fbf85ea5f890c32c863ece3c73e5d9772efa9cff078` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `spec/SPEC_EVOL_GD_M2_DS_PRESENTATION.md` | `ea0fdd0ae6aa605ec05ff8cd91c6fe02b34570369836f7a973316905698db9ab` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `spec/SPEC_EVOL_GD_M2_CANVAS.md` | `b81dfe8ad4700bc741b5c23dbe4e7d95d565deaa09e24f7d1c4ec1c4eeb9b7e9` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `spec/SPEC_EVOL_GD_BPMN_MODDLE_COVERAGE.md` | `7b29e147873287402a271d8b95e86bc0d39cd320152bbd8c6b1f6ef4c6e87505` |
+| sent-tech-design-system `f6f3ba3790696754b6e08b13b62148ef3556bc4e` | `spec/SPEC_RE_BPMN_JS_PARITY.md` | `17df4d8423355f26c28fe330da84198ed77d5a7684eddd4558c3b050fef7bace` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/governance-central.js` | `8648b0935735a386afa843e7221234406c1c61fbe48fa5bc7c4172743b0c3f1c` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/governance-collapse.js` | `eb30e4fadbf3a045b353a700747a97941beabd5c1cf49fb6cd9e764eb5b9d3b7` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/governance-summary.js` | `d821077ac133d229bd5835c465e9f1e7731529e7d573ccd6253fa7916a2d54cc` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/governance-summary-layouts.json` | `44a43b5e1ee3d05968a6baf8d2731076dfb048d0cfc7ddca4ac86f8fc1b10e65` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/governance-layout.js` | `98ca434d422a0685c68c418594452d8f768ecfd491764df992cf6c9dcb823430` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/architecture-routing.js` | `4a181ba51080426ec77bc3dbf07ccfab1e6363f9bf5ce1363a659b0a7c47198e` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/presentation-scenes.json` | `fce2bd5fd1805a46e4c0d7066e61c4706f52dd96a8d80808b6fab946e1744e61` |
+| sentropic `4138a0ecba9c5b37409abb5ac00f732d02b7dc8d` | `docs/governance/kit/src/FrameToggle.svelte` | `9ad3b30b8ccaaf37157f13adf8feb53c1f3d1a1c3dca4b4f436166879ef45cc6` |
+| graphify `618977a86a25c35e426a87f97cb9f3391cd1c654` | `src/ontology-guardian/types.ts` | `e6f9e1627bcdca53c837466424c3deb853f72e5be208b6ddaa6e07e2baa0a631` |
+| graphify `618977a86a25c35e426a87f97cb9f3391cd1c654` | `src/ontology-guardian/catalog.ts` | `bd5b5d290472009196e073d0f8694774d17c263a796fcf2bc9e46b1cbffe32d8` |
+| graphify `618977a86a25c35e426a87f97cb9f3391cd1c654` | `src/ontology-guardian/digests.ts` | `49cec7b137b8f9ec3ab074b7357472ba2b7204e8afa6212dc61142b6f3ec4405` |
+| graphify `618977a86a25c35e426a87f97cb9f3391cd1c654` | `src/ontology-guardian/admission.ts` | `fe299c2e1d0c9c899cd9ac68a76a1ad230bdf542211dffdac05b0a2dafab2b9d` |
+| graphify `618977a86a25c35e426a87f97cb9f3391cd1c654` | `src/ontology-guardian/diagnostics.ts` | `521de919cf9d0161cdd0257d63fc3c2febf93e207bb5eb57df331dcc414b71af` |
+| archimatetool/archi `9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a` | `com.archimatetool.model/src/com/archimatetool/model/IAccessRelationship.java` | `79eb8f693a88e585257f6808678ff03b0409456fbf9f16ca498fdfc121f8d0f3` |
+| archimatetool/archi `9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a` | `com.archimatetool.model/model/relationships.xml` | `82cc8d11b174f3edf700fc8d6e3e061d4d9d8e65e5ec0f3c323d94f98a2681e7` |
+| archimatetool/archi `9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a` | `com.archimatetool.model/model/relationships-keys.xml` | `19d86924efc3364d26c162fe4e6643f37fd9493a0effc80ce5e2aa648fb6803e` |
+| archimatetool/archi `9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a` | `com.archimatetool.model/model/archimate.ecore` | `6d95f268182648c4dba6802ceacf05b9b1b323624f30eb8c31282fc7be29b253` |
+| archimatetool/archi `9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a` | `com.archimatetool.model/LICENSE.txt` | `428f4272e912bbc3809052990c5ba1089b06382dab6e6d6a71670789bfc9bcff` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/MANIFEST.md` | `9558092fa2af669af9dcd4df6d9380e24a1cba723dbdd603ad2ebd86c6439a49` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/S2-asbuilt.json` | `7abc427f7beca5b0f87947efc9df4daf6316f24725074f47f1da2b04be76ba2e` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/S2-target.json` | `28a7271dd0bec89fa9ad435174a614ab4a40b346b10724da95736f9c55b574d9` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/S1-conversational.json` | `d9f7f7cb80894b5301e11cc7b7f0fc2775d1933aa15013152001395d716a32c7` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/S3-agentfactory.json` | `e362b9a8da84082e5389127ae463d282fb773ef8950f41017222e0b3ef9002fc` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/tint-legend.json` | `cc47a3e3a2019af8c436ce28a34d0d52d71b8439cf55a44a33f1c0239752a26d` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/engram/S2-target.semantic.json` | `46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/engram/S2-target.view.json` | `82930614efe070bdb8e5acce3aecea29dfdb2d1ab625b7d376507f97fb6f8b50` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/engram/MANIFEST.json` | `54ef0dd0ac0e923aa99435625780902d07c3819e9c2c340868c921d1f956fd91` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/scene-metadata.mjs` | `85de8a950c66312bd1f519ea2cc04aa37dff4bf9f6f0d39e34252fd95e2b6d51` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/.generated/data.json` | `5a893cd1c69e1bb81bf4095b7472e7494ede1eb709d2c02b732af2163a1d7f2e` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/SCENES.md` | `224bcaac70e397e771d88273219483eea808c0aa31cdcdc6d61d47f645d94853` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/build-scenes.mjs` | `35f0b1ac5e24f12956ea51104a8a3190cb8849485da867dc4d2990a77342d769` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/build-fixtures.mjs` | `3dee69da67bb5569a385a6dfa15759ac27d3fa749e8d6b2a63f04e0446fec102` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/engram/build-engram.mjs` | `d6d007c97efad0f68f041c6a53a901cb6adaeea851e04c08676f419318b45caa` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/ard/decision/focus/.generated/governance-scenes.json` | `236320cec2b25466dfe46d9338f3f75c14aba3ee33c6c25d8070ffc242d5b35c` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/ard/decision/focus/.generated/figures/figures.json` | `83935a169f04ab48df155f324dee6fbf336a502fd2b8cdc260ae03c0a6962719` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/ard/decision/focus/.generated/figures/S2-target.png` | `5dffb39dd10551ae83b35fd256ccc3c65911d5aa731cdccb253605c3ac5d1c9a` |
+| airbus-genair-hrpolnav `faf21b6f259f93a485994bbe03b4023763bf2597` | `docs/architecture/hrpn/ds-fixtures/reference-renders.json` | `7afee15ef473389452011d38fbaf8547973b5eed572440cc0c31ee8d921e25db` |
 
-## Appendix A — Completed declaration sketches (normative content, abbreviated syntax)
+Additional raw-byte pins, measured directly or retained from the unchanged sealed manifest (the gate verifies each before use):
 
-```ts
-// Presentation fragment (family-neutral, composed with any family; governed once):
-//   leaf presentation (on any leaf type):  name!, kicker, body, detail, footer,
-//     icon(key), tone(key), legendRef(reference entity)
-//   container presentation (on any container-family type): name!, kicker,
-//     subtitle, footer, icon(key), tone(key), legendRef(reference entity)
-//   legend (container: true, atomic footprint 460x200 "both"; expanded computed):
-//     name!, kicker, subtitle, footer, icon(key), tone(key), legendRef(reference entity)
-//   legend-key (footprint 460x64 fixedAxes "height"):
-//     name!, category!(key), token!(token-name), description,
-//     order!(quantity unit, integer >= 0)
-// Footprints: leaf/collapsed 460x200 "both"; legend-key height 64 "height";
-//   expanded computed "none" (§4.6.1).
-//
-// generic@2 (completeness "complete"):
-//   node, container(container: true) + fragment; legend/legend-key via composition.
-//   port (in/out/inout; label text<=80).
-//   link (directed; source/target 1..1 entity|port; label<=200, weight, strokeStyle[solid,dashed])
-//   contains (directed; parent/child 1..1; hierarchy containment, tree)
-//   association (undirected; member 2..8; label<=120, strokeStyle[solid,dashed])
-//   Constraints (§5.4 data): hierarchy, parent-family, children-restricted,
-//     required-parent, category-membership, acyclic-hierarchy;
-//     unique-attribute(legend-key.category, {withinType:"legend"}),
-//     unique-attribute(legend-key.order,    {withinType:"legend"}).
-//   Limits: maxEntities 100000, maxRelations 500000, maxEndpointsPerRelation 8.
-//   Legacy note: generic@1 constraints without scope are read via the pinned
-//     legacy-constraints@1 binding (§5.3.1); stored bytes and digest unchanged.
-//   Stack note: generic@2 lineage.parents = []; stack = [generic@2 pin] (§3.13.4).
-//
-// archimate@1 completed (§3.9): element catalogue per layer/aspect over the
-//   skeleton supertype reading; junction; grouping(container: true);
-//   11 relations with the versioned source/target matrix; grouping hierarchy.
-// uml@1 completed (§3.11): class, interface, package(container: true),
-//   property, operation; association/generalization/dependency;
-//   packageContainment hierarchy.
-// bpmn generated stack (§3.10, A′): bpmn@2/bpmndi@1/dc@1/di@1/bioc@1/color@1/sem@1
-//   generated from the pinned descriptor snapshot; bpmn@1 skeleton retained
-//   readable (§6). No declaration is transcribed in this appendix for BPMN:
-//   the generated artefacts are the data.
-```
+| Source | SHA-256 |
+| --- | --- |
+| bpmn-canvas src/profile/canonical.ts | 287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba |
+| profile-parity-corpus/1/cases/jcs-key-order.json | 2a2b0ddc4eeaede4cdac346ae46d5b048b8f25d051b41785eaddbb3e4e491a84 |
+| profile-parity-corpus/1/cases/jcs-escapes.json | 71a5af8cb8735f034b8411a44cc1e46090083f235509b98d1629c0020f294fdc |
+| profile-parity-corpus/1/cases/jcs-numbers.json | bb22448419b5d26311f475995cb5bf3f357e90ca0983ee20f0d2018766fa4bbf |
+| profile-parity-corpus/1/cases/identity-stable-id.json | 59ca51c94f5010267b2991b74fc42d7d04a004ed3890ef8c546ec016301df84f |
+| profile-parity-corpus/1/manifest.json | 01b81fd9fb69f110a7f302631d6da92126bcb1672c67bea3ea68ff802df39faf |
+| tests/fixtures/profile-parity-corpus.pin.json | d34ee889917b8c5ef14c8d7bbd3fa2b222d93f4ac61de4bd0b41deb5767378a2 |
+| tests/fixtures/unicode-case-15.0.0.pin.json | 989aa11b6c138115a356c39867a26d8da281d2fd4b926508c72199b87fa4b762 |
+| tests/fixtures/parity-corpus/index.json | 40284149ca3538b35250e5896694e7d15c80d3c3233241e0d7ac3d91266df03a |
+| tests/fixtures/parity-corpus/canonical-vectors.json (workbench only) | f238aef110a43381416fd0025326f883f760dc75510a9f0cc5817415eb02d1c6 |
+| #711 portable, sentropic 4138a0ec:docs/governance/governance-r11-portable.html | 831cbdee9bb5820e7e19ed55c942522a5848c402db9be0c89d87d02559bf6f35 |
+| Frozen ds-fixtures/reference/S2-target.png | f606ac163c5202c8cddb7caaba97e4d748d767865a2abfb1bb2f57a7bb4ad542 |
+
+| Additional source path (under /home/antoinefa/src) | Raw SHA-256 |
+| --- | --- |
+| `sentropic/.tmp/governance-unification/evidence-astra/threads/ontology/d2d.md` | `ad956900e9ddf79e639dc26332e1380961cbce88dce878527de02d188c7a97c0` |
+| `graphify/.graphify/scratch/design/ontology-guardian/m3/CONSOLIDATED-M3-r3.md` | `0a022c50f77f40acb866b6c7a793de87809538a9146063ce655e856374db414d` |
+| `graphify/.graphify/scratch/design/ontology-guardian/m3/review-M3-sol-r3.out` | `3fb3bf2d22fcad2c3de3a2d83322fdab7c35c3e10021debfa150882b5ffb37a5` |
+| `graphify/.graphify/scratch/design/ontology-guardian/m3/review-M3-astra-r3.out` | `eb2017236c70714e4a6691d8dbaba1c650d892700af0e237b69ab89c0b383b5e` |
+| `sent-tech-design-system/scratchpad/rev/dmodel-rev3.out` | `00d0571581e847181fe694e9e85e982af13e3637d8b9598b9868198f0261cd38` |
+| `bpmn-canvas/src/profile/canonical.ts` | `287d8cb87beb7384fc89a8d6141681010dcba50ee895aaadc3b31345541191ba` |
+| `bpmn-canvas/tests/fixtures/corpus/comments.bpmn` | `0f3b5609248ed3eb3cb6f63b8cf2c7f2ee8f4036fb9de8d52ff3d9732f731d30` |
+| `bpmn-canvas/tests/fixtures/corpus/duplicate-id.bpmn` | `0b3bc8a15b3a2a265e93f4106d5f1d168973d5f343240ea17411581f63df6151` |
+| `bpmn-canvas/tests/fixtures/corpus/extension-ok.bpmn` | `0f47cd0cb28482cddbbb1ed4210c1ac5ee8c0387320028186d00a62080934a69` |
+| `bpmn-canvas/tests/fixtures/corpus/io-specification-incomplete.bpmn` | `ff99f2ed6e1a826d90b249a701aa29055416347c19967b6ce2f81d2be3efcf7f` |
+| `bpmn-canvas/tests/fixtures/corpus/no-di.bpmn` | `f092763b04317e16565f83dfa84be412778d6372f2bbbed5715917375c2fad5f` |
+| `bpmn-canvas/tests/fixtures/corpus/notation.bpmn` | `9d39d6cf37f477ee14451b035dec7e1605f6da765df90c3d51441e4f870f763d` |
+| `bpmn-canvas/tests/fixtures/corpus/partial-di.bpmn` | `73c526076bfb556a7974419b4f28f7e5f512b812a9a6fe3a08afe3acd4f73795` |
+| `bpmn-canvas/tests/fixtures/corpus/rogue-extension.bpmn` | `3db5a5412a5f48f14b9c6e76f1c3a7cb1760941d01ce543031c66a88e9753cef` |
+| `bpmn-canvas/tests/fixtures/corpus/tiny.bpmn` | `29142ab44afc7c4d55049d2ee27bc72af2dcb36785020c634d9aa853c7f92350` |
+| `bpmn-canvas/tests/fixtures/corpus/unresolved-reference.bpmn` | `43da5729c80c31fd46e0ef1c5673ce7b83e46dc01a52addf3f3daed7c9d43b0c` |
+
+
+| Additional #711 source, sentropic 4138a0ecba9c5b37409abb5ac00f732d02b7dc8d | Raw SHA-256 |
+| --- | --- |
+| docs/governance/kit/scripts/check-browser.mjs | d0fddf3eb0ae441abcfda9dec0b6f03eeb9ee53169ab26ce257ca443e6115f84 |
+| docs/governance/kit/scripts/browser-checks.mjs | 64890d902abf1ecfd9386083b5a7cab32c9226d821163ca13c21d7d974b50e2a |
+| docs/governance/kit/scripts/check-performance.mjs | c603e64d0df412b0d61f79046c59d03a9cb1449b0b9d2e2f8b7b460085e03d05 |
+| docs/governance/kit/scripts/check-geometry.mjs | b3b5ed9fbade3d8e47d2cc2e63f6190d95438bad3e333c2227a70f663d21d4cb |
+| docs/governance/kit/src/app.css | d776e25ab66012cd6b08813adcb6a787ff9bcd36d6bca9020aac1fd483330ed5 |
+| docs/governance/kit/src/architecture-layout.js | ec1547e5b22d98d2cd47bb84b1930fff4cd7fcc5e93c298074569d90b23692e9 |
+
+The sealed JCS numbers vector expects exactly:
+[1e+21,1e-7,0,5e-324,1,100000000000000000000,123456789012345680000,0.000001].
+The four stable-id expectations are:
+g_61b268027699fa668a9b0e3eced8130a2b2e188f426051e9ad25ebb1e33a800c,
+g_0a8caa16444f4c61e14ffc4d7b77eb0dd75f8764840be0d3d7b8be550c0923d1,
+g_fda08c83ba8214a3e2d869831822d1cc754d9ef15cf9b93fe975e9b48dec7a6b,
+g_58599b7f84255d80c005b2dcda149676afeb0f7045dd6a162ea609ea523ac618.
+These values belong to identity, not model conformance.
+
+### 8.6 HRPN producer snapshots are distinct from frozen fixtures
+
+Five MANIFEST source-path pins no longer describe the current producer files. They are not silently “verified” by the intact fixture copies. The corrected producer pins below were recomputed with Node from git show HRPN:path at immutable airbus-genair-hrpolnav faf21b6f259f93a485994bbe03b4023763bf2597; they also match the observed working bytes. The producer and frozen payload rows are independently resolvable from that commit. No consumer replays a mutable path, and historical manifest metadata is never used as an active producer pin:
+
+| Producer path | Historical pin printed by frozen fixture manifest | Producer raw-byte pin at HRPN |
+| --- | --- | --- |
+| docs/architecture/hrpn/.generated/data.json | 1459e303d6eac96935c762143538d9f6daac519465fd42a1d8f5cc8765616591 | 5a893cd1c69e1bb81bf4095b7472e7494ede1eb709d2c02b732af2163a1d7f2e |
+| docs/architecture/hrpn/scene-metadata.mjs | 2e67c2c380f50771f4d4520eb1d4110fefca1a51dd173bf10073c6216437ce68 | 85de8a950c66312bd1f519ea2cc04aa37dff4bf9f6f0d39e34252fd95e2b6d51 |
+| docs/architecture/hrpn/SCENES.md | ab3ddb9208b7d3f9c35d94401c29da5bc95477ab99d4caf0fabaa34c41be237f | 224bcaac70e397e771d88273219483eea808c0aa31cdcdc6d61d47f645d94853 |
+| docs/ard/decision/focus/.generated/figures/figures.json | de868091d0bf973aa3c33f82e7a095f3cf88c8ccc5879ea75a13d89c80435c4d | 83935a169f04ab48df155f324dee6fbf336a502fd2b8cdc260ae03c0a6962719 |
+| docs/ard/decision/focus/.generated/figures/S2-target.png | f606ac163c5202c8cddb7caaba97e4d748d767865a2abfb1bb2f57a7bb4ad542 | 5dffb39dd10551ae83b35fd256ccc3c65911d5aa731cdccb253605c3ac5d1c9a |
+
+Frozen ds-fixtures payloads and reference/S2-target.png retain their original hashes. The frozen target sceneHash is b631abb4e4432f43a2978e96f83f346f76fbd7bd6a2d8eea0a3340e7ca1d2d46; current producer target sceneHash is 81183292b8249aa25776768ba505e1b46b95d9a9a6fd2e5610efb247691bcef3. A historical hash in a fixture's embedded source metadata is **provenance of that frozen snapshot**, not an instruction to read the mutable producer path as if it still matched. Recovery of the old producer bytes is unverified U-HISTORY (owner HRPN); no regeneration from today's producer is accepted as the same frozen fixture.
+
+A5's independent source docs/ard/decision/focus/.generated/governance-scenes.json still hashes to 236320cec2b25466dfe46d9338f3f75c14aba3ee33c6c25d8070ffc242d5b35c, matching its manifest. It is separately pinned; it does not overwrite A3.
+
+### 8.7 Populated, digest-bound derived oracle
+
+The following JSON is **the derived oracle now**, not a promise to write one later. It contains source→slot mappings, the explicit category→token assignments, exact default fold inputs, recursive hint translations, dashed ids, ten A1 summary definitions with constituents, all A5 target semantic/presentation records and expected valid diagnostic arrays.
+
+Assignments to existing DS token names are governed synthesis data specified here, not claimed to appear inside tint-legend.json. Source raw colour evidence stays separate. The source tint legend contains no custom/outside category: those A5 meanings come from the A5 semantic records/current pinned metadata. Pixel equivalence/theme resolution remains unverified U-THEME (owner DS presentation); the table does not assert arbitrary palette colours already match the #711/HRPN pixels.
+
+A1 starts with its five top frames collapsed, transcribed from the pinned #711 check-browser.mjs initial-state assertions. A2–A4 use explicit all-expanded initial inputs because their frozen sources declare no stored default fold list. A5 uses its seven source folds. Empty summaries in A2–A5 mean no authored summary definitions in those pinned inputs; no count label is promoted to authored text.
+
+For A2–A4, ordering is transcribed recursively for **every** zone in the frozen zoneHierarchy: key = "entity:" + zone.id; values = zone.cards followed by zone.zones.map(child => "entity:" + child.id), with "entity:" also prefixed to each card id. Child objects are never string-coerced. All 71 parent lists / 207 direct-child references resolve to an entity whose frozen parent is that zone, with no duplicate in a list. No unrecorded gap/direction is asserted as source evidence. A5's root/PPROZ interleaving and PRODZ stretch are the concrete translation of the pinned metadata kit tree. Omitted gapAfter/cardGap/zoneGap fields mean inherited DS engine metrics. Exact pixel/geometry qualification remains a separate U-QUAL gate.
+
+Materialization is generic: create the declared family entities/relations; create each explicitly counted root legend and its keys for that instance; select that instance's categories/order; build CategoryTokenBinding rows from its categories and the common table; resolve every occurrence reference to the retained source drawings; apply diagram-presentation@1; validate and lay out. Instance-specific content stays corpus data. There is no consumer extension, callback or local schema. A1–A4 use added ids entity:legend and entity:legend-key-<category>, after collision preflight; A5 retains entity:LEGEND and entity:legend-<category>.
+
+A native executor must recompute counts/ids/diagnostics against this oracle. [] arrays are specified expectations, not fabricated execution receipts. Rejected diagnostic oracles are fully specified in Appendix C.
+
+| Derived projection | Canonical bytes | SHA-256 |
+| --- | --- | --- |
+| Whole JSON below | 33429 | 08cae540e5535727fc1f4b7bba3aa12d84908790b6c918dc263b65560ab4f2de |
+| categoryTokens only | 432 | a77e2a62ddd6d576f06005969361ee15c241789fe8a571e6195dfb5c2782b3bf |
+| A1 summaries only | 2110 | e363601a0c116197a471a599e92dc94da16147f0e7e78346c1ab7c7df9a49018 |
+| A5 {entities,presentationEntities} | 20532 | 527a0b18c1afee9e71591d6c2e3ef8d68294c89d5f0e593527b31a47b207a2b8 |
+
+~~~json
+{
+  "schemaVersion": "m3-r4-oracle/1",
+  "mappings": {
+    "fixture": {
+      "semanticName": "entities[].label",
+      "viewTitle": "entities[].name when present and distinct",
+      "kicker": "entities[].code",
+      "body": "entities[].role",
+      "detail": "entities[].detail",
+      "footer": "entities[].footer",
+      "semanticCategory": "entities[].tint ?? none",
+      "strokeStyle": "relations[].style (one source drawing)",
+      "semanticParent": "entities[].parent",
+      "store": "true → node.tags includes store; false → no store tag, original presence archived",
+      "icon": "absent in frozen fixture; do not invent"
+    },
+    "a1": {
+      "semanticName": "nodes[].data.title; groups[].titleLines joined by one space",
+      "kicker": "nodes[].data.kicker / groups[].kicker",
+      "body": "nodes[].data.function",
+      "detail": "nodes[].data.detail",
+      "subtitle": "groups[].subtitle",
+      "footer": "nodes[].data.cardFooter",
+      "icon": "nodes[].data.cardIcon",
+      "semanticCategory": "data.tone / group.tone",
+      "strokeStyle": "absent → solid"
+    },
+    "a5": {
+      "semanticName": "attributes.name except extension.displayTitle on PCICD/AWSCI",
+      "kicker": "attributes.kicker or zone-slots.kicker",
+      "body": "attributes.body",
+      "detail": "attributes.detail",
+      "subtitle": "zone-slots.subtitle",
+      "footer": "attributes.footer or zone-slots.footer",
+      "icon": "attributes.icon or zone-slots.icon",
+      "semanticCategory": "attributes.tint or zone-slots.tint, absent → no category except explicit legend-none key",
+      "strokeStyle": "source relation occurrence field, absent retained"
+    }
+  },
+  "categoryTokens": {
+    "genair": "st-semantic-data-category1",
+    "specific": "st-semantic-feedback-warning",
+    "added": "st-semantic-feedback-warning",
+    "removed": "st-semantic-feedback-error",
+    "risk": "st-semantic-feedback-error",
+    "custom": "st-semantic-feedback-success",
+    "outside": "st-semantic-feedback-warning",
+    "none": "st-semantic-surface-raised",
+    "neutral": "st-semantic-surface-raised",
+    "proposal": "st-semantic-feedback-warning",
+    "identity": "st-semantic-feedback-info"
+  },
+  "instances": [
+    {
+      "id": "A1",
+      "source": "sentropic 4138a0ec:docs/governance/kit/src/presentation-scenes.json#/en/architectureScenes/central",
+      "counts": {
+        "node": 28,
+        "container": 10,
+        "legend": 1,
+        "legend-key": 3,
+        "contains": 36,
+        "link": 50
+      },
+      "categories": [
+        "neutral",
+        "proposal",
+        "identity"
+      ],
+      "defaultFolds": [
+        "occurrence:h2a",
+        "occurrence:surfaces",
+        "occurrence:cluster-mesh",
+        "occurrence:engram",
+        "occurrence:design-system"
+      ],
+      "overviewFolds": [
+        "occurrence:h2a",
+        "occurrence:surfaces",
+        "occurrence:cluster-mesh",
+        "occurrence:engram",
+        "occurrence:design-system"
+      ],
+      "summaries": [
+        {
+          "id": "sum:0",
+          "sourceOccurrence": "occurrence:h2a",
+          "targetOccurrence": "occurrence:surfaces",
+          "label": "Harness and collaboration",
+          "relationIds": [
+            "relation:e-h2a-chat",
+            "relation:e-h2a-cli",
+            "relation:e-h2a-cowork"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:1",
+          "sourceOccurrence": "occurrence:surfaces",
+          "targetOccurrence": "occurrence:cluster-mesh",
+          "label": "Sessions and tools",
+          "relationIds": [
+            "relation:e-ai-api",
+            "relation:e-cli-api",
+            "relation:e-cloud-api",
+            "relation:e-cloud-catalog",
+            "relation:e-cowork-api"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:2",
+          "sourceOccurrence": "occurrence:h2a",
+          "targetOccurrence": "occurrence:cluster-mesh",
+          "label": "Tools for h2a",
+          "relationIds": [
+            "relation:e-h2a-tools"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:3",
+          "sourceOccurrence": "occurrence:cluster-mesh",
+          "targetOccurrence": "occurrence:h2a",
+          "label": "A2a messages",
+          "relationIds": [
+            "relation:e-mesh-h2a"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:4",
+          "sourceOccurrence": "occurrence:cluster-mesh",
+          "targetOccurrence": "occurrence:surfaces",
+          "label": "Application deployment",
+          "relationIds": [
+            "relation:e-infra-cloud"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:5",
+          "sourceOccurrence": "occurrence:engram",
+          "targetOccurrence": "occurrence:cluster-mesh",
+          "label": "Memory and knowledge",
+          "relationIds": [
+            "relation:e-eng-mem",
+            "relation:e-eng-onto",
+            "relation:e-eng-store"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:6",
+          "sourceOccurrence": "occurrence:cluster-mesh",
+          "targetOccurrence": "occurrence:engram",
+          "label": "Logs and metrics",
+          "relationIds": [
+            "relation:e-eng-observe"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:7",
+          "sourceOccurrence": "occurrence:engram",
+          "targetOccurrence": "occurrence:design-system",
+          "label": "Diagram Graphs",
+          "relationIds": [
+            "relation:e-eng-ds"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:8",
+          "sourceOccurrence": "occurrence:design-system",
+          "targetOccurrence": "occurrence:cluster-mesh",
+          "label": "Canvas UI",
+          "relationIds": [
+            "relation:e-ds-catalog",
+            "relation:e-ds-comments",
+            "relation:e-ds-store"
+          ],
+          "strokeStyle": "solid"
+        },
+        {
+          "id": "sum:9",
+          "sourceOccurrence": "occurrence:h2a",
+          "targetOccurrence": "occurrence:design-system",
+          "label": "Focus schema and skill",
+          "relationIds": [
+            "relation:e-focus-dossier"
+          ],
+          "strokeStyle": "solid"
+        }
+      ],
+      "hints": {
+        "grouping": [
+          {
+            "id": "central-roots",
+            "direction": "rows",
+            "items": [
+              "entity:h2a",
+              "entity:surfaces",
+              "entity:cluster-mesh",
+              "entity:engram",
+              "entity:design-system"
+            ]
+          }
+        ]
+      },
+      "dashedRelationIds": [],
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    },
+    {
+      "id": "A2",
+      "scene": "S2-asbuilt",
+      "sourceSha256": "7abc427f7beca5b0f87947efc9df4daf6316f24725074f47f1da2b04be76ba2e",
+      "counts": {
+        "node": 41,
+        "container": 17,
+        "legend": 1,
+        "legend-key": 4,
+        "contains": 58,
+        "link": 44
+      },
+      "categories": [
+        "genair",
+        "none",
+        "risk",
+        "specific"
+      ],
+      "defaultFolds": [],
+      "summaries": [],
+      "hints": {
+        "ordering": {
+          "entity:PEOPLE": [
+            "entity:EMP",
+            "entity:DEV"
+          ],
+          "entity:WS": [
+            "entity:CHAT"
+          ],
+          "entity:GCP": [
+            "entity:PROJ",
+            "entity:SSMPROJ",
+            "entity:PRODZ"
+          ],
+          "entity:PROJ": [
+            "entity:LBIAP",
+            "entity:NET",
+            "entity:MSGZ",
+            "entity:RUNZ",
+            "entity:AEZ",
+            "entity:STATEZ",
+            "entity:VERTEXZ",
+            "entity:OBSZ",
+            "entity:CICDZ"
+          ],
+          "entity:MSGZ": [
+            "entity:TOPIC",
+            "entity:SUB"
+          ],
+          "entity:RUNZ": [
+            "entity:APP",
+            "entity:PUSH",
+            "entity:CONS",
+            "entity:CHATCLI",
+            "entity:AGENT",
+            "entity:QUERY",
+            "entity:ADMINT"
+          ],
+          "entity:AEZ": [
+            "entity:AEAPP"
+          ],
+          "entity:STATEZ": [
+            "entity:DOCS",
+            "entity:SESS",
+            "entity:CSQL",
+            "entity:BKT",
+            "entity:FS"
+          ],
+          "entity:VERTEXZ": [
+            "entity:RAG",
+            "entity:GEM"
+          ],
+          "entity:OBSZ": [
+            "entity:CLOG",
+            "entity:LOGS",
+            "entity:BQ",
+            "entity:PHX"
+          ],
+          "entity:CICDZ": [
+            "entity:CB",
+            "entity:AR",
+            "entity:TF",
+            "entity:TFST"
+          ],
+          "entity:SSMPROJ": [
+            "entity:SSM",
+            "entity:IFMIR",
+            "entity:BASE"
+          ],
+          "entity:PRODZ": [
+            "entity:PRODNP"
+          ],
+          "entity:OUT": [
+            "entity:AWSZ"
+          ],
+          "entity:AWSZ": [
+            "entity:JENKINS",
+            "entity:JFROG",
+            "entity:GITHUBZ",
+            "entity:GITLABZ"
+          ],
+          "entity:GITHUBZ": [
+            "entity:CUTTER",
+            "entity:AGARDEN",
+            "entity:IFREPO",
+            "entity:GLIBS"
+          ],
+          "entity:GITLABZ": [
+            "entity:SCMREPO"
+          ]
+        }
+      },
+      "dashedRelationIds": [
+        "relation:AEAPP__RAG__a0b5b8269cfd",
+        "relation:APP__CSQL__5f0a28de3e78",
+        "relation:APP__LOGS__e43083545724",
+        "relation:APP__PHX__2dc85bc7391e",
+        "relation:CUTTER__PRODNP__24e6dc578f0b",
+        "relation:JFROG__BASE__a03f155bff51",
+        "relation:SCMREPO__SSM__4e20c757a1be"
+      ],
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    },
+    {
+      "id": "A3",
+      "scene": "S2-target",
+      "sourceSha256": "28a7271dd0bec89fa9ad435174a614ab4a40b346b10724da95736f9c55b574d9",
+      "counts": {
+        "node": 51,
+        "container": 22,
+        "legend": 1,
+        "legend-key": 4,
+        "contains": 73,
+        "link": 54
+      },
+      "categories": [
+        "added",
+        "genair",
+        "none",
+        "specific"
+      ],
+      "defaultFolds": [],
+      "summaries": [],
+      "hints": {
+        "ordering": {
+          "entity:PEOPLE": [
+            "entity:EMP",
+            "entity:DEV",
+            "entity:HRADM"
+          ],
+          "entity:WS": [
+            "entity:CHAT",
+            "entity:DRIVE"
+          ],
+          "entity:GCP": [
+            "entity:PROJ",
+            "entity:SSMPROJ",
+            "entity:PRODZ"
+          ],
+          "entity:PROJ": [
+            "entity:NET",
+            "entity:MSGZ",
+            "entity:RUNZ",
+            "entity:STATEZ",
+            "entity:VERTEXZ",
+            "entity:OBSZ",
+            "entity:INGZ",
+            "entity:CICDZ"
+          ],
+          "entity:MSGZ": [
+            "entity:TOPIC",
+            "entity:SUB"
+          ],
+          "entity:RUNZ": [
+            "entity:PUSH",
+            "entity:EVT",
+            "entity:CONS",
+            "entity:CHATCLI",
+            "entity:FEEDBACK",
+            "entity:ELIG",
+            "entity:AGENT",
+            "entity:LINK",
+            "entity:QUERY"
+          ],
+          "entity:STATEZ": [
+            "entity:DOCS",
+            "entity:SESS",
+            "entity:FS",
+            "entity:CSQL"
+          ],
+          "entity:VERTEXZ": [
+            "entity:RAG",
+            "entity:GEM",
+            "entity:ARMOR"
+          ],
+          "entity:OBSZ": [
+            "entity:CLOG",
+            "entity:LOGS",
+            "entity:BQ",
+            "entity:PHX"
+          ],
+          "entity:INGZ": [
+            "entity:SYNC",
+            "entity:IMPORT"
+          ],
+          "entity:CICDZ": [
+            "entity:CB",
+            "entity:AR",
+            "entity:TF",
+            "entity:TFST"
+          ],
+          "entity:SSMPROJ": [
+            "entity:SSM",
+            "entity:IFMIR",
+            "entity:BASE"
+          ],
+          "entity:PRODZ": [
+            "entity:PCICD",
+            "entity:PSHARED",
+            "entity:PDEVZ",
+            "entity:PINTZ",
+            "entity:PPROZ"
+          ],
+          "entity:PCICD": [
+            "entity:PAR",
+            "entity:PIAC"
+          ],
+          "entity:PSHARED": [
+            "entity:PSVPC",
+            "entity:PLIBS"
+          ],
+          "entity:PDEVZ": [
+            "entity:PDEV"
+          ],
+          "entity:PINTZ": [
+            "entity:PINT"
+          ],
+          "entity:PPROZ": [
+            "entity:PPRO"
+          ],
+          "entity:OUT": [
+            "entity:AWSZ"
+          ],
+          "entity:AWSZ": [
+            "entity:JENKINS",
+            "entity:JFROG",
+            "entity:GITHUBZ",
+            "entity:GITLABZ"
+          ],
+          "entity:GITHUBZ": [
+            "entity:CUTTER",
+            "entity:AGARDEN",
+            "entity:IFREPO",
+            "entity:GLIBS"
+          ],
+          "entity:GITLABZ": [
+            "entity:SCMREPO"
+          ]
+        }
+      },
+      "dashedRelationIds": [],
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    },
+    {
+      "id": "A4a",
+      "scene": "S1-conversational",
+      "sourceSha256": "d9f7f7cb80894b5301e11cc7b7f0fc2775d1933aa15013152001395d716a32c7",
+      "counts": {
+        "node": 23,
+        "container": 17,
+        "legend": 1,
+        "legend-key": 5,
+        "contains": 41,
+        "link": 24
+      },
+      "categories": [
+        "added",
+        "genair",
+        "none",
+        "risk",
+        "specific"
+      ],
+      "defaultFolds": [],
+      "summaries": [],
+      "hints": {
+        "ordering": {
+          "entity:PEOPLE": [
+            "entity:EMP",
+            "entity:HRADM"
+          ],
+          "entity:WS": [
+            "entity:CHAT",
+            "entity:APPSS",
+            "entity:DRIVE"
+          ],
+          "entity:GCP": [
+            "entity:PROJ",
+            "entity:PRODZ"
+          ],
+          "entity:PROJ": [
+            "entity:CXZ",
+            "entity:TOOLZ",
+            "entity:VAIZ",
+            "entity:STATEZ",
+            "entity:GOVZ"
+          ],
+          "entity:CXZ": [
+            "entity:CXINT",
+            "entity:CXAGENT",
+            "entity:PLAYBOOK",
+            "entity:DSTOOL"
+          ],
+          "entity:TOOLZ": [
+            "entity:LINKF",
+            "entity:RLA"
+          ],
+          "entity:VAIZ": [
+            "entity:DATASTORE",
+            "entity:GEM"
+          ],
+          "entity:STATEZ": [
+            "entity:DOCS",
+            "entity:SYNC",
+            "entity:BQLOG"
+          ],
+          "entity:GOVZ": [
+            "entity:NOIAC",
+            "entity:EXPORT"
+          ],
+          "entity:PRODZ": [
+            "entity:PDEVZ",
+            "entity:PINTZ",
+            "entity:PPROZ"
+          ],
+          "entity:PDEVZ": [
+            "entity:PDEV"
+          ],
+          "entity:PINTZ": [
+            "entity:PINT"
+          ],
+          "entity:PPROZ": [
+            "entity:PPRO"
+          ],
+          "entity:OUT": [
+            "entity:AWSZ"
+          ],
+          "entity:AWSZ": [
+            "entity:GITHUBZ",
+            "entity:GITLABZ"
+          ],
+          "entity:GITHUBZ": [
+            "entity:GENTPL"
+          ],
+          "entity:GITLABZ": [
+            "entity:SCMREPO"
+          ]
+        }
+      },
+      "dashedRelationIds": [
+        "relation:APPSS__CXAGENT__5bd5623a9dfc",
+        "relation:CHAT__APPSS__1b30808dad7d",
+        "relation:DRIVE__SYNC__eefb74f30a11",
+        "relation:EXPORT__SCMREPO__19793062b717",
+        "relation:NOIAC__CXAGENT__ddde25d26cdd",
+        "relation:PLAYBOOK__RLA__51f9edec990b",
+        "relation:SCMREPO__PDEV__af6ca2d26ea0",
+        "relation:SCMREPO__PINT__3904bbabeaf9",
+        "relation:SCMREPO__PPRO__598187d83575",
+        "relation:SYNC__DOCS__dc261875c2c1"
+      ],
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    },
+    {
+      "id": "A4b",
+      "scene": "S3-agentfactory",
+      "sourceSha256": "e362b9a8da84082e5389127ae463d282fb773ef8950f41017222e0b3ef9002fc",
+      "counts": {
+        "node": 37,
+        "container": 15,
+        "legend": 1,
+        "legend-key": 5,
+        "contains": 53,
+        "link": 36
+      },
+      "categories": [
+        "added",
+        "genair",
+        "none",
+        "removed",
+        "risk"
+      ],
+      "defaultFolds": [],
+      "summaries": [],
+      "hints": {
+        "ordering": {
+          "entity:LEFT": [
+            "entity:USERS",
+            "entity:CASB",
+            "entity:IDP",
+            "entity:SIEM"
+          ],
+          "entity:PCP": [
+            "entity:PLOG",
+            "entity:CONN",
+            "entity:MAF",
+            "entity:VPCSC",
+            "entity:GAPI",
+            "entity:IAM",
+            "entity:AIP",
+            "entity:DATAHUB"
+          ],
+          "entity:AIP": [
+            "entity:EAI",
+            "entity:SPOKE"
+          ],
+          "entity:EAI": [
+            "entity:AUTHM",
+            "entity:OBSV",
+            "entity:AUDIT",
+            "entity:SCC",
+            "entity:GEZ",
+            "entity:GEAP"
+          ],
+          "entity:GEZ": [
+            "entity:GEUI",
+            "entity:MA1",
+            "entity:FEDC",
+            "entity:DSTORE"
+          ],
+          "entity:GEAP": [
+            "entity:GW",
+            "entity:POL",
+            "entity:MA2",
+            "entity:RUNTIME"
+          ],
+          "entity:RUNTIME": [
+            "entity:HRAGENT",
+            "entity:HRTOOLS"
+          ],
+          "entity:SPOKE": [
+            "entity:RAG",
+            "entity:GEM",
+            "entity:DOCS",
+            "entity:SYNC",
+            "entity:XIAM",
+            "entity:PSL"
+          ],
+          "entity:DATAHUB": [
+            "entity:DATAPROD",
+            "entity:PIPE"
+          ],
+          "entity:RIGHT": [
+            "entity:LAN",
+            "entity:SAASZ"
+          ],
+          "entity:SAASZ": [
+            "entity:DRIVE",
+            "entity:CHAT"
+          ],
+          "entity:OUT": [
+            "entity:AWSZ"
+          ],
+          "entity:AWSZ": [
+            "entity:JENKINS",
+            "entity:GITHUBZ",
+            "entity:GITLABZ"
+          ],
+          "entity:GITHUBZ": [
+            "entity:CUTTER"
+          ],
+          "entity:GITLABZ": [
+            "entity:SCMREPO"
+          ]
+        }
+      },
+      "dashedRelationIds": [
+        "relation:USERS__CHAT__de2bbc5b3e38",
+        "relation:VPCSC__HRAGENT__8356391330d1",
+        "relation:XIAM__HRAGENT__f18eca9333d3"
+      ],
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    },
+    {
+      "id": "A5",
+      "sourceSha256": "46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91",
+      "counts": {
+        "node": 33,
+        "container": 18,
+        "legend": 1,
+        "legend-key": 4,
+        "contains": 51,
+        "link": 31
+      },
+      "categories": [
+        "genair",
+        "custom",
+        "outside",
+        "none"
+      ],
+      "defaultFolds": [
+        "occurrence:PCICD",
+        "occurrence:MSGZ",
+        "occurrence:VERTEXZ",
+        "occurrence:OBSZ",
+        "occurrence:INGZ",
+        "occurrence:GENSRC",
+        "occurrence:AWSCI"
+      ],
+      "summaries": [],
+      "dashedRelationIds": [],
+      "entities": {
+        "entity:PEOPLE": {
+          "id": "entity:PEOPLE",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Users and operators"
+            }
+          }
+        },
+        "entity:WS": {
+          "id": "entity:WS",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Google Workspace"
+            }
+          }
+        },
+        "entity:GCP": {
+          "id": "entity:GCP",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Google Cloud Platform"
+            }
+          }
+        },
+        "entity:PRODZ": {
+          "id": "entity:PRODZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "PROD landing zone"
+            }
+          }
+        },
+        "entity:PPROZ": {
+          "id": "entity:PPROZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "HRPN pro project"
+            }
+          }
+        },
+        "entity:MSGZ": {
+          "id": "entity:MSGZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Pub/Sub"
+            },
+            "category": {
+              "kind": "text",
+              "value": "outside"
+            }
+          }
+        },
+        "entity:RUNZ": {
+          "id": "entity:RUNZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Cloud Run"
+            }
+          }
+        },
+        "entity:STATEZ": {
+          "id": "entity:STATEZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Storage and state"
+            }
+          }
+        },
+        "entity:VERTEXZ": {
+          "id": "entity:VERTEXZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Vertex AI"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:INGZ": {
+          "id": "entity:INGZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Ingestion"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:PSHARED": {
+          "id": "entity:PSHARED",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "PROD shared projects"
+            }
+          }
+        },
+        "entity:PCICD": {
+          "id": "entity:PCICD",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "CI/CD"
+            }
+          }
+        },
+        "entity:OBSZ": {
+          "id": "entity:OBSZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Observability"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:OUT": {
+          "id": "entity:OUT",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "AWS"
+            }
+          }
+        },
+        "entity:GITHUBZ": {
+          "id": "entity:GITHUBZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Airbus GitHub"
+            }
+          }
+        },
+        "entity:GENSRC": {
+          "id": "entity:GENSRC",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "GenAiR sources"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:GITLABZ": {
+          "id": "entity:GITLABZ",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Airbus GitLab"
+            }
+          }
+        },
+        "entity:AWSCI": {
+          "id": "entity:AWSCI",
+          "profile": "generic@2",
+          "type": "container",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "CI/CD"
+            }
+          }
+        },
+        "entity:LEGEND": {
+          "id": "entity:LEGEND",
+          "profile": "generic@2",
+          "type": "legend",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Legend"
+            }
+          }
+        },
+        "entity:EMP": {
+          "id": "entity:EMP",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Employees · HR"
+            }
+          }
+        },
+        "entity:DEV": {
+          "id": "entity:DEV",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Developers · admin"
+            }
+          }
+        },
+        "entity:HRADM": {
+          "id": "entity:HRADM",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "HR · content owners"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:CHAT": {
+          "id": "entity:CHAT",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Chat app"
+            }
+          }
+        },
+        "entity:DRIVE": {
+          "id": "entity:DRIVE",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Drive · source"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:TOPIC": {
+          "id": "entity:TOPIC",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Pub/Sub · topic"
+            },
+            "category": {
+              "kind": "text",
+              "value": "outside"
+            }
+          }
+        },
+        "entity:SUB": {
+          "id": "entity:SUB",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Pub/Sub · push"
+            },
+            "category": {
+              "kind": "text",
+              "value": "outside"
+            }
+          }
+        },
+        "entity:APP": {
+          "id": "entity:APP",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Backend · FastAPI"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:AGENT": {
+          "id": "entity:AGENT",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "ADK agent · RAG tools"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:CHATAPI": {
+          "id": "entity:CHATAPI",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Google Chat · API"
+            },
+            "category": {
+              "kind": "text",
+              "value": "outside"
+            }
+          }
+        },
+        "entity:DOCS": {
+          "id": "entity:DOCS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Bucket · documents"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:FS": {
+          "id": "entity:FS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Firestore · sessions"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:RAG": {
+          "id": "entity:RAG",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "RAG Engine"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:GEM": {
+          "id": "entity:GEM",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Model · Gemini"
+            }
+          }
+        },
+        "entity:ARMOR": {
+          "id": "entity:ARMOR",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Model Armor"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:SYNC": {
+          "id": "entity:SYNC",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Job · Drive sync"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:IMPORT": {
+          "id": "entity:IMPORT",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Job · RAG import"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:PSSM": {
+          "id": "entity:PSSM",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Repo · SSM"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:PAR": {
+          "id": "entity:PAR",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Registry · PROD"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:PIAC": {
+          "id": "entity:PIAC",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "IaC · WIF"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:PLIBS": {
+          "id": "entity:PLIBS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Libs · PyPI"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:CLOG": {
+          "id": "entity:CLOG",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Logging · audit"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:LOGS": {
+          "id": "entity:LOGS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Logs · 1 year"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:BQ": {
+          "id": "entity:BQ",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "BigQuery · linked"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:PHX": {
+          "id": "entity:PHX",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Tracing · Phoenix"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:PSVPC": {
+          "id": "entity:PSVPC",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Network · SVPC"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:CUTTER": {
+          "id": "entity:CUTTER",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Template · GenAiR"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:AGARDEN": {
+          "id": "entity:AGARDEN",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Agents · template"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:IFREPO": {
+          "id": "entity:IFREPO",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "IaC · modules"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:GLIBS": {
+          "id": "entity:GLIBS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Libs · GenAiR"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            }
+          }
+        },
+        "entity:SCMREPO": {
+          "id": "entity:SCMREPO",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Repo · SCM"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            }
+          }
+        },
+        "entity:JENKINS": {
+          "id": "entity:JENKINS",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "CI · Jenkins"
+            }
+          }
+        },
+        "entity:JFROG": {
+          "id": "entity:JFROG",
+          "profile": "generic@2",
+          "type": "node",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Registry · JFrog"
+            }
+          }
+        },
+        "entity:legend-genair": {
+          "id": "entity:legend-genair",
+          "profile": "generic@2",
+          "type": "legend-key",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "GenAiR standard"
+            },
+            "category": {
+              "kind": "text",
+              "value": "genair"
+            },
+            "description": {
+              "kind": "text",
+              "value": "GenAiR template, unchanged"
+            }
+          }
+        },
+        "entity:legend-custom": {
+          "id": "entity:legend-custom",
+          "profile": "generic@2",
+          "type": "legend-key",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "GenAiR customisation"
+            },
+            "category": {
+              "kind": "text",
+              "value": "custom"
+            },
+            "description": {
+              "kind": "text",
+              "value": "within the template frame"
+            }
+          }
+        },
+        "entity:legend-outside": {
+          "id": "entity:legend-outside",
+          "profile": "generic@2",
+          "type": "legend-key",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Specific for HRPN"
+            },
+            "category": {
+              "kind": "text",
+              "value": "outside"
+            },
+            "description": {
+              "kind": "text",
+              "value": "added outside the template"
+            }
+          }
+        },
+        "entity:legend-none": {
+          "id": "entity:legend-none",
+          "profile": "generic@2",
+          "type": "legend-key",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Managed service"
+            },
+            "category": {
+              "kind": "text",
+              "value": "none"
+            },
+            "description": {
+              "kind": "text",
+              "value": "Google or third-party"
+            }
+          }
+        }
+      },
+      "presentationEntities": {
+        "occurrence:PEOPLE": {
+          "form": "container",
+          "text": {
+            "kicker": "PPL",
+            "subtitle": "Employees HR · Developers admin · HR content owners",
+            "footer": "scope: Users and operators"
+          },
+          "icon": "people"
+        },
+        "occurrence:WS": {
+          "form": "container",
+          "text": {
+            "kicker": "GWS",
+            "subtitle": "Chat app · Drive source",
+            "footer": "service: Google Workspace"
+          },
+          "icon": "window"
+        },
+        "occurrence:GCP": {
+          "form": "container",
+          "text": {
+            "kicker": "GOOGLE CLOUD",
+            "subtitle": "PROD landing zone",
+            "footer": "service: Google Cloud"
+          },
+          "icon": "cloud"
+        },
+        "occurrence:PRODZ": {
+          "form": "container",
+          "text": {
+            "kicker": "GCP PROJECT (PROD)",
+            "subtitle": "app_code (to provision)",
+            "footer": "service: GCP project (PROD)"
+          },
+          "icon": "server"
+        },
+        "occurrence:PPROZ": {
+          "form": "container",
+          "text": {
+            "kicker": "GCP PROJECT (PROD)",
+            "subtitle": "project_id_pro",
+            "footer": "service: GCP project (PROD)"
+          },
+          "icon": "server"
+        },
+        "occurrence:MSGZ": {
+          "form": "container",
+          "text": {
+            "kicker": "PS",
+            "subtitle": "Pub/Sub topic · Pub/Sub push",
+            "footer": "service: Pub/Sub"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-outside"
+        },
+        "occurrence:RUNZ": {
+          "form": "container",
+          "text": {
+            "kicker": "HRPN",
+            "subtitle": "hrpn-ragengine-agent",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server"
+        },
+        "occurrence:STATEZ": {
+          "form": "container",
+          "text": {
+            "kicker": "HRPN",
+            "subtitle": "Bucket documents · Firestore sessions",
+            "footer": "repo: HRPN"
+          },
+          "icon": "db"
+        },
+        "occurrence:VERTEXZ": {
+          "form": "container",
+          "text": {
+            "kicker": "VAI",
+            "subtitle": "RAG Engine · Model Gemini · Model Armor",
+            "footer": "service: Vertex AI"
+          },
+          "icon": "brain",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:INGZ": {
+          "form": "container",
+          "text": {
+            "kicker": "HRPN",
+            "subtitle": "Job Drive sync · Job RAG import",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:PSHARED": {
+          "form": "container",
+          "text": {
+            "kicker": "GENAI PLATFORM",
+            "subtitle": "CI/CD · Observability · Network SVPC",
+            "footer": "service: GenAI platform"
+          },
+          "icon": "server"
+        },
+        "occurrence:PCICD": {
+          "form": "container",
+          "text": {
+            "kicker": "GENAI PCP PLATFORM",
+            "subtitle": "project_id_cicd",
+            "footer": "service: GenAI PCP Platform"
+          },
+          "icon": "server"
+        },
+        "occurrence:OBSZ": {
+          "form": "container",
+          "text": {
+            "kicker": "GENAI PCP PLATFORM",
+            "subtitle": "Logging audit · Logs 1 year · BigQuery linked · Tracing Phoenix",
+            "footer": "service: GenAI PCP Platform"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:OUT": {
+          "form": "container",
+          "text": {
+            "kicker": "OUTSIDE GCP",
+            "subtitle": "Airbus GitHub · Airbus GitLab · CI/CD",
+            "footer": "scope: Outside GCP"
+          },
+          "icon": "link"
+        },
+        "occurrence:GITHUBZ": {
+          "form": "container",
+          "text": {
+            "kicker": "GH",
+            "subtitle": "github.airbus.corp",
+            "footer": "service: Airbus GitHub"
+          },
+          "icon": "link"
+        },
+        "occurrence:GENSRC": {
+          "form": "container",
+          "text": {
+            "kicker": "GENAIR",
+            "subtitle": "Template GenAiR · Agents template · IaC modules · Libs GenAiR",
+            "footer": "repo: GenAiR"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:GITLABZ": {
+          "form": "container",
+          "text": {
+            "kicker": "AIRBUS SCM",
+            "subtitle": "SCM",
+            "footer": "service: Airbus SCM"
+          },
+          "icon": "link"
+        },
+        "occurrence:AWSCI": {
+          "form": "container",
+          "text": {
+            "kicker": "AIRBUS AWS",
+            "subtitle": "CI Jenkins · Registry JFrog",
+            "footer": "service: Airbus AWS"
+          },
+          "icon": "server"
+        },
+        "occurrence:LEGEND": {
+          "form": "legend",
+          "text": {
+            "kicker": "HRPN",
+            "subtitle": "Card tints and link styles of this scene"
+          },
+          "icon": "window"
+        },
+        "occurrence:EMP": {
+          "form": "card",
+          "text": {
+            "kicker": "USR",
+            "body": "HR users and employees",
+            "detail": "ask HR policy questions in Chat",
+            "footer": "actor: Airbus employees"
+          },
+          "icon": "people"
+        },
+        "occurrence:DEV": {
+          "form": "card",
+          "text": {
+            "kicker": "DEV",
+            "body": "HRPN developers (2 authors)",
+            "detail": "git push · Terraform",
+            "footer": "actor: HRPN team"
+          },
+          "icon": "people"
+        },
+        "occurrence:HRADM": {
+          "form": "card",
+          "text": {
+            "kicker": "OWN",
+            "body": "Policy owners (AAI HR)",
+            "detail": "approve documents in Drive",
+            "footer": "actor: AAI HR"
+          },
+          "icon": "people",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:CHAT": {
+          "form": "card",
+          "text": {
+            "kicker": "CHT",
+            "body": "HR Policy Navigator",
+            "detail": "Chat spaces (BRD-ACC-010)",
+            "footer": "service: Google Workspace"
+          },
+          "icon": "window"
+        },
+        "occurrence:DRIVE": {
+          "form": "card",
+          "text": {
+            "kicker": "DRV",
+            "body": "restricted HR policy folder",
+            "detail": "approved PDFs only",
+            "footer": "service: Google Workspace"
+          },
+          "icon": "window",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:TOPIC": {
+          "form": "card",
+          "text": {
+            "kicker": "TOP",
+            "body": "hrpn-gchat-events",
+            "detail": "publisher identity: gate G1",
+            "footer": "repo: HRPN"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-outside"
+        },
+        "occurrence:SUB": {
+          "form": "card",
+          "text": {
+            "kicker": "SUB",
+            "body": "hrpn-gchat-events-sub",
+            "detail": "OIDC · dedicated push SA",
+            "footer": "repo: HRPN"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-outside"
+        },
+        "occurrence:APP": {
+          "form": "card",
+          "text": {
+            "kicker": "API",
+            "body": "get_fast_api_app()",
+            "detail": "Python · GenAiR template server",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:AGENT": {
+          "form": "card",
+          "text": {
+            "kicker": "AGT",
+            "body": "root_agent (HR prompt)",
+            "detail": "rag_query · format_links · scope",
+            "footer": "repo: HRPN"
+          },
+          "icon": "robot",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:CHATAPI": {
+          "form": "card",
+          "text": {
+            "kicker": "GCH",
+            "body": "POST /gchat-push · reply",
+            "detail": "event check · dedup · rating",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-outside"
+        },
+        "occurrence:DOCS": {
+          "form": "card",
+          "text": {
+            "kicker": "DOC",
+            "body": "hrpn-ragengine-docs",
+            "detail": "fed by the Drive sync job",
+            "footer": "repo: HRPN"
+          },
+          "icon": "db",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:FS": {
+          "form": "card",
+          "text": {
+            "kicker": "FS",
+            "body": "hrpn-sessions (Native)",
+            "detail": "FirestoreSessionService · TTL 1 y",
+            "footer": "repo: HRPN"
+          },
+          "icon": "db",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:RAG": {
+          "form": "card",
+          "text": {
+            "kicker": "RAG",
+            "body": "corpus hr_policies",
+            "detail": "RagManaged Basic · embed-005",
+            "footer": "service: Vertex AI"
+          },
+          "icon": "brain",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:GEM": {
+          "form": "card",
+          "text": {
+            "kicker": "LLM",
+            "body": "pinned Gemini Flash",
+            "detail": "upgrade with regression tests",
+            "footer": "service: Vertex AI"
+          },
+          "icon": "brain"
+        },
+        "occurrence:ARMOR": {
+          "form": "card",
+          "text": {
+            "kicker": "MA",
+            "body": "prompt + answer screening",
+            "detail": "PROD availability: unknown",
+            "footer": "service: Vertex AI"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:SYNC": {
+          "form": "card",
+          "text": {
+            "kicker": "SYN",
+            "body": "drive-sync Cloud Run job",
+            "detail": "read-only SA · delta copy",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:IMPORT": {
+          "form": "card",
+          "text": {
+            "kicker": "IMP",
+            "body": "rag.import_files() job",
+            "detail": "delta indexing · 24 h SLA",
+            "footer": "repo: HRPN"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:PSSM": {
+          "form": "card",
+          "text": {
+            "kicker": "PSM",
+            "body": "Source Manager (PROD)",
+            "detail": "ssm = cicd project",
+            "footer": "repo: HRPN"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:PAR": {
+          "form": "card",
+          "text": {
+            "kicker": "PAR",
+            "body": "app-container-images",
+            "detail": "+ app-container-images-noprod",
+            "footer": "repo: HRPN"
+          },
+          "icon": "db",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:PIAC": {
+          "form": "card",
+          "text": {
+            "kicker": "WIF",
+            "body": "iac-sa + iac-state bucket",
+            "detail": "pool wif-<app_code>-prod-cicd",
+            "footer": "repo: HRPN"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:PLIBS": {
+          "form": "card",
+          "text": {
+            "kicker": "PLB",
+            "body": "prj-libs-71f1 python-repository",
+            "detail": "GenAiR libs for PROD builds",
+            "footer": "service: GenAI platform"
+          },
+          "icon": "db",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:CLOG": {
+          "form": "card",
+          "text": {
+            "kicker": "LOG",
+            "body": "structured conversation log",
+            "detail": "PII scrubbed (BRD-HR-014)",
+            "footer": "repo: HRPN"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:LOGS": {
+          "form": "card",
+          "text": {
+            "kicker": "FBK",
+            "body": "hrpn-logbucket + hrpn-sink",
+            "detail": "365 d (DAT-015) · 120 d today",
+            "footer": "repo: HRPN"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:BQ": {
+          "form": "card",
+          "text": {
+            "kicker": "BQ",
+            "body": "hrpn_user_feedback_ds",
+            "detail": "linked dataset on log bucket",
+            "footer": "repo: HRPN"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:PHX": {
+          "form": "card",
+          "text": {
+            "kicker": "PHX",
+            "body": "module cloud_run_phoenix",
+            "detail": "no instrumentation library",
+            "footer": "repo: HRPN"
+          },
+          "icon": "shield",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:PSVPC": {
+          "form": "card",
+          "text": {
+            "kicker": "SVP",
+            "body": "Shared VPC host project",
+            "detail": "networks dev / int / pro",
+            "footer": "service: GenAI platform"
+          },
+          "icon": "cloud",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:CUTTER": {
+          "form": "card",
+          "text": {
+            "kicker": "GEN",
+            "body": "GenAiR-Cutter 26.9.0",
+            "detail": "Agent Engine · no frontend",
+            "footer": "repo: GenAiR-Cutter"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:AGARDEN": {
+          "form": "card",
+          "text": {
+            "kicker": "AGD",
+            "body": "GenAiR-AgentGarden (main)",
+            "detail": "ragengine-agent · Cutter submodule",
+            "footer": "repo: GenAiR-AgentGarden"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:IFREPO": {
+          "form": "card",
+          "text": {
+            "kicker": "GIF",
+            "body": "genair-infra-factory v1.8.3",
+            "detail": "PROD: GitHub · POD: SSM mirror",
+            "footer": "repo: genair-infra-factory"
+          },
+          "icon": "server",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:GLIBS": {
+          "form": "card",
+          "text": {
+            "kicker": "LIB",
+            "body": "genair-* Python packages",
+            "detail": "built by Jenkins → Artifactory",
+            "footer": "repo: GenAiR libs"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:SCMREPO": {
+          "form": "card",
+          "text": {
+            "kicker": "GIT",
+            "body": "HRPN PROD repository",
+            "detail": "host open: GitLab or GitHub",
+            "footer": "repo: HRPN"
+          },
+          "icon": "link",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:JENKINS": {
+          "form": "card",
+          "text": {
+            "kicker": "JK",
+            "body": "oc.jenkins 2b82-devops",
+            "detail": "GenAiR jobs · PROD pipelines",
+            "footer": "service: Jenkins on AWS"
+          },
+          "icon": "server"
+        },
+        "occurrence:JFROG": {
+          "form": "card",
+          "text": {
+            "kicker": "JF",
+            "body": "Artifactory 2b82",
+            "detail": "r-8cf1-genair-pypi-local",
+            "footer": "service: JFrog Artifactory"
+          },
+          "icon": "db"
+        },
+        "occurrence:legend-genair": {
+          "form": "legend-key",
+          "text": {
+            "kicker": "TINT · BLUE",
+            "body": "GenAiR template, unchanged",
+            "detail": "standard GenAiR code and service",
+            "footer": "tint: genair"
+          },
+          "icon": "window",
+          "categoryRef": "entity:legend-genair"
+        },
+        "occurrence:legend-custom": {
+          "form": "legend-key",
+          "text": {
+            "kicker": "TINT · GREEN",
+            "body": "within the template frame",
+            "detail": "configured, data services included",
+            "footer": "tint: custom"
+          },
+          "icon": "window",
+          "categoryRef": "entity:legend-custom"
+        },
+        "occurrence:legend-outside": {
+          "form": "legend-key",
+          "text": {
+            "kicker": "TINT · YELLOW",
+            "body": "added outside the template",
+            "detail": "not provided by GenAiR",
+            "footer": "tint: outside"
+          },
+          "icon": "window",
+          "categoryRef": "entity:legend-outside"
+        },
+        "occurrence:legend-none": {
+          "form": "legend-key",
+          "text": {
+            "kicker": "NO TINT",
+            "body": "Google or third-party",
+            "detail": "managed service: no fill",
+            "footer": "tint: none"
+          },
+          "icon": "window",
+          "categoryRef": "entity:legend-none"
+        }
+      },
+      "legendOrder": [
+        "entity:legend-genair",
+        "entity:legend-custom",
+        "entity:legend-outside",
+        "entity:legend-none"
+      ],
+      "hints": {
+        "grouping": [
+          {
+            "id": "root",
+            "direction": "columns",
+            "items": [
+              {
+                "id": "left",
+                "direction": "rows",
+                "items": [
+                  "entity:PEOPLE",
+                  "entity:WS",
+                  "entity:LEGEND"
+                ]
+              },
+              {
+                "id": "right",
+                "direction": "rows",
+                "stretch": true,
+                "items": [
+                  "entity:GCP",
+                  "entity:OUT"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "PRODZ",
+            "direction": "rows",
+            "stretch": true,
+            "items": [
+              "entity:PPROZ",
+              "entity:PSHARED"
+            ]
+          },
+          {
+            "id": "PPROZ",
+            "direction": "rows",
+            "items": [
+              {
+                "id": "PPROZ-row",
+                "direction": "columns",
+                "items": [
+                  {
+                    "id": "PPROZ-left",
+                    "direction": "rows",
+                    "items": [
+                      "entity:MSGZ",
+                      "entity:INGZ"
+                    ]
+                  },
+                  "entity:RUNZ",
+                  {
+                    "id": "PPROZ-right",
+                    "direction": "rows",
+                    "items": [
+                      "entity:STATEZ",
+                      "entity:VERTEXZ"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "RUNZ",
+            "direction": "rows",
+            "items": [
+              "entity:CHATAPI",
+              "entity:APP",
+              "entity:AGENT"
+            ]
+          },
+          {
+            "id": "OUT",
+            "direction": "columns",
+            "items": [
+              "entity:GITHUBZ",
+              "entity:GITLABZ",
+              "entity:AWSCI"
+            ]
+          }
+        ]
+      },
+      "expectedSemanticDiagnostics": [],
+      "expectedViewDiagnostics": [],
+      "qualification": "unverified U-QUAL"
+    }
+  ]
+}
+~~~
+
+Hash procedure: RFC 8785 of the parsed JSON object (no trailing newline), then SHA-256. Each subprojection above is the exact named JSON value; A5 uses the two-key object shown in its label. No file hash is substituted for a derived projection hash. A future corpus artifact must copy these values or publish a new governed oracle revision with a recorded reason; it may not silently redefine expected mappings/counts.
+
+### 8.8 Acceptance and ownership
+
+M1 checks semantic/view validity, leak invariance, typed counts, every per-occurrence style, summary definitions/activation, A5 field equality, migrations and frozen vectors. A7 adds the ArchiMate full tuple corpus and UML multiplicity/stereotype corpus. Actual execution/receipt collection is unverified U-QUAL; this file records no pass verdict. M2/M3 consume the same pinned fixtures for visual/interactive gates and preserve their source identity.
+
+## 9. Architecture landing remains settled
+
+Card diagrams A1–A5 land on **generic@2 plus diagram-presentation@1**. ArchiMate assertions land on **archimate@2**, using the same presentation contract when drawn as cards. architecture@1 remains withdrawn.
+
+A1 and HRPN sources assert nodes/containers/contains/labelled links and semantic categories, not ArchiMate layer/aspect/matrix assertions. Their ArchiMate cells are therefore absent, not partial. The source generic@1 graphs migrate with explicit value-preserving conversion; forcing an ArchiMate interpretation would invent assertions absent from their producers. The study's central governance-routing instance likewise projects to the generic family.
+
+The landing does not decide profile retention cost: generic@1, archimate@1, bpmn@1 and uml@1 remain readable/regression-tested under any landing. Both family choices can share the same governed presentation contract, so no “one fragment versus three copies” cost advantage is claimed. The owner already chose the @2 migration identities; that decision is not reopened.
+
+## 10. Delivery stages and preserved workload
+
+S1 = development code/data/schema/corpus drafts, outside the catalog.
+S2 = qualified profile/contract publication only after full G0 §5.5 admission, all dependency/identity/adapter receipts included.
+S3 = package release/publication under the owning project's release authority.
+No stage follows merely from writing this specification.
+
+| Milestone | Scope and gate |
+| --- | --- |
+| M1 Model/executor/view | Implement §5 and qualified family data, explicit @1→@2 migrations, typed presentation join, folds/measurement/hints. Build/check/package-scoped tests; self-validation and all A1–A5/A7 oracles including rejected cases; native legacy arrays unchanged; G0 vectors exact; no code/file/pin leak; no extra publishable package. A′-dependent UML/ArchiMate subgates remain explicitly blocked by the corresponding unverified dependencies, not reported done. |
+| M2 Presentation | Pixel equality against actual #711 and pinned HRPN figures, fixed 460×200 geometry, no ellipsis, shared LineLayout, one duotone registry, category token resolution and legend/accessibility text. REQUIREMENTS and pinned kit bytes are the authority; component schema/rendering qualification belongs to DS. |
+| M3 Interaction | Every interactive transition validates, conserves scene items/exclusions, reflows without collision, reroutes, keeps fixed boxes and document revision, and satisfies **600 interactions including 240 stress toggles**, worst interaction <1.8 seconds, no continuous idle work, no raised timeouts. Workload enumeration below is mandatory. |
+| M4 Integration | xyflow (Svelte Flow) custom nodes with handles and standalone embedding; no consumer presentation patches. Adoption/qualification is separate from package release. |
+| M5 Export | Owning export spec gates folds, exact authored summaries/constituents, styles and ids on re-import; BPMN XML stays under A′. |
+| M6 Editing | RT-1 before rich-text editing; host-applied edge reconnection/inline labels under Track 01M5F3XSAJC2H6S9ZREP7JFFJ6; refused proposals change nothing; BPMN stays with its parity owner. |
+
+The M3 workload transcribes the **actual #711 check-browser.mjs/browser-checks.mjs** workload, preserving its report units: **600 interactions total, of which 240 are stress toggles**. No source workload is invented from unrelated scene counts.
+
+| Reported interaction class | Pinned source enumeration | Count |
+| --- | --- | --- |
+| Frame-control traversal | 8 contexts (desktop/mobile × fr/en × light/dark), 10 frames, 3 expected aria-expanded states per frame | 240 |
+| Mixed-fold latency | 8 contexts × [surfaces,engram,design-system,cm-catalog] | 32 |
+| In-frame DS icon buttons | 4 desktop contexts × 10 frames × 2 expected states | 80 |
+| Keyboard then mouse focus | One compound focus-visible case in each desktop context | 4 |
+| Touch pinch | One pinch case in each mobile context | 4 |
+| Stress toggles | fr/en, 120 each; control index (i*7+floor(i/11)) % controls.count | 240 |
+| **Total** | 360 other reported interactions + 240 stress toggles | **600** |
+
+Frame order is exactly h2a, surfaces, cluster-mesh, cm-catalog, cat-mcp, cm-storage, cm-security, cm-cluster, engram, design-system. Traversal states are true,false,true; desktop icon-button states false,true. Each stress language uses its fresh browser/context and the source's collapsed starting state. Every latency gate remains strictly below 1800 ms; no timeout is raised. Offline/no-request and idle-work checks are retained. Browser setup/navigation/global actions are retained as source setup/assertions rather than silently re-counted to replace required report entries.
+
+The same model/projection is additionally exercised on A2–A5 by their corpus gates; those cases do not substitute for or reduce the owner-validated #711 600/240 workload.
+
+The owner freezes the totals/budget/idle rule; the per-action measurement artifact and timings are unverified U-INTERACTION (owner DS M3). No authoring-time timing claim appears here. Own JS and offline/no CDN apply to every stage; 32 MB remains an order of magnitude, not a ceiling.
+
+## 11. Finding response and remaining evidence
+
+### 11.1 Contract response crosswalk (authorship record, not an assessment)
+
+| Finding group | Original identifiers | Specification response |
+| --- | --- | --- |
+| Presentation in graph | Sol N1; Astra 1; DS R3-B1 | §§1.2–1.3/3.1–3.6: all drawing fields in typed view/contract; categories remain semantic; digest invariance. |
+| Executable composition | Sol N2; Astra 2; DS T1 | §3.2 closed G0 contract artifact, explicit join/application, selectors/conflicts and four family witnesses; no profileRefs augmentation or S-2 redeclaration. |
+| Profile identity/completion | Sol N3/N4; Astra 3/4; DS R3-B4/T1 | archimate@2/uml@2, §3.9 pair matrix and §3.11 K6 carrier, §3.13 migrations and coexistence; exact source/endpoint/qualification dependencies stay unverified rather than arity-only coverage. |
+| Incompatible bounds | Sol N5; Astra 9; DS T2 | §3.13 same-kind/different-kind conflicts both atomically refuse; original retained, no invalid partial target. |
+| Authored summaries/style | Sol N6; Astra 10; DS R3-B5 | §4.5 occurrence/style-specific constituents, active-key uniqueness after projection, Appendix B.4/B.5 worked witnesses. |
+| G0 closed mapping/identities | Sol N7; Astra 7; DS T7 | §7.4 exact record/payload/lineage/bindings, full base evidence arm, concrete fixture specimens; production lookups explicitly unverified U-ID. |
+| Generated BPMN admission | Sol N8; Astra 6 | §7.4 requires every implementing-library/proof-set/selection parity receipt plus bijection; any missing receipt refuses. |
+| Oracle/matrix/source pins | Sol N9/N10; Astra 8; DS T3/T6/R3-B2 | §8 actual #711 hashes/counts, split HRPN columns, separate current producer pins, concrete digest-bound derived oracle and summary constituents; measured coverage distinguished from target. |
+| A5 authored field retention | Sol N11; Astra 11; DS T4 | §8.4 four exact key records and §8.7 all 56 native semantic/presentation targets; kicker/footer/icon values have direct native destinations. |
+| c14n vectors | Sol N12; Astra 5; DS R3-B3 | §6 and §8.5 bind sealed jcs-* and identity-stable-id; workbench remains separate; 610c0353 parity retained. |
+| Workload | Sol N13; Astra 12; DS R3-B6 | §10 source-enumerated 600 interactions including 240 stress toggles, <1.8 s, no idle work. |
+| Diagnostics | Sol N14; Astra 13; DS T5/T8 | §5.3 legacy behaviour/ordering preserved; Appendix C literal complete arms/inventory includes quantity-above-max and .target endpoint path; adapter schema qualification explicit. |
+| Quotes/cost/landing | DS R3-M1; consolidated §9 | Exact relay quotation and supplied owner spelling distinguished; no 32 MB ceiling or unsupported copy-cost comparison; §9 generic@2/archimate@2 landing kept. |
+| r4 PARTIAL — ArchiMate completion | r4 closure table; Sol N3 / Astra 4 / DS T1; targeted owner follow-up on the r5 view gap | §§3.9.1–3.9.2/4.4/A.4/B.7/C.6: full declaration and shared relation-target carrier, including RelationRef view provenance, finite fold witnesses and a worked relation-to-relation projection. Publication remains gated by U-AM/U-AM-ENDPOINT/U-QUAL. |
+| r4 PARTIAL — UML completion | r4 closure table; Sol N3 / Astra 4 / DS T1 | §§3.11.1/A.4: exact K6 schema registration interpretation, all class-diagram attributes/roles/constraints, exclusive aggregation, unique extends, K1 diagnostics and explicit pinned-fixture migration. Execution remains U-KERNEL/U-QUAL. |
+| r4 PARTIAL — G0 closed mapping | r4 closure table; Sol N7 / Astra 7 / DS T7 | §7.4/A.3: exact closed records/envelopes, mirrored identities/digests/lineage, defined fixture references, all artifact/asset preimages and recalculated external P-ENTRY. Production lookups/admission remain U-ID/U-QUAL. |
+| r4 PARTIAL — Populated oracle | r4 closure table; Sol N9 / Astra 8 / DS T3 | §8.7: 71 recursively derived frozen-parent orderings / 207 resolvable direct children; all projection sizes/hashes recalculated. Expected arrays remain authored corpus values. |
+| r4 PARTIAL — HRPN producer pins | r4 closure table; DS T3 | §§8.5–8.6: every HRPN payload/producer path is pinned to immutable HRPN commit faf21b6f259f93a485994bbe03b4023763bf2597 and independently rehashed. Only recovery of superseded historical producer bytes remains U-HISTORY. |
+| r4 MAJOR — Fifteen invalid hint ids | r4 new finding, §8.7 A2–A4b | Child zone.id is read recursively from the four pinned JSON files, never child-object coercion; each id exists and its parent matches. Whole-oracle SHA-256 and Appendix E recalculated. |
+| r4 MAJOR — One digest reused for seven artifacts | r4 new finding, A.3 | Seven distinct artifact byte preimages/digests, two defined full-declaration asset byte sources and two recalculated P-ENTRY values. Only corpus references reuse the corpus digest. No fixture executable/schema qualification is asserted. |
+| r4 MAJOR — Relationship endpoint carrier | r4 new finding, §3.9; r5 finding on §§4.4.2/4.4.4 | §§3.9.1/4.4 define the same semantic/view carrier through folds: a visible target retains its relation occurrence; an internal target uses its canonical collapsed container with original RelationRef/sourceOccurrence provenance. B.7/C.6 specify projection, restoration and negative diagnostics; execution/routing qualification remains U-AM-ENDPOINT. |
+| r4 MINOR — Hash-row count | r4 new finding, Appendix E | §8.5 now has 86 rows (52+12+16+6), including four new controlling source files, and 85 distinct source identities. All 86 rows recomputed with Node. |
+| r4 MINOR — Five diagnostic paths | r4 new finding, C.3 | Each mutation has its exact field path, matching its C.3 arm; no one of those five arrays uses the generic presentation.diagram path. |
+| r4 MINOR — Adapter/contract pin binding | r4 new finding, §3.2.1 | Input contractPin equals the persisted/resolved presentation contract; adapterPin equals that contract catalog's compatibility.adapter; schema binding equals artifactBinding.schemaPin. Each mismatch refuses before application under presentation-pin-mismatch. |
+
+### 11.2 unverified register
+
+| Id | Still unverified | Owner / effect |
+| --- | --- | --- |
+| U-ID | Production namespace/owner/canonical-reference registry lookups and actual published catalog record identities | Engram guardian/catalog. Candidate namespace diagram and handle engram are specified expectations, not read registry evidence. S2 refuses without lookups. |
+| U-AM | Normative suitability/catalogue classification and transitive licence qualification of the pinned Archi 3.2 machine-data transcription against the authoritative ArchiMate source | Engram ArchiMate steward. Full pair data is supplied; external certification/standard equivalence is not claimed. Blocks complete-profile admission. |
+| U-AM-ENDPOINT | Execution/schema-2.0 registration, identity migration/reload/downgrade and view-attachment/routing receipts for the fully defined §3.9.1 generic relation-target carrier | DS kernel with Engram. Shape, finite lookup, @relation classification, RelationRef fold provenance, bounded occurrence classification, routing limits and migration witness are specified; B.7/C.6 are expected values, not receipts. No second metamodel/reification/cell deletion. Blocks full archimate@2 admission, not declaration specification. |
+| U-KERNEL | Qualified K1/K2/K6 type/reference/struct schema (including the §3.11.1 kind-neutral multiplicity schema interpretation), shared schema-2.0 transition and Appendix A.4 declaration support | DS kernel/A′ with Engram profiles. Full declarations/carriers/constraints are specified; compatible execution/schema registration/publication remains unverified. |
+| U-DIAG | Published diagnostic-schema/adapter accepting the new native code arms, with reversible receipts | Engram guardian adapter + DS. Blocks S2 for those executors, does not alter frozen G0. |
+| U-D2D-MAP | Generated BPMN↔d2d mechanism mapping and associated receipt pins | Engram/d2d/bpmn-canvas/DS. Matrix remains partial, private content owner-side. |
+| U-HISTORY | Historical producer bytes matching the five superseded HRPN provenance pins | HRPN producer. Frozen fixtures remain pinned/intact; historical regeneration is not asserted. |
+| U-THEME | Resolved DS token assets and pixel equivalence of the governed category-token table | DS presentation with Engram contract/theme steward. Does not permit consumer colour tables. |
+| U-QUAL | Implementation, exact executor/package pins, schema-valid production specimens, corpus/transition and admission receipts, including complete A7 execution | DS execution + Engram governance. Specification oracle values and serialization specimens are not executed admission evidence. |
+| U-INTERACTION | Measured per-action 600/240 artifact and worst-case/idle evidence | DS M3. Workload remains mandatory; no measured performance is claimed. |
+
+All open evidence is assigned above. No unanswered owner choice about identity/family routing/workload is introduced.
+
+
+## Appendix A — Source transcriptions and executable specimens
+
+### A.1 ArchiMate 3.2 catalogue and pairwise matrix
+
+Immutable source: archimatetool/archi 9e6a014f9ef6a782a7dda604ef7b4d03d2c7819a, com.archimatetool.model/model/relationships.xml (version 3.2), relationships-keys.xml and archimate.ecore, plus com.archimatetool.model/LICENSE.txt and com.archimatetool.model/src/com/archimatetool/model/IAccessRelationship.java, raw hashes §8.5. The table below is a transcription of the matrix bytes. The source licence is MIT-form text including The Open Group attribution; dependent publication still requires Engram's U-AM qualification. No Java runtime/code is shipped; the executor is our own JS over the pinned data.
+
+Key transcription: a=access, c=composition, f=flow, g=aggregation, i=assignment, n=influence, o=association, r=realization, s=specialization, t=triggering, v=serving. Case is preserved in the source; this snapshot uses lowercase keys. No runtime relation derivation is implied by a permitted key.
+
+Catalogue type names map by inserting "-" between a lowercase/digit and following uppercase, then ASCII lowercase. Grouping→grouping, Junction→junction retain the @1 names. Relationship→@relation is the source's pseudo-concept for a relation target/source, **not an entity type**. Its generic native carrier is specified in §3.9.1 and qualified under U-AM-ENDPOINT. The other 61 rows are concrete element kinds. layer/aspect below are the explicit candidate classification used by this transcription; classification against the standard is part of U-AM, not fabricated source certification.
+
+| Source concept | Native type id | Layer | Aspect |
+| --- | --- | --- | --- |
+| ApplicationCollaboration | application-collaboration | application | active |
+| ApplicationComponent | application-component | application | active |
+| ApplicationEvent | application-event | application | behaviour |
+| ApplicationFunction | application-function | application | behaviour |
+| ApplicationInteraction | application-interaction | application | behaviour |
+| ApplicationInterface | application-interface | application | active |
+| ApplicationProcess | application-process | application | behaviour |
+| ApplicationService | application-service | application | behaviour |
+| Artifact | artifact | technology | passive |
+| Assessment | assessment | motivation | motivation |
+| BusinessActor | business-actor | business | active |
+| BusinessCollaboration | business-collaboration | business | active |
+| BusinessEvent | business-event | business | behaviour |
+| BusinessFunction | business-function | business | behaviour |
+| BusinessInteraction | business-interaction | business | behaviour |
+| BusinessInterface | business-interface | business | active |
+| BusinessObject | business-object | business | passive |
+| BusinessProcess | business-process | business | behaviour |
+| BusinessRole | business-role | business | active |
+| BusinessService | business-service | business | behaviour |
+| Capability | capability | strategy | behaviour |
+| CommunicationNetwork | communication-network | technology | active |
+| Constraint | constraint | motivation | motivation |
+| Contract | contract | business | passive |
+| CourseOfAction | course-of-action | strategy | behaviour |
+| DataObject | data-object | application | passive |
+| Deliverable | deliverable | implementation | passive |
+| Device | device | technology | active |
+| DistributionNetwork | distribution-network | physical | active |
+| Driver | driver | motivation | motivation |
+| Equipment | equipment | physical | active |
+| Facility | facility | physical | active |
+| Gap | gap | implementation | passive |
+| Goal | goal | motivation | motivation |
+| Grouping | grouping | none | composite |
+| ImplementationEvent | implementation-event | implementation | behaviour |
+| Junction | junction | none | other |
+| Location | location | none | composite |
+| Material | material | physical | passive |
+| Meaning | meaning | motivation | motivation |
+| Node | node | technology | active |
+| Outcome | outcome | motivation | motivation |
+| Path | path | technology | active |
+| Plateau | plateau | implementation | composite |
+| Principle | principle | motivation | motivation |
+| Product | product | business | composite |
+| Representation | representation | business | passive |
+| Requirement | requirement | motivation | motivation |
+| Resource | resource | strategy | active |
+| Stakeholder | stakeholder | motivation | motivation |
+| SystemSoftware | system-software | technology | active |
+| TechnologyCollaboration | technology-collaboration | technology | active |
+| TechnologyEvent | technology-event | technology | behaviour |
+| TechnologyFunction | technology-function | technology | behaviour |
+| TechnologyInteraction | technology-interaction | technology | behaviour |
+| TechnologyInterface | technology-interface | technology | active |
+| TechnologyProcess | technology-process | technology | behaviour |
+| TechnologyService | technology-service | technology | behaviour |
+| Value | value | motivation | motivation |
+| ValueStream | value-stream | strategy | behaviour |
+| WorkPackage | work-package | implementation | behaviour |
+
+None denotes no layer; it is not the string value of a fabricated semantic layer attribute. Catalogue descriptors constrain instance layer/aspect only where defined. Grouping/container capability is explicit. No optional name is made globally unique.
+
+**Complete pairwise table.** Columns are numbered 0…61 in exactly the source order below. Every row has 62 cell strings in that order. Each character in a cell admits exactly that relationship for **that ordered source/target pair**. "-" denotes the empty set; there is no implicit Cartesian product. This is a compact encoding of all 3,844 pairs and their 11,569 permitted (relationship,source,target) tuples, including every @relation pair under §3.9.1.
+
+~~~text
+0 ApplicationCollaboration
+1 ApplicationComponent
+2 ApplicationEvent
+3 ApplicationFunction
+4 ApplicationInteraction
+5 ApplicationInterface
+6 ApplicationProcess
+7 ApplicationService
+8 Artifact
+9 Assessment
+10 BusinessActor
+11 BusinessCollaboration
+12 BusinessEvent
+13 BusinessFunction
+14 BusinessInteraction
+15 BusinessInterface
+16 BusinessObject
+17 BusinessProcess
+18 BusinessRole
+19 BusinessService
+20 Capability
+21 CommunicationNetwork
+22 Constraint
+23 Contract
+24 CourseOfAction
+25 DataObject
+26 Deliverable
+27 Device
+28 DistributionNetwork
+29 Driver
+30 Equipment
+31 Facility
+32 Gap
+33 Goal
+34 Grouping
+35 ImplementationEvent
+36 Junction
+37 Location
+38 Material
+39 Meaning
+40 Node
+41 Outcome
+42 Path
+43 Plateau
+44 Principle
+45 Product
+46 Relationship
+47 Representation
+48 Requirement
+49 Resource
+50 Stakeholder
+51 SystemSoftware
+52 TechnologyCollaboration
+53 TechnologyEvent
+54 TechnologyFunction
+55 TechnologyInteraction
+56 TechnologyInterface
+57 TechnologyProcess
+58 TechnologyService
+59 Value
+60 ValueStream
+61 WorkPackage
+~~~
+
+| Source row | 62 relation-key cells, targets 0…61 |
+| --- | --- |
+| ApplicationCollaboration | `cfgostv fgortv fiortv fiortv fiortv cfgortv fiortv fiortv ao no fotv fotv fortv fortv fortv fortv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationComponent | `fotv cfgorstv fiortv fiortv fiortv cfgortv fiortv fiortv ao no fotv fotv fortv fortv fortv fortv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationEvent | `fotv fotv cfgostv fotv fotv fotv fotv fotv ao no fotv fotv fortv fotv fotv fotv ao fotv fotv fotv o fotv nor ao o ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no o o` |
+| ApplicationFunction | `fotv fotv fotv cfgostv cfgotv fotv cfgotv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationInteraction | `fotv fotv fotv cfgotv cfgostv fotv cfgotv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationInterface | `fotv fotv fotv fotv fotv cfgostv fotv fiotv ao no fotv fotv fotv fotv fotv fortv ao fotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationProcess | `fotv fotv fotv cfgotv cfgotv fotv cfgostv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| ApplicationService | `fotv fotv fotv fotv fotv fotv fotv cfgostv ao no fotv fotv fotv fotv fotv fotv ao fotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| Artifact | `or or or or or or or or cgors no o o or or or or or or o or or o nor or or or o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o nor or no or o or or or or or or no or o` |
+| Assessment | `o o o o o o o o o cgnos o o o o o o o o o o o o no o o o o o o no o o o no cgnos o acfginorstv o o no o no o o no o o o no o no o o o o o o o o no o o` |
+| BusinessActor | `fotv fotv fotv fotv fotv fotv fotv fotv ao no cfgostv fotv fiotv fiotv fiotv cfgiotv ao fiotv fiotv fiortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv io acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or ino fotv fotv fotv fotv fotv fotv fotv fotv no or io` |
+| BusinessCollaboration | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fgotv cfgostv fiotv fiotv fiotv cfgiotv ao fiotv fgiotv fiortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv io acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or ino fotv fotv fotv fotv fotv fotv fotv fotv no or io` |
+| BusinessEvent | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv cfgostv fotv fotv fotv ao fotv fotv fotv o fotv nor ao o ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no o o` |
+| BusinessFunction | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fotv cfgostv cfgotv fotv ao cfgotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| BusinessInteraction | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fotv cfgotv cfgostv fotv ao cfgotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| BusinessInterface | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fotv fotv fotv cfgostv ao fotv fotv fiotv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| BusinessObject | `o o o o o o o o o no o o o o o o cgos o o o or o nor cgos or o o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o nor or no o o o o o o o o no or o` |
+| BusinessProcess | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fotv cfgotv cfgotv fotv ao cfgostv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| BusinessRole | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fiotv fiotv fiotv cfgotv ao fiotv cfgostv fiortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv io acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or ino fotv fotv fotv fotv fotv fotv fotv fotv no or io` |
+| BusinessService | `fotv fotv fotv fotv fotv fotv fotv fotv ao no fotv fotv fotv fotv fotv fotv ao fotv fotv cfgostv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv fotv no or o` |
+| Capability | `o o o o o o o o o no o o o o o o o o o o cfgostv o nor o fortv o o o o no o o o nor cfgnorstv o acfginorstv o o no o nor o o nor o o o nor fotv no o o o o o o o o no fotv o` |
+| CommunicationNetwork | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fortv fortv fortv fortv fortv fortv ao fortv fortv fortv or cfgostv nor ao or ao o fgortv fotv no fortv fortv o nor acfginorstv o acfginorstv fotv ao no fortv nor fortv o nor fotv o ao nor or nor fgiortv fortv fiortv fiortv fiortv fgiortv fiortv fiortv no or o` |
+| Constraint | `o o o o o o o o o no o o o o o o o o o o o o cgnos o o o o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o cgnos o no o o o o o o o o no o o` |
+| Contract | `o o o o o o o o o no o o o o o o cgos o o o or o nor cgos or o o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o nor or no o o o o o o o o no or o` |
+| CourseOfAction | `o o o o o o o o o no o o o o o o o o o o fotv o nor o cfgostv o o o o no o o o nor cfgnorstv o acfginorstv o o no o nor o o nor o o o nor fotv no o o o o o o o o no fotv o` |
+| DataObject | `o o o o o o o o o no o o o o o o or o o o or o nor or or cgos o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o nor or no o o o o o o o o no or o` |
+| Deliverable | `or or or or or or or or or no or or or or or or or or or or or or nor or or or cgos or or no or or o nor cgnors o acfginorstv or or no or nor or or nor or o or nor or nor or or or or or or or or no or o` |
+| Device | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fotv fotv fortv fortv fortv fortv ao fortv fotv fortv or fotv nor ao or ao o cfgostv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no cfgiortv fotv fiortv fiortv fiortv cfgiortv fiortv fiortv no or o` |
+| DistributionNetwork | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fiortv fiortv fiortv fiortv fiortv fiortv ao fiortv fiortv fiortv or fotv nor ao or ao o fgiortv cfgostv no fgiortv fgiortv o nor acfginorstv io acfginorstv fotv aio no fgiortv nor fortv o nor fotv o ao nor or inor fgiortv fortv fiortv fiortv fiortv fgiortv fiortv fiortv no or io` |
+| Driver | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o cgnos o o o no cgnos o acfginorstv o o no o no o o no o o o no o no o o o o o o o o no o o` |
+| Equipment | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fotv fotv fortv fortv fortv fortv ao fortv fotv fortv or fotv nor ao or ao o cfgortv fotv no cfgorstv fotv o nor acfginorstv o acfginorstv fotv aio no fotv nor fotv o nor fotv o ao nor or no cfgiortv fotv fiortv fiortv fiortv cfgiortv fiortv fiortv no or o` |
+| Facility | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fiotv fiotv fiortv fiortv fiortv fiortv ao fiortv fiotv fiortv or fotv nor ao or ao o cfgiortv fotv no cfgiortv cfgiostv o nor acfginorstv io acfginorstv fotv aio no cfgiotv nor fotv o nor fotv o ao nor or ino cfgiortv fotv fiortv fiortv fiortv cfgiortv fiortv fiortv no or io` |
+| Gap | `o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o cgos o cgos o acfginorstv o o o o o o o o o o o o o o o o o o o o o o o o o` |
+| Goal | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o cgnos cgnos o acfginorstv o o no o no o o no o o o no o no o o o o o o o o no o o` |
+| Grouping | `cfgorstv cfgorstv cfgiorstv cfgiorstv cfgiorstv cfgorstv cfgiorstv cfgiorstv acgiors cgnos cfgiorstv cfgiorstv cfgiorstv cfgiorstv cfgiorstv cfgiorstv acgors cfgiorstv cfgiorstv cfgiorstv cfgiorstv cfgorstv cgnors acgors cfgorstv acgors acgors cfgiorstv cfgorstv cgnos cfgiorstv cfgiorstv cgos cgnors acfginorstv cfgiost acfginorstv cfgorstv acgiors cgnos cfgiorstv cgnors cfgorstv cfgorst cgnors cfgorstv cgo acgors cgnors cfgorstv cginors cfgiorstv cfgorstv cfgiorstv cfgiorstv cfgiorstv cfgiorstv cfgiorstv cfgiorstv cgnos cfgiorstv cfgiost` |
+| ImplementationEvent | `o o o o o o o o o no o o o o o o o o o o o o no o o o ao o o no o o o no acfgnost cfgost acfginorstv o o no o no o fot no o o o no o no o o o o o o o o no o fot` |
+| Junction | `fortv fortv fiortv fiortv fiortv fortv fiortv fiortv aior no fiortv fiortv fiortv fiortv fiortv fiortv aor fiortv fiortv fiortv fiortv fortv nor aor fortv aor aor fiortv fortv no fiortv fiortv o nor afinortv fiot acfginorstv fortv aior no fiortv nor fortv fort nor fortv - aor nor fortv inor fiortv fortv fiortv fiortv fiortv fiortv fiortv fiortv no fiortv fiot` |
+| Location | `cfgortv cfgortv cfgiortv cfgiortv cfgiortv cfgortv cfgiortv cfgiortv acgio cgno cfgiortv cfgiortv cfgiortv cfgiortv cfgiortv cfgiortv acgo cfgiortv cfgiortv cfgiortv cgor cfgotv cgnor acgo cgor acgo cgo cfgiortv cfgotv cgno cfgiortv cfgiortv cgo cgnor acfginorstv cgio acfginorstv cfgostv acgio cgno cfgiortv cgnor cfgortv cgo cgnor cfgotv cgo acgo cgnor cgor cginor cfgiortv cfgortv cfgiortv cfgiortv cfgiortv cfgiortv cfgiortv cfgiortv cgno cgor cgio` |
+| Material | `or or or or or or or or or no o o or or or or or or o or or o nor or or or o or o no or o o nor cgnors o acfginorstv o cgors no o nor o o nor o o o nor or no or o or or or or or or no or o` |
+| Meaning | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o no cgnos o acfginorstv o o cgnos o no o o no o o o no o no o o o o o o o o no o o` |
+| Node | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fiotv fiotv fiortv fiortv fiortv fiortv ao fiortv fiotv fiortv or fotv nor ao or ao o cfgiortv fotv no cfgiortv cfgiotv o nor acfginorstv io acfginorstv fotv aio no cfgiostv nor fotv o nor fotv o ao nor or ino cfgiortv fotv fiortv fiortv fiortv cfgiortv fiortv fiortv no or io` |
+| Outcome | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o nor cgnors o acfginorstv o o no o cgnos o o no o o o no o no o o o o o o o o no o o` |
+| Path | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fiotv fiotv fiortv fiortv fiortv fiortv ao fiortv fiotv fiortv or fotv nor ao or ao o fgiortv fotv no fgiortv fgiotv o nor acfginorstv io acfginorstv fotv aio no fgiotv nor cfgostv o nor fotv o ao nor or ino fgiortv fgotv fiortv fiortv fiortv fgiortv fiortv fiortv no or io` |
+| Plateau | `cgor cgor cgor cgor cgor cgor cgor cgor cgor no cgor cgor cgor cgor cgor cgor cgor cgor cgor cgor cgor cgor cgnor cgor cgor cgor ao cgor cgor no cgor cgor o cgnor acfginorst fot acfginorstv cgor cgor no cgor cgnor cgor cfgost nor cgor cgo cgor cgnor cgor inor cgor cgor cgor cgor cgor cgor cgor cgor no cgor fot` |
+| Principle | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o nor cgnors o acfginorstv o o no o nor o o cgnos o o o no o no o o o o o o o o no o o` |
+| Product | `fortv fortv fortv fortv fortv fortv fortv cfgortv acgo no fotv fotv fortv fortv fortv fortv acgo fortv fotv cfgortv or fotv nor acgo or acgo o fortv fotv no fortv fotv o nor acfgnorstv o acfginorstv fotv acgo no fotv nor fotv o nor cfgostv o acgo nor or no fortv fotv fortv fortv fortv fortv fortv cfgortv no or o` |
+| Relationship | `o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o - o o o o o o o o o - o o o o o o o o o o o o o o o` |
+| Representation | `o o o o o o o o o no o o o o o o or o o o or o nor or or o o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o cgos nor or no o o o o o o o o no or o` |
+| Requirement | `o o o o o o o o o no o o o o o o o o o o o o cgnos o o o o o o no o o o nor cgnors o acfginorstv o o no o nor o o nor o o o cgnos o no o o o o o o o o no o o` |
+| Resource | `o o o o o o o o o no o o o o o o o o o o fiotv o nor o fortv o o o o no o o o nor cfginorstv o acfginorstv o o no o nor o o nor o o o nor cfgostv no o o o o o o o o no fiotv o` |
+| Stakeholder | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o no cgnos o acfginorstv o o no o no o o no o o o no o cgnos o o o o o o o o no o o` |
+| SystemSoftware | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fotv fotv fortv fortv fortv fortv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no cfgiorstv fotv fiortv fiortv fiortv cfgiortv fiortv fiortv no or o` |
+| TechnologyCollaboration | `fortv fortv fortv fortv fortv fortv fortv fortv aio no fiotv fiotv fiortv fiortv fiortv fiortv ao fiortv fiotv fiortv or fotv nor ao or ao o fgiortv fotv no fgiortv fgiotv o nor acfginorstv io acfginorstv fotv aio no fgiotv nor fotv o nor fotv o ao nor or ino fgiortv cfgostv fiortv fiortv fiortv cfgiortv fiortv fiortv no or io` |
+| TechnologyEvent | `fotv fotv fortv fotv fotv fotv fotv fotv ao no fotv fotv fortv fotv fotv fotv ao fotv fotv fotv o fotv nor ao o ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv cfgostv fotv fotv fotv fotv fotv no o o` |
+| TechnologyFunction | `fotv fotv fotv fortv fortv fotv fortv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv cfgostv cfgotv fotv cfgotv fortv no or o` |
+| TechnologyInteraction | `fotv fotv fotv fortv fortv fotv fortv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv cfgotv cfgostv fotv cfgotv fortv no or o` |
+| TechnologyInterface | `fotv fotv fotv fotv fotv fortv fotv fortv ao no fotv fotv fotv fotv fotv fortv ao fotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfginorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor or no fotv fotv fotv fotv fotv cfgostv fotv fiotv no or o` |
+| TechnologyProcess | `fotv fotv fotv fortv fortv fotv fortv fortv ao no fotv fotv fotv fortv fortv fotv ao fortv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv cfgotv cfgotv fotv cfgostv fortv no or o` |
+| TechnologyService | `fotv fotv fotv fotv fotv fotv fotv fortv ao no fotv fotv fotv fotv fotv fotv ao fotv fotv fortv or fotv nor ao or ao o fotv fotv no fotv fotv o nor acfgnorstv o acfginorstv fotv ao no fotv nor fotv o nor fotv o ao nor o no fotv fotv fotv fotv fotv fotv fotv cfgostv no or o` |
+| Value | `o o o o o o o o o no o o o o o o o o o o o o no o o o o o o no o o o no cgnos o acfginorstv o o no o no o o no o o o no o no o o o o o o o o cgnos o o` |
+| ValueStream | `o o o o o o o o o no o o o o o o o o o o fotv o nor o fortv o o o o no o o o nor cfgnorstv o acfginorstv o o no o nor o o nor o o o nor fotv no o o o o o o o o no cfgostv o` |
+| WorkPackage | `or or or or or or or or or no or or or or or or or or or or or or nor or or or aor or or no or or o nor acfgnorst fot acfginorstv or or no or nor or fort nor or o or nor or nor or or or or or or or or no or cfgost` |
+
+Executable expansion, with names and cells taken verbatim from the tables above:
+
+~~~js
+const relation = {a:"access",c:"composition",f:"flow",g:"aggregation",
+  i:"assignment",n:"influence",o:"association",r:"realization",
+  s:"specialization",t:"triggering",v:"serving"};
+const typeId = name => name === "Relationship" ? "@relation" :
+  name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+const tuples = cells.flatMap((row,i) => row.flatMap((keys,j) =>
+  keys === "-" ? [] : [...keys].map(k => ({
+    relationType:relation[k], sourceType:typeId(names[i]), targetType:typeId(names[j])
+  }))));
+const allows = (relationship,source,target) =>
+  tuples.some(t => t.relationType===relationship &&
+    t.sourceType===source && t.targetType===target);
+~~~
+
+A profile declaration embeds this expanded tuple array in its relationship-matrix constraint in row/column/key order. Its contentDigest covers the complete tuple values, not merely an external matrix digest. Source↔native catalogue/matrix identities and the pinned source files are also retained as governance evidence. Missing files/digest mismatch prevents transcription; a live URL never substitutes at validation time.
+
+Expanded array RFC 8785: 1027156 bytes, SHA-256 `a13f4112164afd177923a67b424d4c9b6ee57c1b993c4d11c94d5227385267f9`.
+Catalogue JSON array (the rows above, fields name/id/layer/aspect): 5280 bytes, SHA-256 `114cdca0c1e538f9cedf09613f415a6464bc9f4f54471c62ecfafcf6fede916e`.
+
+Concrete pair witnesses transcribed from the table:
+- application-component→data-object admits access and association ("ao"); the reverse admits only association ("o"). Therefore access(component,data-object) passes and access(data-object,component) yields relationship-matrix-violation.
+- application-component→application-service admits flow, assignment, association, realization, triggering and serving ("fiortv").
+- data-object→data-object admits composition, aggregation, association and specialization ("cgos"), not assignment.
+These are predicates over an ordered pair, not independently allowed source/target families.
+
+### A.2 UML multiplicity and stereotype oracles
+
+Shared struct/reference fields are those of A′ K2/K6 (§2.3); this table fixes the profile's data-level interpretation.
+
+| Authored @1 input / @2 fields | Expected result |
+| --- | --- |
+| "1" | lower=1, upper=1 |
+| "0..1" | lower=0, upper=1 |
+| "1..5" | lower=1, upper=5 |
+| "*" | lower=0, upper=-1 |
+| "1..*" | lower=1, upper=-1 |
+| " 1", "1 ", "one", "", "1...2" | Atomic migration refusal: multiplicity-syntax; exact source text retained |
+| lower=3, upper=2 | multiplicity-invalid, no target migration |
+| lower=-1 or upper=-2 | quantity-below-min at the offending field |
+| lower=0.5 | quantity-not-integer |
+| finite upper > 9007199254740991 | quantity-above-max (declared max=9007199254740991) |
+| unknown struct field "ceiling" | struct-field-not-in-schema |
+| unknown struct type | struct-type-unknown |
+| a known non-multiplicity struct in the multiplicity attribute | struct-type-not-allowed |
+| stereotype ref points at ordinary class | reference-target-type |
+| stereotype extends=[class], applied to interface | stereotype-application-invalid |
+| @1 stereotype text without an explicit mapping | Atomic migration refusal: unmapped-stereotype |
+| class with a mapped stereotype extending class | Valid; no local schema/refinement is required |
+
+All structs remain bounded typed fields; no arbitrary JSON object is admitted. Association endpoint multiplicities use the identical carrier. The recorded migration operation keeps every source string/field and exact source-state recovery.
+
+### A.3 G0 closed record/catalog serialization specimens
+
+The JSON below is **fixture data**, with computed digest values over the explicitly supplied declarations and distinct byte sources. Its fixture identities are resolved within this document, not production namespace/owner lookups. Passing receipt values here are expected serialization objects, not a claim that a validator ran or a receipt was issued. This distinction is required by U-ID/U-QUAL.
+
+The base declaration and additive narrowing layer are minimal G0 mechanism fixtures (not production generic@2/ArchiMate/UML profile bytes). The layer adds only a domain entity count bound; it neither removes a parent attribute nor widens a gate. Stack=[basePin,layerPin]; layer lineage.parents=[basePin]. There is no self-parent and no presentation fragment in the semantic stack. Each envelope includes all closed fields, complete base/profile artifactBinding, and a fixture-only compatibility.adapter string whose byte source is embedded below. No declarationFormat is added to any record/payload.
+
+~~~json
+{
+  "corpus": {
+    "scope": "g0-serialization",
+    "cases": [
+      "base-shape",
+      "two-layer-narrowing-shape"
+    ]
+  },
+  "base": {
+    "declaration": {
+      "id": "specimen-base@1",
+      "name": "specimen-base",
+      "version": 1,
+      "completeness": "complete",
+      "entityTypes": [
+        {
+          "id": "node",
+          "label": "Node",
+          "attributes": [
+            {
+              "name": "name",
+              "kind": "text",
+              "required": true,
+              "maxLength": 200
+            }
+          ]
+        }
+      ],
+      "portTypes": [],
+      "relationTypes": [],
+      "constraints": [],
+      "limits": {
+        "maxEntities": 100,
+        "maxRelations": 200,
+        "maxEndpointsPerRelation": 2
+      }
+    },
+    "record": {
+      "namespace": "fixture-namespace",
+      "id": "specimen-base",
+      "version": "1",
+      "owner": "fixture-owner",
+      "lifecycle": "draft",
+      "completeness": "complete",
+      "visibility": "public",
+      "profileShape": "diagram-profile",
+      "artifactKind": "base",
+      "profileRef": {
+        "canonicalRef": "fixture:specimen-base@1",
+        "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+      },
+      "corpusRef": {
+        "ref": "fixture:serialization-corpus",
+        "digest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8"
+      },
+      "digests": {
+        "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e",
+        "pinsDigest": "8b7e46be03c24ead8555204c7ebf85a4a3d37a25e83a64700ea6d106f25162d3",
+        "resultEvidence": {
+          "evidenceState": "resolved",
+          "digest": "936fd5f33944413161807f464641469c42ec6f57e784bf0ed4ce9c77b21cb874"
+        }
+      },
+      "lineage": {
+        "parents": [],
+        "mappings": [],
+        "migrations": []
+      },
+      "consumers": [
+        "fixture:consumer"
+      ]
+    },
+    "envelope": {
+      "format": "sentropic.registry-entry/v1",
+      "contractVersion": "1.1.4",
+      "kind": "ontology",
+      "id": "fixture-base",
+      "name": "Serialization base",
+      "description": "Expected fixture serialization; not admission evidence.",
+      "entryVersion": "1",
+      "publisher": {
+        "packageName": "fixture-publisher",
+        "packageVersion": "1"
+      },
+      "compatibility": {
+        "entryContract": "1.1.4",
+        "packages": [],
+        "schemaProfiles": [
+          "fixture:diagram-profile/1"
+        ],
+        "requiredHostFeatures": [
+          "ontology-descriptors"
+        ],
+        "optionalHostFeatures": []
+      },
+      "parameters": {
+        "schemaVersion": "1",
+        "schema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "maxProperties": 0
+        },
+        "defaults": {}
+      },
+      "bindings": [
+        {
+          "key": "profile",
+          "contract": "fixture:diagram-profile/1#sha256=c2079bdd72c369d4eb0c98534d55c30d5b0435c0805c7589ec3ed55e4e7e2ae8",
+          "required": true
+        }
+      ],
+      "assets": [
+        {
+          "role": "profile-data",
+          "path": "profiles/specimen-base.json",
+          "mediaType": "application/json",
+          "sha256": "ffcf89f3c1ab72bbbf6262f421745bd03fc16b4767bdbc5092c2ce8496bf9760"
+        }
+      ],
+      "ontology": {
+        "canonicalRef": "fixture:specimen-base@1",
+        "namespace": "fixture-namespace",
+        "owner": "fixture-owner",
+        "profileShape": "diagram-profile",
+        "artifactKind": "base",
+        "profilePin": {
+          "id": "specimen-base",
+          "version": "1",
+          "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+        },
+        "stack": [
+          {
+            "id": "specimen-base",
+            "version": "1",
+            "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+          }
+        ],
+        "digests": {
+          "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e",
+          "pinsDigest": "8b7e46be03c24ead8555204c7ebf85a4a3d37a25e83a64700ea6d106f25162d3",
+          "resultEvidence": {
+            "evidenceState": "resolved",
+            "digest": "936fd5f33944413161807f464641469c42ec6f57e784bf0ed4ce9c77b21cb874"
+          }
+        },
+        "ruleSheets": [],
+        "lifecycle": "draft",
+        "provenance": {
+          "sourceRef": "fixture:serialization-contract",
+          "sourceRevision": "1"
+        },
+        "lineage": {
+          "parents": [],
+          "mappings": [],
+          "migrations": []
+        },
+        "conflictPolicy": "fixture:g0-conflicts@1#sha256=69294822a50219a2ce80a2a94e3196e74d61fb4186f9e6905f26d712960bb6b0",
+        "completeness": "complete",
+        "corpusRef": {
+          "ref": "fixture:serialization-corpus",
+          "digest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8"
+        },
+        "receipts": [
+          {
+            "receiptKind": "family-corpus",
+            "corpusDigest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8",
+            "libraryId": "fixture-validator",
+            "libraryVersion": "1",
+            "validatorRole": "transitional-oracle",
+            "verdict": "pass",
+            "issuedAt": "2026-10-27",
+            "evaluatedStack": {
+              "stack": [
+                {
+                  "id": "specimen-base",
+                  "version": "1",
+                  "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+                }
+              ],
+              "pinsDigest": "8b7e46be03c24ead8555204c7ebf85a4a3d37a25e83a64700ea6d106f25162d3",
+              "resultEvidence": {
+                "evidenceState": "resolved",
+                "digest": "936fd5f33944413161807f464641469c42ec6f57e784bf0ed4ce9c77b21cb874"
+              }
+            },
+            "transitionQualification": {
+              "claim": "oracle-witness",
+              "parityMatrixDigest": "e408dcd7721485c12f8d4900e059b83a2d9aa7682d5798f7783144219ee73b46"
+            },
+            "family": "DIA",
+            "fixtureDigest": "431033b0add7b951a5a63956b25a43c5069749b69acee1a8d8aa6a6c78272a9d",
+            "severityPolicyDigest": null,
+            "ruleVerdicts": []
+          }
+        ],
+        "migrations": [],
+        "consumers": [
+          "fixture:consumer"
+        ],
+        "compatibility": {
+          "renderer": "fixture:executor@1#sha256=ab8bea23f592a350e1a668edc06320d9811816734788ad838dab04dbccac2eaa",
+          "adapter": "fixture:adapter@1#sha256=84a80f9f40e48c2e1f7b2b105ad44b941447a76e4f05cbae0395878587f76a35"
+        },
+        "visibility": "public",
+        "linkedTools": [],
+        "artifactBinding": {
+          "artifactKind": "base",
+          "basePin": {
+            "id": "specimen-base",
+            "version": "1",
+            "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+          },
+          "bijectionEvidence": {
+            "evidenceState": "resolved",
+            "receiptRef": "fixture:receipt-base"
+          }
+        }
+      }
+    },
+    "externalEntryDigest": "500d7242b900d4559ffd2291ea69498fcfda3415738958b3c8d62e0927a9349d",
+    "receiptReference": {
+      "ref": "fixture:receipt-base",
+      "receiptIndex": 0
+    }
+  },
+  "stacked": {
+    "declaration": {
+      "id": "specimen-layer@1",
+      "name": "specimen-layer",
+      "version": 1,
+      "completeness": "complete",
+      "entityTypes": [],
+      "portTypes": [],
+      "relationTypes": [],
+      "constraints": [
+        {
+          "kind": "max-entities-of-type",
+          "entityType": "node",
+          "max": 10
+        }
+      ],
+      "limits": {
+        "maxEntities": 100,
+        "maxRelations": 200,
+        "maxEndpointsPerRelation": 2
+      }
+    },
+    "record": {
+      "namespace": "fixture-namespace",
+      "id": "specimen-layer",
+      "version": "1",
+      "owner": "fixture-owner",
+      "lifecycle": "draft",
+      "completeness": "complete",
+      "visibility": "public",
+      "profileShape": "diagram-profile",
+      "artifactKind": "profile",
+      "profileRef": {
+        "canonicalRef": "fixture:specimen-layer@1",
+        "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+      },
+      "corpusRef": {
+        "ref": "fixture:serialization-corpus",
+        "digest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8"
+      },
+      "digests": {
+        "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59",
+        "pinsDigest": "d4eb21e7218297b366fde124c2807fce1c893aec0238af838cadcad9b6c6cb0f",
+        "resultEvidence": {
+          "evidenceState": "resolved",
+          "digest": "8a143e5506ba01f81603f5e891e7a9328d62cce0ca20b325ef36aa14af1d84a8"
+        }
+      },
+      "lineage": {
+        "parents": [
+          {
+            "id": "specimen-base",
+            "version": "1",
+            "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+          }
+        ],
+        "mappings": [],
+        "migrations": []
+      },
+      "consumers": [
+        "fixture:consumer"
+      ]
+    },
+    "envelope": {
+      "format": "sentropic.registry-entry/v1",
+      "contractVersion": "1.1.4",
+      "kind": "ontology",
+      "id": "fixture-profile",
+      "name": "Serialization profile",
+      "description": "Expected fixture serialization; not admission evidence.",
+      "entryVersion": "1",
+      "publisher": {
+        "packageName": "fixture-publisher",
+        "packageVersion": "1"
+      },
+      "compatibility": {
+        "entryContract": "1.1.4",
+        "packages": [],
+        "schemaProfiles": [
+          "fixture:diagram-profile/1"
+        ],
+        "requiredHostFeatures": [
+          "ontology-descriptors"
+        ],
+        "optionalHostFeatures": []
+      },
+      "parameters": {
+        "schemaVersion": "1",
+        "schema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "maxProperties": 0
+        },
+        "defaults": {}
+      },
+      "bindings": [
+        {
+          "key": "profile",
+          "contract": "fixture:diagram-profile/1#sha256=c2079bdd72c369d4eb0c98534d55c30d5b0435c0805c7589ec3ed55e4e7e2ae8",
+          "required": true
+        }
+      ],
+      "assets": [
+        {
+          "role": "profile-data",
+          "path": "profiles/specimen-layer.json",
+          "mediaType": "application/json",
+          "sha256": "fd8b9a9ab48fcf94f955bf65c06164e470a63ddb17fc1a68c919f145ea931417"
+        }
+      ],
+      "ontology": {
+        "canonicalRef": "fixture:specimen-layer@1",
+        "namespace": "fixture-namespace",
+        "owner": "fixture-owner",
+        "profileShape": "diagram-profile",
+        "artifactKind": "profile",
+        "profilePin": {
+          "id": "specimen-layer",
+          "version": "1",
+          "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+        },
+        "stack": [
+          {
+            "id": "specimen-base",
+            "version": "1",
+            "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+          },
+          {
+            "id": "specimen-layer",
+            "version": "1",
+            "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+          }
+        ],
+        "digests": {
+          "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59",
+          "pinsDigest": "d4eb21e7218297b366fde124c2807fce1c893aec0238af838cadcad9b6c6cb0f",
+          "resultEvidence": {
+            "evidenceState": "resolved",
+            "digest": "8a143e5506ba01f81603f5e891e7a9328d62cce0ca20b325ef36aa14af1d84a8"
+          }
+        },
+        "ruleSheets": [],
+        "lifecycle": "draft",
+        "provenance": {
+          "sourceRef": "fixture:serialization-contract",
+          "sourceRevision": "1"
+        },
+        "lineage": {
+          "parents": [
+            {
+              "id": "specimen-base",
+              "version": "1",
+              "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+            }
+          ],
+          "mappings": [],
+          "migrations": []
+        },
+        "conflictPolicy": "fixture:g0-conflicts@1#sha256=69294822a50219a2ce80a2a94e3196e74d61fb4186f9e6905f26d712960bb6b0",
+        "completeness": "complete",
+        "corpusRef": {
+          "ref": "fixture:serialization-corpus",
+          "digest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8"
+        },
+        "receipts": [
+          {
+            "receiptKind": "family-corpus",
+            "corpusDigest": "3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8",
+            "libraryId": "fixture-validator",
+            "libraryVersion": "1",
+            "validatorRole": "transitional-oracle",
+            "verdict": "pass",
+            "issuedAt": "2026-10-27",
+            "evaluatedStack": {
+              "stack": [
+                {
+                  "id": "specimen-base",
+                  "version": "1",
+                  "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+                },
+                {
+                  "id": "specimen-layer",
+                  "version": "1",
+                  "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+                }
+              ],
+              "pinsDigest": "d4eb21e7218297b366fde124c2807fce1c893aec0238af838cadcad9b6c6cb0f",
+              "resultEvidence": {
+                "evidenceState": "resolved",
+                "digest": "8a143e5506ba01f81603f5e891e7a9328d62cce0ca20b325ef36aa14af1d84a8"
+              }
+            },
+            "transitionQualification": {
+              "claim": "oracle-witness",
+              "parityMatrixDigest": "e408dcd7721485c12f8d4900e059b83a2d9aa7682d5798f7783144219ee73b46"
+            },
+            "family": "DIA",
+            "fixtureDigest": "431033b0add7b951a5a63956b25a43c5069749b69acee1a8d8aa6a6c78272a9d",
+            "severityPolicyDigest": null,
+            "ruleVerdicts": []
+          }
+        ],
+        "migrations": [],
+        "consumers": [
+          "fixture:consumer"
+        ],
+        "compatibility": {
+          "renderer": "fixture:executor@1#sha256=ab8bea23f592a350e1a668edc06320d9811816734788ad838dab04dbccac2eaa",
+          "adapter": "fixture:adapter@1#sha256=84a80f9f40e48c2e1f7b2b105ad44b941447a76e4f05cbae0395878587f76a35"
+        },
+        "visibility": "public",
+        "linkedTools": [],
+        "artifactBinding": {
+          "artifactKind": "profile",
+          "profilePin": {
+            "id": "specimen-layer",
+            "version": "1",
+            "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+          },
+          "stack": [
+            {
+              "id": "specimen-base",
+              "version": "1",
+              "contentDigest": "63ad6952c654ff343ef8aab9a39f23e9900a863e092d8113ca67791feac2e97e"
+            },
+            {
+              "id": "specimen-layer",
+              "version": "1",
+              "contentDigest": "6787c2ae4e516218d8819e68678916a0df9d2a050f2b5c5b73b64f9a900e7b59"
+            }
+          ]
+        }
+      }
+    },
+    "externalEntryDigest": "5544190fd969998f25dc384d910565c2c98b73051f372bce3d39b96521965142",
+    "receiptReference": {
+      "ref": "fixture:receipt-profile",
+      "receiptIndex": 0
+    }
+  },
+  "artifacts": {
+    "fixture:diagram-profile/1": {
+      "mediaType": "application/json",
+      "bytes": "{\"id\":\"fixture:diagram-profile/1\",\"required\":[\"id\",\"name\",\"version\",\"completeness\",\"entityTypes\",\"portTypes\",\"relationTypes\",\"constraints\",\"limits\"],\"scope\":\"serialization-only\",\"unknownFields\":\"refuse\"}"
+    },
+    "fixture:g0-conflicts@1": {
+      "mediaType": "application/json",
+      "bytes": "{\"attributeRedeclaration\":\"refuse\",\"gateWidening\":\"refuse\",\"id\":\"fixture:g0-conflicts@1\",\"parentRemoval\":\"refuse\",\"scope\":\"serialization-only\"}"
+    },
+    "fixture:executor@1": {
+      "mediaType": "text/javascript",
+      "bytes": "export const fixtureRole = \"renderer\";\n"
+    },
+    "fixture:adapter@1": {
+      "mediaType": "text/javascript",
+      "bytes": "export const fixtureRole = \"adapter\";\n"
+    },
+    "fixture:parity-matrix": {
+      "mediaType": "application/json",
+      "bytes": "{\"cases\":[{\"expected\":\"base\",\"id\":\"base-shape\"},{\"expected\":\"profile\",\"id\":\"two-layer-narrowing-shape\"}],\"claim\":\"oracle-witness\",\"scope\":\"serialization-only\"}"
+    },
+    "fixture:case-inputs": {
+      "mediaType": "application/json",
+      "bytes": "{\"cases\":[{\"id\":\"base-shape\",\"maxEntities\":100,\"maxRelations\":200},{\"entityType\":\"node\",\"id\":\"two-layer-narrowing-shape\",\"max\":10}],\"scope\":\"serialization-only\"}"
+    }
+  }
+}
+~~~
+
+Byte reconstruction is exact and Node-only: UTF-8 of each artifacts[ref].bytes string, with precisely its represented newlines and no additional newline; SHA-256 of those bytes yields that artifact's pinned digest. These are deliberately inert serialization fixtures, not executable or schema-qualified DS packages. The contract bytes describe the fixture binding, not a claimed production JSON Schema. corpusRef.digest and receipt.corpusDigest hash RFC 8785 of corpus; fixtureDigest hashes artifacts["fixture:case-inputs"].bytes; parityMatrixDigest hashes artifacts["fixture:parity-matrix"].bytes. The seven different artifacts (corpus, binding contract, conflict policy, renderer, adapter, parity matrix, case inputs) have seven independently calculated, distinct digests. Asset profiles/specimen-base.json is RFC 8785 of base.declaration, and profiles/specimen-layer.json is RFC 8785 of stacked.declaration, both UTF-8 with no trailing newline; each asset sha256 hashes those full bytes, not P-CONTENT-DIAGRAM.
+
+For P-RESULT the base effective declaration is its P-CONTENT-DIAGRAM projection; the layer effective declaration uses the layer's profile identity/completeness/limits, base entityTypes and concatenated base+layer constraints, with empty port/relation/rule arrays and severityPolicyDigest=null. Every record/payload/evaluatedStack digest is recomputed from this explicitly resolved fixture value. The externalEntryDigest fields above belong to this specimen container, not to either closed envelope. Each receiptReference resolves to receipts[0] in that specimen. Fixture lookups are closed within this container: (fixture-namespace,specimen-base,1) resolves base.record; (fixture-namespace,specimen-layer,1) resolves stacked.record; fixture-owner resolves the supplied isolated owner handle; each profileRef/canonicalRef resolves the corresponding declaration. fixture:serialization-corpus resolves corpus; each artifacts key resolves exactly its embedded bytes; receipt references resolve the stated receiptIndex; asset paths resolve the byte constructions above. fixture:consumer and fixture-publisher are isolated fixture identity inputs, not asserted production registrations. No reference is silently elided. Production executor/adapter/schema pins and identity registry evidence remain U-ID/U-DIAG/U-QUAL.
+
+
+
+### A.4 Deterministic completed-profile declarations
+
+This is normative declaration data expressed by a pure Node-compatible expansion, not executor code. Input catalogue is the array of the 61 A.1 table rows as {name,id,layer,aspect}; "none" is the table marker, not an instance layer value. Input tuples is exactly A.1's expanded ordered tuple array. Native attribute/schema keys are transcribed from profile.ts/attributes.ts plus the shared K1/K2/K6 and §5.4 additions; all new semantic declarations are inside the seven G0 projection keys. The recipe is over pinned/transcribed inputs only and calls no service, consumer callback or implementation validator.
+
+~~~js
+function completedDeclarations(catalogue, tuples) {
+  const text = (name, maxLength, required=false) =>
+    ({name,kind:"text",...(required?{required:true}:{}),
+      ...(maxLength===undefined?{}:{maxLength})});
+  const bool = name => ({name,kind:"boolean"});
+  const enumeration = (name,values,required=false) =>
+    ({name,kind:"enum",values,...(required?{required:true}:{})});
+  const role = (name,targets,entityTypes) => ({
+    role:name, cardinality:{min:1,max:1}, targets,
+    ...(entityTypes===undefined?{}:{entityTypes})
+  });
+  const pair = (id,entityTypes,targets=["entity"]) => ({
+    id,label:id,direction:"directed",
+    roles:[role("source",targets,entityTypes),role("target",targets,entityTypes)]
+  });
+  const hierarchy = (id,hierarchyId,parentType,childTypes) => ({
+    id,label:id,direction:"directed",
+    roles:[role("parent",["entity"],[parentType]),
+      role("child",["entity"],childTypes)],
+    hierarchy:{id:hierarchyId,shape:"tree",parentRole:"parent",childRole:"child"}
+  });
+  const relationshipIds = ["composition","aggregation","assignment","realization",
+    "serving","access","influence","triggering","flow","association","specialization"];
+  const archimate = {
+    id:"archimate@2",name:"archimate",version:2,completeness:"complete",
+    entityTypes:[
+      {id:"element",label:"Element",abstract:true,attributes:[]},
+      ...catalogue.map(c=>({
+        id:c.id,label:c.name,supertypes:["element"],
+        ...(c.id==="grouping"?{container:true}:{}),
+        attributes:[
+          ...(c.id==="junction"?
+            [enumeration("operator",["and","or"],true)]:
+            [text("name",200,c.id!=="grouping")]),
+          ...(c.layer==="none"?[]:[enumeration("layer",[c.layer],true)]),
+          enumeration("aspect",[c.aspect])
+        ]
+      }))
+    ],
+    portTypes:[],
+    relationTypes:[
+      ...relationshipIds.map(id=>({
+        ...pair(id,undefined,["entity","relation"]),
+        ...(id==="access"?{attributes:[
+          enumeration("accessMode",["write","read","unspecified","read-write"])]}:
+          id==="influence"?{attributes:[text("strength")]}:
+          id==="association"?{attributes:[bool("directed")]}:{})
+      })),
+      hierarchy("groupingContainment","archimate-grouping","grouping",["element"])
+    ],
+    constraints:[
+      {kind:"acyclic-hierarchy",hierarchyId:"archimate-grouping"},
+      {kind:"relationship-matrix",matrixId:"archimate-3.2",
+        sourceRole:"source",targetRole:"target",tuples},
+      {kind:"incident-type-uniformity",matrixId:"archimate-3.2",entityType:"junction",relationTypes:relationshipIds}
+    ],
+    limits:{maxEndpointsPerRelation:2},notes:[]
+  };
+  const visibility = () =>
+    enumeration("visibility",["public","protected","private","package"]);
+  const stereotypes = () => ({name:"stereotypes",kind:"collection",
+    item:{kind:"reference",refKind:"entity",targetTypes:["stereotype"]},maxItems:8});
+  const common = () => [text("name",200,true),visibility(),stereotypes()];
+  const multiplicity = name => ({name,kind:"struct",targetTypes:["multiplicity"]});
+  const aggregation = name => enumeration(name,["none","shared","composite"]);
+  const generalization = pair("generalization",["class","interface"]);
+  generalization.hierarchy = {id:"uml-generalization",shape:"dag",
+    parentRole:"target",childRole:"source"};
+  const uml = {
+    id:"uml@2",name:"uml",version:2,completeness:"complete",
+    entityTypes:[
+      {id:"class",label:"Class",attributes:[...common(),bool("abstract"),bool("isStatic")]},
+      {id:"interface",label:"Interface",attributes:common()},
+      {id:"package",label:"Package",container:true,attributes:common()},
+      {id:"property",label:"Property",attributes:[...common(),text("typeName",200),
+        multiplicity("multiplicity"),bool("isDerived"),bool("isStatic")]},
+      {id:"operation",label:"Operation",attributes:[...common(),
+        text("returnTypeName",200),bool("isStatic")]},
+      {id:"stereotype",label:"Stereotype",attributes:[text("name",60,true),
+        {name:"extends",kind:"collection",required:true,
+          item:{kind:"enum",values:["class","interface","package","property","operation"]},
+          minItems:1,maxItems:5}]},
+      {id:"multiplicity",label:"Multiplicity",abstract:true,attributes:[
+        {name:"lower",kind:"quantity",required:true,units:["unit"],
+          integer:true,min:0,max:9007199254740991},
+        {name:"upper",kind:"quantity",required:true,units:["unit"],
+          integer:true,min:-1,max:9007199254740991},
+        bool("isOrdered"),bool("isUnique")]}
+    ],
+    portTypes:[],
+    relationTypes:[
+      {...pair("association",["class","interface"]),attributes:[
+        multiplicity("sourceMultiplicity"),multiplicity("targetMultiplicity"),
+        aggregation("sourceAggregation"),aggregation("targetAggregation")]},
+      generalization,pair("dependency"),
+      hierarchy("packageContainment","uml-package-containment","package")
+    ],
+    constraints:[
+      {kind:"acyclic-hierarchy",hierarchyId:"uml-package-containment"},
+      {kind:"acyclic-hierarchy",hierarchyId:"uml-generalization"},
+      {kind:"bound-pair",valueType:"multiplicity",lowerField:"lower",
+        upperField:"upper",unboundedUpper:-1},
+      {kind:"reference-application",attribute:"stereotypes",
+        declarationType:"stereotype",allowedTypesField:"extends"},
+      {kind:"at-most-value",relationType:"association",
+        attributes:["sourceAggregation","targetAggregation"],value:"composite",max:1},
+      {kind:"collection-unique",entityType:"stereotype",attribute:"extends"}
+    ],
+    limits:{maxEndpointsPerRelation:2},notes:[]
+  };
+  return {archimate,uml};
+}
+~~~
+
+No authored @1 value is inferred from these schema choices. In particular source stereotype references and concrete ArchiMate type mappings are explicit migration inputs. Abstract schema declarations cannot occur as Entity instances; concrete catalogue types and typed K6 values use their respective schema interpretation in §§3.9/3.11. These **draft declaration digests** identify the exact expansion below; they are not admitted production Pins or executor qualification.
+
+| Draft declaration | P-CONTENT-DIAGRAM bytes | contentDigest | Full RFC 8785 artifactDigest |
+| --- | --- | --- | --- |
+| archimate@2 | 1047531 | 1ffa38c1169b43d932b7c6d69cea24b52dd753f0f4e14eb43f6e83746cce1189 | b7dd36d534e1aceb42d2aff433a1988f462a9eeaefe58bc541a3d6936a95b267 |
+| uml@2 | 5068 | d7da59f277c0f4216a32c201dacdb837270e687ef5d8b1838f00f083e14f9e96 | ab6cf4de23ad003f376239a23a0bae3adec929b7866edb1e0adeaa4156cdba41 |
+
+ArchiMate corpus definition is finite and closed: the source order's 62×62 ordered concept pairs × the 11 declared relationship ids = 42,284 cases; each expanded tuple yields an allowed case and every absent tuple yields a rejection. @relation witnesses use real relation targets/occurrences under §3.9.1, never entity stubs. Case builders allocate local fixture identities from the canonical case input's SHA-256 and retain that preimage; generated production/corpus artifact ids remain unverified U-QUAL until published by Engram. Additional cases cover both junction operators, mixed incident types, all four accessMode values, influence text, association direction, refinement resolution, grouping cycles, dangling relation targets, occurrence attachments, forward/cyclic lookup termination and exact migration/downgrade refusal. Each negative has its literal diagnostic in Appendix C or the unchanged native arm.
+
+UML corpus includes every Appendix A.2 value, property plus both association ends, absent optional values, required lower/upper, non-quantity fields, max/min/integer/unit checks, all five extends kinds, dangling/wrong-type/inapplicable stereotypes, duplicate extends, two composite ends, generalization cycles and the pinned fixture's successful/safely refused migration variants. No mutation is repaired or silently coerced. Execution and receipt issuance belong to U-QUAL, not these expected case definitions.
 
 ## Appendix B — Worked folded projections
 
-**B.1 Single fold (review example).** Document (fragment): containers `MSGZ` (collapsed in the view), cards `CHAT` (outside `MSGZ`) and `TOPIC` (contained in `MSGZ`); semantic relation `link` `CHAT → TOPIC`. Source view: occurrences `occ:CHAT`, `occ:MSGZ`, `occ:TOPIC`; `occ:TOPIC` names the fold group of `occ:MSGZ`; that group (`occurrence: occ:MSGZ`) is `collapsed: true`.
+**B.1 Single fold.** Document (fragment): containers `MSGZ` (collapsed in the view), cards `CHAT` (outside `MSGZ`) and `TOPIC` (contained in `MSGZ`); semantic relation `link` `CHAT → TOPIC`. Source view: occurrences `occurrence:CHAT`, `occurrence:MSGZ`, `occurrence:TOPIC`; `occurrence:TOPIC` names the fold group of `occurrence:MSGZ`; that group (`occurrence: occurrence:MSGZ`) is `collapsed: true`.
 
-Projection (§4.4.3) with collapsed set `{occ:MSGZ}`: `occ:TOPIC` is hidden by fold; its visible representative is `occ:MSGZ` (the only, hence outermost, collapsed ancestor occurrence). The relation occurrence becomes: source endpoint `{ role: "source", occurrence: occ:CHAT }` (unchanged, no provenance fields); target endpoint `{ role: "target", occurrence: occ:MSGZ, semanticTarget: "entity:TOPIC", sourceOccurrence: occ:TOPIC }`. Laid out by `layoutFolded`, `occ:MSGZ` takes the `460 × 200` collapsed box and the edge routes representative-anchor to representative-anchor; the source geometry of `occ:TOPIC` stays on its retained record.
+Projection (§4.4.3) with collapsed set `{occurrence:MSGZ}`: `occurrence:TOPIC` is hidden by fold; its visible representative is `occurrence:MSGZ` (the only, hence outermost, collapsed ancestor occurrence). The relation occurrence becomes: source endpoint `{ role: "source", occurrence: occurrence:CHAT }` (unchanged, no provenance fields); target endpoint `{ role: "target", occurrence: occurrence:MSGZ, semanticTarget: "entity:TOPIC", sourceOccurrence: occurrence:TOPIC }`. Laid out by `layoutFolded`, `occurrence:MSGZ` takes the `460 × 200` collapsed box and the edge routes representative-anchor to representative-anchor; the source geometry of `occurrence:TOPIC` stays on its retained record.
 
-Validation (§4.4.4): `entity:TOPIC` is a target of the semantic relation for role `target`; `sourceOccurrence` draws it; the `MSGZ` occurrence exists, is visible and is folded; walking parent occurrences from `occ:TOPIC` reaches `occ:MSGZ` through the collapsed group; `MSGZ` is in the container family. Zero diagnostics. Removing `semanticTarget` makes the same view refuse `occurrence-endpoint-mismatch`, which is the RED state of the current executor on this input and the first test of `packages/diagram-core/tests/folded-view.test.ts`. Unfolding is `projectView(document, sourceView, ∅)`, whose target endpoint is again `{ occurrence: occ:TOPIC }` byte-identically (no patched residue, no materialised `strokeStyle`).
+Validation (§4.4.4): `entity:TOPIC` is a target of the semantic relation for role `target`; `sourceOccurrence` draws it; the `MSGZ` occurrence exists, is visible and is folded; walking parent occurrences from `occurrence:TOPIC` reaches `occurrence:MSGZ` through the collapsed group; `MSGZ` is in the container family. Zero diagnostics. Removing `semanticTarget` makes the same view refuse `occurrence-endpoint-mismatch`, which is the RED state of the current executor on this input and the first test of `packages/diagram-core/tests/folded-view.test.ts`. Unfolding is `projectView(document, sourceView, ∅)`, whose target endpoint is again `{ occurrence: occurrence:TOPIC }` byte-identically (no patched residue, no materialised `strokeStyle`).
 
-**B.2 Nested fold.** Add ancestors `PPROZ` (contains `MSGZ`) and `GCP`/`PRODZ` above it, all collapsed, with `TOPIC` inside `MSGZ`. Collapsed set `{occ:GCP…, occ:PPROZ, occ:MSGZ}` (every ancestor occurrence folded). The representative of `occ:TOPIC` is the **outermost** collapsed ancestor occurrence (the root-most folded one), which is visible because nothing above it is folded. The inner folded occurrences (`MSGZ`, `PPROZ`) are hidden and are never selected; a hand-written projection naming `occ:MSGZ` as representative refuses with detail `projection-not-outermost` (and would have drawn to a hidden occurrence). Collapsing only `MSGZ` (ancestors expanded) selects `occ:MSGZ`, as in B.1. Both folded views validate, and each unfold step is a fresh `projectView` from the retained source view.
+**B.2 Nested fold.** Add ancestors `PPROZ` (contains `MSGZ`) and `GCP`/`PRODZ` above it, all collapsed, with `TOPIC` inside `MSGZ`. Collapsed set `{occurrence:GCP…, occurrence:PPROZ, occurrence:MSGZ}` (every ancestor occurrence folded). The representative of `occurrence:TOPIC` is the **outermost** collapsed ancestor occurrence (the root-most folded one), which is visible because nothing above it is folded. The inner folded occurrences (`MSGZ`, `PPROZ`) are hidden and are never selected; a hand-written projection naming `occurrence:MSGZ` as representative refuses with detail `projection-not-outermost` (and would have drawn to a hidden occurrence). Collapsing only `MSGZ` (ancestors expanded) selects `occurrence:MSGZ`, as in B.1. Both folded views validate, and each unfold step is a fresh `projectView` from the retained source view.
 
-**B.3 N-ary association across two collapsed branches.** An `association` with members `occ:A1` (inside collapsed `occ:ZONE-A`), `occ:B1` (inside collapsed `occ:ZONE-B`) and `occ:EXT` (outside any fold). Representatives: `occ:ZONE-A`, `occ:ZONE-B`, `occ:EXT` — three distinct representatives with folds involved, so the occurrence is projected (each endpoint independently, provenance per endpoint), never internal, and validates. Collapsing further so that all three representatives coincide (one outer zone folded over both branches and the external member drawn inside it) makes the representative set a single element with a fold involved: the occurrence becomes internal and draws nothing. With no fold at all, three coincident representatives cannot arise from distinct visible occurrences, and a visible self-link stays untouched (§4.4.1).
+**B.3 N-ary association across two collapsed branches.** An `association` with members `occurrence:A1` (inside collapsed `occurrence:ZONE-A`), `occurrence:B1` (inside collapsed `occurrence:ZONE-B`) and `occurrence:EXT` (outside any fold). Representatives: `occurrence:ZONE-A`, `occurrence:ZONE-B`, `occurrence:EXT` — three distinct representatives with folds involved, so the occurrence is projected (each endpoint independently, provenance per endpoint), never internal, and validates. Collapsing further so that all three representatives coincide (one outer zone folded over both branches and the external member drawn inside it) makes the representative set a single element with a fold involved: the occurrence becomes internal and draws nothing. With no fold at all, three coincident representatives cannot arise from distinct visible occurrences, and a visible self-link stays untouched (§4.4.1).
 
-**B.4 Authored aggregate.** Two links `CHAT → TOPIC` and `CHAT → SUB` project onto representative pair `(occ:CHAT, occ:MSGZ)`, one `solid` and one `dashed`. They form **two** aggregate groups (style-keyed, §4.5.3) and never merge. The source view carries definition `{ id: "sum:overview-chat", sourceOccurrence: occ:CHAT, targetOccurrence: occ:MSGZ, label: "<authored overview label>", relationIds: [the solid relation id], strokeStyle: "solid" }` — valid in the source view by the subtree rule (§4.5.1) even though no top-level `CHAT → MSGZ` relation exists there. In the folded overview the definition is active for the solid group and the renderer draws its label; the dashed group falls back to its count label. A second definition for the same `(occ:CHAT, occ:MSGZ, solid)` triple refuses `summary-duplicate-key`. Export serialises label + ids + style so re-import restores the same definition.
+**B.4 Authored solid summary with a separate dashed group.** Source relations are relation:r-solid (CHAT→TOPIC) and relation:r-dashed (CHAT→SUB), with TOPIC/SUB under MSGZ. occurrence:r-solid has strokeStyle absent; occurrence:r-dashed has strokeStyle dashed. The retained source view carries:
 
-## Appendix C — Frozen diagnostic contracts
-
-Conventions for every row: severity is `error` unless stated; `refs` order is as listed; `details` values are scalars only (strings/numbers/booleans) — an object or array in `details` is a contract violation; multiplicity is per violating record as stated; messages are **literal** (`<…>` are substitutions with the stated value domain). Whole diagnostic arrays are compared in tests under reordered input in the total order of §5.3 (`(path, code, refs[0], refs[1])`, UTF-16); the PR #193 order rule (UTF-16 id order, first id is the reference) applies inside each uniqueness scope (§5.3).
-
-| Code | Status | Path template | Literal message | Refs (ordered) | Details (scalar keys with value domains) | Multiplicity |
-| --- | --- | --- | --- | --- | --- | --- |
-| `legend-key-parent-invalid` arm A (wrong child under a legend) | new | `entities.<childId>` | `key entity <childId> is contained by legend <parentId>; only legend-key entities may be contained by a legend` | `[childId, parentId]` | `childType: <effective type id>`, `parentType: <effective type id>`, `constraint: "children-restricted"` | One per violating child |
-| `legend-key-parent-invalid` arm B (key under a non-legend) | new | `entities.<childId>` | `key entity <childId> is contained by <parentId>, which is outside the legend family; a legend-key must be contained by a legend` | `[childId, parentId]` | `childType: <effective type id>`, `parentType: <effective type id>`, `constraint: "required-parent"` | One per violating child |
-| `legend-key-parent-invalid` arm C (orphan key) | new | `entities.<childId>` | `key entity <childId> has no hierarchy parent; a legend-key must be contained by a legend` | `[childId]` | `childType: <effective type id>`, `parentType: "none"`, `constraint: "required-parent"` | One per orphan key |
-| `tone-category-unknown` (undeclared) | new | `entities.<entityId>.attributes.<attribute>` | `tone <value> on <entityId> is not declared by any legend in this document` | `[entityId]` | `attribute: <attribute name>`, `value: <tone value>`, `legendBinding: "undeclared"`, `categoryType: <category type id>` | One per violating entity attribute |
-| `tone-category-unknown` (ambiguous) | new | `entities.<entityId>.attributes.<attribute>` | `tone <value> on <entityId> resolves ambiguously across legends; set legendRef to bind it` | `[entityId]` | `attribute`, `value`, `legendBinding: "ambiguous"`, `categoryType` (as above) | One per violating entity attribute |
-| `tone-category-unknown` (bound target not a legend) | new | `entities.<entityId>.attributes.<bindingAttribute>` | `legendRef on <entityId> names <targetId>, which is not a legend` | `[entityId, targetId]` | `attribute: <binding attribute name>`, `value: <tone value or "">`, `legendBinding: "bound-target-not-legend"`, `categoryType` | One per violating binding |
-| `text-pattern-mismatch` (pattern arm) | new | `<recordPath>.attributes.<attribute>` (entity/relation/port or collection item `…[i]`) | `value does not match the <patternName> grammar` | `[]` (record path carries the location) | `pattern: <patternName>`, `length: <value length>`, `maxLength: <declared bound>` (only when declared) | One per violating value |
-| `text-pattern-mismatch` (minimum-length arm) | new | `<recordPath>.attributes.<attribute>` | `value is shorter than the minimum length for <attribute>` | `[]` | `pattern: "min-length"`, `length: <value length>`, `minLength: <declared minimum>` | One per violating value |
-| `quantity-not-integer` | new | `<recordPath>.attributes.<attribute>` | `value <value> is not an integer` | `[]` | `value: <numeric value>`, `integer: "required"` | One per violating value |
-| `quantity-below-min` / `quantity-above-max` | new | `<recordPath>.attributes.<attribute>` | `value <value> is below the minimum <min>` / `value <value> is above the maximum <max>` | `[]` | `value`, plus `min` resp. `max` (numeric scalars) | One per violating value |
-| `unique-attribute-violation` (new contract) | reused (details gain scalar `scope`) | `entities.<id>.attributes.<attribute>` | `attribute <attribute> must be unique among <entityType> entities in scope <scope>; <referenceId> carries the same value` | `[reportedId, referenceId]` (reference first in UTF-16 order, never reported) | `attribute`, `type`, `scope: "document" \| "siblings" \| "within:<typeId>"` | One per duplicate beyond the reference, per scope group |
-| `unique-attribute-violation` (legacy projection) | reused (frozen historical shape) | `entities.<id>.attributes.<attribute>` | `attribute <attribute> must be unique among <entityType> entities; <referenceId> carries the same value` | `[reportedId, referenceId]` | `attribute`, `type` (no `scope` key, §5.3.1) | As above |
-| `endpoint-target-not-allowed` | reused (details gain `seenChain`) | `relations.<id>.endpoints[<i>]` (existing template kept) | Existing template kept | Existing refs kept | `seenType`, `seenChain` (chain joined with `>`), `allowed` | One per violating endpoint |
-| `occurrence-endpoint-mismatch` (fold arms) | reused (new `details` values, no new code) | `relationOccurrences.<id>.endpoints[<i>].occurrence` (resp. the `summaryLabels.<id>` path for definition arms) | `projected endpoint for role <role> fails check <detailValue>` (definition arms: `summary definition <id> fails check <detailValue>`) | `[occurrenceId, drawnTarget, …roleTargets]` as today (definition arms: `[summaryId, sourceOccurrence, targetOccurrence]`) | `role`, plus exactly one of `representative-hidden`, `projection-not-folded`, `projection-not-outermost`, `representative-not-container`, `provenance-missing`, `provenance-mismatch`, `projection-source-projected`, `summary-constituents-mismatch`, `summary-duplicate-key` | One per violating endpoint (resp. per summary definition) |
-| `type-definition-conflict` (new details) | reused | `profiles.<id>.constraints` / `typeDefinitions.<id>` (per arm) | Per arm; names the missing scope, abstract container, bad text pattern, bad numeric bounds or cycle | `[typeId]` where applicable | Exactly one of `unique-scope-missing`, `abstract-container`, `text-pattern-invalid`, `numeric-constraint-invalid` per arm (in addition to any existing keys of that arm), plus `attribute` / `cycle` (joined ids) where the arm states them | One per violating declaration |
-
-Layout warnings `card-overflow` / `zone-overflow` carry a `MeasurementOverflow` (§4.6.4) in the layout result; `docking-overflow` carries `{ code, refs: [occurrenceId], message: "side <side> of <occurrence> needs <required> docks, fits <fitted>" }`. None of the three is a `Diagnostic` code and none enters `validateDocument` output.
-
-## Appendix D — Oracle manifest entry shape (normative skeleton)
-
-```ts
-interface OracleEntry {
-  readonly id: string;              // e.g. "a5-semantic", "g0", "m2-model"
-  readonly revision: string;        // commit sha or exact version; never a branch name alone
-  readonly path: string;            // repository-relative or governed absolute path as recorded
-  readonly sha256: string;          // full lowercase hex over exact file bytes, or "unverified: <reason>"
-  readonly derived: Readonly<Record<string, unknown>>; // counts, folds, mappings, expected diagnostics
+~~~json
+{
+  "sum:overview-chat": {
+    "id": "sum:overview-chat",
+    "sourceOccurrence": "occurrence:CHAT",
+    "targetOccurrence": "occurrence:MSGZ",
+    "label": "Chat events",
+    "relationIds": ["relation:r-solid"],
+    "strokeStyle": "solid"
+  }
 }
-// Manifest: { entries: OracleEntry[], manifestDigest: string /* SHA-256 over RFC 8785 bytes of entries */ }
-```
+~~~
 
-A gate resolves each entry by path, recomputes `sha256` over exact bytes, and refuses (fixture error) on any mismatch or missing entry before asserting `derived`. An entry marked `unverified` blocks any gate that depends on its `derived` values and blocks none that does not. Mutable working-tree paths without a recorded sha256 are not oracle entries.
+Source candidate matching includes the solid occurrence only because the definition selects style solid. The dashed relation is not a missing constituent. With MSGZ collapsed, the two occurrences form two aggregate keys, (occurrence:CHAT,occurrence:MSGZ,solid) and the corresponding dashed key. The solid key has exactly one candidate and draws "Chat events"; the dashed key has no definition and may draw its localized count. Both relation ids remain conserved. A second solid definition for the same source triple refuses summary-duplicate-key. Export retains the authored label, style and exact constituent id.
+
+**B.5 Distinct source definitions colliding after projection.** P contains C; one solid relation C→X has one occurrence. Definition s1 for (occurrence:P,occurrence:X,solid) and s2 for (occurrence:C,occurrence:X,solid) both name that relation and validate in the source. Collapsing P maps both selected occurrence sets onto (occurrence:P,occurrence:X,solid). Source-key uniqueness alone cannot decide them. §4.5.2 refuses the derived result with summary-active-key-conflict on s2, firstId=s1; no label is selected. Deleting either definition restores a unique candidate.
+
+**B.6 Same relation in two drawings.** C has drawings occurrence:C1/C2 under different parent drawings. A relation has occurrences occurrence:r1/r2; only r1 crosses the source definition's occurrence scope. r2 cannot become its constituent merely because relationIds agrees. Where several same-relation occurrences cross the same scope, relationOccurrences is required; ambiguity is a source refusal, not a guessed aggregate.
+
+**B.7 ArchiMate relation-to-relation folded target.** The complete fixture mutation and expected record fragments are in C.6 under the descriptive name "ArchiMate folded relation-to-relation". It reuses the pinned ArchiMate document's entity/relation identities and occurrence strings already present in B/C; its case id is computed from the pinned raw bytes and canonical mutation, never assigned arbitrarily. All edits after the explicit @2 migration are authored fixture changes. Retype entity:junction as grouping with a name and no junction operator. Retype relation:serving as groupingContainment (parent entity:junction, child entity:actor), relation:assignment as association (entity:junction → entity:actor), and relation:flow as association (entity:component → relation:assignment). The two association tuples are grouping→business-actor and application-component→@relation, both admitted by their own o cells; groupingContainment is the separate hierarchy, outside the matrix.
+
+The source fragment draws the grouping as occurrence:Z, its actor child as occurrence:A1 and the external application component as occurrence:EXT. The group key/id reuses the string occurrence:Z; its occurrence binding is occurrence:Z and the actor's group is that same key. Target relation:assignment is drawn by occurrence:flow, with a finite source polyline; attaching relation:flow is drawn by occurrence:r. These deliberately distinct relation/occurrence bindings are resolved by their fields, not by suffix matching. The enclosing valid view identity is supplied by the fixture harness; semanticDocumentId and revision are retained from the pinned document. No new view id or contract pin is fabricated.
+
+With collapsed set {occurrence:Z}, occurrence:A1 is hidden and occurrence:Z stays visible. The first worklist round maps occurrence:flow to occurrence:Z: both endpoints have that representative and the actor endpoint supplies the fold witness. occurrence:r stays external because its representatives are occurrence:EXT and occurrence:Z. Its projected target is exactly {role:"target",occurrence:"occurrence:Z",semanticTarget:"relation:assignment",sourceOccurrence:"occurrence:flow"}. The target occurrence:flow is retained byte for byte with its original endpoints and waypoints, and excluded as endpoint-hidden; actor occurrence:A1 is excluded as group-collapsed; occurrence:r draws to the collapsed container anchor. The expected semantic/view diagnostic arrays are []; scene exclusions are not diagnostics. projectView keeps source geometry; layoutFolded subsequently measures/places the 460 × 200 collapsed card. revision remains 1 and semantic bytes remain unchanged by the fold.
+
+Unfolding from the retained source with the empty collapsed set restores occurrence:r's target {role:"target",occurrence:"occurrence:flow"}, with both provenance fields absent, and restores both relation records byte for byte. If the target relation instead crosses the container boundary, it stays visible with its own projected endpoints; the attaching endpoint continues to name occurrence:flow without provenance and uses the retained route midpoint (§3.9.1). That state never substitutes an endpoint entity for the target RelationRef.
+
+C.6 gives three isolated negative variants of the valid folded fragment: remove sourceOccurrence → provenance-missing; replace it with occurrence:r (which draws relation:flow, not relation:assignment) → provenance-mismatch; clear the collapsed set while retaining the projected endpoint → projection-not-folded. Each expects one literal diagnostic at relationOccurrences.occurrence:r.endpoints[1].occurrence, with refs [occurrence:r,occurrence:Z]. The separate pre-existing relation-target-hidden case is an unsupported host suppression mask without a fold witness, not the expected result of this valid collapse. All outcomes are specification oracles; no executor run is asserted.
 
 
+## Appendix C — Exact diagnostic contracts
+
+### C.1 Inventory, shape and ordering
+
+Native Diagnostic shape is §2.2, copied without renaming: code, severity, path, message, optional refs/details. Scalar details only. Every **new** arm below includes refs/details exactly as shown, including [] when empty. Substitutions are raw native string ids/type/attribute names, or finite numbers. Entity/relation/port recordPath is the actual dotted native record path; collection indices append [i]. No RFC 6901 conversion occurs inside the native object.
+
+The complete native baseline inventory (50 codes, DS diagnostics.ts at the pinned DS revision) is:
+
+`dangling-reference`, `reference-type-mismatch`, `hierarchy-cycle`, `attribute-not-in-schema`, `quantity-unit-missing`, `collection-bound-exceeded`, `unknown-schema-major`, `revision-conflict`, `extension-unsupported`, `malformed-ref`, `duplicate-id`, `record-key-mismatch`, `schema-version-malformed`, `schema-migration-required`, `document-not-an-object`, `unknown-profile`, `profile-not-declared`, `unknown-entity-type`, `unknown-relation-type`, `unknown-port-type`, `type-definition-conflict`, `attribute-type-mismatch`, `attribute-required-missing`, `enum-value-not-allowed`, `quantity-unit-not-allowed`, `text-too-long`, `date-not-iso8601`, `unique-attribute-violation`, `endpoint-role-unknown`, `endpoint-cardinality-violation`, `endpoint-target-not-allowed`, `hierarchy-multiple-parents`, `port-direction-not-allowed`, `port-owner-mismatch`, `view-document-mismatch`, `revision-divergence`, `occurrence-endpoint-mismatch`, `value-not-finite`, `value-not-serialisable`, `limit-exceeded`, `unknown-command`, `target-already-exists`, `target-missing`, `delete-policy-required`, `delete-policy-refused`, `placement-kind-mismatch`, `inverse-budget-exceeded`, `extension-hash-mismatch`, `extension-source-not-retained`, `view-already-exists`.
+
+Exactly seventeen code additions are required across this lot and its explicitly shared K1/K2/K6 prerequisites:
+
+`legend-key-parent-invalid`, `tone-category-unknown`, `text-pattern-mismatch`, `quantity-not-integer`, `quantity-below-min`, `quantity-above-max`, `relationship-matrix-violation`, `multiplicity-invalid`, `stereotype-application-invalid`, `reference-target-type`, `struct-type-unknown`, `struct-field-not-in-schema`, `struct-type-not-allowed`, `supertype-unknown`, `supertype-cycle`, `attribute-conflict`, `abstract-instantiated`.
+
+The four K2/K6 codes and the four K1 codes are transcribed from A′ and qualified with that kernel; their literal native arms are given below and they are not renamed implementations. All other modified cases reuse an existing code. No seenChain is added to any retained endpoint diagnostic. There is **no global sort** of a native array. Legacy stages/record iteration and 610c0353 uniqueness order remain exact. New per-check iteration is §5.3. Separate G0 enriched copies retain original native indices and invert to the native array exactly.
+
+Layout/rendering codes are separate and **not** DiagnosticCode additions: card-overflow, zone-overflow, docking-overflow; card-icon-unknown and zone-icon-unknown. Their values enter layout/render results, not semantic validation receipts. Migration reason strings (missing-type-mapping, multiplicity-syntax, unmapped-stereotype, missing-presentation-destination, incompatible-attribute-schema) belong to the report, not this union.
+
+### C.2 Literal semantic/scalar arms
+
+All rows have severity error. id/path substitutions are raw M2 nominal references; type/attribute/constraint names are exact declaration strings. allowed is a comma-joined declaration-order list unless stated. No unnamed detail alternative exists.
+
+| Arm | Code / path | Literal message | Exact refs | Exact details |
+| --- | --- | --- | --- | --- |
+| Wrong child under legend | legend-key-parent-invalid / entities.<childId> | key entity <childId> is contained by legend <parentId>; only legend-key entities may be contained by a legend | [childId,parentId] | {childType,parentType,constraint:"children-restricted"} |
+| Key under wrong parent | legend-key-parent-invalid / entities.<childId> | key entity <childId> is contained by <parentId>, which is outside the legend family; a legend-key must be contained by a legend | [childId,parentId] | {childType,parentType,constraint:"required-parent"} |
+| Orphan key | legend-key-parent-invalid / entities.<childId> | key entity <childId> has no hierarchy parent; a legend-key must be contained by a legend | [childId] | {childType,parentType:"none",constraint:"required-parent"} |
+| Text pattern | text-pattern-mismatch / <recordPath>.attributes.<attribute> or the exact typed view text/icon/token field | value does not match the <patternName> grammar | [] | {pattern:patternName,length:value.length,maxLength} if declared, otherwise exactly {pattern:patternName,length:value.length} |
+| Minimum only | text-pattern-mismatch / same actual value path | value is shorter than the minimum length for <attribute> | [] | {pattern:"min-length",length:value.length,minLength} |
+| Integer | quantity-not-integer / <recordPath>.attributes.<attribute> (including .fields.<field>) | value <value> is not an integer | [] | {value,integer:"required"} |
+| Below bound | quantity-below-min / same actual value path | value <value> is below the minimum <min> | [] | {value,min} |
+| Above bound | quantity-above-max / same actual value path | value <value> is above the maximum <max> | [] | {value,max} |
+| Scoped duplicate | unique-attribute-violation / entities.<reportedId>.attributes.<attribute> | attribute <attribute> must be unique among <entityType> entities in scope <scope>; <referenceId> carries the same value | [reportedId,referenceId] | {attribute,type:entityType,scope} |
+| Legacy duplicate | unique-attribute-violation / entities.<reportedId>.attributes.<attribute> | attribute <attribute> must be unique among <entityType> entities; <referenceId> carries the same value | [reportedId,referenceId] | {attribute,type:entityType}, no scope |
+| Wrong endpoint kind, unchanged | endpoint-target-not-allowed / relations.<relationId>.endpoints[<i>].target | role <role> accepts <targets joined ", ">, not a <seenKind> | [endpointTarget] | {seenKind,allowed:targets joined ","} |
+| Wrong endpoint type, unchanged | endpoint-target-not-allowed / relations.<relationId>.endpoints[<i>].target | role <role> accepts entity types <entityTypes joined ", ">; <targetId> is a <seenType> | [targetId] | {seenType,allowed:entityTypes joined ","} |
+| Matrix pair | relationship-matrix-violation / relations.<relationId>.endpoints | relation <relationId> of type <relationType> is not allowed from <sourceType> to <targetType> by matrix <matrixId> | [relationId,sourceId,targetId] | {matrixId,relationType,sourceType,targetType} |
+| Multiplicity pair | multiplicity-invalid / <recordPath>.attributes.<attribute> | multiplicity lower <lower> exceeds finite upper <upper> | [] | {lower,upper,constraint:"bound-pair"} |
+| Stereotype target application | stereotype-application-invalid / <recordPath>.attributes.<attribute>[<i>] | stereotype <stereotypeId> cannot be applied to type <targetType> | [targetId,stereotypeId] | {attribute,targetType,allowed} |
+| K2 reference type | reference-target-type / exact reference attribute/item path | reference target <targetId> has type <seenType>; allowed types are <allowed joined ", "> | [targetId] | {seenType,allowed:allowed joined ","} |
+| K6 unknown type | struct-type-unknown / exact struct value path | structured value type <typeId> is not declared | [] | {type:typeId} |
+| K6 unknown field | struct-field-not-in-schema / <structPath>.fields.<field> | field <field> is not declared by structured type <typeId> | [] | {type:typeId,field} |
+| K6 forbidden type | struct-type-not-allowed / exact struct value path | structured type <typeId> is not allowed here; allowed types are <allowed joined ", "> | [] | {type:typeId,allowed:allowed joined ","} |
+
+| Junction incidence | relationship-matrix-violation / entities.<entityId> | junction <entityId> connects incompatible relation types <relationTypes joined ", "> | [entityId,...incidentRelationIds] | {matrixId,constraint:"incident-type-uniformity",relationTypes:relationTypes joined ","} |
+| Exclusive aggregation ends | multiplicity-invalid / relations.<relationId>.attributes | relation <relationId> has <count> <value> ends; at most <max> is allowed | [relationId] | {count,max,constraint:"at-most-value"} |
+| Duplicate typed item | collection-bound-exceeded / <recordPath>.attributes.<attribute>[<duplicateIndex>] | collection <attribute> repeats item <duplicateIndex>; first occurrence is <firstIndex> | [] | {constraint:"collection-unique",firstIndex,duplicateIndex} |
+| Unknown K1 parent | supertype-unknown / profiles.<profileId>.entityTypes.<typeId>.supertypes[<i>] | supertype <supertype> is not declared | [] | {supertype} |
+| K1 cycle | supertype-cycle / profiles.<profileId>.entityTypes.<typeId>.supertypes | supertype chain for <typeId> is cyclic | [] | {type:typeId} |
+| K1 inherited conflict | attribute-conflict / profiles.<profileId>.entityTypes.<typeId>.attributes.<attribute> | inherited attribute <attribute> has incompatible schemas on <typeId> | [] | {attribute,type:typeId} |
+| Abstract Entity | abstract-instantiated / entities.<entityId>.type | abstract type <typeId> cannot be instantiated as an entity | [entityId] | {type:typeId} |
+
+K1 declaration resolution walks declared types/supertypes in order, depth-first left-to-right as transcribed in §2.3/A′. Unknown parent/cycle suppresses descendant effective-schema checks; attribute-conflict names each conflicting field once after valid parents resolve. Abstract Entity checking follows successful type resolution and refuses identity instantiation before checking its fields. These additions do not change retained @1 diagnostics.
+
+scope is exactly document, siblings or within:<typeId>. Duplicate multiplicity is one diagnostic per later id in each group, never one per pair. Legend parent arms are one per violating child, with the first applicable arm chosen in table order (wrong child is not also treated as a key). Pattern maxLength-presence is determined by the schema, never arbitrarily omitted. Missing/dangling refs use their existing code before target type/application checks.
+
+### C.3 Category and presentation arms
+
+| Arm | Code / path | Literal message | Exact refs | Exact details |
+| --- | --- | --- | --- | --- |
+| No declared category | tone-category-unknown / presentation.diagram.entities.<occurrenceId>.categoryRef (or exact projected category field) | category <value> on occurrence <occurrenceId> is not declared by any legend in this document | [occurrenceId] | {value,legendBinding:"undeclared",categoryType:"legend-key"} |
+| Ambiguous token binding | tone-category-unknown / same category field | category <value> on occurrence <occurrenceId> resolves ambiguously across legends; set categoryRef to bind it | [occurrenceId] | {value,legendBinding:"ambiguous",categoryType:"legend-key"} |
+| Bound target wrong kind | tone-category-unknown / presentation.diagram.categoryTokens[<i>].legendRef | legendRef names <targetId>, which is not a legend | [targetId] | {value:category,legendBinding:"bound-target-not-legend",categoryType:"legend-key"} |
+
+For view-contract shape failures use occurrence-endpoint-mismatch with path equal to the precise failing presentation field, message "diagram presentation fails check <check>", refs [] and details {check}, where **each literal arm** is:
+presentation-shape-invalid (unknown/missing/wrong-typed closed field),
+form-selector-mismatch (form disagrees with resolved type capability),
+legend-order-invalid (missing/extra/duplicate key in the ordered list),
+token-binding-conflict (duplicate (legendRef,category) rows),
+presentation-pin-mismatch (resolved bytes fail a pin, input.contractPin differs from DiagramPresentation.contractPin/resolved contract pin, adapterPin differs from catalog ontology.compatibility.adapter, or the adapter schema binding differs from artifactBinding.schemaPin).
+These are the complete check strings, not an open detail enum. Path selection is deterministic: presentation-shape-invalid names the offending leaf (or its missing field), form-selector-mismatch names .form, legend-order-invalid names .order, token-binding-conflict names the later conflicting categoryTokens[i] row, and presentation-pin-mismatch names presentation.diagram.contractPin for contract disagreement/bytes, input.adapterPin for adapter input/catalog disagreement, or the catalog binding contract field for a schema-binding disagreement. The five mutation oracles below use an otherwise valid card occurrence n, legend occurrence l with direct key k, and an initial (entity:l,risk,danger) token binding. Adapter disagreement is checked before selector/value validation and also refuses under presentation-pin-mismatch; it never falls through to a candidate view. Dangling nominal references use dangling-reference at the exact field with message "presentation reference <targetId> does not resolve", refs [targetId], details {}. A wrong reference namespace uses reference-type-mismatch with message "presentation reference <targetId> must be a <expectedKind>", refs [targetId], details {expectedKind}. Unknown profile/schema resolution remains the existing unknown-profile/G0 missing-receipt discipline, not a new unlisted native code.
+
+### C.4 Projection and summary arms
+
+All new projection arms use code occurrence-endpoint-mismatch, severity error, path relationOccurrences.<relationOccurrenceId>.endpoints[<i>].occurrence, message "projected endpoint for role <role> fails check <check>", refs [relationOccurrenceId,drawnOccurrenceId], details exactly {role,check}. Each literal check and its complete predicate is:
+
+| check | Predicate that fails |
+| --- | --- |
+| representative-hidden | Drawn representative exists but is hidden by a fold. |
+| projection-not-folded | No entity/port collapsed-ancestor walk, or finite all-endpoint relation fold witness, connects original and drawn occurrences. |
+| projection-not-outermost | Drawn occurrence is an inner folded ancestor while a higher folded ancestor exists. |
+| representative-not-container | Drawn representative's resolved entity type (or counterpart port owner's type) has no container capability. The original semantic target may be a relation. |
+| provenance-missing | semanticTarget present but sourceOccurrence absent. |
+| provenance-mismatch | sourceOccurrence's entity/port/relation field does not equal semanticTarget in its nominal namespace, or semanticTarget is not a role target. |
+| projection-source-projected | Caller passed a source endpoint already carrying semanticTarget. |
+
+Missing occurrences first emit existing dangling-reference; ordinary unprojected mismatches keep the pinned native rule. New folded checks have this explicit first-failure priority: provenance, occurrence existence, ancestor walk/fold, outermost, visibility, capability. This priority applies to the predicates of §4.4.4 and determines which single projection failure is emitted for an endpoint; no final sort occurs. A hidden inner folded representative therefore yields projection-not-outermost before its visibility failure, matching Appendix B.2. Other hidden representatives yield representative-hidden. Neither path fabricates a valid view.
+
+**Relation-target occurrence arms (§3.9.1).** The new adapter resolves drawn targets over all three occurrence maps, preserving the native endpoint mismatch shape:
+{code:"occurrence-endpoint-mismatch",severity:"error",path:"relationOccurrences.<relationOccurrenceId>.endpoints[<i>].occurrence",message:"occurrence <occurrenceId> draws <drawnTarget>; role <role> of <relationId> targets <targets joined ', '>",refs:[occurrenceId,drawnTarget,...targets],details:{role}}.
+A missing occurrence uses dangling-reference at the same path, message "<occurrenceId> is no entity, port or relation occurrence of this view", refs [occurrenceId], and no details. Those are new-adapter arms only; the @1 wording remains exactly "entity or port". A canonical fold retains all relation occurrence records and redirects attachments to an internal target's mapped container with RelationRef provenance; it does not refuse relation-target-hidden. That arm guards an explicit host request to suppress an otherwise visible target relation occurrence **without** the §4.4.1 fold witness (the projectedHiddenRelationOccurrences mask in the existing C.6 negative case, with no collapsed set). Refuse once per affected attachment with code occurrence-endpoint-mismatch, severity error, the same endpoint path, message "projected endpoint for role <role> fails check relation-target-hidden", refs [relationOccurrenceId,drawnOccurrenceId], details {role,check:"relation-target-hidden"}. This mask is a negative harness input, never a ViewDocument field. Ordinary filters still produce scene exclusions with their filter cause (§4.4.6), not this refusal. Finite lookup precedes fold classification; no partial candidate is emitted. The positive folded-target fixture and its isolated provenance/stale-fold diagnostics are in B.7/C.6.
+
+Summary arms use occurrence-endpoint-mismatch, path summaryLabels.<summaryId>, message "summary definition <summaryId> fails check <check>", refs [summaryId,sourceOccurrence,targetOccurrence].
+- summary-constituents-mismatch: details {check:"summary-constituents-mismatch"}.
+- summary-duplicate-key: details {check:"summary-duplicate-key",firstId}.
+- summary-occurrence-ambiguous: details {check:"summary-occurrence-ambiguous",relationId}.
+- summary-active-key-conflict: details {check:"summary-active-key-conflict",firstId,sourceRepresentative,targetRepresentative,strokeStyle}.
+A source-valid inactive definition emits **nothing**. Active conflicts are emitted after projection in UTF-16 definition-id order, one per conflicting candidate after firstId. That first id is a diagnostic reference, not a winning active label.
+
+### C.5 Declaration/resolver arms
+
+Each row uses type-definition-conflict, severity error, refs [], and exactly the stated details:
+
+| Predicate | Path | Literal message | Exact details |
+| --- | --- | --- | --- |
+| Missing new-format scope | profiles.<profileId>.constraints[<i>] | unique-attribute constraint for <typeId>.<attribute> requires an explicit scope | {check:"unique-scope-missing",type:typeId,attribute} |
+| Illegal abstract container | profiles.<profileId>.entityTypes[<i>] | abstract type <typeId> cannot declare container capability | {check:"abstract-container",type:typeId} |
+| Invalid text grammar/bounds | <schemaPath> | text schema for <attribute> has an invalid pattern or length bounds | {check:"text-pattern-invalid",attribute} |
+| Invalid numeric bounds | <schemaPath> | quantity schema for <attribute> has invalid numeric bounds | {check:"numeric-constraint-invalid",attribute} |
+| Resolver base cycle | typeDefinitions.<definitionId>.baseType | type definition <definitionId> closes base cycle <cycle> | {check:"resolution-cycle",cycle} |
+| Invalid matrix declaration | profiles.<profileId>.constraints[<i>] | relationship matrix <matrixId> has an invalid or duplicate tuple | {check:"matrix-constraint-invalid",matrixId} |
+
+cycle is the visited chain joined with ">", including the repeated closing id. Missing bases use unknown-entity-type before a cycle check. A real redeclaration retains the pinned native literal:
+path typeDefinitions.<id>.attributes.<attribute>;
+message "type definition <id> redeclares <attribute>, which base type <baseType> already declares; refinements are additive only";
+details {attribute,baseType}; **refs absent**, matching the native source. A migration's incompatible-bound refusal lives in unmigrated rather than inventing a misleading successful declaration.
+
+### C.6 Concrete diagnostic object oracles
+
+The following concrete objects instantiate every added code and every new arm family. They are fixture expectations, not the output of a claimed run. The templates above define substitution/multiplicity for all records; the JSON fixes optional-field presence and scalar detail encoding.
+
+The ten computed case ids below use Node and "case_" + SHA-256(raw sourcePin file bytes || UTF-8("\n") || RFC 8785(mutation)), with no trailing newline after the mutation. name is a descriptive label, never a resolvable entity/profile id. Their sourcePin paths/hashes are in §8.5. Mutations isolate the named check in the already valid @2 declaration/document context: relation and entity fragments replace the corresponding isolated input, and declaration mutations precede document checks. The B.7 mutation first applies the §3.9.1 migration with its explicit entityMappings, then replaces the listed entity/relation records and installs its sourceViewFragment in the enclosing valid view. Omitted standard view fields retain the harness's valid values; semanticDocumentId = the pinned documentId and revision = 1. Its three variants are independent mutations of the expected folded fragment. The deliberately missing parent name in the negative K1 case is expected to fail resolution; it is not presented as a source id. Full corpus execution remains U-QUAL.
+
+~~~json
+[
+  {
+    "id": "legend-wrong-child",
+    "expected": [
+      {
+        "code": "legend-key-parent-invalid",
+        "severity": "error",
+        "path": "entities.entity:n",
+        "message": "key entity entity:n is contained by legend entity:l; only legend-key entities may be contained by a legend",
+        "refs": [
+          "entity:n",
+          "entity:l"
+        ],
+        "details": {
+          "childType": "node",
+          "parentType": "legend",
+          "constraint": "children-restricted"
+        }
+      }
+    ]
+  },
+  {
+    "id": "legend-wrong-parent",
+    "expected": [
+      {
+        "code": "legend-key-parent-invalid",
+        "severity": "error",
+        "path": "entities.entity:k",
+        "message": "key entity entity:k is contained by entity:c, which is outside the legend family; a legend-key must be contained by a legend",
+        "refs": [
+          "entity:k",
+          "entity:c"
+        ],
+        "details": {
+          "childType": "legend-key",
+          "parentType": "container",
+          "constraint": "required-parent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "legend-orphan",
+    "expected": [
+      {
+        "code": "legend-key-parent-invalid",
+        "severity": "error",
+        "path": "entities.entity:k",
+        "message": "key entity entity:k has no hierarchy parent; a legend-key must be contained by a legend",
+        "refs": [
+          "entity:k"
+        ],
+        "details": {
+          "childType": "legend-key",
+          "parentType": "none",
+          "constraint": "required-parent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "category-undeclared",
+    "expected": [
+      {
+        "code": "tone-category-unknown",
+        "severity": "error",
+        "path": "presentation.diagram.entities.occurrence:n.categoryRef",
+        "message": "category risk on occurrence occurrence:n is not declared by any legend in this document",
+        "refs": [
+          "occurrence:n"
+        ],
+        "details": {
+          "value": "risk",
+          "legendBinding": "undeclared",
+          "categoryType": "legend-key"
+        }
+      }
+    ]
+  },
+  {
+    "id": "category-ambiguous",
+    "expected": [
+      {
+        "code": "tone-category-unknown",
+        "severity": "error",
+        "path": "presentation.diagram.entities.occurrence:n.categoryRef",
+        "message": "category risk on occurrence occurrence:n resolves ambiguously across legends; set categoryRef to bind it",
+        "refs": [
+          "occurrence:n"
+        ],
+        "details": {
+          "value": "risk",
+          "legendBinding": "ambiguous",
+          "categoryType": "legend-key"
+        }
+      }
+    ]
+  },
+  {
+    "id": "category-wrong-legend",
+    "expected": [
+      {
+        "code": "tone-category-unknown",
+        "severity": "error",
+        "path": "presentation.diagram.categoryTokens[0].legendRef",
+        "message": "legendRef names entity:c, which is not a legend",
+        "refs": [
+          "entity:c"
+        ],
+        "details": {
+          "value": "risk",
+          "legendBinding": "bound-target-not-legend",
+          "categoryType": "legend-key"
+        }
+      }
+    ]
+  },
+  {
+    "id": "pattern-bounded",
+    "expected": [
+      {
+        "code": "text-pattern-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.entities.occurrence:n.icon",
+        "message": "value does not match the key grammar",
+        "refs": [],
+        "details": {
+          "pattern": "key",
+          "length": 1,
+          "maxLength": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "pattern-without-max",
+    "expected": [
+      {
+        "code": "text-pattern-mismatch",
+        "severity": "error",
+        "path": "entities.entity:n.attributes.code",
+        "message": "value does not match the key grammar",
+        "refs": [],
+        "details": {
+          "pattern": "key",
+          "length": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "minimum-only",
+    "expected": [
+      {
+        "code": "text-pattern-mismatch",
+        "severity": "error",
+        "path": "entities.entity:n.attributes.code",
+        "message": "value is shorter than the minimum length for code",
+        "refs": [],
+        "details": {
+          "pattern": "min-length",
+          "length": 0,
+          "minLength": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "integer",
+    "expected": [
+      {
+        "code": "quantity-not-integer",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity.fields.lower",
+        "message": "value 0.5 is not an integer",
+        "refs": [],
+        "details": {
+          "value": 0.5,
+          "integer": "required"
+        }
+      }
+    ]
+  },
+  {
+    "id": "quantity-min",
+    "expected": [
+      {
+        "code": "quantity-below-min",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity.fields.lower",
+        "message": "value -1 is below the minimum 0",
+        "refs": [],
+        "details": {
+          "value": -1,
+          "min": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "quantity-max",
+    "expected": [
+      {
+        "code": "quantity-above-max",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity.fields.upper",
+        "message": "value 9007199254740992 is above the maximum 9007199254740991",
+        "refs": [],
+        "details": {
+          "value": 9007199254740992,
+          "max": 9007199254740991
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique-scoped",
+    "expected": [
+      {
+        "code": "unique-attribute-violation",
+        "severity": "error",
+        "path": "entities.entity:k2.attributes.category",
+        "message": "attribute category must be unique among legend-key entities in scope within:legend; entity:k1 carries the same value",
+        "refs": [
+          "entity:k2",
+          "entity:k1"
+        ],
+        "details": {
+          "attribute": "category",
+          "type": "legend-key",
+          "scope": "within:legend"
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique-legacy",
+    "expected": [
+      {
+        "code": "unique-attribute-violation",
+        "severity": "error",
+        "path": "entities.entity:c2.attributes.name",
+        "message": "attribute name must be unique among container entities; entity:c1 carries the same value",
+        "refs": [
+          "entity:c2",
+          "entity:c1"
+        ],
+        "details": {
+          "attribute": "name",
+          "type": "container"
+        }
+      }
+    ]
+  },
+  {
+    "id": "endpoint-kind",
+    "expected": [
+      {
+        "code": "endpoint-target-not-allowed",
+        "severity": "error",
+        "path": "relations.relation:r.endpoints[0].target",
+        "message": "role source accepts entity, not a port",
+        "refs": [
+          "port:p"
+        ],
+        "details": {
+          "seenKind": "port",
+          "allowed": "entity"
+        }
+      }
+    ]
+  },
+  {
+    "id": "endpoint-type",
+    "expected": [
+      {
+        "code": "endpoint-target-not-allowed",
+        "severity": "error",
+        "path": "relations.relation:r.endpoints[0].target",
+        "message": "role source accepts entity types process; entity:p is a custom-process",
+        "refs": [
+          "entity:p"
+        ],
+        "details": {
+          "seenType": "custom-process",
+          "allowed": "process"
+        }
+      }
+    ]
+  },
+  {
+    "id": "matrix-reversed-pair",
+    "expected": [
+      {
+        "code": "relationship-matrix-violation",
+        "severity": "error",
+        "path": "relations.relation:r.endpoints",
+        "message": "relation relation:r of type access is not allowed from data-object to application-component by matrix archimate-3.2",
+        "refs": [
+          "relation:r",
+          "entity:d",
+          "entity:c"
+        ],
+        "details": {
+          "matrixId": "archimate-3.2",
+          "relationType": "access",
+          "sourceType": "data-object",
+          "targetType": "application-component"
+        }
+      }
+    ]
+  },
+  {
+    "id": "multiplicity-reversed",
+    "expected": [
+      {
+        "code": "multiplicity-invalid",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity",
+        "message": "multiplicity lower 3 exceeds finite upper 2",
+        "refs": [],
+        "details": {
+          "lower": 3,
+          "upper": 2,
+          "constraint": "bound-pair"
+        }
+      }
+    ]
+  },
+  {
+    "id": "stereotype-application",
+    "expected": [
+      {
+        "code": "stereotype-application-invalid",
+        "severity": "error",
+        "path": "entities.entity:i.attributes.stereotypes[0]",
+        "message": "stereotype entity:s cannot be applied to type interface",
+        "refs": [
+          "entity:i",
+          "entity:s"
+        ],
+        "details": {
+          "attribute": "stereotypes",
+          "targetType": "interface",
+          "allowed": "class"
+        }
+      }
+    ]
+  },
+  {
+    "id": "typed-reference",
+    "expected": [
+      {
+        "code": "reference-target-type",
+        "severity": "error",
+        "path": "entities.entity:i.attributes.stereotypes[0]",
+        "message": "reference target entity:c has type class; allowed types are stereotype",
+        "refs": [
+          "entity:c"
+        ],
+        "details": {
+          "seenType": "class",
+          "allowed": "stereotype"
+        }
+      }
+    ]
+  },
+  {
+    "id": "struct-unknown",
+    "expected": [
+      {
+        "code": "struct-type-unknown",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity",
+        "message": "structured value type unknown-value is not declared",
+        "refs": [],
+        "details": {
+          "type": "unknown-value"
+        }
+      }
+    ]
+  },
+  {
+    "id": "struct-field",
+    "expected": [
+      {
+        "code": "struct-field-not-in-schema",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity.fields.ceiling",
+        "message": "field ceiling is not declared by structured type multiplicity",
+        "refs": [],
+        "details": {
+          "type": "multiplicity",
+          "field": "ceiling"
+        }
+      }
+    ]
+  },
+  {
+    "id": "struct-type",
+    "expected": [
+      {
+        "code": "struct-type-not-allowed",
+        "severity": "error",
+        "path": "entities.entity:p.attributes.multiplicity",
+        "message": "structured type other-value is not allowed here; allowed types are multiplicity",
+        "refs": [],
+        "details": {
+          "type": "other-value",
+          "allowed": "multiplicity"
+        }
+      }
+    ]
+  },
+  {
+    "id": "presentation-shape-invalid",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.entities.occurrence:n.text.kicker",
+        "message": "diagram presentation fails check presentation-shape-invalid",
+        "refs": [],
+        "details": {
+          "check": "presentation-shape-invalid"
+        }
+      }
+    ],
+    "mutation": {
+      "path": "presentation.diagram.entities.occurrence:n.text.kicker",
+      "value": 7
+    }
+  },
+  {
+    "id": "form-selector-mismatch",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.entities.occurrence:n.form",
+        "message": "diagram presentation fails check form-selector-mismatch",
+        "refs": [],
+        "details": {
+          "check": "form-selector-mismatch"
+        }
+      }
+    ],
+    "mutation": {
+      "path": "presentation.diagram.entities.occurrence:n.form",
+      "value": "container"
+    }
+  },
+  {
+    "id": "legend-order-invalid",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.legends.occurrence:l.order",
+        "message": "diagram presentation fails check legend-order-invalid",
+        "refs": [],
+        "details": {
+          "check": "legend-order-invalid"
+        }
+      }
+    ],
+    "mutation": {
+      "path": "presentation.diagram.legends.occurrence:l.order",
+      "value": []
+    }
+  },
+  {
+    "id": "token-binding-conflict",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.categoryTokens[1]",
+        "message": "diagram presentation fails check token-binding-conflict",
+        "refs": [],
+        "details": {
+          "check": "token-binding-conflict"
+        }
+      }
+    ],
+    "mutation": {
+      "path": "presentation.diagram.categoryTokens[1]",
+      "value": {
+        "legendRef": "entity:l",
+        "category": "risk",
+        "token": "danger"
+      }
+    }
+  },
+  {
+    "id": "presentation-pin-mismatch",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "presentation.diagram.contractPin",
+        "message": "diagram presentation fails check presentation-pin-mismatch",
+        "refs": [],
+        "details": {
+          "check": "presentation-pin-mismatch"
+        }
+      }
+    ],
+    "mutation": {
+      "path": "presentation.diagram.contractPin",
+      "operation": "substitute-another-resolved-contract-pin"
+    }
+  },
+  {
+    "id": "representative-hidden",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check representative-hidden",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "representative-hidden"
+        }
+      }
+    ]
+  },
+  {
+    "id": "projection-not-folded",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check projection-not-folded",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "projection-not-folded"
+        }
+      }
+    ]
+  },
+  {
+    "id": "projection-not-outermost",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check projection-not-outermost",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "projection-not-outermost"
+        }
+      }
+    ]
+  },
+  {
+    "id": "representative-not-container",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check representative-not-container",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "representative-not-container"
+        }
+      }
+    ]
+  },
+  {
+    "id": "provenance-missing",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check provenance-missing",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "provenance-missing"
+        }
+      }
+    ]
+  },
+  {
+    "id": "provenance-mismatch",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check provenance-mismatch",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "provenance-mismatch"
+        }
+      }
+    ]
+  },
+  {
+    "id": "projection-source-projected",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check projection-source-projected",
+        "refs": [
+          "occurrence:r",
+          "occurrence:Z"
+        ],
+        "details": {
+          "role": "target",
+          "check": "projection-source-projected"
+        }
+      }
+    ]
+  },
+  {
+    "id": "summary-constituents-mismatch",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "summaryLabels.s2",
+        "message": "summary definition s2 fails check summary-constituents-mismatch",
+        "refs": [
+          "s2",
+          "occurrence:C",
+          "occurrence:X"
+        ],
+        "details": {
+          "check": "summary-constituents-mismatch"
+        }
+      }
+    ]
+  },
+  {
+    "id": "summary-duplicate-key",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "summaryLabels.s2",
+        "message": "summary definition s2 fails check summary-duplicate-key",
+        "refs": [
+          "s2",
+          "occurrence:C",
+          "occurrence:X"
+        ],
+        "details": {
+          "check": "summary-duplicate-key",
+          "firstId": "s1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "summary-occurrence-ambiguous",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "summaryLabels.s2",
+        "message": "summary definition s2 fails check summary-occurrence-ambiguous",
+        "refs": [
+          "s2",
+          "occurrence:C",
+          "occurrence:X"
+        ],
+        "details": {
+          "check": "summary-occurrence-ambiguous",
+          "relationId": "relation:r"
+        }
+      }
+    ]
+  },
+  {
+    "id": "summary-active-key-conflict",
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "summaryLabels.s2",
+        "message": "summary definition s2 fails check summary-active-key-conflict",
+        "refs": [
+          "s2",
+          "occurrence:C",
+          "occurrence:X"
+        ],
+        "details": {
+          "check": "summary-active-key-conflict",
+          "firstId": "s1",
+          "sourceRepresentative": "occurrence:Z",
+          "targetRepresentative": "occurrence:X",
+          "strokeStyle": "solid"
+        }
+      }
+    ]
+  },
+  {
+    "id": "scope-required",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "profiles.generic@2.constraints[0]",
+        "message": "unique-attribute constraint for legend-key.category requires an explicit scope",
+        "refs": [],
+        "details": {
+          "check": "unique-scope-missing",
+          "type": "legend-key",
+          "attribute": "category"
+        }
+      }
+    ]
+  },
+  {
+    "id": "abstract-container",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "profiles.synthetic@2.entityTypes[0]",
+        "message": "abstract type root cannot declare container capability",
+        "refs": [],
+        "details": {
+          "check": "abstract-container",
+          "type": "root"
+        }
+      }
+    ]
+  },
+  {
+    "id": "bad-text-schema",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "profiles.synthetic@2.entityTypes[0].attributes[0]",
+        "message": "text schema for code has an invalid pattern or length bounds",
+        "refs": [],
+        "details": {
+          "check": "text-pattern-invalid",
+          "attribute": "code"
+        }
+      }
+    ]
+  },
+  {
+    "id": "bad-numeric-schema",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "profiles.synthetic@2.entityTypes[0].attributes[0]",
+        "message": "quantity schema for count has invalid numeric bounds",
+        "refs": [],
+        "details": {
+          "check": "numeric-constraint-invalid",
+          "attribute": "count"
+        }
+      }
+    ]
+  },
+  {
+    "id": "type-cycle",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "typeDefinitions.a.baseType",
+        "message": "type definition a closes base cycle a>b>a",
+        "refs": [],
+        "details": {
+          "check": "resolution-cycle",
+          "cycle": "a>b>a"
+        }
+      }
+    ]
+  },
+  {
+    "id": "bad-matrix",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "profiles.archimate@2.constraints[0]",
+        "message": "relationship matrix archimate-3.2 has an invalid or duplicate tuple",
+        "refs": [],
+        "details": {
+          "check": "matrix-constraint-invalid",
+          "matrixId": "archimate-3.2"
+        }
+      }
+    ]
+  },
+  {
+    "id": "native-redeclaration",
+    "expected": [
+      {
+        "code": "type-definition-conflict",
+        "severity": "error",
+        "path": "typeDefinitions.refined.attributes.name",
+        "message": "type definition refined redeclares name, which base type node already declares; refinements are additive only",
+        "details": {
+          "attribute": "name",
+          "baseType": "node"
+        }
+      }
+    ]
+  },
+  {
+    "id": "source-valid-inactive-summary",
+    "expected": []
+  },
+  {
+    "id": "solid-summary-does-not-include-dashed",
+    "expected": []
+  },
+  {
+    "id": "case_78e5757e7e2adade198869b77144b84085625a7380fd7035f9f64dc611833792",
+    "mutation": {
+      "path": "relations.relation:serving",
+      "value": {
+        "id": "relation:serving",
+        "profile": "archimate@2",
+        "type": "triggering",
+        "endpoints": [
+          {
+            "role": "source",
+            "target": "entity:process"
+          },
+          {
+            "role": "target",
+            "target": "entity:junction"
+          }
+        ],
+        "attributes": {}
+      }
+    },
+    "expected": [
+      {
+        "code": "relationship-matrix-violation",
+        "severity": "error",
+        "path": "entities.entity:junction",
+        "message": "junction entity:junction connects incompatible relation types flow, triggering",
+        "refs": [
+          "entity:junction",
+          "relation:flow",
+          "relation:serving"
+        ],
+        "details": {
+          "matrixId": "archimate-3.2",
+          "constraint": "incident-type-uniformity",
+          "relationTypes": "flow,triggering"
+        }
+      }
+    ],
+    "name": "junction-incident-types",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/archimate-skeleton-document.json",
+      "sha256": "8395ccc32ac25ae1354271817a3358bfe6f96243ecdfe2e5ef45ae1f48683951"
+    }
+  },
+  {
+    "id": "case_f579949420e664ed7b741494a57859dc9bc66a6f31d1ae799cdcedda3502cb88",
+    "mutation": {
+      "replacements": [
+        {
+          "path": "relations.relation:order-customer.attributes.sourceAggregation",
+          "value": {
+            "kind": "enum",
+            "value": "composite"
+          }
+        },
+        {
+          "path": "relations.relation:order-customer.attributes.targetAggregation",
+          "value": {
+            "kind": "enum",
+            "value": "composite"
+          }
+        }
+      ]
+    },
+    "expected": [
+      {
+        "code": "multiplicity-invalid",
+        "severity": "error",
+        "path": "relations.relation:order-customer.attributes",
+        "message": "relation relation:order-customer has 2 composite ends; at most 1 is allowed",
+        "refs": [
+          "relation:order-customer"
+        ],
+        "details": {
+          "count": 2,
+          "max": 1,
+          "constraint": "at-most-value"
+        }
+      }
+    ],
+    "name": "two-composite-ends",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_beb407b2578c63ce4a2619c23d081c167bba9ea97492285d586ed0d4c86efa68",
+    "mutation": {
+      "isolatedEntity": {
+        "id": "entity:order",
+        "profile": "uml@2",
+        "type": "stereotype",
+        "attributes": {
+          "name": {
+            "kind": "text",
+            "value": "Order"
+          },
+          "extends": {
+            "kind": "collection",
+            "items": [
+              {
+                "kind": "enum",
+                "value": "class"
+              },
+              {
+                "kind": "enum",
+                "value": "class"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "expected": [
+      {
+        "code": "collection-bound-exceeded",
+        "severity": "error",
+        "path": "entities.entity:order.attributes.extends[1]",
+        "message": "collection extends repeats item 1; first occurrence is 0",
+        "refs": [],
+        "details": {
+          "constraint": "collection-unique",
+          "firstIndex": 0,
+          "duplicateIndex": 1
+        }
+      }
+    ],
+    "name": "duplicate-extends",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_9ddcf62fdc56e4d33af6aebb251fe1a5fa5988e548cf60b01c5f2a191998405f",
+    "mutation": {
+      "path": "profiles.uml@2.entityTypes.class.supertypes",
+      "value": [
+        "missing"
+      ]
+    },
+    "expected": [
+      {
+        "code": "supertype-unknown",
+        "severity": "error",
+        "path": "profiles.uml@2.entityTypes.class.supertypes[0]",
+        "message": "supertype missing is not declared",
+        "refs": [],
+        "details": {
+          "supertype": "missing"
+        }
+      }
+    ],
+    "name": "supertype-unknown",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_5de1e81a294931a03d5fd302d8a0f0c01819ef6936e399ec62264c8ab0b951b5",
+    "mutation": {
+      "path": "profiles.uml@2.entityTypes.class.supertypes",
+      "value": [
+        "class"
+      ]
+    },
+    "expected": [
+      {
+        "code": "supertype-cycle",
+        "severity": "error",
+        "path": "profiles.uml@2.entityTypes.class.supertypes",
+        "message": "supertype chain for class is cyclic",
+        "refs": [],
+        "details": {
+          "type": "class"
+        }
+      }
+    ],
+    "name": "supertype-cycle",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_8d9846b3f4e3afcab6230b4d2433ba9f1c9939769f59ddcfe0e63511ea169969",
+    "mutation": {
+      "replacements": [
+        {
+          "path": "profiles.uml@2.entityTypes.class.attributes",
+          "value": []
+        },
+        {
+          "path": "profiles.uml@2.entityTypes.class.supertypes",
+          "value": [
+            "interface",
+            "package"
+          ]
+        },
+        {
+          "path": "profiles.uml@2.entityTypes.interface.attributes.name.maxLength",
+          "value": 100
+        }
+      ]
+    },
+    "expected": [
+      {
+        "code": "attribute-conflict",
+        "severity": "error",
+        "path": "profiles.uml@2.entityTypes.class.attributes.name",
+        "message": "inherited attribute name has incompatible schemas on class",
+        "refs": [],
+        "details": {
+          "attribute": "name",
+          "type": "class"
+        }
+      }
+    ],
+    "name": "attribute-conflict",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_27deeb4c3575ac8f4aa268e9eeb08b822780ce0861684ff5fd1f71837500ef2c",
+    "mutation": {
+      "path": "entities.entity:order.type",
+      "value": "multiplicity",
+      "operation": "instantiate-abstract-identity-schema"
+    },
+    "expected": [
+      {
+        "code": "abstract-instantiated",
+        "severity": "error",
+        "path": "entities.entity:order.type",
+        "message": "abstract type multiplicity cannot be instantiated as an entity",
+        "refs": [
+          "entity:order"
+        ],
+        "details": {
+          "type": "multiplicity"
+        }
+      }
+    ],
+    "name": "abstract-instantiated",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_fe922459c0772be776416003ee5450eb2b49d8f92f935556e3343370ff6f0525",
+    "mutation": {
+      "path": "input.adapterPin",
+      "value": {
+        "id": "fixture:executor",
+        "version": "1",
+        "contentDigest": "ab8bea23f592a350e1a668edc06320d9811816734788ad838dab04dbccac2eaa"
+      }
+    },
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "input.adapterPin",
+        "message": "diagram presentation fails check presentation-pin-mismatch",
+        "refs": [],
+        "details": {
+          "check": "presentation-pin-mismatch"
+        }
+      }
+    ],
+    "name": "adapter-pin-mismatch",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/uml-skeleton-document.json",
+      "sha256": "eea74144a37d9e44456278eeb36b06c5c2d7f9b4d19136a6b8ed3ce6ea3b08d8"
+    }
+  },
+  {
+    "id": "case_dfc9850a6f79aaa8301d79ab15a1ed73b74ce18550ad27d691d4afc31105c68b",
+    "mutation": {
+      "attachmentOccurrence": "occurrence:r",
+      "targetOccurrence": "occurrence:flow",
+      "projectedHiddenRelationOccurrences": [
+        "occurrence:flow"
+      ]
+    },
+    "expected": [
+      {
+        "code": "occurrence-endpoint-mismatch",
+        "severity": "error",
+        "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+        "message": "projected endpoint for role target fails check relation-target-hidden",
+        "refs": [
+          "occurrence:r",
+          "occurrence:flow"
+        ],
+        "details": {
+          "role": "target",
+          "check": "relation-target-hidden"
+        }
+      }
+    ],
+    "name": "relation-target-hidden",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/archimate-skeleton-document.json",
+      "sha256": "8395ccc32ac25ae1354271817a3358bfe6f96243ecdfe2e5ef45ae1f48683951"
+    }
+  },
+  {
+    "id": "case_7096bf5caf4ece090e4d14b5db3dcea68ffa7272d4e08cd982b061fc0b93a974",
+    "name": "ArchiMate folded relation-to-relation",
+    "sourcePin": {
+      "repository": "sent-tech-design-system",
+      "revision": "f6f3ba3790696754b6e08b13b62148ef3556bc4e",
+      "path": "packages/diagram-core/fixtures/valid/archimate-skeleton-document.json",
+      "sha256": "8395ccc32ac25ae1354271817a3358bfe6f96243ecdfe2e5ef45ae1f48683951"
+    },
+    "mutation": {
+      "entityMappings": {
+        "entity:actor": "business-actor",
+        "entity:process": "business-process",
+        "entity:component": "application-component"
+      },
+      "replaceEntities": {
+        "entity:junction": {
+          "id": "entity:junction",
+          "profile": "archimate@2",
+          "type": "grouping",
+          "attributes": {
+            "name": {
+              "kind": "text",
+              "value": "Claims grouping"
+            }
+          }
+        }
+      },
+      "replaceRelations": {
+        "relation:assignment": {
+          "id": "relation:assignment",
+          "profile": "archimate@2",
+          "type": "association",
+          "endpoints": [
+            {
+              "role": "source",
+              "target": "entity:junction"
+            },
+            {
+              "role": "target",
+              "target": "entity:actor"
+            }
+          ],
+          "attributes": {}
+        },
+        "relation:serving": {
+          "id": "relation:serving",
+          "profile": "archimate@2",
+          "type": "groupingContainment",
+          "endpoints": [
+            {
+              "role": "parent",
+              "target": "entity:junction"
+            },
+            {
+              "role": "child",
+              "target": "entity:actor"
+            }
+          ],
+          "attributes": {}
+        },
+        "relation:flow": {
+          "id": "relation:flow",
+          "profile": "archimate@2",
+          "type": "association",
+          "endpoints": [
+            {
+              "role": "source",
+              "target": "entity:component"
+            },
+            {
+              "role": "target",
+              "target": "relation:assignment"
+            }
+          ],
+          "attributes": {}
+        }
+      },
+      "sourceViewFragment": {
+        "entityOccurrences": {
+          "occurrence:Z": {
+            "id": "occurrence:Z",
+            "entity": "entity:junction",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 1000,
+              "height": 600
+            }
+          },
+          "occurrence:A1": {
+            "id": "occurrence:A1",
+            "entity": "entity:actor",
+            "geometry": {
+              "x": 40,
+              "y": 240,
+              "width": 460,
+              "height": 200
+            },
+            "group": "occurrence:Z"
+          },
+          "occurrence:EXT": {
+            "id": "occurrence:EXT",
+            "entity": "entity:component",
+            "geometry": {
+              "x": 1200,
+              "y": 240,
+              "width": 460,
+              "height": 200
+            }
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:r": {
+            "id": "occurrence:r",
+            "relation": "relation:flow",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:EXT"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:flow"
+              }
+            ]
+          },
+          "occurrence:flow": {
+            "id": "occurrence:flow",
+            "relation": "relation:assignment",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:Z"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:A1"
+              }
+            ],
+            "waypoints": [
+              {
+                "x": 500,
+                "y": 200
+              },
+              {
+                "x": 270,
+                "y": 240
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "occurrence:Z": {
+            "id": "occurrence:Z",
+            "occurrence": "occurrence:Z",
+            "collapsed": false
+          }
+        },
+        "filters": []
+      },
+      "collapsedOccurrenceIds": [
+        "occurrence:Z"
+      ]
+    },
+    "expectedProjection": {
+      "entityOccurrences": {
+        "occurrence:Z": {
+          "id": "occurrence:Z",
+          "entity": "entity:junction",
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1000,
+            "height": 600
+          }
+        },
+        "occurrence:A1": {
+          "id": "occurrence:A1",
+          "entity": "entity:actor",
+          "geometry": {
+            "x": 40,
+            "y": 240,
+            "width": 460,
+            "height": 200
+          },
+          "group": "occurrence:Z"
+        },
+        "occurrence:EXT": {
+          "id": "occurrence:EXT",
+          "entity": "entity:component",
+          "geometry": {
+            "x": 1200,
+            "y": 240,
+            "width": 460,
+            "height": 200
+          }
+        }
+      },
+      "relationOccurrences": {
+        "occurrence:r": {
+          "id": "occurrence:r",
+          "relation": "relation:flow",
+          "endpoints": [
+            {
+              "role": "source",
+              "occurrence": "occurrence:EXT"
+            },
+            {
+              "role": "target",
+              "occurrence": "occurrence:Z",
+              "semanticTarget": "relation:assignment",
+              "sourceOccurrence": "occurrence:flow"
+            }
+          ]
+        },
+        "occurrence:flow": {
+          "id": "occurrence:flow",
+          "relation": "relation:assignment",
+          "endpoints": [
+            {
+              "role": "source",
+              "occurrence": "occurrence:Z"
+            },
+            {
+              "role": "target",
+              "occurrence": "occurrence:A1"
+            }
+          ],
+          "waypoints": [
+            {
+              "x": 500,
+              "y": 200
+            },
+            {
+              "x": 270,
+              "y": 240
+            }
+          ]
+        }
+      },
+      "portOccurrences": {},
+      "groups": {
+        "occurrence:Z": {
+          "id": "occurrence:Z",
+          "occurrence": "occurrence:Z",
+          "collapsed": true
+        }
+      },
+      "filters": []
+    },
+    "expectedScene": {
+      "groupCollapsed": [
+        "occurrence:A1"
+      ],
+      "endpointHidden": [
+        "occurrence:flow"
+      ],
+      "drawnRelations": [
+        "occurrence:r"
+      ]
+    },
+    "expectedUnfoldedRelationOccurrences": {
+      "occurrence:r": {
+        "id": "occurrence:r",
+        "relation": "relation:flow",
+        "endpoints": [
+          {
+            "role": "source",
+            "occurrence": "occurrence:EXT"
+          },
+          {
+            "role": "target",
+            "occurrence": "occurrence:flow"
+          }
+        ]
+      },
+      "occurrence:flow": {
+        "id": "occurrence:flow",
+        "relation": "relation:assignment",
+        "endpoints": [
+          {
+            "role": "source",
+            "occurrence": "occurrence:Z"
+          },
+          {
+            "role": "target",
+            "occurrence": "occurrence:A1"
+          }
+        ],
+        "waypoints": [
+          {
+            "x": 500,
+            "y": 200
+          },
+          {
+            "x": 270,
+            "y": 240
+          }
+        ]
+      }
+    },
+    "expectedRevision": 1,
+    "expected": [],
+    "variants": [
+      {
+        "name": "missing relation occurrence provenance",
+        "mutation": {
+          "path": "relationOccurrences.occurrence:r.endpoints[1].sourceOccurrence",
+          "operation": "remove"
+        },
+        "expected": [
+          {
+            "code": "occurrence-endpoint-mismatch",
+            "severity": "error",
+            "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+            "message": "projected endpoint for role target fails check provenance-missing",
+            "refs": [
+              "occurrence:r",
+              "occurrence:Z"
+            ],
+            "details": {
+              "role": "target",
+              "check": "provenance-missing"
+            }
+          }
+        ]
+      },
+      {
+        "name": "different relation occurrence provenance",
+        "mutation": {
+          "path": "relationOccurrences.occurrence:r.endpoints[1].sourceOccurrence",
+          "value": "occurrence:r"
+        },
+        "expected": [
+          {
+            "code": "occurrence-endpoint-mismatch",
+            "severity": "error",
+            "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+            "message": "projected endpoint for role target fails check provenance-mismatch",
+            "refs": [
+              "occurrence:r",
+              "occurrence:Z"
+            ],
+            "details": {
+              "role": "target",
+              "check": "provenance-mismatch"
+            }
+          }
+        ]
+      },
+      {
+        "name": "stale relation target projection after unfold",
+        "mutation": {
+          "path": "groups.occurrence:Z.collapsed",
+          "value": false
+        },
+        "expected": [
+          {
+            "code": "occurrence-endpoint-mismatch",
+            "severity": "error",
+            "path": "relationOccurrences.occurrence:r.endpoints[1].occurrence",
+            "message": "projected endpoint for role target fails check projection-not-folded",
+            "refs": [
+              "occurrence:r",
+              "occurrence:Z"
+            ],
+            "details": {
+              "role": "target",
+              "check": "projection-not-folded"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+~~~
+
+### C.7 Layout warning shape
+
+card-overflow/zone-overflow carry the exact MeasurementOverflow of §4.6.4 (occurrence,slot,neededHeight,allocatedHeight,lines,allocatedLines). docking-overflow is
+{code:"docking-overflow",refs:[occurrenceId],message:"side <side> of <occurrenceId> needs <required> docks, fits <fitted>",details:{side,required,fitted}},
+where side is north/east/south/west and counts are non-negative integers. These warnings never become semantic refusal codes. Unknown-icon render results use card-icon-unknown/zone-icon-unknown and retain the unresolved name; no view semantic failure is fabricated.
 
 
+## Appendix D — Oracle replay and evidence boundaries
 
+Source identity is the exact repository revision plus path and raw SHA-256, or the explicitly content-addressed snapshot plus its path/hash. A frozen path whose bytes drift fails as fixture error; it is never overwritten with a live producer value. Unverified metadata belongs to §11.2, not a fake Digest field.
 
+The derived oracle is the literal JSON of §8.7, with its canonical projection digests. Corpus publication packages those values, the matrix source/transcription and rejected-case oracles together; it does not leave mappings/folds/hints/expected diagnostics to an implementation author's later interpretation. Its producer executes the library gates, records exact library/version/selection, and submits the resulting receipts to G0. Fixture expectations and source hashes do not count as receipts.
+
+Replay order:
+1. Resolve local source/corpus/profile/contract pins and compare exact bytes before any assertion.
+2. Validate semantic families in their own resolved contexts, with @1 legacy behaviour preserved and @2 shared mechanisms explicitly selected.
+3. Validate/apply the typed presentation join, including semantic category references and native view field closure.
+4. Project from retained source occurrences; resolve summary candidates and active-key uniqueness; measure/place/route; validate the emitted view.
+5. Compare per-type/containment/link counts, per-occurrence styles, exact authored field values/summary sets and stated diagnostic arrays.
+6. Only an executing library may produce qualification/admission receipts, with all G0 proof obligations. This authoring task performs a final document consistency calculation only.
+
+A blank expected diagnostic array is an oracle assertion, not a success claim. A missing qualified executor/registry/carrier implementation/adapter/receipt remains unverified under its named owner. No fallback to latest, consumer patch or skipped required case is part of this contract.
+
+## Appendix E — Final consistency pass (2026-10-27)
+
+The preceding author round recorded the document consistency calculations below: all 86 §8.5 hash rows, 3,844 XML matrix cells, frozen order references, separate G0 preimages and diagnostic field paths. Those unchanged calculations are retained as prior author evidence, not claimed as re-executed in the owner's targeted extra round. That extra round aligns only the relation-target carrier, fold provenance and worked fixture, updates the affected rows, parses the five fenced JSON artifacts with Node and calculates the added fixture identity from pinned source bytes and its canonical mutation. Source observations and unresolved qualification remain separate (§11.2). No implementation validator or independent assessment is run or claimed.
+
+| Checked identity / field / code / digest | Canonical correspondence / calculation | Result |
+| --- | --- | --- |
+| Frozen hint references | A2–A4b: 71 parent lists, 207 direct-child references; every id resolves in the pinned scene and has the named parent; no duplicate membership or child-object coercion | consistent |
+| Completed ArchiMate declarations | A.4: 62 native type declarations (61 concrete + abstract element), 12 relation declarations, 3 constraints; 1,047,531 P-CONTENT bytes; 1ffa38c1169b43d932b7c6d69cea24b52dd753f0f4e14eb43f6e83746cce1189 | consistent draft data; qualification unverified |
+| Completed UML declarations | A.4: 7 named schemas (6 entity kinds + identity-abstract multiplicity), 4 relations, 6 constraints; 5,068 P-CONTENT bytes; d7da59f277c0f4216a32c201dacdb837270e687ef5d8b1838f00f083e14f9e96 | consistent draft data; qualification unverified |
+| Relation endpoint carrier | EndpointTargetKind entity/port/relation; RelationEndpoint.target and RelationOccurrenceEndpoint.semanticTarget use EntityRef/PortRef/RelationRef. Provenance resolves entity/port/relation directly; a visible relation target retains its occurrence, an internal one uses its canonical collapsed container and original RelationRef/sourceOccurrence. Matrix @relation is never an entity type. | §§3.9.1/4.4/5.2/A.1/A.4/B.7/C.4/C.6 aligned; execution unverified |
+| ArchiMate folded relation target | B.7/C.6 case_7096bf5caf4ece090e4d14b5db3dcea68ffa7272d4e08cd982b061fc0b93a974 derives from the existing pinned ArchiMate source and canonical mutation. Folded target = occurrence:Z / relation:assignment / occurrence:flow; positive diagnostics []; exact source restoration; three negative variants each expect one existing projection diagnostic. Internal records remain unchanged; no graph drawing field. | Authored projection/diagnostic oracle; case identity calculated, executor qualification unverified |
+| Full matrix case count | 62×62×11=42,284; 11,569 positive tuples (126 involving @relation), 30,715 absent-tuple rejections; source XML rows/cells reproduced exactly | consistent |
+| Presentation pin equalities | input.contractPin = sourceView.presentation.diagram.contractPin = resolved contract; input.adapterPin = contract catalog ontology.compatibility.adapter; adapter schema binding = artifactBinding.schemaPin | §§3.2.1/7.4/C.3 agree |
+| Precise presentation paths | Five C.3 mutation paths equal the respective expected Diagnostic.path; adapter mismatch separately names input.adapterPin | consistent |
+| G0 specimen artifact byte hashes | Corpus 3d4c6b6bc655d028bc7467f7278c5dac3c913e8b298f2ad756fbc78c173701d8; six embedded byte strings independently hashed; seven distinct digest values total | consistent |
+| G0 specimen asset byte hashes | Base ffcf89f3c1ab72bbbf6262f421745bd03fc16b4767bdbc5092c2ce8496bf9760; layer fd8b9a9ab48fcf94f955bf65c06164e470a63ddb17fc1a68c919f145ea931417; each hashes full declaration JCS bytes | consistent |
+| G0 specimen external entryDigest | Base 500d7242b900d4559ffd2291ea69498fcfda3415738958b3c8d62e0927a9349d; stack 5544190fd969998f25dc384d910565c2c98b73051f372bce3d39b96521965142; each hashes its own closed envelope | consistent |
+| Derived oracle | 08cae540e5535727fc1f4b7bba3aa12d84908790b6c918dc263b65560ab4f2de | consistent |
+| Category token map | a77e2a62ddd6d576f06005969361ee15c241789fe8a571e6195dfb5c2782b3bf | consistent |
+| Ten A1 summaries | e363601a0c116197a471a599e92dc94da16147f0e7e78346c1ab7c7df9a49018 | consistent |
+| A5 full field ledger | 527a0b18c1afee9e71591d6c2e3ef8d68294c89d5f0e593527b31a47b207a2b8 | consistent |
+| Semantic/presentation field separation | 56 semantic entities / 56 occurrence presentations; graph has no icon/token/stroke/order | consistent |
+| A1 counts and initial folds | 28 cards / 10 frames / 50 links; five initial folds | consistent |
+| 600/240 source workload | 240+32+80+4+4+240=600, of which stress=240 | consistent |
+| ArchiMate pair matrix | a13f4112164afd177923a67b424d4c9b6ee57c1b993c4d11c94d5227385267f9 | consistent |
+| ArchiMate catalogue | 114cdca0c1e538f9cedf09613f415a6464bc9f4f54471c62ecfafcf6fede916e | consistent |
+| G0 frozen vectors | 186 / 206 / 86 / 320 bytes; all four hashes | consistent |
+| Additional case identities | Ten case_ ids use SHA-256 of pinned raw fixture bytes, newline and canonical mutation; nine retain their prior calculations, the B.7 case is calculated in the targeted extra round. sourcePin hashes match §8.5; descriptive names are not nominal entity/profile ids. | Existing identities retained; added identity calculated |
+| Diagnostic inventory | 50 native + 17 additions, including quantity-above-max; C.6 has 58 top-level case records / 55 primary diagnostic objects, plus 3 diagnostic objects in the B.7 case's isolated variants (58 diagnostic objects total). No new code or legacy message/order change. | JSON counts calculated; expected outcomes only |
+| Legacy fields/order | Native .target path; no new seenChain/global sort; no legacy scope | consistent |
+| G0 closed mapping specimens | Mirrored namespace/owner/digests/lineage; base evidence arm; no self-parent; seven distinct embedded artifact byte sources, two defined asset byte sources, recomputed P-CONTENT/P-PINS/P-RESULT/P-ENTRY | consistent |
+| Source pin repetition | 86 hash rows in §8.5 (52 + 12 + 16 + 6); 85 distinct source identities because canonical.ts appears twice; frozen/producer HRPN rows use the same immutable commit but distinct paths/hashes | consistent |
+| Profile identity/migration | Distinct @2 ProfileIds; @1 immutable; migrations explicit; architecture@1 withdrawn | consistent |
+| BPMN c14n/admission | Sealed JCS/stable-id; 610c0353; parity plus bijection | consistent |
+| Summary projection/example | Occurrence/style-specific membership and active-key refusal; literal worked example | consistent |
+| Open evidence assigned | Every unverified dependency has an owner/gate | consistent |
+| Wording/placeholders | Literal diagnostic contracts; prohibited word absent | consistent |
+| Semantic profile ids | generic@1 / generic@2; archimate@1 / archimate@2; bpmn@1 / bpmn@2; bpmndi@1, dc@1, di@1, bioc@1, color@1, sem@1; uml@1 / uml@2. @1 means retained source; @2 means replacement/generated target throughout §§1–11. | Identical spellings and roles |
+| Withdrawn id | architecture@1 occurs only as withdrawn history/prohibition; no registry or migration target. | Identical disposition |
+| Non-profile ids | diagram-presentation@1 = G0 contract; executor-profile-bindings@1 = bound contract asset; legacy-constraints@1/scoped-constraints@1 = adapter identities. None is a SemanticDocument profileRef or extra semantic stack layer. | Roles separated |
+| Fixture-only ids | specimen-base@1, specimen-layer@1, synthetic@2; fixture adapter@1/executor@1/g0-conflicts@1 references appear only in isolated serialization/diagnostic oracles. They are not production lookup evidence. | Scope explicit |
+| Native view additions | RelationOccurrenceEndpoint.semanticTarget?: EntityRef/PortRef/RelationRef and sourceOccurrence?: OccurrenceRef; both occurrence fields resolve all three existing occurrence maps. RelationOccurrence.strokeStyle; VisualGroup.occurrence; ViewDocument.summaryLabels; PresentationState.diagram. Only summaryLabels changes VIEW_DOCUMENT_FIELDS; bounded relation fold witnesses add no persisted field or semantic parent. | §§2.2/3.2/3.9.1/4.4/5.6/B.7/C.4/C.6 aligned |
+| DiagramPresentation fields | contractPin, entities, legends, categoryTokens. EntityPresentation={form,text,icon?,categoryRef?}; PresentationText={title?,kicker?,body?,detail?,subtitle?,footer?}; LegendPresentation={order}; CategoryTokenBinding={legendRef,category,token}. | Same names in contract/oracle |
+| Semantic versus drawing fields | Semantic name/category/description and existing domain attributes remain graph data. icon/token/strokeStyle/order/footprint/collapsed and standard card roles remain typed view/contract data; domain BPMN body text is not prohibited by a drawing-field name scan. | Carrier boundary unchanged across sections |
+| SummaryDefinition fields | id, sourceOccurrence, targetOccurrence, label, relationIds, strokeStyle?, relationOccurrences?. Definition and activation use the same style/occurrence scope; active key uses projected representatives. | §4.5/App. B/App. C agree |
+| Measurement fields | MeasureRequest text/role/availableWidth/allocatedLines/folded; LineLayout lines/width/height/overflow; EntityMeasurementInput entity/occurrence/effectiveType/folded/toggle/slots/availableWidth/allocatedLines; HeaderMeasurement occurrence/kicker?/title/subtitle?/height/overflow; SlotMeasurement occurrence/role/layout. | §4.6 API is the shared layout/render input |
+| Footprints / overflow | FootprintDecl width/height/fixedAxes; MeasurementOverflow occurrence/slot/neededHeight/allocatedHeight/lines/allocatedLines. Card 460×200, fixedAxes both; key height 64, fixedAxes height; expanded computed. Applies to selected synthesis forms, preserving native DI. | §§1.4/4.6/4.8/App. C agree |
+| Recursive hint fields | LayoutGroup id/direction/items/stretch?/gapAfter?; LayoutHints ordering?/grouping?/stretch?/cardGapX?/cardGapY?/zoneGapX?/zoneGapY?/rankGap?. Ordered items preserve PPROZ interleaving; no duplicate members/groups authority. | §4.7 and A5 oracle agree |
+| G0 identity/digest fields | Pin={id,version,contentDigest}; digests={contentDigest,pinsDigest,resultEvidence}; DigestEvidence is resolved+digest or unresolved without digest. profileRef={canonicalRef,contentDigest}; corpusRef={ref,digest}. | Exact names/shapes reused |
+| G0 lineage fields | PublicLineage parents/derivation?/mappings/migrations; PrivateLineage parents/derivationRef?/mappings/migrations; PrivateDerivationRef base/deltaDigest/mappingRef?; PrivateDerivationRecord adds resultingDigests from the same enclosing digests. | §7.4 specimens/source mapping agree |
+| G0 closed envelope mappings | namespace/owner mirrored; profilePin and record profileRef.contentDigest agree; assets role/path/mediaType/sha256; bindings key/contract/required; provenance sourceRef/sourceRevision only; compatibility renderer/adapter strings. No declarationFormat field or extra adjacent adapter pin. | Closed shapes preserved |
+| G0 artifactBinding arms | base includes basePin+bijectionEvidence (also non-BPMN); profile includes profilePin+stack; contract includes schemaPin+compatibilityMatrixVersion; theme includes themeDigest+appliesTo; mechanism/corpus keep their exact G0 arms. | §7.4 source/specimens agree |
+| G0 receipt proof fields | evaluatedStack stack/pinsDigest/resultEvidence; bpmn-parity proofBindings only; bpmn-bijection descriptorCoverage/roundTripEvidenceRef/moddleTestPin; family-corpus family/fixtureDigest; contract-verdict schemaPin/compatibilityMatrixVersion/caseVerdicts; severityPolicyDigest explicit for each arm as specified. | Proof sets/roles never merged |
+| UML multiplicity fields | K6 kind/type/fields; lower and upper quantities in unit; integer bounds and max 9007199254740991; upper=-1 only unbounded sentinel. Same carrier on property and association ends, schema declaration in A.4. | §3.11/App. A.2/App. A.4/App. C agree |
+| Native diagnostic fields | code/severity/path/message/refs?/details? preserved; new details are scalar. Appendix C enumerates 50 unchanged native codes + 17 additions and all changed arms. Native endpoint path ends in .target. | No placeholder or new legacy field |
+| Source versus application digests | Raw source SHA-256, G0 contentDigest/pinsDigest/resultEvidence, external entryDigest, presentationDigest and the explicit derived-oracle projection digests keep distinct names/preimages. | No digest substitution |
+| Known incomplete evidence | U-ID, U-AM, U-AM-ENDPOINT, U-KERNEL, U-DIAG, U-D2D-MAP, U-HISTORY, U-THEME, U-QUAL, U-INTERACTION are all explicitly unverified with named owners. Consistency does not resolve them. | No false qualification claim |
+
+The file's final SHA-256 is calculated externally after this table is written. It is not self-embedded.
 
