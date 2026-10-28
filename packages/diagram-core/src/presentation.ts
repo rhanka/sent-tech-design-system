@@ -56,6 +56,36 @@ export interface DiagramPresentation {
   readonly categoryTokens: readonly CategoryTokenBinding[];
 }
 
+function deepCloneValue<T>(value: T): T {
+  if (value === null || typeof value !== "object") return value;
+  if (Array.isArray(value)) {
+    return (value as readonly unknown[]).map((item) => deepCloneValue(item)) as unknown as T;
+  }
+  const source = value as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const key of Object.keys(source)) {
+    out[key] = deepCloneValue(source[key]);
+  }
+  return out as unknown as T;
+}
+
+function deepFreezeValue<T>(value: T): T {
+  if (value === null || typeof value !== "object") return value;
+  if (Object.isFrozen(value)) return value;
+  const target = value as Record<string, unknown>;
+  for (const key of Object.keys(target)) {
+    const child = target[key];
+    if (child !== null && typeof child === "object") {
+      deepFreezeValue(child);
+    }
+  }
+  return Object.freeze(value);
+}
+
+function frozenCopy<T>(value: T): T {
+  return deepFreezeValue(deepCloneValue(value));
+}
+
 const KEY_GRAMMAR = { type: "string", minLength: 1, maxLength: 40, pattern: "^[a-z][a-z0-9-]*$" };
 const TOKEN_GRAMMAR = {
   type: "string",
@@ -138,51 +168,66 @@ const DIAGRAM_VALUE_PROPERTIES = {
 
 const DIAGRAM_VALUE_REQUIRED = ["contractPin", "entities", "legends", "categoryTokens"];
 
-export const DIAGRAM_PRESENTATION_SCHEMA: Record<string, unknown> = {
+const PRIVATE_PRESENTATION_SCHEMA: Record<string, unknown> = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   $id: "engram:diagram-presentation-schema/1",
   title: "diagram-presentation@1 contract",
   type: "object",
   properties: DIAGRAM_VALUE_PROPERTIES,
-  required: DIAGRAM_VALUE_REQUIRED,
+  required: [...DIAGRAM_VALUE_REQUIRED],
   additionalProperties: false,
 };
+deepFreezeValue(PRIVATE_PRESENTATION_SCHEMA);
 
-export const DIAGRAM_PRESENTATION_SCHEMA_DIGEST: string = sha256Hex(canonicalBytes(DIAGRAM_PRESENTATION_SCHEMA));
+export const DIAGRAM_PRESENTATION_SCHEMA: Record<string, unknown> = frozenCopy(PRIVATE_PRESENTATION_SCHEMA);
 
-export const DIAGRAM_PRESENTATION_SCHEMA_PIN: PresentationPin = {
+export const DIAGRAM_PRESENTATION_SCHEMA_DIGEST: string = sha256Hex(canonicalBytes(PRIVATE_PRESENTATION_SCHEMA));
+
+const PRIVATE_PRESENTATION_SCHEMA_PIN: PresentationPin = {
   id: "diagram-presentation-schema",
   version: "1",
   contentDigest: DIAGRAM_PRESENTATION_SCHEMA_DIGEST,
 };
+deepFreezeValue(PRIVATE_PRESENTATION_SCHEMA_PIN);
+
+export const DIAGRAM_PRESENTATION_SCHEMA_PIN: PresentationPin = frozenCopy(PRIVATE_PRESENTATION_SCHEMA_PIN);
 
 export const DIAGRAM_PRESENTATION_CONTRACT_ID = "diagram-presentation@1" as const;
 export const DIAGRAM_PRESENTATION_PROFILE_SHAPE = "mechanism-descriptor" as const;
 export const DIAGRAM_PRESENTATION_ARTIFACT_KIND = "contract" as const;
 export const DIAGRAM_PRESENTATION_COMPAT_VERSION = "1" as const;
 
-export const DIAGRAM_PRESENTATION_CONTRACT_DESCRIPTOR = {
+const PRIVATE_CONTRACT_DESCRIPTOR = {
   id: DIAGRAM_PRESENTATION_CONTRACT_ID,
   artifactKind: DIAGRAM_PRESENTATION_ARTIFACT_KIND,
-  schemaPin: { ...DIAGRAM_PRESENTATION_SCHEMA_PIN },
+  schemaPin: { ...PRIVATE_PRESENTATION_SCHEMA_PIN },
   compatibilityMatrixVersion: DIAGRAM_PRESENTATION_COMPAT_VERSION,
-} as const;
+};
+deepFreezeValue(PRIVATE_CONTRACT_DESCRIPTOR);
+
+export const DIAGRAM_PRESENTATION_CONTRACT_DESCRIPTOR = frozenCopy(PRIVATE_CONTRACT_DESCRIPTOR);
 
 export const DIAGRAM_PRESENTATION_CONTRACT_CONTENT: string = sha256Hex(
-  canonicalBytes({ ...DIAGRAM_PRESENTATION_CONTRACT_DESCRIPTOR }),
+  canonicalBytes(PRIVATE_CONTRACT_DESCRIPTOR),
 );
 
-export const DIAGRAM_PRESENTATION_CONTRACT_PIN: PresentationPin = {
+const PRIVATE_CONTRACT_PIN: PresentationPin = {
   id: "diagram-presentation",
   version: "1",
   contentDigest: DIAGRAM_PRESENTATION_CONTRACT_CONTENT,
 };
+deepFreezeValue(PRIVATE_CONTRACT_PIN);
 
-export const DIAGRAM_PRESENTATION_BINDING = {
+export const DIAGRAM_PRESENTATION_CONTRACT_PIN: PresentationPin = frozenCopy(PRIVATE_CONTRACT_PIN);
+
+const PRIVATE_BINDING = {
   artifactKind: "contract" as const,
-  schemaPin: { ...DIAGRAM_PRESENTATION_SCHEMA_PIN },
+  schemaPin: { ...PRIVATE_PRESENTATION_SCHEMA_PIN },
   compatibilityMatrixVersion: "1" as const,
 };
+deepFreezeValue(PRIVATE_BINDING);
+
+export const DIAGRAM_PRESENTATION_BINDING = frozenCopy(PRIVATE_BINDING);
 
 /** Governed lot corpus reference, transcribed from Engram (U-ID/U-QUAL). */
 export const DIAGRAM_PRESENTATION_CORPUS_REF = "engram:diagram-lot-corpus/1" as const;
@@ -208,9 +253,9 @@ function pinsDigestForLayers(layers: readonly PresentationPin[]): string {
   );
 }
 
-export const DIAGRAM_PRESENTATION_PINS_DIGEST: string = pinsDigestForLayers([DIAGRAM_PRESENTATION_CONTRACT_PIN]);
+export const DIAGRAM_PRESENTATION_PINS_DIGEST: string = pinsDigestForLayers([PRIVATE_CONTRACT_PIN]);
 
-export const DIAGRAM_PRESENTATION_RECORD = {
+const PRIVATE_RECORD = {
   namespace: "diagram",
   id: "diagram-presentation",
   version: "1",
@@ -236,12 +281,18 @@ export const DIAGRAM_PRESENTATION_RECORD = {
   lineage: { parents: [], mappings: [], migrations: [] },
   consumers: [],
 } as const;
+deepFreezeValue(PRIVATE_RECORD);
+
+export const DIAGRAM_PRESENTATION_RECORD = frozenCopy(PRIVATE_RECORD);
 
 /** Transitional executor/adapter refs, as governed by Engram (U-QUAL). */
-export const DIAGRAM_PRESENTATION_COMPATIBILITY = {
+const PRIVATE_COMPATIBILITY = {
   renderer: "transitional:ds-diagram-core-executor-unqualified",
   adapter: "transitional:ds-schema-adapter-unqualified",
 } as const;
+deepFreezeValue(PRIVATE_COMPATIBILITY);
+
+export const DIAGRAM_PRESENTATION_COMPATIBILITY = frozenCopy(PRIVATE_COMPATIBILITY);
 
 /**
  * Resolved contract catalog entry used by application authentication.
@@ -256,11 +307,16 @@ export interface PresentationContractCatalog {
   readonly schemaPin: PresentationPin;
 }
 
-export const DIAGRAM_PRESENTATION_PACKAGED_CATALOG: PresentationContractCatalog = {
-  compatibilityAdapter: DIAGRAM_PRESENTATION_COMPATIBILITY.adapter,
+const PRIVATE_PACKAGED_CATALOG_SNAPSHOT: PresentationContractCatalog = {
+  compatibilityAdapter: PRIVATE_COMPATIBILITY.adapter,
   adapterBytes: undefined,
-  schemaPin: { ...DIAGRAM_PRESENTATION_SCHEMA_PIN },
+  schemaPin: { ...PRIVATE_PRESENTATION_SCHEMA_PIN },
 };
+deepFreezeValue(PRIVATE_PACKAGED_CATALOG_SNAPSHOT);
+
+export const DIAGRAM_PRESENTATION_PACKAGED_CATALOG: PresentationContractCatalog = frozenCopy(
+  PRIVATE_PACKAGED_CATALOG_SNAPSHOT,
+);
 
 /** Parse an exact pinned adapter reference `id@version#sha256=<digest>`. */
 export function parsePinnedAdapterReference(ref: string): PresentationPin | undefined {
@@ -282,9 +338,17 @@ export function isPresentationContractProfileId(id: string): boolean {
 
 export function isPresentationContractPin(pin: PresentationPin): boolean {
   return (
-    pin.id === DIAGRAM_PRESENTATION_CONTRACT_PIN.id &&
-    pin.version === DIAGRAM_PRESENTATION_CONTRACT_PIN.version &&
-    pin.contentDigest === DIAGRAM_PRESENTATION_CONTRACT_PIN.contentDigest
+    pin.id === PRIVATE_CONTRACT_PIN.id &&
+    pin.version === PRIVATE_CONTRACT_PIN.version &&
+    pin.contentDigest === PRIVATE_CONTRACT_PIN.contentDigest
+  );
+}
+
+export function isPresentationSchemaPin(pin: PresentationPin): boolean {
+  return (
+    pin.id === PRIVATE_PRESENTATION_SCHEMA_PIN.id &&
+    pin.version === PRIVATE_PRESENTATION_SCHEMA_PIN.version &&
+    pin.contentDigest === PRIVATE_PRESENTATION_SCHEMA_PIN.contentDigest
   );
 }
 
