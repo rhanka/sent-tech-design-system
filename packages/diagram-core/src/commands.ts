@@ -1193,7 +1193,7 @@ function applyOne(state: DiagramState, command: Command, index: number, options:
         applied: {
           state: { document, views: withKey(state.views, command.view, projected) },
           effects: [],
-          inverse: [replaceViewInverse(command.view, previous, false)],
+          inverse: [replaceViewInverse(command.view, previous, command.internalRestore === true)],
           touchedViews: [command.view],
         },
       };
