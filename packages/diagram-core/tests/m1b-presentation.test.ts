@@ -155,7 +155,7 @@ describe("M1-b P-GEN witness", () => {
     const mod = (await import("../src/index.js")) as unknown as {
       applyPresentation: (input: unknown, options: unknown) => unknown;
       DIAGRAM_PRESENTATION_CONTRACT_PIN: { id: string; version: string; contentDigest: string };
-      DIAGRAM_PRESENTATION_ADAPTER_PIN: { id: string; version: string; contentDigest: string };
+      DIAGRAM_PRESENTATION_SCHEMA_PIN: { id: string; version: string; contentDigest: string };
       familyPinForProfile: (profile: unknown) => { id: string; version: string; contentDigest: string };
     };
     const document = validGeneric2Document();
@@ -223,15 +223,29 @@ describe("M1-b P-GEN witness", () => {
       },
     };
     const familyPin = mod.familyPinForProfile(generic2Profile);
+    const adapterBytes = "export const testPresentationAdapter = \"adapter\";\n";
+    const adapterPin = {
+      id: "test-presentation-adapter",
+      version: "1",
+      contentDigest: sha256Hex(adapterBytes),
+    };
+    const catalog = {
+      compatibilityAdapter: `${adapterPin.id}@${adapterPin.version}#sha256=${adapterPin.contentDigest}`,
+      adapterBytes,
+      schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
+    };
     const input = {
       familyPins: [familyPin],
       semanticDocument: doc2,
       sourceView,
       contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
       semanticCategoryPins: [],
-      adapterPin: mod.DIAGRAM_PRESENTATION_ADAPTER_PIN,
+      adapterPin,
     };
-    const out = mod.applyPresentation(input, scopedOptions([generic2Profile])) as
+    const out = mod.applyPresentation(
+      input,
+      { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
+    ) as
       | { outcome: "ok"; view: unknown; presentationDigest: string; diagnostics: readonly unknown[] }
       | { outcome: "refused"; diagnostics: readonly unknown[] };
     expect(out.outcome).toBe("ok");
@@ -249,7 +263,7 @@ describe("M1-b P-GEN witness", () => {
     const mod = (await import("../src/index.js")) as unknown as {
       applyPresentation: (input: never, options: never) => { outcome: string; presentationDigest?: string };
       DIAGRAM_PRESENTATION_CONTRACT_PIN: { id: string; version: string; contentDigest: string };
-      DIAGRAM_PRESENTATION_ADAPTER_PIN: { id: string; version: string; contentDigest: string };
+      DIAGRAM_PRESENTATION_SCHEMA_PIN: { id: string; version: string; contentDigest: string };
       familyPinForProfile: (profile: unknown) => { id: string; version: string; contentDigest: string };
     };
     const document = validGeneric2Document();
@@ -299,6 +313,17 @@ describe("M1-b P-GEN witness", () => {
       presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram },
     });
     const familyPin = mod.familyPinForProfile(generic2Profile);
+    const adapterBytes = "export const testPresentationAdapter = \"adapter\";\n";
+    const adapterPin = {
+      id: "test-presentation-adapter",
+      version: "1",
+      contentDigest: sha256Hex(adapterBytes),
+    };
+    const catalog = {
+      compatibilityAdapter: `${adapterPin.id}@${adapterPin.version}#sha256=${adapterPin.contentDigest}`,
+      adapterBytes,
+      schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
+    };
     const run = (diagram: unknown) =>
       mod.applyPresentation(
         {
@@ -307,9 +332,9 @@ describe("M1-b P-GEN witness", () => {
           sourceView: viewFor(diagram),
           contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
           semanticCategoryPins: [],
-          adapterPin: mod.DIAGRAM_PRESENTATION_ADAPTER_PIN,
+          adapterPin,
         } as never,
-        scopedOptions([generic2Profile]) as never,
+        { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
       ) as { outcome: string; presentationDigest: string };
     const before = canonicalBytes(doc2);
     const first = run(baseDiagram);
@@ -462,7 +487,7 @@ describe("M1-b view validation", () => {
   it("refuses duplicate category bindings with token-binding-conflict and no output", async () => {
     const mod = (await import("../src/index.js")) as unknown as {
       DIAGRAM_PRESENTATION_CONTRACT_PIN: { id: string; version: string; contentDigest: string };
-      DIAGRAM_PRESENTATION_ADAPTER_PIN: { id: string; version: string; contentDigest: string };
+      DIAGRAM_PRESENTATION_SCHEMA_PIN: { id: string; version: string; contentDigest: string };
       familyPinForProfile: (profile: unknown) => { id: string; version: string; contentDigest: string };
       applyPresentation: (input: unknown, options: unknown) => unknown;
     };
@@ -515,6 +540,17 @@ describe("M1-b view validation", () => {
         details: { check: "token-binding-conflict" },
       },
     ]);
+    const adapterBytes = "export const testPresentationAdapter = \"adapter\";\n";
+    const adapterPin = {
+      id: "test-presentation-adapter",
+      version: "1",
+      contentDigest: sha256Hex(adapterBytes),
+    };
+    const catalog = {
+      compatibilityAdapter: `${adapterPin.id}@${adapterPin.version}#sha256=${adapterPin.contentDigest}`,
+      adapterBytes,
+      schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
+    };
     const out = mod.applyPresentation(
       {
         familyPins: [mod.familyPinForProfile(generic2Profile)],
@@ -522,9 +558,9 @@ describe("M1-b view validation", () => {
         sourceView: view,
         contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
         semanticCategoryPins: [],
-        adapterPin: mod.DIAGRAM_PRESENTATION_ADAPTER_PIN,
+        adapterPin,
       },
-      scopedOptions([generic2Profile]),
+      { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
     ) as { outcome: string; view?: unknown; diagnostics: readonly unknown[] };
     expect(out.outcome).toBe("refused");
     expect("view" in out).toBe(false);

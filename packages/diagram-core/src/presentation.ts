@@ -184,6 +184,32 @@ export const DIAGRAM_PRESENTATION_BINDING = {
   compatibilityMatrixVersion: "1" as const,
 };
 
+/** Governed lot corpus reference, transcribed from Engram (U-ID/U-QUAL). */
+export const DIAGRAM_PRESENTATION_CORPUS_REF = "engram:diagram-lot-corpus/1" as const;
+/**
+ * Governed lot corpus digest over the eight pinned fixture rows of
+ * Engram 636fa9d6 diagram-registry.ts LOT_CORPUS_FIXTURES.
+ */
+export const DIAGRAM_PRESENTATION_CORPUS_DIGEST =
+  "e946288de536075611c25e7b5e6078ea3def433b66d7a6ea60c1eb20cfebcf6e" as const;
+
+function pinsDigestForLayers(layers: readonly PresentationPin[]): string {
+  return sha256Hex(
+    canonicalBytes({
+      deltaDigest: null,
+      layers: layers.map((pin) => ({
+        contentDigest: pin.contentDigest,
+        id: pin.id,
+        version: pin.version,
+      })),
+      mappingDigest: null,
+      ruleSheets: [],
+    }),
+  );
+}
+
+export const DIAGRAM_PRESENTATION_PINS_DIGEST: string = pinsDigestForLayers([DIAGRAM_PRESENTATION_CONTRACT_PIN]);
+
 export const DIAGRAM_PRESENTATION_RECORD = {
   namespace: "diagram",
   id: "diagram-presentation",
@@ -198,8 +224,14 @@ export const DIAGRAM_PRESENTATION_RECORD = {
     canonicalRef: "engram:diagram-presentation@1",
     contentDigest: DIAGRAM_PRESENTATION_CONTRACT_CONTENT,
   },
+  corpusRef: {
+    ref: DIAGRAM_PRESENTATION_CORPUS_REF,
+    digest: DIAGRAM_PRESENTATION_CORPUS_DIGEST,
+  },
   digests: {
     contentDigest: DIAGRAM_PRESENTATION_CONTRACT_CONTENT,
+    pinsDigest: DIAGRAM_PRESENTATION_PINS_DIGEST,
+    resultEvidence: { evidenceState: "unresolved" },
   },
   lineage: { parents: [], mappings: [], migrations: [] },
   consumers: [],
@@ -211,19 +243,35 @@ export const DIAGRAM_PRESENTATION_COMPATIBILITY = {
   adapter: "transitional:ds-schema-adapter-unqualified",
 } as const;
 
-function adapterDigestFor(id: string, version: string): string {
-  return sha256Hex(canonicalBytes({ id, version }));
+/**
+ * Resolved contract catalog entry used by application authentication.
+ * The packaged entry carries the governed transitional adapter reference,
+ * which is not a pinned reference, so application refuses while
+ * qualification stays unresolved. Tests supply their own entry with a
+ * real pinned adapter over actual bytes.
+ */
+export interface PresentationContractCatalog {
+  readonly compatibilityAdapter: string;
+  readonly adapterBytes: string | undefined;
+  readonly schemaPin: PresentationPin;
 }
 
-export const DIAGRAM_PRESENTATION_ADAPTER_PIN: PresentationPin = {
-  id: "ds-presentation-adapter",
-  version: "1",
-  contentDigest: adapterDigestFor("ds-presentation-adapter", "1"),
+export const DIAGRAM_PRESENTATION_PACKAGED_CATALOG: PresentationContractCatalog = {
+  compatibilityAdapter: DIAGRAM_PRESENTATION_COMPATIBILITY.adapter,
+  adapterBytes: undefined,
+  schemaPin: { ...DIAGRAM_PRESENTATION_SCHEMA_PIN },
 };
 
-export const DIAGRAM_PRESENTATION_ADAPTER_SCHEMA_PIN: PresentationPin = {
-  ...DIAGRAM_PRESENTATION_SCHEMA_PIN,
-};
+/** Parse an exact pinned adapter reference `id@version#sha256=<digest>`. */
+export function parsePinnedAdapterReference(ref: string): PresentationPin | undefined {
+  const match = /^(.+)@([^#]+)#sha256=([0-9a-f]{64})$/.exec(ref);
+  if (match === null) return undefined;
+  const id = match[1] as string;
+  const version = match[2] as string;
+  const contentDigest = match[3] as string;
+  if (id.length === 0 || version.length === 0) return undefined;
+  return { id, version, contentDigest };
+}
 
 /** The contract ProfileId form, never a valid semantic profileRef. */
 export const DIAGRAM_PRESENTATION_PROFILE_ID = "diagram-presentation@1" as const;
