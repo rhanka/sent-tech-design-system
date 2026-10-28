@@ -143,33 +143,73 @@ function wrongNamespacePresentation(path: string, targetId: string, expectedKind
   });
 }
 
+const GENERIC2_PROFILE_ID = "generic@2" as const;
+
 interface FamilySets {
-  readonly legendRoots: ReadonlySet<string>;
-  readonly keyTypes: ReadonlySet<string>;
   readonly legendHierarchyIds: ReadonlySet<string>;
 }
 
 function collectFamilySets(registry: ProfileRegistry, profileIds: readonly string[]): FamilySets {
-  const legendRoots = new Set<string>();
-  const keyTypes = new Set<string>();
   const legendHierarchyIds = new Set<string>();
   for (const id of profileIds) {
+    if (id !== GENERIC2_PROFILE_ID) continue;
     const profile = registry.get(id as never);
     if (profile === undefined) continue;
     for (const constraint of profile.constraints) {
       if (constraint.kind === "children-restricted" || constraint.kind === "required-parent") {
         const typed = constraint as {
-          readonly parentFamilyRoots: readonly string[];
-          readonly childTypes: readonly string[];
           readonly hierarchyId: string;
         };
-        for (const root of typed.parentFamilyRoots) legendRoots.add(root);
-        for (const child of typed.childTypes) keyTypes.add(child);
         legendHierarchyIds.add(typed.hierarchyId);
       }
     }
   }
-  return { legendRoots, keyTypes, legendHierarchyIds };
+  return { legendHierarchyIds };
+}
+
+function isGeneric2Legend(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  resolver: ReturnType<typeof createTypeResolver>,
+  entityId: string,
+): boolean {
+  const entity = document.entities[entityId];
+  if (entity === undefined) return false;
+  if (entity.profile !== GENERIC2_PROFILE_ID) return false;
+  const owner = registry.get(entity.profile as never);
+  if (owner === undefined) return false;
+  const resolution = resolver.resolve(owner, entity.type);
+  if (!resolution.ok) return false;
+  return resolution.resolved.ancestry.includes("legend");
+}
+
+function isGeneric2Key(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  resolver: ReturnType<typeof createTypeResolver>,
+  entityId: string,
+): boolean {
+  const entity = document.entities[entityId];
+  if (entity === undefined) return false;
+  if (entity.profile !== GENERIC2_PROFILE_ID) return false;
+  const owner = registry.get(entity.profile as never);
+  if (owner === undefined) return false;
+  const resolution = resolver.resolve(owner, entity.type);
+  if (!resolution.ok) return false;
+  return resolution.resolved.ancestry.includes("legend-key");
+}
+
+function satisfiesExplicitForm(
+  form: string,
+  ownerId: string,
+  ancestry: readonly string[],
+  container: boolean,
+): boolean {
+  if (form === "card") return container === false;
+  if (form === "container") return container === true;
+  if (form === "legend") return ownerId === GENERIC2_PROFILE_ID && ancestry.includes("legend");
+  if (form === "legend-key") return ownerId === GENERIC2_PROFILE_ID && ancestry.includes("legend-key");
+  return false;
 }
 
 function hierarchyChildren(
@@ -198,6 +238,13 @@ export function validateDiagramPresentation(
     registry,
     document.profileRefs as readonly string[],
   );
+  for (const key of Object.keys(view.relationOccurrences).sort()) {
+    const occurrence = view.relationOccurrences[key] as unknown as Record<string, unknown>;
+    const style = occurrence["strokeStyle"];
+    if (style !== undefined && style !== "solid" && style !== "dashed") {
+      diagnostics.push(shapeMismatch(`relationOccurrences.${key}.strokeStyle`));
+    }
+  }
 
   const shapeFailed = new Set<string>();
 
@@ -441,11 +488,8 @@ export function validateDiagramPresentation(
     const resolution = resolver.resolve(owner, semantic.type);
     if (!resolution.ok) continue;
     const ancestry = resolution.resolved.ancestry;
-    const isKey = [...familySets.keyTypes].some((type) => ancestry.includes(type));
-    const isLegend = [...familySets.legendRoots].some((type) => ancestry.includes(type));
     const container = resolution.resolved.container;
-    const expected = isKey ? "legend-key" : isLegend ? "legend" : container ? "container" : "card";
-    if (entry.form !== expected) {
+    if (!satisfiesExplicitForm(entry.form, owner.id, ancestry, container)) {
       diagnostics.push(formMismatch(`${entryPath}.form`));
       continue;
     }
@@ -497,29 +541,20 @@ export function validateDiagramPresentation(
       diagnostics.push(danglingPresentation(`${itemPath}.legendRef`, typed.legendRef));
       return;
     }
-    const owner = registry.get(target.profile as never);
-    if (owner !== undefined) {
-      const resolution = resolver.resolve(owner, target.type);
-      if (resolution.ok) {
-        const isLegend = [...familySets.legendRoots].some((type) =>
-          resolution.resolved.ancestry.includes(type),
-        );
-        if (!isLegend) {
-          diagnostics.push({
-            code: "tone-category-unknown",
-            severity: "error",
-            path: `${itemPath}.legendRef`,
-            message: `legendRef names ${typed.legendRef}, which is not a legend`,
-            refs: [typed.legendRef],
-            details: {
-              value: typed.category,
-              legendBinding: "bound-target-not-legend",
-              categoryType: "legend-key",
-            },
-          });
-          return;
-        }
-      }
+    if (!isGeneric2Legend(document, registry, resolver, typed.legendRef)) {
+      diagnostics.push({
+        code: "tone-category-unknown",
+        severity: "error",
+        path: `${itemPath}.legendRef`,
+        message: `legendRef names ${typed.legendRef}, which is not a legend`,
+        refs: [typed.legendRef],
+        details: {
+          value: typed.category,
+          legendBinding: "bound-target-not-legend",
+          categoryType: "legend-key",
+        },
+      });
+      return;
     }
     const categoryLength = [...typed.category].length;
     if (typed.category.length === 0 || categoryLength > 40 || !KEY_PATTERN.test(typed.category)) {
@@ -568,6 +603,10 @@ export function validateDiagramPresentation(
     }
     if (document.entities[targetId] === undefined) {
       diagnostics.push(danglingPresentation(entryPath, targetId));
+      continue;
+    }
+    if (!isGeneric2Key(document, registry, resolver, targetId)) {
+      diagnostics.push(wrongNamespacePresentation(entryPath, targetId, "legend-key"));
     }
   }
 
@@ -579,6 +618,7 @@ export function validateDiagramPresentation(
     const hierarchyIds = familySets.legendHierarchyIds;
     if (hierarchyIds.size === 0) return;
     for (const profileId of document.profileRefs) {
+      if (profileId !== GENERIC2_PROFILE_ID) continue;
       const profile = registry.get(profileId as never);
       if (profile === undefined) continue;
       const declarations = profile.relationTypes.filter((declaration) =>
@@ -605,27 +645,52 @@ export function validateDiagramPresentation(
   buildLegendChildren();
 
   const directKeysOf = (legendEntityId: string): string[] => {
+    if (!isGeneric2Legend(document, registry, resolver, legendEntityId)) return [];
     const kids = legendChildren.get(legendEntityId) ?? [];
-    return kids.filter((kid) => {
-      const entity = document.entities[kid];
-      if (entity === undefined) return false;
-      const owner = registry.get(entity.profile as never);
-      if (owner === undefined) return false;
-      const resolution = resolver.resolve(owner, entity.type);
-      if (!resolution.ok) return false;
-      return [...familySets.keyTypes].some((type) => resolution.resolved.ancestry.includes(type));
-    });
+    return kids.filter((kid) => isGeneric2Key(document, registry, resolver, kid));
   };
 
-  const isLegendEntity = (entityId: string): boolean => {
-    const entity = document.entities[entityId];
-    if (entity === undefined) return false;
-    const owner = registry.get(entity.profile as never);
-    if (owner === undefined) return false;
-    const resolution = resolver.resolve(owner, entity.type);
-    if (!resolution.ok) return false;
-    return [...familySets.legendRoots].some((type) => resolution.resolved.ancestry.includes(type));
-  };
+  const isLegendEntity = (entityId: string): boolean =>
+    isGeneric2Legend(document, registry, resolver, entityId);
+
+  categoryTokens.forEach((item, index) => {
+    const itemPath = `presentation.diagram.categoryTokens[${index}]`;
+    if (shapeFailed.has(itemPath)) return;
+    const typed = item as { legendRef?: unknown; category?: unknown; token?: unknown };
+    if (typeof typed.legendRef !== "string" || typeof typed.category !== "string" || typeof typed.token !== "string") {
+      return;
+    }
+    if (refKindOf(typed.legendRef) !== "entity") return;
+    if (document.entities[typed.legendRef] === undefined) return;
+    if (!isGeneric2Legend(document, registry, resolver, typed.legendRef)) return;
+    const categoryLength = [...typed.category].length;
+    if (typed.category.length === 0 || categoryLength > 40 || !KEY_PATTERN.test(typed.category)) return;
+    const tokenValue = typed.token;
+    if (typeof tokenValue !== "string") return;
+    const tokenLength = [...tokenValue].length;
+    if (tokenLength < 1 || tokenLength > 80 || !TOKEN_PATTERN.test(tokenValue)) return;
+    const direct = directKeysOf(typed.legendRef);
+    const categories = new Set<string>();
+    for (const kid of direct) {
+      const keyEntity = document.entities[kid];
+      if (keyEntity === undefined) continue;
+      const keyValue = keyEntity.attributes["category"];
+      if (keyValue !== undefined && keyValue.kind === "text") {
+        const value = (keyValue as { value: string }).value;
+        if (typeof value === "string") categories.add(value);
+      }
+    }
+    if (!categories.has(typed.category)) {
+      diagnostics.push({
+        code: "tone-category-unknown",
+        severity: "error",
+        path: `${itemPath}.category`,
+        message: `category ${typed.category} is not a direct key category of legend ${typed.legendRef}`,
+        refs: [typed.legendRef],
+        details: { value: typed.category, legendBinding: "undeclared", categoryType: "legend-key" },
+      });
+    }
+  });
 
   for (const key of Object.keys(entities).sort()) {
     if (shapeFailed.has(`presentation.diagram.entities.${key}`)) continue;
@@ -641,8 +706,8 @@ export function validateDiagramPresentation(
     const resolution = resolver.resolve(owner, semantic.type);
     if (!resolution.ok) continue;
     const ancestry = resolution.resolved.ancestry;
-    const isKeyType = [...familySets.keyTypes].some((type) => ancestry.includes(type));
-    const isLegendType = [...familySets.legendRoots].some((type) => ancestry.includes(type));
+    const isKeyType = owner.id === GENERIC2_PROFILE_ID && ancestry.includes("legend-key");
+    const isLegendType = owner.id === GENERIC2_PROFILE_ID && ancestry.includes("legend");
     if (isKeyType || isLegendType) continue;
     const schemas = resolution.resolved.schemas;
     const categorySchema = schemas.find((schema) => schema.name === "category");
@@ -711,14 +776,34 @@ export function validateDiagramPresentation(
 
   for (const key of Object.keys(legends).sort()) {
     const entryPath = `presentation.diagram.legends.${key}.order`;
-    if (shapeFailed.has(entryPath) || shapeFailed.has(`presentation.diagram.legends.${key}`)) continue;
+    const entryKeyPath = `presentation.diagram.legends.${key}`;
+    if (shapeFailed.has(entryPath) || shapeFailed.has(entryKeyPath)) continue;
     const occurrence = view.entityOccurrences[key];
     if (occurrence === undefined) continue;
     const semantic = document.entities[occurrence.entity];
     if (semantic === undefined) continue;
-    const expected = directKeysOf(semantic.id).slice().sort();
+    if (!isGeneric2Legend(document, registry, resolver, semantic.id)) {
+      diagnostics.push(formMismatch(entryKeyPath));
+      continue;
+    }
     const entry = legends[key] as { order: readonly unknown[] };
     const actual = (entry.order ?? []) as readonly unknown[];
+    let referencesOk = true;
+    actual.forEach((item, index) => {
+      if (typeof item !== "string") return;
+      const itemPath = `${entryPath}[${index}]`;
+      if (refKindOf(item) !== "entity") {
+        diagnostics.push(wrongNamespacePresentation(itemPath, item, "entity"));
+        referencesOk = false;
+        return;
+      }
+      if (document.entities[item] === undefined) {
+        diagnostics.push(danglingPresentation(itemPath, item));
+        referencesOk = false;
+      }
+    });
+    if (!referencesOk) continue;
+    const expected = directKeysOf(semantic.id).slice().sort();
     const actualStrings = actual.filter((item): item is string => typeof item === "string");
     const actualSorted = [...actualStrings].sort();
     const uniqueActual = new Set(actualStrings);
