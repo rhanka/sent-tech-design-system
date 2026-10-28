@@ -37,8 +37,12 @@ export interface Entity {
 export interface RelationEndpoint {
   /** A role declared by the relation type. Not a position: `endpoints[0]` means nothing. */
   readonly role: string;
-  /** An entity or a semantic port. The two are not interchangeable (the role declares which). */
-  readonly target: EntityRef | PortRef;
+  /**
+   * An entity, a semantic port or a semantic relation (M3 §3.9.1). The kinds
+   * are not interchangeable (the role declares which). A RelationRef target
+   * is permitted only where the semantic role admits relation targets.
+   */
+  readonly target: EntityRef | PortRef | RelationRef;
 }
 
 export interface Relation {
