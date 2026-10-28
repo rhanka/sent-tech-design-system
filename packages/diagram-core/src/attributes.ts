@@ -17,7 +17,7 @@ import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import { type RefKind, refKindOf } from "./refs.js";
 
 export type ScalarAttributeKind = "text" | "boolean" | "date" | "quantity" | "enum" | "reference";
-export type AttributeKind = ScalarAttributeKind | "collection";
+export type AttributeKind = ScalarAttributeKind | "collection" | "struct";
 
 export type ScalarAttributeValue =
   | { readonly kind: "text"; readonly value: string }
@@ -32,16 +32,61 @@ export type ScalarAttributeValue =
 
 export type AttributeValue =
   | ScalarAttributeValue
+  | StructAttributeValue
   | { readonly kind: "collection"; readonly items: readonly ScalarAttributeValue[] };
 
+/**
+ * A structured value (K6 carrier). `type` names a profile-declared structured
+ * type; `fields` carries the nested attribute values, validated against that
+ * type's declared field schemas. It has no entity identity: an entity record
+ * can never instantiate an abstract structured type.
+ */
+export type StructAttributeValue = {
+  readonly kind: "struct";
+  readonly type: string;
+  readonly fields: Readonly<Record<string, AttributeValue>>;
+};
+
+export type TextSchema = {
+  readonly kind: "text";
+  readonly maxLength?: number;
+  /** Minimum length. A present value below it is refused (pattern "min-length"). */
+  readonly minLength?: number;
+  /** Anchored ASCII RegExp source, no flags. `patternName` is required with it. */
+  readonly pattern?: string;
+  readonly patternName?: string;
+};
+
+export type QuantitySchema = {
+  readonly kind: "quantity";
+  readonly units: readonly string[];
+  /** When true, only integers validate; a fraction is refused. */
+  readonly integer?: boolean;
+  readonly min?: number;
+  readonly max?: number;
+};
+
+export type ReferenceSchema = {
+  readonly kind: "reference";
+  readonly refKind: RefKind;
+  /** K2 target types: the referenced entity's resolved chain must contain one. */
+  readonly targetTypes?: readonly string[];
+};
+
+/** A structured-value slot (K6 carrier): only the named types are allowed here. */
+export type StructSchema = {
+  readonly kind: "struct";
+  readonly targetTypes: readonly string[];
+};
+
 export type ScalarSchema =
-  | { readonly kind: "text"; readonly maxLength?: number }
+  | TextSchema
   | { readonly kind: "boolean" }
   | { readonly kind: "date" }
   /** The units a quantity may use. A one-unit list is how a profile pins a unit. */
-  | { readonly kind: "quantity"; readonly units: readonly string[] }
+  | QuantitySchema
   | { readonly kind: "enum"; readonly values: readonly string[] }
-  | { readonly kind: "reference"; readonly refKind: RefKind };
+  | ReferenceSchema;
 
 /**
  * A collection is ALWAYS bounded: `maxItems` is required, because "collection
@@ -54,7 +99,20 @@ export type CollectionSchema = {
   readonly minItems?: number;
 };
 
-export type AttributeSchema = { readonly name: string; readonly required?: boolean } & (ScalarSchema | CollectionSchema);
+export type AttributeSchema = { readonly name: string; readonly required?: boolean } & (
+  | ScalarSchema
+  | CollectionSchema
+  | StructSchema
+);
+
+/** A schema pattern that fails to compile is a qualification refusal, not a value verdict. */
+function matchesPattern(source: string, value: string): boolean {
+  try {
+    return new RegExp(source).test(value);
+  } catch {
+    return true;
+  }
+}
 
 /** ISO-8601 date or date-time, with optional offset. Deliberately strict. */
 const ISO_8601 = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})?)?$/;
@@ -67,7 +125,12 @@ function isRealDate(text: string): boolean {
   return probe.getUTCFullYear() === year && probe.getUTCMonth() === month - 1 && probe.getUTCDate() === day;
 }
 
-function validateScalar(schema: ScalarSchema, value: ScalarAttributeValue, path: string): readonly Diagnostic[] {
+function validateScalar(
+  schema: ScalarSchema,
+  value: ScalarAttributeValue,
+  path: string,
+  attributeName: string,
+): readonly Diagnostic[] {
   if (value.kind !== schema.kind) {
     return [
       diagnostic({
@@ -89,6 +152,32 @@ function validateScalar(schema: ScalarSchema, value: ScalarAttributeValue, path:
             path,
             message: `text is ${text.length} characters, the schema allows ${schema.maxLength}`,
             details: { length: text.length, maxLength: schema.maxLength },
+          }),
+        ];
+      }
+      // M3 §5.8: maxLength first (retained), then one pattern failure.
+      if (schema.minLength !== undefined && text.length < schema.minLength) {
+        return [
+          diagnostic({
+            code: "text-pattern-mismatch",
+            path,
+            message: `value is shorter than the minimum length for ${attributeName}`,
+            refs: [],
+            details: { pattern: "min-length", length: text.length, minLength: schema.minLength },
+          }),
+        ];
+      }
+      if (schema.pattern !== undefined && !matchesPattern(schema.pattern, text)) {
+        return [
+          diagnostic({
+            code: "text-pattern-mismatch",
+            path,
+            message: `value does not match the ${schema.patternName as string} grammar`,
+            refs: [],
+            details:
+              schema.maxLength === undefined
+                ? { pattern: schema.patternName as string, length: text.length }
+                : { pattern: schema.patternName as string, length: text.length, maxLength: schema.maxLength },
           }),
         ];
       }
@@ -141,6 +230,41 @@ function validateScalar(schema: ScalarSchema, value: ScalarAttributeValue, path:
             message: `quantity magnitude is not finite (${String(quantity.value)})`,
           }),
         );
+      }
+      // M3 §5.8: the retained kind/finiteness/unit checks keep priority; then
+      // one first new scalar failure in declared order.
+      if (typeof quantity.value === "number" && Number.isFinite(quantity.value)) {
+        if (schema.integer === true && !Number.isInteger(quantity.value)) {
+          diagnostics.push(
+            diagnostic({
+              code: "quantity-not-integer",
+              path,
+              message: `value ${String(quantity.value)} is not an integer`,
+              refs: [],
+              details: { value: quantity.value, integer: "required" },
+            }),
+          );
+        } else if (schema.min !== undefined && quantity.value < schema.min) {
+          diagnostics.push(
+            diagnostic({
+              code: "quantity-below-min",
+              path,
+              message: `value ${String(quantity.value)} is below the minimum ${String(schema.min)}`,
+              refs: [],
+              details: { value: quantity.value, min: schema.min },
+            }),
+          );
+        } else if (schema.max !== undefined && quantity.value > schema.max) {
+          diagnostics.push(
+            diagnostic({
+              code: "quantity-above-max",
+              path,
+              message: `value ${String(quantity.value)} is above the maximum ${String(schema.max)}`,
+              refs: [],
+              details: { value: quantity.value, max: schema.max },
+            }),
+          );
+        }
       }
       return diagnostics;
     }
@@ -231,7 +355,7 @@ export function validateAttributeValue(
       );
     }
     value.items.forEach((item, index) => {
-      diagnostics.push(...validateScalar(schema.item, item, `${path}[${index}]`));
+      diagnostics.push(...validateScalar(schema.item, item, `${path}[${index}]`, schema.name));
     });
     return diagnostics;
   }
@@ -247,7 +371,35 @@ export function validateAttributeValue(
     ];
   }
 
-  return validateScalar(schema, value, path);
+  if (schema.kind === "struct") {
+    // Field validation needs the declared structured type, which lives in the
+    // owning profile: `validate.ts` runs it. Here only the kind is checked, so
+    // a struct in a scalar slot (and vice versa) is refused at the same stage.
+    if (value.kind !== "struct") {
+      return [
+        diagnostic({
+          code: "attribute-type-mismatch",
+          path,
+          message: `expected a struct value, got ${value.kind}`,
+          details: { expectedKind: "struct", seenKind: value.kind },
+        }),
+      ];
+    }
+    return [];
+  }
+
+  if (value.kind === "struct") {
+    return [
+      diagnostic({
+        code: "attribute-type-mismatch",
+        path,
+        message: `expected a ${schema.kind} value, got struct`,
+        details: { expectedKind: schema.kind, seenKind: "struct" },
+      }),
+    ];
+  }
+
+  return validateScalar(schema, value, path, schema.name);
 }
 
 /** Every reference a value carries, with the namespace its schema requires. */
@@ -276,3 +428,8 @@ export const quantity = (value: number, unit: string): AttributeValue => ({ kind
 export const enumeration = (value: string): AttributeValue => ({ kind: "enum", value });
 export const reference = (value: string): AttributeValue => ({ kind: "reference", value });
 export const collection = (items: readonly ScalarAttributeValue[]): AttributeValue => ({ kind: "collection", items });
+export const structValue = (type: string, fields: Readonly<Record<string, AttributeValue>>): AttributeValue => ({
+  kind: "struct",
+  type,
+  fields,
+});

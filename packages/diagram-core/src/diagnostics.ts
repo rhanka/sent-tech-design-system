@@ -67,6 +67,26 @@ export type DiagnosticCode =
   | "value-not-serialisable"
   // --- Limits and constraints -------------------------------------------
   | "limit-exceeded"
+  // --- M3 semantic executor (shared K1/K2/K6 prerequisites + generic mechanisms)
+  /** A hierarchy endpoint targets a foreign-profile entity with no admitted semantic join (M3 §3.2.3). */
+  | "endpoint-without-join"
+  | "legend-key-parent-invalid"
+  | "tone-category-unknown"
+  | "text-pattern-mismatch"
+  | "quantity-not-integer"
+  | "quantity-below-min"
+  | "quantity-above-max"
+  | "relationship-matrix-violation"
+  | "multiplicity-invalid"
+  | "stereotype-application-invalid"
+  | "reference-target-type"
+  | "struct-type-unknown"
+  | "struct-field-not-in-schema"
+  | "struct-type-not-allowed"
+  | "supertype-unknown"
+  | "supertype-cycle"
+  | "attribute-conflict"
+  | "abstract-instantiated"
   // --- Commands ----------------------------------------------------------
   | "unknown-command"
   | "target-already-exists"
