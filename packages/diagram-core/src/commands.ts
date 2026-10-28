@@ -49,6 +49,8 @@ import type { ExecutorProfileBindings } from "./bindings.js";
 import type { EntityRef, OccurrenceRef, PortRef, RelationRef, ResourceRef, ViewRef } from "./refs.js";
 import type { DiagramState } from "./state.js";
 import { validateState } from "./validate.js";
+import { canonicalise } from "./canonical.js";
+import { reprojectRetained } from "./fold.js";
 import type {
   EntityOccurrence,
   Geometry,
@@ -56,7 +58,9 @@ import type {
   PortOccurrence,
   PortSide,
   RelationOccurrence,
+  SummaryDefinition,
   ViewDocument,
+  VisualGroup,
 } from "./view.js";
 
 /** No default. A caller decides what happens to the drawings and the relations. */
@@ -130,6 +134,17 @@ export type Command =
   | { readonly kind: "delete-view"; readonly view: ViewRef }
   | { readonly kind: "attach-resource"; readonly resource: ResourceDescriptor }
   | { readonly kind: "detach-resource"; readonly resource: ResourceRef }
+  /**
+   * §5.7 view-data commands. Groups, member references and summary
+   * definitions are view data, so their cleanup needs commands whose
+   * inverses restore every consumed field byte for byte. Hosts may use them
+   * directly; the final transaction validation still owns every refusal.
+   */
+  | { readonly kind: "create-group"; readonly view: ViewRef; readonly group: VisualGroup }
+  | { readonly kind: "remove-group"; readonly view: ViewRef; readonly group: string }
+  | { readonly kind: "set-occurrence-group"; readonly view: ViewRef; readonly occurrence: OccurrenceRef; readonly group?: string }
+  | { readonly kind: "set-summary-definition"; readonly view: ViewRef; readonly definition: SummaryDefinition }
+  | { readonly kind: "remove-summary-definition"; readonly view: ViewRef; readonly id: string }
   | { readonly kind: "apply-preserved-extension"; readonly extension: PreservedExtension }
   /**
    * The eighteenth command, and an addition to SPEC 3.5's list of seventeen.
@@ -166,6 +181,11 @@ export const COMMAND_KINDS: readonly CommandKind[] = [
   "detach-resource",
   "apply-preserved-extension",
   "remove-preserved-extension",
+  "create-group",
+  "remove-group",
+  "set-occurrence-group",
+  "set-summary-definition",
+  "remove-summary-definition",
 ];
 
 export interface Transaction {
@@ -253,6 +273,129 @@ function patchAttributes(
 }
 
 const isDisposition = (value: unknown): value is DeleteDisposition => value === "cascade" || value === "refuse";
+
+// --- §5.7 fold and summary cleanup -------------------------------------------
+
+/** The §5.7 view-data cleanup of one view after a removal, with its pre-images. */
+interface FoldCleanup {
+  readonly entityOccurrences: Readonly<Record<string, EntityOccurrence>>;
+  readonly groups: Readonly<Record<string, VisualGroup>>;
+  readonly droppedGroups: readonly VisualGroup[];
+  readonly clearedRefs: readonly { readonly occurrence: OccurrenceRef; readonly previous: string }[];
+  readonly summaryLabels: Readonly<Record<string, SummaryDefinition>> | undefined;
+  readonly restoredSummaries: readonly SummaryDefinition[];
+}
+
+/**
+ * Dependency-aware view-data cleanup (§5.7) over a view whose occurrences
+ * were already removed: drop fold groups bound to a removed occurrence,
+ * clear member references to dropped groups, and prune summary definitions
+ * that lost their scope root, their selected occurrences or their semantic
+ * relations. Empty definitions disappear; the rest is revalidated by the
+ * transaction, which refuses atomically on any remaining violation.
+ */
+function cleanFoldBindings(
+  view: ViewDocument,
+  removedOccurrences: ReadonlySet<string>,
+  removedRelations: ReadonlySet<string>,
+): FoldCleanup {
+  let groups = view.groups;
+  const droppedGroups: VisualGroup[] = [];
+  for (const key of Object.keys(view.groups).sort()) {
+    const group = view.groups[key] as VisualGroup;
+    if (group.occurrence !== undefined && removedOccurrences.has(group.occurrence)) {
+      droppedGroups.push(group);
+      groups = withoutKey(groups, key);
+    }
+  }
+  const liveGroups = new Set(Object.keys(groups));
+  let entityOccurrences = view.entityOccurrences;
+  const clearedRefs: { occurrence: OccurrenceRef; previous: string }[] = [];
+  for (const key of Object.keys(view.entityOccurrences).sort()) {
+    const occurrence = view.entityOccurrences[key] as EntityOccurrence;
+    if (occurrence.group !== undefined && !liveGroups.has(occurrence.group)) {
+      clearedRefs.push({ occurrence: occurrence.id, previous: occurrence.group });
+      const { group: _cleared, ...rest } = occurrence;
+      void _cleared;
+      entityOccurrences = withKey(entityOccurrences, key, rest);
+    }
+  }
+  const previous = view.summaryLabels;
+  let summaryLabels = previous;
+  const restoredSummaries: SummaryDefinition[] = [];
+  if (previous !== undefined) {
+    const kept: Record<string, SummaryDefinition> = {};
+    for (const id of Object.keys(previous).sort()) {
+      const definition = previous[id] as SummaryDefinition;
+      if (removedOccurrences.has(definition.sourceOccurrence) || removedOccurrences.has(definition.targetOccurrence)) {
+        restoredSummaries.push(definition);
+        continue;
+      }
+      const prunedOccurrences = definition.relationOccurrences?.filter((member) => !removedOccurrences.has(member));
+      const prunedIds = definition.relationIds.filter((relation) => !removedRelations.has(relation));
+      if (
+        prunedIds.length === 0 ||
+        (definition.relationOccurrences !== undefined && (prunedOccurrences as OccurrenceRef[]).length === 0)
+      ) {
+        restoredSummaries.push(definition);
+        continue;
+      }
+      if (
+        (prunedOccurrences !== undefined &&
+          prunedOccurrences.length !== (definition.relationOccurrences as readonly OccurrenceRef[]).length) ||
+        prunedIds.length !== definition.relationIds.length
+      ) {
+        restoredSummaries.push(definition);
+        kept[id] = {
+          ...definition,
+          relationIds: [...prunedIds],
+          ...(prunedOccurrences === undefined ? {} : { relationOccurrences: [...(prunedOccurrences as OccurrenceRef[])] }),
+        };
+        continue;
+      }
+      kept[id] = definition;
+    }
+    if (restoredSummaries.length > 0) {
+      summaryLabels = Object.keys(kept).length === 0 ? undefined : kept;
+    }
+  }
+  return { entityOccurrences, groups, droppedGroups, clearedRefs, summaryLabels, restoredSummaries };
+}
+
+/** The view with the cleanup applied, omitting an emptied summary record. */
+function cleanedView(
+  view: ViewDocument,
+  cleanup: FoldCleanup,
+  relationOccurrences: Readonly<Record<string, RelationOccurrence>>,
+): ViewDocument {
+  const base = {
+    ...view,
+    entityOccurrences: cleanup.entityOccurrences,
+    relationOccurrences,
+    groups: cleanup.groups,
+  };
+  if (cleanup.summaryLabels === undefined) {
+    const { summaryLabels: _dropped, ...rest } = base;
+    void _dropped;
+    return rest;
+  }
+  return { ...base, summaryLabels: cleanup.summaryLabels };
+}
+
+/** Inverse commands restoring every field the cleanup consumed, in undo order. */
+function restoreFoldCleanupInverse(view: ViewRef, cleanup: FoldCleanup): Command[] {
+  const inverse: Command[] = [];
+  for (const definition of cleanup.restoredSummaries) {
+    inverse.push({ kind: "set-summary-definition", view, definition });
+  }
+  for (const ref of cleanup.clearedRefs) {
+    inverse.push({ kind: "set-occurrence-group", view, occurrence: ref.occurrence, group: ref.previous });
+  }
+  for (const group of cleanup.droppedGroups) {
+    inverse.push({ kind: "create-group", view, group });
+  }
+  return inverse;
+}
 
 // --- removal closure ---------------------------------------------------------
 
@@ -396,6 +539,7 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
 
   const views: Record<string, ViewDocument> = { ...state.views };
   const touchedViews: ViewRef[] = [];
+  const removedRelations = new Set<string>(plan.relations);
   for (const [viewKey, removedIds] of Object.entries(plan.occurrences)) {
     const view = views[viewKey];
     if (view === undefined) continue;
@@ -429,12 +573,42 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
         effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
       }
     }
-    // Visual groups are untouched: a group DECLARES itself and membership lives
-    // on the occurrence, so removing a drawing removes its membership with it and
-    // re-creating the drawing brings the membership back. A group that ends up
-    // with no member stays declared - an empty group is a legitimate state, and
-    // deleting it would be a decision nobody asked for.
-    views[viewKey] = { ...view, entityOccurrences, relationOccurrences, portOccurrences };
+    // §5.7: a removal also cleans the fold bindings and summary definitions
+    // that named a removed drawing or relation, then reprojects the surviving
+    // projected endpoints from their retained origins. Surviving occurrences
+    // whose projection went stale are replaced (remove plus re-create), so
+    // the inverse captures their pre-images with existing commands.
+    const cleanup = cleanFoldBindings(
+      { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+      new Set<string>(removedIds),
+      removedRelations,
+    );
+    const candidate = cleanedView(
+      { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+      cleanup,
+      relationOccurrences,
+    );
+    const repaired = reprojectRetained(candidate, state.document);
+    const staleIds: OccurrenceRef[] = [];
+    for (const key of Object.keys(candidate.relationOccurrences).sort()) {
+      if (canonicalise(repaired.relationOccurrences[key]) !== canonicalise(candidate.relationOccurrences[key])) {
+        staleIds.push(key as OccurrenceRef);
+      }
+    }
+    inverse.push(...restoreFoldCleanupInverse(viewRef, cleanup));
+    for (const id of staleIds) {
+      inverse.push({ kind: "remove-occurrence", view: viewRef, occurrence: id });
+      effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
+    }
+    for (const id of staleIds) {
+      inverse.push({
+        kind: "create-occurrence",
+        view: viewRef,
+        occurrence: { of: "relation", occurrence: candidate.relationOccurrences[id] as RelationOccurrence },
+      });
+      effects.push({ kind: "occurrence-created", view: viewRef, occurrence: id });
+    }
+    views[viewKey] = repaired;
     touchedViews.push(viewRef);
   }
 
@@ -922,36 +1096,177 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
       let entityOccurrences = view.entityOccurrences;
       let portOccurrences = view.portOccurrences;
       let relationOccurrences = view.relationOccurrences;
-      const inverse: Command[] = [];
-      const effects: Effect[] = [];
+      const removed: { of: "entity" | "relation" | "port"; id: string; record: EntityOccurrence | RelationOccurrence | PortOccurrence }[] = [];
       for (const id of [...consumed].sort()) {
         const entityRemoved = entityOccurrences[id];
         if (entityRemoved !== undefined) {
-          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "entity", occurrence: entityRemoved } });
+          removed.push({ of: "entity", id, record: entityRemoved });
           entityOccurrences = withoutKey(entityOccurrences, id);
-          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
           continue;
         }
         const portRemoved = portOccurrences[id];
         if (portRemoved !== undefined) {
-          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "port", occurrence: portRemoved } });
+          removed.push({ of: "port", id, record: portRemoved });
           portOccurrences = withoutKey(portOccurrences, id);
-          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
           continue;
         }
         const relationRemoved = relationOccurrences[id];
         if (relationRemoved !== undefined) {
-          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "relation", occurrence: relationRemoved } });
+          removed.push({ of: "relation", id, record: relationRemoved });
           relationOccurrences = withoutKey(relationOccurrences, id);
-          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
         }
       }
-      const next: ViewDocument = { ...view, entityOccurrences, portOccurrences, relationOccurrences };
+      // §5.7: clean the fold bindings and summary definitions that named a
+      // removed drawing, then reproject the surviving projected endpoints
+      // from their retained origins. Stale survivors are replaced, so the
+      // inverse captures their pre-images with existing commands.
+      const cleanup = cleanFoldBindings(
+        { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+        consumed,
+        new Set<string>(),
+      );
+      const candidate = cleanedView(
+        { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+        cleanup,
+        relationOccurrences,
+      );
+      const repaired = reprojectRetained(candidate, document);
+      const staleIds: OccurrenceRef[] = [];
+      for (const key of Object.keys(candidate.relationOccurrences).sort()) {
+        if (canonicalise(repaired.relationOccurrences[key]) !== canonicalise(candidate.relationOccurrences[key])) {
+          staleIds.push(key as OccurrenceRef);
+        }
+      }
+      const effects: Effect[] = [];
+      for (const id of [...new Set<string>([...consumed, ...staleIds])].sort()) {
+        effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
+      }
+      for (const id of staleIds) {
+        effects.push({ kind: "occurrence-created", view: command.view, occurrence: id });
+      }
+      const inverse: Command[] = [
+        ...restoreFoldCleanupInverse(command.view, cleanup),
+        ...staleIds.map((id) => ({ kind: "remove-occurrence", view: command.view, occurrence: id }) as Command),
+        ...staleIds.map(
+          (id) =>
+            ({
+              kind: "create-occurrence",
+              view: command.view,
+              occurrence: { of: "relation", occurrence: candidate.relationOccurrences[id] as RelationOccurrence },
+            }) as Command,
+        ),
+        ...removed.map(
+          (entry) => ({ kind: "create-occurrence", view: command.view, occurrence: { of: entry.of, occurrence: entry.record } }) as Command,
+        ),
+      ];
+      return {
+        applied: {
+          state: { document, views: withKey(state.views, command.view, repaired) },
+          effects,
+          inverse,
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "create-group": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      if (view.groups[command.group.id] !== undefined) {
+        return exists(path, `group ${command.group.id} already exists in view ${command.view}`, [command.group.id, command.view]);
+      }
+      return {
+        applied: {
+          state: { document, views: withKey(state.views, command.view, { ...view, groups: withKey(view.groups, command.group.id, command.group) }) },
+          effects: [],
+          inverse: [{ kind: "remove-group", view: command.view, group: command.group.id }],
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "remove-group": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      const removed = view.groups[command.group];
+      if (removed === undefined) return missing(path, `group ${command.group} does not exist in view ${command.view}`, [command.group, command.view]);
+      return {
+        applied: {
+          state: { document, views: withKey(state.views, command.view, { ...view, groups: withoutKey(view.groups, command.group) }) },
+          effects: [],
+          inverse: [{ kind: "create-group", view: command.view, group: removed }],
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "set-occurrence-group": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      const current = view.entityOccurrences[command.occurrence];
+      if (current === undefined) {
+        return missing(path, `occurrence ${command.occurrence} does not exist in view ${command.view}`, [command.occurrence, command.view]);
+      }
+      const next: EntityOccurrence =
+        command.group === undefined
+          ? (({ group: _cleared, ...rest }: EntityOccurrence & { group?: string }) => (void _cleared, rest))(current)
+          : { ...current, group: command.group };
+      return {
+        applied: {
+          state: {
+            document,
+            views: withKey(state.views, command.view, {
+              ...view,
+              entityOccurrences: withKey(view.entityOccurrences, command.occurrence, next),
+            }),
+          },
+          effects: [],
+          inverse: [
+            current.group === undefined
+              ? { kind: "set-occurrence-group", view: command.view, occurrence: command.occurrence }
+              : { kind: "set-occurrence-group", view: command.view, occurrence: command.occurrence, group: current.group },
+          ],
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "set-summary-definition": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      const previous = view.summaryLabels?.[command.definition.id];
+      const summaryLabels = { ...(view.summaryLabels ?? {}), [command.definition.id]: command.definition };
+      return {
+        applied: {
+          state: { document, views: withKey(state.views, command.view, { ...view, summaryLabels }) },
+          effects: [],
+          inverse: [
+            previous === undefined
+              ? { kind: "remove-summary-definition", view: command.view, id: command.definition.id }
+              : { kind: "set-summary-definition", view: command.view, definition: previous },
+          ],
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "remove-summary-definition": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      const removed = view.summaryLabels?.[command.id];
+      if (removed === undefined) {
+        return missing(path, `summary definition ${command.id} does not exist in view ${command.view}`, [command.id, command.view]);
+      }
+      const kept = withoutKey(view.summaryLabels as Readonly<Record<string, SummaryDefinition>>, command.id);
+      const next: ViewDocument =
+        Object.keys(kept).length === 0
+          ? (({ summaryLabels: _dropped, ...rest }: ViewDocument) => (void _dropped, rest))(view)
+          : { ...view, summaryLabels: kept };
       return {
         applied: {
           state: { document, views: withKey(state.views, command.view, next) },
-          effects,
-          inverse,
+          effects: [],
+          inverse: [{ kind: "set-summary-definition", view: command.view, definition: removed }],
           touchedViews: [command.view],
         },
       };
