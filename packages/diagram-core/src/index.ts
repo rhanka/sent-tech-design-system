@@ -19,6 +19,7 @@ export * from "./resolver.js";
 export * from "./profiles/index.js";
 export * from "./document.js";
 export * from "./view.js";
+export * from "./fold.js";
 export * from "./state.js";
 export * from "./hash.js";
 export * from "./sha256.js";

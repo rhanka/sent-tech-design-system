@@ -46,8 +46,24 @@ export interface EntityOccurrence {
 export interface RelationOccurrenceEndpoint {
   /** The role of the relation this end draws. Matched against the relation's own endpoints. */
   readonly role: string;
-  /** The occurrence this end attaches to: an entity occurrence or a port occurrence. */
+  /**
+   * The occurrence this end attaches to: an entity, port or relation
+   * occurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef
+   * target through its `relation` field.
+   */
   readonly occurrence: OccurrenceRef;
+  /**
+   * The semantic endpoint target for this role, copied verbatim. Present iff
+   * the drawn `occurrence` does not itself draw that target (folded
+   * projection, §4.4.2). A RelationRef is permitted only where the semantic
+   * role admits relation targets.
+   */
+  readonly semanticTarget?: EntityRef | PortRef | RelationRef;
+  /**
+   * The original endpoint occurrence in the retained source view. Present iff
+   * `semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).
+   */
+  readonly sourceOccurrence?: OccurrenceRef;
 }
 
 export interface RelationOccurrence {
@@ -95,6 +111,34 @@ export interface VisualGroup {
   readonly id: string;
   readonly label?: string;
   readonly collapsed?: boolean;
+  /**
+   * The entity occurrence this group folds (M3 §4.1.1). Present on every fold
+   * group in a completed-profile view. Membership is still derived through
+   * `EntityOccurrence.group`, never stored here.
+   */
+  readonly occurrence?: OccurrenceRef;
+}
+
+/**
+ * An authored aggregate-label definition (M3 §4.5.1). View data: it labels a
+ * folded drawing, never a semantic fact. Activation is derived after
+ * occurrence projection (§4.5.2) and is never persisted.
+ */
+export interface SummaryDefinition {
+  readonly id: string;
+  readonly sourceOccurrence: OccurrenceRef;
+  readonly targetOccurrence: OccurrenceRef;
+  readonly label: string;
+  /** Sorted, distinct, non-empty semantic relation ids of the selected set. */
+  readonly relationIds: readonly RelationRef[];
+  /** Absent selects solid only. Solid and dashed never aggregate together. */
+  readonly strokeStyle?: "solid" | "dashed";
+  /**
+   * Complete selected candidate occurrence set for the scope/style. Absent
+   * means the scope/style must select at most one occurrence per relation
+   * id; present must list every selected occurrence (sorted, distinct).
+   */
+  readonly relationOccurrences?: readonly OccurrenceRef[];
 }
 
 /**
@@ -142,6 +186,13 @@ export interface ViewDocument {
   readonly groups: Readonly<Record<string, VisualGroup>>;
   readonly filters: readonly ViewFilter[];
   readonly presentation: PresentationState;
+  /**
+   * Authored aggregate-label definitions (M3 §4.5.1), keyed by definition id.
+   * Absent means no authored labels; derived count labels are computed at
+   * render time and never stored. Definitions survive projection byte for
+   * byte; activation is derived, never persisted.
+   */
+  readonly summaryLabels?: Readonly<Record<string, SummaryDefinition>>;
 }
 
 /** The view field set, asserted by a test: an added `hover` key fails it. */
@@ -154,6 +205,7 @@ export const VIEW_DOCUMENT_FIELDS = [
   "relationOccurrences",
   "revision",
   "semanticDocumentId",
+  "summaryLabels",
   "viewId",
 ] as const;
 
