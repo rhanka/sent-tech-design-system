@@ -61,6 +61,8 @@ import {
 } from "./profile.js";
 import { parseRef, refKindOf, type EntityRef, type PortRef, type RefKind } from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
+import { DIAGRAM_PRESENTATION_PROFILE_ID } from "./presentation.js";
+import { validateDiagramPresentation } from "./presentation-validate.js";
 import type { DiagramState } from "./state.js";
 import type { ViewDocument } from "./view.js";
 
@@ -1551,6 +1553,37 @@ export function validateDocument(document: SemanticDocument, options: Validation
     return [diagnostic({ code: "document-not-an-object", path: "document", message: "a document is an object" })];
   }
 
+  if (
+    Array.isArray((document as { profileRefs?: unknown }).profileRefs) &&
+    ((document as unknown as { profileRefs: readonly string[] }).profileRefs as readonly string[]).includes(
+      DIAGRAM_PRESENTATION_PROFILE_ID,
+    )
+  ) {
+    return [
+      diagnostic({
+        code: "unknown-profile",
+        severity: "error",
+        path: "profileRefs",
+        message: `profile ${DIAGRAM_PRESENTATION_PROFILE_ID} is not a diagram profile; diagram-presentation@1 is a contract artifact, not a semantic profile`,
+        details: { profile: DIAGRAM_PRESENTATION_PROFILE_ID },
+      }),
+    ];
+  }
+  if (
+    options.bindings !== undefined &&
+    options.bindings.rows.some((row) => row.profileId === (DIAGRAM_PRESENTATION_PROFILE_ID as never))
+  ) {
+    return [
+      diagnostic({
+        code: "type-definition-conflict",
+        severity: "error",
+        path: `bindings.${DIAGRAM_PRESENTATION_PROFILE_ID}`,
+        message: `executor binding for ${DIAGRAM_PRESENTATION_PROFILE_ID} is refused; a contract artifact is never a family layer`,
+        details: { profile: DIAGRAM_PRESENTATION_PROFILE_ID },
+      }),
+    ];
+  }
+
   // A provided bindings table is verified before any document check runs; a
   // missing row or digest mismatch refuses the run instead of guessing.
   if (options.bindings !== undefined) {
@@ -2056,6 +2089,10 @@ export function validateView(
         message: `zoom ${view.presentation.camera.zoom} must be strictly positive`,
       }),
     );
+  }
+
+  if (view.presentation.diagram !== undefined) {
+    diagnostics.push(...validateDiagramPresentation(document, view, options));
   }
 
   const canonical = tryCanonicalise(view, "view");
