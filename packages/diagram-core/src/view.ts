@@ -18,6 +18,7 @@
  */
 
 import type { DocumentRef, EntityRef, OccurrenceRef, PortRef, RelationRef, ViewRef } from "./refs.js";
+import type { DiagramPresentation, StrokeStyle } from "./presentation.js";
 
 export interface Point {
   readonly x: number;
@@ -55,6 +56,11 @@ export interface RelationOccurrence {
   readonly endpoints: readonly RelationOccurrenceEndpoint[];
   /** Persisted route hints. An empty/absent list means "the renderer routes it". */
   readonly waypoints?: readonly Point[];
+  /**
+   * The only stroke carrier (M3 §3.2.2/§3.5), default solid. Absent is distinct
+   * from explicit solid and is preserved byte-for-byte.
+   */
+  readonly strokeStyle?: StrokeStyle;
 }
 
 export type PortSide = "north" | "east" | "south" | "west";
@@ -121,6 +127,8 @@ export interface PresentationState {
   readonly grid?: { readonly size: number; readonly snap: boolean };
   /** A theme id the host resolves. No colour, no token value is stored here. */
   readonly theme?: string;
+  /** Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract. */
+  readonly diagram?: DiagramPresentation;
 }
 
 export interface ViewDocument {
