@@ -47,8 +47,12 @@ export interface PortTypeDeclaration {
   readonly attributes?: readonly AttributeSchema[];
 }
 
-/** What a relation endpoint may point at. Entities and ports are not interchangeable. */
-export type EndpointTargetKind = "entity" | "port";
+/**
+ * What a relation endpoint may point at. Entities, ports and relations are
+ * not interchangeable. The `relation` kind is the shared relation-target
+ * carrier of M3 §3.9.1; legacy @1 adapters retain their pinned two-kind run.
+ */
+export type EndpointTargetKind = "entity" | "port" | "relation";
 
 export interface RelationRoleDeclaration {
   readonly role: string;

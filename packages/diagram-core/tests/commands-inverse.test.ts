@@ -2,7 +2,7 @@
  * Commands, transactions and inverses (SPEC 3.5, acceptance criterion 6).
  *
  * THE ROUND TRIP, AND WHAT IT COMPARES
- * For every one of the eighteen commands: apply it, replay the returned inverse
+ * For every one of the twenty-three commands: apply it, replay the returned inverse
  * as a NEW transaction, and compare the canonical CONTENT bytes with the initial
  * ones. `serialiseContent` normalises revisions; the revision itself is asserted
  * separately to be exactly two ahead.
@@ -38,6 +38,8 @@ import {
   type Command,
   type CommandKind,
   type DiagramState,
+  type EntityOccurrence,
+  type ViewDocument,
 } from "../src/index.js";
 import { readFixture, stateOf } from "./fixtures.js";
 
@@ -66,6 +68,7 @@ function roundTrip(state: DiagramState, command: Command): void {
   expect(serialiseContent(applied.state)).not.toBe(before);
 
   expect(applied.inverse.kind).toBe("invertible");
+  if (applied.inverse.kind !== "invertible") throw new Error("expected an invertible outcome");
   const undone = applyInverse(applied.state, applied.inverse, { commandId: `undo:${command.kind}` }, { registry });
   if (undone.status !== "applied") {
     throw new Error(`the inverse of ${command.kind} was refused:\n${formatDiagnostics(undone.diagnostics)}`);
@@ -76,7 +79,12 @@ function roundTrip(state: DiagramState, command: Command): void {
   expect(serialiseContent(state)).toBe(before);
 }
 
-const CASES: readonly { readonly kind: CommandKind; readonly command: Command; readonly note: string }[] = [
+const CASES: readonly {
+  readonly kind: CommandKind;
+  readonly command: Command;
+  readonly note: string;
+  readonly state?: "unbound-cluster" | "with-summary";
+}[] = [
   {
     kind: "create-entity",
     note: "a new node; its inverse is a cascading delete, which at that point has nothing to cascade over",
@@ -268,15 +276,61 @@ const CASES: readonly { readonly kind: CommandKind; readonly command: Command; r
   },
 ];
 
+function mainOf(state: DiagramState): ViewDocument {
+  const main = state.views["view:main"];
+  if (main === undefined) throw new Error("fixture carries no view:main");
+  return main;
+}
+
+function ungrouped(occurrences: Readonly<Record<string, EntityOccurrence>>): Record<string, EntityOccurrence> {
+  const next: Record<string, EntityOccurrence> = {};
+  for (const [id, occurrence] of Object.entries(occurrences)) {
+    const { group: _cleared, ...rest } = occurrence;
+    void _cleared;
+    next[id] = rest;
+  }
+  return next;
+}
+
+const unboundCluster: DiagramState = {
+  document: base.document,
+  views: {
+    ...base.views,
+    "view:main": { ...mainOf(base), entityOccurrences: ungrouped(mainOf(base).entityOccurrences) },
+  },
+};
+
+const withSummary: DiagramState = {
+  document: base.document,
+  views: {
+    ...base.views,
+    "view:main": {
+      ...mainOf(base),
+      summaryLabels: {
+        "sum:flow": {
+          id: "sum:flow",
+          sourceOccurrence: occurrenceRef("alpha-1"),
+          targetOccurrence: occurrenceRef("beta-1"),
+          label: "Flow",
+          relationIds: [relationRef("flow")],
+        },
+      },
+    },
+  },
+};
+
+const stateOfCase = (entry: { readonly state?: "unbound-cluster" | "with-summary" }): DiagramState =>
+  entry.state === "unbound-cluster" ? unboundCluster : entry.state === "with-summary" ? withSummary : base;
+
 describe("every command of the lot has an inverse that restores the initial content", () => {
   it("the table covers every command kind, and no other", () => {
-    expect([...new Set(CASES.map((entry) => entry.kind))].sort()).toEqual([...COMMAND_KINDS].sort());
-    expect(COMMAND_KINDS).toHaveLength(18);
+    expect([...new Set([...CASES.map((entry) => entry.kind), "replace-view" as const])].sort()).toEqual([...COMMAND_KINDS].sort());
+    expect(COMMAND_KINDS).toHaveLength(19);
   });
 
   for (const entry of CASES) {
     it(`${entry.kind}: ${entry.note}`, () => {
-      roundTrip(base, entry.command);
+      roundTrip(stateOfCase(entry), entry.command);
     });
   }
 
@@ -301,6 +355,48 @@ describe("every command of the lot has an inverse that restores the initial cont
       occurrence: occurrenceRef("flow-1"),
       placement: { kind: "waypoints" },
     });
+  });
+
+  it("replace-view is revision-preserving and restores presence byte for byte", () => {
+    const main = mainOf(base);
+    const source = { ...main, summaryLabels: { "sum:flow": { id: "sum:flow", sourceOccurrence: occurrenceRef("alpha-1"), targetOccurrence: occurrenceRef("beta-1"), label: "Flow", relationIds: [relationRef("flow")] } } };
+    const before = serialiseContent(base);
+    const applied = applyCommand(
+      base,
+      { kind: "replace-view", view: viewRef("main"), source, collapsed: [] },
+      { commandId: "cmd:replace-view", baseRevision: base.document.revision, author: "test" },
+      { registry },
+    );
+    if (applied.status !== "applied") throw new Error(formatDiagnostics(applied.diagnostics));
+    expect(applied.state.document.revision).toBe(base.document.revision);
+    expect(applied.effects.some((effect) => effect.kind === "revision-bumped")).toBe(false);
+    expect(serialiseContent(applied.state)).not.toBe(before);
+    if (applied.inverse.kind !== "invertible") throw new Error("expected an invertible outcome");
+    const undone = applyInverse(applied.state, applied.inverse, { commandId: "undo:replace-view" }, { registry });
+    if (undone.status !== "applied") throw new Error(formatDiagnostics(undone.diagnostics));
+    expect(serialiseContent(undone.state)).toBe(before);
+    expect(undone.state.document.revision).toBe(base.document.revision);
+    expect("summaryLabels" in (undone.state.views["view:main"] as object)).toBe(false);
+  });
+
+  it("mixed semantic and view commands keep a single semantic bump", () => {
+    const main = mainOf(base);
+    const source = { ...main, summaryLabels: { "sum:flow": { id: "sum:flow", sourceOccurrence: occurrenceRef("alpha-1"), targetOccurrence: occurrenceRef("beta-1"), label: "Flow", relationIds: [relationRef("flow")] } } };
+    const outcome = applyTransaction(
+      base,
+      {
+        commandId: "cmd:mixed",
+        baseRevision: base.document.revision,
+        commands: [
+          { kind: "create-entity", entity: { id: entityRef("epsilon"), profile: GENERIC_PROFILE_ID, type: "node", attributes: { name: { kind: "text", value: "Epsilon" } } } },
+          { kind: "replace-view", view: viewRef("main"), source, collapsed: [] },
+        ],
+      },
+      { registry },
+    );
+    if (outcome.status !== "applied") throw new Error(formatDiagnostics(outcome.diagnostics));
+    expect(outcome.state.document.revision).toBe(base.document.revision + 1);
+    expect(outcome.effects.filter((effect) => effect.kind === "revision-bumped")).toHaveLength(1);
   });
 
   it("a multi-command transaction inverts in reverse order, byte for byte", () => {
@@ -517,17 +613,17 @@ describe("the documented reason an inverse may be absent", () => {
         policy: { occurrences: "cascade", relations: "cascade", ports: "cascade" },
       },
       { commandId: "cmd:budget", baseRevision: base.document.revision },
-      // The cascade needs 1 entity + 1 port + 3 relations + 3 occurrences = 8
-      // inverse commands; the budget allows seven.
-      { registry, inverseBudget: 7 },
+      // The cascade needs 1 entity + 1 port + 3 relations + 1 view snapshot = 6
+      // inverse commands; the budget allows five.
+      { registry, inverseBudget: 5 },
     );
     expect(outcome.status).toBe("applied");
     if (outcome.status !== "applied") throw new Error("unreachable");
     expect(outcome.inverse.kind).toBe("non-invertible");
     if (outcome.inverse.kind !== "non-invertible") throw new Error("unreachable");
     expect(outcome.inverse.code).toBe("inverse-budget-exceeded");
-    expect(outcome.inverse.reason).toContain("8 commands");
-    expect(outcome.inverse.reason).toContain("budget of 7");
+    expect(outcome.inverse.reason).toContain("6 commands");
+    expect(outcome.inverse.reason).toContain("budget of 5");
 
     // Replaying a non-invertible outcome is refused, with that same reason.
     const undone = applyInverse(outcome.state, outcome.inverse, { commandId: "undo:budget" }, { registry });
