@@ -8,9 +8,9 @@
 import { diagnostic, type Diagnostic } from "./diagnostics.js";
 import type { SemanticDocument } from "./document.js";
 import {
-  DIAGRAM_PRESENTATION_CONTRACT_PIN,
-  DIAGRAM_PRESENTATION_SCHEMA_PIN,
   familyPinForProfile,
+  isPresentationContractPin,
+  isPresentationSchemaPin,
   parsePinnedAdapterReference,
   presentationDigestOf,
   presentationPinsEqual,
@@ -241,7 +241,7 @@ export function applyPresentation(
   if (!pinsEqual(typed.contractPin, diagram.contractPin as PresentationPin)) {
     return { outcome: "refused", diagnostics: [pinMismatch("presentation.diagram.contractPin")] };
   }
-  if (!pinsEqual(typed.contractPin, DIAGRAM_PRESENTATION_CONTRACT_PIN)) {
+  if (!isPresentationContractPin(typed.contractPin)) {
     return { outcome: "refused", diagnostics: [pinMismatch("presentation.diagram.contractPin")] };
   }
 
@@ -262,7 +262,7 @@ export function applyPresentation(
   if (!isWellFormedPin(catalogSchemaPin)) {
     return { outcome: "refused", diagnostics: [pinMismatch("artifactBinding.schemaPin")] };
   }
-  if (!pinsEqual(catalogSchemaPin as PresentationPin, DIAGRAM_PRESENTATION_SCHEMA_PIN)) {
+  if (!isPresentationSchemaPin(catalogSchemaPin as PresentationPin)) {
     return { outcome: "refused", diagnostics: [pinMismatch("artifactBinding.schemaPin")] };
   }
   const parsedAdapter = parsePinnedAdapterReference(catalogAdapterRef);

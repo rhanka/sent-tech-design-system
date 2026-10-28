@@ -9,8 +9,9 @@
 import { diagnostic, type Diagnostic } from "./diagnostics.js";
 import type { SemanticDocument } from "./document.js";
 import {
-  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  isPresentationContractPin,
   type DiagramPresentation,
+  type PresentationPin,
 } from "./presentation.js";
 import { createTypeResolver } from "./resolver.js";
 import { refKindOf } from "./refs.js";
@@ -294,9 +295,7 @@ export function validateDiagramPresentation(
     return diagnostics;
   }
   if (
-    contractPin["id"] !== DIAGRAM_PRESENTATION_CONTRACT_PIN.id ||
-    contractPin["version"] !== DIAGRAM_PRESENTATION_CONTRACT_PIN.version ||
-    contractPin["contentDigest"] !== DIAGRAM_PRESENTATION_CONTRACT_PIN.contentDigest ||
+    !isPresentationContractPin(contractPin as unknown as PresentationPin) ||
     !DIGEST_PATTERN.test(contractPin["contentDigest"] as string)
   ) {
     diagnostics.push(pinMismatch("presentation.diagram.contractPin"));
