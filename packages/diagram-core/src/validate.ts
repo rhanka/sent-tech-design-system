@@ -75,6 +75,13 @@ export interface ValidationOptions {
    * version, requires a verified row.
    */
   readonly bindings?: ExecutorProfileBindings;
+  /**
+   * Test-only resolved contract catalog for presentation authentication.
+   * Absent means the packaged governed draft entry, whose transitional
+   * adapter is unqualified and refuses. Positive witnesses supply a
+   * test entry with a real pinned adapter over actual bytes.
+   */
+  readonly presentationCatalog?: import("./presentation.js").PresentationContractCatalog;
 }
 
 /** Base type attributes plus the additive attributes of a document type definition. */
