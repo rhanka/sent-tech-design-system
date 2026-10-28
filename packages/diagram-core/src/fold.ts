@@ -442,11 +442,14 @@ export function foldedScene(
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
     const id = key as OccurrenceRef;
     const foldExcluded = internal.has(id);
-    // A filter exclusion is evaluated per occurrence from the evaluated host
-    // input: any endpoint whose original drawing is filter-hidden excludes
-    // the whole occurrence (§4.4.6). Fold precedence applies only where the
-    // two exclusions actually overlap.
-    const filterExcluded = occurrence.endpoints.some((endpoint) => filterHidden.has(originalOf(endpoint)));
+    // Evaluated filter exclusions apply consistently to relation occurrence
+    // ids, original endpoints and drawn (representative) endpoints before
+    // scene relations and aggregates are built; overlapping causes retained.
+    const filterExcluded =
+      filterHidden.has(id) ||
+      occurrence.endpoints.some(
+        (endpoint) => filterHidden.has(originalOf(endpoint)) || filterHidden.has(endpoint.occurrence),
+      );
     if (!foldExcluded && !filterExcluded) drawn.push(id);
     if (foldExcluded && filterExcluded) {
       exclusions.push({ occurrence: id, kind: "endpoint-hidden", reason: "fold", cause: "filter" });
@@ -502,33 +505,47 @@ interface SummaryCandidate {
 export interface SummaryResolutionOptions {
   /** Evaluated filter exclusions feeding aggregate resolution (§4.4.6). */
   readonly filters?: FoldFilterState;
-  /** Profile registry for declared relation directions (§4.5.1). */
-  readonly registry?: ProfileRegistry;
+  /** Declared profile context for relation directions (§4.5.1). Always supplied. */
+  readonly registry: ProfileRegistry;
 }
 
 /**
- * The declared direction of a semantic relation: undirected relations
- * normalize their representative pair, directed ones never do. Unknown
- * declarations fall back to role-name comparison.
+ * The declared direction of a semantic relation from declared roles only:
+ * undirected relations normalize their representative pair, directed ones
+ * never do. Unknown declarations are directed (strict, no role-name guessing).
  */
 function isUndirectedRelation(
   document: SemanticDocument,
-  registry: ProfileRegistry | undefined,
+  registry: ProfileRegistry,
   relationId: RelationRef,
-): boolean | undefined {
+): boolean {
   const relation = document.relations[relationId];
-  if (relation === undefined || registry === undefined) return undefined;
+  if (relation === undefined) return false;
   const profile = registry.get(relation.profile);
   const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
-  if (declared === undefined) return undefined;
+  if (declared === undefined) return false;
   return declared.direction === "undirected";
 }
 
-/** Binary candidate occurrences whose ordered endpoints lie in the two scopes. */
-function summaryCandidates(
+/** Declared role order for a semantic relation, if its type declares roles. */
+function declaredRoleOrder(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  relationId: RelationRef,
+): readonly string[] | undefined {
+  const relation = document.relations[relationId];
+  if (relation === undefined) return undefined;
+  const profile = registry.get(relation.profile);
+  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  if (declared === undefined) return undefined;
+  return declared.roles.map((role) => role.role);
+}
+
+/** Binary candidate occurrences whose oriented endpoints lie in the two scopes. */
+export function summaryCandidates(
   view: ViewDocument,
   document: SemanticDocument,
-  registry: ProfileRegistry | undefined,
+  registry: ProfileRegistry,
   source: OccurrenceRef,
   target: OccurrenceRef,
   style: "solid" | "dashed",
@@ -540,16 +557,32 @@ function summaryCandidates(
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
     if (occurrence.endpoints.length !== 2) continue;
     if ((occurrence.strokeStyle ?? "solid") !== style) continue;
+    const undirected = isUndirectedRelation(document, registry, occurrence.relation);
+    if (undirected) {
+      const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
+      const firstOriginal = first.sourceOccurrence ?? first.occurrence;
+      const secondOriginal = second.sourceOccurrence ?? second.occurrence;
+      const ordered = sourceScope.has(firstOriginal) && targetScope.has(secondOriginal);
+      const swapped = sourceScope.has(secondOriginal) && targetScope.has(firstOriginal);
+      if (!ordered && !swapped) continue;
+      found.push({ occurrence: key as OccurrenceRef, relation: occurrence.relation, style });
+      continue;
+    }
+    const order = declaredRoleOrder(document, registry, occurrence.relation);
+    const byRole = new Map(occurrence.endpoints.map((endpoint) => [endpoint.role, endpoint] as const));
+    if (order !== undefined && order.length >= 2 && byRole.has(order[0] as string) && byRole.has(order[1] as string)) {
+      const firstEndpoint = byRole.get(order[0] as string) as RelationOccurrenceEndpoint;
+      const secondEndpoint = byRole.get(order[1] as string) as RelationOccurrenceEndpoint;
+      const firstOriginal = firstEndpoint.sourceOccurrence ?? firstEndpoint.occurrence;
+      const secondOriginal = secondEndpoint.sourceOccurrence ?? secondEndpoint.occurrence;
+      if (!(sourceScope.has(firstOriginal) && targetScope.has(secondOriginal))) continue;
+      found.push({ occurrence: key as OccurrenceRef, relation: occurrence.relation, style });
+      continue;
+    }
     const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
     const firstOriginal = first.sourceOccurrence ?? first.occurrence;
     const secondOriginal = second.sourceOccurrence ?? second.occurrence;
-    const declared = isUndirectedRelation(document, registry, occurrence.relation);
-    const directed = declared === undefined ? first.role !== second.role : !declared;
-    const ordered =
-      sourceScope.has(firstOriginal) && targetScope.has(secondOriginal);
-    const swapped =
-      !directed && sourceScope.has(secondOriginal) && targetScope.has(firstOriginal);
-    if (!ordered && !swapped) continue;
+    if (!(sourceScope.has(firstOriginal) && targetScope.has(secondOriginal))) continue;
     found.push({ occurrence: key as OccurrenceRef, relation: occurrence.relation, style });
   }
   return found;
@@ -598,11 +631,18 @@ function arraysEqual(left: readonly string[], right: readonly string[]): boolean
 export function analyzeSummaries(
   view: ViewDocument,
   document: SemanticDocument,
-  options?: SummaryResolutionOptions,
+  options: SummaryResolutionOptions,
 ): SummaryAnalysis {
   const definitions = view.summaryLabels ?? {};
-  const registry = options?.registry;
-  const filterHidden = new Set<string>(options?.filters?.hiddenByFilter ?? []);
+  const registry = options.registry;
+  const filterHidden = new Set<string>(options.filters?.hiddenByFilter ?? []);
+  const isFilterExcluded = (occurrence: RelationOccurrence): boolean => {
+    if (filterHidden.has(occurrence.id)) return true;
+    return occurrence.endpoints.some(
+      (endpoint) =>
+        filterHidden.has(endpoint.sourceOccurrence ?? endpoint.occurrence) || filterHidden.has(endpoint.occurrence),
+    );
+  };
   const sourceIssues: SummaryIssue[] = [];
   const invalid = new Set<string>();
   const seenTriples = new Map<string, string>();
@@ -696,20 +736,40 @@ export function analyzeSummaries(
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
     if (internal.has(key as OccurrenceRef)) continue;
-    if (occurrence.endpoints.some((endpoint) => filterHidden.has(endpoint.sourceOccurrence ?? endpoint.occurrence))) continue;
+    if (isFilterExcluded(occurrence)) continue;
     if (occurrence.endpoints.length !== 2) continue;
-    const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
-    const declared = isUndirectedRelation(document, registry, occurrence.relation);
-    const directed = declared === undefined ? first.role !== second.role : !declared;
-    const ordered: [string, string] = [first.occurrence, second.occurrence];
-    const pair: [string, string] =
-      directed || ordered[0] <= ordered[1] ? ordered : [ordered[1], ordered[0]];
+    const undirected = isUndirectedRelation(document, registry, occurrence.relation);
+    let pair: [string, string];
+    if (undirected) {
+      const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
+      const ordered: [string, string] = [first.occurrence, second.occurrence];
+      pair = ordered[0] <= ordered[1] ? ordered : [ordered[1], ordered[0]];
+    } else {
+      const order = declaredRoleOrder(document, registry, occurrence.relation);
+      const byRole = new Map(occurrence.endpoints.map((endpoint) => [endpoint.role, endpoint.occurrence] as const));
+      if (order !== undefined && order.length >= 2 && byRole.has(order[0] as string) && byRole.has(order[1] as string)) {
+        pair = [byRole.get(order[0] as string) as string, byRole.get(order[1] as string) as string];
+      } else {
+        const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
+        const orderRoles = declaredRoleOrder(document, registry, occurrence.relation) ?? [];
+        const indexOf = (role: string): number => {
+          const index = orderRoles.indexOf(role);
+          return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+        };
+        const sorted = [first, second].sort((left, right) => {
+          const orderDiff = indexOf(left.role) - indexOf(right.role);
+          if (orderDiff !== 0) return orderDiff;
+          return left.occurrence < right.occurrence ? -1 : left.occurrence > right.occurrence ? 1 : 0;
+        });
+        pair = [sorted[0]?.occurrence as string, sorted[1]?.occurrence as string];
+      }
+    }
     const style = occurrence.strokeStyle ?? "solid";
     const aggregateKey = `(${pair[0]},${pair[1]},${style})`;
     const aggregate = aggregates.get(aggregateKey) ?? { members: [], relationIds: [], projected: false };
     aggregate.members.push(key as OccurrenceRef);
     if (!aggregate.relationIds.includes(occurrence.relation)) aggregate.relationIds.push(occurrence.relation);
-    if (first.semanticTarget !== undefined || second.semanticTarget !== undefined) aggregate.projected = true;
+    if (occurrence.endpoints.some((endpoint) => endpoint.semanticTarget !== undefined)) aggregate.projected = true;
     aggregates.set(aggregateKey, aggregate);
   }
   for (const aggregate of aggregates.values()) {
@@ -788,7 +848,7 @@ export function analyzeSummaries(
 export function resolveSummaries(
   view: ViewDocument,
   document: SemanticDocument,
-  options?: SummaryResolutionOptions,
+  options: SummaryResolutionOptions,
 ): Map<string, ActiveSummary> {
   return new Map(analyzeSummaries(view, document, options).actives);
 }

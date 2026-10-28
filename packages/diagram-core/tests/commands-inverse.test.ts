@@ -68,12 +68,14 @@ function roundTrip(state: DiagramState, command: Command): void {
   expect(serialiseContent(applied.state)).not.toBe(before);
 
   expect(applied.inverse.kind).toBe("invertible");
+  if (applied.inverse.kind !== "invertible") throw new Error("expected an invertible outcome");
+  const inverseBumps = applied.inverse.commands.some((entry) => entry.kind !== "replace-view") ? 1 : 0;
   const undone = applyInverse(applied.state, applied.inverse, { commandId: `undo:${command.kind}` }, { registry });
   if (undone.status !== "applied") {
     throw new Error(`the inverse of ${command.kind} was refused:\n${formatDiagnostics(undone.diagnostics)}`);
   }
   expect(serialiseContent(undone.state)).toBe(before);
-  expect(undone.state.document.revision).toBe(state.document.revision + 2);
+  expect(undone.state.document.revision).toBe(state.document.revision + 1 + inverseBumps);
   // The caller's state was never mutated.
   expect(serialiseContent(state)).toBe(before);
 }
@@ -273,47 +275,6 @@ const CASES: readonly {
       scope: { kind: "entity", target: entityRef("alpha") },
     },
   },
-  {
-    kind: "create-group",
-    note: "an unbound label group; its inverse removes it again",
-    command: {
-      kind: "create-group",
-      view: viewRef("main"),
-      group: { id: "grp.9.test", label: "test" },
-    },
-  },
-  {
-    kind: "remove-group",
-    note: "removes a memberless group; the inverse restores the record",
-    command: { kind: "remove-group", view: viewRef("main"), group: "group:cluster" },
-    state: "unbound-cluster" as const,
-  },
-  {
-    kind: "set-occurrence-group",
-    note: "assigns an ungrouped drawing to the cluster; the inverse clears it",
-    command: { kind: "set-occurrence-group", view: viewRef("main"), occurrence: occurrenceRef("alpha-2"), group: "group:cluster" },
-  },
-  {
-    kind: "set-summary-definition",
-    note: "adds a valid authored definition; the inverse removes it again",
-    command: {
-      kind: "set-summary-definition",
-      view: viewRef("main"),
-      definition: {
-        id: "sum:flow",
-        sourceOccurrence: occurrenceRef("alpha-1"),
-        targetOccurrence: occurrenceRef("beta-1"),
-        label: "Flow",
-        relationIds: [relationRef("flow")],
-      },
-    },
-  },
-  {
-    kind: "remove-summary-definition",
-    note: "removes the only definition; the inverse restores it byte for byte",
-    command: { kind: "remove-summary-definition", view: viewRef("main"), id: "sum:flow" },
-    state: "with-summary" as const,
-  },
 ];
 
 function mainOf(state: DiagramState): ViewDocument {
@@ -364,8 +325,8 @@ const stateOfCase = (entry: { readonly state?: "unbound-cluster" | "with-summary
 
 describe("every command of the lot has an inverse that restores the initial content", () => {
   it("the table covers every command kind, and no other", () => {
-    expect([...new Set(CASES.map((entry) => entry.kind))].sort()).toEqual([...COMMAND_KINDS].sort());
-    expect(COMMAND_KINDS).toHaveLength(23);
+    expect([...new Set([...CASES.map((entry) => entry.kind), "replace-view" as const])].sort()).toEqual([...COMMAND_KINDS].sort());
+    expect(COMMAND_KINDS).toHaveLength(19);
   });
 
   for (const entry of CASES) {
@@ -395,6 +356,48 @@ describe("every command of the lot has an inverse that restores the initial cont
       occurrence: occurrenceRef("flow-1"),
       placement: { kind: "waypoints" },
     });
+  });
+
+  it("replace-view is revision-preserving and restores presence byte for byte", () => {
+    const main = mainOf(base);
+    const source = { ...main, summaryLabels: { "sum:flow": { id: "sum:flow", sourceOccurrence: occurrenceRef("alpha-1"), targetOccurrence: occurrenceRef("beta-1"), label: "Flow", relationIds: [relationRef("flow")] } } };
+    const before = serialiseContent(base);
+    const applied = applyCommand(
+      base,
+      { kind: "replace-view", view: viewRef("main"), source, collapsed: [] },
+      { commandId: "cmd:replace-view", baseRevision: base.document.revision, author: "test" },
+      { registry },
+    );
+    if (applied.status !== "applied") throw new Error(formatDiagnostics(applied.diagnostics));
+    expect(applied.state.document.revision).toBe(base.document.revision);
+    expect(applied.effects.some((effect) => effect.kind === "revision-bumped")).toBe(false);
+    expect(serialiseContent(applied.state)).not.toBe(before);
+    if (applied.inverse.kind !== "invertible") throw new Error("expected an invertible outcome");
+    const undone = applyInverse(applied.state, applied.inverse, { commandId: "undo:replace-view" }, { registry });
+    if (undone.status !== "applied") throw new Error(formatDiagnostics(undone.diagnostics));
+    expect(serialiseContent(undone.state)).toBe(before);
+    expect(undone.state.document.revision).toBe(base.document.revision);
+    expect("summaryLabels" in (undone.state.views["view:main"] as object)).toBe(false);
+  });
+
+  it("mixed semantic and view commands keep a single semantic bump", () => {
+    const main = mainOf(base);
+    const source = { ...main, summaryLabels: { "sum:flow": { id: "sum:flow", sourceOccurrence: occurrenceRef("alpha-1"), targetOccurrence: occurrenceRef("beta-1"), label: "Flow", relationIds: [relationRef("flow")] } } };
+    const outcome = applyTransaction(
+      base,
+      {
+        commandId: "cmd:mixed",
+        baseRevision: base.document.revision,
+        commands: [
+          { kind: "create-entity", entity: { id: entityRef("epsilon"), profile: GENERIC_PROFILE_ID, type: "node", attributes: { name: { kind: "text", value: "Epsilon" } } } },
+          { kind: "replace-view", view: viewRef("main"), source, collapsed: [] },
+        ],
+      },
+      { registry },
+    );
+    if (outcome.status !== "applied") throw new Error(formatDiagnostics(outcome.diagnostics));
+    expect(outcome.state.document.revision).toBe(base.document.revision + 1);
+    expect(outcome.effects.filter((effect) => effect.kind === "revision-bumped")).toHaveLength(1);
   });
 
   it("a multi-command transaction inverts in reverse order, byte for byte", () => {
@@ -611,17 +614,17 @@ describe("the documented reason an inverse may be absent", () => {
         policy: { occurrences: "cascade", relations: "cascade", ports: "cascade" },
       },
       { commandId: "cmd:budget", baseRevision: base.document.revision },
-      // The cascade needs 1 entity + 1 port + 3 relations + 3 occurrences = 8
-      // inverse commands; the budget allows seven.
-      { registry, inverseBudget: 7 },
+      // The cascade needs 1 entity + 1 port + 3 relations + 1 view snapshot = 6
+      // inverse commands; the budget allows five.
+      { registry, inverseBudget: 5 },
     );
     expect(outcome.status).toBe("applied");
     if (outcome.status !== "applied") throw new Error("unreachable");
     expect(outcome.inverse.kind).toBe("non-invertible");
     if (outcome.inverse.kind !== "non-invertible") throw new Error("unreachable");
     expect(outcome.inverse.code).toBe("inverse-budget-exceeded");
-    expect(outcome.inverse.reason).toContain("8 commands");
-    expect(outcome.inverse.reason).toContain("budget of 7");
+    expect(outcome.inverse.reason).toContain("6 commands");
+    expect(outcome.inverse.reason).toContain("budget of 5");
 
     // Replaying a non-invertible outcome is refused, with that same reason.
     const undone = applyInverse(outcome.state, outcome.inverse, { commandId: "undo:budget" }, { registry });
