@@ -2,7 +2,7 @@
  * Commands, transactions and inverses (SPEC 3.5, acceptance criterion 6).
  *
  * THE ROUND TRIP, AND WHAT IT COMPARES
- * For every one of the eighteen commands: apply it, replay the returned inverse
+ * For every one of the twenty-three commands: apply it, replay the returned inverse
  * as a NEW transaction, and compare the canonical CONTENT bytes with the initial
  * ones. `serialiseContent` normalises revisions; the revision itself is asserted
  * separately to be exactly two ahead.
@@ -38,6 +38,8 @@ import {
   type Command,
   type CommandKind,
   type DiagramState,
+  type EntityOccurrence,
+  type ViewDocument,
 } from "../src/index.js";
 import { readFixture, stateOf } from "./fixtures.js";
 
@@ -76,7 +78,12 @@ function roundTrip(state: DiagramState, command: Command): void {
   expect(serialiseContent(state)).toBe(before);
 }
 
-const CASES: readonly { readonly kind: CommandKind; readonly command: Command; readonly note: string }[] = [
+const CASES: readonly {
+  readonly kind: CommandKind;
+  readonly command: Command;
+  readonly note: string;
+  readonly state?: "unbound-cluster" | "with-summary";
+}[] = [
   {
     kind: "create-entity",
     note: "a new node; its inverse is a cascading delete, which at that point has nothing to cascade over",
@@ -266,17 +273,104 @@ const CASES: readonly { readonly kind: CommandKind; readonly command: Command; r
       scope: { kind: "entity", target: entityRef("alpha") },
     },
   },
+  {
+    kind: "create-group",
+    note: "an unbound label group; its inverse removes it again",
+    command: {
+      kind: "create-group",
+      view: viewRef("main"),
+      group: { id: "grp.9.test", label: "test" },
+    },
+  },
+  {
+    kind: "remove-group",
+    note: "removes a memberless group; the inverse restores the record",
+    command: { kind: "remove-group", view: viewRef("main"), group: "group:cluster" },
+    state: "unbound-cluster" as const,
+  },
+  {
+    kind: "set-occurrence-group",
+    note: "assigns an ungrouped drawing to the cluster; the inverse clears it",
+    command: { kind: "set-occurrence-group", view: viewRef("main"), occurrence: occurrenceRef("alpha-2"), group: "group:cluster" },
+  },
+  {
+    kind: "set-summary-definition",
+    note: "adds a valid authored definition; the inverse removes it again",
+    command: {
+      kind: "set-summary-definition",
+      view: viewRef("main"),
+      definition: {
+        id: "sum:flow",
+        sourceOccurrence: occurrenceRef("alpha-1"),
+        targetOccurrence: occurrenceRef("beta-1"),
+        label: "Flow",
+        relationIds: [relationRef("flow")],
+      },
+    },
+  },
+  {
+    kind: "remove-summary-definition",
+    note: "removes the only definition; the inverse restores it byte for byte",
+    command: { kind: "remove-summary-definition", view: viewRef("main"), id: "sum:flow" },
+    state: "with-summary" as const,
+  },
 ];
+
+function mainOf(state: DiagramState): ViewDocument {
+  const main = state.views["view:main"];
+  if (main === undefined) throw new Error("fixture carries no view:main");
+  return main;
+}
+
+function ungrouped(occurrences: Readonly<Record<string, EntityOccurrence>>): Record<string, EntityOccurrence> {
+  const next: Record<string, EntityOccurrence> = {};
+  for (const [id, occurrence] of Object.entries(occurrences)) {
+    const { group: _cleared, ...rest } = occurrence;
+    void _cleared;
+    next[id] = rest;
+  }
+  return next;
+}
+
+const unboundCluster: DiagramState = {
+  document: base.document,
+  views: {
+    ...base.views,
+    "view:main": { ...mainOf(base), entityOccurrences: ungrouped(mainOf(base).entityOccurrences) },
+  },
+};
+
+const withSummary: DiagramState = {
+  document: base.document,
+  views: {
+    ...base.views,
+    "view:main": {
+      ...mainOf(base),
+      summaryLabels: {
+        "sum:flow": {
+          id: "sum:flow",
+          sourceOccurrence: occurrenceRef("alpha-1"),
+          targetOccurrence: occurrenceRef("beta-1"),
+          label: "Flow",
+          relationIds: [relationRef("flow")],
+        },
+      },
+    },
+  },
+};
+
+const stateOfCase = (entry: { readonly state?: "unbound-cluster" | "with-summary" }): DiagramState =>
+  entry.state === "unbound-cluster" ? unboundCluster : entry.state === "with-summary" ? withSummary : base;
 
 describe("every command of the lot has an inverse that restores the initial content", () => {
   it("the table covers every command kind, and no other", () => {
     expect([...new Set(CASES.map((entry) => entry.kind))].sort()).toEqual([...COMMAND_KINDS].sort());
-    expect(COMMAND_KINDS).toHaveLength(18);
+    expect(COMMAND_KINDS).toHaveLength(23);
   });
 
   for (const entry of CASES) {
     it(`${entry.kind}: ${entry.note}`, () => {
-      roundTrip(base, entry.command);
+      roundTrip(stateOfCase(entry), entry.command);
     });
   }
 

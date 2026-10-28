@@ -8,12 +8,17 @@
  * exactly as before; `validateView` owns every refusal.
  */
 
+import type { Diagnostic } from "./diagnostics.js";
 import type { Relation, SemanticDocument } from "./document.js";
+import { relationTypeOf } from "./profile.js";
+import type { ProfileRegistry } from "./profile.js";
+import { canonicalise } from "./canonical.js";
 import type {
   RelationOccurrence,
   RelationOccurrenceEndpoint,
   SummaryDefinition,
   ViewDocument,
+  VisualGroup,
 } from "./view.js";
 import type { EntityRef, OccurrenceRef, PortRef, RelationRef } from "./refs.js";
 
@@ -160,12 +165,22 @@ export function collapsedOf(view: ViewDocument): ReadonlySet<string> {
   );
 }
 
+/**
+ * The §4.1.1 group id for an occurrence: `grp.<len>.<localId>` where
+ * `<localId>` is the local id of the occurrence and `<len>` its length.
+ */
+export function foldGroupId(occurrence: OccurrenceRef): string {
+  const raw = occurrence as string;
+  const local = raw.includes(":") ? raw.slice(raw.indexOf(":") + 1) : raw;
+  return `grp.${local.length}.${local}`;
+}
+
 /** Stamp fold groups for exactly a collapsed set; revision is never changed. */
 function stampGroups(
   view: ViewDocument,
   collapsed: ReadonlySet<string>,
-): Readonly<Record<string, import("./view.js").VisualGroup>> {
-  const groups: Record<string, import("./view.js").VisualGroup> = {};
+): Readonly<Record<string, VisualGroup>> {
+  const groups: Record<string, VisualGroup> = {};
   for (const [key, group] of Object.entries(view.groups)) {
     groups[key] =
       group.occurrence === undefined ? group : { ...group, collapsed: collapsed.has(group.occurrence) };
@@ -173,7 +188,9 @@ function stampGroups(
   for (const id of collapsed) {
     const bound = Object.keys(groups).find((key) => groups[key]?.occurrence === id);
     if (bound !== undefined) continue;
-    groups[id] = { id, occurrence: id as OccurrenceRef, collapsed: true };
+    const generated = foldGroupId(id as OccurrenceRef);
+    if (groups[generated] !== undefined) continue;
+    groups[generated] = { id: generated, occurrence: id as OccurrenceRef, collapsed: true };
   }
   return groups;
 }
@@ -185,22 +202,17 @@ function stampGroups(
  * geometry; `strokeStyle` override presence is preserved byte-for-byte;
  * `summaryLabels` definitions carry through unchanged; `revision` is retained.
  */
-export function projectView(
-  document: SemanticDocument,
+/**
+ * The per-relation step of the folded projection (§4.4.3, step 2): every
+ * retained relation occurrence is either internal (kept unchanged) or has
+ * each hidden endpoint retargeted to its visible representative with
+ * provenance. Shared by `projectView` and by the post-removal repair of §5.7.
+ */
+export function projectRelationOccurrences(
   sourceView: ViewDocument,
-  collapsedOccurrenceIds: readonly OccurrenceRef[],
-): ViewDocument {
-  for (const occurrence of Object.values(sourceView.relationOccurrences)) {
-    const projected = (occurrence as RelationOccurrence).endpoints.find(
-      (endpoint) => endpoint.semanticTarget !== undefined,
-    );
-    if (projected !== undefined) {
-      throw new Error(
-        `projectView refuses projection-source-projected: source endpoint of ${occurrence.id} already carries semanticTarget`,
-      );
-    }
-  }
-  const collapsed = new Set<string>(collapsedOccurrenceIds);
+  document: SemanticDocument,
+  collapsed: ReadonlySet<string>,
+): Record<string, RelationOccurrence> {
   const internal = classifyInternalRelations(sourceView, document, collapsed);
   const relationOccurrences: Record<string, RelationOccurrence> = {};
   for (const key of Object.keys(sourceView.relationOccurrences).sort()) {
@@ -251,9 +263,34 @@ export function projectView(
       ...(occurrence.strokeStyle === undefined ? {} : { strokeStyle: occurrence.strokeStyle }),
     };
   }
+  return relationOccurrences;
+}
+
+export function projectView(
+  document: SemanticDocument,
+  sourceView: ViewDocument,
+  collapsedOccurrenceIds: readonly OccurrenceRef[],
+): ViewDocument {
+  for (const key of Object.keys(sourceView.relationOccurrences).sort()) {
+    const occurrence = sourceView.relationOccurrences[key] as RelationOccurrence;
+    const index = occurrence.endpoints.findIndex((endpoint) => endpoint.semanticTarget !== undefined);
+    if (index !== -1) {
+      const endpoint = occurrence.endpoints[index] as RelationOccurrenceEndpoint;
+      const refusal: Diagnostic = {
+        code: "occurrence-endpoint-mismatch",
+        severity: "error",
+        path: `relationOccurrences.${occurrence.id}.endpoints[${index}].occurrence`,
+        message: `projected endpoint for role ${endpoint.role} fails check projection-source-projected`,
+        refs: [occurrence.id, endpoint.occurrence],
+        details: { role: endpoint.role, check: "projection-source-projected" },
+      };
+      throw refusal;
+    }
+  }
+  const collapsed = new Set<string>(collapsedOccurrenceIds);
   return {
     ...sourceView,
-    relationOccurrences,
+    relationOccurrences: projectRelationOccurrences(sourceView, document, collapsed),
     groups: stampGroups(sourceView, collapsed),
     filters: [...sourceView.filters],
     ...(sourceView.summaryLabels === undefined ? {} : { summaryLabels: { ...sourceView.summaryLabels } }),
@@ -261,29 +298,78 @@ export function projectView(
   };
 }
 
-/** Apply default folds when a view is first built: stamp exactly the given set. */
-export function applyDefaultFolds(view: ViewDocument, defaults: readonly OccurrenceRef[]): ViewDocument {
-  return { ...view, groups: stampGroups(view, new Set<string>(defaults)), revision: view.revision };
+/**
+ * Apply default folds when a view is first built: the retained source
+ * projected with exactly the given collapsed set (§4.4.3).
+ */
+export function applyDefaultFolds(
+  document: SemanticDocument,
+  sourceView: ViewDocument,
+  defaults: readonly OccurrenceRef[],
+): ViewDocument {
+  return projectView(document, sourceView, defaults);
 }
 
-/** Expand every fold group; a view change that retains the revision. */
-export function expandAll(view: ViewDocument): ViewDocument {
-  return { ...view, groups: stampGroups(view, new Set<string>()), revision: view.revision };
+/**
+ * Expand every fold group: the retained source projected with an empty
+ * collapsed set. The source must carry no folded projection of its own.
+ */
+export function expandAll(document: SemanticDocument, sourceView: ViewDocument): ViewDocument {
+  return projectView(document, sourceView, []);
 }
 
-/** Collapse every fold group whose occurrence has at least one child occurrence. */
-export function collapseAll(view: ViewDocument): ViewDocument {
+/**
+ * Collapse every fold-group occurrence with at least one child occurrence:
+ * the retained source projected with exactly that set.
+ */
+export function collapseAll(document: SemanticDocument, sourceView: ViewDocument): ViewDocument {
   const withChild = new Set<string>();
-  for (const id of Object.keys(view.entityOccurrences)) {
-    const parent = parentOccurrenceOf(view, id as OccurrenceRef);
+  for (const id of Object.keys(sourceView.entityOccurrences)) {
+    const parent = parentOccurrenceOf(sourceView, id as OccurrenceRef);
     if (parent !== undefined) withChild.add(parent);
   }
-  const collapsed = new Set<string>();
-  for (const [key, group] of Object.entries(view.groups)) {
-    if (group.occurrence !== undefined && withChild.has(group.occurrence)) collapsed.add(group.occurrence);
-    void key;
+  return projectView(
+    document,
+    sourceView,
+    [...withChild].sort().map((id) => id as OccurrenceRef),
+  );
+}
+
+/**
+ * Post-removal repair (§5.7): recompute the surviving projected endpoints
+ * from their retained `sourceOccurrence` origins under the current fold
+ * groups. Occurrences that carried no provenance are returned byte-identical;
+ * the caller replaces the stale ones and captures their pre-images.
+ */
+export function reprojectRetained(view: ViewDocument, document: SemanticDocument): ViewDocument {
+  const carried = Object.values(view.relationOccurrences)
+    .filter((occurrence) =>
+      (occurrence as RelationOccurrence).endpoints.some((endpoint) => endpoint.semanticTarget !== undefined),
+    )
+    .map((occurrence) => (occurrence as RelationOccurrence).id);
+  if (carried.length === 0) return view;
+  const stripped: Record<string, RelationOccurrence> = {};
+  for (const key of Object.keys(view.relationOccurrences).sort()) {
+    const occurrence = view.relationOccurrences[key] as RelationOccurrence;
+    stripped[key] = {
+      ...occurrence,
+      endpoints: occurrence.endpoints.map((endpoint) =>
+        endpoint.sourceOccurrence === undefined
+          ? { role: endpoint.role, occurrence: endpoint.occurrence }
+          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+      ),
+    };
   }
-  return { ...view, groups: stampGroups(view, collapsed), revision: view.revision };
+  const fresh = projectRelationOccurrences({ ...view, relationOccurrences: stripped }, document, collapsedOf(view));
+  let relationOccurrences = view.relationOccurrences;
+  let changed = false;
+  for (const id of carried) {
+    if (canonicalise(fresh[id]) !== canonicalise(view.relationOccurrences[id])) {
+      relationOccurrences = { ...relationOccurrences, [id]: fresh[id] as RelationOccurrence };
+      changed = true;
+    }
+  }
+  return changed ? { ...view, relationOccurrences } : view;
 }
 
 export interface FoldedSceneExclusion {
@@ -306,9 +392,11 @@ export interface FoldFilterState {
 
 /**
  * Scene exclusions of a folded view (§4.4.6/§4.4.7). Hidden occurrences are
- * reported, never silently dropped; a relation already excluded by a filter
- * is still projected, so clearing either cause restores the drawing without
- * touching the other. Fold takes precedence with the filter cause retained.
+ * reported, never silently dropped. A relation already excluded by a filter
+ * is still projected by the same rules, so clearing the filter restores the
+ * drawing without touching the fold; a filtered member leaves the drawn
+ * relations. Fold precedence applies only where both exclusions overlap, with
+ * the filter cause retained.
  */
 export function foldedScene(
   view: ViewDocument,
@@ -340,10 +428,6 @@ export function foldedScene(
     .filter((key) => internal.has(key as OccurrenceRef))
     .sort()
     .map((key) => key as OccurrenceRef);
-  const drawnRelations = Object.keys(view.relationOccurrences)
-    .filter((key) => !internal.has(key as OccurrenceRef))
-    .sort()
-    .map((key) => key as OccurrenceRef);
   const exclusions: FoldedSceneExclusion[] = [];
   for (const id of [...groupCollapsed, ...portHidden]) {
     exclusions.push({
@@ -353,25 +437,26 @@ export function foldedScene(
       ...(filterHidden.has(id) ? { cause: "filter" as const } : {}),
     });
   }
+  const drawn: OccurrenceRef[] = [];
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
     const id = key as OccurrenceRef;
     const foldExcluded = internal.has(id);
+    // A filter exclusion is evaluated per occurrence from the evaluated host
+    // input: any endpoint whose original drawing is filter-hidden excludes
+    // the whole occurrence (§4.4.6). Fold precedence applies only where the
+    // two exclusions actually overlap.
     const filterExcluded = occurrence.endpoints.some((endpoint) => filterHidden.has(originalOf(endpoint)));
-    const projected = occurrence.endpoints.some((endpoint) => endpoint.semanticTarget !== undefined);
-    // One exclusion per occurrence: fold takes precedence with the filter
-    // cause retained when an endpoint is hidden by both (§4.4.6). A projected
-    // relation hidden only by a filter stays excluded without re-projection.
+    if (!foldExcluded && !filterExcluded) drawn.push(id);
     if (foldExcluded && filterExcluded) {
       exclusions.push({ occurrence: id, kind: "endpoint-hidden", reason: "fold", cause: "filter" });
     } else if (foldExcluded) {
       exclusions.push({ occurrence: id, kind: "endpoint-hidden", reason: "fold" });
-    } else if (filterExcluded && projected) {
-      exclusions.push({ occurrence: id, kind: "endpoint-hidden", reason: "fold", cause: "filter" });
     } else if (filterExcluded) {
       exclusions.push({ occurrence: id, kind: "endpoint-hidden", reason: "filter" });
     }
   }
+  const drawnRelations = drawn;
   return { groupCollapsed, endpointHidden, drawnRelations, exclusions };
 }
 
@@ -414,9 +499,36 @@ interface SummaryCandidate {
   readonly style: "solid" | "dashed";
 }
 
+export interface SummaryResolutionOptions {
+  /** Evaluated filter exclusions feeding aggregate resolution (§4.4.6). */
+  readonly filters?: FoldFilterState;
+  /** Profile registry for declared relation directions (§4.5.1). */
+  readonly registry?: ProfileRegistry;
+}
+
+/**
+ * The declared direction of a semantic relation: undirected relations
+ * normalize their representative pair, directed ones never do. Unknown
+ * declarations fall back to role-name comparison.
+ */
+function isUndirectedRelation(
+  document: SemanticDocument,
+  registry: ProfileRegistry | undefined,
+  relationId: RelationRef,
+): boolean | undefined {
+  const relation = document.relations[relationId];
+  if (relation === undefined || registry === undefined) return undefined;
+  const profile = registry.get(relation.profile);
+  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  if (declared === undefined) return undefined;
+  return declared.direction === "undirected";
+}
+
 /** Binary candidate occurrences whose ordered endpoints lie in the two scopes. */
 function summaryCandidates(
   view: ViewDocument,
+  document: SemanticDocument,
+  registry: ProfileRegistry | undefined,
   source: OccurrenceRef,
   target: OccurrenceRef,
   style: "solid" | "dashed",
@@ -431,7 +543,8 @@ function summaryCandidates(
     const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
     const firstOriginal = first.sourceOccurrence ?? first.occurrence;
     const secondOriginal = second.sourceOccurrence ?? second.occurrence;
-    const directed = first.role !== second.role;
+    const declared = isUndirectedRelation(document, registry, occurrence.relation);
+    const directed = declared === undefined ? first.role !== second.role : !declared;
     const ordered =
       sourceScope.has(firstOriginal) && targetScope.has(secondOriginal);
     const swapped =
@@ -478,10 +591,18 @@ function arraysEqual(left: readonly string[], right: readonly string[]): boolean
 /**
  * Full summary analysis (§4.5.1/§4.5.2): source validity of every definition,
  * then activation after occurrence projection with at most one candidate per
- * active key. A source-valid inactive definition reports nothing.
+ * active key. A source-valid inactive definition reports nothing. Evaluated
+ * filter exclusions remove members from drawn aggregates; a colliding active
+ * key selects no label and reports one conflict per loser (B.5).
  */
-export function analyzeSummaries(view: ViewDocument, document: SemanticDocument): SummaryAnalysis {
+export function analyzeSummaries(
+  view: ViewDocument,
+  document: SemanticDocument,
+  options?: SummaryResolutionOptions,
+): SummaryAnalysis {
   const definitions = view.summaryLabels ?? {};
+  const registry = options?.registry;
+  const filterHidden = new Set<string>(options?.filters?.hiddenByFilter ?? []);
   const sourceIssues: SummaryIssue[] = [];
   const invalid = new Set<string>();
   const seenTriples = new Map<string, string>();
@@ -517,7 +638,7 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
         invalid.add(id);
         continue;
       }
-      const candidates = summaryCandidates(view, definition.sourceOccurrence, definition.targetOccurrence, style);
+      const candidates = summaryCandidates(view, document, registry, definition.sourceOccurrence, definition.targetOccurrence, style);
       const candidateSet = new Set(candidates.map((candidate) => candidate.occurrence));
       if (!listed.every((member) => candidateSet.has(member))) {
         sourceIssues.push({ id, check: "summary-constituents-mismatch" });
@@ -540,7 +661,7 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
       validSelections.set(id, [...listed].sort() as OccurrenceRef[]);
       continue;
     }
-    const candidates = summaryCandidates(view, definition.sourceOccurrence, definition.targetOccurrence, style);
+    const candidates = summaryCandidates(view, document, registry, definition.sourceOccurrence, definition.targetOccurrence, style);
     const byRelation = new Map<string, OccurrenceRef[]>();
     for (const candidate of candidates) {
       const list = byRelation.get(candidate.relation) ?? [];
@@ -575,9 +696,11 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
     if (internal.has(key as OccurrenceRef)) continue;
+    if (occurrence.endpoints.some((endpoint) => filterHidden.has(endpoint.sourceOccurrence ?? endpoint.occurrence))) continue;
     if (occurrence.endpoints.length !== 2) continue;
     const [first, second] = occurrence.endpoints as [RelationOccurrenceEndpoint, RelationOccurrenceEndpoint];
-    const directed = first.role !== second.role;
+    const declared = isUndirectedRelation(document, registry, occurrence.relation);
+    const directed = declared === undefined ? first.role !== second.role : !declared;
     const ordered: [string, string] = [first.occurrence, second.occurrence];
     const pair: [string, string] =
       directed || ordered[0] <= ordered[1] ? ordered : [ordered[1], ordered[0]];
@@ -601,7 +724,14 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
     const style = definition.strokeStyle ?? "solid";
     const sourceRep = representativeOfEndpoint(view, document, collapsed, internal, definition.sourceOccurrence);
     const targetRep = representativeOfEndpoint(view, document, collapsed, internal, definition.targetOccurrence);
-    const key = `(${sourceRep},${targetRep},${style})`;
+    // The definition pair normalizes exactly like the aggregate pair when the
+    // definition spans only undirected declarations (§4.5.1/§4.5.2).
+    const undirected = definition.relationIds.every(
+      (relation) => isUndirectedRelation(document, registry, relation) === true,
+    );
+    const pair: [string, string] =
+      undirected && sourceRep > targetRep ? [targetRep, sourceRep] : [sourceRep, targetRep];
+    const key = `(${pair[0]},${pair[1]},${style})`;
     const aggregate = aggregates.get(key);
     if (aggregate === undefined || !aggregate.projected) continue;
     const selected = validSelections.get(id) as OccurrenceRef[];
@@ -620,14 +750,18 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
   )) {
     const ordered = [...list].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
     const winner = ordered[0] as { id: string; definition: SummaryDefinition };
-    const aggregate = aggregates.get(key) as Aggregate;
-    active.set(key, {
-      key,
-      definitionId: winner.id,
-      label: winner.definition.label,
-      members: [...aggregate.members],
-      relationIds: [...aggregate.relationIds] as RelationRef[],
-    });
+    // A conflicting active key selects no label: the first id is a diagnostic
+    // reference, never a winning active label (B.5).
+    if (ordered.length === 1) {
+      const aggregate = aggregates.get(key) as Aggregate;
+      active.set(key, {
+        key,
+        definitionId: winner.id,
+        label: winner.definition.label,
+        members: [...aggregate.members],
+        relationIds: [...aggregate.relationIds] as RelationRef[],
+      });
+    }
     for (const loser of ordered.slice(1)) {
       const style = loser.definition.strokeStyle ?? "solid";
       const sourceRep = representativeOfEndpoint(view, document, collapsed, internal, loser.definition.sourceOccurrence);
@@ -648,11 +782,15 @@ export function analyzeSummaries(view: ViewDocument, document: SemanticDocument)
 
 /**
  * Resolved active summaries of a folded view (§4.5.2): at most one authored
- * label per drawn binary aggregate key. Definitions remain retained
- * unchanged; partial overlaps stay inactive.
+ * label per drawn binary aggregate key, and none for a colliding key.
+ * Definitions remain retained unchanged; partial overlaps stay inactive.
  */
-export function resolveSummaries(view: ViewDocument, document: SemanticDocument): Map<string, ActiveSummary> {
-  return new Map(analyzeSummaries(view, document).actives);
+export function resolveSummaries(
+  view: ViewDocument,
+  document: SemanticDocument,
+  options?: SummaryResolutionOptions,
+): Map<string, ActiveSummary> {
+  return new Map(analyzeSummaries(view, document, options).actives);
 }
 
 function representativeOfEndpoint(
