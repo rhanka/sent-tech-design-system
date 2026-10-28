@@ -213,6 +213,17 @@ function migrateAttributes(
       migrated[name] = { kind: "collection", items };
       continue;
     }
+    if (schema.kind === "struct") {
+      // The 1.0 stored form has no structured values: a struct slot cannot be
+      // wrapped from a bare stored value. Migrations to @2 profiles are a later
+      // lot (§3.13); this path only records the gap.
+      unmigrated.push({
+        path: `${path}.${name}`,
+        reason: "attribute-type-mismatch",
+        detail: `schema expects a structured ${schema.targetTypes.join(", ")} value, which the 1.0 stored form cannot supply`,
+      });
+      continue;
+    }
     const wrapped = wrapScalar(schema, value, `${path}.${name}`, operations, unmigrated);
     if (wrapped !== undefined) migrated[name] = wrapped;
   }

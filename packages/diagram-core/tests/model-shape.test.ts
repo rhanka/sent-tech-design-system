@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   CURRENT_SCHEMA_VERSION,
+  bindingRowFor,
   createProfileRegistry,
   documentContentHashInput,
   findOccurrence,
@@ -24,6 +25,7 @@ import {
   serialiseView,
   DEFAULT_PRESENTATION,
   GENERIC_PROFILE_ID,
+  LEGACY_CONSTRAINTS_ADAPTER,
   SEMANTIC_DOCUMENT_FIELDS,
   VIEW_DOCUMENT_FIELDS,
   createDocument,
@@ -240,21 +242,20 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
     expect(validateDocument(orphan, { registry }).map((entry) => entry.code)).toContain("unknown-entity-type");
   });
 
-  it("refuses to instantiate an abstract profile type, and says it is abstract", () => {
-    const abstractRegistry = createProfileRegistry([
-      {
-        id: "abstracted@1",
-        name: "abstracted",
-        version: 1,
-        completeness: "skeleton",
-        entityTypes: [{ id: "base", label: "Base", attributes: [], abstract: true }],
-        portTypes: [],
-        relationTypes: [],
-        constraints: [],
-        limits: {},
-        notes: ["SKELETON. A single abstract type, to prove abstract types cannot be instantiated."],
-      },
-    ]);
+  it("refuses an explicit legacy row for a non-retained @1 profile before abstract checks", () => {
+    const abstracted = {
+      id: "abstracted@1",
+      name: "abstracted",
+      version: 1,
+      completeness: "skeleton",
+      entityTypes: [{ id: "base", label: "Base", attributes: [], abstract: true }],
+      portTypes: [],
+      relationTypes: [],
+      constraints: [],
+      limits: {},
+      notes: ["SKELETON. A single abstract type, to prove abstract types cannot be instantiated."],
+    } as const;
+    const abstractRegistry = createProfileRegistry([abstracted]);
     const instantiated: SemanticDocument = {
       documentId: documentRef("abstract"),
       schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -269,8 +270,24 @@ describe("document-local type definitions are ADDITIVE refinements", () => {
       resources: {},
       extensions: [],
     };
-    const diagnostics = validateDocument(instantiated, { registry: abstractRegistry });
-    expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
-    expect(diagnostics[0]?.details).toEqual({ abstract: true });
+    const diagnostics = validateDocument(instantiated, {
+      registry: abstractRegistry,
+      bindings: {
+        schemaVersion: "1",
+        rows: [bindingRowFor(abstracted, LEGACY_CONSTRAINTS_ADAPTER)],
+      },
+    });
+    // §5.3.1 reserves legacy rows for the four retained @1 identities: the
+    // binding gate refuses before any native abstract-shape check runs.
+    expect(diagnostics).toEqual([
+      {
+        code: "type-definition-conflict",
+        severity: "error",
+        path: "bindings.rows[0]",
+        message: "executor binding for abstracted@1 must use scoped-constraints@1, not legacy-constraints@1",
+        refs: [],
+        details: { profile: "abstracted@1" },
+      },
+    ]);
   });
 });
