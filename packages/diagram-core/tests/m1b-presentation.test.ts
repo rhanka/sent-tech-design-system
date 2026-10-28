@@ -5,13 +5,19 @@
  * Each test below fails before the M1-b implementation and passes after it.
  * No archimate@2/uml@2, no folds, no measurement, no migrations.
  */
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("../src/presentation-catalog.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../src/presentation-catalog.js")>();
+  return { ...actual, resolveGovernedCatalog: vi.fn(actual.resolveGovernedCatalog) };
+});
 
 import {
   bindingRowFor,
   canonicalBytes,
   contentDiagramDigest,
   createProfileRegistry,
+  DIAGRAM_PRESENTATION_PACKAGED_CATALOG,
   generic2Profile,
   genericProfile,
   SCOPED_CONSTRAINTS_ADAPTER,
@@ -20,6 +26,11 @@ import {
   validateView,
   type SemanticDocument,
 } from "../src/index.js";
+import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
+
+beforeEach(() => {
+  vi.mocked(resolveGovernedCatalog).mockReturnValue(DIAGRAM_PRESENTATION_PACKAGED_CATALOG);
+});
 import { baseDocument, ent, rel, scopedOptions, validGeneric2Document } from "./m3-helpers.js";
 import { text } from "../src/index.js";
 
@@ -242,10 +253,8 @@ describe("M1-b P-GEN witness", () => {
       semanticCategoryPins: [],
       adapterPin,
     };
-    const out = mod.applyPresentation(
-      input,
-      { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
-    ) as
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
+    const out = mod.applyPresentation(input, scopedOptions([generic2Profile])) as
       | { outcome: "ok"; view: unknown; presentationDigest: string; diagnostics: readonly unknown[] }
       | { outcome: "refused"; diagnostics: readonly unknown[] };
     expect(out.outcome).toBe("ok");
@@ -261,7 +270,7 @@ describe("M1-b P-GEN witness", () => {
 
   it("changing only the icon changes only presentationDigest", async () => {
     const mod = (await import("../src/index.js")) as unknown as {
-      applyPresentation: (input: never, options: never) => { outcome: string; presentationDigest?: string };
+      applyPresentation: (input: unknown, options: unknown) => { outcome: string; presentationDigest?: string };
       DIAGRAM_PRESENTATION_CONTRACT_PIN: { id: string; version: string; contentDigest: string };
       DIAGRAM_PRESENTATION_SCHEMA_PIN: { id: string; version: string; contentDigest: string };
       familyPinForProfile: (profile: unknown) => { id: string; version: string; contentDigest: string };
@@ -324,6 +333,7 @@ describe("M1-b P-GEN witness", () => {
       adapterBytes,
       schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const run = (diagram: unknown) =>
       mod.applyPresentation(
         {
@@ -334,7 +344,7 @@ describe("M1-b P-GEN witness", () => {
           semanticCategoryPins: [],
           adapterPin,
         } as never,
-        { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
+        scopedOptions([generic2Profile]),
       ) as { outcome: string; presentationDigest: string };
     const before = canonicalBytes(doc2);
     const first = run(baseDiagram);
@@ -551,6 +561,7 @@ describe("M1-b view validation", () => {
       adapterBytes,
       schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [mod.familyPinForProfile(generic2Profile)],
@@ -560,7 +571,7 @@ describe("M1-b view validation", () => {
         semanticCategoryPins: [],
         adapterPin,
       },
-      { ...scopedOptions([generic2Profile]), presentationCatalog: catalog } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; view?: unknown; diagnostics: readonly unknown[] };
     expect(out.outcome).toBe("refused");
     expect("view" in out).toBe(false);

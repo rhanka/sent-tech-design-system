@@ -4,12 +4,18 @@
  * Each test below fails on 1ccb33d3 and passes after the fix.
  * English in code. No network. No Python.
  */
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("../src/presentation-catalog.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../src/presentation-catalog.js")>();
+  return { ...actual, resolveGovernedCatalog: vi.fn(actual.resolveGovernedCatalog) };
+});
 
 import {
   canonicalBytes,
   contentDiagramDigest,
   createProfileRegistry,
+  DIAGRAM_PRESENTATION_PACKAGED_CATALOG,
   generic2Profile,
   genericProfile,
   sha256Hex,
@@ -17,6 +23,11 @@ import {
   validateView,
   type SemanticDocument,
 } from "../src/index.js";
+import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
+
+beforeEach(() => {
+  vi.mocked(resolveGovernedCatalog).mockReturnValue(DIAGRAM_PRESENTATION_PACKAGED_CATALOG);
+});
 import { baseDocument, ent, rel, scopedOptions, validGeneric2Document } from "./m3-helpers.js";
 import { text } from "../src/index.js";
 
@@ -200,7 +211,7 @@ describe("fix 1: governed adapter authentication", () => {
       schemaPin: mod.DIAGRAM_PRESENTATION_SCHEMA_PIN,
     };
     const familyPin = mod.familyPinForProfile(generic2Profile);
-    const baseOptions = scopedOptions([generic2Profile]) as unknown as Record<string, unknown>;
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [familyPin],
@@ -210,7 +221,7 @@ describe("fix 1: governed adapter authentication", () => {
         semanticCategoryPins: [],
         adapterPin,
       } as never,
-      { ...baseOptions, presentationCatalog: catalog } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; diagnostics: readonly unknown[] };
     expect(out.outcome).toBe("ok");
   });
@@ -605,6 +616,7 @@ describe("fix 6: closed application input", () => {
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
     let out: unknown;
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     expect(() => {
       out = mod.applyPresentation(
         {
@@ -614,7 +626,7 @@ describe("fix 6: closed application input", () => {
           semanticCategoryPins: [],
           adapterPin,
         } as never,
-        { ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>), presentationCatalog: catalog } as never,
+        scopedOptions([generic2Profile]),
       );
     }).not.toThrow();
     expect((out as { outcome: string }).outcome).toBe("refused");
@@ -651,6 +663,7 @@ describe("fix 6: closed application input", () => {
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
     let out: unknown;
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     expect(() => {
       out = mod.applyPresentation(
         {
@@ -661,7 +674,7 @@ describe("fix 6: closed application input", () => {
           semanticCategoryPins: [],
           adapterPin,
         } as never,
-        { ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>), presentationCatalog: catalog } as never,
+        scopedOptions([generic2Profile]),
       );
     }).not.toThrow();
     expect((out as { outcome: string }).outcome).toBe("refused");
@@ -709,6 +722,7 @@ describe("fix 6: closed application input", () => {
       adapterBytes,
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [familyPin],
@@ -719,7 +733,7 @@ describe("fix 6: closed application input", () => {
         adapterPin,
         extra: 1,
       } as never,
-      { ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>), presentationCatalog: catalog } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; diagnostics: readonly { path: string }[] };
     expect(out.outcome).toBe("refused");
     expect(out.diagnostics.some((entry) => entry.path.includes("extra"))).toBe(true);
@@ -767,6 +781,7 @@ describe("fix 6: closed application input", () => {
       adapterBytes,
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [familyPin],
@@ -776,7 +791,7 @@ describe("fix 6: closed application input", () => {
         semanticCategoryPins: [familyPin, familyPin],
         adapterPin,
       } as never,
-      { ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>), presentationCatalog: catalog } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; diagnostics: readonly { path: string }[] };
     expect(out.outcome).toBe("refused");
     expect(
@@ -839,6 +854,7 @@ describe("fix 7: normative order occurrences before presentation", () => {
       adapterBytes,
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [familyPin],
@@ -848,7 +864,7 @@ describe("fix 7: normative order occurrences before presentation", () => {
         semanticCategoryPins: [],
         adapterPin,
       } as never,
-      { ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>), presentationCatalog: catalog } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; diagnostics: readonly { path: string; code: string }[] };
     expect(out.outcome).toBe("refused");
     expect(out.diagnostics.some((entry) => entry.path === "entityOccurrences.occurrence:bad.entity")).toBe(true);
@@ -1020,6 +1036,7 @@ describe("fix 9: unknown profile keeps unknown-profile", () => {
       adapterBytes,
       schemaPin: (mod as unknown as Record<string, unknown>)["DIAGRAM_PRESENTATION_SCHEMA_PIN"],
     };
+    vi.mocked(resolveGovernedCatalog).mockReturnValue(catalog as never);
     const out = mod.applyPresentation(
       {
         familyPins: [{ id: "unknown", version: "9.0.0", contentDigest: "a".repeat(64) }],
@@ -1029,10 +1046,7 @@ describe("fix 9: unknown profile keeps unknown-profile", () => {
         semanticCategoryPins: [],
         adapterPin,
       } as never,
-      {
-        ...(scopedOptions([generic2Profile]) as unknown as Record<string, unknown>),
-        presentationCatalog: catalog,
-      } as never,
+      scopedOptions([generic2Profile]),
     ) as { outcome: string; diagnostics: readonly { code: string }[] };
     expect(out.outcome).toBe("refused");
     expect(out.diagnostics[0]).toMatchObject({ code: "unknown-profile" });
