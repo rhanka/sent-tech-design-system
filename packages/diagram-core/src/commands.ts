@@ -45,9 +45,12 @@ import {
   sameExtensionIdentity,
 } from "./document.js";
 import type { PortDirection, ProfileRegistry } from "./profile.js";
+import type { ExecutorProfileBindings } from "./bindings.js";
 import type { EntityRef, OccurrenceRef, PortRef, RelationRef, ResourceRef, ViewRef } from "./refs.js";
 import type { DiagramState } from "./state.js";
 import { validateState } from "./validate.js";
+import { canonicalise } from "./canonical.js";
+import { collapsedOf, projectView, reprojectRetained, summaryCandidates } from "./fold.js";
 import type {
   EntityOccurrence,
   Geometry,
@@ -55,7 +58,9 @@ import type {
   PortOccurrence,
   PortSide,
   RelationOccurrence,
+  SummaryDefinition,
   ViewDocument,
+  VisualGroup,
 } from "./view.js";
 
 /** No default. A caller decides what happens to the drawings and the relations. */
@@ -129,6 +134,27 @@ export type Command =
   | { readonly kind: "delete-view"; readonly view: ViewRef }
   | { readonly kind: "attach-resource"; readonly resource: ResourceDescriptor }
   | { readonly kind: "detach-resource"; readonly resource: ResourceRef }
+  /**
+   * §4.1.3/§4.4.3/§5.6/§5.7 view replacement: fold, group-membership and
+   * summary-definition edits as one revision-preserving view-replacement
+   * path. The caller supplies the new retained source view and the collapsed
+   * set; the result is `projectView(document, retainedSource, set)`,
+   * validated, with semantic bytes and revision unchanged. Its inverse is
+   * the previous retained source plus its projection, byte-identical
+   * including optional-field presence.
+   */
+  | {
+      readonly kind: "replace-view";
+      readonly view: ViewRef;
+      readonly source: ViewDocument;
+      readonly collapsed: readonly OccurrenceRef[];
+      /**
+       * Internal snapshot restoration retains the originating transaction's
+       * revision policy: it bumps like any semantic command. Absent on
+       * explicit presentation replacements, which stay revision-preserving.
+       */
+      readonly internalRestore?: true;
+    }
   | { readonly kind: "apply-preserved-extension"; readonly extension: PreservedExtension }
   /**
    * The eighteenth command, and an addition to SPEC 3.5's list of seventeen.
@@ -163,6 +189,7 @@ export const COMMAND_KINDS: readonly CommandKind[] = [
   "delete-view",
   "attach-resource",
   "detach-resource",
+  "replace-view",
   "apply-preserved-extension",
   "remove-preserved-extension",
 ];
@@ -208,6 +235,12 @@ export type TransactionOutcome =
 export interface ApplyOptions {
   readonly registry: ProfileRegistry;
   /**
+   * The `executor-profile-bindings@1` table (M3 §5.3.1). Absent means the
+   * retained native run for exactly the four @1 identities; completed
+   * profiles require their verified scoped rows, as in validation.
+   */
+  readonly bindings?: ExecutorProfileBindings;
+  /**
    * Maximum number of operations an inverse may carry. A cascade above it
    * returns `non-invertible` rather than materialising an unbounded undo entry.
    * Bounded by default, like every collection in this package.
@@ -247,6 +280,143 @@ function patchAttributes(
 
 const isDisposition = (value: unknown): value is DeleteDisposition => value === "cascade" || value === "refuse";
 
+// --- §5.7 fold and summary cleanup -------------------------------------------
+
+/** The §5.7 view-data cleanup of one view after a removal. */
+interface FoldCleanup {
+  readonly entityOccurrences: Readonly<Record<string, EntityOccurrence>>;
+  readonly groups: Readonly<Record<string, VisualGroup>>;
+  readonly summaryLabels: Readonly<Record<string, SummaryDefinition>> | undefined;
+}
+
+/**
+ * Dependency-aware view-data cleanup (§5.7) over a view whose occurrences
+ * were already removed: drop fold groups bound to a removed occurrence,
+ * clear member references to dropped groups, and recompute each summary
+ * definition's surviving occurrence and relation sets (both
+ * `relationOccurrences` and `relationIds`). Empty definitions disappear;
+ * the rest is revalidated by the transaction. Undo restores complete
+ * preimages via view-replacement snapshots, not piecemeal commands.
+ */
+function cleanFoldBindings(
+  view: ViewDocument,
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  removedOccurrences: ReadonlySet<string>,
+): FoldCleanup {
+  let groups = view.groups;
+  for (const key of Object.keys(view.groups).sort()) {
+    const group = view.groups[key] as VisualGroup;
+    if (group.occurrence !== undefined && removedOccurrences.has(group.occurrence)) {
+      groups = withoutKey(groups, key);
+    }
+  }
+  const liveGroups = new Set(Object.keys(groups));
+  let entityOccurrences = view.entityOccurrences;
+  for (const key of Object.keys(view.entityOccurrences).sort()) {
+    const occurrence = view.entityOccurrences[key] as EntityOccurrence;
+    if (occurrence.group !== undefined && !liveGroups.has(occurrence.group)) {
+      const { group: _cleared, ...rest } = occurrence;
+      void _cleared;
+      entityOccurrences = withKey(entityOccurrences, key, rest);
+    }
+  }
+  const previous = view.summaryLabels;
+  let summaryLabels = previous;
+  if (previous !== undefined) {
+    const kept: Record<string, SummaryDefinition> = {};
+    for (const id of Object.keys(previous).sort()) {
+      const definition = previous[id] as SummaryDefinition;
+      if (removedOccurrences.has(definition.sourceOccurrence) || removedOccurrences.has(definition.targetOccurrence)) {
+        continue;
+      }
+      const style = definition.strokeStyle ?? "solid";
+      const candidates = summaryCandidates(view, document, registry, definition.sourceOccurrence, definition.targetOccurrence, style);
+      if (candidates.length === 0) continue;
+      const candidateSet = new Set(candidates.map((candidate) => candidate.occurrence));
+      if (definition.relationOccurrences !== undefined) {
+        const survivingListed = definition.relationOccurrences.filter((member) => candidateSet.has(member));
+        if (survivingListed.length === 0) continue;
+        const survivingRelations = [...new Set(survivingListed.map((member) => (view.relationOccurrences[member] as RelationOccurrence).relation))].sort();
+        const completeCandidates = candidates.filter((candidate) => survivingRelations.includes(candidate.relation));
+        const newOccurrences = [...new Set(completeCandidates.map((candidate) => candidate.occurrence))].sort() as OccurrenceRef[];
+        const newRelations = [...new Set(newOccurrences.map((member) => (view.relationOccurrences[member] as RelationOccurrence).relation))].sort();
+        if (newOccurrences.length === 0 || newRelations.length === 0) continue;
+        kept[id] = { ...definition, relationIds: [...newRelations] as never, relationOccurrences: [...newOccurrences] as never };
+        continue;
+      }
+      const byRelation = new Map<string, OccurrenceRef[]>();
+      for (const candidate of candidates) {
+        const list = byRelation.get(candidate.relation) ?? [];
+        list.push(candidate.occurrence);
+        byRelation.set(candidate.relation, list);
+      }
+      const ambiguous = [...byRelation.values()].some((list) => list.length > 1);
+      if (ambiguous) continue;
+      const selectedRelations = [...new Set(candidates.map((candidate) => candidate.relation))].sort();
+      if (selectedRelations.length === 0) continue;
+      kept[id] = { ...definition, relationIds: [...selectedRelations] as never };
+    }
+    if (Object.keys(kept).length !== Object.keys(previous).length || Object.keys(previous).some((id) => kept[id] === undefined || canonicalise(kept[id]) !== canonicalise(previous[id]))) {
+      summaryLabels = Object.keys(kept).length === 0 ? undefined : kept;
+    }
+  }
+  return { entityOccurrences, groups, summaryLabels };
+}
+
+/** The view with the cleanup applied, omitting an emptied summary record. */
+function cleanedView(
+  view: ViewDocument,
+  cleanup: FoldCleanup,
+  relationOccurrences: Readonly<Record<string, RelationOccurrence>>,
+): ViewDocument {
+  const base = {
+    ...view,
+    entityOccurrences: cleanup.entityOccurrences,
+    relationOccurrences,
+    groups: cleanup.groups,
+  };
+  if (cleanup.summaryLabels === undefined) {
+    const { summaryLabels: _dropped, ...rest } = base;
+    void _dropped;
+    return rest;
+  }
+  return { ...base, summaryLabels: cleanup.summaryLabels };
+}
+
+/** Strip folded provenance to a retained source for view-replacement inverses. */
+function stripProvenance(view: ViewDocument): ViewDocument {
+  let relationOccurrences = view.relationOccurrences;
+  let changed = false;
+  for (const key of Object.keys(view.relationOccurrences).sort()) {
+    const occurrence = view.relationOccurrences[key] as RelationOccurrence;
+    if (!occurrence.endpoints.some((endpoint) => endpoint.sourceOccurrence !== undefined)) continue;
+    const stripped: RelationOccurrence = {
+      ...occurrence,
+      endpoints: occurrence.endpoints.map((endpoint) =>
+        endpoint.sourceOccurrence === undefined
+          ? { role: endpoint.role, occurrence: endpoint.occurrence }
+          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+      ),
+    };
+    relationOccurrences = withKey(relationOccurrences, key, stripped);
+    changed = true;
+  }
+  return changed ? { ...view, relationOccurrences } : view;
+}
+
+/** View-replacement inverse restoring a previous view via its retained source. */
+function replaceViewInverse(view: ViewRef, previous: ViewDocument, internal: boolean): Command {
+  const stripped = stripProvenance(previous);
+  const base = {
+    kind: "replace-view" as const,
+    view,
+    source: stripped,
+    collapsed: [...collapsedOf(previous)] as OccurrenceRef[],
+  };
+  return internal ? { ...base, internalRestore: true as const } : base;
+}
+
 // --- removal closure ---------------------------------------------------------
 
 interface RemovalPlan {
@@ -276,29 +446,65 @@ function planRemoval(
   for (const port of Object.values(document.ports)) {
     if (entities.has(port.owner)) ports.add(port.id);
   }
-  for (const relation of Object.values(document.relations)) {
-    if (relation.endpoints.some((endpoint) => entities.has(endpoint.target) || ports.has(endpoint.target))) {
-      relations.add(relation.id);
+  // Relation closure to a fixpoint: a relation is taken when any endpoint
+  // targets a removed element, including a removed relation (relation-target
+  // chains, §3.9.1) and anything they in turn touch.
+  let relationGrown = true;
+  while (relationGrown) {
+    relationGrown = false;
+    for (const relation of Object.values(document.relations)) {
+      if (relations.has(relation.id)) continue;
+      if (
+        relation.endpoints.some(
+          (endpoint) => entities.has(endpoint.target) || ports.has(endpoint.target) || relations.has(endpoint.target),
+        )
+      ) {
+        relations.add(relation.id);
+        relationGrown = true;
+      }
+    }
+  }
+
+  // Occurrence closure to a fixpoint over every view: a drawing goes when it
+  // draws a removed element, hangs off a removed drawing, attaches to a
+  // removed drawing, or carries provenance from one (folded projections keep
+  // their origin, §4.4.2, so removing the origin takes the projection).
+  const removedByView = new Map<string, Set<string>>();
+  for (const [viewKey] of Object.entries(state.views)) removedByView.set(viewKey, new Set<string>());
+  let occurrenceGrown = true;
+  while (occurrenceGrown) {
+    occurrenceGrown = false;
+    for (const [viewKey, view] of Object.entries(state.views)) {
+      const removed = removedByView.get(viewKey) as Set<string>;
+      for (const occurrence of Object.values(view.entityOccurrences)) {
+        if (!removed.has(occurrence.id) && entities.has(occurrence.entity)) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
+      for (const occurrence of Object.values(view.portOccurrences)) {
+        if (!removed.has(occurrence.id) && (ports.has(occurrence.port) || removed.has(occurrence.ownerOccurrence))) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
+      for (const occurrence of Object.values(view.relationOccurrences)) {
+        if (removed.has(occurrence.id)) continue;
+        if (
+          relations.has(occurrence.relation) ||
+          occurrence.endpoints.some(
+            (endpoint) => removed.has(endpoint.occurrence) || (endpoint.sourceOccurrence !== undefined && removed.has(endpoint.sourceOccurrence)),
+          )
+        ) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
     }
   }
 
   const occurrences: Record<string, readonly OccurrenceRef[]> = {};
-  for (const [viewKey, view] of Object.entries(state.views)) {
-    const removed = new Set<string>();
-    for (const occurrence of Object.values(view.entityOccurrences)) {
-      if (entities.has(occurrence.entity)) removed.add(occurrence.id);
-    }
-    for (const occurrence of Object.values(view.portOccurrences)) {
-      if (ports.has(occurrence.port) || removed.has(occurrence.ownerOccurrence)) removed.add(occurrence.id);
-    }
-    for (const occurrence of Object.values(view.relationOccurrences)) {
-      if (
-        relations.has(occurrence.relation) ||
-        occurrence.endpoints.some((endpoint) => removed.has(endpoint.occurrence))
-      ) {
-        removed.add(occurrence.id);
-      }
-    }
+  for (const [viewKey, removed] of removedByView) {
     if (removed.size > 0) {
       occurrences[viewKey] = [...removed].sort().map((id) => id as OccurrenceRef);
     }
@@ -319,7 +525,7 @@ interface AppliedRemoval {
   readonly touchedViews: readonly ViewRef[];
 }
 
-function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
+function applyRemoval(state: DiagramState, plan: RemovalPlan, registry: ProfileRegistry): AppliedRemoval {
   const effects: Effect[] = [];
   const inverse: Command[] = [];
 
@@ -328,7 +534,7 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
   let relations = state.document.relations;
 
   // The inverse re-creates in dependency order: entities, then their ports,
-  // then the relations between them, then the drawings.
+  // then the relations between them, then the views via replacement snapshots.
   for (const ref of plan.entities) {
     const entity = entities[ref];
     if (entity === undefined) continue;
@@ -350,53 +556,65 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
     relations = withoutKey(relations, ref);
     effects.push({ kind: "relation-deleted", relation: ref });
   }
+  const newDocument = { ...state.document, entities, ports, relations };
 
   const views: Record<string, ViewDocument> = { ...state.views };
   const touchedViews: ViewRef[] = [];
   for (const [viewKey, removedIds] of Object.entries(plan.occurrences)) {
     const view = views[viewKey];
     if (view === undefined) continue;
+    const previous = state.views[viewKey] as ViewDocument;
     let entityOccurrences = view.entityOccurrences;
     let relationOccurrences = view.relationOccurrences;
     let portOccurrences = view.portOccurrences;
     const viewRef = viewKey as ViewRef;
-    // Order is irrelevant here, and deliberately so: a `create-occurrence` has
-    // no structural precondition on the occurrences it points at, and the
-    // transaction validates the FINAL state once. Sorted ids keep the inverse
-    // itself deterministic, which the byte-for-byte tests rely on.
     for (const id of removedIds) {
-      const relationOccurrence = relationOccurrences[id];
-      if (relationOccurrence !== undefined) {
-        inverse.push({ kind: "create-occurrence", view: viewRef, occurrence: { of: "relation", occurrence: relationOccurrence } });
+      if (relationOccurrences[id] !== undefined) {
         relationOccurrences = withoutKey(relationOccurrences, id);
         effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
         continue;
       }
-      const portOccurrence = portOccurrences[id];
-      if (portOccurrence !== undefined) {
-        inverse.push({ kind: "create-occurrence", view: viewRef, occurrence: { of: "port", occurrence: portOccurrence } });
+      if (portOccurrences[id] !== undefined) {
         portOccurrences = withoutKey(portOccurrences, id);
         effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
         continue;
       }
-      const entityOccurrence = entityOccurrences[id];
-      if (entityOccurrence !== undefined) {
-        inverse.push({ kind: "create-occurrence", view: viewRef, occurrence: { of: "entity", occurrence: entityOccurrence } });
+      if (entityOccurrences[id] !== undefined) {
         entityOccurrences = withoutKey(entityOccurrences, id);
         effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
       }
     }
-    // Visual groups are untouched: a group DECLARES itself and membership lives
-    // on the occurrence, so removing a drawing removes its membership with it and
-    // re-creating the drawing brings the membership back. A group that ends up
-    // with no member stays declared - an empty group is a legitimate state, and
-    // deleting it would be a decision nobody asked for.
-    views[viewKey] = { ...view, entityOccurrences, relationOccurrences, portOccurrences };
+    const cleanup = cleanFoldBindings(
+      { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+      newDocument,
+      registry,
+      new Set<string>(removedIds),
+    );
+    const candidate = cleanedView(
+      { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+      cleanup,
+      relationOccurrences,
+    );
+    const repaired = reprojectRetained(candidate, newDocument);
+    const staleIds: OccurrenceRef[] = [];
+    for (const key of Object.keys(candidate.relationOccurrences).sort()) {
+      if (canonicalise(repaired.relationOccurrences[key]) !== canonicalise(candidate.relationOccurrences[key])) {
+        staleIds.push(key as OccurrenceRef);
+      }
+    }
+    for (const id of staleIds) {
+      effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
+    }
+    for (const id of staleIds) {
+      effects.push({ kind: "occurrence-created", view: viewRef, occurrence: id });
+    }
+    inverse.push(replaceViewInverse(viewRef, previous, true));
+    views[viewKey] = repaired;
     touchedViews.push(viewRef);
   }
 
   return {
-    state: { document: { ...state.document, entities, ports, relations }, views },
+    state: { document: newDocument, views },
     effects,
     inverse,
     touchedViews,
@@ -426,7 +644,7 @@ function withDocument(state: DiagramState, document: SemanticDocument): DiagramS
   return { document, views: state.views };
 }
 
-function applyOne(state: DiagramState, command: Command, index: number): CommandResult {
+function applyOne(state: DiagramState, command: Command, index: number, options: ApplyOptions): CommandResult {
   const path = `commands[${index}]`;
   const document = state.document;
 
@@ -529,7 +747,7 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
         );
       }
       if (refused.length > 0) return { diagnostics: refused };
-      const removal = applyRemoval(state, plan);
+      const removal = applyRemoval(state, plan, options.registry);
       return { applied: removal };
     }
 
@@ -602,7 +820,7 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
           ],
         };
       }
-      return { applied: applyRemoval(state, plan) };
+      return { applied: applyRemoval(state, plan, options.registry) };
     }
 
     case "create-port": {
@@ -687,7 +905,7 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
         );
       }
       if (refused.length > 0) return { diagnostics: refused };
-      return { applied: applyRemoval(state, plan) };
+      return { applied: applyRemoval(state, plan, options.registry) };
     }
 
     case "create-occurrence": {
@@ -839,34 +1057,143 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
     case "remove-occurrence": {
       const view = state.views[command.view];
       if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
-      const entityOccurrence = view.entityOccurrences[command.occurrence];
-      const portOccurrence = view.portOccurrences[command.occurrence];
-      const relationOccurrence = view.relationOccurrences[command.occurrence];
-      if (entityOccurrence === undefined && portOccurrence === undefined && relationOccurrence === undefined) {
+      if (
+        view.entityOccurrences[command.occurrence] === undefined &&
+        view.portOccurrences[command.occurrence] === undefined &&
+        view.relationOccurrences[command.occurrence] === undefined
+      ) {
         return missing(path, `occurrence ${command.occurrence} does not exist in view ${command.view}`, [
           command.occurrence,
           command.view,
         ]);
       }
-      const occurrence: OccurrenceInput =
-        entityOccurrence !== undefined
-          ? { of: "entity", occurrence: entityOccurrence }
-          : portOccurrence !== undefined
-            ? { of: "port", occurrence: portOccurrence }
-            : { of: "relation", occurrence: relationOccurrence as RelationOccurrence };
-      const next: ViewDocument =
-        occurrence.of === "entity"
-          ? { ...view, entityOccurrences: withoutKey(view.entityOccurrences, command.occurrence) }
-          : occurrence.of === "port"
-            ? { ...view, portOccurrences: withoutKey(view.portOccurrences, command.occurrence) }
-            : { ...view, relationOccurrences: withoutKey(view.relationOccurrences, command.occurrence) };
-      // Removing ONE drawing removes a drawing: the entity, the relation and the
-      // port are untouched (study invariant 2).
+      const previous = state.views[command.view] as ViewDocument;
+      const consumed = new Set<string>([command.occurrence]);
+      let consumedGrown = true;
+      while (consumedGrown) {
+        consumedGrown = false;
+        for (const candidate of Object.values(view.portOccurrences)) {
+          if (!consumed.has(candidate.id) && consumed.has(candidate.ownerOccurrence)) {
+            consumed.add(candidate.id);
+            consumedGrown = true;
+          }
+        }
+        for (const candidate of Object.values(view.relationOccurrences)) {
+          if (consumed.has(candidate.id)) continue;
+          if (
+            candidate.endpoints.some(
+              (endpoint) => consumed.has(endpoint.occurrence) || (endpoint.sourceOccurrence !== undefined && consumed.has(endpoint.sourceOccurrence)),
+            )
+          ) {
+            consumed.add(candidate.id);
+            consumedGrown = true;
+          }
+        }
+      }
+      let entityOccurrences = view.entityOccurrences;
+      let portOccurrences = view.portOccurrences;
+      let relationOccurrences = view.relationOccurrences;
+      for (const id of [...consumed].sort()) {
+        if (entityOccurrences[id] !== undefined) {
+          entityOccurrences = withoutKey(entityOccurrences, id);
+          continue;
+        }
+        if (portOccurrences[id] !== undefined) {
+          portOccurrences = withoutKey(portOccurrences, id);
+          continue;
+        }
+        if (relationOccurrences[id] !== undefined) {
+          relationOccurrences = withoutKey(relationOccurrences, id);
+        }
+      }
+      const cleanup = cleanFoldBindings(
+        { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+        document,
+        options.registry,
+        consumed,
+      );
+      const candidate = cleanedView(
+        { ...view, entityOccurrences, relationOccurrences, portOccurrences },
+        cleanup,
+        relationOccurrences,
+      );
+      const repaired = reprojectRetained(candidate, document);
+      const staleIds: OccurrenceRef[] = [];
+      for (const key of Object.keys(candidate.relationOccurrences).sort()) {
+        if (canonicalise(repaired.relationOccurrences[key]) !== canonicalise(candidate.relationOccurrences[key])) {
+          staleIds.push(key as OccurrenceRef);
+        }
+      }
+      const effects: Effect[] = [];
+      for (const id of [...new Set<string>([...consumed, ...staleIds])].sort()) {
+        effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
+      }
+      for (const id of staleIds) {
+        effects.push({ kind: "occurrence-created", view: command.view, occurrence: id });
+      }
+      const inverse: Command[] = [replaceViewInverse(command.view, previous, true)];
       return {
         applied: {
-          state: { document, views: withKey(state.views, command.view, next) },
-          effects: [{ kind: "occurrence-removed", view: command.view, occurrence: command.occurrence }],
-          inverse: [{ kind: "create-occurrence", view: command.view, occurrence }],
+          state: { document, views: withKey(state.views, command.view, repaired) },
+          effects,
+          inverse,
+          touchedViews: [command.view],
+        },
+      };
+    }
+
+    case "replace-view": {
+      const view = state.views[command.view];
+      if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
+      if (command.source.viewId !== command.view) {
+        return {
+          diagnostics: [
+            diagnostic({
+              code: "view-document-mismatch",
+              path: `${path}.source.viewId`,
+              message: `replace-view source viewId ${command.source.viewId} does not match target view ${command.view}`,
+              refs: [command.source.viewId, command.view],
+            }),
+          ],
+        };
+      }
+      if (command.source.semanticDocumentId !== document.documentId) {
+        return {
+          diagnostics: [
+            diagnostic({
+              code: "view-document-mismatch",
+              path: `${path}.source.semanticDocumentId`,
+              message: `replace-view source points at ${command.source.semanticDocumentId}, the document is ${document.documentId}`,
+              refs: [command.source.semanticDocumentId, document.documentId],
+            }),
+          ],
+        };
+      }
+      if (command.source.revision > document.revision) {
+        return {
+          diagnostics: [
+            diagnostic({
+              code: "revision-divergence",
+              path: `${path}.source.revision`,
+              message: `source revision ${command.source.revision} is ahead of document revision ${document.revision}`,
+              details: { viewRevision: command.source.revision, documentRevision: document.revision },
+            }),
+          ],
+        };
+      }
+      const previous = state.views[command.view] as ViewDocument;
+      let projected: ViewDocument;
+      try {
+        projected = projectView(document, command.source, command.collapsed);
+      } catch (thrown) {
+        const refusal = thrown as import("./diagnostics.js").Diagnostic;
+        return { diagnostics: [refusal] };
+      }
+      return {
+        applied: {
+          state: { document, views: withKey(state.views, command.view, projected) },
+          effects: [],
+          inverse: [replaceViewInverse(command.view, previous, command.internalRestore === true)],
           touchedViews: [command.view],
         },
       };
@@ -1088,7 +1415,7 @@ export function applyTransaction(
   const touched = new Set<string>();
 
   for (const [index, command] of transaction.commands.entries()) {
-    const result = applyOne(working, command, index);
+    const result = applyOne(working, command, index, options);
     if ("diagnostics" in result) {
       // No partial success: the working copy is dropped whole.
       return { status: "rejected", commandId, diagnostics: result.diagnostics };
@@ -1100,6 +1427,33 @@ export function applyTransaction(
     for (const view of result.applied.touchedViews) touched.add(view);
   }
 
+  const viewOnly = transaction.commands.every(
+    (command) => command.kind === "replace-view" && command.internalRestore !== true,
+  );
+  if (viewOnly) {
+    const next: DiagramState = { document: { ...working.document }, views: { ...working.views } };
+    const diagnostics = validateState(
+      next,
+      options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings },
+    ).filter((entry) => entry.severity === "error");
+    if (diagnostics.length > 0) {
+      return { status: "rejected", commandId, diagnostics };
+    }
+    const budget = options.inverseBudget ?? DEFAULT_INVERSE_BUDGET;
+    const inverse: Inverse =
+      inverseCommands.length > budget
+        ? {
+            kind: "non-invertible",
+            code: "inverse-budget-exceeded",
+            reason:
+              `the inverse of this transaction needs ${inverseCommands.length} commands, above the declared budget of ${budget}; ` +
+              "it is not returned because an unbounded inverse is an unbounded cost on the host's undo stack. " +
+              "The state before the transaction is recoverable from the host's own snapshot, not from this outcome.",
+          }
+        : { kind: "invertible", commands: inverseCommands };
+    return { status: "applied", commandId, state: next, effects: [...effects], inverse };
+  }
+
   const nextRevision = state.document.revision + 1;
   const views: Record<string, ViewDocument> = { ...working.views };
   for (const key of Object.keys(views)) {
@@ -1109,9 +1463,10 @@ export function applyTransaction(
   }
   const next: DiagramState = { document: { ...working.document, revision: nextRevision }, views };
 
-  const diagnostics = validateState(next, { registry: options.registry }).filter(
-    (entry) => entry.severity === "error",
-  );
+  const diagnostics = validateState(
+    next,
+    options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings },
+  ).filter((entry) => entry.severity === "error");
   if (diagnostics.length > 0) {
     return { status: "rejected", commandId, diagnostics };
   }

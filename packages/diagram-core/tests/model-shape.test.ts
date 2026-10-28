@@ -112,11 +112,16 @@ describe("the view document", () => {
   const view = createView({ viewId: viewRef("v"), semanticDocumentId: document.documentId });
 
   it("has exactly the declared fields, freshly created and as a fixture", () => {
-    expect(Object.keys(view).sort()).toEqual([...VIEW_DOCUMENT_FIELDS]);
-    const fixture = stateOf(readFixture("valid/generic-state.json"));
-    for (const candidate of Object.values(fixture.views)) {
-      expect(Object.keys(candidate).sort()).toEqual([...VIEW_DOCUMENT_FIELDS]);
+    // M3 §4.5.1/§5.6: `summaryLabels` is the one optional top-level field.
+    // Required fields must all be present and no undeclared key (a stray
+    // `hover` key still fails here); the optional field may be absent.
+    const requiredFields = [...VIEW_DOCUMENT_FIELDS].filter((field) => field !== "summaryLabels");
+    for (const candidate of [view, ...Object.values(stateOf(readFixture("valid/generic-state.json")).views)]) {
+      const keys = Object.keys(candidate as unknown as Record<string, unknown>).sort();
+      for (const field of requiredFields) expect(keys).toContain(field);
+      for (const key of keys) expect([...VIEW_DOCUMENT_FIELDS]).toContain(key);
     }
+    expect([...VIEW_DOCUMENT_FIELDS].sort()).toContain("summaryLabels");
   });
 
   it("excludes transient state BY NAME", () => {
