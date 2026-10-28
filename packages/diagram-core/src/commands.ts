@@ -148,6 +148,12 @@ export type Command =
       readonly view: ViewRef;
       readonly source: ViewDocument;
       readonly collapsed: readonly OccurrenceRef[];
+      /**
+       * Internal snapshot restoration retains the originating transaction's
+       * revision policy: it bumps like any semantic command. Absent on
+       * explicit presentation replacements, which stay revision-preserving.
+       */
+      readonly internalRestore?: true;
     }
   | { readonly kind: "apply-preserved-extension"; readonly extension: PreservedExtension }
   /**
@@ -400,9 +406,15 @@ function stripProvenance(view: ViewDocument): ViewDocument {
 }
 
 /** View-replacement inverse restoring a previous view via its retained source. */
-function replaceViewInverse(view: ViewRef, previous: ViewDocument): Command {
+function replaceViewInverse(view: ViewRef, previous: ViewDocument, internal: boolean): Command {
   const stripped = stripProvenance(previous);
-  return { kind: "replace-view", view, source: stripped, collapsed: [...collapsedOf(previous)] as OccurrenceRef[] };
+  const base = {
+    kind: "replace-view" as const,
+    view,
+    source: stripped,
+    collapsed: [...collapsedOf(previous)] as OccurrenceRef[],
+  };
+  return internal ? { ...base, internalRestore: true as const } : base;
 }
 
 // --- removal closure ---------------------------------------------------------
@@ -596,7 +608,7 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan, registry: ProfileR
     for (const id of staleIds) {
       effects.push({ kind: "occurrence-created", view: viewRef, occurrence: id });
     }
-    inverse.push(replaceViewInverse(viewRef, previous));
+    inverse.push(replaceViewInverse(viewRef, previous, true));
     views[viewKey] = repaired;
     touchedViews.push(viewRef);
   }
@@ -1119,7 +1131,7 @@ function applyOne(state: DiagramState, command: Command, index: number, options:
       for (const id of staleIds) {
         effects.push({ kind: "occurrence-created", view: command.view, occurrence: id });
       }
-      const inverse: Command[] = [replaceViewInverse(command.view, previous)];
+      const inverse: Command[] = [replaceViewInverse(command.view, previous, true)];
       return {
         applied: {
           state: { document, views: withKey(state.views, command.view, repaired) },
@@ -1157,6 +1169,18 @@ function applyOne(state: DiagramState, command: Command, index: number, options:
           ],
         };
       }
+      if (command.source.revision > document.revision) {
+        return {
+          diagnostics: [
+            diagnostic({
+              code: "revision-divergence",
+              path: `${path}.source.revision`,
+              message: `source revision ${command.source.revision} is ahead of document revision ${document.revision}`,
+              details: { viewRevision: command.source.revision, documentRevision: document.revision },
+            }),
+          ],
+        };
+      }
       const previous = state.views[command.view] as ViewDocument;
       let projected: ViewDocument;
       try {
@@ -1165,12 +1189,11 @@ function applyOne(state: DiagramState, command: Command, index: number, options:
         const refusal = thrown as import("./diagnostics.js").Diagnostic;
         return { diagnostics: [refusal] };
       }
-      projected = { ...projected, revision: document.revision };
       return {
         applied: {
           state: { document, views: withKey(state.views, command.view, projected) },
           effects: [],
-          inverse: [replaceViewInverse(command.view, previous)],
+          inverse: [replaceViewInverse(command.view, previous, false)],
           touchedViews: [command.view],
         },
       };
@@ -1404,7 +1427,9 @@ export function applyTransaction(
     for (const view of result.applied.touchedViews) touched.add(view);
   }
 
-  const viewOnly = transaction.commands.every((command) => command.kind === "replace-view");
+  const viewOnly = transaction.commands.every(
+    (command) => command.kind === "replace-view" && command.internalRestore !== true,
+  );
   if (viewOnly) {
     const next: DiagramState = { document: { ...working.document }, views: { ...working.views } };
     const diagnostics = validateState(
