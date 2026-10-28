@@ -12,7 +12,25 @@
  *      refused transaction can be explained in one pass.
  */
 
-import { referencesOf, validateAttributeValue, type AttributeSchema, type AttributeValue } from "./attributes.js";
+import {
+  referencesOf,
+  validateAttributeValue,
+  type AttributeSchema,
+  type AttributeValue,
+  type ReferenceSchema,
+  type ScalarSchema,
+  type StructAttributeValue,
+  type StructSchema,
+} from "./attributes.js";
+import {
+  adapterFor,
+  isRetainedLegacyProfileId,
+  LEGACY_CONSTRAINTS_ADAPTER,
+  verifyExecutorBindings,
+  type DeclarationAdapter,
+  type ExecutorProfileBindings,
+} from "./bindings.js";
+import { retainedExecutorBindings } from "./profiles/index.js";
 import { tryCanonicalise } from "./canonical.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import {
@@ -28,20 +46,33 @@ import { hashContent } from "./hash.js";
 import {
   entityTypeOf,
   portTypeOf,
+  qualifyAttributeSchema,
   relationTypeOf,
   roleOf,
+  selectGroupingHierarchy,
   validateProfile,
+  type AddedConstraint,
   type Profile,
+  type ProfileConstraint,
   type ProfileId,
   type ProfileRegistry,
   type RelationTypeDeclaration,
+  type UniqueAttributeScope,
 } from "./profile.js";
 import { parseRef, refKindOf, type EntityRef, type PortRef, type RefKind } from "./refs.js";
+import { createTypeResolver, type TypeResolver } from "./resolver.js";
 import type { DiagramState } from "./state.js";
 import type { ViewDocument } from "./view.js";
 
 export interface ValidationOptions {
   readonly registry: ProfileRegistry;
+  /**
+   * The `executor-profile-bindings@1` table (M3 §5.3.1). Absent means the
+   * retained native run for exactly the four @1 identities, so they keep
+   * their exact native behaviour and diagnostics. Every other profile, any
+   * version, requires a verified row.
+   */
+  readonly bindings?: ExecutorProfileBindings;
 }
 
 /** Base type attributes plus the additive attributes of a document type definition. */
@@ -89,11 +120,23 @@ export function effectiveEntitySchemas(
   return { schemas: [...base.attributes, ...definition.attributes] };
 }
 
+/**
+ * What the scoped executor needs beyond the schema alone: the owning profile
+ * (for K6 structured-type declarations), the registry (for K2 target chains)
+ * and the shared resolver. Absent, the bag runs the retained native checks.
+ */
+export interface AttributeContext {
+  readonly owner: Profile;
+  readonly registry: ProfileRegistry;
+  readonly resolver: TypeResolver;
+}
+
 function validateAttributeBag(
   attributes: Readonly<Record<string, AttributeValue>>,
   schemas: readonly AttributeSchema[],
   document: SemanticDocument,
   path: string,
+  context?: AttributeContext,
 ): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const byName = new Map(schemas.map((schema) => [schema.name, schema] as const));
@@ -115,9 +158,17 @@ function validateAttributeBag(
       continue;
     }
     diagnostics.push(...validateAttributeValue(schema, value, `${path}.${name}`));
+    if (schema.kind === "struct" && value.kind === "struct" && context !== undefined) {
+      diagnostics.push(...validateStructValue(schema, value, `${path}.${name}`, document, context));
+    }
     for (const found of referencesOf(schema, value)) {
       const location = found.index === undefined ? `${path}.${name}` : `${path}.${name}[${found.index}]`;
       diagnostics.push(...resolveReference(document, found.raw, found.refKind, location));
+      if (context !== undefined) {
+        const slot: ScalarSchema | undefined =
+          schema.kind === "collection" ? (schema.item as ScalarSchema) : (schema as ScalarSchema);
+        diagnostics.push(...checkReferenceTargetType(document, context, slot, found.raw, location));
+      }
     }
   }
 
@@ -134,6 +185,120 @@ function validateAttributeBag(
     }
   }
 
+  return diagnostics;
+}
+
+/** K2: a resolved entity reference must sit inside the declared target types. */
+function checkReferenceTargetType(
+  document: SemanticDocument,
+  context: AttributeContext,
+  slot: ScalarSchema | undefined,
+  raw: string,
+  location: string,
+): readonly Diagnostic[] {
+  if (slot?.kind !== "reference" || slot.refKind !== "entity") return [];
+  const targetTypes = (slot as ReferenceSchema).targetTypes;
+  if (targetTypes === undefined || targetTypes.length === 0) return [];
+  const target = document.entities[raw];
+  if (target === undefined) return [];
+  const targetProfile = context.registry.get(target.profile);
+  if (targetProfile === undefined) return [];
+  const resolution = context.resolver.resolve(targetProfile, target.type);
+  if (!resolution.ok) return [];
+  if (targetTypes.some((type) => resolution.resolved.ancestry.includes(type))) return [];
+  return [
+    diagnostic({
+      code: "reference-target-type",
+      path: location,
+      message: `reference target ${raw} has type ${target.type}; allowed types are ${targetTypes.join(", ")}`,
+      refs: [raw],
+      details: { seenType: target.type, allowed: targetTypes.join(",") },
+    }),
+  ];
+}
+
+/**
+ * K6: a structured value against its resolved effective structured type,
+ * recursively. The effective schema (M3 §2.3/§5.1) carries inherited fields;
+ * the direct declaration alone would miss them and misreport the ones the
+ * value does carry.
+ */
+function validateStructValue(
+  schema: StructSchema,
+  value: StructAttributeValue,
+  path: string,
+  document: SemanticDocument,
+  context: AttributeContext,
+): readonly Diagnostic[] {
+  // An unresolvable structured type keeps the A′ unknown-type arm at the
+  // value path; deeper K1/definition refusals are reported once at their own
+  // stage, never duplicated here.
+  const resolution = context.resolver.resolve(context.owner, value.type);
+  if (!resolution.ok) {
+    return [
+      diagnostic({
+        code: "struct-type-unknown",
+        path,
+        message: `structured value type ${value.type} is not declared`,
+        refs: [],
+        details: { type: value.type },
+      }),
+    ];
+  }
+  if (schema.targetTypes.length > 0 && !schema.targetTypes.includes(value.type)) {
+    return [
+      diagnostic({
+        code: "struct-type-not-allowed",
+        path,
+        message: `structured type ${value.type} is not allowed here; allowed types are ${schema.targetTypes.join(", ")}`,
+        refs: [],
+        details: { type: value.type, allowed: schema.targetTypes.join(",") },
+      }),
+    ];
+  }
+  const effective = resolution.resolved.schemas;
+  const diagnostics: Diagnostic[] = [];
+  const byName = new Map(effective.map((field) => [field.name, field] as const));
+  for (const name of Object.keys(value.fields).sort()) {
+    const fieldSchema = byName.get(name);
+    const fieldPath = `${path}.fields.${name}`;
+    const fieldValue = value.fields[name] as AttributeValue;
+    if (fieldSchema === undefined) {
+      diagnostics.push(
+        diagnostic({
+          code: "struct-field-not-in-schema",
+          path: fieldPath,
+          message: `field ${name} is not declared by structured type ${value.type}`,
+          refs: [],
+          details: { type: value.type, field: name },
+        }),
+      );
+      continue;
+    }
+    diagnostics.push(...validateAttributeValue(fieldSchema, fieldValue, fieldPath));
+    if (fieldSchema.kind === "struct" && fieldValue.kind === "struct") {
+      diagnostics.push(...validateStructValue(fieldSchema, fieldValue, fieldPath, document, context));
+    }
+    for (const found of referencesOf(fieldSchema, fieldValue)) {
+      const location = found.index === undefined ? fieldPath : `${fieldPath}[${found.index}]`;
+      diagnostics.push(...resolveReference(document, found.raw, found.refKind, location));
+      const slot: ScalarSchema | undefined =
+        fieldSchema.kind === "collection" ? (fieldSchema.item as ScalarSchema) : (fieldSchema as ScalarSchema);
+      diagnostics.push(...checkReferenceTargetType(document, context, slot, found.raw, location));
+    }
+  }
+  for (const fieldSchema of effective) {
+    if (fieldSchema.required === true && value.fields[fieldSchema.name] === undefined) {
+      diagnostics.push(
+        diagnostic({
+          code: "attribute-required-missing",
+          path: `${path}.fields.${fieldSchema.name}`,
+          message: `attribute ${fieldSchema.name} is required by the schema`,
+          details: { attribute: fieldSchema.name },
+        }),
+      );
+    }
+  }
   return diagnostics;
 }
 
@@ -187,11 +352,17 @@ function validateEntity(
   key: string,
   document: SemanticDocument,
   options: ValidationOptions,
+  resolver?: TypeResolver,
+  adapter: DeclarationAdapter = LEGACY_CONSTRAINTS_ADAPTER,
 ): readonly Diagnostic[] {
   const path = `entities.${key}`;
   const diagnostics: Diagnostic[] = [...keyMatchesId(key, entity.id, "entity", path)];
   const profile = declaredProfile(document, entity.profile, options, path);
   if ("diagnostic" in profile) return [...diagnostics, profile.diagnostic];
+
+  if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined) {
+    return [...diagnostics, ...validateScopedEntity(entity, path, document, options, profile.profile, resolver)];
+  }
 
   const effective = effectiveEntitySchemas(document, profile.profile, entity.type);
   if ("diagnostic" in effective) return [...diagnostics, { ...effective.diagnostic, path: `${path}.type` }];
@@ -200,11 +371,48 @@ function validateEntity(
   return diagnostics;
 }
 
+/** The scoped entity run: resolver schemas, the abstract arm, K2/K6 values. */
+function validateScopedEntity(
+  entity: Entity,
+  path: string,
+  document: SemanticDocument,
+  options: ValidationOptions,
+  profile: Profile,
+  resolver: TypeResolver,
+): readonly Diagnostic[] {
+  const resolution = resolver.resolve(profile, entity.type);
+  if (!resolution.ok) {
+    // Chain failures (unknown base, cycle, redeclaration) are reported once at
+    // the definition that closes them; only an unknown start is reported here.
+    if (resolution.diagnostic.path.startsWith("typeDefinitions.")) return [];
+    return [{ ...resolution.diagnostic, path: `${path}.type` }];
+  }
+  if (resolution.resolved.abstract) {
+    return [
+      diagnostic({
+        code: "abstract-instantiated",
+        severity: "error",
+        path: `${path}.type`,
+        message: `abstract type ${entity.type} cannot be instantiated as an entity`,
+        refs: [entity.id],
+        details: { type: entity.type },
+      }),
+    ];
+  }
+  return validateAttributeBag(entity.attributes, resolution.resolved.schemas, document, `${path}.attributes`, {
+    owner: profile,
+    registry: options.registry,
+    resolver,
+  });
+}
+
 function validatePort(
   port: SemanticPort,
   key: string,
   document: SemanticDocument,
   options: ValidationOptions,
+  resolver?: TypeResolver,
+  adapter: DeclarationAdapter = LEGACY_CONSTRAINTS_ADAPTER,
 ): readonly Diagnostic[] {
   const path = `ports.${key}`;
   const diagnostics: Diagnostic[] = [...keyMatchesId(key, port.id, "port", path)];
@@ -235,8 +443,12 @@ function validatePort(
       }),
     );
   }
+  const context: AttributeContext | undefined =
+    adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined
+      ? { owner: profile.profile, registry: options.registry, resolver }
+      : undefined;
   diagnostics.push(
-    ...validateAttributeBag(port.attributes, declared.attributes ?? [], document, `${path}.attributes`),
+    ...validateAttributeBag(port.attributes, declared.attributes ?? [], document, `${path}.attributes`, context),
   );
   return diagnostics;
 }
@@ -246,6 +458,8 @@ function validateRelation(
   key: string,
   document: SemanticDocument,
   options: ValidationOptions,
+  resolver?: TypeResolver,
+  adapter: DeclarationAdapter = LEGACY_CONSTRAINTS_ADAPTER,
 ): readonly Diagnostic[] {
   const path = `relations.${key}`;
   const diagnostics: Diagnostic[] = [...keyMatchesId(key, relation.id, "relation", path)];
@@ -324,9 +538,39 @@ function validateRelation(
     diagnostics.push(...resolution);
     if (resolution.length > 0) return;
 
+    // M3 §3.2.1 S-4: every scoped endpoint is owned by the relation's own
+    // profile. A foreign-family entity or port is refused without an admitted
+    // semantic join — and no such join exists in this lot. The check covers
+    // all relation types, not only hierarchy relations. The retained native
+    // run is unchanged.
+    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && (seenKind === "entity" || seenKind === "port")) {
+      const target =
+        seenKind === "entity"
+          ? (document.entities[endpoint.target] as Entity | undefined)
+          : (document.ports[endpoint.target] as SemanticPort | undefined);
+      if (target !== undefined && target.profile !== relation.profile) {
+        diagnostics.push(
+          diagnostic({
+            code: "endpoint-without-join",
+            path: `${endpointPath}.target`,
+            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to ${seenKind} ${endpoint.target} owned by profile ${target.profile} with no admitted semantic join`,
+            refs: [endpoint.target],
+            details: { profile: relation.profile, targetProfile: target.profile },
+          }),
+        );
+        return;
+      }
+    }
+
     if (seenKind === "entity" && role.entityTypes !== undefined) {
       const target = document.entities[endpoint.target] as Entity;
-      if (!role.entityTypes.includes(target.type)) {
+      // A new-format role is satisfied iff the target's resolved chain contains
+      // an allowed family root; the retained native run compares directly.
+      const chain: readonly string[] =
+        adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined
+          ? entityAncestry(options.registry, resolver, target)
+          : [target.type];
+      if (!role.entityTypes.some((allowed) => chain.includes(allowed))) {
         diagnostics.push(
           diagnostic({
             code: "endpoint-target-not-allowed",
@@ -354,10 +598,23 @@ function validateRelation(
     }
   }
 
+  const context: AttributeContext | undefined =
+    adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined
+      ? { owner: profile.profile, registry: options.registry, resolver }
+      : undefined;
   diagnostics.push(
-    ...validateAttributeBag(relation.attributes, declared.attributes ?? [], document, `${path}.attributes`),
+    ...validateAttributeBag(relation.attributes, declared.attributes ?? [], document, `${path}.attributes`, context),
   );
   return diagnostics;
+}
+
+/** An entity's resolved ancestry in its own profile context; the direct type when unresolvable. */
+function entityAncestry(registry: ProfileRegistry, resolver: TypeResolver, target: Entity): readonly string[] {
+  const targetProfile = registry.get(target.profile);
+  if (targetProfile === undefined) return [target.type];
+  const resolution = resolver.resolve(targetProfile, target.type);
+  if (!resolution.ok) return [target.type];
+  return resolution.resolved.ancestry;
 }
 
 /**
@@ -444,12 +701,24 @@ function validateHierarchies(
   return diagnostics;
 }
 
-function validateConstraints(document: SemanticDocument, profile: Profile): readonly Diagnostic[] {
+function validateConstraints(
+  document: SemanticDocument,
+  profile: Profile,
+  options: ValidationOptions,
+  resolver: TypeResolver,
+  adapter: DeclarationAdapter,
+): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const entities = Object.values(document.entities).filter((entity) => entity.profile === profile.id);
 
   for (const constraint of profile.constraints) {
     if (constraint.kind === "acyclic-hierarchy") continue; // handled by validateHierarchies
+    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined && isAddedConstraint(constraint)) {
+      diagnostics.push(
+        ...validateAddedConstraint(document, profile, options, resolver, constraint, entities),
+      );
+      continue;
+    }
     if (constraint.kind === "max-entities-of-type") {
       const count = entities.filter((entity) => entity.type === constraint.entityType).length;
       if (count > constraint.max) {
@@ -462,6 +731,15 @@ function validateConstraints(document: SemanticDocument, profile: Profile): read
           }),
         );
       }
+      continue;
+    }
+    // New-format `AddedConstraint` members are dispatched by the scoped
+    // executor; the retained native run ignores them exactly as before.
+    if (constraint.kind !== "unique-attribute") continue;
+    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && constraint.scope !== undefined) {
+      diagnostics.push(
+        ...validateScopedUniqueness(document, profile, options.registry, resolver, constraint, entities),
+      );
       continue;
     }
     const seen = new Map<string, string>();
@@ -495,6 +773,687 @@ function validateConstraints(document: SemanticDocument, profile: Profile): read
     }
   }
   return diagnostics;
+}
+
+function isAddedConstraint(constraint: ProfileConstraint): constraint is AddedConstraint {
+  switch (constraint.kind) {
+    case "acyclic-hierarchy":
+    case "unique-attribute":
+    case "max-entities-of-type":
+      return false;
+    default:
+      return true;
+  }
+}
+
+/** One entity with its resolved chain and nearest declared family type. */
+interface ChainedEntity {
+  readonly entity: Entity;
+  readonly chain: readonly string[];
+  readonly familyType: string;
+}
+
+/**
+ * The resolved chain of a known entity, or `undefined` when its profile or
+ * type does not resolve. Unlike `chainOfEntity`, there is no fallback chain:
+ * callers that must not duplicate another stage's refusal use this.
+ */
+function resolvedChainOfEntity(
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  entity: Entity,
+): ChainedEntity | undefined {
+  const owner = registry.get(entity.profile);
+  if (owner === undefined) return undefined;
+  const resolution = resolver.resolve(owner, entity.type);
+  if (!resolution.ok) return undefined;
+  const familyType =
+    resolution.resolved.ancestry.find((id) => entityTypeOf(owner, id) !== undefined) ?? entity.type;
+  return { entity, chain: resolution.resolved.ancestry, familyType };
+}
+
+function chainOfEntity(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  entityId: string,
+): ChainedEntity | undefined {
+  const entity = document.entities[entityId];
+  if (entity === undefined) return undefined;
+  const owner = registry.get(entity.profile);
+  if (owner === undefined) return { entity, chain: [entity.type], familyType: entity.type };
+  const resolution = resolver.resolve(owner, entity.type);
+  if (!resolution.ok) return { entity, chain: [entity.type], familyType: entity.type };
+  const familyType =
+    resolution.resolved.ancestry.find((id) => entityTypeOf(owner, id) !== undefined) ?? entity.type;
+  return { entity, chain: resolution.resolved.ancestry, familyType };
+}
+
+interface HierarchyIndex {
+  readonly childToParents: ReadonlyMap<string, readonly string[]>;
+}
+
+function indexHierarchy(
+  document: SemanticDocument,
+  profile: Profile,
+  hierarchyId: string,
+): HierarchyIndex | undefined {
+  const declarations = profile.relationTypes.filter(
+    (declaration) => declaration.hierarchy?.id === hierarchyId,
+  );
+  if (declarations.length === 0) return undefined;
+  const childToParents = new Map<string, string[]>();
+  for (const declaration of declarations) {
+    const hierarchy = declaration.hierarchy as NonNullable<RelationTypeDeclaration["hierarchy"]>;
+    for (const relation of Object.values(document.relations)) {
+      if (relation.profile !== profile.id || relation.type !== declaration.id) continue;
+      const parents = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.parentRole);
+      const kids = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.childRole);
+      for (const parent of parents) {
+        if (refKindOf(parent.target) !== "entity") continue;
+        for (const kid of kids) {
+          if (refKindOf(kid.target) !== "entity") continue;
+          childToParents.set(kid.target, [...(childToParents.get(kid.target) ?? []), parent.target]);
+        }
+      }
+    }
+  }
+  for (const parents of childToParents.values()) parents.sort();
+  return { childToParents };
+}
+
+function validateAddedConstraint(
+  document: SemanticDocument,
+  profile: Profile,
+  options: ValidationOptions,
+  resolver: TypeResolver,
+  constraint: AddedConstraint,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  switch (constraint.kind) {
+    case "hierarchy":
+      // Declaration-level binding: qualification checks that the named
+      // relation type declares this hierarchy with these roles, and
+      // `validateHierarchies` enforces the tree/DAG shapes for every declared
+      // hierarchy. The constraint itself adds no per-document check.
+      return [];
+    case "parent-family":
+      return checkParentFamily(document, profile, options.registry, resolver, constraint);
+    case "children-restricted":
+      return checkChildrenRestricted(document, profile, options.registry, resolver, constraint);
+    case "required-parent":
+      return checkRequiredParent(document, profile, options.registry, resolver, constraint, entities);
+    case "relationship-matrix":
+      return checkRelationshipMatrix(document, profile, options.registry, resolver, constraint);
+    case "bound-pair":
+      return checkBoundPair(document, profile, options.registry, resolver, constraint);
+    case "reference-application":
+      return checkReferenceApplication(document, profile, options.registry, resolver, constraint, entities);
+    case "incident-type-uniformity":
+      return checkIncidentTypeUniformity(document, profile, options.registry, resolver, constraint, entities);
+    case "at-most-value":
+      return checkAtMostValue(document, profile, constraint);
+    case "collection-unique":
+      return checkCollectionUnique(document, options.registry, resolver, constraint, entities);
+  }
+}
+
+function checkParentFamily(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "parent-family" }>,
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  for (const declaration of profile.relationTypes) {
+    if (declaration.hierarchy?.id !== constraint.hierarchyId) continue;
+    const hierarchy = declaration.hierarchy;
+    const relations = Object.values(document.relations)
+      .filter((relation) => relation.profile === profile.id && relation.type === declaration.id)
+      .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+    for (const relation of relations) {
+      relation.endpoints.forEach((endpoint, index) => {
+        if (endpoint.role !== hierarchy.parentRole) return;
+        if (refKindOf(endpoint.target) !== "entity") return;
+        const info = chainOfEntity(document, registry, resolver, endpoint.target);
+        if (info === undefined) return;
+        if (constraint.familyRoots.some((root) => info.chain.includes(root))) return;
+        diagnostics.push(
+          diagnostic({
+            code: "endpoint-target-not-allowed",
+            path: `relations.${relation.id}.endpoints[${index}].target`,
+            message: `role ${endpoint.role} accepts entity types ${constraint.familyRoots.join(", ")}; ${info.entity.id} is a ${info.entity.type}`,
+            refs: [info.entity.id],
+            details: { seenType: info.entity.type, allowed: constraint.familyRoots.join(",") },
+          }),
+        );
+      });
+    }
+  }
+  return diagnostics;
+}
+
+function checkChildrenRestricted(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "children-restricted" }>,
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  const reported = new Set<string>();
+  for (const declaration of profile.relationTypes) {
+    if (declaration.hierarchy?.id !== constraint.hierarchyId) continue;
+    const hierarchy = declaration.hierarchy;
+    const relations = Object.values(document.relations)
+      .filter((relation) => relation.profile === profile.id && relation.type === declaration.id)
+      .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+    for (const relation of relations) {
+      const parents = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.parentRole);
+      const kids = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.childRole);
+      for (const parent of parents) {
+        if (refKindOf(parent.target) !== "entity") continue;
+        const parentInfo = chainOfEntity(document, registry, resolver, parent.target);
+        if (parentInfo === undefined) continue;
+        if (!constraint.parentFamilyRoots.some((root) => parentInfo.chain.includes(root))) continue;
+        // The arm wording is fixed native mapping; only the family names are
+        // composed from the constraint values, so any family renames cleanly.
+        const roots = constraint.parentFamilyRoots.join(", ");
+        const kinds = constraint.childTypes.join(", ");
+        for (const kid of kids) {
+          if (refKindOf(kid.target) !== "entity" || reported.has(kid.target)) continue;
+          const kidInfo = chainOfEntity(document, registry, resolver, kid.target);
+          if (kidInfo === undefined) continue;
+          if (constraint.childTypes.some((child) => kidInfo.chain.includes(child))) continue;
+          reported.add(kid.target);
+          diagnostics.push(
+            diagnostic({
+              code: "legend-key-parent-invalid",
+              path: `entities.${kid.target}`,
+              message: `key entity ${kid.target} is contained by ${roots} ${parent.target}; only ${kinds} entities may be contained by a ${roots}`,
+              refs: [kid.target, parent.target],
+              details: {
+                childType: kidInfo.entity.type,
+                parentType: parentInfo.entity.type,
+                constraint: "children-restricted",
+              },
+            }),
+          );
+        }
+      }
+    }
+  }
+  return diagnostics;
+}
+
+function checkRequiredParent(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "required-parent" }>,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  const index = indexHierarchy(document, profile, constraint.hierarchyId);
+  if (index === undefined) return [];
+  const diagnostics: Diagnostic[] = [];
+  const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const entity of ordered) {
+    if (!constraint.childTypes.some((child) => entityAncestry(registry, resolver, entity).includes(child))) continue;
+    const roots = constraint.parentFamilyRoots.join(", ");
+    const kinds = constraint.childTypes.join(", ");
+    const parents = index.childToParents.get(entity.id) ?? [];
+    if (parents.length === 0) {
+      diagnostics.push(
+        diagnostic({
+          code: "legend-key-parent-invalid",
+          path: `entities.${entity.id}`,
+          message: `key entity ${entity.id} has no hierarchy parent; a ${kinds} must be contained by a ${roots}`,
+          refs: [entity.id],
+          details: { childType: entity.type, parentType: "none", constraint: "required-parent" },
+        }),
+      );
+      continue;
+    }
+    const inside = parents.filter((parent) => {
+      const info = chainOfEntity(document, registry, resolver, parent);
+      return info !== undefined && constraint.parentFamilyRoots.some((root) => info.chain.includes(root));
+    });
+    if (inside.length > 0) continue;
+    const named = parents[0] as string;
+    const parentInfo = chainOfEntity(document, registry, resolver, named);
+    if (parentInfo === undefined) continue;
+    diagnostics.push(
+      diagnostic({
+        code: "legend-key-parent-invalid",
+        path: `entities.${entity.id}`,
+        message: `key entity ${entity.id} is contained by ${named}, which is outside the ${roots} family; a ${kinds} must be contained by a ${roots}`,
+        refs: [entity.id, named],
+        details: { childType: entity.type, parentType: parentInfo.entity.type, constraint: "required-parent" },
+      }),
+    );
+  }
+  return diagnostics;
+}
+
+function checkRelationshipMatrix(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "relationship-matrix" }>,
+): readonly Diagnostic[] {
+  const tuples = new Set(
+    constraint.tuples.map((tuple) => `${tuple.relationType}\n${tuple.sourceType}\n${tuple.targetType}`),
+  );
+  const diagnostics: Diagnostic[] = [];
+  const relations = Object.values(document.relations)
+    .filter((relation) => relation.profile === profile.id)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const relation of relations) {
+    // §5.2: relation declaration, role, kind, cardinality and resolution
+    // prerequisites take precedence. A relation failing any of them already
+    // carries its own refusal from endpoint validation; comparing it against
+    // the matrix would add a secondary relationship-matrix-violation.
+    const declared = relationTypeOf(profile, relation.type);
+    if (declared === undefined) continue;
+    const sourceRole = roleOf(declared, constraint.sourceRole);
+    const targetRole = roleOf(declared, constraint.targetRole);
+    if (sourceRole === undefined || targetRole === undefined) continue;
+    const sources = relation.endpoints.filter((endpoint) => endpoint.role === constraint.sourceRole);
+    const targets = relation.endpoints.filter((endpoint) => endpoint.role === constraint.targetRole);
+    if (sources.length !== 1 || targets.length !== 1) continue;
+    const source = sources[0] as (typeof sources)[number];
+    const target = targets[0] as (typeof targets)[number];
+    if (refKindOf(source.target) !== "entity" || refKindOf(target.target) !== "entity") continue;
+    if (!sourceRole.targets.includes("entity") || !targetRole.targets.includes("entity")) continue;
+    const counts = new Map<string, number>();
+    for (const endpoint of relation.endpoints) {
+      counts.set(endpoint.role, (counts.get(endpoint.role) ?? 0) + 1);
+    }
+    const sourceCount = counts.get(constraint.sourceRole) ?? 0;
+    const targetCount = counts.get(constraint.targetRole) ?? 0;
+    if (sourceCount < sourceRole.cardinality.min || sourceCount > sourceRole.cardinality.max) continue;
+    if (targetCount < targetRole.cardinality.min || targetCount > targetRole.cardinality.max) continue;
+    const sourceEntity = document.entities[source.target] as Entity | undefined;
+    const targetEntity = document.entities[target.target] as Entity | undefined;
+    if (sourceEntity === undefined || targetEntity === undefined) continue;
+    const sourceInfo = resolvedChainOfEntity(registry, resolver, sourceEntity);
+    const targetInfo = resolvedChainOfEntity(registry, resolver, targetEntity);
+    if (sourceInfo === undefined || targetInfo === undefined) continue;
+    if (
+      sourceRole.entityTypes !== undefined &&
+      !sourceRole.entityTypes.some((allowed) => sourceInfo.chain.includes(allowed))
+    ) {
+      continue;
+    }
+    if (
+      targetRole.entityTypes !== undefined &&
+      !targetRole.entityTypes.some((allowed) => targetInfo.chain.includes(allowed))
+    ) {
+      continue;
+    }
+    if (tuples.has(`${relation.type}\n${sourceInfo.familyType}\n${targetInfo.familyType}`)) continue;
+    diagnostics.push(
+      diagnostic({
+        code: "relationship-matrix-violation",
+        path: `relations.${relation.id}.endpoints`,
+        message: `relation ${relation.id} of type ${relation.type} is not allowed from ${sourceInfo.familyType} to ${targetInfo.familyType} by matrix ${constraint.matrixId}`,
+        refs: [relation.id, source.target, target.target],
+        details: {
+          matrixId: constraint.matrixId,
+          relationType: relation.type,
+          sourceType: sourceInfo.familyType,
+          targetType: targetInfo.familyType,
+        },
+      }),
+    );
+  }
+  return diagnostics;
+}
+
+function scopedRecordSchemas(
+  resolver: TypeResolver,
+  owner: Profile,
+  recordType: string,
+): readonly AttributeSchema[] | undefined {
+  const resolution = resolver.resolve(owner, recordType);
+  if (!resolution.ok) return undefined;
+  return resolution.resolved.schemas;
+}
+
+function checkBoundPair(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "bound-pair" }>,
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  // Every occurrence of the value type is checked, including values nested
+  // inside other K6 structs: a bound pair buried one level down is the same
+  // multiplicity fact as a top-level one.
+  const checkValue = (value: AttributeValue, valuePath: string): void => {
+    if (value.kind !== "struct") return;
+    if (value.type === constraint.valueType) {
+      const lower = value.fields[constraint.lowerField];
+      const upper = value.fields[constraint.upperField];
+      if (
+        lower?.kind === "quantity" &&
+        upper?.kind === "quantity" &&
+        typeof lower.value === "number" &&
+        typeof upper.value === "number" &&
+        Number.isFinite(lower.value) &&
+        Number.isFinite(upper.value) &&
+        upper.value !== constraint.unboundedUpper &&
+        lower.value > upper.value
+      ) {
+        diagnostics.push(
+          diagnostic({
+            code: "multiplicity-invalid",
+            path: valuePath,
+            message: `multiplicity lower ${String(lower.value)} exceeds finite upper ${String(upper.value)}`,
+            refs: [],
+            details: { lower: lower.value, upper: upper.value, constraint: "bound-pair" },
+          }),
+        );
+      }
+    }
+    for (const name of Object.keys(value.fields).sort()) {
+      checkValue(value.fields[name] as AttributeValue, `${valuePath}.fields.${name}`);
+    }
+  };
+  const checkRecord = (recordPath: string, attributes: Readonly<Record<string, AttributeValue>>): void => {
+    for (const name of Object.keys(attributes).sort()) {
+      checkValue(attributes[name] as AttributeValue, `${recordPath}.attributes.${name}`);
+    }
+  };
+  for (const entity of Object.values(document.entities)
+    .filter((candidate) => candidate.profile === profile.id)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
+    if (scopedRecordSchemas(resolver, profile, entity.type) === undefined) continue;
+    checkRecord(`entities.${entity.id}`, entity.attributes);
+  }
+  for (const relation of Object.values(document.relations)
+    .filter((candidate) => candidate.profile === profile.id)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
+    if (relationTypeOf(profile, relation.type) === undefined) continue;
+    checkRecord(`relations.${relation.id}`, relation.attributes);
+  }
+  // Ports carry structured attributes too: a bound pair on a port attribute
+  // is the same multiplicity fact as on an entity or relation. Records walk
+  // in UTF-16 id order and attributes keep the exact value path, like every
+  // other sorted walk in this file.
+  for (const port of Object.values(document.ports)
+    .filter((candidate) => candidate.profile === profile.id)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
+    if (portTypeOf(profile, port.type) === undefined) continue;
+    checkRecord(`ports.${port.id}`, port.attributes);
+  }
+  return diagnostics;
+}
+
+function checkReferenceApplication(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "reference-application" }>,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const entity of ordered) {
+    const schemas = scopedRecordSchemas(resolver, profile, entity.type);
+    if (schemas === undefined) continue;
+    const schema = schemas.find((candidate) => candidate.name === constraint.attribute);
+    if (schema === undefined) continue;
+    const value = entity.attributes[constraint.attribute];
+    if (value === undefined) continue;
+    const slot = schema.kind === "collection" ? schema.item : schema;
+    if (slot.kind !== "reference") continue;
+    const items: readonly { readonly item: AttributeValue; readonly index: number | undefined }[] =
+      value.kind === "collection"
+        ? value.items.map((item, index) => ({ item, index }) as const)
+        : [{ item: value, index: undefined }];
+    for (const { item, index } of items) {
+      if (item.kind !== "reference") continue;
+      const itemPath =
+        index === undefined
+          ? `entities.${entity.id}.attributes.${constraint.attribute}`
+          : `entities.${entity.id}.attributes.${constraint.attribute}[${index}]`;
+      const target = document.entities[item.value];
+      if (target === undefined) continue;
+      const targetProfile = registry.get(target.profile);
+      if (targetProfile === undefined) continue;
+      const targetResolution = resolver.resolve(targetProfile, target.type);
+      if (!targetResolution.ok) continue;
+      const allowedSet = slot.targetTypes;
+      if (
+        allowedSet !== undefined &&
+        allowedSet.length > 0 &&
+        !allowedSet.some((type) => targetResolution.resolved.ancestry.includes(type))
+      ) {
+        continue;
+      }
+      // The applicable target set is the target entity's own field value, not
+      // the schema's enum vocabulary: a stereotype applies exactly to the
+      // types its instance declares.
+      const declaration = targetResolution.resolved.schemas.find(
+        (candidate) => candidate.name === constraint.allowedTypesField,
+      );
+      if (declaration?.kind !== "collection" || declaration.item.kind !== "enum") continue;
+      const targetValue = target.attributes[constraint.allowedTypesField];
+      if (targetValue?.kind !== "collection") continue;
+      const allowed = targetValue.items.flatMap((entry) => (entry.kind === "enum" ? [entry.value] : []));
+      const source = chainOfEntity(document, registry, resolver, entity.id);
+      if (source === undefined) continue;
+      if (allowed.some((type) => source.chain.includes(type))) continue;
+      diagnostics.push(
+        diagnostic({
+          code: "stereotype-application-invalid",
+          path: itemPath,
+          message: `stereotype ${target.id} cannot be applied to type ${source.familyType}`,
+          refs: [entity.id, target.id],
+          details: { attribute: constraint.attribute, targetType: source.familyType, allowed: allowed.join(",") },
+        }),
+      );
+    }
+  }
+  return diagnostics;
+}
+
+function checkIncidentTypeUniformity(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "incident-type-uniformity" }>,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  const relations = Object.values(document.relations)
+    .filter((relation) => relation.profile === profile.id && constraint.relationTypes.includes(relation.type))
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const entity of ordered) {
+    if (!entityAncestry(registry, resolver, entity).includes(constraint.entityType)) continue;
+    const incident = relations.filter((relation) =>
+      relation.endpoints.some((endpoint) => endpoint.target === entity.id),
+    );
+    const distinct = [...new Set(incident.map((relation) => relation.type))].sort();
+    if (distinct.length <= 1) continue;
+    diagnostics.push(
+      diagnostic({
+        code: "relationship-matrix-violation",
+        path: `entities.${entity.id}`,
+        message: `junction ${entity.id} connects incompatible relation types ${distinct.join(", ")}`,
+        refs: [entity.id, ...incident.map((relation) => relation.id)],
+        details: {
+          matrixId: constraint.matrixId,
+          constraint: "incident-type-uniformity",
+          relationTypes: distinct.join(","),
+        },
+      }),
+    );
+  }
+  return diagnostics;
+}
+
+function checkAtMostValue(
+  document: SemanticDocument,
+  profile: Profile,
+  constraint: Extract<AddedConstraint, { kind: "at-most-value" }>,
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  const relations = Object.values(document.relations)
+    .filter((relation) => relation.profile === profile.id && relation.type === constraint.relationType)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const relation of relations) {
+    const count = constraint.attributes.filter((attribute) => {
+      const value = relation.attributes[attribute];
+      return value !== undefined && value.kind === "enum" && value.value === constraint.value;
+    }).length;
+    if (count <= constraint.max) continue;
+    diagnostics.push(
+      diagnostic({
+        code: "multiplicity-invalid",
+        path: `relations.${relation.id}.attributes`,
+        message: `relation ${relation.id} has ${count} ${constraint.value} ends; at most ${constraint.max} is allowed`,
+        refs: [relation.id],
+        details: { count, max: constraint.max, constraint: "at-most-value" },
+      }),
+    );
+  }
+  return diagnostics;
+}
+
+function checkCollectionUnique(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<AddedConstraint, { kind: "collection-unique" }>,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  for (const entity of ordered) {
+    if (!entityAncestry(registry, resolver, entity).includes(constraint.entityType)) continue;
+    const value = entity.attributes[constraint.attribute];
+    if (value?.kind !== "collection") continue;
+    const seen = new Map<string, number>();
+    value.items.forEach((item, index) => {
+      const key = tryCanonicalise(item, "value");
+      if (!key.ok) return;
+      const first = seen.get(key.text);
+      if (first !== undefined) {
+        diagnostics.push(
+          diagnostic({
+            code: "collection-bound-exceeded",
+            path: `entities.${entity.id}.attributes.${constraint.attribute}[${index}]`,
+            message: `collection ${constraint.attribute} repeats item ${index}; first occurrence is ${first}`,
+            refs: [],
+            details: { constraint: "collection-unique", firstIndex: first, duplicateIndex: index },
+          }),
+        );
+      } else {
+        seen.set(key.text, index);
+      }
+    });
+  }
+  return diagnostics;
+}
+
+function validateScopedUniqueness(
+  document: SemanticDocument,
+  profile: Profile,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  constraint: Extract<ProfileConstraint, { kind: "unique-attribute" }>,
+  entities: readonly Entity[],
+): readonly Diagnostic[] {
+  const scope: UniqueAttributeScope = constraint.scope ?? "document";
+  const scopeText = scope === "document" ? "document" : scope === "siblings" ? "siblings" : `within:${scope.withinType}`;
+  let keyOf: ((entityId: string) => string) | undefined;
+  if (scope === "document") {
+    keyOf = () => "document";
+  } else {
+    const selection = selectGroupingHierarchy(
+      profile,
+      constraint.entityType,
+      scope === "siblings" ? undefined : scope.withinType,
+    );
+    if (selection === undefined) return [];
+    const index = indexHierarchy(document, profile, selection.hierarchyId);
+    if (index === undefined) return [];
+    if (scope === "siblings") {
+      keyOf = (entityId) => index.childToParents.get(entityId)?.[0] ?? "roots";
+    } else {
+      keyOf = (entityId) => nearestWithinTypeAncestor(document, registry, resolver, index, entityId, scope.withinType);
+    }
+  }
+  const keyFor = keyOf;
+  const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+  const groups = new Map<string, string[]>();
+  for (const entity of ordered) {
+    if (!entityAncestry(registry, resolver, entity).includes(constraint.entityType)) continue;
+    const group = keyFor(entity.id);
+    groups.set(group, [...(groups.get(group) ?? []), entity.id]);
+  }
+  const diagnostics: Diagnostic[] = [];
+  for (const ids of groups.values()) {
+    const seen = new Map<string, string>();
+    for (const id of ids) {
+      const entity = document.entities[id] as Entity;
+      const value = entity.attributes[constraint.attribute];
+      if (value === undefined) continue;
+      const key = tryCanonicalise(value, "value");
+      if (!key.ok) continue;
+      const previous = seen.get(key.text);
+      if (previous !== undefined) {
+        diagnostics.push(
+          diagnostic({
+            code: "unique-attribute-violation",
+            path: `entities.${id}.attributes.${constraint.attribute}`,
+            message: `attribute ${constraint.attribute} must be unique among ${constraint.entityType} entities in scope ${scopeText}; ${previous} carries the same value`,
+            refs: [id, previous],
+            details: { attribute: constraint.attribute, type: constraint.entityType, scope: scopeText },
+          }),
+        );
+      } else {
+        seen.set(key.text, id);
+      }
+    }
+  }
+  return diagnostics;
+}
+
+/** Nearest hierarchy ancestor whose chain contains the declared type, else a singleton group. */
+function nearestWithinTypeAncestor(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+  resolver: TypeResolver,
+  index: HierarchyIndex,
+  entityId: string,
+  withinType: string,
+): string {
+  let level: readonly string[] = [entityId];
+  const visited = new Set<string>([entityId]);
+  while (level.length > 0) {
+    const next: string[] = [];
+    for (const current of [...level].sort()) {
+      for (const parent of index.childToParents.get(current) ?? []) {
+        if (visited.has(parent)) continue;
+        visited.add(parent);
+        const info = chainOfEntity(document, registry, resolver, parent);
+        if (info !== undefined && info.chain.includes(withinType)) return parent;
+        next.push(parent);
+      }
+    }
+    level = next;
+  }
+  return `none:${entityId}`;
 }
 
 function validateExtensions(document: SemanticDocument): readonly Diagnostic[] {
@@ -585,11 +1544,62 @@ function declaredProfile(
 }
 
 export function validateDocument(document: SemanticDocument, options: ValidationOptions): readonly Diagnostic[] {
-  const diagnostics: Diagnostic[] = [];
-
+  // The native object guard runs before anything else reads the document: a
+  // non-object input returns the exact native diagnostic instead of throwing
+  // on `profileRefs` inside binding processing.
   if (typeof document !== "object" || document === null) {
     return [diagnostic({ code: "document-not-an-object", path: "document", message: "a document is an object" })];
   }
+
+  // A provided bindings table is verified before any document check runs; a
+  // missing row or digest mismatch refuses the run instead of guessing.
+  if (options.bindings !== undefined) {
+    const bindingDiagnostics = verifyExecutorBindings(options.bindings, options.registry);
+    if (bindingDiagnostics.length > 0) return bindingDiagnostics;
+    for (const id of document.profileRefs) {
+      if (adapterFor(options.bindings, id) === undefined) {
+        return [
+          diagnostic({
+            code: "type-definition-conflict",
+            path: `bindings.${id}`,
+            message: `no executor binding row selects an adapter for profile ${id}`,
+            details: { profile: id },
+          }),
+        ];
+      }
+    }
+  } else {
+    // No table, no guess (§5.3.1): implicit native compatibility is reserved
+    // for exactly the four retained @1 identities. Every other profile, any
+    // version, requires a verified bindings row selecting its adapter;
+    // synthetic witnesses carry their explicit verified scoped rows.
+    for (const id of document.profileRefs) {
+      if (!isRetainedLegacyProfileId(id)) {
+        return [
+          diagnostic({
+            code: "type-definition-conflict",
+            path: `bindings.${id}`,
+            message: `no executor binding row selects an adapter for profile ${id}`,
+            details: { profile: id },
+          }),
+        ];
+      }
+    }
+    // The packaged retained rows are the effective defaults: verify their
+    // pins against the supplied registry before native execution, so
+    // modified retained bytes refuse instead of running native checks.
+    // Only rows both referenced and registered are verified; an unregistered
+    // retained id keeps its existing unknown-profile diagnostic below.
+    const effectiveDefaults: ExecutorProfileBindings = {
+      schemaVersion: "1",
+      rows: retainedExecutorBindings.rows.filter(
+        (row) => document.profileRefs.includes(row.profileId) && options.registry.get(row.profileId) !== undefined,
+      ),
+    };
+    const defaultDiagnostics = verifyExecutorBindings(effectiveDefaults, options.registry);
+    if (defaultDiagnostics.length > 0) return defaultDiagnostics;
+  }
+  const diagnostics: Diagnostic[] = [];
 
   const version = document.schemaVersion;
   if (
@@ -646,6 +1656,10 @@ export function validateDocument(document: SemanticDocument, options: Validation
       diagnostic({ code: "profile-not-declared", path: "profileRefs", message: "a document declares at least one profile" }),
     );
   }
+  const adapterOf = (id: ProfileId): DeclarationAdapter =>
+    adapterFor(options.bindings, id) ?? LEGACY_CONSTRAINTS_ADAPTER;
+  const resolver = createTypeResolver(document);
+
   const profiles: Profile[] = [];
   for (const id of document.profileRefs) {
     const profile = options.registry.get(id);
@@ -661,9 +1675,10 @@ export function validateDocument(document: SemanticDocument, options: Validation
       continue;
     }
     profiles.push(profile);
-    diagnostics.push(...validateProfile(profile));
+    diagnostics.push(...validateProfile(profile, adapterOf(id)));
   }
 
+  const emittedDefinitionPaths = new Set<string>();
   for (const key of Object.keys(document.typeDefinitions).sort()) {
     const definition = document.typeDefinitions[key] as NonNullable<(typeof document.typeDefinitions)[string]>;
     const path = `typeDefinitions.${key}`;
@@ -677,40 +1692,64 @@ export function validateDocument(document: SemanticDocument, options: Validation
       diagnostics.push(profile.diagnostic);
       continue;
     }
-    const base = entityTypeOf(profile.profile, definition.baseType);
-    if (base === undefined) {
-      diagnostics.push(
-        diagnostic({
-          code: "unknown-entity-type",
-          path: `${path}.baseType`,
-          message: `profile ${definition.profile} does not declare base type ${definition.baseType}`,
-        }),
-      );
-      continue;
-    }
-    const baseNames = new Set(base.attributes.map((attribute) => attribute.name));
-    for (const attribute of definition.attributes) {
-      if (baseNames.has(attribute.name)) {
+    if (adapterOf(definition.profile) === LEGACY_CONSTRAINTS_ADAPTER) {
+      const base = entityTypeOf(profile.profile, definition.baseType);
+      if (base === undefined) {
         diagnostics.push(
           diagnostic({
-            code: "type-definition-conflict",
-            path: `${path}.attributes.${attribute.name}`,
-            message: `type definition ${key} redeclares ${attribute.name}, which base type ${definition.baseType} already declares; refinements are additive only`,
-            details: { attribute: attribute.name, baseType: definition.baseType },
+            code: "unknown-entity-type",
+            path: `${path}.baseType`,
+            message: `profile ${definition.profile} does not declare base type ${definition.baseType}`,
           }),
         );
+        continue;
       }
+      const baseNames = new Set(base.attributes.map((attribute) => attribute.name));
+      for (const attribute of definition.attributes) {
+        if (baseNames.has(attribute.name)) {
+          diagnostics.push(
+            diagnostic({
+              code: "type-definition-conflict",
+              path: `${path}.attributes.${attribute.name}`,
+              message: `type definition ${key} redeclares ${attribute.name}, which base type ${definition.baseType} already declares; refinements are additive only`,
+              details: { attribute: attribute.name, baseType: definition.baseType },
+            }),
+          );
+        }
+      }
+      continue;
     }
+    // Scoped run: the shared resolver owns the full base chain, so a cycle,
+    // a cross-owner base and an inherited redeclaration are reported once at
+    // the definition that closes them.
+    const resolution = resolver.resolve(profile.profile, key);
+    if (!resolution.ok) {
+      if (!emittedDefinitionPaths.has(resolution.diagnostic.path)) {
+        emittedDefinitionPaths.add(resolution.diagnostic.path);
+        diagnostics.push(resolution.diagnostic);
+      }
+      continue;
+    }
+    definition.attributes.forEach((schema, schemaIndex) => {
+      diagnostics.push(...qualifyAttributeSchema(schema, `${path}.attributes[${schemaIndex}]`));
+    });
   }
 
   for (const key of Object.keys(document.entities).sort()) {
-    diagnostics.push(...validateEntity(document.entities[key] as Entity, key, document, options));
+    const entity = document.entities[key] as Entity;
+    diagnostics.push(
+      ...validateEntity(entity, key, document, options, resolver, adapterOf(entity.profile)),
+    );
   }
   for (const key of Object.keys(document.ports).sort()) {
-    diagnostics.push(...validatePort(document.ports[key] as SemanticPort, key, document, options));
+    const port = document.ports[key] as SemanticPort;
+    diagnostics.push(...validatePort(port, key, document, options, resolver, adapterOf(port.profile)));
   }
   for (const key of Object.keys(document.relations).sort()) {
-    diagnostics.push(...validateRelation(document.relations[key] as Relation, key, document, options));
+    const relation = document.relations[key] as Relation;
+    diagnostics.push(
+      ...validateRelation(relation, key, document, options, resolver, adapterOf(relation.profile)),
+    );
   }
   for (const key of Object.keys(document.resources).sort()) {
     const resource = document.resources[key] as NonNullable<(typeof document.resources)[string]>;
@@ -739,7 +1778,9 @@ export function validateDocument(document: SemanticDocument, options: Validation
       ),
     ),
   );
-  for (const profile of profiles) diagnostics.push(...validateConstraints(document, profile));
+  for (const profile of profiles) {
+    diagnostics.push(...validateConstraints(document, profile, options, resolver, adapterOf(profile.id)));
+  }
   diagnostics.push(...validateExtensions(document));
 
   for (const profile of profiles) {

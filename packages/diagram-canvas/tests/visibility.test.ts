@@ -5,8 +5,10 @@
  */
 import { describe, expect, it } from "vitest";
 
+import type { AttributeValue } from "@sentropic/diagram-core";
 import { EXCLUSION_REASONS, evaluateVisibility } from "../src/visibility.js";
 import {
+  ENTITY_B,
   OCC_A,
   OCC_B,
   OCC_C,
@@ -232,5 +234,35 @@ describe("the reason list", () => {
     for (const reason of EXCLUSION_REASONS) {
       expect(observedHere.has(reason) || observedInSceneSuite.has(reason), reason).toBe(true);
     }
+  });
+});
+
+describe("struct attribute values in attribute-equals", () => {
+  it("never matches a filter against the absent value field of a struct", () => {
+    // A struct carries `type` and `fields`, never `value`: reading `.value`
+    // off it yields `undefined`, which String() would turn into the text
+    // "undefined" and match a filter for that literal. A struct has no text.
+    const document = sampleDocument();
+    const holder = document.entities[ENTITY_B];
+    if (holder === undefined) throw new Error("unreachable");
+    const withStruct = {
+      ...document,
+      entities: {
+        ...document.entities,
+        [ENTITY_B]: {
+          ...holder,
+          attributes: {
+            ...holder.attributes,
+            spec: { kind: "struct", type: "s", fields: {} } as AttributeValue,
+          },
+        },
+      },
+    };
+    const view = sampleView({
+      filters: [{ id: "f1", kind: "attribute-equals", attribute: "spec", value: "undefined", mode: "include" }],
+    });
+    const { visible, exclusions } = evaluateVisibility({ document: withStruct, view });
+    expect(visible.has(OCC_B)).toBe(false);
+    expect(exclusions).toContainEqual({ occurrence: OCC_B, kind: "entity", reason: "not-included" });
   });
 });

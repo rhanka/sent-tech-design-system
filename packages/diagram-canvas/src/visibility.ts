@@ -95,9 +95,16 @@ export interface SceneExclusion {
   readonly cause?: string;
 }
 
-/** The text a filter compares against, or `undefined` when the value has none. */
+/**
+ * The text a filter compares against, or `[]` when the value has none.
+ *
+ * A struct carries `type` and `fields`, never `value`: it has no text form,
+ * so it never matches an `attribute-equals` filter (matching it against the
+ * string "undefined" would be a leak of the host language into the scene).
+ */
 function textsOf(value: AttributeValue): readonly string[] {
   if (value.kind === "collection") return value.items.map((item) => String(item.value));
+  if (value.kind === "struct") return [];
   return [String(value.value)];
 }
 
