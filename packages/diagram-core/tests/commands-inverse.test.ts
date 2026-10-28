@@ -69,13 +69,12 @@ function roundTrip(state: DiagramState, command: Command): void {
 
   expect(applied.inverse.kind).toBe("invertible");
   if (applied.inverse.kind !== "invertible") throw new Error("expected an invertible outcome");
-  const inverseBumps = applied.inverse.commands.some((entry) => entry.kind !== "replace-view") ? 1 : 0;
   const undone = applyInverse(applied.state, applied.inverse, { commandId: `undo:${command.kind}` }, { registry });
   if (undone.status !== "applied") {
     throw new Error(`the inverse of ${command.kind} was refused:\n${formatDiagnostics(undone.diagnostics)}`);
   }
   expect(serialiseContent(undone.state)).toBe(before);
-  expect(undone.state.document.revision).toBe(state.document.revision + 1 + inverseBumps);
+  expect(undone.state.document.revision).toBe(state.document.revision + 2);
   // The caller's state was never mutated.
   expect(serialiseContent(state)).toBe(before);
 }
