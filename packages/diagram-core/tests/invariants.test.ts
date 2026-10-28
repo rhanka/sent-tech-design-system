@@ -283,19 +283,21 @@ describe("invariant 6 - a validated command yields state, effects and an inverse
   });
 });
 
-describe("invariant 7 - projection: NOT COVERED BY THIS LOT", () => {
-  it("exposes no projection API, so nothing here can be mistaken for one", () => {
+describe("invariant 7 - projection: folded endpoints and scene only, no layout", () => {
+  it("exposes the folded projection without any layout, measure, place or route API", () => {
     // WRITTEN JUSTIFICATION (acceptance criterion 5). Invariant 7 is about a
     // PROJECTION: it must report the elements it excluded and why, keep an
     // origin -> projection -> result map, and never infer business conformance
-    // from a rendered geometry. Projection belongs to GD-M2-PROCESSING (already
-    // landed in @sentropic/graph, where `LayoutOutcome.inverse` carries the
-    // origin -> projected index -> result correspondence) and to GD-M2-CANVAS.
-    // This package produces no projection and no geometry of its own, so the
-    // only thing it can do for this invariant is NOT to pretend: no export of
-    // this barrel projects, flattens or lays anything out.
-    const suspicious = Object.keys(core).filter((name) => /^(project|layout|scene|render|flatten)/i.test(name));
-    expect(suspicious).toEqual([]);
+    // from a rendered geometry. M1-c delivers exactly the folded part
+    // (M3 §4.4.3: `projectView` recomputes endpoints and groups from the
+    // retained source on every transition; `foldedScene` reports hidden
+    // occurrences and excluded relations with their cause). Geometry, measure,
+    // place and route stay out: they are the M1-d layout lot, and no export of
+    // this barrel may be mistaken for them.
+    const layoutLike = Object.keys(core).filter((name) => /^(layout|measure|route|render|flatten|place)/i.test(name));
+    expect(layoutLike).toEqual([]);
+    expect(typeof (core as Record<string, unknown>)["projectView"]).toBe("function");
+    expect(typeof (core as Record<string, unknown>)["foldedScene"]).toBe("function");
   });
 });
 
