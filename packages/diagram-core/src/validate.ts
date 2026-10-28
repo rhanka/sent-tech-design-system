@@ -59,12 +59,30 @@ import {
   type RelationTypeDeclaration,
   type UniqueAttributeScope,
 } from "./profile.js";
-import { parseRef, refKindOf, type EntityRef, type PortRef, type RefKind } from "./refs.js";
+import {
+  parseRef,
+  refKindOf,
+  type EntityRef,
+  type OccurrenceRef,
+  type PortRef,
+  type RefKind,
+  type RelationRef,
+} from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
 import { DIAGRAM_PRESENTATION_PROFILE_ID } from "./presentation.js";
 import { validateDiagramPresentation } from "./presentation-validate.js";
+import {
+  analyzeSummaries,
+  classifyInternalRelations,
+  collapsedOf,
+  drawnTargetOf,
+  hiddenByFold,
+  parentOccurrenceOf,
+  portRepresentativeOf,
+  representativeOf,
+} from "./fold.js";
 import type { DiagramState } from "./state.js";
-import type { ViewDocument } from "./view.js";
+import type { SummaryDefinition, ViewDocument } from "./view.js";
 
 export interface ValidationOptions {
   readonly registry: ProfileRegistry;
@@ -511,7 +529,11 @@ function validateRelation(
     perRole.set(endpoint.role, (perRole.get(endpoint.role) ?? 0) + 1);
 
     const seenKind = refKindOf(endpoint.target);
-    if (seenKind !== "entity" && seenKind !== "port") {
+    // The shared relation-target carrier (§3.9.1): a scoped run admits
+    // relation endpoints where the role declares them. The retained native
+    // run keeps its pinned two-kind shape and arrays.
+    const relationAdmitted = adapter !== LEGACY_CONSTRAINTS_ADAPTER && seenKind === "relation";
+    if (seenKind !== "entity" && seenKind !== "port" && !relationAdmitted) {
       diagnostics.push(
         diagnostic({
           code: seenKind === undefined ? "malformed-ref" : "reference-type-mismatch",
@@ -523,7 +545,7 @@ function validateRelation(
       );
       return;
     }
-    if (!role.targets.includes(seenKind)) {
+    if (!role.targets.includes(seenKind as "entity" | "port" | "relation")) {
       diagnostics.push(
         diagnostic({
           code: "endpoint-target-not-allowed",
@@ -536,7 +558,12 @@ function validateRelation(
       return;
     }
 
-    const resolution = resolveReference(document, endpoint.target, seenKind, `${endpointPath}.target`);
+    const resolution = resolveReference(
+      document,
+      endpoint.target,
+      seenKind as "entity" | "port" | "relation",
+      `${endpointPath}.target`,
+    );
     diagnostics.push(...resolution);
     if (resolution.length > 0) return;
 
@@ -1862,12 +1889,137 @@ function finiteNumbers(
     );
 }
 
+/**
+ * Host suppression mask for the `relation-target-hidden` arm (C.4): explicit
+ * requests to suppress an otherwise visible target relation occurrence
+ * without the §4.4.1 fold witness. Never a `ViewDocument` field.
+ */
+export interface FoldValidationMask {
+  readonly projectedHiddenRelationOccurrences?: readonly OccurrenceRef[];
+}
+
+/** First-failure priority for one folded projected endpoint (§4.4.4, C.4). */
+function projectedEndpointDiagnostic(
+  view: ViewDocument,
+  document: SemanticDocument,
+  options: ValidationOptions,
+  resolver: TypeResolver,
+  usesFoldShape: boolean,
+  collapsed: ReadonlySet<string>,
+  internal: ReadonlyMap<OccurrenceRef, OccurrenceRef>,
+  relation: Relation,
+  occurrenceId: OccurrenceRef,
+  endpoint: { readonly role: string; readonly occurrence: OccurrenceRef; readonly semanticTarget?: EntityRef | PortRef | RelationRef; readonly sourceOccurrence?: OccurrenceRef },
+  endpointPath: string,
+): Diagnostic | undefined {
+  const projected = (
+    check: string,
+    details: Readonly<Record<string, string>> = {},
+  ): Diagnostic =>
+    diagnostic({
+      code: "occurrence-endpoint-mismatch",
+      severity: "error",
+      path: `${endpointPath}.occurrence`,
+      message: `projected endpoint for role ${endpoint.role} fails check ${check}`,
+      refs: [occurrenceId, endpoint.occurrence],
+      details: { role: endpoint.role, check, ...details },
+    });
+  if ((endpoint.semanticTarget === undefined) !== (endpoint.sourceOccurrence === undefined)) {
+    return projected("provenance-missing");
+  }
+  const semantic = endpoint.semanticTarget as EntityRef | PortRef | RelationRef;
+  const sourceId = endpoint.sourceOccurrence as OccurrenceRef;
+  const targets = relation.endpoints
+    .filter((candidate) => candidate.role === endpoint.role)
+    .map((candidate) => candidate.target);
+  if (!targets.includes(semantic)) return projected("provenance-mismatch");
+  const sourceDrawn = drawnTargetOf(view, sourceId);
+  if (sourceDrawn === undefined || sourceDrawn !== semantic) return projected("provenance-mismatch");
+  const sourceRelation = view.relationOccurrences[sourceId];
+  if (
+    sourceRelation !== undefined &&
+    sourceRelation.endpoints.some((candidate) => candidate.semanticTarget !== undefined)
+  ) {
+    return projected("projection-source-projected");
+  }
+  const drawnEntity = view.entityOccurrences[endpoint.occurrence];
+  const drawnPort = view.portOccurrences[endpoint.occurrence];
+  const drawnRelation = view.relationOccurrences[endpoint.occurrence];
+  if (drawnEntity === undefined && drawnPort === undefined && drawnRelation === undefined) {
+    return diagnostic({
+      code: "dangling-reference",
+      path: `${endpointPath}.occurrence`,
+      message: usesFoldShape
+        ? `${endpoint.occurrence} is no entity, port or relation occurrence of this view`
+        : `${endpoint.occurrence} is no entity or port occurrence of this view`,
+      refs: [endpoint.occurrence],
+    });
+  }
+  const containerOf = (entityId: EntityRef | undefined): boolean | undefined => {
+    if (entityId === undefined) return undefined;
+    const entity = document.entities[entityId];
+    if (entity === undefined) return undefined;
+    const profile = options.registry.get(entity.profile);
+    if (profile === undefined) return undefined;
+    const resolution = resolver.resolve(profile, entity.type);
+    return resolution.ok ? resolution.resolved.container : undefined;
+  };
+  if (refKindOf(semantic) === "relation") {
+    if (internal.get(sourceId) !== endpoint.occurrence) return projected("projection-not-folded");
+    if (hiddenByFold(view, collapsed, endpoint.occurrence)) return projected("representative-hidden");
+    if (containerOf(drawnEntity?.entity) === false) return projected("representative-not-container");
+    return undefined;
+  }
+  const sourcePort = view.portOccurrences[sourceId];
+  const anchor = sourcePort !== undefined ? sourcePort.ownerOccurrence : sourceId;
+  const chain: OccurrenceRef[] = [];
+  const seen = new Set<string>();
+  let current: OccurrenceRef | undefined = anchor;
+  while (current !== undefined && !seen.has(current)) {
+    seen.add(current);
+    chain.push(current);
+    current = parentOccurrenceOf(view, current);
+  }
+  const foldedAncestors = chain.filter((id) => collapsed.has(id));
+  if (foldedAncestors.length === 0) return projected("projection-not-folded");
+  const expected =
+    sourcePort !== undefined
+      ? portRepresentativeOf(view, document, collapsed, sourceId)
+      : (foldedAncestors[foldedAncestors.length - 1] as OccurrenceRef);
+  if (endpoint.occurrence !== expected) {
+    const drawnOwner = drawnPort !== undefined ? drawnPort.ownerOccurrence : endpoint.occurrence;
+    if (chain.includes(drawnOwner) && collapsed.has(drawnOwner)) return projected("projection-not-outermost");
+    return projected("projection-not-folded");
+  }
+  if (hiddenByFold(view, collapsed, endpoint.occurrence)) return projected("representative-hidden");
+  const representativeEntity =
+    drawnPort !== undefined
+      ? view.entityOccurrences[drawnPort.ownerOccurrence]?.entity
+      : drawnEntity?.entity;
+  if (containerOf(representativeEntity) === false) return projected("representative-not-container");
+  return undefined;
+}
+
 export function validateView(
   view: ViewDocument,
   document: SemanticDocument,
   options: ValidationOptions,
+  hidden?: FoldValidationMask,
 ): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
+  const hiddenMask = new Set<string>(hidden?.projectedHiddenRelationOccurrences ?? []);
+  const usesFoldShape =
+    hiddenMask.size > 0 ||
+    view.summaryLabels !== undefined ||
+    Object.values(view.groups).some((group) => group.occurrence !== undefined) ||
+    Object.values(view.relationOccurrences).some((occurrence) =>
+      occurrence.endpoints.some(
+        (endpoint) => endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined,
+      ),
+    );
+  const resolver = createTypeResolver(document);
+  const collapsed = collapsedOf(view);
+  const internal = classifyInternalRelations(view, document, collapsed);
   const viewIdParsed = parseRef("view", view.viewId, "viewId");
   if (!viewIdParsed.ok) diagnostics.push(viewIdParsed.diagnostic);
 
@@ -1999,19 +2151,60 @@ export function validateView(
 
     occurrence.endpoints.forEach((endpoint, index) => {
       const endpointPath = `${path}.endpoints[${index}]`;
-      const drawn = view.entityOccurrences[endpoint.occurrence] ?? view.portOccurrences[endpoint.occurrence];
+      const drawn =
+        view.entityOccurrences[endpoint.occurrence] ??
+        view.portOccurrences[endpoint.occurrence] ??
+        view.relationOccurrences[endpoint.occurrence];
       if (drawn === undefined) {
         diagnostics.push(
           diagnostic({
             code: "dangling-reference",
             path: `${endpointPath}.occurrence`,
-            message: `${endpoint.occurrence} is no entity or port occurrence of this view`,
+            message: usesFoldShape
+              ? `${endpoint.occurrence} is no entity, port or relation occurrence of this view`
+              : `${endpoint.occurrence} is no entity or port occurrence of this view`,
             refs: [endpoint.occurrence],
           }),
         );
         return;
       }
       if (relation === undefined) return;
+      // A host suppression mask without the §4.4.1 fold witness refuses with
+      // `relation-target-hidden`; a canonical fold never emits it (§4.4.2).
+      if (
+        endpoint.semanticTarget === undefined &&
+        endpoint.sourceOccurrence === undefined &&
+        hiddenMask.has(endpoint.occurrence)
+      ) {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            severity: "error",
+            path: `${endpointPath}.occurrence`,
+            message: `projected endpoint for role ${endpoint.role} fails check relation-target-hidden`,
+            refs: [occurrence.id, endpoint.occurrence],
+            details: { role: endpoint.role, check: "relation-target-hidden" },
+          }),
+        );
+        return;
+      }
+      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined) {
+        const failure = projectedEndpointDiagnostic(
+          view,
+          document,
+          options,
+          resolver,
+          usesFoldShape,
+          collapsed,
+          internal,
+          relation,
+          occurrence.id,
+          endpoint,
+          endpointPath,
+        );
+        if (failure !== undefined) diagnostics.push(failure);
+        return;
+      }
       const targets = relation.endpoints
         .filter((candidate) => candidate.role === endpoint.role)
         .map((candidate) => candidate.target);
@@ -2027,7 +2220,8 @@ export function validateView(
         );
         return;
       }
-      const drawnTarget: EntityRef | PortRef = "entity" in drawn ? drawn.entity : drawn.port;
+      const drawnTarget: EntityRef | PortRef | RelationRef =
+        "entity" in drawn ? drawn.entity : "port" in drawn ? drawn.port : drawn.relation;
       if (!targets.includes(drawnTarget)) {
         diagnostics.push(
           diagnostic({
@@ -2048,6 +2242,15 @@ export function validateView(
     }
   }
 
+  // Drawn representatives of projected endpoints: their container capability
+  // is reported once at the endpoint (`representative-not-container`), so the
+  // group binding that folds them does not double-report the same cause.
+  const drawnByProjection = new Set<string>();
+  for (const occurrence of Object.values(view.relationOccurrences)) {
+    for (const endpoint of occurrence.endpoints) {
+      if (endpoint.semanticTarget !== undefined) drawnByProjection.add(endpoint.occurrence);
+    }
+  }
   for (const key of Object.keys(view.groups).sort()) {
     const group = view.groups[key] as NonNullable<(typeof view.groups)[string]>;
     const path = `groups.${key}`;
@@ -2059,6 +2262,38 @@ export function validateView(
     // Membership is not checked here because it is not stored here: an
     // occurrence names its group, and that reference is validated where the
     // occurrence is (`entityOccurrences.*.group`).
+    // A fold binding names exactly one entity occurrence of a container type.
+    if (group.occurrence !== undefined && !(group.collapsed === true && drawnByProjection.has(group.occurrence))) {
+      const bound = view.entityOccurrences[group.occurrence];
+      if (bound === undefined) {
+        diagnostics.push(
+          diagnostic({
+            code: "dangling-reference",
+            path: `${path}.occurrence`,
+            message: `fold group ${key} names ${group.occurrence} which is no entity occurrence of this view`,
+            refs: [group.occurrence],
+          }),
+        );
+      } else {
+        const entity = document.entities[bound.entity];
+        const profile = entity === undefined ? undefined : options.registry.get(entity.profile);
+        const resolution =
+          entity === undefined || profile === undefined
+            ? undefined
+            : resolver.resolve(profile, entity.type);
+        if (resolution !== undefined && resolution.ok && !resolution.resolved.container) {
+          diagnostics.push(
+            diagnostic({
+              code: "occurrence-endpoint-mismatch",
+              path: `${path}.occurrence`,
+              message: `fold group ${key} binds ${group.occurrence} which draws ${bound.entity} of type ${entity?.type} outside the container family`,
+              refs: [group.occurrence, bound.entity],
+              details: { type: entity?.type as string },
+            }),
+          );
+        }
+      }
+    }
   }
 
   const filterIds = new Set<string>();
@@ -2070,6 +2305,52 @@ export function validateView(
     }
     filterIds.add(filter.id);
   });
+
+  // Authored aggregate labels (§4.5): source validity of every definition,
+  // then at most one active candidate per projected aggregate key. A
+  // source-valid inactive definition reports nothing.
+  if (view.summaryLabels !== undefined) {
+    const analysis = analyzeSummaries(view, document);
+    for (const issue of analysis.sourceIssues) {
+      const definition = (view.summaryLabels as Record<string, SummaryDefinition>)[issue.id] as SummaryDefinition;
+      diagnostics.push(
+        diagnostic({
+          code: "occurrence-endpoint-mismatch",
+          severity: "error",
+          path: `summaryLabels.${issue.id}`,
+          message: `summary definition ${issue.id} fails check ${issue.check}`,
+          refs: [issue.id, definition.sourceOccurrence, definition.targetOccurrence],
+          details:
+            issue.check === "summary-duplicate-key"
+              ? { check: issue.check, firstId: issue.firstId as string }
+              : issue.check === "summary-occurrence-ambiguous"
+                ? { check: issue.check, relationId: issue.relationId as string }
+                : { check: issue.check },
+        }),
+      );
+    }
+    for (const conflict of analysis.conflicts) {
+      const definition = (view.summaryLabels as Record<string, SummaryDefinition>)[
+        conflict.id
+      ] as SummaryDefinition;
+      diagnostics.push(
+        diagnostic({
+          code: "occurrence-endpoint-mismatch",
+          severity: "error",
+          path: `summaryLabels.${conflict.id}`,
+          message: `summary definition ${conflict.id} fails check ${conflict.check}`,
+          refs: [conflict.id, definition.sourceOccurrence, definition.targetOccurrence],
+          details: {
+            check: conflict.check,
+            firstId: conflict.firstId as string,
+            sourceRepresentative: conflict.sourceRepresentative as string,
+            targetRepresentative: conflict.targetRepresentative as string,
+            strokeStyle: conflict.strokeStyle as string,
+          },
+        }),
+      );
+    }
+  }
 
   diagnostics.push(
     ...finiteNumbers(

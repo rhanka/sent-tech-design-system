@@ -45,6 +45,7 @@ import {
   sameExtensionIdentity,
 } from "./document.js";
 import type { PortDirection, ProfileRegistry } from "./profile.js";
+import type { ExecutorProfileBindings } from "./bindings.js";
 import type { EntityRef, OccurrenceRef, PortRef, RelationRef, ResourceRef, ViewRef } from "./refs.js";
 import type { DiagramState } from "./state.js";
 import { validateState } from "./validate.js";
@@ -208,6 +209,12 @@ export type TransactionOutcome =
 export interface ApplyOptions {
   readonly registry: ProfileRegistry;
   /**
+   * The `executor-profile-bindings@1` table (M3 §5.3.1). Absent means the
+   * retained native run for exactly the four @1 identities; completed
+   * profiles require their verified scoped rows, as in validation.
+   */
+  readonly bindings?: ExecutorProfileBindings;
+  /**
    * Maximum number of operations an inverse may carry. A cascade above it
    * returns `non-invertible` rather than materialising an unbounded undo entry.
    * Bounded by default, like every collection in this package.
@@ -276,29 +283,65 @@ function planRemoval(
   for (const port of Object.values(document.ports)) {
     if (entities.has(port.owner)) ports.add(port.id);
   }
-  for (const relation of Object.values(document.relations)) {
-    if (relation.endpoints.some((endpoint) => entities.has(endpoint.target) || ports.has(endpoint.target))) {
-      relations.add(relation.id);
+  // Relation closure to a fixpoint: a relation is taken when any endpoint
+  // targets a removed element, including a removed relation (relation-target
+  // chains, §3.9.1) and anything they in turn touch.
+  let relationGrown = true;
+  while (relationGrown) {
+    relationGrown = false;
+    for (const relation of Object.values(document.relations)) {
+      if (relations.has(relation.id)) continue;
+      if (
+        relation.endpoints.some(
+          (endpoint) => entities.has(endpoint.target) || ports.has(endpoint.target) || relations.has(endpoint.target),
+        )
+      ) {
+        relations.add(relation.id);
+        relationGrown = true;
+      }
+    }
+  }
+
+  // Occurrence closure to a fixpoint over every view: a drawing goes when it
+  // draws a removed element, hangs off a removed drawing, attaches to a
+  // removed drawing, or carries provenance from one (folded projections keep
+  // their origin, §4.4.2, so removing the origin takes the projection).
+  const removedByView = new Map<string, Set<string>>();
+  for (const [viewKey] of Object.entries(state.views)) removedByView.set(viewKey, new Set<string>());
+  let occurrenceGrown = true;
+  while (occurrenceGrown) {
+    occurrenceGrown = false;
+    for (const [viewKey, view] of Object.entries(state.views)) {
+      const removed = removedByView.get(viewKey) as Set<string>;
+      for (const occurrence of Object.values(view.entityOccurrences)) {
+        if (!removed.has(occurrence.id) && entities.has(occurrence.entity)) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
+      for (const occurrence of Object.values(view.portOccurrences)) {
+        if (!removed.has(occurrence.id) && (ports.has(occurrence.port) || removed.has(occurrence.ownerOccurrence))) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
+      for (const occurrence of Object.values(view.relationOccurrences)) {
+        if (removed.has(occurrence.id)) continue;
+        if (
+          relations.has(occurrence.relation) ||
+          occurrence.endpoints.some(
+            (endpoint) => removed.has(endpoint.occurrence) || (endpoint.sourceOccurrence !== undefined && removed.has(endpoint.sourceOccurrence)),
+          )
+        ) {
+          removed.add(occurrence.id);
+          occurrenceGrown = true;
+        }
+      }
     }
   }
 
   const occurrences: Record<string, readonly OccurrenceRef[]> = {};
-  for (const [viewKey, view] of Object.entries(state.views)) {
-    const removed = new Set<string>();
-    for (const occurrence of Object.values(view.entityOccurrences)) {
-      if (entities.has(occurrence.entity)) removed.add(occurrence.id);
-    }
-    for (const occurrence of Object.values(view.portOccurrences)) {
-      if (ports.has(occurrence.port) || removed.has(occurrence.ownerOccurrence)) removed.add(occurrence.id);
-    }
-    for (const occurrence of Object.values(view.relationOccurrences)) {
-      if (
-        relations.has(occurrence.relation) ||
-        occurrence.endpoints.some((endpoint) => removed.has(endpoint.occurrence))
-      ) {
-        removed.add(occurrence.id);
-      }
-    }
+  for (const [viewKey, removed] of removedByView) {
     if (removed.size > 0) {
       occurrences[viewKey] = [...removed].sort().map((id) => id as OccurrenceRef);
     }
@@ -839,34 +882,76 @@ function applyOne(state: DiagramState, command: Command, index: number): Command
     case "remove-occurrence": {
       const view = state.views[command.view];
       if (view === undefined) return missing(path, `view ${command.view} does not exist`, [command.view]);
-      const entityOccurrence = view.entityOccurrences[command.occurrence];
-      const portOccurrence = view.portOccurrences[command.occurrence];
-      const relationOccurrence = view.relationOccurrences[command.occurrence];
-      if (entityOccurrence === undefined && portOccurrence === undefined && relationOccurrence === undefined) {
+      if (
+        view.entityOccurrences[command.occurrence] === undefined &&
+        view.portOccurrences[command.occurrence] === undefined &&
+        view.relationOccurrences[command.occurrence] === undefined
+      ) {
         return missing(path, `occurrence ${command.occurrence} does not exist in view ${command.view}`, [
           command.occurrence,
           command.view,
         ]);
       }
-      const occurrence: OccurrenceInput =
-        entityOccurrence !== undefined
-          ? { of: "entity", occurrence: entityOccurrence }
-          : portOccurrence !== undefined
-            ? { of: "port", occurrence: portOccurrence }
-            : { of: "relation", occurrence: relationOccurrence as RelationOccurrence };
-      const next: ViewDocument =
-        occurrence.of === "entity"
-          ? { ...view, entityOccurrences: withoutKey(view.entityOccurrences, command.occurrence) }
-          : occurrence.of === "port"
-            ? { ...view, portOccurrences: withoutKey(view.portOccurrences, command.occurrence) }
-            : { ...view, relationOccurrences: withoutKey(view.relationOccurrences, command.occurrence) };
-      // Removing ONE drawing removes a drawing: the entity, the relation and the
-      // port are untouched (study invariant 2).
+      // Dependent drawings go with the named one: ports hung off a removed
+      // entity occurrence, relations attached to a removed drawing, and folded
+      // projections carrying a removed origin (§4.4.2 provenance). The
+      // semantic entity, relation and port are untouched (study invariant 2);
+      // the inverse re-creates every consumed drawing byte for byte.
+      const consumed = new Set<string>([command.occurrence]);
+      let consumedGrown = true;
+      while (consumedGrown) {
+        consumedGrown = false;
+        for (const candidate of Object.values(view.portOccurrences)) {
+          if (!consumed.has(candidate.id) && consumed.has(candidate.ownerOccurrence)) {
+            consumed.add(candidate.id);
+            consumedGrown = true;
+          }
+        }
+        for (const candidate of Object.values(view.relationOccurrences)) {
+          if (consumed.has(candidate.id)) continue;
+          if (
+            candidate.endpoints.some(
+              (endpoint) => consumed.has(endpoint.occurrence) || (endpoint.sourceOccurrence !== undefined && consumed.has(endpoint.sourceOccurrence)),
+            )
+          ) {
+            consumed.add(candidate.id);
+            consumedGrown = true;
+          }
+        }
+      }
+      let entityOccurrences = view.entityOccurrences;
+      let portOccurrences = view.portOccurrences;
+      let relationOccurrences = view.relationOccurrences;
+      const inverse: Command[] = [];
+      const effects: Effect[] = [];
+      for (const id of [...consumed].sort()) {
+        const entityRemoved = entityOccurrences[id];
+        if (entityRemoved !== undefined) {
+          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "entity", occurrence: entityRemoved } });
+          entityOccurrences = withoutKey(entityOccurrences, id);
+          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
+          continue;
+        }
+        const portRemoved = portOccurrences[id];
+        if (portRemoved !== undefined) {
+          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "port", occurrence: portRemoved } });
+          portOccurrences = withoutKey(portOccurrences, id);
+          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
+          continue;
+        }
+        const relationRemoved = relationOccurrences[id];
+        if (relationRemoved !== undefined) {
+          inverse.push({ kind: "create-occurrence", view: command.view, occurrence: { of: "relation", occurrence: relationRemoved } });
+          relationOccurrences = withoutKey(relationOccurrences, id);
+          effects.push({ kind: "occurrence-removed", view: command.view, occurrence: id as OccurrenceRef });
+        }
+      }
+      const next: ViewDocument = { ...view, entityOccurrences, portOccurrences, relationOccurrences };
       return {
         applied: {
           state: { document, views: withKey(state.views, command.view, next) },
-          effects: [{ kind: "occurrence-removed", view: command.view, occurrence: command.occurrence }],
-          inverse: [{ kind: "create-occurrence", view: command.view, occurrence }],
+          effects,
+          inverse,
           touchedViews: [command.view],
         },
       };
@@ -1109,9 +1194,10 @@ export function applyTransaction(
   }
   const next: DiagramState = { document: { ...working.document, revision: nextRevision }, views };
 
-  const diagnostics = validateState(next, { registry: options.registry }).filter(
-    (entry) => entry.severity === "error",
-  );
+  const diagnostics = validateState(
+    next,
+    options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings },
+  ).filter((entry) => entry.severity === "error");
   if (diagnostics.length > 0) {
     return { status: "rejected", commandId, diagnostics };
   }
