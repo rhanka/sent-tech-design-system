@@ -984,7 +984,7 @@ describe("C.4 projection arms", () => {
       ...base,
       revision: 1,
       entities: {
-        "entity:P": ent("P", "generic@2", "node", { name: text("P") }),
+        "entity:Z": ent("Z", "generic@2", "node", { name: text("Z") }),
         "entity:K": ent("K", "generic@2", "node", { name: text("K") }),
         "entity:X": ent("X", "generic@2", "node", { name: text("X") }),
       },
@@ -1001,8 +1001,8 @@ describe("C.4 projection arms", () => {
       ...view,
       revision: 1,
       entityOccurrences: {
-        "occurrence:P": { id: occurrenceRef("P"), entity: entityRef("P"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
-        "occurrence:K": { id: occurrenceRef("K"), entity: entityRef("K"), geometry: { x: 0, y: 300, width: 460, height: 200 }, group: "grp.1.P" },
+        "occurrence:Z": { id: occurrenceRef("Z"), entity: entityRef("Z"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:K": { id: occurrenceRef("K"), entity: entityRef("K"), geometry: { x: 0, y: 300, width: 460, height: 200 }, group: "grp.1.Z" },
         "occurrence:X": { id: occurrenceRef("X"), entity: entityRef("X"), geometry: { x: 1200, y: 240, width: 460, height: 200 } },
       },
       relationOccurrences: {
@@ -1013,7 +1013,7 @@ describe("C.4 projection arms", () => {
             { role: "source", occurrence: occurrenceRef("X") },
             {
               role: "target",
-              occurrence: occurrenceRef("P"),
+              occurrence: occurrenceRef("Z"),
               semanticTarget: entityRef("K"),
               sourceOccurrence: occurrenceRef("K"),
             },
@@ -1021,7 +1021,7 @@ describe("C.4 projection arms", () => {
         },
       },
       portOccurrences: {},
-      groups: { "grp.1.P": { id: "grp.1.P", occurrence: occurrenceRef("P"), collapsed: true } },
+      groups: { "grp.1.Z": { id: "grp.1.Z", occurrence: occurrenceRef("Z"), collapsed: true } },
       filters: [],
     };
     expect(validateView(source, document, options())).toEqual([
@@ -1030,7 +1030,7 @@ describe("C.4 projection arms", () => {
         severity: "error",
         path: "relationOccurrences.occurrence:r.endpoints[1].occurrence",
         message: "projected endpoint for role target fails check representative-not-container",
-        refs: ["occurrence:r", "occurrence:P"],
+        refs: ["occurrence:r", "occurrence:Z"],
         details: { role: "target", check: "representative-not-container" },
       },
     ]);
@@ -1096,18 +1096,18 @@ describe("C.4 projection arms", () => {
       ...base,
       revision: 1,
       entities: {
-        "entity:P": ent("P", "generic@2", "container", { name: text("P") }),
+        "entity:Z": ent("Z", "generic@2", "container", { name: text("Z") }),
         "entity:K": ent("K", "generic@2", "node", { name: text("K") }),
         "entity:X": ent("X", "generic@2", "node", { name: text("X") }),
       },
       relations: {
         "relation:pk": rel("pk", "generic@2", "contains", [
-          { role: "parent", target: "entity:P" },
+          { role: "parent", target: "entity:Z" },
           { role: "child", target: "entity:K" },
         ]),
         "relation:xp": rel("xp", "generic@2", "link", [
           { role: "source", target: "entity:X" },
-          { role: "target", target: "entity:P" },
+          { role: "target", target: "entity:Z" },
         ]),
       },
       ports: {},
@@ -1117,8 +1117,8 @@ describe("C.4 projection arms", () => {
       ...view,
       revision: 1,
       entityOccurrences: {
-        "occurrence:P": { id: occurrenceRef("P"), entity: entityRef("P"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
-        "occurrence:K": { id: occurrenceRef("K"), entity: entityRef("K"), geometry: { x: 0, y: 300, width: 460, height: 200 }, group: "grp.1.P" },
+        "occurrence:Z": { id: occurrenceRef("Z"), entity: entityRef("Z"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:K": { id: occurrenceRef("K"), entity: entityRef("K"), geometry: { x: 0, y: 300, width: 460, height: 200 }, group: "grp.1.Z" },
         "occurrence:X": { id: occurrenceRef("X"), entity: entityRef("X"), geometry: { x: 1200, y: 240, width: 460, height: 200 } },
       },
       relationOccurrences: {
@@ -1129,15 +1129,15 @@ describe("C.4 projection arms", () => {
             { role: "source", occurrence: occurrenceRef("X") },
             {
               role: "target",
-              occurrence: occurrenceRef("P"),
-              semanticTarget: entityRef("P"),
-              sourceOccurrence: occurrenceRef("P"),
+              occurrence: occurrenceRef("Z"),
+              semanticTarget: entityRef("Z"),
+              sourceOccurrence: occurrenceRef("Z"),
             },
           ],
         },
       },
       portOccurrences: {},
-      groups: { "grp.1.P": { id: "grp.1.P", occurrence: occurrenceRef("P"), collapsed: true } },
+      groups: { "grp.1.Z": { id: "grp.1.Z", occurrence: occurrenceRef("Z"), collapsed: true } },
       filters: [],
     };
     expect(validateView(drawn, document, options())).toEqual([
@@ -1146,7 +1146,7 @@ describe("C.4 projection arms", () => {
         severity: "error",
         path: "relationOccurrences.occurrence:r.endpoints[1].occurrence",
         message: "projected endpoint for role target fails check projection-not-folded",
-        refs: ["occurrence:r", "occurrence:P"],
+        refs: ["occurrence:r", "occurrence:Z"],
         details: { role: "target", check: "projection-not-folded" },
       },
     ]);
@@ -1184,8 +1184,8 @@ describe("C.4 projection arms", () => {
         "occurrence:X": { id: occurrenceRef("X"), entity: entityRef("X"), geometry: { x: 1200, y: 240, width: 460, height: 200 } },
       },
       relationOccurrences: {
-        "occurrence:inner": {
-          id: occurrenceRef("inner"),
+        "occurrence:flow": {
+          id: occurrenceRef("flow"),
           relation: relationRef("ab"),
           endpoints: [
             { role: "source", occurrence: occurrenceRef("A") },
@@ -1197,7 +1197,7 @@ describe("C.4 projection arms", () => {
           relation: relationRef("xb"),
           endpoints: [
             { role: "source", occurrence: occurrenceRef("X") },
-            { role: "target", occurrence: occurrenceRef("inner") },
+            { role: "target", occurrence: occurrenceRef("flow") },
           ],
         },
       },
@@ -1206,7 +1206,7 @@ describe("C.4 projection arms", () => {
       filters: [],
     };
     const diagnostics = validateView(source, document, options(), {
-      projectedHiddenRelationOccurrences: [occurrenceRef("inner")],
+      projectedHiddenRelationOccurrences: [occurrenceRef("flow")],
     });
     expect(diagnostics).toEqual([
       {
@@ -1214,7 +1214,7 @@ describe("C.4 projection arms", () => {
         severity: "error",
         path: "relationOccurrences.occurrence:r.endpoints[1].occurrence",
         message: "projected endpoint for role target fails check relation-target-hidden",
-        refs: ["occurrence:r", "occurrence:inner"],
+        refs: ["occurrence:r", "occurrence:flow"],
         details: { role: "target", check: "relation-target-hidden" },
       },
     ]);
@@ -1266,7 +1266,7 @@ describe("B.4 authored solid summary with a separate dashed group", () => {
     expect(validateView(source, document, options())).toEqual([]);
     const folded = projectView(document, source, [occurrenceRef("MSGZ")]);
     expect(validateView(folded, document, options())).toEqual([]);
-    const active = resolveSummaries(folded, document);
+    const active = resolveSummaries(folded, document, { registry: options().registry });
     expect(active.get("(occurrence:CHAT,occurrence:MSGZ,solid)")).toEqual({
       key: "(occurrence:CHAT,occurrence:MSGZ,solid)",
       definitionId: "sum:overview-chat",
@@ -1290,13 +1290,13 @@ describe("B.5 distinct source definitions colliding after projection", () => {
       ...base,
       revision: 1,
       entities: {
-        "entity:P": ent("P", "generic@2", "container", { name: text("P") }),
+        "entity:Z": ent("Z", "generic@2", "container", { name: text("Z") }),
         "entity:C": ent("C", "generic@2", "container", { name: text("C") }),
         "entity:X": ent("X", "generic@2", "node", { name: text("X") }),
       },
       relations: {
         "relation:pc": rel("pc", "generic@2", "contains", [
-          { role: "parent", target: "entity:P" },
+          { role: "parent", target: "entity:Z" },
           { role: "child", target: "entity:C" },
         ]),
         "relation:cx": rel("cx", "generic@2", "link", [
@@ -1311,8 +1311,8 @@ describe("B.5 distinct source definitions colliding after projection", () => {
       ...view,
       revision: 1,
       entityOccurrences: {
-        "occurrence:P": { id: occurrenceRef("P"), entity: entityRef("P"), geometry: { x: 0, y: 0, width: 1600, height: 900 } },
-        "occurrence:C": { id: occurrenceRef("C"), entity: entityRef("C"), geometry: { x: 40, y: 240, width: 1000, height: 600 }, group: "grp.1.P" },
+        "occurrence:Z": { id: occurrenceRef("Z"), entity: entityRef("Z"), geometry: { x: 0, y: 0, width: 1600, height: 900 } },
+        "occurrence:C": { id: occurrenceRef("C"), entity: entityRef("C"), geometry: { x: 40, y: 240, width: 1000, height: 600 }, group: "grp.1.Z" },
         "occurrence:X": { id: occurrenceRef("X"), entity: entityRef("X"), geometry: { x: 1700, y: 240, width: 460, height: 200 } },
       },
       relationOccurrences: {
@@ -1327,16 +1327,16 @@ describe("B.5 distinct source definitions colliding after projection", () => {
       },
       portOccurrences: {},
       groups: {
-        "grp.1.P": { id: "grp.1.P", occurrence: occurrenceRef("P"), collapsed: false },
+        "grp.1.Z": { id: "grp.1.Z", occurrence: occurrenceRef("Z"), collapsed: false },
         "grp.1.C": { id: "grp.1.C", occurrence: occurrenceRef("C"), collapsed: false },
       },
       filters: [],
       summaryLabels: {
         s1: {
           id: "s1",
-          sourceOccurrence: occurrenceRef("P"),
+          sourceOccurrence: occurrenceRef("Z"),
           targetOccurrence: occurrenceRef("X"),
-          label: "P to X",
+          label: "Z to X",
           relationIds: [relationRef("cx")],
         },
         s2: {
@@ -1354,7 +1354,7 @@ describe("B.5 distinct source definitions colliding after projection", () => {
   it("both definitions validate in the source and collide after folding P", () => {
     const { document, source } = collidingSource();
     expect(validateView(source, document, options())).toEqual([]);
-    const folded = projectView(document, source, [occurrenceRef("P")]);
+    const folded = projectView(document, source, [occurrenceRef("Z")]);
     expect(validateView(folded, document, options())).toEqual([
       {
         code: "occurrence-endpoint-mismatch",
@@ -1365,7 +1365,7 @@ describe("B.5 distinct source definitions colliding after projection", () => {
         details: {
           check: "summary-active-key-conflict",
           firstId: "s1",
-          sourceRepresentative: "occurrence:P",
+          sourceRepresentative: "occurrence:Z",
           targetRepresentative: "occurrence:X",
           strokeStyle: "solid",
         },
@@ -1376,7 +1376,7 @@ describe("B.5 distinct source definitions colliding after projection", () => {
   it("removing one definition restores a unique candidate", () => {
     const { document, source } = collidingSource();
     const { s2: _dropped, ...rest } = source.summaryLabels!;
-    const folded = projectView(document, { ...source, summaryLabels: rest }, [occurrenceRef("P")]);
+    const folded = projectView(document, { ...source, summaryLabels: rest }, [occurrenceRef("Z")]);
     expect(validateView(folded, document, options())).toEqual([]);
   });
 });
@@ -1665,7 +1665,7 @@ describe("B.6 same relation in two drawings and summary arms", () => {
     expect(validateView(source, document, options())).toEqual([]);
     const folded = projectView(document, source, [occurrenceRef("C")]);
     expect(validateView(folded, document, options())).toEqual([]);
-    const active = resolveSummaries(folded, document);
+    const active = resolveSummaries(folded, document, { registry: options().registry });
     expect(active.size).toBe(1);
   });
 });
@@ -2074,7 +2074,7 @@ describe("M1-c fix: conflicting active keys select no label", () => {
         },
       },
     ]);
-    expect(resolveSummaries(folded, document).size).toBe(0);
+    expect(resolveSummaries(folded, document, { registry: options().registry }).size).toBe(0);
   });
 });
 
@@ -2332,7 +2332,7 @@ describe("M1-c fix: B.6 activation beyond source validity", () => {
     const { document, source } = scopeSource();
     const folded = projectView(document, source, [occurrenceRef("C2")]);
     expect(validateView(folded, document, options())).toEqual([]);
-    expect(resolveSummaries(folded, document).size).toBe(0);
+    expect(resolveSummaries(folded, document, { registry: options().registry }).size).toBe(0);
     const scene = foldedScene(folded, document, [occurrenceRef("C2")]);
     expect(scene.endpointHidden).toEqual(["occurrence:r2"]);
     expect(scene.drawnRelations).toEqual(["occurrence:r1"]);

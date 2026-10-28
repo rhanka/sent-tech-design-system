@@ -2038,8 +2038,12 @@ export function validateView(
   const resolver = createTypeResolver(document);
   const collapsed = collapsedOf(view);
   const internal = classifyInternalRelations(view, document, collapsed);
+  const admittedBindings =
+    options.bindings !== undefined && verifyExecutorBindings(options.bindings, options.registry).length === 0
+      ? options.bindings
+      : undefined;
   const viewAdapterOf = (id: ProfileId): DeclarationAdapter =>
-    adapterFor(options.bindings, id) ?? LEGACY_CONSTRAINTS_ADAPTER;
+    admittedBindings !== undefined ? (adapterFor(admittedBindings, id) ?? LEGACY_CONSTRAINTS_ADAPTER) : LEGACY_CONSTRAINTS_ADAPTER;
   const viewIdParsed = parseRef("view", view.viewId, "viewId");
   if (!viewIdParsed.ok) diagnostics.push(viewIdParsed.diagnostic);
 
