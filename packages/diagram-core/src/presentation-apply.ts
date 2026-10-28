@@ -9,7 +9,6 @@ import { diagnostic, type Diagnostic } from "./diagnostics.js";
 import type { SemanticDocument } from "./document.js";
 import {
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
-  DIAGRAM_PRESENTATION_PACKAGED_CATALOG,
   DIAGRAM_PRESENTATION_SCHEMA_PIN,
   familyPinForProfile,
   parsePinnedAdapterReference,
@@ -18,6 +17,7 @@ import {
   type DiagramPresentation,
   type PresentationPin,
 } from "./presentation.js";
+import { resolveGovernedCatalog } from "./presentation-catalog.js";
 import type { ProfileRegistry } from "./profile.js";
 import { validateDocument, validateView, type ValidationOptions } from "./validate.js";
 import type { ViewDocument } from "./view.js";
@@ -169,6 +169,12 @@ export function applyPresentation(
     return { outcome: "refused", diagnostics: [shapeMismatch("presentation.diagram")] };
   }
 
+  // The persisted pin is validated before any comparison, so a missing, null
+  // or malformed value returns the refusal union instead of throwing.
+  if (!isWellFormedPin((diagramValue as Record<string, unknown>)["contractPin"])) {
+    return { outcome: "refused", diagnostics: [shapeMismatch("presentation.diagram.contractPin")] };
+  }
+
   // Family pins equal exactly the unique semantic profileRefs in stored order.
   if (!Array.isArray((semanticDocument as unknown as Record<string, unknown>)["profileRefs"])) {
     return { outcome: "refused", diagnostics: [shapeMismatch("input")] };
@@ -239,11 +245,11 @@ export function applyPresentation(
     return { outcome: "refused", diagnostics: [pinMismatch("presentation.diagram.contractPin")] };
   }
 
-  // Governed adapter authentication: parse the resolved contract catalog
+  // Governed adapter authentication: parse the packaged governed catalog
   // ontology.compatibility.adapter exact pinned reference, verify the
   // adapter bytes and its bound schema asset against
   // artifactBinding.schemaPin, and require equality with input.adapterPin.
-  const catalog = (options as ValidationOptions).presentationCatalog ?? DIAGRAM_PRESENTATION_PACKAGED_CATALOG;
+  const catalog = resolveGovernedCatalog();
   if (!isRecord(catalog as unknown)) {
     return { outcome: "refused", diagnostics: [pinMismatch("input.adapterPin")] };
   }
