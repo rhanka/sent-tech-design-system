@@ -567,24 +567,26 @@ function validateRelation(
     diagnostics.push(...resolution);
     if (resolution.length > 0) return;
 
-    // M3 §3.2.1 S-4: every scoped endpoint is owned by the relation's own
-    // profile. A foreign-family entity or port is refused without an admitted
-    // semantic join — and no such join exists in this lot. The check covers
-    // all relation types, not only hierarchy relations. The retained native
-    // run is unchanged.
-    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && (seenKind === "entity" || seenKind === "port")) {
-      const target =
+    // M3 §§3.2.1/3.9.1 S-4: every scoped endpoint is owned by the relation's
+    // own profile. A foreign-profile entity, port or relation target is
+    // refused without an admitted semantic join — and no such join exists in
+    // this lot. The check covers all relation types, not only hierarchy
+    // relations. The retained native run is unchanged.
+    if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && (seenKind === "entity" || seenKind === "port" || seenKind === "relation")) {
+      const targetProfile =
         seenKind === "entity"
-          ? (document.entities[endpoint.target] as Entity | undefined)
-          : (document.ports[endpoint.target] as SemanticPort | undefined);
-      if (target !== undefined && target.profile !== relation.profile) {
+          ? (document.entities[endpoint.target] as Entity | undefined)?.profile
+          : seenKind === "port"
+            ? (document.ports[endpoint.target] as SemanticPort | undefined)?.profile
+            : (document.relations[endpoint.target] as Relation | undefined)?.profile;
+      if (targetProfile !== undefined && targetProfile !== relation.profile) {
         diagnostics.push(
           diagnostic({
             code: "endpoint-without-join",
             path: `${endpointPath}.target`,
-            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to ${seenKind} ${endpoint.target} owned by profile ${target.profile} with no admitted semantic join`,
+            message: `relation ${relation.id} applies ${relation.profile} ${relation.type} to ${seenKind} ${endpoint.target} owned by profile ${targetProfile} with no admitted semantic join`,
             refs: [endpoint.target],
-            details: { profile: relation.profile, targetProfile: target.profile },
+            details: { profile: relation.profile, targetProfile },
           }),
         );
         return;
@@ -1095,8 +1097,13 @@ function checkRelationshipMatrix(
     if (sources.length !== 1 || targets.length !== 1) continue;
     const source = sources[0] as (typeof sources)[number];
     const target = targets[0] as (typeof targets)[number];
-    if (refKindOf(source.target) !== "entity" || refKindOf(target.target) !== "entity") continue;
-    if (!sourceRole.targets.includes("entity") || !targetRole.targets.includes("entity")) continue;
+    // Relation targets classify as `@relation` in matrix execution (§3.9.1);
+    // they are never an entity type. Ports stay outside the matrix.
+    const sourceKind = refKindOf(source.target);
+    const targetKind = refKindOf(target.target);
+    if (sourceKind !== "entity" && sourceKind !== "relation") continue;
+    if (targetKind !== "entity" && targetKind !== "relation") continue;
+    if (!sourceRole.targets.includes(sourceKind) || !targetRole.targets.includes(targetKind)) continue;
     const counts = new Map<string, number>();
     for (const endpoint of relation.endpoints) {
       counts.set(endpoint.role, (counts.get(endpoint.role) ?? 0) + 1);
@@ -1105,36 +1112,50 @@ function checkRelationshipMatrix(
     const targetCount = counts.get(constraint.targetRole) ?? 0;
     if (sourceCount < sourceRole.cardinality.min || sourceCount > sourceRole.cardinality.max) continue;
     if (targetCount < targetRole.cardinality.min || targetCount > targetRole.cardinality.max) continue;
-    const sourceEntity = document.entities[source.target] as Entity | undefined;
-    const targetEntity = document.entities[target.target] as Entity | undefined;
-    if (sourceEntity === undefined || targetEntity === undefined) continue;
-    const sourceInfo = resolvedChainOfEntity(registry, resolver, sourceEntity);
-    const targetInfo = resolvedChainOfEntity(registry, resolver, targetEntity);
-    if (sourceInfo === undefined || targetInfo === undefined) continue;
-    if (
-      sourceRole.entityTypes !== undefined &&
-      !sourceRole.entityTypes.some((allowed) => sourceInfo.chain.includes(allowed))
-    ) {
-      continue;
+    let sourceType: string;
+    if (sourceKind === "entity") {
+      const sourceEntity = document.entities[source.target] as Entity | undefined;
+      if (sourceEntity === undefined) continue;
+      const sourceInfo = resolvedChainOfEntity(registry, resolver, sourceEntity);
+      if (sourceInfo === undefined) continue;
+      if (
+        sourceRole.entityTypes !== undefined &&
+        !sourceRole.entityTypes.some((allowed) => sourceInfo.chain.includes(allowed))
+      ) {
+        continue;
+      }
+      sourceType = sourceInfo.familyType;
+    } else {
+      sourceType = "@relation";
     }
-    if (
-      targetRole.entityTypes !== undefined &&
-      !targetRole.entityTypes.some((allowed) => targetInfo.chain.includes(allowed))
-    ) {
-      continue;
+    let targetType: string;
+    if (targetKind === "entity") {
+      const targetEntity = document.entities[target.target] as Entity | undefined;
+      if (targetEntity === undefined) continue;
+      const targetInfo = resolvedChainOfEntity(registry, resolver, targetEntity);
+      if (targetInfo === undefined) continue;
+      if (
+        targetRole.entityTypes !== undefined &&
+        !targetRole.entityTypes.some((allowed) => targetInfo.chain.includes(allowed))
+      ) {
+        continue;
+      }
+      targetType = targetInfo.familyType;
+    } else {
+      targetType = "@relation";
     }
-    if (tuples.has(`${relation.type}\n${sourceInfo.familyType}\n${targetInfo.familyType}`)) continue;
+    if (tuples.has(`${relation.type}\n${sourceType}\n${targetType}`)) continue;
     diagnostics.push(
       diagnostic({
         code: "relationship-matrix-violation",
         path: `relations.${relation.id}.endpoints`,
-        message: `relation ${relation.id} of type ${relation.type} is not allowed from ${sourceInfo.familyType} to ${targetInfo.familyType} by matrix ${constraint.matrixId}`,
+        message: `relation ${relation.id} of type ${relation.type} is not allowed from ${sourceType} to ${targetType} by matrix ${constraint.matrixId}`,
         refs: [relation.id, source.target, target.target],
         details: {
           matrixId: constraint.matrixId,
           relationType: relation.type,
-          sourceType: sourceInfo.familyType,
-          targetType: targetInfo.familyType,
+          sourceType,
+          targetType,
         },
       }),
     );
@@ -1893,9 +1914,12 @@ function finiteNumbers(
  * Host suppression mask for the `relation-target-hidden` arm (C.4): explicit
  * requests to suppress an otherwise visible target relation occurrence
  * without the §4.4.1 fold witness. Never a `ViewDocument` field.
+ * `hiddenByFilter` carries the evaluated filter exclusions feeding aggregate
+ * resolution (§4.4.6/§4.5.2).
  */
 export interface FoldValidationMask {
   readonly projectedHiddenRelationOccurrences?: readonly OccurrenceRef[];
+  readonly hiddenByFilter?: readonly OccurrenceRef[];
 }
 
 /** First-failure priority for one folded projected endpoint (§4.4.4, C.4). */
@@ -1904,7 +1928,7 @@ function projectedEndpointDiagnostic(
   document: SemanticDocument,
   options: ValidationOptions,
   resolver: TypeResolver,
-  usesFoldShape: boolean,
+  scopedTargets: boolean,
   collapsed: ReadonlySet<string>,
   internal: ReadonlyMap<OccurrenceRef, OccurrenceRef>,
   relation: Relation,
@@ -1949,12 +1973,15 @@ function projectedEndpointDiagnostic(
     return diagnostic({
       code: "dangling-reference",
       path: `${endpointPath}.occurrence`,
-      message: usesFoldShape
+      message: scopedTargets
         ? `${endpoint.occurrence} is no entity, port or relation occurrence of this view`
         : `${endpoint.occurrence} is no entity or port occurrence of this view`,
       refs: [endpoint.occurrence],
     });
   }
+  // Provenance on an unchanged drawing is redundant: an actual fold witness
+  // moves the endpoint, it never re-states the origin (C.4).
+  if (endpoint.occurrence === sourceId) return projected("projection-not-folded");
   const containerOf = (entityId: EntityRef | undefined): boolean | undefined => {
     if (entityId === undefined) return undefined;
     const entity = document.entities[entityId];
@@ -2008,18 +2035,11 @@ export function validateView(
 ): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const hiddenMask = new Set<string>(hidden?.projectedHiddenRelationOccurrences ?? []);
-  const usesFoldShape =
-    hiddenMask.size > 0 ||
-    view.summaryLabels !== undefined ||
-    Object.values(view.groups).some((group) => group.occurrence !== undefined) ||
-    Object.values(view.relationOccurrences).some((occurrence) =>
-      occurrence.endpoints.some(
-        (endpoint) => endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined,
-      ),
-    );
   const resolver = createTypeResolver(document);
   const collapsed = collapsedOf(view);
   const internal = classifyInternalRelations(view, document, collapsed);
+  const viewAdapterOf = (id: ProfileId): DeclarationAdapter =>
+    adapterFor(options.bindings, id) ?? LEGACY_CONSTRAINTS_ADAPTER;
   const viewIdParsed = parseRef("view", view.viewId, "viewId");
   if (!viewIdParsed.ok) diagnostics.push(viewIdParsed.diagnostic);
 
@@ -2149,18 +2169,44 @@ export function validateView(
     diagnostics.push(...relationResolution);
     const relation = relationResolution.length === 0 ? (document.relations[occurrence.relation] as Relation) : undefined;
 
+    // The admitted execution run owns the third occurrence kind and its
+    // wording: the retained native run resolves entity/port drawings only
+    // and keeps the pinned @1 wording, while a scoped run resolves
+    // relation occurrences as well (C.4, §3.9.1). Never field presence.
+    const occurrenceAdapter = relation !== undefined ? viewAdapterOf(relation.profile) : LEGACY_CONSTRAINTS_ADAPTER;
+    const scopedTargets = occurrenceAdapter !== LEGACY_CONSTRAINTS_ADAPTER;
     occurrence.endpoints.forEach((endpoint, index) => {
       const endpointPath = `${path}.endpoints[${index}]`;
+      // Provenance-carrying endpoints validate provenance first, even when
+      // the drawn occurrence is missing (C.4 priority).
+      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined) {
+        if (relation === undefined) return;
+        const failure = projectedEndpointDiagnostic(
+          view,
+          document,
+          options,
+          resolver,
+          scopedTargets,
+          collapsed,
+          internal,
+          relation,
+          occurrence.id,
+          endpoint,
+          endpointPath,
+        );
+        if (failure !== undefined) diagnostics.push(failure);
+        return;
+      }
       const drawn =
         view.entityOccurrences[endpoint.occurrence] ??
         view.portOccurrences[endpoint.occurrence] ??
-        view.relationOccurrences[endpoint.occurrence];
+        (scopedTargets ? view.relationOccurrences[endpoint.occurrence] : undefined);
       if (drawn === undefined) {
         diagnostics.push(
           diagnostic({
             code: "dangling-reference",
             path: `${endpointPath}.occurrence`,
-            message: usesFoldShape
+            message: scopedTargets
               ? `${endpoint.occurrence} is no entity, port or relation occurrence of this view`
               : `${endpoint.occurrence} is no entity or port occurrence of this view`,
             refs: [endpoint.occurrence],
@@ -2186,23 +2232,6 @@ export function validateView(
             details: { role: endpoint.role, check: "relation-target-hidden" },
           }),
         );
-        return;
-      }
-      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined) {
-        const failure = projectedEndpointDiagnostic(
-          view,
-          document,
-          options,
-          resolver,
-          usesFoldShape,
-          collapsed,
-          internal,
-          relation,
-          occurrence.id,
-          endpoint,
-          endpointPath,
-        );
-        if (failure !== undefined) diagnostics.push(failure);
         return;
       }
       const targets = relation.endpoints
@@ -2251,6 +2280,9 @@ export function validateView(
       if (endpoint.semanticTarget !== undefined) drawnByProjection.add(endpoint.occurrence);
     }
   }
+  // The fold state of one container drawing is exactly one group (§4.1.1):
+  // at most one fold group binds a given occurrence.
+  const boundOccurrences = new Map<string, string>();
   for (const key of Object.keys(view.groups).sort()) {
     const group = view.groups[key] as NonNullable<(typeof view.groups)[string]>;
     const path = `groups.${key}`;
@@ -2258,6 +2290,21 @@ export function validateView(
       diagnostics.push(
         diagnostic({ code: "record-key-mismatch", path, message: `record key ${key} is not the group id ${group.id}` }),
       );
+    }
+    if (group.occurrence !== undefined) {
+      const first = boundOccurrences.get(group.occurrence);
+      if (first === undefined) {
+        boundOccurrences.set(group.occurrence, key);
+      } else {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            path: `${path}.occurrence`,
+            message: `fold group ${key} binds ${group.occurrence} which is already bound by fold group ${first}; at most one fold group per occurrence`,
+            refs: [group.occurrence],
+          }),
+        );
+      }
     }
     // Membership is not checked here because it is not stored here: an
     // occurrence names its group, and that reference is validated where the
@@ -2310,7 +2357,22 @@ export function validateView(
   // then at most one active candidate per projected aggregate key. A
   // source-valid inactive definition reports nothing.
   if (view.summaryLabels !== undefined) {
-    const analysis = analyzeSummaries(view, document);
+    for (const id of Object.keys(view.summaryLabels).sort()) {
+      const definition = (view.summaryLabels as Record<string, SummaryDefinition>)[id] as SummaryDefinition;
+      if (definition.id !== id) {
+        diagnostics.push(
+          diagnostic({
+            code: "record-key-mismatch",
+            path: `summaryLabels.${id}`,
+            message: `record key ${id} is not the summary definition id ${definition.id}`,
+          }),
+        );
+      }
+    }
+    const analysis = analyzeSummaries(view, document, {
+      registry: options.registry,
+      ...(hidden?.hiddenByFilter === undefined ? {} : { filters: { hiddenByFilter: hidden.hiddenByFilter } }),
+    });
     for (const issue of analysis.sourceIssues) {
       const definition = (view.summaryLabels as Record<string, SummaryDefinition>)[issue.id] as SummaryDefinition;
       diagnostics.push(

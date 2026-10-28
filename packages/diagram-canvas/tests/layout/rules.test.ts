@@ -704,7 +704,22 @@ describe("L-R11 — no legend", () => {
   const { view } = lay(document, WIDE);
 
   it("the view holds exactly the document's drawings and nothing that could be a legend", () => {
-    expect(Object.keys(view).sort()).toEqual([...VIEW_DOCUMENT_FIELDS].sort());
+    const required = [
+      "entityOccurrences",
+      "filters",
+      "groups",
+      "portOccurrences",
+      "presentation",
+      "relationOccurrences",
+      "revision",
+      "semanticDocumentId",
+      "viewId",
+    ];
+    expect(required).toHaveLength(9);
+    expect(Object.keys(view).sort()).toEqual([...required].sort());
+    expect("summaryLabels" in view).toBe(false);
+    expect(Object.keys(view).every((key) => (VIEW_DOCUMENT_FIELDS as readonly string[]).includes(key))).toBe(true);
+    expect([...VIEW_DOCUMENT_FIELDS].sort()).toEqual([...required, "summaryLabels"].sort());
     expect(Object.values(view.entityOccurrences).map((occurrence) => occurrence.entity).sort()).toEqual(
       ["a", "b", "c", "k"].map((id) => entityRef(id)).sort(),
     );
