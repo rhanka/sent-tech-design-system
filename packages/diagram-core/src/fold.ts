@@ -182,8 +182,21 @@ function stampGroups(
 ): Readonly<Record<string, VisualGroup>> {
   const groups: Record<string, VisualGroup> = {};
   for (const [key, group] of Object.entries(view.groups)) {
-    groups[key] =
-      group.occurrence === undefined ? group : { ...group, collapsed: collapsed.has(group.occurrence) };
+    if (group.occurrence === undefined) {
+      groups[key] = group;
+      continue;
+    }
+    if (collapsed.has(group.occurrence)) {
+      groups[key] = { ...group, collapsed: true };
+      continue;
+    }
+    if (group.collapsed === undefined) {
+      const { collapsed: _absent, ...rest } = group;
+      void _absent;
+      groups[key] = rest;
+      continue;
+    }
+    groups[key] = { ...group, collapsed: false };
   }
   for (const id of collapsed) {
     const bound = Object.keys(groups).find((key) => groups[key]?.occurrence === id);
@@ -336,18 +349,12 @@ export function collapseAll(document: SemanticDocument, sourceView: ViewDocument
 }
 
 /**
- * Post-removal repair (§5.7): recompute the surviving projected endpoints
- * from their retained `sourceOccurrence` origins under the current fold
- * groups. Occurrences that carried no provenance are returned byte-identical;
- * the caller replaces the stale ones and captures their pre-images.
+ * Post-removal repair (§5.7): recompute every surviving relation occurrence
+ * from its retained `sourceOccurrence` origin under the current fold groups,
+ * including relations that carried no provenance before (previously internal).
+ * Shared by both removal paths; the caller replaces the stale records.
  */
 export function reprojectRetained(view: ViewDocument, document: SemanticDocument): ViewDocument {
-  const carried = Object.values(view.relationOccurrences)
-    .filter((occurrence) =>
-      (occurrence as RelationOccurrence).endpoints.some((endpoint) => endpoint.semanticTarget !== undefined),
-    )
-    .map((occurrence) => (occurrence as RelationOccurrence).id);
-  if (carried.length === 0) return view;
   const stripped: Record<string, RelationOccurrence> = {};
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as RelationOccurrence;
@@ -363,9 +370,9 @@ export function reprojectRetained(view: ViewDocument, document: SemanticDocument
   const fresh = projectRelationOccurrences({ ...view, relationOccurrences: stripped }, document, collapsedOf(view));
   let relationOccurrences = view.relationOccurrences;
   let changed = false;
-  for (const id of carried) {
-    if (canonicalise(fresh[id]) !== canonicalise(view.relationOccurrences[id])) {
-      relationOccurrences = { ...relationOccurrences, [id]: fresh[id] as RelationOccurrence };
+  for (const key of Object.keys(view.relationOccurrences).sort()) {
+    if (canonicalise(fresh[key]) !== canonicalise(view.relationOccurrences[key])) {
+      relationOccurrences = { ...relationOccurrences, [key]: fresh[key] as RelationOccurrence };
       changed = true;
     }
   }
