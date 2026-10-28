@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Specification only. No implementation, no package, no test execution is claimed by this document. |
+| Status | Specification only, revision r2 after Sol review pass 1. No implementation, no package, no test execution is claimed by this document. |
 | Date | 2026-10-28 |
-| Branch | `spec/canvas-live-collab`, cut from `main` `0d32d10b` |
+| Branch | `spec/canvas-live-collab`, cut from `main` `0d32d10b`; r1 at `218f5e30` |
 | Track anchors | B2 `01M5A1Y37BP5VF255984D4N1GZ`; B1 `01M5A1Y31KMPMWJR721CEZSW8B`; JSON-render E (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md`) lots L1/L2/L8; RT-1 `@sentropic/design-system-rich-text` 0.1.0 + `@sentropic/design-system-svelte/rich-text-editor` |
 | Lane gate | This lane starts after diagram-core M1-b (owner decision in the DS session, 2026-10-28). Canvas-norm contract lots that are independent of the L2 binding may proceed in parallel with M1-b follow-on once ratified; L2 lots do not start before that gate. |
 | Stack rule | Node/TypeScript and native tooling already present only. No Python is used anywhere in the lots this specification defines. No network is used by this study. |
@@ -68,7 +68,7 @@ Owner lane decision in the DS session (2026-10-28, AskUserQuestion): « Après M
 
 | Question | Rendered decision | Source | Effect on this specification |
 | --- | --- | --- | --- |
-| Q1 — engage L2 and when | **L2 engaged now.** Real concurrent editing in the same block, Google-Docs class: presence, carets/selections, character-level merge, no lost edit. L0 locks remain a capability, not a prerequisite stage. | `owner-decision` (statements 3–5) | The lots of §8 deliver L2 as the headline, not as an optional follow-on. CB-0/CB-1 L0 work is retained only where it is on the critical path (provider port, badge) and is announced with the §5.3 discipline of B2, never as co-editing. |
+| Q1 — engage L2 and when | **L2 engaged now.** Real concurrent editing in the same block, Google-Docs class: presence, carets/selections, character-level merge, no lost edit. L0 locks remain a capability, not a prerequisite stage. | `owner-decision` (statements 3–5) | The lots of §8 deliver L2 as the headline, not as an optional follow-on. L0 work is split in §8 into CL-1M (shared model, on the L2 critical path) and CL-1B (badge UI, not on it) (T6); L0 is announced with the §5.3 discipline of B2, never as co-editing. |
 | Q2 — L1 block locks for text | **A — no L1 for text.** | `conductor-decision` | No block-lock gesture guards are built for text. The exclusive-block guarantee for text is consciously not delivered. Diagram and spreadsheet granularity are not decided here. |
 | Q3 — agent posture on a visualised object | **Superseded by a new posture.** The AI agent is a live co-editor in the same block at the same time as humans: a CRDT participant with presence, not a draft, not a lock holder, not a yielding background process. | `owner-decision` (statements 3, 5) | §5 defines the agent as a peer. The former B2 options A/B/C for Q3 (present-and-warn / live-wins / lock-for-agents) are superseded as defaults. A host MAY offer an explicit suggest mode as a preference, never as the default that replaces co-editing (sentropic dossier r4b §5, `sentropic-input` dossier-r4b.md:268). |
 | Q4 — first live host | **A — sentropic hosts the first live session.** Persistence and transport stay host-side, consistent with the handover (`LiveDocumentStore` persistence host-side, B2 option C). | `conductor-decision` | §7 makes sentropic the first implementer of the provider and of the MCP bridge. The DS ships no server. |
@@ -77,7 +77,7 @@ Owner lane decision in the DS session (2026-10-28, AskUserQuestion): « Après M
 | Q7 — who may request the collective freeze | **A — any authorised participant may request it; the host serialises it and records session provenance.** | `conductor-decision` | §4.7 and lot CL-4 inherit the B2 §4.5 publication authority unchanged. |
 | Q-JOINT-1 — spreadsheet ambition | **Out of scope for this lane.** | instruction | No spreadsheet lot is defined here. The shared lock/presence contract of B2 §5.1 remains available to B3; this specification takes no position on cell merge semantics. |
 
-Technical choices that the sources leave open are decided in this specification with rationale and tagged `ds-proposition` or `conductor-decision`. They are not presented as owner questions. The remaining owner questions are collected in §9 and are short by construction.
+Technical choices that the sources leave open are decided in this specification with rationale and tagged `ds-proposition` or `conductor-decision`. They are not presented as owner questions. The remaining owner questions are collected in §9 and are kept short; future-work items are in §12, not in §9.
 
 ## 2. Measured starting point
 
@@ -155,7 +155,7 @@ The canvas norm is the set of DS-owned contracts that let an AI produce only dat
 | Elements | The compiled DS components that render and edit a canvas: the canvas shell, field cards, the editable-card editor surface (§6), presence and caret presentation. Distributed as npm + CDN (jsDelivr) compiled web components where option E requires it (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:50-58`). | JSON-render L2 + RT-1 + this specification. |
 | Envelope | The exchange envelope for diagrams (`SemanticDocument`/`ViewDocument`/`Transaction`, `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:673-683`) and the live-editing session envelope (§4). Layout is done by DS engines, never by the producer (« que l'IA n'ait qu'à produire les objets de données, et que le layout soit fait par le design system et ses moteurs », `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:60-61`). | JSON-render L8 + GD-M2-CANVAS (`01M2KJTY6V3DC5N6ZBVG13808F`, REPORT.md:25). |
 
-The norm is not a component. It is the contract surface that components, the catalogue generator, the MCP tools and the fixtures all derive from. Changing a norm contract is a DS version change under §7.5; hosts pin the version.
+The norm is not a component. It is the contract surface that components, the catalogue generator, the MCP tools and the fixtures all derive from. Changing a norm contract is a DS version change under §7.7; hosts pin the version.
 
 ### 3.2 The canvas template/descriptor contract
 
@@ -165,6 +165,11 @@ The DS publishes the canonical descriptor in a framework-neutral package (the ri
 
 ```ts
 // DS-owned (pure entry; no editor runtime, no transport)
+/** Editing profile a template opens with. The union is closed in this
+    contract; adding a member is a minor contract change under §7.7 and
+    requires a validator update in the same change. */
+export type CanvasProfile = "markdown" | "structured" | "plain";
+
 export interface CanvasTemplateDescriptor {
   /** Stable kebab-case id (e.g. "blank-markdown"). Same rule as
       sentropic CanvasTemplate.id (types.ts:175-176). */
@@ -175,9 +180,10 @@ export interface CanvasTemplateDescriptor {
   /** MIME type of the starter content ("text/markdown",
       "application/json", "text/plain"). Same rule as types.ts:183. */
   mimeType: string;
-  /** Starter content body. Optional (may be empty). Same rule as
-      types.ts:188. Renamed from initialContent at the DS boundary;
-      the host adapter maps the two names once. */
+  /** Starter content body. Optional (may be empty). Same name and rule
+      as sentropic CanvasTemplate.initialContent (types.ts:188); the DS
+      descriptor keeps the name so adoption is a type import, not a
+      field rename. */
   initialContent?: string;
   /** Optional JSON Schema for structured kinds. Same rule as
       types.ts:193. Absent for free-form text/markdown. */
@@ -185,7 +191,7 @@ export interface CanvasTemplateDescriptor {
   /** DS additions (additive, so existing sentropic consumers keep
       working): the editing profile the template opens with, and the
       field layout the canvas shell renders. */
-  profile: CanvasProfile;          // "markdown" | "structured" | "plain"
+  profile: CanvasProfile;
   fields: readonly CanvasFieldDescriptor[];
   capabilities: CanvasCapabilities;
 }
@@ -214,7 +220,7 @@ export interface CanvasCapabilities {
 Rules (blocking):
 
 - R-DESC-1. The two sentropic seeds become DS fixtures verbatim in content: `blank-markdown` (`text/markdown`, `initialContent: ""`, no schema, `profile: "markdown"`, one editable markdown field) and `structured-plan` (`application/json`, the `{title:"", sections:[]}` starter and its `{title, sections[]}` schema of `canvas-template-source.ts:52-89`, `profile: "structured"`). A fixture test asserts byte equality of `initialContent` and deep equality of `schema` against the sentropic source at adoption time; afterwards the DS fixture is the source and the sentropic copy is deleted (§3.6).
-- R-DESC-2. `id` is the identity. Renaming an `id` is a breaking change (new descriptor, new catalogue minor under §7.5). `mimeType` and `profile` together decide which editor surface opens; a descriptor whose `profile` disagrees with its `mimeType` family is refused by the validator with the JSON-render diagnostic shape (`{code, path, message, severity, source}`, `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:339-353`).
+- R-DESC-2. `id` is the identity. Renaming an `id` is a breaking change (new descriptor, new catalogue minor under §7.7). `mimeType` and `profile` together decide which editor surface opens; a descriptor whose `profile` disagrees with its `mimeType` family is refused by the validator with the JSON-render diagnostic shape (`{code, path, message, severity, source}`, `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:339-353`).
 - R-DESC-3. The descriptor carries no URL, no endpoint, no credential, no workspace id. Host configuration (theme, locale, `assetBase`, watermark reference) travels on the separate host channel of JSON-render §6.5, never in the envelope (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:311-313`).
 - R-DESC-4. Catalogue projection is generated, never hand-written: the A2UI catalogue entry for a canvas template is emitted from this type by the L1 generator, with `x-sentropic.contract` versioning (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:412-415`). Sentropic's catalogue then imports the generated entry instead of defining `CanvasEntry` locally (§3.6).
 
@@ -252,7 +258,7 @@ Decision CL-D5 — Hosting stays sentropic; only the contract moves. `conductor-
 | Canvas shell, field cards, editable cards, presence UI | Owns (§3.3, §6) | Composes them; supplies data, messages, capabilities |
 | Artefact identity (`artifactId`/`releaseId`), publication, releases, access, lifecycle | Does not own | Owns (artifacts provider; `templates.ts` kit is the provider seam, §2.3 item 5) |
 | Live session transport, Hocuspocus hosting, persistence, session journal | Does not own (§4.9) | Owns (§7.4) |
-| MCP tools that create/patch a live artefact (B′ live artefact patchable by MCP) | Defines the port (§5.6) | Implements the tools and the bridge (§5.7, §7.4) |
+| MCP tools that create/patch a live artefact (B′ live artefact patchable by MCP) | Defines the port (§5.7) | Implements the tools and the bridge (§5.7, §7.6) |
 | Auth, membership, agent admission and revocation | Renders opaque actor facts only | Owns and enforces (dossier r4b §5 admission gates) |
 
 The DS norm therefore has no deployment. A host that cannot run the live session still consumes the norm in snapshot mode; the norm never requires a server (the offline `file://` dossier configuration of B2 §5.1).
@@ -269,18 +275,20 @@ Gate NORM-G (must all hold before a deletion is claimed for any row):
 4. The sentropic copy is deleted in the same adoption change; `git grep` for the deleted symbol/path in sentropic returns no active reference outside history and the migration note.
 5. The conductor keeps the receipt `source path → DS export@version → consumer site → deletion commit`.
 
-| # | Artefact (sentropic source) | DS version (what becomes canonical) | Sentropic adoption | Deletion (no legacy) | Row gate (in addition to NORM-G) |
-| --- | --- | --- | --- | --- | --- |
-| N1 | `api/src/services/catalog/types.ts:154-194` (`CanvasEntry`/`CanvasTemplate`) | `CanvasTemplateDescriptor` (§3.2) + generated catalogue entry | Catalogue imports the DS type; `CanvasEntry.template` is typed by the DS descriptor through an adapter that maps `initialContent` once | Local `CanvasTemplate` interface deleted; no parallel canvas template type remains | Fixture: `blank-markdown` and `structured-plan` descriptors deep-equal the sentropic seeds; catalogue `list/search/get` parity for `kind:'canvas'` unchanged |
-| N2 | `api/src/services/catalog/sources/canvas-template-source.ts` (two seeds) | DS fixtures for the two seeds (R-DESC-1) | `CanvasTemplateSource` reads the DS fixture set through the pinned package (or a generated JSON asset) | Inline `CANVAS_TEMPLATES` array deleted | Byte equality of both `initialContent` values and deep equality of the `structured-plan` schema, asserted in both repos before deletion |
-| N3 | `spec/SPEC_EVOL_CATALOG.md:80-91,195` (D-CANVAS kind-only) + `spec/SPEC_VOL_INTERACTIVE_CANVAS.md` (raw intent) | Normative canvas chapters move into DS versioned specs (this file + JSON-render); sentropic keeps an integration note pointing at the DS version | Sentropic spec replaced by a version reference + host-only contracts | The duplicated normative sections deleted; the dangling `SPEC_EVOL_CHAT_CANVAS` reference resolved to the DS live-editing contract (§7) | A reader following the sentropic note reaches the DS contract without encountering a second normative definition |
-| N4 | `packages/chat-core/src/ports.ts:70-72` (`LiveDocumentStore` stub) | The live-document contract is the DS provider port + host persistence contract (§7.3–§7.4); the DS defines no store | Sentropic implements the host store behind that contract (§7.4) | The `_kind` stub deleted once the implementation lands; no parallel signature kept | The implementation passes the §7.4 persistence witnesses (snapshot/journal/replay); the stub's absence breaks no import |
-| N5 | `packages/artifacts/src/server/templates.ts` (template kit) | Only the canvas-relevant generic templates/descriptors become DS norm (§3.2); the provider kit mechanism stays sentropic | Provider imports DS canvas descriptors for canvas artefacts; generic `static-html` kit stays host-side | Copied canvas templates inside the provider deleted; provider code that defined them now imports | Artefact create/publish/read through the provider with a DS canvas descriptor renders identically to the pre-transfer fixture |
-| N6 | `packages/comments/src/types.ts:13` (`'canvas'` kind) — G3 carve-out | DS presentation reference only (§3.4). No DS copy of the model. | No adoption needed; the host keeps using its own type | **Nothing deleted.** The public discriminant `'canvas'` and contract v1 are not broken (dossier r4b §5 row 6). A duplicate DS-side definition, if one appears, is the thing deleted. | The §3.4 join renders in the canvas shell against the frozen v1 contract; `CommentTargetKind` is unchanged |
-| N7 | `ui/src/lib/components/TipTap.svelte` + generic part of `EditableInput.svelte` + TemplateRenderer FieldCards | The §6 editable-card components on RT-1 | Field-class migration (B1 order: templater text + score first, chat second, `forceList` last) | `TipTap.svelte` and the replaced generic wrapper parts deleted after the profile gates for the migrated classes pass | B1 witness matrix (§6.5) green for the migrated class; unmigrated classes keep the host wrapper and are announced as such |
-| N8 | This dossier's normative canvas prescriptions (B′ r4) | Decisions, co-editing criteria, contracts and fixtures integrated into E/B2 and this file | Sentropic keeps its consumer plan and historical evidence (r3/r4 dossiers preserved) | Active normative copies retired after the DS reference is in place; historical dossiers are evidence and are not erased | The correspondence register (source → DS section) is recorded; no active sentropic norm competes with the DS one |
+Every row names its delivery lot and its adoption lot. A row without a lot is not a promise. Publication dependencies are normative: no adoption lot starts before the DS version it pins is published at an exact version (NORM-G step 1).
 
-Ordering: N1/N2 (descriptor contract) are independent of the L2 binding and may run before it. N7 depends on the §6 components. N4 depends on §7.4. N6 has no deletion and may be verified at any point.
+| # | Artefact (sentropic source) | DS version (what becomes canonical) | Delivery lot (DS) → adoption lot (host) | Deletion / disposition | Row gate (in addition to NORM-G) |
+| --- | --- | --- | --- | --- | --- |
+| N1 | `api/src/services/catalog/types.ts:154-194` (`CanvasEntry`/`CanvasTemplate`) | `CanvasTemplateDescriptor` (§3.2) + generated catalogue entry | CL-0 → CL-5 (catalogue import) | Local `CanvasTemplate` interface deleted in the CL-5 adoption change; no parallel canvas template type remains | Fixture: `blank-markdown` and `structured-plan` descriptors deep-equal the sentropic seeds; catalogue `list/search/get` parity for `kind:'canvas'` unchanged; `initialContent` name retained (§3.2) |
+| N2 | `api/src/services/catalog/sources/canvas-template-source.ts` (two seeds) | DS fixtures for the two seeds (R-DESC-1) | CL-0 → CL-5 | Inline `CANVAS_TEMPLATES` array deleted in the CL-5 adoption change | Byte equality of both `initialContent` values and deep equality of the `structured-plan` schema, asserted in both repos before deletion |
+| N3 | `spec/SPEC_EVOL_CATALOG.md:80-91,195` (D-CANVAS kind-only) + `spec/SPEC_VOL_INTERACTIVE_CANVAS.md` (raw intent) | Normative canvas chapters move into DS versioned specs (this file + JSON-render); sentropic keeps an integration note pointing at the DS version | CL-0N (norm-note lot, §8) → host doc change in CL-5 | The duplicated normative sections deleted; the dangling `SPEC_EVOL_CHAT_CANVAS` reference resolved to the DS live-editing contract (§7). Historical intent text is retained as evidence, marked superseded, not deleted | Runnable witness: a link/anchor check from the sentropic note reaches §3/§7 of this file; `git grep SPEC_EVOL_CHAT_CANVAS` in sentropic returns only the resolved reference and history |
+| N4 | `packages/chat-core/src/ports.ts:70-72` (`LiveDocumentStore` stub) | The live-document contract is the DS provider port + host persistence contract (§7.3–§7.4); the DS defines no store | CL-1M/CL-3 (port) → CL-5 (host store) | The `_kind` stub deleted in CL-5 once the implementation lands; no parallel signature kept | The implementation passes the §7.4 persistence witnesses (checkpoint/journal/replay per T3 correction); the stub's absence breaks no import (`tsc` + host test suite) |
+| N5 | `packages/artifacts/src/server/templates.ts` (template kit) | Only the canvas-relevant descriptor contract becomes DS norm (§3.2); the provider kit mechanism stays sentropic | CL-0 (descriptor) → CL-5 (provider wiring for canvas artefacts only) | **Inapplicable as a deletion row.** Measured at `origin/main`: the provider's default catalogue contains only the `static-html` kit (`templates.ts`, `DEFAULT_TEMPLATE_ID = 'static-html'`; no canvas template copy exists to delete). No deletion gate is invented for a copy that does not exist. If a canvas template copy is later found, it is recorded as a new row before any deletion claim | Artefact create/publish/read through the provider with a DS canvas descriptor renders identically to the pre-transfer fixture; `static-html` behaviour unchanged |
+| N6 | `packages/comments/src/types.ts:13` (`'canvas'` kind) — G3 carve-out | DS presentation reference only (§3.4). No DS copy of the model. | CL-0C (comment-join verification, §8) | **Nothing deleted.** The public discriminant `'canvas'` and contract v1 are not broken (dossier r4b §5 row 6). A duplicate DS-side definition, if one appears, is the thing deleted | Runnable witness: the §3.4 join renders in the canvas shell (CL-0S) against the frozen v1 contract with each resolver outcome (exact / changed / unresolved / unavailable); `CommentTargetKind` unchanged |
+| N7 | `ui/src/lib/components/TipTap.svelte` + generic part of `EditableInput.svelte` + TemplateRenderer FieldCards | The §6 editable-card components on RT-1 | CL-1M/CL-2/CL-3 (§6) → CL-5 per field class (§6.5, §8 CL-5) | `TipTap.svelte` deleted only in the final CL-5 step, after **every** field class of §6.5 reports `migrated` (§6.5 completion criteria); the replaced generic wrapper parts deleted per class. Until then `TipTap.svelte` remains and partial adoption is reported with counts (§6.5) | B1 witness matrix (§6.5) green per migrated class; unmigrated classes keep the host wrapper and are announced as such |
+| N8 | This dossier's normative canvas prescriptions (B′ r4) | Decisions, co-editing criteria, contracts and fixtures integrated into E/B2 and this file | CL-0N (correspondence register) | Active normative copies retired after the DS reference is in place; historical dossiers (r3/r4) are evidence and are not erased | Runnable witness: the correspondence register (source line → DS section) is committed with CL-0N and a grep for competing normative canvas definitions in active sentropic specs returns none |
+
+Ordering: N1/N2 (descriptor contract, CL-0) are independent of the L2 binding and may run before it. CL-0S (canvas shell + field composition) and CL-0C (comment join) deliver the §3.3/§3.4 surfaces that r1 promised without a lot; they depend on CL-0 and CL-1M, not on CL-3. N7 depends on the §6 components per class. N4 depends on §7.4 as corrected by T3. N6 has no deletion and may be verified at any point.
 
 ## 4. Collaborative document model
 
@@ -302,7 +310,7 @@ Decision CL-D7 — `paragraphId` is the block identity in both modes. `h2a-spec`
 
 - The identity is the opaque `paragraphId` string on `paragraph` and `preservedBlock` nodes, rendered as `data-paragraph-id` (`packages/rich-text/src/model.ts:7-21`; FE-2 §5.2). The DS never parses, derives, sorts by or displays it as content.
 - In the Yjs binding, node attributes map onto `Y.XmlElement` attributes, so the identity rides the shared element itself rather than a position, an index or a text offset (B2 §4.5). Concurrent character inserts inside one element interleave without touching its identity attribute.
-- Split allocates through the injected allocator (the leading paragraph keeps its id, tails receive fresh ids); merge retires consumed ids without reallocation; clear-field keeps the first block's id; undo restores identities by construction (FE-2 §5.2, `packages/rich-text/src/editor.ts` identity plugin). In a live session the allocator must be collision-free across sessions (host-issued or UUID-class); deterministic producer seeding is a baseline operation, never a live-session operation (B2 §4.5 failure mode 1).
+- Split allocates through the injected allocator (the leading paragraph keeps its id, tails receive fresh ids); merge retires consumed ids without reallocation; clear-field keeps the first block's id; undo restores identities under the rules of §4.5 and §4.10 (FE-2 §5.2, `packages/rich-text/src/editor.ts` identity plugin). In a live session the allocator must be collision-free across sessions (host-issued or UUID-class); deterministic producer seeding is a baseline operation, never a live-session operation (B2 §4.5 failure mode 1). Allocator collision-freedom alone does **not** make concurrent split/merge safe: it prevents two tails receiving the same fresh id, it does not protect text moved or hidden by a concurrent structural change. Structural safety is the separate mechanism of §4.10, and no lot may claim it from identity allocation alone.
 - External paste strips incoming `data-paragraph-id` before insertion, without exception — now with the additional reason that a pasted id could collide with a live remote element (B2 §4.5 failure mode 3).
 - Display order, array index, DOM path, content hash and character offset are never identities (h2a D13).
 
@@ -312,7 +320,10 @@ Decision CL-D8 — One `Y.Doc` per canvas artefact; one `Y.XmlFragment` per edit
 
 ```
 Y.Doc (guid = host session document name, e.g. "canvas:<artifactId>")
- ├─ Y.Map "meta"        — norm version, profile, descriptor id (host-written, DS-read)
+ ├─ Y.Map "meta"        — reserved keys (§4.11): descriptor id, profile id,
+ │                        schema epoch (host-sequencer-written only, DS-read)
+ ├─ Y.Array "structureLog" — structural operation log (§4.10; sequencer-applied
+ │                        entries only; clients submit intents, never raw entries)
  └─ Y.XmlFragment "<fieldKey>"   — one per CanvasFieldDescriptor with editable: true
       └─ Y.XmlElement "paragraph" (attrs: paragraphId) — one per RichTextBlock
            └─ Y.XmlText — the paragraph characters (marks as Yjs attributes)
@@ -321,10 +332,11 @@ Y.Doc (guid = host session document name, e.g. "canvas:<artifactId>")
 
 Rules (blocking):
 
-- R-MAP-1. The field key is the `CanvasFieldDescriptor.key`. A canvas with three editable fields has three fragments in one doc; presence and awareness are per doc, so a collaborator's caret is located by `(fieldKey, paragraphId, relative position)`. Per-field docs were rejected: they would fragment awareness and the freeze (§4.7) into per-field lineages for no gain.
-- R-MAP-2. The DS binding receives exactly one fragment plus the awareness object for the field it renders (§4.9). Framework adapters never receive the `Y.Doc`.
+- R-MAP-1. The field key is the `CanvasFieldDescriptor.key`. A canvas with three editable fields has three fragments in one doc; presence and awareness are per doc, so a collaborator's caret is located by the binding identity of §5.7 (`documentId`, `sessionId`, `fieldKey`) plus a relative anchor (§5.2). Per-field docs were rejected: they would fragment awareness and the freeze (§4.7) into per-field lineages for no gain.
+- R-MAP-2. The DS binding receives exactly one fragment plus the awareness object for the field it renders, addressed by the full binding identity (§5.7, B2 correction). Framework adapters never receive the `Y.Doc`.
 - R-MAP-3. Seeding: the host seeds the fragment once from the retained baseline's `RichTextDocument` (paragraph elements with their `paragraphId` attributes, text as `Y.XmlText`). Seeding is a host operation at session open; the DS binding assumes the fragment already reflects the baseline and never reseeds. Reseeding identities mid-session is prohibited (B2 §4.5 session/base discipline).
 - R-MAP-4. A field whose descriptor says `editable: false`, or a structured (`application/json`) field, is not a text fragment. Structured canvas content (the `structured-plan` seed shape) is edited through its own host surface and merges by the host's business transaction rules, not by Yjs text. Claiming CRDT merge for JSON structure under this specification is a scope breach (§10).
+- R-MAP-5. The `meta` map and the `structureLog` array are reserved shared types. Only the host sequencer/segmentation origin may write them (§4.10, §4.11). A client update that writes a reserved key, a `preservedBlock` element, or a `paragraphId` attribute is not a text edit and is refused at ingress (§4.11).
 
 ### 4.4 Preserved blocks inside a live fragment
 
@@ -336,7 +348,7 @@ Decision CL-D9 — The Yjs `UndoManager` replaces ProseMirror history in bound m
 
 - In bound mode the history is the Yjs `UndoManager` (via `yUndoPlugin` / Tiptap collaboration), which undoes only the local user's tracked origins. My undo never removes a collaborator's text; that is the required multi-writer semantics and the only available one, since a global ProseMirror history in a merged document would revert remote changes.
 - The P0 extension list changes exactly once behind the binding slot (remove `UndoRedo` from `@tiptap/extensions`, add the collaboration pair), never per-session toggling. Enabling collaboration extensions alongside `UndoRedo` is the warned-against configuration (§2.5) and is a lot failure if shipped.
-- Undo of a split/merge must still restore the same logical paragraph's identity (the attribute rides the `Y.XmlElement`, §4.2), now requiring a merge-interleaved undo witness (lot CL-3 witness 2).
+- Undo of a split/merge restores identities only through the structural rules of §4.10. Required interleaved-undo outcomes (witnessed in CL-3): (a) undoing my split after a collaborator inserted text into either resulting paragraph rejoins the paragraphs and keeps the collaborator's characters, in their merged order; (b) undoing my merge after a collaborator inserted into the consumed paragraph keeps that insertion inside the surviving logical paragraph; (c) my text undo never undoes a collaborator's structural operation, and my structural undo never deletes a collaborator's text items. An implementation that restores a paragraph by snapshot replacement fails (c).
 - `protectedNodes = {'paragraph'}` (the y-prosemirror default delete filter) interacts with the DS `preservedBlock` atom: preserved blocks are excluded from collaborative mutation entirely (§4.4), so the undo delete-filter needs a DS-side witness with preserved blocks present.
 - L0/controlled mode keeps ProseMirror `UndoRedo` unchanged.
 
@@ -346,13 +358,29 @@ The single shared rule is IME-LOCK-1 (B2 §4.4, FE-2 amendment A-IME-1), reprodu
 
 > **IME-LOCK-1.** (1) Content arrivals are deferred during composition: an external controlled value arriving while composing is neither applied nor signalled as a conflict mid-composition; it is re-evaluated once, immediately after the composition commit and its single `onChange`, under FE-2 §5.6 rules 1, 3 and 4. In bound mode a remote Yjs transaction is document content, not a controlled value: it is not routed through `onExternalConflict`, and the same no-emission-mid-composition rule applies to its local notification. (2) Rights revocation is immediate, never deferred: a host-driven `editable: true → false` calls `setEditable` at once on the live editor, without remount, even mid-composition (FE-2 §5.4). (3) The uncommitted composition is discarded (A-IME-1): the composition terminates without a commit, its text is discarded, the displayed document reverts to the last committed revision, and no `RichTextChangeEvent` is emitted for the discarded text. (4) A pending `captureDocument()` rejects exactly once with `RichTextCaptureUnavailable` (`name: "RichTextCaptureUnavailable"`, `message: "rich-text.capture-unavailable"`). (5) Nothing is emitted after revocation; whether an in-flight host save is accepted is decided only by the host atomic save control, never by the editor.
 
-L2 additions that stage two must re-witness (not part of IME-LOCK-1): no `onChange` mid-composition in bound mode, the committed composition emits exactly one coalesced change, deferred capture resolves with the committed revision, and the local caret (expressed via relative positions for sharing) does not jump when a remote insert lands before it. jsdom cannot witness real IME behaviour (FE-2 §11); the browser suite carries it (lot CL-3 witness 5, shared witness W-IME-1 of B2 §4.4).
+#### 4.6.1 Composition staging in bound mode (governs shared state, not only notifications)
 
-### 4.7 Offline, reconnect, snapshot/version, and the paragraph-diff return
+Suppressing `onChange` does not satisfy IME-LOCK-1 in bound mode: the pinned `ySyncPlugin` forwards ProseMirror changes into the shared fragment (`y-prosemirror/src/plugins/sync-plugin.js`, `ProsemirrorBinding._prosemirrorChanged`), so intermediate composition text would reach other replicas even with notifications suppressed. The DS binding shall therefore stage composition-owned changes outside the authoritative shared state. This is a binding contract; either staging mechanism below is conforming, a notification-only suppression is not.
+
+Decision CL-D15 — Composition-owned changes are staged, then committed once or discarded whole. `ds-proposition`
+
+- R-IME-1 (staging). At `compositionstart` the binding opens a composition session identified by `(binding identity, compositionId)`. Until `compositionend`, ProseMirror changes attributable to the composition are held in a staging buffer and are **not** transacted into the field's `Y.XmlFragment`. Conforming mechanisms: (a) a staging fragment — composition edits accumulate in a detached staging doc/fragment and only the committed result is transacted into the shared fragment; or (b) selective tracking — composition items are transacted only under a dedicated origin `composition:<compositionId>` that the binding captures with a dedicated `UndoManager` scope, with the binding withholding broadcast of those items (the host provider shall not forward uncommitted composition updates; see R-IME-3). A binding that lets another replica observe intermediate composition text before commit is non-conforming under either mechanism.
+- R-IME-2 (commit). At `compositionend` without revocation, the staged result is applied to the shared fragment as exactly one Yjs transaction under the local actor's normal origin, anchored at the composition's start relative anchor (§5.2). The editor emits exactly one coalesced local change for the commit. Remote updates that arrived during composition are already in the shared fragment; the commit inserts at its anchor in the merged document and does not overwrite them.
+- R-IME-3 (no early broadcast). The host provider and the DS binding together shall not persist or broadcast composition-owned updates before commit. Under mechanism (b) this requires the provider to hold updates whose origin is an open `composition:` origin until the binding signals commit (re-origined under the actor origin) or cancellation (dropped). Hocuspocus authentication alone does not provide this hold; the CL-3 host witness shall demonstrate it.
+- R-IME-4 (cancellation / revocation). On rights revocation (IME-LOCK-1 clause 2), on `compositioncancel`, or on unmount mid-composition, the staging buffer is discarded (mechanism a) or exactly the composition-origin items are selectively undone/deleted (mechanism b). No composition-owned character remains in the shared fragment, on the authoritative host doc, or on any connected replica after cancellation settles. Concurrent human text inserted before, inside, or after the composition range during the composition survives cancellation unchanged. The displayed editor re-renders from the shared fragment (the last committed revision plus merged remote text); it does not restore a pre-composition snapshot over remote work.
+- R-IME-5 (capture and caret). A capture pending during composition follows IME-LOCK-1 clause 4. The local caret after commit or cancellation is restored through relative anchors (§5.2), not numeric offsets.
+
+Witness (CL-3, browser suite, replica-inspecting; jsdom cannot witness real IME, FE-2 §11): replica A composes uncommitted text `X` in a paragraph while replica B concurrently inserts committed text `Y` in the same paragraph; inspect the shared fragment on replica A, replica B, a third read-only replica, and the authoritative host doc **before** commit — `X` is absent from every replica except A's local display, `Y` is present; then cancel the composition (and, in a second run, revoke `editable` mid-composition) and re-inspect every replica — `X` is absent everywhere and `Y` survives verbatim. A third run commits instead: exactly one transaction carries the composition result and `Y` survives. The r1 witness (no `onChange` mid-composition, one coalesced commit change, deferred capture resolves with the committed revision, caret stable under a remote insert before it) is retained in addition, as lot CL-3 witness 5 with shared witness W-IME-1 of B2 §4.4.
+
+### 4.7 Offline, reconnect, checkpoint/version, and the paragraph-diff return
 
 **Offline/reconnect.** Editing continues offline in bound mode; Yjs updates queue in the doc and sync on reconnect, merging with whatever arrived meanwhile (§2.5 convergence). The DS contributes no persistence for this: a local-persistence provider (`y-indexeddb` class) is a host choice, `unknown` until pinned. The offline `file://` dossier stays single-user in controlled mode, byte-identical to today; Yjs offline editing exists only inside connected hosts that explicitly enable it.
 
-**Snapshot/version.** A version of the shared state is a Yjs snapshot (`Y.Snapshot`) plus the state vector at capture. The host persists snapshots and the update journal (Hocuspocus `onStoreDocument` / Database extension seam, §2.5); the DS never stores them. Snapshot equality is how the host verifies that the replicas it freezes from agree (§4.7 freeze step).
+**Checkpoint/version (T3 correction).** A Yjs `Y.Snapshot` is a pair (delete set, state vector) (`yjs/src/utils/Snapshot.js:28–43` in the pinned tree); it contains no document content and cannot bootstrap a document. Restart recovery therefore uses an **encoded-state checkpoint**, not a snapshot:
+
+- A checkpoint is `{ checkpointId, documentId, encodedState, stateVector, journalWatermark, schemaEpoch, createdAt }` where `encodedState` is the byte output of `encodeStateAsUpdate(doc)` at checkpoint time, `stateVector` is `encodeStateVector(doc)` at the same instant, and `journalWatermark` is the highest journal sequence number whose update is included in `encodedState`. The host persists the checkpoint atomically with its watermark (Hocuspocus `onStoreDocument` / Database extension seam, §2.5); the DS never stores it.
+- Recovery is: decode `encodedState` into a fresh `Y.Doc`, then replay journal updates with sequence `> journalWatermark` in order. A recovery that starts from a `Y.Snapshot` alone, or from a checkpoint without its subsequent journal entries, is non-conforming. The alternative conforming design — retaining and replaying the complete update history from an empty doc — shall be declared explicitly by the host lot if chosen; silently truncating history at a snapshot is prohibited.
+- Historical `Y.Snapshot` values have a different, separate job: version comparison at freeze (snapshot equality verifies that the replicas the host freezes from agree) and garbage-collection/retention decisions. Their retention period is a host policy recorded at CL-5; it is never the restart-recovery mechanism.
 
 **Conversion to the h2a edit-return paragraph diff.** The owner request of 18/10 (AI return as diff by paragraph, §1.1) is served at freeze time, unchanged from B2 §4.5:
 
@@ -366,22 +394,79 @@ L2 additions that stage two must re-witness (not part of IME-LOCK-1): no `onChan
 ### 4.8 Schema evolution
 
 - The text schema inside the fragment is the RT-1 P0 profile (`focus.markdown.p0@1`: `paragraph`/`text`/`hardBreak` + `bold`/`italic`/`code`, everything else preserved; FE-2 §6). A live session does not widen it. Lists, headings and other StarterKit constructs become editable only through a new versioned profile (`p1` class) with its own round-trip qualification and, for Focus-bound fields, the FE-2 §6.4 three-condition gate (h2a evolution, new pin, joint witnesses). The two gates (DS list profile for `apiPut` fields; Focus gate for return-bound fields) are not interchangeable (B1 §4.1.2).
-- Descriptor evolution follows §7.5 (catalogue major in `catalogId`, per-component `x-sentropic.contract` minors additive within a major). A breaking descriptor change creates `v2` beside `v1`; a renderer refuses an envelope whose contract major disagrees (`unsupported-contract`, never a partial render; `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:328-335`).
+- Descriptor evolution follows §7.7 (catalogue major in `catalogId`, per-component `x-sentropic.contract` minors additive within a major). A breaking descriptor change creates `v2` beside `v1`; a renderer refuses an envelope whose contract major disagrees (`unsupported-contract`, never a partial render; `spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:328-335`).
 - Representability is evaluated on the merged live content at emission/capture time: two individually representable paragraphs that merge into a non-representable one are flagged once on the result, never blocked at input time and never repaired by a merge step (B2 §4.4, FE-2 §6.6 non-mutating rule). The DS reports `RichTextRepresentability { nonRepresentableParagraphIds }`; the host adapter separately evaluates the pinned Focus checks at export (FE-2 §5.10).
+
+#### 4.8.1 Live-session admission by profile and schema epoch (T4 correction)
+
+Descriptor/catalogue versioning does not by itself stop an old tab or an offline replica on a previous text schema from joining a migrated session. Live admission is therefore a separate handshake:
+
+- Every live doc carries, in the reserved `meta` map (§4.3), `profileId` (the `RichTextFormat`, e.g. `focus.markdown.p0@1`) and `schemaEpoch` (a host-minted, monotonically increasing string per document, bumped by exactly one on any text-schema migration). The sequencer (§4.10) is the only writer of `schemaEpoch`.
+- `openLiveSession` (§5.7) carries the client's `{ profileId, schemaEpoch }`. The host compares before resolving any binding: equal profile and epoch → admitted; older epoch with a defined migration → the host migrates the doc first (sequencer operation, journaled), then admits; mismatched profile, newer client epoch than the doc, or an epoch with no defined migration → refused with typed `incompatible-schema` (`AgentPatchResult`-family refusal / session-open error), no binding resolved, no update applied.
+- An incompatible reconnect shall preserve the local draft: the DS binding exports the offline local document through `captureDocument()` semantics (identities and representability flags intact) and the host surfaces it as a preserved draft for explicit re-import or discard. The draft is never silently reseeded, never merged into the migrated schema by text matching, and never discarded by the refusal itself.
+- Witness (CL-3/CL-5): a mixed-version session — one client on the current epoch, one stale tab and one offline replica on the previous epoch — joins after a migration; the stale tab is refused with `incompatible-schema` and its draft capture is byte-identical before and after the refusal; the offline replica either migrates through the defined migration or is refused the same way, with no partial application recorded in the journal.
 
 ### 4.9 What lives where (DS vs host)
 
 | Concern | DS package | Host |
 | --- | --- | --- |
-| Model types (`RichTextDocument`, collaboration types of §5.6/§7) | Pure `"."` entry: types + pure helpers only; no Yjs, no ProseMirror, no DOM | Consumes the types |
+| Model types (`RichTextDocument`, collaboration types of §5.7/§7) | Pure `"."` entry: types + pure helpers only; no Yjs, no ProseMirror, no DOM | Consumes the types |
 | Editor binding (ProseMirror ↔ `Y.XmlFragment` sync, undo manager wiring, caret decorations) | `"./editor"` graph only (`editor-collaboration.ts` class module); loads only when a provider is injected | Supplies the fragment/awareness pair (§7.3) |
 | Presence/caret rendering (avatars, badge, remote caret/selection decorations with DS tokens) | Renders from injected snapshots and awareness facts; validates caret colour to `#RRGGBB` else `transparent`; labels as text, never markup | Supplies actor facts; decides who may write |
 | Local rules (IME-LOCK-1, `editable && !disabled` enforcement, paste refusal, preserved-block guard, representability flagging) | Enforces locally in both modes | Drives `editable` from role/lock/session state; never widens permissions through awareness |
 | Transport (WebSocket/SSE), Hocuspocus server, socket lifecycle | None. No socket is opened by DS code (witnessed at runtime, §8) | Owns entirely |
-| Persistence (Yjs updates, snapshots, session journal, `LiveDocumentStore` implementation) | None | Owns entirely (§7.4) |
+| Persistence (Yjs update journal, encoded-state checkpoints, session journal, `LiveDocumentStore` implementation) | None | Owns entirely (§7.4) |
 | Auth, membership, agent admission/revocation, publication authority (freeze serialisation, CAS) | None; renders opaque actor identities | Owns entirely |
 
 Importing `"."` or mounting a controlled editor loads no CRDT code (extended RED-P packaging witness, lot CL-3 witness 7). The offline dossier artefact with no provider is byte-identical in behaviour to RT-1.
+
+### 4.10 Structural concurrency: split and merge (B3 correction)
+
+The pinned binding (`y-prosemirror` `ySyncPlugin`, `y-prosemirror/src/plugins/sync-plugin.js:1207–1297` mapping in the pinned tree) synchronises ProseMirror child elements by replacement; it is not a paragraph-identity merge algorithm. In particular, deleting a consumed paragraph's `Y.XmlElement` on one replica can hide a concurrent insertion into that element made on another replica. This specification therefore does **not** claim safe concurrent split/merge from the binding, from `paragraphId` allocation, or from text convergence. Structural safety comes from the serialised structural mechanism below. Where this section says the pinned binding cannot do something, that is a finding about the pin, and the enforcement named here is the contract.
+
+Decision CL-D16 — Structural operations are sequencer-serialised intents; text stays CRDT-concurrent. `ds-proposition`
+
+**Vocabulary (pure entry, §5.7).** A structural intent is one of:
+
+```ts
+export type StructuralIntent =
+  | { type: "split"; binding: FieldBindingIdentity; paragraphId: string;
+      at: RelativeAnchor; newParagraphId: string; intentId: string;
+      baseStructuralRevision: string }
+  | { type: "mergeWithPrevious"; binding: FieldBindingIdentity;
+      paragraphId: string; intentId: string;
+      baseStructuralRevision: string };
+```
+
+`intentId` is client-minted and idempotent per `(documentId, actorId, intentId)` (same deduplication store family as §5.4.1). `baseStructuralRevision` is the `structureLog` length / revision the client last observed. Raw client updates never append to `structureLog` (§4.11); only the sequencer does.
+
+**The sequencer (host-side, one per document).** The host runs a single structural sequencer per `documentId` — a serialised applier (mutex or CAS on the document's structural revision) that is the only writer of `structureLog` entries and of paragraph-element insertions/deletions in every field fragment of that document. Browser editors, the agent bridge, and reconnecting offline replicas all submit structural intents to the sequencer; none of them applies a split/merge directly to the authoritative doc. Text inserts/deletes/marks never pass through the sequencer. DS-side enforcement: the `"./editor"` binding intercepts ProseMirror transactions that would insert, delete, or reparent a `paragraph`/`preservedBlock` element and converts them into intents (the local display may apply the split provisionally, marked pending, but the shared fragment is unchanged until the sequencer confirms); a binding build that forwards raw structural element changes to the shared fragment is non-conforming. Offline enforcement: a structural gesture made offline is stored as a pending intent in the local session (not as an authoritative structural update); on reconnect the client submits intents in local order and the sequencer transforms or refuses each against the current revision (R-STR-2). Offline text editing is unaffected.
+
+**Sequencer application rules (blocking).**
+
+- R-STR-1 (split application). To apply `split(P, at, newId)`: resolve `at` against the current doc (§5.2). If `P` no longer exists as a live paragraph, refuse `target-gone`. Otherwise, in one Yjs transaction under the sequencer origin: keep the text before the resolved position in `P`, create the tail element with `paragraphId = newId` carrying the text after the position, and append a `structureLog` entry `{ intentId, kind: "split", source: P, tail: newId, structuralRevision }`. Text items are never copied by value across elements in a way that loses concurrent inserts: the split moves the suffix items of `P`'s `Y.XmlText` as items (or, where the binding cannot move items, the sequencer refuses the binding for structural use and CL-3 falls back to R-STR-4).
+- R-STR-2 (concurrent split/split, required outcome). Two splits of the same original paragraph `P` at distinct anchors `A` (nearer the start) and `B`, in either submission order, shall converge to exactly three paragraphs in text order: `[start, A)`, `[A, B)`, `[B, end)`. The first keeps `P`'s id; the middle carries the `newParagraphId` of the intent anchored at `A`; the tail carries the `newParagraphId` of the intent anchored at `B` — identity follows the anchor, not the sequencing order. Two splits at the same resolved anchor are one split: the second intent is acknowledged as a duplicate of the first (same tail id returned, no second element, no error). No character is lost, duplicated, or reordered in any interleaving.
+- R-STR-3 (merge vs insert-in-consumed-paragraph, required outcome). Merge is not element deletion. To apply `mergeWithPrevious(Q)` (surviving paragraph `P`, consumed `Q`): in one sequencer transaction, append `Q`'s current text items after `P`'s text items in `P`, record `mergedInto: P` on `Q` in `structureLog`, and only then retire `Q`'s element. A text insertion into `Q` that is concurrent with the merge — created on any replica, including offline, and not yet sequenced — shall survive: if it reaches the authoritative doc before the merge is sequenced, it is part of `Q`'s items and moves with them; if it arrives after the merge as a late update addressed to `Q`, the ingress layer (§4.11) redirects it through the recorded `mergedInto` mapping to the corresponding anchor in `P` (offset preserved relative to `Q`'s text start, which is now the junction point in `P`), rather than applying it to a deleted element. An update that can be neither moved nor redirected is refused at ingress and journaled; it is never silently hidden inside a deleted element. After the merge, `Q`'s `paragraphId` is retired and never reallocated (§4.2).
+- R-STR-4 (binding capability gate). If the pinned binding line chosen at CL-3 cannot move `Y.XmlText` suffix items and cannot keep a consumed element's late inserts visible under R-STR-3, then that binding is qualified for text concurrency only, and the DS/host enforcement is: structural gestures in bound mode require sequencer confirmation before the local display commits them (no provisional structural sync at all), and fields where even that cannot be enforced stay in controlled/L0 mode for structural gestures (text co-editing may still run). The gate outcome is recorded at CL-3; claiming R-STR-2/R-STR-3 outcomes for a binding that failed this gate is a scope breach.
+- R-STR-5 (interleaved undo). Structural undo is sequencer-mediated like structural apply: undoing a split rejoins through a merge intent (and conversely), attributed to the undoing actor's origin, so §4.5 outcomes (a)–(c) hold. The Yjs `UndoManager` alone, tracking element deletions, does not satisfy R-STR-5.
+
+Witnesses (CL-3): concurrent split/split at distinct anchors and at the same anchor (R-STR-2, both submission orders, plus an offline replica submitting after reconnect); merge racing an insert into the consumed paragraph from a second replica and from an offline replica (R-STR-3, insert visible in the surviving paragraph on every replica); interleaved undo per §4.5 (a)–(c). Each witness inspects the authoritative doc and at least two replicas after quiescence.
+
+### 4.11 Authorised ingress for CRDT updates (B6 correction)
+
+Authorisation for MCP patches (§5) does not cover raw CRDT traffic: a browser client (or a reconnecting offline replica) submits binary Yjs updates that Hocuspocus's writable path would otherwise apply directly (`hocuspocus/packages/server/src/MessageReceiver.ts:258–290` in the pinned tree: `messageYjsUpdate` → `readUpdate`). Authentication at connect time does not authorise the fields, node kinds, or reserved types inside an update. Every incoming update shall therefore pass the ingress pipeline below **before** authoritative application, persistence, and broadcast. Reconnect/sync traffic (`SyncStep1`/`SyncStep2` and update messages) passes the same pipeline; there is no trusted reconnect path.
+
+Decision CL-D17 — No update is applied, persisted, or broadcast before ingress validation and authorisation. `ds-proposition` (host enforcement; the DS defines the policy vocabulary)
+
+Ingress steps, in order, per update message, on the host:
+
+1. **Session binding.** The connection's authenticated actor and its admitted `(documentId, sessionId, field set, operation families)` (§5.2) are already established; an update for a different document or a revoked actor is refused and the connection is closed.
+2. **Decode and bound.** The binary update is decoded in a scratch `Y.Doc` clone of the authoritative doc (never directly into it). Undecodable updates, updates exceeding the §5.5 aggregate byte bound, and updates whose state vector would regress the authoritative doc are refused.
+3. **Classify.** The decoded delta is classified per affected shared type: which field fragments, which paragraph elements, whether `meta`, `structureLog`, or a `preservedBlock` is touched, and whether any `paragraphId` attribute is created, changed, or deleted.
+4. **Authorise.** Text changes inside admitted fields by an admitted actor pass. The following are refused for any non-sequencer, non-segmentation origin: any write to `meta` or `structureLog`; any creation, mutation, or deletion of a `preservedBlock` element or its `raw`; any change to a `paragraphId` attribute; any structural element insertion/deletion that did not arrive as a §4.10 intent; any write to a field outside the actor's admitted set. Classification that cannot be completed (opaque or malformed delta) fails closed.
+5. **Apply or refuse atomically.** A passing update is applied to the authoritative doc in one transaction (origin = the connection's actor), then persisted (journal), then broadcast, in that order. A refused update changes no authoritative state: the doc's state vector and content are byte-identical before and after, nothing is journaled as applied, nothing is broadcast, the refusal is logged with its class, and repeated hostile updates close the connection.
+
+Hostile witnesses (CL-5, all against the Hocuspocus-backed host, each asserting state-vector equality of the authoritative doc plus absence from the journal and from a listening replica): (i) a binary update writing a reserved `meta` key (`schemaEpoch` forgery); (ii) a binary update mutating a `preservedBlock`'s text or deleting the element; (iii) a binary update writing a field outside the actor's admitted set; (iv) a binary update changing a `paragraphId` attribute; (v) the same four replayed as reconnect sync traffic from a previously admitted client. A host that cannot classify updates at this granularity (step 3) shall instead run clients in a mode where the server only accepts updates through the validated bridge path; claiming B6 conformance without either mechanism is a scope breach.
 
 ## 5. AI co-editor channel
 
@@ -391,60 +476,141 @@ Posture (settled, §1.2 Q3): the AI agent is a live co-editor in the same block 
 
 Decision CL-D10 — The agent is `CollaborationActor` with `kind: 'agent'`. `ds-proposition` over B2 §5.1
 
-B2 §5.1 already carries the actor shape this lane needs: `CollaborationActor { actorId, kind: 'human'|'agent'|'nhi', displayLabel, color, activity? }` with `CollaborationActivity { scopeRef, state: 'viewing'|'holding'|'planned'|'yielded', since }`, plus `CollaborationCapabilities { currentActorId, canAcquire, canRequestUnlock, canForceUnlock }` (B2 §5.1, `packages/rich-text/src/collaboration.ts` types). This specification adopts that shape without renaming:
+B2 §5.1 carries the actor shape this lane needs: `CollaborationActor { actorId, kind: 'human'|'agent'|'nhi', displayLabel, color, activity? }` with `CollaborationActivity { scopeRef, state: 'viewing'|'holding'|'planned'|'yielded', since }`, plus `CollaborationCapabilities { currentActorId, canAcquire, canRequestUnlock, canForceUnlock }` (B2 §5.1). That shape is a B2 proposal: `packages/rich-text/src/collaboration.ts` does **not** exist on RT-1 main (§2.4 lists the files present); it is created by lot CL-1M (§8). This specification adopts the B2 shape without renaming and extends it only as stated in §5.7:
 
 - The host creates the agent actor at session admission: `actorId` is an opaque host/NHI identity, `kind: 'agent'`, `displayLabel` is host-supplied (rendered as text), `color` is host-supplied and validated by the DS to `#RRGGBB` else `transparent` (the caret extension rule, §2.5). The `activity` fact (scope reference, state, since) is present only when the host can prove it (h2a engagement / track scope); the DS invents none (B2 §3.2).
-- Presence: the agent appears in the same presence snapshot and the same avatar stack as humans (`PresenceSnapshot { scopeRef, actors }`, current actor excluded by the host, B2 §5.1). A viewer sees that an agent is present and where its caret is; presence confers no right (B2 §5.1 rule: presence is rendering only, `editable` is a separate host decision).
-- Caret/selection: in bound mode the agent's caret and selection render through the same awareness decorations as a human's (the `yCursorPlugin` path): a caret element and a selection highlight carrying the agent's label and validated colour. The public component surface exposes users as data (the `collaborationCaret.users` shape); it never exposes a `Y.Doc`, an awareness instance or a socket (B2 §5.1).
-- Agent identity in the CRDT: the bridge (§5.3) transacts on the shared `Y.Doc` with a distinct transaction origin per agent actor, so the per-client `UndoManager` scoping (§5.4) and the host journal (§5.8) can attribute operations to that origin. The origin string is host-chosen and opaque; the DS binding forwards it as data and never interprets it.
+- Presence: the agent appears in the same presence snapshot and the same avatar stack as humans (`PresenceSnapshot { scopeRef, actors, total }`, §5.7 — `total` is the B2 count including the current actor, restored in r2; the `actors` list excludes the current actor by host rule, B2 §5.1). A viewer sees that an agent is present and where its caret is; presence confers no right (B2 §5.1 rule: presence is rendering only, `editable` is a separate host decision, §6.2 R-API-2).
+- Caret/selection: in bound mode every admitted actor — human or agent — publishes its caret/selection through the awareness contract of §5.7 (`publishCursor` / `AwarenessCursor`), and remote carets render through the same awareness decorations (the `yCursorPlugin` path): a caret element and a selection highlight carrying the actor's label and validated colour. The public component surface exposes users as data (the `collaborationCaret.users` shape); it never exposes a `Y.Doc`, an awareness instance or a socket (B2 §5.1).
+- Actor ↔ awareness identity mapping (B5 correction): transaction origin alone does not create an awareness participant, and Yjs updates do not preserve the originating actor (`yjs/src/utils/encoding.js:476–492`: the origin is local transaction metadata). The host therefore maintains an explicit registry `actorId ↔ awarenessClientId` (the Yjs client id of the actor's awareness state), established at admission, re-established on reconnect with the same `actorId`, and removed on leave/revocation. The awareness state each client publishes carries its `actorId`; a receiver shall render a caret only for an awareness state whose `actorId` resolves in the registry to an admitted actor, and shall ignore unregistered awareness states. Distinct agents have distinct `actorId`s, distinct awareness client ids, and distinct transaction origins (`agent:<actorId>`); two agents never share an awareness participant.
+- Agent identity in the CRDT: the bridge (§5.4) transacts on the shared `Y.Doc` with origin `agent:<actorId>`, so the per-client `UndoManager` scoping (§4.5) and the durable receipt linkage (§5.6) can attribute operations to that actor. The origin string is host-minted in exactly this form; the DS binding forwards it as data and never interprets it beyond the prefix check at ingress (§4.11).
 
-### 5.2 Edit granularity and limits
+### 5.2 Revision-bound relative anchors (B1 correction)
+
+Numeric offsets are not a patch addressing scheme: after an agent reads `abcdef`, a concurrent human insert of `XX` before it shifts every offset, and deleting the previously read range `[2, 4)` would delete `ab` instead of `cd`. All agent range addressing therefore uses revision-bound opaque relative anchors. Numeric offsets appear only as read-time display values (§5.6), never in a patch.
+
+Decision CL-D18 — Agent patches are addressed by opaque relative anchors bound to a read revision. `ds-proposition`
+
+**Types (pure entry, §5.7).**
+
+```ts
+/** Opaque relative anchor. The DS never parses it. Host encoding: the
+    JSON serialisation of a Yjs RelativePosition (yjs
+    relativePositionToJSON / createRelativePositionFromJSON) for the
+    paragraph's Y.XmlText, carried as a string. An anchor is meaningful
+    only together with its (binding identity, paragraphId, baseRevision). */
+export type RelativeAnchor = string & { readonly __anchorBrand: unique symbol };
+
+/** A revision of one document as observed by a read. stateVector is the
+    base64url encoding of encodeStateVector(doc) at read time. */
+export interface DocumentRevision {
+  documentId: string;
+  stateVector: string;
+  schemaEpoch: string;
+}
+
+export interface AnchorRange { start: RelativeAnchor; end: RelativeAnchor }
+```
+
+- R-ANCH-1 (units). Where an offset is shown at read time (§5.6), its unit is the **UTF-16 code unit**, counted inside the paragraph's `Y.XmlText` content (the JS string unit; the same unit as the Focus manifest range, B2 §2.4). Offsets are valid only against the revision they were read at. No patch operation carries an offset.
+- R-ANCH-2 (minting and association). Anchors are minted only by the host bridge at read time, one per UTF-16 offset `0..len` of each returned paragraph (§5.6). Minting uses `createRelativePositionFromTypeIndex` semantics on the paragraph's `Y.XmlText` with this association rule: the anchor at offset `0` is associated to the first character (or to the empty type when the paragraph is empty); an interior anchor at offset `i` is associated to the character **after** position `i` (`assoc >= 0`, Yjs default, `yjs/src/utils/RelativePosition.js:64–74`); the anchor at offset `len` is associated to the character **before** it (`assoc < 0`), so end-of-paragraph inserts append rather than prepend to a following concurrent insert. An anchor supplied with a different binding identity, paragraph, or document than it was minted for is refused `target-gone`; the bridge never re-anchors by text search (D13/C4, §4.2).
+- R-ANCH-3 (resolution). At patch application the bridge resolves each anchor with `createAbsolutePositionFromRelativePosition` against the **current** authoritative doc. An insert applies at the resolved position of its anchor (taking the anchor's association for concurrent inserts at the same position: text inserted by the patch at an interior anchor lands before the character the anchor is associated to; concurrent text inserted by others at the same item is ordered by Yjs item order, deterministically on every replica). A patch whose `baseRevision.stateVector` is older than the current doc is **not** stale-refused for text operations: anchors carry it. Staleness is refused only where §5.6/R-ANCH-5 says so.
+- R-ANCH-4 (delete/mark range semantics, including concurrent interior inserts). A delete (or mark) range is the pair `(start, end)` of anchors from the same read revision of the same paragraph. The bridge shall delete exactly the `Y.XmlText` items that (i) existed at `baseRevision` (covered by its state vector), and (ii) lie between the resolved start and end items. Items inserted concurrently **inside** the range — items not covered by `baseRevision`, wherever they now sit between the anchors — are **not** deleted and not marked: the agent never read them, and deleting unread concurrent text would break the no-lost-edit property. Items concurrent with the range but outside the resolved anchors are likewise untouched. This item-set semantics, not an index-range delete on the current doc, is the contract; a bridge that resolves the anchors to current indices and deletes that index interval is non-conforming.
+- R-ANCH-5 (deleted anchor / gone target). If the anchor's paragraph element no longer exists, was merged into another paragraph (§4.10 `mergedInto` — in that case the bridge redirects only when the patch's binding names the consumed paragraph and the operation is a text insert/delete/mark, resolving through the junction anchor; structural operations are never redirected), or the anchor's item was deleted and cannot be resolved with `followUndoneDeletions` semantics, the whole patch is refused `target-gone` (§5.4 atomicity) and nothing is applied. There is no fallback to offset, index, or text matching.
+
+Witnesses (CL-4): **stale-read** — agent reads `abcdef`, human inserts `XX` before the paragraph text, agent deletes the range it read as `cd` → every replica shows `XXabef` (the prefix insert and the undeleted characters survive; `cd` is gone); **deleted-anchor** — the anchor paragraph is merged away (or deleted through the sequencer) before the patch arrives → typed `target-gone`, authoritative state vector unchanged; **concurrent-interior-insert** — agent reads `abcdef` and deletes `cd` while a human concurrently inserts `ZZ` between `c` and `d` → replicas converge to `abZZef`: the interior concurrent insert survives the delete (R-ANCH-4).
+
+### 5.3 Edit granularity and limits
 
 Decision CL-D11 — Character/range operations only; whole-block replacement is refused at the bridge. `ds-proposition`
 
-- Granularity: the agent edits by character/range operations on the shared fragment — insert text at a relative position, delete a range, apply marks over a range — the same operation family the sync plugin produces for a human keystroke. The bridge translates each MCP patch into Yjs operations; it never replaces a whole paragraph or a whole field in one operation. Rationale: whole-block replacement would (a) destroy concurrent human characters inside that block (the exact « no lost edit » property L2 is engaged for), (b) bypass the identity discipline (a replacement paragraph would need a fresh `paragraphId`, retiring the identity collaborators' carets and comment anchors point at, §4.2/§3.4), and (c) make per-operation undo (§5.4) meaningless. A structural intent (split this paragraph, delete this block) is expressed as the corresponding structural operation through the same channel, subject to the host policy gate for non-mergeable operations (§5.5).
-- Rate and size limits (defaults; host-configurable within the stated ceilings, enforced by the host bridge, witnessed in lot CL-4): at most 20 operations per second per agent actor sustained (burst 40), at most 2000 characters inserted per operation, at most 64 KiB of Yjs update payload per operation, at most 8 concurrent agent actors per document. The DS side of the limit is a pure validator in the `"."` entry (operation shape and size checks over the port types of §5.7) so the same limits are testable without a server; enforcement (counting, throttling, refusal) is host-side because only the host sees the session. A refused operation returns a typed refusal (`rate-limited` / `too-large` / `scope-denied`) to the MCP caller; it is never silently truncated. These numbers are starting budgets derived from the interaction targets of dossier r4b §6 (local response ≤50 ms, ordinary patch ≤250 ms native; `sentropic-input` dossier-r4b.md:621) scaled to stay well under them; they are revisable by measurement at lot start, and §8 requires the revision to be recorded, not silent.
+- Granularity: the agent edits by character/range operations on the shared fragment — insert text at an anchor, delete an anchor range, apply marks over an anchor range — the same operation family the sync plugin produces for a human keystroke, addressed per §5.2. The bridge translates each MCP patch into Yjs operations; it never replaces a whole paragraph or a whole field in one operation. Rationale: whole-block replacement would (a) destroy concurrent human characters inside that block (the exact « no lost edit » property L2 is engaged for), (b) bypass the identity discipline (a replacement paragraph would need a fresh `paragraphId`, retiring the identity collaborators' carets and comment anchors point at, §4.2/§3.4), and (c) make targeted revert (§5.6) meaningless. A structural intent (split this paragraph, merge this block) is expressed as a §4.10 structural intent through the sequencer, never as a text patch.
 - Scope: the agent's admission names the documents and fields it may edit (the bounded scope of dossier r4b §5: « ses opérations sont admises dans le même flux partagé que celles des humains » inside a bounded scope with provenance). Operations outside that scope are refused at admission of the operation, not filtered after merge. Membership in the session is necessary and not sufficient: each operation is re-authorised (a revoked agent's queued operations never merge; dossier r4b §5 gate « Droits et arrêt de l'agent »).
 
-### 5.3 How agent edits arrive: the host-side bridge
+#### 5.3.1 Whole-patch bounds, preflight atomicity, and the rate algorithm (T5 correction)
+
+Per-operation limits alone leave a patch unbounded, and a Yjs transaction does not roll back on exception (`yjs/src/utils/Transaction.js`, transact cleanup: observers run and partial changes stand). Patch safety is therefore defined over the whole request, before any authoritative change:
+
+- **Whole-patch bounds (defaults; host-configurable only downward, enforced by the host bridge, witnessed in CL-4).** Per patch: at most **50 operations**; at most **20 000** inserted UTF-16 code units summed over all insert operations; at most **256 KiB** summed serialised patch size; per operation: at most 2 000 inserted code units (retained from r1). Per document: at most 8 concurrent agent actors. A patch exceeding any bound is refused whole as `too-large`; nothing is truncated to fit.
+- **Preflight atomicity.** The bridge shall validate a patch by applying its operations sequentially to a scratch clone of the authoritative doc (or equivalently by computing the full resulting update without committing it), checking every operation in sequence order (anchor resolution, scope, whole-block-replacement rule, structural policy). Only a patch whose full preflight succeeds is committed, as one Yjs transaction under the agent origin. If any operation fails preflight — including the last one — the patch is refused whole and the authoritative doc is unchanged (state-vector equality is the witness). Committing operations one by one and stopping mid-patch is non-conforming.
+- **Rate algorithm.** Rate limiting is a token bucket per `(documentId, actorId)`: capacity **40** tokens, refill **20 tokens/second** (continuous, computed from a monotonic clock), cost **1 token per operation** (a 50-operation patch costs 50 and therefore needs a full bucket plus refill time; it is never admitted on burst alone). A patch whose cost exceeds the available tokens is refused whole as `rate-limited` with `retryAfterMs` (the computed time until enough tokens accumulate); tokens are debited only on admission, never on refusal. This replaces the r1 wording (20/s sustained, burst 40), with which the former "21st operation" witness conflicted: under the bucket, operation 21 in the same second succeeds while tokens remain, and refusals start exactly when the bucket is empty. The DS pure validator (§5.7) checks shape and size; counting is host-side. These numbers are starting budgets derived from dossier r4b §6 targets (local response ≤50 ms, ordinary patch ≤250 ms; `sentropic-input` dossier-r4b.md:621); any revision by measurement is recorded at lot start, never silent (§8.5).
+
+Witness (CL-4): a 50-operation patch whose 50th operation addresses a deleted anchor leaves the authoritative doc byte-identical (state vector and content) and returns `target-gone`; a 51-operation patch and a 20 001-unit patch each refuse `too-large` with nothing applied; bucket exhaustion refuses with a `retryAfterMs` that decreases under a fake clock and admits after it elapses.
+
+### 5.4 How agent edits arrive: the host-side bridge, with durable idempotency (B4 correction)
 
 The agent never speaks Yjs directly. The path is:
 
 ```
-AI (MCP client) ──MCP tool call──► Sentropic host ──► Agent bridge ──► Y.Doc transaction (origin = agent actor)
-   (patch by paragraph/range)        (auth, scope,        (validate, rate-limit,
-                                      session admission)   translate to CRDT ops)
+AI (MCP client) ──MCP tool call──► Sentropic host ──► Agent bridge ──► Y.Doc transaction (origin = agent:<actorId>)
+   (patch by anchor range)           (auth, scope,        (preflight §5.3.1,
+                                      session admission)   idempotency, translate)
                                                                     │
-Browser editors ◄── Hocuspocus sync (Yjs updates + awareness) ◄─────┘
+Browser editors ◄── Hocuspocus sync (validated ingress §4.11) ◄────┘
 ```
 
-- The MCP surface is host-side (sentropic): tools in the family of the B′ live-artefact patch (create/patch a live artefact by MCP). Concretely the bridge exposes, per live document: read current state (per field, per paragraph, with identities), read awareness (who is present, caret positions as paragraph + offset), and apply a patch (a list of character/range operations addressed by `(fieldKey, paragraphId, relative position or offset range)`). Tool names and the MCP transport are sentropic's to freeze in its implementation lot; the contract that binds the DS is the port and bridge obligations of §5.7. No MCP type enters a DS package.
-- Translation: the bridge resolves each addressed range against the current `Y.XmlFragment` (relative positions survive concurrent inserts; a range whose anchor paragraph no longer exists is refused as `target-gone`, never re-anchored by text search — the D13/C4 rule of §4.2). It then applies the operations in one Yjs transaction with the agent origin. That transaction syncs to every replica like a human's.
-- Ordering with human input: there is no ordering service and none is needed. CRDT convergence (§4.1) makes concurrent operations in the same range merge deterministically; the bridge does not queue behind human typing and humans do not queue behind the bridge.
+- The MCP surface is host-side (sentropic): tools in the family of the B′ live-artefact patch (create/patch a live artefact by MCP). Concretely the bridge exposes, per live document: read state (§5.6), read awareness (§5.6), publish cursor (§5.6), apply patch (this section), and revert (§5.6). Tool names and the MCP transport are sentropic's to freeze in its implementation lot; the contract that binds the DS is the port and bridge obligations of §5.7. No MCP type enters a DS package.
+- Translation: the bridge preflights the patch on a scratch clone (§5.3.1), resolves each anchor against the current doc per §5.2, then commits the operations in one Yjs transaction with origin `agent:<actorId>`. That transaction syncs to every replica like a human's, through the ingress validation of §4.11.
+- Ordering with human input: there is no ordering service for text and none is needed. CRDT convergence (§4.1) makes concurrent text operations in the same range merge deterministically; the bridge does not queue behind human typing and humans do not queue behind the bridge. Structural intents are the exception: they queue at the §4.10 sequencer.
 
-### 5.4 How humans see and undo agent edits
+#### 5.4.1 Durable patch idempotency
 
-- Visibility: agent characters appear in place as they merge, with the agent's caret/selection visible in the same awareness rendering (§5.1). The session journal (§5.8) records which operations arrived under the agent origin, so a human can review what the agent changed after the fact. There is no separate agent draft view and no accept/reject step in the default posture; an explicit suggest mode, if a host offers it, is a host preference layered over the same operations (operations staged outside the shared doc and applied on acceptance), never the DS default and never a replacement for co-editing (dossier r4b §5).
-- Undo: each human's undo removes only that human's tracked origins (§4.5). Undoing an agent's edit is therefore not done with a human's undo stack. It is done by an explicit host operation: revert the agent operations in a recorded range/session window (the host mints inverse operations under its own origin, attributed in the journal as a revert of the named agent operations), or request the agent to undo its own last operations (its `UndoManager` scope). The DS editor exposes the gesture (a host-wired command over the §5.7 port); the policy (who may revert an agent) is host authorisation. This separation is deliberate: silently letting one participant's undo delete another participant's merged text would break the undo-isolation property that lot CL-3 witness 2 exists to prove.
-- Human edits made on top of agent text are ordinary merged text. Reverting the agent operation underneath them follows CRDT semantics (the inverse operation deletes the agent's characters; the human's concurrent characters remain). The bridge must not implement revert as restoring a snapshot of the block, for the same whole-block reason as §5.2.
+Yjs update idempotency does not deduplicate independently translated MCP calls: if a patch is applied and its response is lost, a naive retry mints a second insertion. Patch application is therefore idempotent at the bridge, durably:
+
+Decision CL-D19 — A patch identifier is a durable idempotency key bound to its payload. `ds-proposition` (host store; DS defines the key and receipt shapes)
+
+- **Key scope.** The idempotency key is the tuple `(documentId, actorId, sessionEpoch, patchId)`. `sessionEpoch` is a host-minted epoch for the actor's admission to that document: it is minted at first admission, persisted with the admission record, and re-issued unchanged when the same actor rejoins the same document after a bridge restart or reconnect. It changes only when the host closes the admission and admits the actor afresh (new epoch, recorded in the journal). A retry after a restart therefore carries the same key; a genuinely new admission is a different key space through the epoch value itself, not through any client assertion.
+- **Payload binding.** At first application the bridge computes `payloadHash` = SHA-256 over the RFC 8785 canonical JSON of the patch body (operations, anchors, base revision, binding identity — everything except transport metadata) and stores, durably (host database, same durability as the §7.4 journal — not an in-memory map): `{ key, payloadHash, status: applied | refused, receipt, affectedItems (§5.6), stateVectorBefore, stateVectorAfter, createdAt }`. The receipt and the doc update are committed in the same host transaction boundary: a crash between applying the Yjs transaction and storing the receipt shall be impossible to observe as "applied but unrecorded" (the journal write that persists the update carries the receipt, §7.4).
+- **Retry semantics.** A submission whose key already exists: if its `payloadHash` matches the stored hash, the bridge returns the **original receipt verbatim** (same `patchId`, same status, same `stateVectorAfter`, plus `duplicate: true`) and applies nothing — no second Yjs transaction, no second journal entry beyond a `duplicate-suppressed` note. If the hash differs, the bridge refuses `idempotency-key-reuse`, applies nothing, and journals the attempted reuse. A stored `refused` receipt is returned the same way: a refused patch stays refused under its key.
+- Witnesses (CL-4): **lost response** — apply a patch, drop the response, retry the identical patch → the document contains the inserted text exactly once and the retry returns the original receipt with `duplicate: true`; **restart** — apply a patch, restart the bridge (and the Hocuspocus host), retry → same outcome, the receipt is read from the durable store; **reuse** — retry the same `patchId` with one character changed → `idempotency-key-reuse`, authoritative state vector unchanged.
 
 ### 5.5 Conflict behaviour in the same range
 
 When a human and the agent type in the same range at the same time, the behaviour is merge, not refusal: both character sequences survive, interleaved by the CRDT order, on every replica identically, with no lost edit and no per-keystroke warning (the L2 row of B2 §3.1). Specifically:
 
 - Same word, same moment: neither side is blocked, locked out or warned. The result may read as interleaved text that the participants then repair by ordinary editing — that is the Google-Docs class contract the owner asked for, stated plainly so it is not later misreported as a defect.
-- Structural operations are the exception and are governed by explicit host policy, not by merge: paragraph split/merge, block deletion, block type/profile change and preserved-block splice are non-mergeable in the same sense as dossier r4b §5 (« suppression/type/migration de bloc protégés par politique explicite, avec état conservé »). The bridge refuses or serialises them while the target range is under active concurrent edit, with a typed refusal the caller can retry. The default policy is: allow split/merge (they are identity operations, §4.2), refuse block deletion and type migration against a range with unmerged concurrent input, and never let a text undo revert a business transaction (the three-planes rule, §3.3).
+- Structural operations are the exception and are governed by §4.10, not by merge: paragraph split/merge go through the sequencer with the R-STR-2/R-STR-3 outcomes; block deletion, block type/profile change and preserved-block splice remain refused or serialised under explicit host policy in the same sense as dossier r4b §5 (« suppression/type/migration de bloc protégés par politique explicite, avec état conservé »), with a typed refusal the caller can retry. A text undo never reverts a business transaction (the three-planes rule, §3.3).
 - Rights changes are not conflicts: revoking the agent (or a human) mid-session follows IME-LOCK-1 clause (2)/(5) for the editor surface and session teardown host-side (close the socket, stop the bridge actor, re-authorise queued operations). A revoked actor's text already merged stays merged; revocation stops future operations, it does not rewrite history.
 
-### 5.6 What the agent reads
+### 5.6 What the agent reads, where carets are published, and how agent edits are reverted (B5 correction)
 
-Through the host bridge (never through a DS package), the agent reads: the current document state per field as `RichTextDocument` captures (the same capture shape humans freeze from, §4.7), the awareness snapshot (actors present, caret/selection positions expressed as field + paragraph identity + offset), and the session journal entries for its own operations (accepted/refused with reasons). Reading current state before patching is the intended flow; the bridge may require a state-vector precondition on a patch (the caller names the snapshot it read; if the doc has moved, character/range operations still apply by relative position, while structural operations are refused for re-evaluation). The agent reads no host credential, no other session's journal, and no data outside its admitted scope.
+Through the host bridge (never through a DS package), the agent uses three contracts. All three are in the §5.7 port; the DS renders their results and implements none of the transport.
+
+**Read state.** `readAgentState(binding)` returns, for one binding identity (§5.7):
+
+```ts
+export interface AgentParagraphState {
+  paragraphId: string;
+  text: string;                          // current Y.XmlText content
+  /** One anchor per UTF-16 offset 0..text.length (R-ANCH-2). */
+  anchors: readonly RelativeAnchor[];
+}
+export interface AgentFieldState {
+  fieldKey: string;
+  paragraphs: readonly AgentParagraphState[];
+}
+export interface AgentDocumentState {
+  revision: DocumentRevision;            // §5.2; anchors bind to this
+  fields: readonly AgentFieldState[];
+}
+```
+
+Reading current state before patching is the intended flow. The returned revision is the patch's `baseRevision`; text operations remain valid after the doc moves (R-ANCH-3), while a structural intent whose `baseStructuralRevision` is behind the sequencer's revision is transformed or refused by the sequencer (§4.10), never applied blind. The agent reads no host credential, no other session's journal, and no data outside its admitted scope. Its own patch receipts (§5.4.1) are readable by key.
+
+**Cursor/selection publication.** Every admitted actor publishes its caret through awareness; the agent does so through the bridge (it has no editor): `publishAgentCursor({ binding, actorId, selection: { anchor: RelativeAnchor; head: RelativeAnchor } | null })` makes the host set the actor's awareness state (via the §5.1 registry entry) to `{ actorId, binding: { fieldKey, paragraphId }, anchor, head }`. Humans publish the same shape from the editor binding (the binding converts its ProseMirror selection to anchors with `getRelativeSelection` semantics). Readers (`readAwareness`, §5.7) receive `PresenceSnapshot` actors each optionally carrying an `AwarenessCursor { fieldKey, paragraphId, anchor, head }`; numeric offsets are derived at display time by resolving the anchors, never stored. An agent that never publishes a cursor renders as present without a caret; publishing `selection: null` clears it.
+
+**Authorised revert with durable linkage.** Undoing an agent's edit is not done with a human's undo stack (each human's undo removes only that human's tracked origins, §4.5).
+
+- At patch application the bridge durably records, per receipt (§5.4.1), the **affected items**: for each operation, `{ fieldKey, paragraphId, insertedItems: [{ client, clockRanges }], deletedItems: [{ text, anchorBefore, anchorAfter, marks }], stateVectorBefore, stateVectorAfter }` — the Yjs item identities the patch created and, for deletions, the deleted content plus its flanking anchors, sufficient to construct the inverse after a restart without relying on any in-memory `UndoManager`. This linkage is part of the receipt store, not a separate best-effort log.
+- `revertAgentPatch({ documentId, patchId, requestedBy, reason })` (host-side; the DS exposes the gesture over the §5.7 port, the policy — who may revert which actor — is host authorisation checked at call time) applies the inverse as one transaction under origin `revert:<requestedBy>`: items the patch inserted are deleted by identity (concurrent human items interleaved among them are untouched); items the patch deleted are re-inserted at their recorded flanking anchors (if a flanking anchor is gone, R-ANCH-5 applies to that operation and the revert reports it rather than guessing). Revert is itself journaled against the original receipt (`revertedBy`, `revertPatchId`), is idempotent under its own key (reverting an already-reverted patch returns the original revert receipt), and never restores a paragraph snapshot by value (§5.3 whole-block rule). Agent self-undo (the agent asking to undo its own last patch) is the same operation with `requestedBy` = the agent actor, authorised only over its own receipts.
+- Visibility: agent characters appear in place as they merge, with the agent's caret/selection visible in the same awareness rendering (§5.1). The session journal (§5.8) records which operations arrived under each agent origin, so a human can review what an agent changed after the fact. There is no separate agent draft view and no accept/reject step in the default posture; an explicit suggest mode, if a host offers it, is a host preference layered over the same operations (operations staged outside the shared doc and applied on acceptance), never the DS default and never a replacement for co-editing (dossier r4b §5).
+
+Witnesses (CL-4): **multi-agent** — two distinct agent actors (distinct `actorId`, awareness client id, and origin per §5.1) plus two humans edit one block; each agent's caret renders under its own label/colour, each agent reads the other's awareness through the bridge, and reverting agent A's patch leaves agent B's and the humans' characters intact; **revert after restart** — agent patch applied, host and bridge restarted, then `revertAgentPatch` by an authorised human removes exactly the agent's inserted characters and restores its deleted characters from the durable affected-items record, with concurrent human text on top of the agent text preserved. No Focus contract change is involved in any of this (§5.8).
 
 ### 5.7 The exact port the DS exposes, and the host bridge contract
 
 Decision CL-D12 — The DS exposes data and capabilities; the host implements transport and the agent bridge. `ds-proposition`, extending B2 §5.1
 
-Pure entry (`packages/rich-text/src/collaboration.ts`, types + pure helpers only; no Yjs type appears here):
+Pure entry (`packages/rich-text/src/collaboration.ts` — **proposed by this specification, created in lot CL-1M; it does not exist on RT-1 main** — types + pure helpers only; no Yjs type appears here):
 
 ```ts
 export type CollaborationActorKind = 'human' | 'agent' | 'nhi';
@@ -452,25 +618,66 @@ export interface CollaborationActor {
   actorId: string; kind: CollaborationActorKind;
   displayLabel: string; color: string;           // DS validates #RRGGBB else fallback
   activity?: { scopeRef: string; state: 'viewing'|'holding'|'planned'|'yielded'; since: string };
+  /** Present iff the actor has published a caret (§5.6). Anchors, never offsets. */
+  cursor?: AwarenessCursor;
+}
+export interface AwarenessCursor {
+  fieldKey: string; paragraphId: string;
+  anchor: RelativeAnchor; head: RelativeAnchor;  // anchor === head ⇒ collapsed caret
 }
 export interface CollaborationCapabilities {
   currentActorId: string; canAcquire: boolean; canRequestUnlock: boolean; canForceUnlock: boolean;
 }
 export interface LockUnitRef { scopeRef: string; unitRef?: string }
 export interface LockSnapshot { unit: LockUnitRef; holder: CollaborationActor | null; expiresAt: string | null; unlockRequestedBy?: CollaborationActor | null }
-export interface PresenceSnapshot { scopeRef: string; actors: readonly CollaborationActor[] }
+export interface PresenceSnapshot {
+  scopeRef: string;
+  /** Co-viewers; current actor excluded by the host (B2 §5.1). */
+  actors: readonly CollaborationActor[];
+  /** Count including the current actor (B2 §5.1; restored in r2). */
+  total: number;
+}
 
-// One character/range operation, the agent-edit vocabulary (§5.2).
+// ── Binding identity (B2 correction). One document has many fields; a
+// binding is unusable without all three coordinates. ──
+export interface FieldBindingIdentity {
+  documentId: string;      // host document identity (e.g. "canvas:<artifactId>")
+  sessionId: string;       // host session record key for that document
+  fieldKey: string;        // CanvasFieldDescriptor.key of the bound field
+}
+export interface LiveSessionHandle {
+  readonly kind: 'live-session';
+  readonly documentId: string;
+  readonly sessionId: string;
+  /** Release this field binding only (§5.7 lifetime rules). */
+  dispose(): Promise<void>;
+}
+
+// One character/range operation, the agent-edit vocabulary (§5.2–§5.3).
+// No numeric offset appears in any operation.
 export type AgentEditOperation =
-  | { type: 'insert'; fieldKey: string; paragraphId: string; at: number; text: string }
-  | { type: 'delete'; fieldKey: string; paragraphId: string; from: number; to: number }
-  | { type: 'mark'; fieldKey: string; paragraphId: string; from: number; to: number; mark: 'bold'|'italic'|'code'; applied: boolean }
-  | { type: 'split'; fieldKey: string; paragraphId: string; at: number }
-  | { type: 'mergeWithPrevious'; fieldKey: string; paragraphId: string };
-export interface AgentPatch { patchId: string; baseStateVector?: string; operations: readonly AgentEditOperation[] }
-export type AgentPatchResult =
-  | { status: 'applied'; patchId: string }
-  | { status: 'refused'; patchId: string; reason: 'rate-limited'|'too-large'|'scope-denied'|'target-gone'|'structural-conflict'|'revoked'; detail?: string };
+  | { type: 'insert'; fieldKey: string; paragraphId: string; at: RelativeAnchor; text: string }
+  | { type: 'delete'; fieldKey: string; paragraphId: string; range: AnchorRange }
+  | { type: 'mark'; fieldKey: string; paragraphId: string; range: AnchorRange; mark: 'bold'|'italic'|'code'; applied: boolean };
+export interface AgentPatch {
+  patchId: string;                       // idempotency key component (§5.4.1)
+  binding: FieldBindingIdentity;         // document/session the patch targets
+  actorId: string;
+  sessionEpoch: string;                  // idempotency key component (§5.4.1)
+  baseRevision: DocumentRevision;        // the read the anchors were minted at (§5.2)
+  operations: readonly AgentEditOperation[];
+}
+export interface AgentPatchReceipt {
+  patchId: string;
+  status: 'applied' | 'refused';
+  /** True only on an idempotent replay of the original receipt (§5.4.1). */
+  duplicate?: boolean;
+  reason?: 'rate-limited'|'too-large'|'scope-denied'|'target-gone'|'structural-conflict'|'revoked'|'idempotency-key-reuse'|'incompatible-schema';
+  retryAfterMs?: number;                 // present iff reason === 'rate-limited'
+  stateVectorAfter?: string;
+  detail?: string;
+}
+export type AgentPatchResult = AgentPatchReceipt;
 
 export interface CollaborationProvider {
   acquireLock(u: LockUnitRef): Promise<{ acquired: boolean; lock: LockSnapshot }>;
@@ -483,33 +690,59 @@ export interface CollaborationProvider {
   leavePresence(scopeRef: string): Promise<void>;
   subscribeLock(u: LockUnitRef, cb: (s: LockSnapshot) => void): () => void;
   subscribePresence(scopeRef: string, cb: (s: PresenceSnapshot) => void): () => void;
-  openLiveSession?(input: { scopeRef: string; actor: CollaborationActor }):
-    Promise<{ kind: 'live-session'; sessionId: string; dispose(): Promise<void> }>;
+  /** Open or join the live session for one field of one document.
+      Carries the schema admission facts of §4.8.1. */
+  openLiveSession?(input: {
+    binding: Omit<FieldBindingIdentity, 'sessionId'> & { sessionId?: string };
+    actor: CollaborationActor;
+    profileId: string; schemaEpoch: string;
+  }): Promise<LiveSessionHandle>;
   // AI co-editor surface (host bridge implements; DS renders the results):
   applyAgentPatch?(patch: AgentPatch): Promise<AgentPatchResult>;
-  readAwareness?(scopeRef: string): Promise<PresenceSnapshot>;
+  readAgentState?(binding: FieldBindingIdentity): Promise<AgentDocumentState>;
+  readAwareness?(binding: FieldBindingIdentity): Promise<PresenceSnapshot>;
+  publishAgentCursor?(input: {
+    binding: FieldBindingIdentity; actorId: string;
+    selection: { anchor: RelativeAnchor; head: RelativeAnchor } | null;
+  }): Promise<void>;
+  revertAgentPatch?(input: {
+    documentId: string; patchId: string; requestedBy: string; reason?: string;
+  }): Promise<AgentPatchReceipt>;
+  submitStructuralIntent?(intent: StructuralIntent): Promise<AgentPatchReceipt>;
 }
 ```
 
-Editor-graph binding (the only Yjs-reachable module, `"./editor"` graph only; framework adapters never receive these objects), as in B2 §5.1:
+**Binding identity and shared-session lifetime (B2 correction, blocking).**
+
+- R-BIND-1. A live binding is identified by the full `FieldBindingIdentity` (`documentId`, `sessionId`, `fieldKey`). Opening (`openLiveSession`), resolution (`resolveBinding`), and release (`releaseBinding` / `handle.dispose()`) all carry the full identity. A resolution request missing any coordinate, or whose coordinates do not jointly match a live field binding, fails closed with a conformance error; it never resolves to "the" fragment of a multi-field document by default.
+- R-BIND-2. The host session is per **document**; bindings are per **field** of that document. The host reference-counts field bindings over the shared session: the first field binding for a `(documentId, sessionId)` establishes the session (doc, socket, awareness), each additional field binding joins it, and releasing one field binding decrements the count without disconnecting, closing awareness, or disturbing the other fields' bindings. The session is torn down only when the count reaches zero or the host explicitly closes the session. A handle's `dispose()` releases exactly its own field binding.
+- R-BIND-3. The DS component prop (§6.2) carries the same identity, so two simultaneously mounted fields of one canvas mount two bindings over one session. Witness (CL-3): mount fields `description` and `notes` of one document, verify both editors converge independently, unmount `description`, and verify `notes` remains live (remote update still renders, local edit still syncs) with no session re-open.
+
+Editor-graph binding (the only Yjs-reachable module, `"./editor"` graph only; framework adapters never receive these objects), extending B2 §5.1 with the identity:
 
 ```ts
 import type * as Y from 'yjs';
 import type { Awareness } from 'y-protocols/awareness';
-export interface LiveSessionBinding { fragment: Y.XmlFragment; awareness: Awareness }
+export interface LiveSessionBinding {
+  identity: FieldBindingIdentity;
+  fragment: Y.XmlFragment;   // the fragment for identity.fieldKey only
+  awareness: Awareness;      // the document session's awareness object
+}
 export interface LiveSessionBindingSource {
-  resolveBinding(handle: { sessionId: string }): LiveSessionBinding;
-  releaseBinding(handle: { sessionId: string }): void;
+  resolveBinding(identity: FieldBindingIdentity): LiveSessionBinding;
+  releaseBinding(identity: FieldBindingIdentity): void;
 }
 ```
 
 Bridge contract (sentropic implements; the DS witnesses it through lot CL-4):
 
-- B-BRIDGE-1. Each accepted patch is applied as Yjs operations in the addressed fragments in one transaction per patch, with the agent actor as origin. Whole-block replacement is not expressible: a patch whose effect is to delete a paragraph's entire text and insert different text in the same patch is refused as `structural-conflict` with guidance to use range operations. (Witnessed by lot CL-4.)
-- B-BRIDGE-2. Limits of §5.2 are enforced per agent actor; refusals are typed (`AgentPatchResult`) and journaled. No operation is partially applied: a patch applies whole or refuses whole.
+- B-BRIDGE-1. Each accepted patch is preflighted whole (§5.3.1) and applied as Yjs operations in the addressed fragments in one transaction per patch, with origin `agent:<actorId>`. Whole-block replacement is not expressible: a patch whose effect is to delete a paragraph's entire text and insert different text in the same patch is refused as `structural-conflict` with guidance to use range operations. (Witnessed by lot CL-4.)
+- B-BRIDGE-2. Bounds and the rate algorithm of §5.3.1 are enforced per agent actor; refusals are typed (`AgentPatchResult`) and journaled with their durable receipt (§5.4.1). No operation is partially applied: a patch applies whole or refuses whole.
 - B-BRIDGE-3. Every operation is authorised against the agent's admitted scope at apply time (document, field, operation family). A socket-level authentication alone does not satisfy this (dossier r4b §5: « une socket authentifiée seule ne prouve pas cette autorisation »).
-- B-BRIDGE-4. The bridge serves reads (state capture, awareness) in the shapes above and requires no DS code to run: the same bridge must work with the editor closed (headless agent session), because awareness and state are host-side facts the DS only renders when mounted.
+- B-BRIDGE-4. The bridge serves reads (state, awareness, cursor publication, revert) in the shapes above and requires no DS code to run: the same bridge must work with the editor closed (headless agent session), because awareness and state are host-side facts the DS only renders when mounted.
 - B-BRIDGE-5. Revocation stops the bridge actor within one operation window: after revocation, `applyAgentPatch` returns `revoked` and no queued operation merges. Already-merged text is untouched (§5.5).
+- B-BRIDGE-6. Patch idempotency follows §5.4.1 exactly (durable key, payload hash, original receipt on retry, `idempotency-key-reuse` on changed payload). Yjs update idempotency is not a substitute.
+- B-BRIDGE-7. Structural intents from the bridge are submitted to the §4.10 sequencer as intents; the bridge never applies a split/merge element change directly.
 
 ### 5.8 Finding on Q5: per-change attribution is not required (Q5 A stands)
 
@@ -518,7 +751,7 @@ The §1.2 settlement (Q5 A) is conditional on this analysis. The finding is: **p
 Reasons, each tied to a requirement that might have needed it:
 
 1. Undo isolation does not need return attribution. « My undo never removes your text » is delivered by `UndoManager` origin tracking inside the session (§4.5), which attributes operations by transaction origin at edit time. The frozen return is computed afterwards by diffing the merged result against the baseline (§4.7); nothing in that computation needs to know who typed which character.
-2. Review and accountability do not need it in the envelope. The host session journal (B2 DRAFT-LINEAGE-1 (f)) already records, keyed by `returnId`: `sessionId`, the provable participant roster, the head named at freeze, excluded replicas and the capture digest — and this lane adds the per-operation agent record (§5.4). A reviewer can reconstruct « the agent changed these ranges in this session » from the journal plus the Yjs origins, without widening the pinned `FocusReturn` schema (which is closed, `additionalProperties: false`, and carries only `production { producerId, generationId, requestId }` and `scope { workspaceId }`; B2 §4.5). Putting per-paragraph authorship in the envelope would require a Focus evolution with a new pin, engaged separately — cost with no consumer in this lane.
+2. Review and accountability do not need it in the envelope. The host session journal (B2 DRAFT-LINEAGE-1 (f)) already records, keyed by `returnId`: `sessionId`, the provable participant roster, the head named at freeze, excluded replicas and the capture digest — and this lane adds the durable per-patch receipt and affected-items record (§5.4.1, §5.6). A reviewer can reconstruct « the agent changed these ranges in this session » from the journal plus the receipts, without widening the pinned `FocusReturn` schema (which is closed, `additionalProperties: false`, and carries only `production { producerId, generationId, requestId }` and `scope { workspaceId }`; B2 §4.5). Putting per-paragraph authorship in the envelope would require a Focus evolution with a new pin, engaged separately — cost with no consumer in this lane.
 3. Conflict handling does not need it. At freeze, merged text is the joint draft; third-party divergence is defined by lineage, not by authorship (§4.7). Per-paragraph authorship would not change any reconcile outcome.
 4. The one case that would need it is named so it can be recognised if it ever becomes a requirement: a regulatory or product rule requiring the published document itself (not the journal) to prove, per paragraph, whether a human or a named agent wrote it, in a form that survives export outside the host. No source in this lane states such a rule (the dossier's provenance gates concern session-level provenance and anchor provenance, dossier r4b §5). If that rule is ever stated, it is a Focus contract evolution plus a host provenance mechanism (Q5 B), to be qualified before any announcement that depends on it — it is not retrofitted into this lane's lots.
 
@@ -558,7 +791,11 @@ interface RichTextEditorProps {
   // ── Additive live extension (this specification) ──
   provider?: CollaborationProvider;          // injected; absent ⇒ controlled mode
   bindingSource?: LiveSessionBindingSource;  // host side of the §5.7 binding; required iff a live session is open
-  session?: { scopeRef: string; actor: CollaborationActor };  // opens via provider.openLiveSession
+  /** Full binding identity (B2 correction): document + session + field.
+      Opens via provider.openLiveSession; two fields of one document carry
+      the same sessionId and different fieldKeys. */
+  binding?: FieldBindingIdentity;
+  actor?: CollaborationActor;                // the local actor for this binding
   capabilities?: CollaborationCapabilities;  // badge derivation facts (B2 §5.1)
   onPresenceChange?: (s: PresenceSnapshot) => void;
   onLockChange?: (s: LockSnapshot) => void;
@@ -569,10 +806,34 @@ interface RichTextEditorProps {
 Rules (blocking):
 
 - R-API-1. No prop carries a Focus type, a Track type, a URL, a socket, a Yjs object or a business callback. There is no `onSave`, no autosave, no debounce-to-network semantics in the component (FE-2 §5.5). The host debounces its own reaction to `onChange`.
-- R-API-2. Lock state drives the existing props only: `holder === currentActor` → editable; `holder === other` → `editable={false}` with the badge in locked-by-other mode; `holder === null` → host policy (editable with acquire-on-first-gesture, or read-only until acquired). The editor component gains no lock-specific prop beyond the badge inputs, the capabilities and the provider reference (B2 §5.1).
+- R-API-2 (B8 correction: L0 projection vs L2 admission are different inputs). The component receives exactly one host-computed editing fact per surface mode, and the two modes shall not be conflated:
+  - *Controlled / L0 surfaces (no live session).* The L0 lock snapshot projects onto the existing props: `holder === currentActor` → editable; `holder === other` → `editable={false}` with the badge in locked-by-other mode; `holder === null` → host policy (editable with acquire-on-first-gesture, or read-only until acquired). This projection applies only where no `binding` is present.
+  - *Live / L2 surfaces (`binding` present).* Admission is decided by the host at `openLiveSession` (§4.8.1, §5.7): an actor admitted with edit rights is editable **together with every other admitted editor** — no lock snapshot, including a lock held by another actor, shall make an admitted L2 field read-only. The L0 snapshot may still be rendered (badge, §6.4) for information on mixed surfaces, but it does not drive `editable` in L2 mode. An actor admitted read-only (viewer) is `editable={false}` from the admission decision, not from a lock. The host adapter computes `effectiveEditable = binding ? (admittedEditable && !disabled) : (l0Projection && !disabled)`; the DS component enforces only that result locally and gains no second lock-specific prop beyond the badge inputs, the capabilities and the provider reference (B2 §5.1).
+  - Publication stays serialised in both modes: concurrent L2 editing never implies concurrent publication (§4.7 single-writer freeze). Legacy L0 surfaces keep their lock gating unchanged during migration; admitting an actor to L2 on one surface changes nothing on an L0 surface of the same host.
+  Witness (CL-2/CL-5): two humans and one agent admitted to one live block all edit simultaneously while an L0 lock on the same object names one of them; the same lock on the legacy controlled surface for that object still renders the other actors read-only.
 - R-API-3. In bound mode, `value` seeds the session once at mount (through the host seeding of §4.3) and is thereafter the capture surface, not a controlled value the host pushes per keystroke. A host attempt to replace the whole value mid-session means: end the session or surface a session-level conflict — never a silent `setContent` (B2 §4.5). Controlled-mode fields keep the §5.6 echo/defer/conflict/apply discipline exactly.
 - R-API-4. `editable={false}` (viewer, locked-by-other, preserved) keeps text selectable/copyable with no mutation path; `disabled` removes focusability; both take effect immediately via `setEditable` without remount, including mid-composition under IME-LOCK-1. A collaboration session never widens permissions: awareness shows who is present, the host decides who may write, the editor enforces `editable && !disabled` locally regardless of what the provider delivers.
 - R-API-5. Every label comes from injected messages under the `rich-text.*` / `collab.*` namespaces with the marker form `⟦untranslated:<ns>.<key>⟧` plus `data-untranslated`. Component sources contain no natural-language literal for these strings, including no owner fallback.
+
+#### 6.2.1 Controlled string / composer surface (T2 correction)
+
+Chat mounts (B1 S6/S9) do not consume the document editor: they consume a controlled **string** surface (Markdown string in/out, keys forwarded, no autosave, no `apiPut`). That surface was absent from r1 §6.2; it is specified here as an editor-level surface, not as a chat component (§2.7 stands: no chat API is frozen).
+
+```ts
+// Host-valued string surface over the same RT-1 editor core (Svelte first).
+export interface ComposerEditorProps {
+  value: string;                       // Markdown string; host-owned
+  editable?: boolean; disabled?: boolean;
+  messages: RichTextMessages;
+  placeholder?: string;
+  onChange?: (value: string) => void;  // string out; no document, no gesture
+  /** Host keys (Enter/send, mention triggers) are forwarded, never consumed
+      for sending by the DS. Returning true marks the key handled by the host. */
+  onKeyDown?: (e: { key: string; shiftKey: boolean }) => boolean | void;
+}
+```
+
+Rules: the surface converts string ↔ `RichTextDocument` at its boundary through the same P0 profile and identity rules (identities are internal and never exposed to the chat host); per-mount inertness is exactly the mount's `editable`/`disabled` fact (B1 §2.7: comments composer follows the shell `disabled`, edit form imposes none, AI composer stays typeable while sending — the DS preserves the fact it is given and invents none); unmount/clear/send are host actions. This surface is a CL-2 deliverable with its own witness (Enter/mention forwarding, string round-trip, per-mount inertness); chat adoption (§6.5) is blocked until it exists. The standalone chat-ui plaintext/`textarea` fallbacks (B1 S7/S8) are host surfaces and are not replaced by this surface.
 
 ### 6.3 The collaboration slot / provider port
 
@@ -594,17 +855,21 @@ A test double that resolves synchronously from an in-memory map must be sufficie
 
 Measured baseline (B1 §2.3, REPORT.md:48): `<EditableInput` occurs 24 times in 10 files — TemplateRenderer 8 (4 text at `:499…`, 4 list `forceList` at `:520…`, inside FieldCards), chat `AppChatPanel` 3 (`:3131/:3228/:3369`), matrix 3, OrganizationForm 2, folder/new 2, folders/[id] 2, InitiativeDetail 1 (plus TemplateRenderer `:135/:270`), ScoreTable 1, dashboard 1 (plus TemplateRenderer `:1266`), WorkspaceSettingsPanel 1. At runtime a templater field renders in exactly one layout branch, so 8 is a source count, not 8 simultaneous editors (B1 §2.6).
 
-Adoption is by field class, in B1 order, and each class is announced by its witnessed state only:
+Adoption is by field class, in B1 order, and each class is announced by its witnessed state only. The programme total is **24 mounts: 17 Markdown mounts** (templater text 4, templater list 4, folder 2, matrix 3, ScoreTable 1, chat 3 — source counts per B1 §2.3; templater mounts render in one layout branch at runtime) **and 7 native plain fields** (multiline + single-line). A class reports one of `not-started | in-progress (n/24 mounts) | migrated`; the programme reports the sum. Partial adoption is a quantified status (e.g. « 13/24 mounts migrated, classes: … »), never an unqualified adoption claim.
 
-| Class | Sites | DS path | Gate before the class migrates |
-| --- | --- | --- | --- |
-| Templater text fields | TemplateRenderer 4 text mounts; ScoreTable justification 1 | §6.2 editor in controlled mode first, live mode when the host session exists; host adapter keeps buffers, sibling payloads, normalisation (`normalizeUseCaseMarkdown`), autosave and the representability gate before `apiPut` (a flagged draft is preserved live and never saved-then-remounted) | B1 witness matrix W1/W3/W4/W5 for prose (round-trip byte identity at block level, paste refusal, IME/external-update, lock/theme/locale) + §4.2 identity witnesses |
-| Folder context (markdown, non-templater) | folder/new 1, folders/[id] 1 | Same as above | Same |
-| Matrix fields | 3 (axis names + level description) | Same; axis names migrate as short markdown fields (B1 §2.8: whether formatting must remain in them is B1 Q-B1-4, still the host's to answer) | Same; the Q-B1-4 answer recorded per field |
-| Chat composers / message edit | AppChatPanel 3, host-valued, no `apiEndpoint` | Controlled string surface through the chat shell seam; per-mount inertness preserved exactly (comments composer follows shell `disabled`; edit form imposes none; AI composer stays typeable while sending, B1 §2.7) | Chat witness: Enter/send and mention key forwarding host-side; no autosave migration claimed |
-| Plain name/industry fields | 7 (multiline + single-line) | DS `Input`/`Textarea`; measured-width/auto-height sizing and unsaved chrome matched observably host-side | Form witness: sizing, locked inertness, no save before creation on creation pages |
-| Templater list fields (`forceList`) | TemplateRenderer 4 list mounts + incidental lists in text | Stay on the sentropic wrapper (or a host list-forcing wrapper) until a DS list profile (`p1`) is qualified on its own corpus; `forceList` never becomes a DS prop (B1 R-B1-3) | W2 list witness under the new profile; Focus-bound list editing additionally needs the FE-2 §6.4 gate. Until then the observable narrowing (lists visible, preserved, not editable) is stated per field, never shipped silently |
-| Citations `[N]` | Decoration over templater/chat text | Host decoration outside the ProseMirror document (rendered-output transformation recomputed per render; never a DOM mutation of editor nodes, B1 §4.1.1) | Decoration witness (decorate → type around it → capture → remount, wire byte-identical). Stability is `unverified` (U-B1-7) until it runs |
+**B1 prerequisites (blocking for CL-5, T2 correction).** CL-5 shall not start a class before its B1 prerequisites are recorded as met or explicitly waived by the host: (i) the B1 witness corpus for that class (W1 round-trip corpus on real content, W3/W4/W5 as applicable) is available; (ii) for chat, the §6.2.1 composer surface exists (CL-2) and the product acceptance for per-mount inertness (B1 §2.7) is recorded; (iii) for `forceList`, the list profile below is scheduled as its own lot — until it is, the class stays `not-started` by decision, not by omission; (iv) the host confirms the Q-B1-4 formatting answer for matrix axis names. Missing prerequisites keep the class on the host wrapper.
+
+| Class | Sites | DS path | Gate before the class migrates | Completion criterion for the class |
+| --- | --- | --- | --- | --- |
+| Templater text fields | TemplateRenderer 4 text mounts; ScoreTable justification 1 | §6.2 editor in controlled mode first, live mode when the host session exists; host adapter keeps buffers, sibling payloads, normalisation (`normalizeUseCaseMarkdown`), autosave and the representability gate before `apiPut` (a flagged draft is preserved live and never saved-then-remounted) | B1 witness matrix W1/W3/W4/W5 for prose (round-trip byte identity at block level, paste refusal, IME/external-update, lock/theme/locale) + §4.2 identity witnesses | All 5 mounts on the DS editor in the host build; W1/W3/W4/W5 green on the class corpus; host wrapper code for the class deleted |
+| Folder context (markdown, non-templater) | folder/new 1, folders/[id] 1 | Same as above | Same | Both mounts migrated; same witnesses green |
+| Matrix fields | 3 (axis names + level description) | Same; axis names migrate as short markdown fields (B1 §2.8: whether formatting must remain in them is B1 Q-B1-4, still the host's to answer) | Same; the Q-B1-4 answer recorded per field before the first matrix mount migrates | All 3 mounts migrated with the recorded Q-B1-4 posture per field |
+| Chat composers / message edit | AppChatPanel 3, host-valued, no `apiEndpoint` | §6.2.1 controlled string/composer surface through the chat shell seam (CL-2 deliverable); per-mount inertness preserved exactly (comments composer follows shell `disabled`; edit form imposes none; AI composer stays typeable while sending, B1 §2.7) | §6.2.1 surface exists; chat witness: Enter/send and mention key forwarding host-side, string round-trip, per-mount inertness; no autosave migration claimed; host product acceptance recorded | All 3 mounts on §6.2.1; chat witness green; no `EditableInput` markdown mount remains in `AppChatPanel` |
+| Plain name/industry fields | 7 (multiline + single-line) | DS `Input`/`Textarea`; measured-width/auto-height sizing and unsaved chrome matched observably host-side | Form witness: sizing, locked inertness, no save before creation on creation pages | All 7 fields on DS `Input`/`Textarea`; form witness green |
+| Templater list fields (`forceList`) | TemplateRenderer 4 list mounts + incidental lists in text | Stay on the sentropic wrapper (or a host list-forcing wrapper) until a DS list profile (`p1`) is qualified on its own corpus **by a separately scheduled profile lot** (not CL-5; the lot is created and estimated when the corpus exists — until then this class is `not-started`); `forceList` never becomes a DS prop (B1 R-B1-3) | W2 list witness under the new profile; Focus-bound list editing additionally needs the FE-2 §6.4 gate. Until then the observable narrowing (lists visible, preserved, not editable) is stated per field, never shipped silently | The profile lot's W2 witness green and all 4 mounts migrated; until then the class blocks programme completion (see deletion rule) |
+| Citations `[N]` | Decoration over templater/chat text | Host decoration outside the ProseMirror document (rendered-output transformation recomputed per render; never a DOM mutation of editor nodes, B1 §4.1.1) | Decoration witness (decorate → type around it → capture → remount, wire byte-identical). Stability is `unverified` (U-B1-7) until it runs | Witness green on templater + chat text; decoration stays host-side (no DS deletion follows) |
+
+**Deletion rule for `TipTap.svelte` (T2 correction).** `TipTap.svelte` (and the generic `EditableInput` parts it serves) shall be deleted only when **every** class above reports `migrated` — including the `forceList` class through its profile lot and chat through §6.2.1. While any class is not `migrated`, `TipTap.svelte` remains, the host wrapper remains for that class, and every status report carries the quantified partial-adoption status (`migrated n/24`, classes remaining). Deleting `TipTap.svelte` with a class still on it, or announcing full adoption from a subset, is a scope breach.
 
 Two cross-cutting parity rules: (a) the differential witness is black-box (public surfaces only, expected outcomes as data, three scenario classes parity/divergence/DS-only per B1 §4.2) — no sentropic source is imported or snapshotted; (b) the two Markdown bridges differ (`tiptap-markdown ^0.9.0` host-side vs `@tiptap/markdown 3.32.0` DS-side), so round-trip equivalence on real content is `unverified` (U-B1-2) until the W1 corpus runs. A DS-only green never announces Focus agreement, list editing or full adoption (B1 R-B1-6).
 
@@ -615,20 +880,20 @@ This section is written so the sentropic host can be implemented against it with
 ### 7.1 Component API (consume these)
 
 - Editor: `@sentropic/design-system-svelte/rich-text-editor` (default export `RichTextEditor`), props and handle exactly as in §6.2. Consume `RichTextDocument` / `RichTextChangeEvent` / `RichTextCaptureResult` / `RichTextMessages` from `@sentropic/design-system-rich-text` (the `"."` entry). Do not import `@sentropic/design-system-rich-text/editor` from application code; that entry is for the adapter and for headless factory use in tests.
-- Badge: `LockPresenceBadge` (path fixed by the CL-1 lot report) with inputs `lock: LockSnapshot`, `presence: PresenceSnapshot`, `capabilities: CollaborationCapabilities`, `messages` (collab catalogue) and callbacks `onRequestUnlock`, `onAcceptUnlock`, `onForceUnlock`, `onReleaseLock`. Render it in the page header / canvas shell header; it owns no data fetching.
-- Descriptor: `CanvasTemplateDescriptor`, `CanvasFieldDescriptor`, `CanvasCapabilities` from the DS contract package (path fixed by the CL-0 lot report; generated catalogue JSON at `@sentropic/design-system-elements/catalog.json` once L1 lands, schemas under `schemas/`). Pin the exact version (§7.5).
+- Badge: `LockPresenceBadge` (path fixed by the CL-1B lot report) with inputs `lock: LockSnapshot`, `presence: PresenceSnapshot`, `capabilities: CollaborationCapabilities`, `messages` (collab catalogue) and callbacks `onRequestUnlock`, `onAcceptUnlock`, `onForceUnlock`, `onReleaseLock`. Render it in the page header / canvas shell header; it owns no data fetching.
+- Descriptor: `CanvasTemplateDescriptor`, `CanvasFieldDescriptor`, `CanvasCapabilities`, `CanvasProfile` from the DS contract package (path fixed by the CL-0 lot report; generated catalogue JSON at `@sentropic/design-system-elements/catalog.json` once L1 lands, schemas under `schemas/`). Pin the exact version (§7.7).
 
 ### 7.2 Collaborative document model types (implement against these)
 
-From `@sentropic/design-system-rich-text` `"."`: `RichTextDocument`, `RichTextBlock`, `RichTextFormat`, plus the collaboration types of §5.7 (`CollaborationActor`, `CollaborationCapabilities`, `LockUnitRef`, `LockSnapshot`, `PresenceSnapshot`, `AgentEditOperation`, `AgentPatch`, `AgentPatchResult`, `CollaborationProvider`). The host treats `paragraphId` values as opaque, allocates split-tail identities through the injected `allocateId` (collision-free across sessions), and never derives identity from order, offset or hash. The shared-state shape is §4.3: one `Y.Doc` per artefact (`canvas:<artifactId>`), one `Y.XmlFragment` per editable field key, paragraph elements carrying the `paragraphId` attribute. The host seeds fragments from the retained baseline at session open and never reseeds mid-session.
+From `@sentropic/design-system-rich-text` `"."`: `RichTextDocument`, `RichTextBlock`, `RichTextFormat`, plus the collaboration types of §5.7 (`CollaborationActor`, `AwarenessCursor`, `CollaborationCapabilities`, `LockUnitRef`, `LockSnapshot`, `PresenceSnapshot`, `FieldBindingIdentity`, `LiveSessionHandle`, `RelativeAnchor`, `DocumentRevision`, `AnchorRange`, `AgentEditOperation`, `AgentPatch`, `AgentPatchReceipt`/`AgentPatchResult`, `AgentDocumentState`, `StructuralIntent`, `CollaborationProvider`). The host treats `paragraphId` values and `RelativeAnchor` values as opaque, allocates split-tail identities through the injected `allocateId` (collision-free across sessions), and never derives identity from order, offset or hash. The shared-state shape is §4.3: one `Y.Doc` per artefact (`canvas:<artifactId>`), one `Y.XmlFragment` per editable field key, paragraph elements carrying the `paragraphId` attribute, plus the reserved `meta`/`structureLog` types (§4.10–§4.11). The host seeds fragments from the retained baseline at session open and never reseeds mid-session.
 
 ### 7.3 Provider port (implement this host-side)
 
 Implement `CollaborationProvider` (§5.7) over your own transport:
 
-- L0 methods (`acquireLock` … `leavePresence`, `subscribe*`) over the existing sentropic API: `GET/POST/DELETE /api/v1/locks`, `request-unlock`/`accept-unlock`/`force-unlock`, `presence` record/list/leave, notified through the existing `/streams/sse` `lock_update`/`presence_update` channel (B2 §2.2; client starting point `ui/src/lib/utils/object-lock.ts`). Badge snapshots you feed the DS must be host-authoritative; the DS renders them and grants nothing itself.
-- `openLiveSession({ scopeRef, actor })`: create or join the session for `scopeRef`, return `{ kind: 'live-session', sessionId, dispose() }`, and register the `LiveSessionBindingSource` that resolves that `sessionId` to `{ fragment, awareness }` for each editable field. A handle that resolves to no binding, or to a binding for a different field, is a conformance failure (lot CL-3 witness 8). `dispose()` leaves presence, closes the local binding and does not delete host-persisted state.
-- `applyAgentPatch(patch)` / `readAwareness(scopeRef)`: the bridge surface of §5.7 (B-BRIDGE-1…5). Implement throttling and per-operation authorisation there; return typed refusals, never partial application.
+- L0 methods (`acquireLock` … `leavePresence`, `subscribe*`) over the existing sentropic API: `GET/POST/DELETE /api/v1/locks`, `request-unlock`/`accept-unlock`/`force-unlock`, `presence` record/list/leave, notified through the existing `/streams/sse` `lock_update`/`presence_update` channel (B2 §2.2; client starting point `ui/src/lib/utils/object-lock.ts`). Badge snapshots you feed the DS must be host-authoritative; the DS renders them and grants nothing itself. L0 snapshots project to `editable` only on controlled surfaces (R-API-2).
+- `openLiveSession({ binding, actor, profileId, schemaEpoch })`: create or join the session for `binding.documentId`, admit the actor under §4.8.1 (profile/epoch check before any binding resolves), return a `LiveSessionHandle` carrying the full `FieldBindingIdentity`, and register the `LiveSessionBindingSource` that resolves that exact identity to `{ identity, fragment, awareness }`. A resolution with a missing coordinate, or for a different field/document/session than the handle's, is a conformance failure (lot CL-3 witness 8). Field bindings over one document share the session by reference count (R-BIND-2): `dispose()` releases only its own field binding and does not delete host-persisted state.
+- Bridge surface (§5.7, B-BRIDGE-1…7): `applyAgentPatch`, `readAgentState`, `readAwareness`, `publishAgentCursor`, `revertAgentPatch`, `submitStructuralIntent` — all keyed by binding identity where applicable. Implement the §5.3.1 bounds/rate algorithm, §5.4.1 durable idempotency, and §4.11 ingress validation there; return typed refusals, never partial application.
 
 ### 7.4 Persistence contract (the `LiveDocumentStore` replacement)
 
@@ -636,8 +901,8 @@ Decision CL-D14 — The stub is replaced by a host implementation behind the DS 
 
 The sentropic host implements, in its own storage (Postgres/DB of its choosing; the DS prescribes no schema):
 
-1. **Live document store.** Per session document (`canvas:<artifactId>`): the Yjs update log and periodic snapshots (`Y.Snapshot` + state vector) sufficient to rebuild the doc after restart, plus the artefact's retained baseline link (`documentRef`, `baseHash`, `manifestBaseHash`, lineage head at open, §4.7). Rebuild after restart must reproduce the doc exactly (snapshot + journal replay), witnessed by kill/restart in lot CL-5.
-2. **Session journal.** Per `returnId` (and per session before any freeze): `sessionId`, lineage identity, head named at freeze, provable participant roster (including agent actors and their origins), excluded replicas at freeze, capture digest, and the per-operation agent record (patch id, origin, applied/refused with reason, revert links). The journal is the provenance record of §5.8; the Focus envelope is not extended.
+1. **Live document store.** Per session document (`canvas:<artifactId>`): the Yjs update journal (ordered, sequence-numbered) and periodic **encoded-state checkpoints** per §4.7 (`encodedState` + `stateVector` + `journalWatermark` + `schemaEpoch`, persisted atomically), plus the artefact's retained baseline link (`documentRef`, `baseHash`, `manifestBaseHash`, lineage head at open, §4.7). Rebuild after restart is checkpoint + replay of journal entries after the watermark (or full-history replay where the host declares it) and must reproduce the doc exactly, witnessed by kill/restart in lot CL-5. A `Y.Snapshot` alone never bootstraps recovery (§4.7).
+2. **Session journal.** Per `returnId` (and per session before any freeze): `sessionId`, lineage identity, head named at freeze, provable participant roster (including agent actors, their `agent:<actorId>` origins, and their awareness registry entries, §5.1), excluded replicas at freeze, capture digest, and the durable agent records: per-patch receipt with its idempotency key, `payloadHash`, status and affected-items linkage (§5.4.1, §5.6), structural log entries (§4.10), and ingress refusals (§4.11). The journal is the provenance record of §5.8; the Focus envelope is not extended.
 3. **Publication authority.** The freeze/CAS discipline of §4.7 (serialised collective freeze per lineage, pre-publication re-read, pure `reconcile()`, atomic publish only on `ok`, journaled pending freeze with fsync + atomic commit of manifest/lineage/receipt, idempotent replay reporting `already-processed`). This is FE-6 host work; the DS client gate (CL-3) does not substitute for it.
 4. **Atomic save control for `apiPut` surfaces.** The §2.2-of-B2 check-then-write gap is closed host-side: the save transaction re-checks lock ownership and the expected version/base and writes conditionally, refusing with a conflict when either no longer matches. Without it, a late save after lock expiry silently overwrites (B2 CB-2 discriminating witness). No Focus reconciler exists on that path to catch it instead.
 
@@ -649,7 +914,7 @@ Per §3.4: map each canvas field to `CommentTarget { kind: 'canvas', id: artifac
 
 ### 7.6 MCP bridge for the AI co-editor (implement this)
 
-Expose host MCP tools (names yours to freeze) providing, per live document: `read state` (per-field `RichTextDocument` captures with identities), `read awareness` (`PresenceSnapshot` in the §5.7 shape), and `apply patch` (`AgentPatch` → `AgentPatchResult`). Enforce §5.2 limits and §5.7 B-BRIDGE rules in the bridge. The DS-side pure validator for patch shape/size ships in the `"."` entry so client and bridge check the same limits; counting/enforcement is yours. Agent admission (which agent actor, which documents/fields, which operation families) is your auth decision, recorded in the session journal.
+Expose host MCP tools (names yours to freeze) providing, per live document: `read state` (`AgentDocumentState` with per-paragraph anchors, §5.6), `read awareness` (`PresenceSnapshot` with `AwarenessCursor`s, §5.6), `publish cursor`, `apply patch` (`AgentPatch` → `AgentPatchReceipt`, anchor-addressed per §5.2), `revert patch` (§5.6), and `submit structural intent` (§4.10). Enforce §5.3.1 bounds/rate, §5.4.1 durable idempotency, and §5.7 B-BRIDGE rules in the bridge; validate every incoming CRDT update per §4.11 before application. The DS-side pure validator for patch shape/size ships in the `"."` entry so client and bridge check the same limits; counting/enforcement is yours. Agent admission (which agent actor, which documents/fields, which operation families, which `sessionEpoch`) is your auth decision, recorded in the session journal.
 
 ### 7.7 Versioning and pin discipline
 
@@ -659,65 +924,98 @@ Expose host MCP tools (names yours to freeze) providing, per live document: `rea
 
 ## 8. Lots, gates and acceptance
 
-This section replaces B2's CB-0..CB-4 for this lane. CB-0/CB-1 work that is already on the critical path is carried into CL-1/CL-2 with its witnesses intact; CB-2's host prerequisite is carried into CL-5; CB-3 becomes CL-3/CL-4/CL-5 with the AI channel added; CB-4D becomes CL-6D; CB-4S is not carried (Q-JOINT-1 out of scope, §1.2). L1-for-text appears in no lot (Q2 A). Order is normative: a later lot never compensates for an earlier gate that failed. Every lot is RED-first (witnesses written and observed failing for the stated reason before implementation), uses targeted test runs per repo convention (the conductor runs the full suite at integration), and uses no Python. Canvas-norm contract lots (CL-0) are independent of the L2 binding and may run before it; the lane gate (after M1-b, §1.1) orders CL-3 onward.
+This section replaces B2's CB-0..CB-4 for this lane. CB-0 is split into CL-1M (shared model, pure entry) and CL-1B (badge UI) so that L2 never waits on L0 UI delivery (T6 correction); CB-1 becomes CL-2; CB-2's host prerequisite is carried into CL-5; CB-3 becomes CL-3/CL-4/CL-5 with the AI channel added; CB-4D becomes CL-6D; CB-4S is not carried (Q-JOINT-1 out of scope, §1.2). L1-for-text appears in no lot (Q2 A). Order is normative: a later lot never compensates for an earlier gate that failed. Every lot is RED-first (witnesses written and observed failing for the stated reason before implementation), uses targeted test runs per repo convention (the conductor runs the full suite at integration), and uses no Python. Canvas-norm contract lots (CL-0 family) are independent of the L2 binding and may run before it; the lane gate (after M1-b, §1.1) orders CL-3 onward.
 
-Estimates are relative sizes at specification time (S ≈ one focused lot-week class, M ≈ two to three, L ≈ four plus), stated to order the work, not as commitments. Each lot re-estimates at start from its own file count.
+Estimates are relative sizes at specification time (S ≈ one focused lot-week class, M ≈ two to three, L ≈ four plus), stated to order the work, not as commitments. Each lot re-estimates at start from its own file count. Where r1 hid work inside an estimate (the CL-0 generator), r2 names the work and re-estimates explicitly (T6).
+
+**Dependency graph (normative).** `CL-0 → CL-0S/CL-0C/CL-0N`; `CL-1M → CL-2 → CL-3 → CL-4 → CL-5`; `CL-1M → CL-1B` (badge UI, parallel to CL-2); `CL-1M → CL-6D`. CL-3 depends on **CL-1M + CL-2 only** — the shared model types and the editor seams (identity discipline, mode-neutral capture, empty provider slot). CL-3 does **not** depend on CL-1B: the complete L0 badge/integration chain is not a prerequisite stage for L2 (settled in §1.2: L0 is a capability, not a stage). A CL-1B delay never blocks CL-3; a CL-1M or CL-2 failure always does.
 
 ### CL-0 — Canvas norm contract (descriptor, fixtures, catalogue projection)
 
-Depends on: JSON-render L1 generator availability (or a minimal generator in this lot if L1 has not landed; recorded either way). Blocks: CL-1 announcements about the norm; sentropic N1/N2 adoption. Size: S.
+Depends on: the canonical JSON-render L1 catalogue/schema generator (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md` §14 lot L1, gate G1/AC-L1: `node <generator> --check` inside `scripts/run-script-guards.mjs`, catalogue/standalone-schema agreement test). CL-0 consumes that generator; it does not build a substitute. If L1 has not landed when CL-0 starts, CL-0 is **blocked and recorded as such** — the missing generator work is L1's, estimated in L1, and shall not be absorbed silently into CL-0's estimate. Blocks: CL-0S, sentropic N1/N2 adoption (CL-5). Size: **M** (re-estimated from r1's S: descriptor + validator + fixtures + catalogue projection through the canonical generator + the N1/N2 equivalence witnesses in two repos).
 
-- Files (DS): `[N]` descriptor types + validator + the two seed fixtures (§3.2, R-DESC-1) in the framework-neutral contract location; catalogue generation for the canvas entries; `[N]` fixture and validator tests. Sentropic (adoption, separate host change): catalogue imports the pinned DS descriptor; seeds read from DS fixtures.
-- RED witnesses: (1) both seed fixtures byte/deep-equal the sentropic sources (§3.6 N1/N2); (2) a descriptor with a `profile`/`mimeType` family disagreement is refused with the JSON-render diagnostic shape (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:339-353`); (3) the generated catalogue entry and the standalone schema agree after canonical sorting (the JSON-render §5.2 test) and carry the canvas contract under `x-sentropic.contract`; (4) a consumer importing only the pure entry loads no editor runtime (RED-P half).
-- Gate: targeted DS tests green with output; NORM-G steps 1–3 witnessed for N1/N2 (publication itself is a release act recorded separately). Announced exactly as: « canvas norm contract published; sentropic adoption pending » until §3.6 step 4 (deletion) lands, then « norm transferred for N1/N2 ».
+- Files (DS): `[N]` descriptor types (including `CanvasProfile`, §3.2) + validator + the two seed fixtures (§3.2, R-DESC-1) in the framework-neutral contract location; catalogue generation for the canvas entries through the L1 generator; `[N]` fixture and validator tests. Sentropic (adoption, separate host change in CL-5): catalogue imports the pinned DS descriptor; seeds read from DS fixtures.
+- RED witnesses: (1) both seed fixtures byte/deep-equal the sentropic sources (§3.6 N1/N2); (2) a descriptor with a `profile`/`mimeType` family disagreement is refused with the JSON-render diagnostic shape (`spec/SPEC_EVOL_DS_JSON_RENDER_STANDARD.md:339-353`); (3) the generated catalogue entry and the standalone schema agree after canonical sorting (the JSON-render §5.2 test, run through the canonical L1 generator's `--check`) and carry the canvas contract under `x-sentropic.contract`; (4) a consumer importing only the pure entry loads no editor runtime (RED-P half).
+- Gate: targeted DS tests green with output; NORM-G steps 1–3 witnessed for N1/N2 (publication itself is a release act recorded separately). Announced exactly as: « canvas norm contract published; sentropic adoption pending » until §3.6 step 4 (deletion, in CL-5) lands, then « norm transferred for N1/N2 ».
 
-### CL-1 — Collaboration model and badge (L0 protocol, pure entry + Svelte)
+### CL-0S — Canvas shell and field composition (N-row delivery for §3.3)
 
-Depends on: RT-1 (present on main, §2.4). Blocks: CL-2. Size: M. (Carries B2 CB-0.)
+Depends on: CL-0, CL-1M. Blocks: N7 canvas-surface claims; CL-0C rendering inside the shell. Size: M.
 
-- Files: `[N] packages/rich-text/src/collaboration.ts` (the §5.7 types plus pure helpers: expiry evaluation against an injected clock, badge state derivation, colour validation, patch shape/size validator), `[N] packages/rich-text/src/collaboration.test.ts`; `[N] packages/components-svelte/src/lib/presence-badge/LockPresenceBadge.svelte` (+ test), message keys under the `collab.*` namespace.
-- RED witnesses (B2 CB-0, retained): (1) badge derives holder/requester/admin/viewer states from snapshots plus injected `CollaborationCapabilities` and the current actor — the same snapshot renders differently for viewer/editor/admin; no snapshot, no badge lock state; (2) an expired lock renders as no lock (pure TTL evaluation, never `Date.now()` inside the helper); (3) every visible string comes from injected messages with the `⟦untranslated:collab.<key>⟧` marker and zero built-in literals, including no `User` fallback (sentinel render + source scan); (4) colour outside `#RRGGBB` falls back, labels render as text with markup inert; (5) an in-memory provider double drives acquire → request → accept (holder transfer) → force, with badge state asserted at each step and no network/socket/timer in the DS test; (6) an `kind: 'agent'` actor with a host-supplied `activity` renders its scope/state/since verbatim, and an actor without `activity` renders no scope line.
-- Gate: targeted pure + jsdom tests green with output; licensing guard green (no new publishable package); `pack:smoke` extended only if a new subpath ships. Stage announcement per B2 §5.3 (« presence and object locking available (Svelte); concurrent editing not included »).
+- Files (DS): the canvas shell component (header with presence-badge slot and connection-state slot, field stack per `CanvasFieldDescriptor`), field-card composition reusing the published DS cards, snapshot-mode rendering (descriptor → fields without a live session).
+- RED witnesses: (1) a descriptor fixture renders its field stack in descriptor order with one card per field and no producer-supplied layout; (2) `editable: false` and structured fields render without an editor binding; (3) the shell with no provider is byte-identical in behaviour to snapshot mode (no session opened, no socket — runtime observation); (4) comment-count/anchor slots render host-supplied facts only (join exercised fully in CL-0C).
+- Gate: targeted component tests green. Announced as: « canvas shell available (snapshot mode) »; live mode is announced only through CL-3/CL-5.
 
-### CL-2 — Editor integration of L0 and the live seams (with the RT-1 successor)
+### CL-0C — Comment-target presentation join for canvas (N6 verification)
 
-Depends on: CL-1. Blocks: any host adoption claim. Size: M. (Carries B2 CB-1 + the §6.3 seams.)
+Depends on: CL-0S. Size: S.
 
-- Files: adapter surface of §6.2 (provider/badge composition beside the editor), the three seams recorded as an FE-2 delta note (identity discipline, mode-neutral capture, empty provider slot in `"./editor"`).
-- RED witnesses (B2 CB-1, retained): (1) lock held by another ⇒ typing, paste, drop, cut and mutation shortcuts inert, no `onChange`, text still selectable (viewer fixture under lock); (2) acquiring the lock flips to editable without remount (same ProseMirror instance, caret/selection preserved); (3) W-IME-1 verbatim (IME-LOCK-1, browser suite); (4) capture neutrality only: an external document replacement between two captures yields a second capture equal to the replacement; (5) no provider ⇒ byte-identical controlled behaviour to RT-1 without this lot.
+- Files (DS): join wiring in the shell (field → `CommentTarget { kind: 'canvas', id, sectionKey }` display facts), rendering of the four resolver outcomes through the existing DS comment blocks (§3.4). No comment model code.
+- RED witnesses: each resolver outcome (exact / changed / unresolved / unavailable) renders distinctly on a canvas field fixture; a moved text range under L2 reports `changed`/`unresolved` from the host resolver and is never reattached by text search; `CommentTargetKind` is unchanged (host contract test).
+- Gate: targeted tests green. Announced as: « comment presentation verified for canvas (model unchanged) ». Nothing is deleted by this lot (§3.6 N6).
+
+### CL-0N — Norm-note and correspondence register (N3/N8)
+
+Depends on: CL-0. Size: S. Host doc change lands with CL-5.
+
+- Deliverables: the sentropic integration note (version reference to this file + host-only contracts), the N8 correspondence register (dossier source line → DS section), retirement of the duplicated normative sections and resolution of the `SPEC_EVOL_CHAT_CANVAS` reference (§3.6 N3/N8).
+- RED witnesses: the link/anchor check from the note reaches §3/§7; `git grep SPEC_EVOL_CHAT_CANVAS` in sentropic returns only the resolved reference and history; a grep for competing normative canvas definitions in active sentropic specs returns none. Historical dossiers are retained as evidence.
+
+### CL-1M — Collaboration model (pure entry; shared seam for L0 and L2)
+
+Depends on: RT-1 (present on main, §2.4). Blocks: CL-2, CL-3 (through CL-2), CL-1B, CL-6D. Size: M. (Carries the model half of B2 CB-0; the badge half is CL-1B.)
+
+- Files: `[N] packages/rich-text/src/collaboration.ts` (created here — it does not exist on RT-1 main: the §5.7 types including binding identity, anchors, receipts, structural intents, plus pure helpers: expiry evaluation against an injected clock, colour validation, patch shape/size/bounds validator per §5.3.1, badge state derivation as pure data), `[N] packages/rich-text/src/collaboration.test.ts`. No component in this lot.
+- RED witnesses: (1) `PresenceSnapshot.total` counts including the current actor while `actors` excludes them (B2 compatibility); (2) the patch validator refuses a 51st operation, a 20 001-unit aggregate, and a numeric-offset operation shape (no offset field exists in the type — asserted by a type-level fixture that fails to compile with one); (3) expiry/badge derivation are pure (injected clock, no `Date.now()` in the helper — source scan); (4) colour outside `#RRGGBB` falls back in the pure helper.
+- Gate: targeted pure tests green with output; licensing guard green (no new publishable package). No UI announcement follows from this lot alone.
+
+### CL-1B — Presence/lock badge (L0 UI; not an L2 prerequisite)
+
+Depends on: CL-1M. Blocks: L0 UI announcements only — **not** CL-3 (T6). Size: S. (Carries the badge half of B2 CB-0.)
+
+- Files: `[N] packages/components-svelte/src/lib/presence-badge/LockPresenceBadge.svelte` (+ test), message keys under the `collab.*` namespace.
+- RED witnesses (B2 CB-0, retained): (1) badge derives holder/requester/admin/viewer states from snapshots plus injected `CollaborationCapabilities` and the current actor — the same snapshot renders differently for viewer/editor/admin; no snapshot, no badge lock state; (2) an expired lock renders as no lock; (3) every visible string comes from injected messages with the `⟦untranslated:collab.<key>⟧` marker and zero built-in literals, including no `User` fallback (sentinel render + source scan); (4) labels render as text with markup inert; (5) an in-memory provider double drives acquire → request → accept (holder transfer) → force, with badge state asserted at each step and no network/socket/timer in the DS test; (6) a `kind: 'agent'` actor with a host-supplied `activity` renders its scope/state/since verbatim, and an actor without `activity` renders no scope line; (7) B8 display half: in L2 mode the badge renders lock/presence facts without driving `editable` (R-API-2) — a locked-by-other snapshot beside a live binding still shows all admitted editors as editing.
+- Gate: targeted jsdom tests green with output; `pack:smoke` extended only if a new subpath ships. Stage announcement per B2 §5.3 (« presence and object locking available (Svelte); concurrent editing not included »).
+
+### CL-2 — Editor integration: L0 projection, live seams, composer surface (with the RT-1 successor)
+
+Depends on: CL-1M (CL-1B only for the badge composition witness). Blocks: any host adoption claim. Size: M. (Carries B2 CB-1 + the §6.3 seams + §6.2.1.)
+
+- Files: adapter surface of §6.2 (provider composition beside the editor, `binding`/`actor` props, R-API-2 effective-editable computation), the §6.2.1 composer/string surface, the three seams recorded as an FE-2 delta note (identity discipline, mode-neutral capture, empty provider slot in `"./editor"`).
+- RED witnesses (B2 CB-1, retained and extended): (1) on a controlled surface, lock held by another ⇒ typing, paste, drop, cut and mutation shortcuts inert, no `onChange`, text still selectable (viewer fixture under lock); (2) acquiring the lock flips to editable without remount (same ProseMirror instance, caret/selection preserved); (3) W-IME-1 verbatim (IME-LOCK-1, browser suite); (4) capture neutrality only: an external document replacement between two captures yields a second capture equal to the replacement; (5) no provider ⇒ byte-identical controlled behaviour to RT-1 without this lot; (6) B8: with a live `binding` present, a locked-by-other L0 snapshot does **not** make admitted editors read-only (R-API-2), while the same snapshot without a binding does; (7) composer surface (§6.2.1): string round-trip, Enter/mention key forwarding, and the three B1 per-mount inertness postures.
 - Gate: jsdom + browser suites green with these witnesses; offline dossier configuration asserted provider-free.
 
 ### CL-3 — L2 binding: Yjs session behind the provider slot
 
-Depends on: CL-2, FE-3 freeze bridge green (host-side), the §4.4 preserved-block gate decision. Blocks: any « concurrent editing » announcement. A connected-publication announcement additionally requires the FE-6 host gate (CL-5). Size: L.
+Depends on: CL-1M + CL-2 (necessary seams only — not CL-1B, T6), FE-3 freeze bridge green (host-side), the §4.4 preserved-block gate decision, the §4.10 R-STR-4 binding-capability decision. Blocks: any « concurrent editing » announcement. A connected-publication announcement additionally requires the FE-6 host gate (CL-5). Size: L.
 
-- Files (DS): `[N] packages/rich-text/src/editor-collaboration.ts` (the only Yjs-reachable module, `"./editor"` graph only; holds the `LiveSessionBindingSource` contract), extension composition change (collaboration pair replaces `UndoRedo` when bound), caret/selection decoration rendering with DS tokens; pins added (`yjs`, `y-protocols`, binding line of §4.1) with lockfile + notices regenerated in the same change (`npm run notices:generate`; licensing guard and `pack:smoke` wiring for every new entry/peer, §8.6).
-- RED witnesses (B2 CB-3 witnesses 1–8, retained and renumbered here as the DS client gate): (1) **multi-client convergence + no lost edit in the same word:** two sessions on one fragment type into the same paragraph — including the same word — concurrently ⇒ after quiescence both texts are present on both replicas, the `paragraphId` set is unchanged except allocator-fresh split tails, and no id collides across sessions; (2) **undo isolation:** split/merge/undo interleaved with remote edits ⇒ undo removes only local changes, identities restored per §4.2; (3) **preserved-block gate:** a preserved-bearing field through arbitrary merges keeps every `raw` byte-identical, else the field refuses bound mode; (4) **freeze bridge:** capture ⇒ host `diffParagraphs` against the retained baseline yields exactly the merged delta, undo-to-baseline yields the empty cumulative return, the baseline is never advanced by the session; (5) **IME:** a remote update mid-composition ⇒ no mid-composition emission, one coalesced commit change, caret stable (browser suite), and a session revocation mid-composition follows IME-LOCK-1; (6) **read-only bound session** renders remote updates with all local mutation paths inert; (7) **packaging:** importing `"."` or mounting controlled loads no Yjs module (extended RED-P), and the offline artefact with no provider behaves byte-identically to CL-2; (8) **provider conformance with a real witness:** the same binding runs against (i) a Hocuspocus-backed host provider and (ii) an in-memory test-double provider, both resolving the §5.7 binding for the requested field and failing closed on a handle bound to a different field. The test double alone never passes this gate.
-- Gate: witnesses 1–8 green with output in jsdom + browser suites (DS client qualification); `pack:smoke` and licensing green at the new dependency set. Announcement: « concurrent editing client qualified where the host provides a collaboration session; offline dossiers unchanged ». Performance budgets (§8.5) measured and recorded at this gate.
+- Files (DS): `[N] packages/rich-text/src/editor-collaboration.ts` (the only Yjs-reachable module, `"./editor"` graph only; holds the `LiveSessionBindingSource` contract, the §4.6.1 composition staging, and the §4.10 structural-intent interception), extension composition change (collaboration pair replaces `UndoRedo` when bound), caret/selection decoration rendering with DS tokens; pins added (`yjs`, `y-protocols`, binding line of §4.1) with lockfile + notices regenerated in the same change (`npm run notices:generate`; licensing guard and `pack:smoke` wiring for every new entry/peer, §8.6). Host-side at this gate: the §4.10 sequencer and the §4.11 ingress validator behind the Hocuspocus witness (host code, witnessed here, owned by CL-5 for production).
+- RED witnesses (B2 CB-3 witnesses 1–8, retained, extended by the r2 corrections; the DS client gate): (1) **multi-client convergence + no lost edit in the same word:** two sessions on one fragment type into the same paragraph — including the same word — concurrently ⇒ after quiescence both texts are present on both replicas, the `paragraphId` set is unchanged except sequencer-confirmed split tails, and no id collides across sessions; (2) **undo isolation + interleaved structural undo:** text and split/merge undo interleaved with remote edits ⇒ §4.5 outcomes (a)–(c) hold, undo removes only local changes; (3) **preserved-block gate:** a preserved-bearing field through arbitrary merges keeps every `raw` byte-identical, else the field refuses bound mode; (4) **freeze bridge:** capture ⇒ host `diffParagraphs` against the retained baseline yields exactly the merged delta, undo-to-baseline yields the empty cumulative return, the baseline is never advanced by the session; (5) **IME staging (B7):** the §4.6.1 replica-inspecting witness — uncommitted composition text absent from every other replica and the authoritative doc, concurrent committed text surviving cancellation and revocation, one transaction on commit — plus the retained r1 items (no mid-composition emission, one coalesced commit change, caret stable, revocation follows IME-LOCK-1; browser suite); (6) **read-only bound session** renders remote updates with all local mutation paths inert, and B8: admitted editors stay editable together under an L0 lock naming another actor (R-API-2); (7) **packaging:** importing `"."` or mounting controlled loads no Yjs module (extended RED-P), and the offline artefact with no provider behaves byte-identically to CL-2; (8) **provider conformance with a real witness:** the same binding runs against (i) a Hocuspocus-backed host provider and (ii) an in-memory test-double provider, both resolving the §5.7 binding **by full identity** for the requested field, failing closed on a missing coordinate or a different field/document/session, and passing the R-BIND-3 two-fields-mounted witness (unmounting one field leaves the other live). The test double alone never passes this gate; (9) **structural concurrency (B3):** the §4.10 witnesses — concurrent split/split (distinct and identical anchors, both orders, offline submission), merge vs insert-in-consumed-paragraph (connected and offline inserts survive in the surviving paragraph on every replica); a binding failing R-STR-4 is recorded and structural gestures fall back per that rule; (10) **schema admission (T4):** the §4.8.1 mixed-version witness (stale tab refused `incompatible-schema` with its draft capture byte-identical; offline old-epoch replica migrated or refused, no partial application).
+- Gate: witnesses 1–10 green with output in jsdom + browser suites (DS client qualification); `pack:smoke` and licensing green at the new dependency set. Announcement: « concurrent editing client qualified where the host provides a collaboration session; offline dossiers unchanged ». Performance budgets (§8.5) measured and recorded at this gate.
 
 ### CL-4 — AI co-editor channel (agent as peer)
 
 Depends on: CL-3 (DS client gate). Blocks: any « AI co-edits live » announcement. Size: M.
 
-- Files (DS): the `AgentEditOperation`/`AgentPatch` validator in the pure entry (shape/size/scope vocabulary), agent presence/caret rendering assertions, the revert-gesture surface over the port. Files (host, sentropic): the MCP tools and bridge (§7.6), per-operation authorisation, throttling, journal records.
-- RED witnesses: (1) **agent + 2 humans in one block:** two human sessions and one agent actor insert/replace simultaneously in the same identified block ⇒ all replicas converge after quiescence with no silent loss and no whole-block replacement wiping concurrent human characters (the dossier r4b L2-CB3 same-block gate); (2) the agent's caret/selection and presence render for humans, and the agent reads awareness + current state through the bridge before patching; (3) a patch attempting whole-block replacement is refused `structural-conflict` and applies nothing; (4) limits: the 21st sustained operation in a second, an insert over 2000 characters, and an out-of-scope field each refuse with their typed reason and apply nothing; (5) a human revert of a recorded agent window removes the agent's characters and preserves concurrent human characters on top of them; a human's ordinary undo never removes agent text; (6) revocation: after the agent actor is revoked, its next patch returns `revoked`, queued operations do not merge, and already-merged text is unchanged.
+- Files (DS): the `AgentEditOperation`/`AgentPatch` validator in the pure entry (anchor-addressed shapes, §5.3.1 bounds), agent presence/caret rendering assertions, the revert-gesture surface over the port. Files (host, sentropic): the MCP tools and bridge (§7.6), per-operation authorisation, the §5.3.1 token bucket, the §5.4.1 durable receipt store, journal records.
+- RED witnesses: (1) **agent + 2 humans in one block:** two human sessions and one agent actor insert simultaneously in the same identified block ⇒ all replicas converge after quiescence with no silent loss and no whole-block replacement wiping concurrent human characters (the dossier r4b L2-CB3 same-block gate); (2) **anchors (B1):** the §5.2 stale-read, deleted-anchor, and concurrent-interior-insert witnesses (`XXabef`, `target-gone` with unchanged state vector, `abZZef`); (3) the agent's caret/selection and presence render for humans under its own §5.1 registry entry, and the agent reads awareness + anchored state through the bridge before patching (B5 read half); (4) a patch attempting whole-block replacement is refused `structural-conflict` and applies nothing; (5) **bounds and atomicity (T5):** the §5.3.1 witnesses — invalid 50th operation leaves the authoritative doc byte-identical, 51 operations and 20 001 aggregate units refuse `too-large`, bucket exhaustion refuses `rate-limited` with decreasing `retryAfterMs`, an out-of-scope field refuses `scope-denied`, each applying nothing; (6) **idempotency (B4):** the §5.4.1 lost-response, restart, and key-reuse witnesses (single application, original receipt with `duplicate: true`, `idempotency-key-reuse`); (7) **revert (B5):** the §5.6 multi-agent and revert-after-restart witnesses; a human's ordinary undo never removes agent text; (8) revocation: after the agent actor is revoked, its next patch returns `revoked`, queued operations do not merge, and already-merged text is unchanged.
 - Gate: DS witnesses green against both the test double and the Hocuspocus-backed host, with the bridge running headless (editor closed) for at least the read/patch witnesses. Announcement: « AI co-editor qualified in the same block (bounded scope) » naming the scope; never an unbounded agent claim.
 
 ### CL-5 — First host adoption and connected publication (sentropic)
 
 Depends on: CL-3, CL-4 for the AI claim. Owner: sentropic host lot (FE-7 sibling), not a DS-only claim. Size: L (host) + S (DS support).
 
-- Scope: provider implementation over the sentropic locks/presence API and SSE channel; Hocuspocus hosting behind sentropic auth; the §7.4 store, journal and publication authority; the §7.4 atomic save control; DS badge replacing the local badge behind a parity checklist (avatar ordering, key overlay, read-only tooltip wording, force inside tooltip); field-class migration of §6.5 in B1 order.
-- RED witnesses (host-side; B2 CB-2/CB-3 host witnesses retained): stale badge after SSE drop recovers by re-read; **expiry discriminating witness** (writer A's lock expires, writer B acquires and saves V2 and releases, then A's late save with its stale expected version is refused by the atomic save control and V2 remains — the form that fails against the current guard, which passes a save when no lock is active); **reconnect after offline edits** (a roster participant disconnects, edits offline, the connected converged replicas freeze and publish meanwhile with the disconnected member recorded as excluded, and on reconnect its edits re-enter as a merged state followed by adoption and a re-freeze against the new head — never as a second return on the old head); collective-freeze serialisation, demonstrated-ancestry (not delivery-order), external-change-between-freeze-and-publication, and the W-LIN-1/2/3 lineage witnesses of B2 CB-3 (adoption keeps both corrections; stale omission refused before minting; independent lineages fail closed) against the host publication authority; kill/restart rebuild of the live doc from snapshot + journal.
-- Gate: host targeted tests green with output; DS packages unchanged unless a CL-1..CL-4 defect is found (then fixed in its own lot, never patched host-side). Announcements follow §4.7: « connected publication delivered » only when this gate including FE-6 is green, per host, never globally.
+- Scope: provider implementation over the sentropic locks/presence API and SSE channel; Hocuspocus hosting behind sentropic auth **with the §4.11 ingress validator and the §4.10 sequencer in the update path**; the §7.4 store (checkpoint + journal), journal and publication authority; the §7.4 atomic save control; DS badge replacing the local badge behind a parity checklist (avatar ordering, key overlay, read-only tooltip wording, force inside tooltip); field-class migration of §6.5 in B1 order, gated per class on its B1 prerequisites, with the quantified partial-adoption status reported until every class is `migrated`; N1/N2/N3/N5/N7/N8 adoption and deletions per §3.6 (N5 deletion inapplicable — no copy exists).
+- RED witnesses (host-side; B2 CB-2/CB-3 host witnesses retained): stale badge after SSE drop recovers by re-read; **expiry discriminating witness** (writer A's lock expires, writer B acquires and saves V2 and releases, then A's late save with its stale expected version is refused by the atomic save control and V2 remains — the form that fails against the current guard, which passes a save when no lock is active); **reconnect after offline edits** (a roster participant disconnects, edits offline — text edits merge, structural intents submit to the sequencer per §4.10 — the connected converged replicas freeze and publish meanwhile with the disconnected member recorded as excluded, and on reconnect its edits re-enter as a merged state followed by adoption and a re-freeze against the new head — never as a second return on the old head); collective-freeze serialisation, demonstrated-ancestry (not delivery-order), external-change-between-freeze-and-publication, and the W-LIN-1/2/3 lineage witnesses of B2 CB-3 (adoption keeps both corrections; stale omission refused before minting; independent lineages fail closed) against the host publication authority; **kill/restart rebuild** of the live doc from the §4.7 encoded-state checkpoint + journal-after-watermark (a snapshot-only rebuild is asserted absent from the recovery path); **hostile ingress (B6):** the §4.11 witnesses (i)–(v), each asserting authoritative state-vector equality plus absence from journal and broadcast, including the reconnect replay; **B8 adoption:** admitted L2 participants (2 humans + agent) edit together on the adopted surface while the legacy controlled surface for the same object keeps L0 gating, and publication remains serialised.
+- Gate: host targeted tests green with output; DS packages unchanged unless a CL-1M..CL-4 defect is found (then fixed in its own lot, never patched host-side). Announcements follow §4.7: « connected publication delivered » only when this gate including FE-6 is green, per host, never globally. `TipTap.svelte` deletion is claimed only under the §6.5 deletion rule (every class `migrated`); otherwise the report carries « migrated n/24 ».
 
 ### CL-6D — Diagram arbitration surface
 
-Depends on: CL-1 (shared model). Independent of CL-3. Size: M. (Carries B2 CB-4D; Q6 A, §1.2.)
+Depends on: CL-1M (shared model). Independent of CL-3. Size: M. (Carries B2 CB-4D; Q6 A, §1.2.)
 
 Claim rendering on element selection, holder highlight, `editable` arbitration for the claimed unit, badge composition in the surface header. Diagram refs cross as opaque strings; no `diagram-core` import from any DS collaboration code (layering guard `scripts/verify-layering.test.mjs`). RED witnesses: claim by another ⇒ unit non-editable locally with holder shown; expiry releases without a server push; force-release admin path; presence without claim leaves editing untouched. Announced as arbitration/presence only — never as merged concurrent editing.
 
-Sequencing summary: CL-0 (norm contract) may start first and in parallel with the lane gate. CL-1 → CL-2 form the L0 delivery. CL-3 is the only L2 binding lot; CL-4 adds the agent as peer; CL-5 is the first host adoption and the only route to a connected-publication claim. CL-6D runs parallel to either stage. No lot delivers L1-for-text, merged diagram editing or spreadsheet collaboration.
+Sequencing summary: CL-0 (norm contract, through the canonical L1 generator) may start first and in parallel with the lane gate, followed by CL-0S/CL-0C/CL-0N. CL-1M → CL-2 are the shared seams; CL-1B (L0 badge UI) runs parallel to CL-2 and never gates CL-3. CL-3 is the only L2 binding lot; CL-4 adds the agent as peer; CL-5 is the first host adoption and the only route to a connected-publication claim. CL-6D runs parallel to either stage. No lot delivers L1-for-text, merged diagram editing or spreadsheet collaboration.
 
 ### 8.5 Performance budgets
 
@@ -742,25 +1040,13 @@ A missed budget blocks the announcement it is attached to; it does not block the
 
 ## 9. Remaining owner questions
 
-Only what neither the sources nor the decisions of §1.2 settle. Each question blocks only the lot named; the rest proceed. Technical choices are decided in the body with rationale and are not listed here.
+Only what neither the sources nor the decisions of §1.2 settle and that blocks a lot in §8. Future-work items are not owner questions for this lane; they are recorded in §12. Host policy choices that need no owner decision are likewise in §12.
 
-**Q-CL-1 — Structured canvas fields (`application/json`, the `structured-plan` shape): merge strategy when they leave the host business surface?**
-Context: §4.3 R-MAP-4 keeps structured fields on host business transactions today. If a future canvas needs concurrent structured editing, the mechanism is open.
-- A. Keep structured fields host-merged permanently; this lane never CRDT-merges JSON structure. *(Recommendation — smallest scope; the text lane already covers the owner's statements, which concern text blocks.)*
-- B. Add a later DS study for `Y.Map`/`Y.Array` structured merge with its own identity and conflict rules.
-Blocks: nothing in §8. Recorded so the R-MAP-4 boundary is a decision, not an omission.
-
-**Q-CL-2 — May an agent actor hold the L0 lock on an object, in a host that still runs L0 surfaces beside live ones?**
-Context: §1.2 Q3 supersedes the agent-as-lock-holder posture for live blocks, but L0-only surfaces (whole-object locked records) still exist during migration. The DS renders either fact; who may hold a lock is a host policy the owner may want to fix once.
-- A. No: agents never hold L0 locks; they edit only through live sessions, and L0 surfaces show agent activity as presence (`activity: planned/holding`) without lock ownership. *(Recommendation — one posture across surfaces.)*
-- B. Yes, where the host chooses: an agent may acquire the same L0 lock as a human, with the same request/force vocabulary.
-Blocks: CL-5 host policy only.
-
-**Q-CL-3 — React/Vue/Angular timing for the live components?**
-Context: FE-2 stages frameworks (Svelte first, each adapter behind its own RED run and vertical scenario, parity never claimed from types). The live extension multiplies that cost per framework (binding + caret decorations).
-- A. Svelte only for the whole lane; other frameworks staged afterwards by demand, each behind its own gate. *(Recommendation — follows the measured consumer set: both current consumers are Svelte, §2.4.)*
-- B. Commit now to a named second framework and its gate inside this lane.
-Blocks: nothing; the answer only schedules work.
+**Q-CL-1 — B1 adoption acceptance: are the P0 restrictions accepted for migrated fields? (carried from B1 Q-B1-6)**
+Context: under the P0 profile, headings, lists and link-bearing paragraphs in a migrated field become preserved and non-editable, and pastes that the current StarterKit editor accepts (lists, headings, other non-paragraph blocks) are refused whole (B1 P3–P5/P18, §6.5). No source settles whether that product-visible narrowing is accepted, and it governs **every** P0 adoption in this lane — the CL-5 templater/score classes and the chat mounts through §6.2.1 alike. This is the one genuinely unresolved adoption gate carried into this lane; CL-5 shall not migrate a class whose usages fall outside the accepted answer.
+- A. Migrate only the usages whose observed uses are covered by P0, across all adoptions concerned (templater and chat included); every other usage keeps its current editor unchanged. *(Recommendation, as in B1.)*
+- B. Accept the wider adoption: headings/lists/links visible but non-editable in migrated fields, and the wider paste refusals, across the same adoptions.
+Blocks: CL-5, per field class. Nothing else in §8 is blocked by this question.
 
 ## 10. NOT covered
 
@@ -770,7 +1056,7 @@ Each item is explicitly excluded from this specification and from every lot it d
 2. **Block-level text locks (L1).** Not built (Q2 A, §1.2). No exclusive-block guarantee is offered for text.
 3. **Merged concurrent diagram editing.** No concurrent dragging or geometry merge; diagrams receive arbitration and presence only (CL-6D).
 4. **Spreadsheet collaboration.** Owned by B3 under Q-JOINT-1, not carried here. The shared lock/presence contract remains available to B3; this specification designs no cell/range claim, no grid merge and no sheet surface.
-5. **Structured (`application/json`) CRDT merge.** Structured canvas fields stay on host business transactions (R-MAP-4) unless Q-CL-1 B engages a separate study.
+5. **Structured (`application/json`) CRDT merge.** Structured canvas fields stay on host business transactions (R-MAP-4); a structured-merge study is future work (§12), not part of this lane.
 6. **The h2a Focus contract.** No change to the return envelope, manifest, diff, reconciler, digests, lineage or schemas; no new Track event kind; per-paragraph attribution only through the Q5 B path of §5.8, which this lane does not engage.
 7. **`LiveDocumentStore` as a DS artefact.** The replacement is a host implementation behind the DS port (§7.4). The DS ships no store.
 8. **The full `SPEC_VOL_INTERACTIVE_CANVAS` programme.** Kanban-as-canvas (I4), dossier-as-canvas beyond the FE-2 editor surface (I5), CLI surfacing (I3) and the reusable sentropic canvas module (I6) are separate promotions. This lane covers the editor collaboration layer they would share and the canvas norm contract, not their surfaces.
@@ -779,7 +1065,7 @@ Each item is explicitly excluded from this specification and from every lot it d
 11. **Offline multi-writer return merging.** Merging two independently produced offline returns remains the reconciler's job (rebase/conflict at the host boundary), not a CRDT merge; the `file://` dossier stays single-user.
 12. **Chat component migration.** No chat component is defined or frozen here (§2.7). Chat editable mounts migrate as editor consumers (§6.5) without a chat API claim.
 13. **List/heading editing beyond P0.** Preserved until the versioned-profile route of §4.8 passes; `forceList` fields stay wrapped (§6.5).
-14. **Framework delivery beyond Svelte.** React/Vue/Angular live adapters are staged by their own gates (Q-CL-3); until a gate passes, that framework is reported as not delivered for live editing.
+14. **Framework delivery beyond Svelte.** React/Vue/Angular live adapters are staged by their own gates (§12); until a gate passes, that framework is reported as not delivered for live editing.
 
 ## 11. Unverified register
 
@@ -789,7 +1075,7 @@ Claims this specification depends on but could not verify from the sources avail
 | --- | --- | --- | --- |
 | U-CL-1 | `y-protocols` (awareness) source and exact version: not vendored in `.ds-scrap/re-sources/`, observable only through its consumers (B2 §2.7) | `source-gap` | CL-3 pins it explicitly and records the version; the binding lot fails if the awareness API differs from the assumed `Awareness` shape |
 | U-CL-2 | `y-websocket` / `y-indexeddb`-class provider and local-persistence packages: not in the pinned set | `unknown` | Host lots pin them if chosen; the DS never depends on them |
-| U-CL-3 | Registry state of `@sentropic/design-system-rich-text` and the `rich-text-editor` subpath (REPORT measured them unpublished at 0.36.0-era) | `source-gap` | Re-measured at CL-1/CL-3 lot start; publication is a release act, not assumed |
+| U-CL-3 | Registry state of `@sentropic/design-system-rich-text` and the `rich-text-editor` subpath (REPORT measured them unpublished at 0.36.0-era) | `source-gap` | Re-measured at CL-1M/CL-3 lot start; publication is a release act, not assumed |
 | U-CL-4 | Whether preserved-bearing fields can stay byte-identical through arbitrary merges (the §4.4 gate) | `unknown` | CL-3 witness 3; a negative result permanently scopes those fields to controlled/L0 mode |
 | U-CL-5 | Exact `@tiptap/starter-kit` default set behind the sentropic editor and the finer parity claims that depend on it (B1 U-B1-1); round-trip equivalence of the two Markdown bridges on real content (B1 U-B1-2); stability of literal `[N]` citation text across host decoration (B1 U-B1-7) | `source-gap` / `unverified` | B1-L0 corpus and the §6.5 witnesses; no finer parity is claimed before they run |
 | U-CL-6 | Legal templater descriptor vocabulary as stored server-side (B1 U-B1-3) and whether stored content already needs headings/lists editable (B1 U-B1-4) | `source-gap` / `unknown` | Host inventory at the CL-5 adoption lot; decides migration order and any `p1` profile need, not the P0 profile |
@@ -797,6 +1083,16 @@ Claims this specification depends on but could not verify from the sources avail
 | U-CL-8 | Performance numbers of §8.5 on real host hardware and real document sizes | `unknown` | Measured at the CL-3/CL-4/CL-5 gates with the recorded discipline; budgets are targets until then |
 | U-CL-9 | Sentropic server-side enforcement behind the standalone settings/chat saves that show no client lock (B1 U-B1-5), and the final MCP tool names/shape for the bridge | `unknown` | Host confirms at CL-5; the DS contract (§7.6) binds shapes, not tool names |
 | U-CL-10 | Whether any host needs the remote-change notification that §4.7 defers (capture-only is the settled default) | `unknown` | Only an FE-2 amendment with explicit remote-origin provenance settles it; until then bound mode emits no remote `RichTextChangeEvent` |
+| U-CL-11 | Whether the pinned binding line can move `Y.XmlText` suffix items and keep consumed-paragraph late inserts visible (the §4.10 R-STR-4 capability) | `unknown` | CL-3 gate decision record; a negative result triggers the R-STR-4 fallback (sequencer-confirmed structure, or controlled/L0 structural gestures) and no R-STR-2/3 claim |
+| U-CL-12 | Whether the host update path can classify decoded Yjs deltas at §4.11 step-3 granularity on the pinned Hocuspocus version | `unknown` | CL-3 Hocuspocus witness / CL-5; if it cannot, the host runs the validated-bridge-only mode of §4.11 and claims no raw-update ingress conformance |
+
+## 12. Future considerations (not owner questions for this lane)
+
+Items removed from §9 in r2 (M2 correction). None of them blocks any lot in §8, and none is presented as an owner decision still to take for this lane.
+
+- **Structured canvas fields.** §4.3 R-MAP-4 keeps `application/json` fields (the `structured-plan` shape) on host business transactions. Concurrent structured editing (`Y.Map`/`Y.Array` merge with its own identity and conflict rules) is a future DS study if a canvas ever needs it; this lane never CRDT-merges JSON structure (§10 item 5).
+- **Frameworks beyond Svelte.** FE-2 stages frameworks (Svelte first, each adapter behind its own RED run and vertical scenario, parity never claimed from types). React/Vue/Angular live adapters are scheduled by demand behind their own gates (§10 item 14); no second framework is committed inside this lane.
+- **Agent actors and L0 locks (host policy, not an owner question).** §1.2 Q3 settles that agents do not hold locks on live blocks. Whether an agent may hold an L0 lock on a legacy L0-only surface during migration is a host policy the host records at CL-5 (recommended default: agents edit only through live sessions and appear on L0 surfaces as presence `activity` without lock ownership). It does not block live adoption: no demonstrated legacy-surface dependency requires an agent lock holder, and R-API-2 keeps the two modes disjoint either way.
 
 ## Appendix A. Decision index
 
@@ -812,10 +1108,15 @@ Claims this specification depends on but could not verify from the sources avail
 | CL-D8 | One `Y.Doc` per artefact, one `Y.XmlFragment` per editable field | `ds-proposition` | §4.3 |
 | CL-D9 | Yjs `UndoManager` replaces ProseMirror history in bound mode, exactly once | `ds-proposition` | §4.5 |
 | CL-D10 | Agent actor is `CollaborationActor kind: 'agent'` with presence and caret | `ds-proposition` | §5.1 |
-| CL-D11 | Character/range operations only; whole-block replacement refused at the bridge | `ds-proposition` | §5.2 |
+| CL-D11 | Character/range operations only; whole-block replacement refused at the bridge | `ds-proposition` | §5.3 |
 | CL-D12 | DS exposes the §5.7 port; sentropic implements transport and the MCP bridge | `ds-proposition` | §5.7 |
 | CL-D13 | `RichTextEditor` (extended) + `LockPresenceBadge` replace the editable cards | `ds-proposition` | §6.1 |
 | CL-D14 | `LiveDocumentStore` stub replaced by the §7.4 host implementation; no DS store | `conductor-decision` | §7.4 |
+| CL-D15 | Composition-owned changes are staged, then committed once or discarded whole | `ds-proposition` | §4.6.1 |
+| CL-D16 | Structural operations are sequencer-serialised intents; text stays CRDT-concurrent | `ds-proposition` | §4.10 |
+| CL-D17 | No CRDT update is applied, persisted, or broadcast before ingress validation and authorisation | `ds-proposition` | §4.11 |
+| CL-D18 | Agent patches are addressed by opaque relative anchors bound to a read revision | `ds-proposition` | §5.2 |
+| CL-D19 | A patch identifier is a durable idempotency key bound to its payload hash | `ds-proposition` | §5.4.1 |
 
 Settled B2 questions (not reopened): Q1 L2 engaged now; Q2 A; Q3 superseded (agent as live co-editor); Q4 A; Q5 A (finding §5.8); Q6 A; Q7 A; Q-JOINT-1 out of scope. See §1.2.
 
