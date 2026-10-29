@@ -9,6 +9,7 @@
 import type {
   Diagnostic,
   DiagramPresentation,
+  ExecutorProfileBindings,
   OccurrenceRef,
   ProfileRegistry,
   ViewDocument,
@@ -111,6 +112,8 @@ export interface LayoutOptions {
   readonly presentation?: DiagramPresentation;
   /** Injected shared line measurer for measured views (M3 §4.6.2/§5.6). */
   readonly measureLines?: LineMeasurer;
+  /** Verified executor bindings for @2 profiles (M3 §5.3.1); required for generic@2. */
+  readonly bindings?: ExecutorProfileBindings;
   /** Collapsed occurrence ids (fold state) for measured views (M3 §5.6). */
   readonly collapsed?: readonly OccurrenceRef[];
   /** Authored recursive layout hints for measured views (M3 §4.7). */
@@ -167,7 +170,8 @@ export type LayoutRefusalCode =
   | "entity-profile-unsupported"
   | "entity-type-unsupported"
   | "relation-type-unsupported"
-  | "layout-hint-invalid";
+  | "layout-hint-invalid"
+  | "measure-lines-missing";
 
 export interface LayoutRefusal {
   readonly code: LayoutRefusalCode;

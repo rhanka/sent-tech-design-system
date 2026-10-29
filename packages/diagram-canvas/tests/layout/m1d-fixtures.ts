@@ -45,11 +45,11 @@ export function makePresentation(spec: {
 }): DiagramPresentation {
   const entities: Record<string, { form: DiagramForm; text: PresentationText }> = {};
   for (const [local, form] of Object.entries(spec.forms)) {
-    entities[entityRef(local)] = { form, text: spec.texts?.[local] ?? {} };
+    entities[occurrenceOfEntity(local)] = { form, text: spec.texts?.[local] ?? {} };
   }
   const legends: Record<string, { order: readonly EntityRef[] }> = {};
   for (const [local, order] of Object.entries(spec.legends ?? {})) {
-    legends[entityRef(local)] = { order: order.map((entry) => entityRef(entry)) };
+    legends[occurrenceOfEntity(local)] = { order: order.map((entry) => entityRef(entry)) };
   }
   return {
     contractPin: { id: "diagram-presentation", version: "1", contentDigest: "0".repeat(64) },

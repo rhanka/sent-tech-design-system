@@ -17,10 +17,14 @@
  */
 import {
   collapsedOf,
+  createTypeResolver,
+  GENERIC_PROFILE_ID,
   hasErrors,
   localIdOf,
   occurrenceRef,
+  projectView,
   validateDocument,
+  validateView,
   viewRef,
   type DiagramForm,
   type DiagramPresentation,
@@ -28,7 +32,9 @@ import {
   type EntityRef,
   type OccurrenceRef,
   type PortOccurrence,
+  type PortRef,
   type PortSide,
+  type ProfileRegistry,
   type RelationOccurrence,
   type RelationRef,
   type SemanticDocument,
@@ -36,7 +42,7 @@ import {
 } from "@sentropic/diagram-core";
 
 import { dockEdges, parallelRelations, type Dock, type EdgeDocks } from "./dock.js";
-import { ancestorsOf, readGraph, type LayoutGraph } from "./graph.js";
+import { ancestorsOf, type LayoutEdge, type LayoutGraph, type LayoutNode } from "./graph.js";
 import {
   effectiveStretch,
   groupLeaves,
@@ -104,17 +110,19 @@ function semanticName(document: SemanticDocument, entity: EntityRef): string {
   return name !== undefined && name.kind === "text" && typeof name.value === "string" ? name.value : "";
 }
 
-function formOf(presentation: DiagramPresentation, entity: EntityRef): DiagramForm | undefined {
-  return presentation.entities[entity]?.form;
+function formOf(presentation: DiagramPresentation, occurrence: OccurrenceRef): DiagramForm | undefined {
+  return (presentation.entities as Record<string, { form: DiagramForm }>)[occurrence]?.form;
 }
 
 /** Slot text for one occurrence: typed presentation slots, else the semantic name as title. */
 function slotTexts(
   document: SemanticDocument,
   presentation: DiagramPresentation,
+  occurrence: OccurrenceRef,
   entity: EntityRef,
 ): Partial<Record<TextRole, string>> {
-  const text = presentation.entities[entity]?.text;
+  const text = (presentation.entities as Record<string, { text: Partial<Record<TextRole, string>> }>)[occurrence]
+    ?.text;
   const slots: Partial<Record<TextRole, string>> = {};
   if (text?.kicker !== undefined) slots.kicker = text.kicker;
   const title = text?.title ?? semanticName(document, entity);
@@ -145,11 +153,56 @@ function kindGap(kind: OccurrenceKind, gaps: ResolvedGaps, axis: "x" | "y"): num
 }
 
 /** Compatibility adapter: one shared line per legacy measurement. */
-function singleLineMeasurer(measureText: LayoutOptions["measureText"]): LineMeasurer {
-  return (request: MeasureRequest): LineLayout => {
-    const size = measureText(request.text, request.role);
-    return { lines: [request.text], width: size.width, height: size.height, overflow: false };
-  };
+function stripProjections(sourceView: ViewDocument): ViewDocument {
+  const relationOccurrences: Record<string, RelationOccurrence> = {};
+  for (const [key, occurrence] of Object.entries(sourceView.relationOccurrences)) {
+    relationOccurrences[key] = {
+      ...occurrence,
+      endpoints: occurrence.endpoints.map((endpoint) =>
+        endpoint.sourceOccurrence === undefined
+          ? { role: endpoint.role, occurrence: endpoint.occurrence }
+          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+      ),
+    };
+  }
+  return { ...sourceView, relationOccurrences };
+}
+
+function stampFoldGroups(
+  sourceView: ViewDocument | undefined,
+  collapsed: ReadonlySet<OccurrenceRef>,
+): Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }> {
+  const groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }> = {};
+  if (sourceView !== undefined) {
+    for (const [key, group] of Object.entries(sourceView.groups)) {
+      const typed = group as { id: string; occurrence?: OccurrenceRef; collapsed?: boolean };
+      if (typed.occurrence === undefined) {
+        groups[key] = { id: typed.id, occurrence: undefined as never };
+        continue;
+      }
+      if (collapsed.has(typed.occurrence)) {
+        groups[key] = { id: typed.id, occurrence: typed.occurrence, collapsed: true };
+        continue;
+      }
+      if (typed.collapsed === undefined) {
+        const { collapsed: _absent, ...rest } = typed as { collapsed?: boolean; id: string; occurrence: OccurrenceRef };
+        void _absent;
+        groups[key] = rest as { id: string; occurrence: OccurrenceRef };
+        continue;
+      }
+      groups[key] = { id: typed.id, occurrence: typed.occurrence, collapsed: false };
+    }
+  }
+  for (const id of collapsed) {
+    const bound = Object.keys(groups).find((key) => groups[key]?.occurrence === id);
+    if (bound !== undefined) continue;
+    const raw = id as string;
+    const local = raw.includes(":") ? raw.slice(raw.indexOf(":") + 1) : raw;
+    const generated = `grp.${local.length}.${local}`;
+    if (groups[generated] !== undefined) continue;
+    groups[generated] = { id: generated, occurrence: id, collapsed: true };
+  }
+  return groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
 }
 
 const clean = (value: number): number => (value === 0 ? 0 : value);
@@ -180,7 +233,23 @@ export function layoutMeasured(
       diagnostics: [],
     };
   }
-  const diagnostics = validateDocument(document, { registry: options.registry });
+  if (options.measureLines === undefined) {
+    return {
+      status: "refused",
+      refusals: [
+        {
+          code: "measure-lines-missing",
+          path: "measureLines",
+          message: "measured layout needs an injected LineMeasurer through options.measureLines",
+        },
+      ],
+      diagnostics: [],
+    };
+  }
+  const measure = options.measureLines;
+  const validationOptions =
+    options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
+  const diagnostics = validateDocument(document, validationOptions);
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",
@@ -188,14 +257,13 @@ export function layoutMeasured(
       diagnostics,
     };
   }
-  const read = readGraph(document);
+  const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
   const globalStretch = hints.stretch ?? false;
-  const measure = options.measureLines ?? singleLineMeasurer(options.measureText);
   const warnings: LayoutWarning[] = [];
   const overflows: MeasurementOverflow[] = [];
   const warnOverflow = (overflow: MeasurementOverflow, zone: boolean): void => {
@@ -220,16 +288,49 @@ export function layoutMeasured(
   const occurrenceOf = (entity: EntityRef): OccurrenceRef => occurrenceRef(`e.${localIdOf(entity)}`);
   const entityOfOccurrence = new Map<OccurrenceRef, EntityRef>();
   for (const id of graph.nodes.keys()) entityOfOccurrence.set(occurrenceOf(id), id);
+  const collapsedOccurrences =
+    options.collapsed !== undefined
+      ? new Set<OccurrenceRef>(options.collapsed)
+      : sourceView !== undefined
+        ? new Set<OccurrenceRef>([...collapsedOf(sourceView)] as OccurrenceRef[])
+        : new Set<OccurrenceRef>();
   const collapsed = new Set<EntityRef>();
-  if (sourceView !== undefined) {
-    for (const id of collapsedOf(sourceView)) {
-      const entity = sourceView.entityOccurrences[id as OccurrenceRef]?.entity;
-      if (entity !== undefined) collapsed.add(entity);
-    }
+  for (const id of collapsedOccurrences) {
+    const entity = entityOfOccurrence.get(id) ?? sourceView?.entityOccurrences[id]?.entity;
+    if (entity !== undefined && graph.nodes.has(entity)) collapsed.add(entity);
   }
-  for (const id of options.collapsed ?? []) {
-    const entity = entityOfOccurrence.get(id);
-    if (entity !== undefined) collapsed.add(entity);
+  let foldMetadata: {
+    groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
+    filters: ViewDocument["filters"];
+    presentationState: ViewDocument["presentation"];
+    summaryLabels: ViewDocument["summaryLabels"];
+  } = {
+    groups: {},
+    filters: [],
+    presentationState: { camera: { x: 0, y: 0, zoom: 1 } },
+    summaryLabels: undefined,
+  };
+  if (sourceView !== undefined) {
+    try {
+      const stripped = stripProjections(sourceView);
+      const projected = projectView(document, stripped, [...collapsedOccurrences]);
+      foldMetadata = {
+        groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
+        filters: [...projected.filters],
+        presentationState: projected.presentation,
+        summaryLabels: projected.summaryLabels,
+      };
+    } catch {
+      foldMetadata = {
+        groups: stampFoldGroups(sourceView, collapsedOccurrences) as Record<
+          string,
+          { id: string; occurrence: OccurrenceRef; collapsed?: boolean }
+        >,
+        filters: [...sourceView.filters],
+        presentationState: sourceView.presentation,
+        summaryLabels: sourceView.summaryLabels,
+      };
+    }
   }
   const hidden = new Set<EntityRef>();
   for (const id of graph.nodes.keys()) {
@@ -243,7 +344,7 @@ export function layoutMeasured(
   const visible = (id: EntityRef): boolean => !hidden.has(id);
   const classify = (id: EntityRef): OccurrenceKind => {
     const node = graph.nodes.get(id)!;
-    const form = formOf(presentation, id);
+    const form = formOf(presentation, occurrenceOf(id));
     if (form === "legend-key") return "legend-key";
     if (form === "legend") return collapsed.has(id) ? "legend-collapsed" : "legend-expanded";
     if (form === "container" || node.kind === "container") {
@@ -263,36 +364,48 @@ export function layoutMeasured(
   const childOrder = (parent: EntityRef, children: readonly EntityRef[]): EntityRef[] => {
     const live = children.filter(visible);
     if (kinds.get(parent) === "legend-expanded") {
-      return resolveOrder(live, presentation.legends[parent]?.order);
+      const order = (presentation.legends as Record<string, { order: readonly EntityRef[] }>)[occurrenceOf(parent)]
+        ?.order;
+      return resolveOrder(live, order);
     }
     return resolveOrder(live, hints.ordering?.[parent]);
   };
 
+  const groupEffectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
+    effectiveStretch(group.stretch, parentEffective);
+
   /** Stretch context of one member: its innermost group, else the global flag. */
   const contextStretchOf = (member: EntityRef): boolean => {
-    let best: LayoutGroup | undefined;
+    let bestEffective = globalStretch;
     let bestDepth = -1;
-    const visit = (group: LayoutGroup, depth: number): void => {
-      if (!groupLeaves(group).includes(member)) return;
-      if (depth > bestDepth) {
-        best = group;
+    const visit = (group: LayoutGroup, depth: number, parentEffective: boolean): void => {
+      const effective = groupEffectiveOf(group, parentEffective);
+      if (groupLeaves(group).includes(member) && depth > bestDepth) {
+        bestEffective = effective;
         bestDepth = depth;
       }
-      for (const item of group.items) if (isLayoutGroup(item)) visit(item, depth + 1);
+      for (const item of group.items) if (isLayoutGroup(item)) visit(item, depth + 1, effective);
     };
-    for (const group of hints.grouping ?? []) visit(group, 0);
-    return effectiveStretch(best?.stretch, globalStretch);
+    for (const group of hints.grouping ?? []) visit(group, 0, globalStretch);
+    return bestDepth >= 0 ? bestEffective : globalStretch;
   };
 
-  /** Stretch in force for one sibling level: its covering group, else inherited. */
+  /** Stretch in force for one sibling level: its innermost covering group, else inherited. */
   const levelStretchOf = (level: readonly EntityRef[], inherited: boolean): boolean => {
-    for (const group of hints.grouping ?? []) {
+    if (level.length === 0) return inherited;
+    let bestEffective: boolean | undefined;
+    let bestDepth = -1;
+    const visit = (group: LayoutGroup, depth: number, parentEffective: boolean): void => {
+      const effective = groupEffectiveOf(group, parentEffective);
       const leaves = new Set(groupLeaves(group));
-      if (level.length > 0 && level.every((member) => leaves.has(member))) {
-        return effectiveStretch(group.stretch, globalStretch);
+      if (level.every((member) => leaves.has(member)) && depth > bestDepth) {
+        bestEffective = effective;
+        bestDepth = depth;
       }
-    }
-    return inherited;
+      for (const item of group.items) if (isLayoutGroup(item)) visit(item, depth + 1, effective);
+    };
+    for (const group of hints.grouping ?? []) visit(group, 0, globalStretch);
+    return bestDepth >= 0 ? (bestEffective as boolean) : inherited;
   };
 
   // Step 2 — widths bottom-up: (a) unwrapped header width at the
@@ -300,7 +413,7 @@ export function layoutMeasured(
   // grouping width implied by hints as an authored override (stretch).
   const outerWidths = new Map<EntityRef, number>();
   const unwrappedHeaderWidth = (id: EntityRef): number => {
-    const slots = slotTexts(document, presentation, id);
+    const slots = slotTexts(document, presentation, occurrenceOf(id), id);
     const width = headerAvailableWidth(UNWRAPPED_PROBE_WIDTH, true);
     let widest = 0;
     for (const role of ["kicker", "title"] as const) {
@@ -310,7 +423,75 @@ export function layoutMeasured(
     }
     return widest;
   };
-  const computeWidth = (id: EntityRef, inheritedStretch: boolean): number => {
+  const kindGapLocal = (kind: OccurrenceKind, axis: "x" | "y"): number => {
+    const zone = kind === "container-expanded" || kind === "legend-expanded";
+    if (axis === "x") return zone ? gaps.zoneGapX : gaps.cardGapX;
+    return zone ? gaps.zoneGapY : gaps.cardGapY;
+  };
+  const groupGapKind = (group: LayoutGroup): OccurrenceKind | "group-zone" | "group-card" => {
+    const leaves = groupLeaves(group);
+    const zone = leaves.some((leaf) => {
+      const kind = kinds.get(leaf);
+      return kind === "container-expanded" || kind === "legend-expanded";
+    });
+    return zone ? "group-zone" : "group-card";
+  };
+  const gapForItem = (
+    item: { readonly entity?: EntityRef; readonly group?: LayoutGroup },
+    axis: "x" | "y",
+  ): number => {
+    if (item.group !== undefined) {
+      const kind = groupGapKind(item.group);
+      if (kind === "group-zone") return axis === "x" ? gaps.zoneGapX : gaps.zoneGapY;
+      return axis === "x" ? gaps.cardGapX : gaps.cardGapY;
+    }
+    return kindGapLocal(kinds.get(item.entity!)!, axis);
+  };
+  const groupContentWidth = (group: LayoutGroup): number => {
+    const axis = group.direction === "rows" ? "y" : "x";
+    if (axis === "y") {
+      let widest = 0;
+      for (const item of group.items) {
+        if (isLayoutGroup(item)) widest = Math.max(widest, groupContentWidth(item));
+        else if (visible(item)) widest = Math.max(widest, outerWidths.get(item) ?? 0);
+      }
+      return widest;
+    }
+    let total = 0;
+    let first = true;
+    let previousGapAfter: number | undefined;
+    for (const item of group.items) {
+      if (!isLayoutGroup(item) && !visible(item)) continue;
+      if (!first) {
+        const inherited = gapForItem(isLayoutGroup(item) ? { group: item } : { entity: item as EntityRef }, "x");
+        total += previousGapAfter ?? inherited;
+      }
+      first = false;
+      if (isLayoutGroup(item)) {
+        total += groupContentWidth(item);
+        previousGapAfter = item.gapAfter;
+      } else {
+        total += outerWidths.get(item as EntityRef) ?? 0;
+        previousGapAfter = undefined;
+      }
+    }
+    return total;
+  };
+  const groupingOuterWidth = (ordered: readonly EntityRef[]): number | undefined => {
+    const parts = groupsForLevel(ordered, hints);
+    if (parts === undefined) return undefined;
+    let widest = 0;
+    for (const part of parts) {
+      if (part.group !== undefined) widest = Math.max(widest, groupContentWidth(part.group));
+      else {
+        for (const member of part.members) {
+          if (visible(member)) widest = Math.max(widest, outerWidths.get(member) ?? 0);
+        }
+      }
+    }
+    return widest;
+  };
+  const computeWidth = (id: EntityRef): number => {
     const kind = kinds.get(id)!;
     if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
       outerWidths.set(id, FIXED_CARD_WIDTH);
@@ -321,33 +502,120 @@ export function layoutMeasured(
       return 0;
     }
     const ordered = childOrder(id, graph.nodes.get(id)!.children);
-    const levelStretch = levelStretchOf(ordered, inheritedStretch);
-    for (const child of ordered) computeWidth(child, levelStretchOf([child], levelStretch));
-    if (levelStretch) {
-      let widest = 0;
-      for (const child of ordered) {
-        const childKind = kinds.get(child)!;
-        if (childKind === "container-expanded" || childKind === "legend-expanded") {
-          widest = Math.max(widest, outerWidths.get(child) ?? 0);
-        }
-      }
-      for (const child of ordered) {
-        const childKind = kinds.get(child)!;
-        if (childKind === "container-expanded" || childKind === "legend-expanded") outerWidths.set(child, widest);
-      }
-    }
+    for (const child of ordered) computeWidth(child);
     let widestChild = 0;
     for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
-    const outer = Math.max(
-      FIXED_CARD_WIDTH,
-      unwrappedHeaderWidth(id) + 2 * 16,
-      widestChild + (ordered.length > 0 ? 2 * 16 : 0),
-    );
+    const grouping = groupingOuterWidth(ordered);
+    const headerDriven = unwrappedHeaderWidth(id) + 2 * 16 + 32;
+    const content = grouping ?? widestChild;
+    const outer = Math.max(FIXED_CARD_WIDTH, headerDriven, content + (ordered.length > 0 ? 2 * 16 : 0));
     outerWidths.set(id, outer);
     return outer;
   };
   const rootOrder = resolveOrder(graph.roots.filter(visible), undefined);
-  for (const root of rootOrder) computeWidth(root, contextStretchOf(root));
+  for (const root of rootOrder) computeWidth(root);
+  const effectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
+    effectiveStretch(group.stretch, parentEffective);
+  const equalizeRowsGroup = (group: LayoutGroup, parentEffective: boolean): void => {
+    const effective = effectiveOf(group, parentEffective);
+    if (group.direction === "rows" && effective) {
+      let widest = 0;
+      for (const item of group.items) {
+        if (isLayoutGroup(item)) continue;
+        if (!visible(item)) continue;
+        const kind = kinds.get(item)!;
+        if (kind === "container-expanded" || kind === "legend-expanded") {
+          widest = Math.max(widest, outerWidths.get(item) ?? 0);
+        }
+      }
+      for (const item of group.items) {
+        if (isLayoutGroup(item)) continue;
+        if (!visible(item)) continue;
+        const kind = kinds.get(item)!;
+        if (kind === "container-expanded" || kind === "legend-expanded") outerWidths.set(item, widest);
+      }
+    }
+    for (const item of group.items) if (isLayoutGroup(item)) equalizeRowsGroup(item, effective);
+  };
+  for (const group of hints.grouping ?? []) equalizeRowsGroup(group, globalStretch);
+  for (const id of graph.nodes.keys()) {
+    if (kinds.get(id) !== "container-expanded" && kinds.get(id) !== "legend-expanded") continue;
+    const ordered = childOrder(id, graph.nodes.get(id)!.children);
+    const levelStretch = levelStretchOf(ordered, contextStretchOf(id));
+    if (!levelStretch) continue;
+    let widest = 0;
+    for (const child of ordered) {
+      const childKind = kinds.get(child)!;
+      if (childKind === "container-expanded" || childKind === "legend-expanded") {
+        widest = Math.max(widest, outerWidths.get(child) ?? 0);
+      }
+    }
+    for (const child of ordered) {
+      const childKind = kinds.get(child)!;
+      if (childKind === "container-expanded" || childKind === "legend-expanded") outerWidths.set(child, widest);
+    }
+  }
+  {
+    const rootGroups = (hints.grouping ?? []).filter((group) =>
+      groupLeaves(group).every((leaf) => graph.roots.includes(leaf) && visible(leaf)),
+    );
+    const grouped = new Set<EntityRef>();
+    for (const group of rootGroups) for (const leaf of groupLeaves(group)) grouped.add(leaf);
+    const ungrouped = rootOrder.filter((id) => !grouped.has(id));
+    const stretchOfRoot = (root: EntityRef): boolean => contextStretchOf(root);
+    const expandedRoots = (roots: readonly EntityRef[]): EntityRef[] =>
+      roots.filter(
+        (root) => kinds.get(root) === "container-expanded" || kinds.get(root) === "legend-expanded",
+      );
+    const equalizeList = (roots: readonly EntityRef[], stretch: boolean): void => {
+      if (!stretch) return;
+      const expanded = expandedRoots(roots);
+      if (expanded.length === 0) return;
+      let widest = 0;
+      for (const root of expanded) widest = Math.max(widest, outerWidths.get(root) ?? 0);
+      for (const root of expanded) outerWidths.set(root, widest);
+    };
+    for (const group of rootGroups) {
+      if (group.direction !== "rows") continue;
+      const leaves = groupLeaves(group).filter((leaf) => visible(leaf));
+      let effective = globalStretch;
+      const visit = (current: LayoutGroup, parentEffective: boolean): boolean | undefined => {
+        const currentEffective = effectiveOf(current, parentEffective);
+        if (current === group) return currentEffective;
+        for (const item of current.items) {
+          if (!isLayoutGroup(item)) continue;
+          if (groupLeaves(item).some((leaf) => leaves.includes(leaf))) {
+            const found = visit(item, currentEffective);
+            if (found !== undefined) return found;
+          }
+        }
+        return undefined;
+      };
+      void visit;
+      const topEffective = (() => {
+        let best: boolean | undefined;
+        let bestDepth = -1;
+        const walk = (candidate: LayoutGroup, depth: number, parentEffective: boolean): void => {
+          const currentEffective = effectiveOf(candidate, parentEffective);
+          const candidateLeaves = new Set(groupLeaves(candidate));
+          if (leaves.every((leaf) => candidateLeaves.has(leaf)) && depth > bestDepth) {
+            best = currentEffective;
+            bestDepth = depth;
+          }
+          for (const item of candidate.items) if (isLayoutGroup(item)) walk(item, depth + 1, currentEffective);
+        };
+        for (const top of hints.grouping ?? []) walk(top, 0, globalStretch);
+        return bestDepth >= 0 ? (best as boolean) : globalStretch;
+      })();
+      effective = topEffective;
+      equalizeList(leaves, effective);
+    }
+    if (ungrouped.length > 0) {
+      const stretch = globalStretch;
+      equalizeList(ungrouped, stretch);
+    }
+    void stretchOfRoot;
+  }
 
   // Step 3 — headers before any child placement; folded and expanded forms
   // are distinct inputs.
@@ -363,10 +631,10 @@ export function layoutMeasured(
     const input: EntityMeasurementInput = {
       entity: id,
       occurrence: occurrenceOf(id),
-      effectiveType: `${document.entities[id]?.profile ?? ""}:${document.entities[id]?.type ?? ""}/${formOf(presentation, id) ?? graph.nodes.get(id)!.kind}`,
+      effectiveType: `${document.entities[id]?.profile ?? ""}:${document.entities[id]?.type ?? ""}/${formOf(presentation, occurrenceOf(id)) ?? graph.nodes.get(id)!.kind}`,
       folded,
       toggle,
-      slots: slotTexts(document, presentation, id),
+      slots: slotTexts(document, presentation, occurrenceOf(id), id),
       availableWidth: inner,
       allocatedLines: { ...DEFAULT_ALLOCATED_LINES },
     };
@@ -404,23 +672,26 @@ export function layoutMeasured(
     let cursorY = y;
     let width = 0;
     let height = 0;
+    let previousGapAfter: number | undefined;
     items.forEach((item, index) => {
       if (index > 0) {
-        const gap = stackGap(item, axis);
+        const gap = previousGapAfter ?? stackGap(item, axis);
         if (axis === "x") cursorX += gap;
         else cursorY += gap;
       }
+      previousGapAfter = undefined;
       if ("group" in item) {
         const size = placeGroupItems(item.group, cursorX, cursorY, stretch);
         if (axis === "x") {
-          cursorX += size.width + (item.group.gapAfter ?? 0);
+          cursorX += size.width;
           height = Math.max(height, size.height);
           width = cursorX - x;
         } else {
-          cursorY += size.height + (item.group.gapAfter ?? 0);
+          cursorY += size.height;
           width = Math.max(width, size.width);
           height = cursorY - y;
         }
+        previousGapAfter = item.group.gapAfter;
       } else {
         const box = placeOne(item.entity, cursorX, cursorY, stretch);
         if (axis === "x") {
@@ -506,21 +777,23 @@ export function layoutMeasured(
   let rootY = 0;
   let rootWidth = 0;
   let firstRoot = true;
-  const seatRoot = (height: number, width: number, gapAfter: number): void => {
-    rootY += height + gapAfter;
+  let previousRootGapAfter: number | undefined;
+  const seatRoot = (height: number, width: number, gapAfter: number | undefined): void => {
+    rootY += height;
     rootWidth = Math.max(rootWidth, width);
+    previousRootGapAfter = gapAfter;
   };
   for (const group of rootGroups) {
-    if (!firstRoot) rootY += gaps.rankGap;
+    if (!firstRoot) rootY += previousRootGapAfter ?? gaps.rankGap;
     firstRoot = false;
     const size = placeGroupItems(group, 0, rootY, globalStretch);
-    seatRoot(size.height, size.width, group.gapAfter ?? 0);
+    seatRoot(size.height, size.width, group.gapAfter);
   }
   for (const root of ungroupedRoots) {
-    if (!firstRoot) rootY += gaps.rankGap;
+    if (!firstRoot) rootY += previousRootGapAfter ?? gaps.rankGap;
     firstRoot = false;
     const box = placeOne(root, 0, rootY, contextStretchOf(root));
-    seatRoot(box.height, box.width, 0);
+    seatRoot(box.height, box.width, undefined);
   }
 
   // Step 5 — bodies and labels through the same measurer.
@@ -546,7 +819,7 @@ export function layoutMeasured(
     if (!visible(id)) continue;
     const kind = kinds.get(id)!;
     const occurrence = occurrenceOf(id);
-    const text = slotTexts(document, presentation, id);
+    const text = slotTexts(document, presentation, occurrence, id);
     if (kind === "legend-key") {
       const parent = graph.nodes.get(id)?.parent;
       const inner =
@@ -584,12 +857,95 @@ export function layoutMeasured(
     }
   }
 
-  // Visible edges: internal edges under a collapse are explicitly excluded.
-  const visibleEdges = graph.edges.filter((edge) => visible(edge.source.entity) && visible(edge.target.entity));
+  // Visible edges: internal edges under a collapse are excluded; external
+  // edges are projected onto their outermost visible collapsed representatives.
+  const representativeEntityOf = (entity: EntityRef): EntityRef => {
+    if (visible(entity)) return entity;
+    let current: EntityRef | undefined = entity;
+    let representative: EntityRef | undefined;
+    while (current !== undefined) {
+      const node = graph.nodes.get(current);
+      const parent: EntityRef | undefined = node?.parent;
+      if (parent !== undefined && collapsed.has(parent) && visible(parent)) {
+        representative = parent;
+      }
+      current = parent;
+    }
+    if (representative !== undefined) {
+      let outer: EntityRef = representative;
+      let cursor: EntityRef | undefined = graph.nodes.get(representative)?.parent;
+      while (cursor !== undefined) {
+        if (collapsed.has(cursor) && visible(cursor)) outer = cursor;
+        cursor = graph.nodes.get(cursor)?.parent;
+      }
+      return outer;
+    }
+    return entity;
+  };
+  type ProjectedEdge = {
+    readonly id: RelationRef;
+    readonly source: EntityRef;
+    readonly target: EntityRef;
+    readonly sourcePort: PortRef | undefined;
+    readonly targetPort: PortRef | undefined;
+    readonly originalSource: EntityRef;
+    readonly originalTarget: EntityRef;
+  };
+  const projectedEdges: ProjectedEdge[] = [];
+  if (sourceView === undefined) {
+    for (const edge of graph.edges) {
+      if (!visible(edge.source.entity) || !visible(edge.target.entity)) continue;
+      projectedEdges.push({
+        id: edge.id,
+        source: edge.source.entity,
+        target: edge.target.entity,
+        sourcePort: edge.source.port,
+        targetPort: edge.target.port,
+        originalSource: edge.source.entity,
+        originalTarget: edge.target.entity,
+      });
+    }
+  } else {
+    for (const edge of graph.edges) {
+      if (edge.source.port !== undefined || edge.target.port !== undefined) {
+        if (!visible(edge.source.entity) || !visible(edge.target.entity)) continue;
+        projectedEdges.push({
+          id: edge.id,
+          source: edge.source.entity,
+          target: edge.target.entity,
+          sourcePort: edge.source.port,
+          targetPort: edge.target.port,
+          originalSource: edge.source.entity,
+          originalTarget: edge.target.entity,
+        });
+        continue;
+      }
+      const repSource = representativeEntityOf(edge.source.entity);
+      const repTarget = representativeEntityOf(edge.target.entity);
+      const hiddenSource = !visible(edge.source.entity);
+      const hiddenTarget = !visible(edge.target.entity);
+      if (repSource === repTarget && (hiddenSource || hiddenTarget)) continue;
+      if (!visible(repSource) || !visible(repTarget)) continue;
+      projectedEdges.push({
+        id: edge.id,
+        source: repSource,
+        target: repTarget,
+        sourcePort: undefined,
+        targetPort: undefined,
+        originalSource: edge.source.entity,
+        originalTarget: edge.target.entity,
+      });
+    }
+  }
+  const visibleEdges = projectedEdges;
   const filteredGraph: LayoutGraph = {
     nodes: new Map([...graph.nodes].filter(([id]) => visible(id))),
     roots: graph.roots.filter(visible),
-    edges: visibleEdges,
+    edges: visibleEdges.map((edge) => ({
+      id: edge.id,
+      source: edge.sourcePort === undefined ? { entity: edge.source } : { entity: edge.source, port: edge.sourcePort },
+      target: edge.targetPort === undefined ? { entity: edge.target } : { entity: edge.target, port: edge.targetPort },
+    })),
   };
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
@@ -609,60 +965,35 @@ export function layoutMeasured(
   }
 
   // Step 6 — dock and route against fixed boxes (§4.6.4/§4.6.5).
-  const docked = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics, labelSizes });
+  const docked = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics, labelSizes, fixed: true });
   const finalDocks = new Map<RelationRef, EdgeDocks>(docked.docks);
-  const sideLength = (rect: Rect, side: PortSide): number =>
-    side === "east" || side === "west" ? rect.height : rect.width;
-  const byEntitySide = new Map<string, { entity: EntityRef; side: PortSide; edge: RelationRef; end: "source" | "target" }[]>();
-  for (const edge of visibleEdges) {
-    const pair = finalDocks.get(edge.id);
-    if (pair === undefined) continue;
-    for (const end of ["source", "target"] as const) {
-      const dock = pair[end];
-      const key = `${dock.entity}|${dock.side}`;
-      const list = byEntitySide.get(key) ?? [];
-      list.push({ entity: dock.entity, side: dock.side, edge: edge.id, end });
-      byEntitySide.set(key, list);
-    }
-  }
   const dockingWarnings: LayoutWarning[] = [];
-  for (const list of byEntitySide.values()) {
-    list.sort((left, right) => byString(left.edge, right.edge));
-    const rect = rects.get(list[0]!.entity)!;
-    const capacity = Math.max(1, Math.floor(sideLength(rect, list[0]!.side) / metrics.slotSpacing) + 1);
-    if (list.length <= capacity) continue;
-    const fitted = list.slice(0, capacity);
-    const overflowed = list.slice(capacity);
-    const anchorDock = finalDocks.get(fitted[fitted.length - 1]!.edge)![fitted[fitted.length - 1]!.end];
-    for (const entry of overflowed) {
-      const pair = finalDocks.get(entry.edge)!;
-      const current = pair[entry.end];
-      const point = edgePointOnSide(rect, entry.side, anchorDock.anchor);
-      finalDocks.set(entry.edge, { ...pair, [entry.end]: { ...current, point, anchor: anchorDock.anchor } });
-    }
+  for (const overflow of [...docked.fixedOverflows].sort(
+    (left, right) => byString(left.entity, right.entity) || byString(left.side, right.side),
+  )) {
+    const occurrence = occurrenceOf(overflow.entity);
     dockingWarnings.push({
       code: "docking-overflow",
-      refs: [occurrenceOf(list[0]!.entity), ...overflowed.map((entry) => entry.edge)],
-      message: `docking overflow on ${list[0]!.side}: ${list.length} slots needed, ${fitted.length} fitted; the box is kept`,
+      refs: [occurrence],
+      message: `side ${overflow.side} of ${occurrence} needs ${overflow.required} docks, fits ${overflow.fitted}`,
       details: {
-        occurrence: occurrenceOf(list[0]!.entity),
-        side: list[0]!.side,
-        required: list.length,
-        fitted: fitted.length,
+        occurrence,
+        side: overflow.side,
+        required: overflow.required,
+        fitted: overflow.fitted,
       },
     });
   }
-  dockingWarnings.sort((left, right) => byString(left.refs[0]!, right.refs[0]!));
   warnings.push(...dockingWarnings);
   const requests = visibleEdges.map((edge) => {
     const pair = finalDocks.get(edge.id)!;
     const passable = new Set<EntityRef>([
-      ...ancestorsOf(filteredGraph, edge.source.entity),
-      ...ancestorsOf(filteredGraph, edge.target.entity),
+      ...ancestorsOf(filteredGraph, edge.source),
+      ...ancestorsOf(filteredGraph, edge.target),
     ]);
     return {
       id: edge.id,
-      pairKey: [edge.source.entity, edge.target.entity].sort().join("|"),
+      pairKey: [edge.source, edge.target].sort().join("|"),
       start: pair.source.point,
       startExit: pair.source.exit,
       end: pair.target.point,
@@ -695,14 +1026,27 @@ export function layoutMeasured(
   }
 
   // Step 7 — emit the view plus measurements.
-  const placedView = buildMeasuredView(document, filteredGraph, rects, finalDocks, routed.routes, options, sourceView);
+  const placedView = buildMeasuredView(
+    document,
+    filteredGraph,
+    rects,
+    finalDocks,
+    routed.routes,
+    options,
+    foldMetadata,
+    visibleEdges,
+    occurrenceOf,
+  );
   const bounds = unionOf(rects, routed.routes, labelBoxes);
   const width = bounds.width;
   const zoom = bounds.empty ? 1 : Math.min(1, Math.max(MIN_ZOOM, options.targetWidth / width));
   const camera = bounds.empty ? { x: 0, y: 0 } : { x: bounds.xmin, y: bounds.ymin };
   const view: ViewDocument = {
     ...placedView,
-    presentation: { camera: { x: clean(camera.x), y: clean(camera.y), zoom } },
+    presentation: {
+      ...placedView.presentation,
+      camera: { x: clean(camera.x), y: clean(camera.y), zoom },
+    },
   };
   const measurements: LayoutMeasurements = {
     headers: [...headers.values()].sort((left, right) => byString(left.occurrence, right.occurrence)),
@@ -773,6 +1117,21 @@ function unionOf(
   return { empty: false, xmin, ymin, width: xmax - xmin, height: ymax - ymin };
 }
 
+type MeasuredFoldMetadata = {
+  groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
+  filters: ViewDocument["filters"];
+  presentationState: ViewDocument["presentation"];
+  summaryLabels: ViewDocument["summaryLabels"];
+};
+
+type MeasuredProjectedEdge = {
+  readonly id: RelationRef;
+  readonly source: EntityRef;
+  readonly target: EntityRef;
+  readonly originalSource: EntityRef;
+  readonly originalTarget: EntityRef;
+};
+
 function buildMeasuredView(
   document: SemanticDocument,
   graph: LayoutGraph,
@@ -780,27 +1139,36 @@ function buildMeasuredView(
   docks: ReadonlyMap<RelationRef, EdgeDocks>,
   routes: ReadonlyMap<RelationRef, readonly Vec2[]>,
   options: LayoutOptions,
-  sourceView: ViewDocument | undefined,
+  foldMetadata: MeasuredFoldMetadata,
+  projectedEdges: readonly MeasuredProjectedEdge[],
+  occurrenceOf: (entity: EntityRef) => OccurrenceRef,
 ): ViewDocument {
-  const occurrenceOf = (entity: EntityRef): OccurrenceRef => occurrenceRef(`e.${localIdOf(entity)}`);
+  const maxContainerDepth = Math.max(
+    -1,
+    ...[...graph.nodes.values()].filter((node) => node.kind === "container").map((node) => node.depth),
+  );
   const entityOccurrences: Record<string, EntityOccurrence> = {};
   for (const id of [...graph.nodes.keys()].sort(byString)) {
     const rect = rects.get(id)!;
     const occurrence = occurrenceOf(id);
+    const node = graph.nodes.get(id)!;
     entityOccurrences[occurrence] = {
       id: occurrence,
       entity: id,
       geometry: { x: clean(rect.x), y: clean(rect.y), width: clean(rect.width), height: clean(rect.height) },
-      z: graph.nodes.get(id)!.kind === "container" ? -1 : 0,
+      z: node.kind === "container" ? node.depth - (maxContainerDepth + 1) : 0,
     };
   }
   const portOccurrences: Record<string, PortOccurrence> = {};
   const relationOccurrences: Record<string, RelationOccurrence> = {};
   const coded = (value: string): string => `${value.length}.${value}`;
   const parallel = parallelRelations(graph);
+  const projectedById = new Map<RelationRef, MeasuredProjectedEdge>();
+  for (const edge of projectedEdges) projectedById.set(edge.id, edge);
   for (const edge of [...graph.edges].sort((left, right) => byString(left.id, right.id))) {
     const pair = docks.get(edge.id)!;
     const route = routes.get(edge.id)!;
+    const projected = projectedById.get(edge.id);
     const endOccurrence = (dock: Dock, role: "source" | "target"): OccurrenceRef => {
       if (dock.port === undefined) return occurrenceOf(dock.entity);
       const id = parallel.has(edge.id)
@@ -820,6 +1188,36 @@ function buildMeasuredView(
       .slice(pair.source.port === undefined ? 0 : 1, pair.target.port === undefined ? route.length : route.length - 1)
       .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
     const id = occurrenceRef(`r.${localIdOf(edge.id)}`);
+    if (projected !== undefined && (projected.source !== projected.originalSource || projected.target !== projected.originalTarget)) {
+      const sourceOccurrence = occurrenceOf(projected.originalSource);
+      const targetOccurrence = occurrenceOf(projected.originalTarget);
+      const sourceRep = occurrenceOf(projected.source);
+      const targetRep = occurrenceOf(projected.target);
+      relationOccurrences[id] = {
+        id,
+        relation: edge.id,
+        endpoints: [
+          projected.source === projected.originalSource
+            ? { role: "source", occurrence: endOccurrence(pair.source, "source") }
+            : {
+                role: "source",
+                occurrence: sourceRep,
+                semanticTarget: projected.originalSource,
+                sourceOccurrence,
+              },
+          projected.target === projected.originalTarget
+            ? { role: "target", occurrence: endOccurrence(pair.target, "target") }
+            : {
+                role: "target",
+                occurrence: targetRep,
+                semanticTarget: projected.originalTarget,
+                sourceOccurrence: targetOccurrence,
+              },
+        ],
+        waypoints,
+      };
+      continue;
+    }
     relationOccurrences[id] = {
       id,
       relation: edge.id,
@@ -831,10 +1229,10 @@ function buildMeasuredView(
     };
   }
   const summaryLabels =
-    sourceView?.summaryLabels === undefined
+    foldMetadata.summaryLabels === undefined
       ? undefined
       : Object.fromEntries(
-          Object.entries(sourceView.summaryLabels).filter(
+          Object.entries(foldMetadata.summaryLabels).filter(
             ([, definition]) =>
               entityOccurrences[definition.sourceOccurrence] !== undefined &&
               entityOccurrences[definition.targetOccurrence] !== undefined,
@@ -847,9 +1245,9 @@ function buildMeasuredView(
     entityOccurrences,
     relationOccurrences,
     portOccurrences,
-    groups: {},
-    filters: [],
-    presentation: { camera: { x: 0, y: 0, zoom: 1 } },
+    groups: foldMetadata.groups as ViewDocument["groups"],
+    filters: [...foldMetadata.filters],
+    presentation: foldMetadata.presentationState,
     ...(summaryLabels === undefined || Object.keys(summaryLabels).length === 0 ? {} : { summaryLabels }),
   };
 }
@@ -867,6 +1265,139 @@ export function layoutFolded(
     };
   }
   return layoutMeasured(document, options, sourceView);
+}
+
+function readMeasuredGraph(
+  document: SemanticDocument,
+  registry: ProfileRegistry,
+): { readonly graph: LayoutGraph } | { readonly refusals: readonly { code: "entity-profile-unsupported" | "entity-type-unsupported" | "relation-type-unsupported"; path: string; message: string; refs: readonly string[] }[] } {
+  const refusals: { code: "entity-profile-unsupported" | "entity-type-unsupported" | "relation-type-unsupported"; path: string; message: string; refs: readonly string[] }[] = [];
+  const resolver = createTypeResolver(document);
+  const kinds = new Map<EntityRef, LayoutNode["kind"]>();
+  for (const key of Object.keys(document.entities).sort(byString)) {
+    const entity = document.entities[key]!;
+    const profile = registry.get(entity.profile as never);
+    if (profile === undefined) {
+      refusals.push({
+        code: "entity-profile-unsupported",
+        path: `entities.${key}.profile`,
+        message: `the layout engine lays out generic@1 and generic@2 entities; ${entity.id} is ${entity.profile}`,
+        refs: [entity.id],
+      });
+      continue;
+    }
+    if (entity.profile !== "generic@1" && entity.profile !== "generic@2") {
+      refusals.push({
+        code: "entity-profile-unsupported",
+        path: `entities.${key}.profile`,
+        message: `the layout engine lays out generic@1 and generic@2 entities; ${entity.id} is ${entity.profile}`,
+        refs: [entity.id],
+      });
+      continue;
+    }
+    const resolution = resolver.resolve(profile, entity.type);
+    if (!resolution.ok) {
+      refusals.push({
+        code: "entity-type-unsupported",
+        path: `entities.${key}.type`,
+        message: `the layout engine lays out node, container, legend and legend-key entities; ${entity.id} is ${entity.type}`,
+        refs: [entity.id],
+      });
+      continue;
+    }
+    const family = resolution.resolved.familyType;
+    const allowed = entity.profile === "generic@1" ? ["node", "container"] : ["node", "container", "legend", "legend-key"];
+    if (!allowed.includes(family)) {
+      refusals.push({
+        code: "entity-type-unsupported",
+        path: `entities.${key}.type`,
+        message: `the layout engine lays out node, container, legend and legend-key entities; ${entity.id} is ${entity.type}`,
+        refs: [entity.id],
+      });
+      continue;
+    }
+    const isContainer =
+      entity.profile === "generic@1" ? family === "container" : resolution.resolved.container === true;
+    kinds.set(entity.id, isContainer ? "container" : "node");
+  }
+  const parentOf = new Map<EntityRef, EntityRef>();
+  const edges: LayoutEdge[] = [];
+  for (const key of Object.keys(document.relations).sort(byString)) {
+    const relation = document.relations[key]!;
+    if (
+      (relation.profile !== "generic@1" && relation.profile !== "generic@2") ||
+      (relation.type !== "contains" && relation.type !== "link")
+    ) {
+      if (relation.type === "contains" || relation.type === "link") {
+        refusals.push({
+          code: "entity-profile-unsupported",
+          path: `relations.${key}.profile`,
+          message: `the layout engine lays out generic@1 and generic@2 relations; ${relation.id} is ${relation.profile} ${relation.type}`,
+          refs: [relation.id],
+        });
+      } else {
+        refusals.push({
+          code: "relation-type-unsupported",
+          path: `relations.${key}.type`,
+          message: `the layout engine lays out link and contains relations; ${relation.id} is ${relation.profile} ${relation.type}`,
+          refs: [relation.id],
+        });
+      }
+      continue;
+    }
+    const role = (name: string) => relation.endpoints.find((endpoint) => endpoint.role === name)?.target;
+    if (relation.type === "contains") {
+      const parent = role("parent") as EntityRef | undefined;
+      const child = role("child") as EntityRef | undefined;
+      if (parent !== undefined && child !== undefined) parentOf.set(child, parent);
+      continue;
+    }
+    const end = (name: string): { entity: EntityRef; port?: import("@sentropic/diagram-core").PortRef } | undefined => {
+      const target = role(name);
+      if (target === undefined) return undefined;
+      if (target.startsWith("port:")) {
+        const port = document.ports[target];
+        return port === undefined ? undefined : { entity: port.owner, port: port.id };
+      }
+      return { entity: target as EntityRef };
+    };
+    const source = end("source");
+    const target = end("target");
+    if (source === undefined || target === undefined) continue;
+    const labelAttr = (relation.attributes as Record<string, { kind?: unknown; value?: unknown }> | undefined)?.["label"];
+    const label =
+      labelAttr !== undefined && labelAttr.kind === "text" && typeof labelAttr.value === "string" && labelAttr.value !== ""
+        ? labelAttr.value
+        : undefined;
+    edges.push({ id: relation.id, source, target, ...(label === undefined ? {} : { label }) });
+  }
+  if (refusals.length > 0) return { refusals };
+  const children = new Map<EntityRef, EntityRef[]>();
+  for (const id of kinds.keys()) children.set(id, []);
+  for (const [child, parent] of parentOf) children.get(parent)?.push(child);
+  const depthOf = (id: EntityRef): number => {
+    let depth = 0;
+    for (let cursor = parentOf.get(id); cursor !== undefined; cursor = parentOf.get(cursor)) depth += 1;
+    return depth;
+  };
+  const nodes = new Map<EntityRef, LayoutNode>();
+  for (const id of [...kinds.keys()].sort(byString)) {
+    const labelAttr = (document.entities[id]?.attributes as Record<string, { kind?: unknown; value?: unknown }> | undefined)?.[
+      "name"
+    ];
+    const label =
+      labelAttr !== undefined && labelAttr.kind === "text" && typeof labelAttr.value === "string" ? labelAttr.value : "";
+    nodes.set(id, {
+      id,
+      kind: kinds.get(id)!,
+      label,
+      parent: parentOf.get(id),
+      children: [...(children.get(id) ?? [])].sort(byString),
+      depth: depthOf(id),
+    });
+  }
+  const roots = [...nodes.values()].filter((node) => node.parent === undefined).map((node) => node.id);
+  return { graph: { nodes, roots, edges } };
 }
 
 interface LevelPart {

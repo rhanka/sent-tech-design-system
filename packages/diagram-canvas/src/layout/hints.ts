@@ -109,6 +109,30 @@ export function validateHints(hints: LayoutHints, scope: HintScope): LayoutRefus
     }
   };
   for (const group of hints.grouping ?? []) visitGroup(group, `hints.grouping.${group.id}`);
+  const ownership = new Map<string, Map<string, string>>();
+  for (const group of hints.grouping ?? []) {
+    const leaves = [...new Set(groupLeaves(group))];
+    const contexts = new Set<string>();
+    for (const leaf of leaves) {
+      const context = scope.roots.has(leaf) ? "__roots__" : `parent:${String(scope.parentOf.get(leaf) ?? "__unknown__")}`;
+      contexts.add(context);
+    }
+    if (contexts.size !== 1) continue;
+    const context = [...contexts][0]!;
+    let claimed = ownership.get(context);
+    if (claimed === undefined) {
+      claimed = new Map<string, string>();
+      ownership.set(context, claimed);
+    }
+    for (const leaf of leaves) {
+      const first = claimed.get(leaf);
+      if (first !== undefined && first !== group.id) {
+        refuse(`hints.grouping.${group.id}.items`, `duplicate leaf ${leaf} across groups ${first} and ${group.id}`, [leaf]);
+        continue;
+      }
+      if (first === undefined) claimed.set(leaf, group.id);
+    }
+  }
   return refusals;
 }
 

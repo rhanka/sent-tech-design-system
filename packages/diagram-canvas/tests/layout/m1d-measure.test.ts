@@ -5,6 +5,8 @@
  */
 import { describe, expect, it } from "vitest";
 
+import { occurrenceRef } from "@sentropic/diagram-core";
+
 import { TOGGLE_ALLOCATION } from "../../src/index.js";
 import {
   buildMeasuredDocument,
@@ -19,8 +21,12 @@ import {
 const presentation = makePresentation({
   forms: { C: "container", a: "card", b: "card", lone: "card" },
   texts: {
-    C: { kicker: "Zone", title: "Container", subtitle: "first second third fourth fifth sixth" },
-    a: { title: "Alpha", body: "alpha body text" },
+    C: {
+      kicker: "Zone",
+      title: "Container with a fairly long title that definitely wraps differently at full and toggle widths",
+      subtitle: "first second third fourth fifth sixth",
+    },
+    a: { title: "Alpha with a fairly long card title that wraps at the fixed inner width", body: "alpha body text" },
     b: { title: "Beta" },
     lone: { title: "Lone" },
   },
@@ -45,31 +51,95 @@ describe("layout lines and emitted measurements share one result", () => {
     const document = buildMeasuredDocument();
     const measurer = wordWrapMeasurer({ charWidth: 8 });
     const measured = layMeasured(document, presentation, measurer);
-    const emitted: { role: string; lines: readonly string[] }[] = [];
+    expect(measured.headers.map((header) => header.occurrence).sort()).toEqual(
+      [occurrenceOfEntity("C"), occurrenceOfEntity("a"), occurrenceOfEntity("b"), occurrenceOfEntity("lone")].sort(),
+    );
+    expect(
+      measured.headers.flatMap((header) => [
+        ...(header.kicker !== undefined ? [[header.occurrence, "kicker"] as const] : []),
+        [header.occurrence, "title"] as const,
+        ...(header.subtitle !== undefined ? [[header.occurrence, "subtitle"] as const] : []),
+      ]),
+    ).toEqual([
+      [occurrenceOfEntity("C"), "kicker"],
+      [occurrenceOfEntity("C"), "title"],
+      [occurrenceOfEntity("C"), "subtitle"],
+      [occurrenceOfEntity("a"), "title"],
+      [occurrenceOfEntity("b"), "title"],
+      [occurrenceOfEntity("lone"), "title"],
+    ]);
+    expect(measured.slots.map((slot) => [slot.occurrence, slot.role])).toEqual([
+      [occurrenceOfEntity("a"), "body"],
+      [occurrenceRef("r.l1"), "edge-label"],
+    ]);
+    const replayLines = (
+      text: string,
+      role: "kicker" | "title" | "subtitle" | "body" | "edge-label",
+      availableWidth: number,
+    ): readonly string[] =>
+      wordWrapMeasurer({ charWidth: 8 })({
+        text,
+        role,
+        availableWidth,
+        allocatedLines: 2,
+        folded: false,
+      }).lines;
+    const containerInner = geometryOf(measured.view, "C").width - 32;
+    const containerTitleWidth = containerInner - TOGGLE_ALLOCATION;
+    const containerTitle = "Container with a fairly long title that definitely wraps differently at full and toggle widths";
+    const expectedContainerTitle = replayLines(containerTitle, "title", containerTitleWidth);
+    expect(expectedContainerTitle.join(" ")).toBe(containerTitle);
+    const leafTitle = "Alpha with a fairly long card title that wraps at the fixed inner width";
+    const leafFull = replayLines(leafTitle, "title", 460 - 32);
+    const leafReduced = replayLines(leafTitle, "title", 460 - 32 - TOGGLE_ALLOCATION);
+    expect(leafFull.length).toBeGreaterThan(1);
+    expect(leafFull.join(" ")).toBe(leafTitle);
+    expect(leafReduced.join(" ")).toBe(leafTitle);
+    expect(JSON.stringify(leafFull)).not.toBe(JSON.stringify(leafReduced));
+    const emittedContainerTitle = measured.headers.find(
+      (header) => header.occurrence === occurrenceOfEntity("C"),
+    )!.title.lines;
+    expect(emittedContainerTitle).toEqual(expectedContainerTitle);
+    const emittedLeafTitle = measured.headers.find(
+      (header) => header.occurrence === occurrenceOfEntity("a"),
+    )!.title.lines;
+    expect(emittedLeafTitle).toEqual(leafFull);
+    expect(emittedLeafTitle.length).toBeGreaterThan(1);
     for (const header of measured.headers) {
-      if (header.kicker !== undefined) emitted.push({ role: "kicker", lines: header.kicker.lines });
-      emitted.push({ role: "title", lines: header.title.lines });
-      if (header.subtitle !== undefined) emitted.push({ role: "subtitle", lines: header.subtitle.lines });
+      const expected = (role: "kicker" | "title" | "subtitle"): readonly string[] => {
+        const text =
+          header.occurrence === occurrenceOfEntity("C")
+            ? role === "kicker"
+              ? "Zone"
+              : role === "title"
+                ? containerTitle
+                : "first second third fourth fifth sixth"
+            : header.occurrence === occurrenceOfEntity("a") && role === "title"
+              ? "Alpha with a fairly long card title that wraps at the fixed inner width"
+              : role === "title"
+                ? header.occurrence === occurrenceOfEntity("b")
+                  ? "Beta"
+                  : "Lone"
+                : "";
+        const width =
+          header.occurrence === occurrenceOfEntity("C") && role === "title"
+            ? containerTitleWidth
+            : header.occurrence === occurrenceOfEntity("C")
+              ? containerInner
+              : 460 - 32;
+        return replayLines(text, role, width);
+      };
+      if (header.kicker !== undefined) expect(header.kicker.lines).toEqual(expected("kicker"));
+      expect(header.title.lines).toEqual(expected("title"));
+      if (header.subtitle !== undefined) expect(header.subtitle.lines).toEqual(expected("subtitle"));
     }
-    for (const slot of measured.slots) emitted.push({ role: slot.role, lines: slot.layout.lines });
-    expect(emitted.length).toBeGreaterThan(0);
-    // Every emitted line array matches a recorded call with the same role:
-    // wrapping is deterministic in (text, width), so replaying the recorded
-    // call reproduces the emitted lines exactly.
-    for (const entry of emitted) {
-      const candidates = measurer.calls.filter((call) => call.role === entry.role);
-      expect(candidates.length).toBeGreaterThan(0);
-      const replayed = candidates.some((call) => {
-        const replay = wordWrapMeasurer({ charWidth: 8 })({
-          text: call.text,
-          role: call.role,
-          availableWidth: call.availableWidth,
-          allocatedLines: call.allocatedLines,
-          folded: call.folded,
-        });
-        return JSON.stringify(replay.lines) === JSON.stringify(entry.lines);
-      });
-      expect(replayed).toBe(true);
+    for (const slot of measured.slots) {
+      if (slot.role === "body") {
+        expect(slot.layout.lines).toEqual(replayLines("alpha body text", "body", slot.layout.width));
+      } else {
+        expect(slot.role).toBe("edge-label");
+        expect(slot.layout.lines).toEqual(replayLines("a to lone", "edge-label", slot.layout.width));
+      }
     }
   });
 });
@@ -79,10 +149,11 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     const document = buildMeasuredDocument();
     const measurer = wordWrapMeasurer({ charWidth: 8 });
     const measured = layMeasured(document, presentation, measurer);
+    const containerTitle = "Container with a fairly long title that definitely wraps differently at full and toggle widths";
     // Header measurements only: width probes use a far larger allocation.
-    const titleCalls = measurer.calls.filter((call) => call.role === "title" && call.availableWidth <= 460 - 32);
-    const containerCall = titleCalls.find((call) => call.text === "Container")!;
-    const leafCall = titleCalls.find((call) => call.text === "Alpha")!;
+    const titleCalls = measurer.calls.filter((call) => call.role === "title" && call.availableWidth < 10000);
+    const containerCall = titleCalls.find((call) => call.text === containerTitle)!;
+    const leafCall = titleCalls.find((call) => call.text.startsWith("Alpha with"))!;
     // The container renders a fold control, the leaf does not: the
     // container title is measured at its own inner width minus the toggle
     // allocation, the leaf at its full inner width.
@@ -92,12 +163,33 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     expect(containerInner - containerCall.availableWidth).toBe(TOGGLE_ALLOCATION);
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
     const replay = wordWrapMeasurer({ charWidth: 8 })({
-      text: "Container",
+      text: containerTitle,
       role: "title",
       availableWidth: containerCall.availableWidth,
       allocatedLines: 2,
       folded: false,
     });
+    expect(replay.lines.join(" ")).toBe(containerTitle);
     expect(header.title.lines).toEqual(replay.lines);
+    const leafTitle = "Alpha with a fairly long card title that wraps at the fixed inner width";
+    const leafFull = wordWrapMeasurer({ charWidth: 8 })({
+      text: leafTitle,
+      role: "title",
+      availableWidth: 460 - 32,
+      allocatedLines: 2,
+      folded: false,
+    });
+    const leafReduced = wordWrapMeasurer({ charWidth: 8 })({
+      text: leafTitle,
+      role: "title",
+      availableWidth: 460 - 32 - TOGGLE_ALLOCATION,
+      allocatedLines: 2,
+      folded: false,
+    });
+    expect(leafFull.lines.length).toBeGreaterThan(1);
+    expect(leafFull.lines.join(" ")).toBe(leafTitle);
+    expect(JSON.stringify(leafFull.lines)).not.toBe(JSON.stringify(leafReduced.lines));
+    const leafHeader = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("a"))!;
+    expect(leafHeader.title.lines).toEqual(leafFull.lines);
   });
 });
