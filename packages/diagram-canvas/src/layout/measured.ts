@@ -504,9 +504,7 @@ export function layoutMeasured(
   const placedChildrenOf = (id: EntityRef): EntityRef[] => {
     const kind = kinds.get(id);
     if (kind !== "container-expanded" && kind !== "legend-expanded") return [];
-    return (graph.nodes.get(id)?.children ?? []).filter(
-      (child) => visible(child) && placementParentOf(child) === id,
-    );
+    return [...graph.nodes.keys()].filter((child) => visible(child) && placementParentOf(child) === id);
   };
 
   const groupEffectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
