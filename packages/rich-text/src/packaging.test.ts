@@ -77,6 +77,9 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     const runtimePrefixes = [
       "@tiptap/",
       "prosemirror-",
+      "yjs",
+      "y-protocols",
+      "hocuspocus",
       "svelte",
       "vue",
       "react",
@@ -105,6 +108,10 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     }
   });
 
+  it("the pure entry graph carries the collaboration model (CL-1M)", () => {
+    expect(pureEntryGraph()).toContain("collaboration.ts");
+  });
+
   it("the built pure entry exposes pure helpers and no editor factory or codec", async () => {
     const built = (await import(
       resolve(SRC_DIR, "../dist/index.js")
@@ -115,6 +122,14 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     expect(typeof built["createCaptureTracker"]).toBe("function");
     expect(typeof built["createP0Extensions"]).toBe("function");
     expect(typeof built["createParagraphIdentityPlugin"]).toBe("function");
+    expect(typeof built["validateAgentPatch"]).toBe("function");
+    expect(typeof built["validateAgentReadRequest"]).toBe("function");
+    expect(typeof built["validateCollaborationColor"]).toBe("function");
+    expect(typeof built["validateFullBlockMetadata"]).toBe("function");
+    expect(typeof built["isAllowedHref"]).toBe("function");
+    expect(typeof built["isLockExpired"]).toBe("function");
+    expect(typeof built["createPresenceSnapshot"]).toBe("function");
+    expect(typeof built["derivePresenceBadgeState"]).toBe("function");
     expect("createRichTextEditor" in built).toBe(false);
     expect("createHeadlessEditor" in built).toBe(false);
     expect("segmentSource" in built).toBe(false);
