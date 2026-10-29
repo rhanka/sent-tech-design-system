@@ -72,6 +72,7 @@ import {
 
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
+import { layoutMeasured } from "./measured.js";
 import { dockEdges, parallelRelations, type EdgeDocks } from "./dock.js";
 import { ancestorsOf, isAncestor, memberOf, readGraph, type LayoutEdge, type LayoutGraph } from "./graph.js";
 import { edgeLabelCandidates, labelBoxOnSegment, pad, placeEdgeLabels, segmentLength } from "./labels.js";
@@ -979,6 +980,10 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
       diagnostics: [],
     };
   }
+  // M1-d (M3 §4.6–§4.8): a view with `presentation.diagram` takes the
+  // fixed-footprint measurement path. Without it the pinned compatibility
+  // path below runs untouched, byte-identical (§4.8).
+  if (options.presentation !== undefined) return layoutMeasured(document, options);
   const diagnostics = validateDocument(document, { registry: options.registry });
   if (hasErrors(diagnostics)) {
     return {
@@ -1073,6 +1078,7 @@ export function diagnoseLabels(
       diagnostics: [],
     };
   }
+  if (options.presentation !== undefined) return diagnoseMeasuredLabels(document, options);
   const diagnostics = validateDocument(document, { registry: options.registry });
   if (hasErrors(diagnostics)) {
     return {
@@ -1100,4 +1106,35 @@ export function diagnoseLabels(
     width: boundsWidth(drawing),
     outcomes: drawing.labelOutcomes,
   };
+}
+
+/**
+ * Label diagnosis for measured views: one outcome per routed relation from
+ * the measured call's own warnings. Test support; never persisted.
+ */
+function diagnoseMeasuredLabels(
+  document: SemanticDocument,
+  options: LayoutOptions,
+):
+  | {
+      readonly status: "diagnosed";
+      readonly direction: FlowDirection;
+      readonly width: number;
+      readonly outcomes: ReadonlyMap<RelationRef, LabelOutcome>;
+    }
+  | { readonly status: "refused"; readonly refusals: readonly LayoutRefusal[]; readonly diagnostics: readonly Diagnostic[] } {
+  const laid = layoutMeasured(document, options);
+  if (laid.status !== "laid-out") {
+    return { status: "refused", refusals: laid.refusals, diagnostics: laid.diagnostics };
+  }
+  const unplaced = new Set(
+    laid.warnings.filter((warning) => warning.code === "label-unplaced").flatMap((warning) => warning.refs),
+  );
+  const outcomes = new Map<RelationRef, LabelOutcome>();
+  for (const key of Object.keys(laid.view.relationOccurrences).sort()) {
+    const occurrence = laid.view.relationOccurrences[key]!;
+    const id = occurrence.relation;
+    outcomes.set(id, unplaced.has(id) ? { outcome: "label-unplaced", segments: [] } : { outcome: "placed", segments: [] });
+  }
+  return { status: "diagnosed", direction: laid.fit.direction, width: laid.fit.width, outcomes };
 }
