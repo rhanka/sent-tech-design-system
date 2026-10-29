@@ -8,8 +8,9 @@
  * composition ancestry.
  */
 import { contentDiagramDigest, imposedAdapterFor, stableStringify } from "./bindings.js";
-import { canonicalise } from "./canonical.js";
+import { tryCanonicalise } from "./canonical.js";
 import { sha256Hex } from "./sha256.js";
+import type { Diagnostic } from "./diagnostics.js";
 import type { AttributeSchema, AttributeValue } from "./attributes.js";
 import type { SemanticDocument } from "./document.js";
 import { entityTypeOf, type Profile, type ProfileId } from "./profile.js";
@@ -182,9 +183,43 @@ function splitInput(input: ProfileMigrationInput): { readonly document: Semantic
   return { document: input, views: {}, isState: false };
 }
 
-function originalOfInput(input: ProfileMigrationInput): { readonly canonical: string; readonly hash: string } {
-  const canonical = canonicalise(input);
-  return { canonical, hash: sha256Hex(canonical) };
+function sourceCheckFor(ids: readonly ProfileId[]): {
+  readonly registry: ReturnType<typeof createProfileRegistry>;
+  readonly bindings: { readonly schemaVersion: "1"; readonly rows: ReturnType<typeof bindingRowFor>[] } | undefined;
+} {
+  try {
+    return scopedBindingsFor(ids);
+  } catch {
+    return { registry: fullRegistry(), bindings: undefined };
+  }
+}
+
+function sourceDiagnosticsFor(
+  source: SemanticDocument,
+  views: DiagramState["views"],
+): readonly Diagnostic[] {
+  const check = sourceCheckFor(source.profileRefs);
+  if (check.bindings === undefined) {
+    return Object.keys(views).length > 0
+      ? validateState({ document: source, views }, { registry: check.registry })
+      : validateDocument(source, { registry: check.registry });
+  }
+  return Object.keys(views).length > 0
+    ? validateState({ document: source, views }, { registry: check.registry, bindings: check.bindings })
+    : validateDocument(source, { registry: check.registry, bindings: check.bindings });
+}
+
+function tryOriginalOfInput(input: ProfileMigrationInput): {
+  readonly ok: true;
+  readonly canonical: string;
+  readonly hash: string;
+} | {
+  readonly ok: false;
+  readonly diagnostics: readonly Diagnostic[];
+} {
+  const tried = tryCanonicalise(input);
+  if (tried.ok) return { ok: true, canonical: tried.text, hash: sha256Hex(tried.text) };
+  return { ok: false, diagnostics: tried.diagnostics };
 }
 
 function sectionIndex(path: string): number {
@@ -197,11 +232,39 @@ function sectionIndex(path: string): number {
   return 6;
 }
 
+function operationIdentifier(path: string): string {
+  if (path === "profileRefs" || path === "mapping" || path === "") return "";
+  const firstDot = path.indexOf(".");
+  if (firstDot === -1) return path;
+  const rest = path.slice(firstDot + 1);
+  const secondDot = rest.indexOf(".");
+  if (secondDot === -1) return rest;
+  return rest.slice(0, secondDot);
+}
+
+function operationRemainder(path: string): string {
+  if (path === "profileRefs" || path === "mapping" || path === "") return "";
+  const firstDot = path.indexOf(".");
+  if (firstDot === -1) return "";
+  const rest = path.slice(firstDot + 1);
+  const secondDot = rest.indexOf(".");
+  if (secondDot === -1) return "";
+  return rest.slice(secondDot + 1);
+}
+
 function orderOperations(operations: MigrationOperation[]): MigrationOperation[] {
   return [...operations].sort((a, b) => {
     const sectionA = sectionIndex(a.path);
     const sectionB = sectionIndex(b.path);
     if (sectionA !== sectionB) return sectionA - sectionB;
+    const identifierA = operationIdentifier(a.path);
+    const identifierB = operationIdentifier(b.path);
+    if (identifierA < identifierB) return -1;
+    if (identifierA > identifierB) return 1;
+    const remainderA = operationRemainder(a.path);
+    const remainderB = operationRemainder(b.path);
+    if (remainderA < remainderB) return -1;
+    if (remainderA > remainderB) return 1;
     if (a.path < b.path) return -1;
     if (a.path > b.path) return 1;
     if (a.action < b.action) return -1;
@@ -292,7 +355,9 @@ export function migrateArchimateV1ToV2(
 ): ProfileMigrationOutcome {
   const { document: source, views: sourceViews } = splitInput(sourceInput);
   const { from, to } = baseOf(source, "archimate@1", "archimate@2", "archimate@1->archimate@2");
-  const { canonical, hash } = originalOfInput(sourceInput);
+  const triedOriginal = tryOriginalOfInput(sourceInput);
+  const canonical = triedOriginal.ok ? triedOriginal.canonical : "";
+  const hash = triedOriginal.ok ? triedOriginal.hash : "";
   const supersession = {
     superseded: "archimate@1" as ProfileId,
     supersededBy: "archimate@2" as ProfileId,
@@ -309,6 +374,18 @@ export function migrateArchimateV1ToV2(
     unmigrated: detail === undefined ? [{ path, reason }] : [{ path, reason, detail }],
     supersession,
   });
+  if (!triedOriginal.ok) {
+    const nativeDiagnostics = sourceDiagnosticsFor(source, sourceViews);
+    const first = nativeDiagnostics[0] as (typeof nativeDiagnostics)[number] | undefined;
+    if (first !== undefined) {
+      return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
+    }
+    const fallback = triedOriginal.diagnostics[0] as (typeof triedOriginal.diagnostics)[number] | undefined;
+    if (fallback !== undefined) {
+      return refused(fallback.path, "incompatible-attribute-schema", `${fallback.code}: ${fallback.message}`);
+    }
+    return refused("input", "incompatible-attribute-schema", "value is not canonically serialisable");
+  }
   if (!hasExactKeys(mapping, ["entityTypes"]) || !isRecord((mapping as Record<string, unknown>)["entityTypes"])) {
     return refused("mapping", "incompatible-attribute-schema");
   }
@@ -321,11 +398,7 @@ export function migrateArchimateV1ToV2(
     return refused("", refs.includes("archimate@2") ? "target-already-present" : "missing-source-profile");
   }
   if (refs.includes("archimate@2")) return refused("", "target-already-present");
-  const sourceRegistry = fullRegistry();
-  const sourceDiagnostics =
-    sourceViews !== undefined && Object.keys(sourceViews).length > 0
-      ? validateState({ document: source, views: sourceViews }, { registry: sourceRegistry })
-      : validateDocument(source, { registry: sourceRegistry });
+  const sourceDiagnostics = sourceDiagnosticsFor(source, sourceViews);
   if (sourceDiagnostics.length > 0) {
     const first = sourceDiagnostics[0] as (typeof sourceDiagnostics)[number];
     return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
@@ -685,7 +758,9 @@ export function migrateUmlV1ToV2(
 ): ProfileMigrationOutcome {
   const { document: source, views: sourceViews } = splitInput(sourceInput);
   const { from, to } = baseOf(source, "uml@1", "uml@2", "uml@1->uml@2");
-  const { canonical, hash } = originalOfInput(sourceInput);
+  const triedOriginal = tryOriginalOfInput(sourceInput);
+  const canonical = triedOriginal.ok ? triedOriginal.canonical : "";
+  const hash = triedOriginal.ok ? triedOriginal.hash : "";
   const supersession = {
     superseded: "uml@1" as ProfileId,
     supersededBy: "uml@2" as ProfileId,
@@ -702,6 +777,18 @@ export function migrateUmlV1ToV2(
     unmigrated: detail === undefined ? [{ path, reason }] : [{ path, reason, detail }],
     supersession,
   });
+  if (!triedOriginal.ok) {
+    const nativeDiagnostics = sourceDiagnosticsFor(source, sourceViews);
+    const first = nativeDiagnostics[0] as (typeof nativeDiagnostics)[number] | undefined;
+    if (first !== undefined) {
+      return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
+    }
+    const fallback = triedOriginal.diagnostics[0] as (typeof triedOriginal.diagnostics)[number] | undefined;
+    if (fallback !== undefined) {
+      return refused(fallback.path, "incompatible-attribute-schema", `${fallback.code}: ${fallback.message}`);
+    }
+    return refused("input", "incompatible-attribute-schema", "value is not canonically serialisable");
+  }
   if (!hasExactKeys(input, ["stereotypes"]) || !isRecord((input as Record<string, unknown>)["stereotypes"])) {
     return refused("mapping", "incompatible-attribute-schema");
   }
@@ -714,11 +801,7 @@ export function migrateUmlV1ToV2(
     return refused("", refs.includes("uml@2") ? "target-already-present" : "missing-source-profile");
   }
   if (refs.includes("uml@2")) return refused("", "target-already-present");
-  const sourceRegistry = fullRegistry();
-  const sourceDiagnostics =
-    sourceViews !== undefined && Object.keys(sourceViews).length > 0
-      ? validateState({ document: source, views: sourceViews }, { registry: sourceRegistry })
-      : validateDocument(source, { registry: sourceRegistry });
+  const sourceDiagnostics = sourceDiagnosticsFor(source, sourceViews);
   if (sourceDiagnostics.length > 0) {
     const first = sourceDiagnostics[0] as (typeof sourceDiagnostics)[number];
     return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);

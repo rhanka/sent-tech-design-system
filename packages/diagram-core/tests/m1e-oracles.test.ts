@@ -223,6 +223,36 @@ describe("P-AM and P-UML witnesses", () => {
     expect(validateDocument(reversed, mixedArchimateOptions()).map((d) => d.code)).toContain(
       "relationship-matrix-violation",
     );
+    const familyPins = [
+      mod.familyPinForProfile(mod.archimate2Profile),
+      mod.familyPinForProfile(mod.generic2Profile),
+    ];
+    const adapterPin = mod.parsePinnedAdapterReference(
+      mod.DIAGRAM_PRESENTATION_PACKAGED_CATALOG.compatibilityAdapter,
+    );
+    expect(adapterPin).toBeDefined();
+    const baseApplyInput = {
+      familyPins,
+      semanticDocument: document,
+      sourceView: view,
+      contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
+      semanticCategoryPins: [],
+      adapterPin: adapterPin as NonNullable<typeof adapterPin>,
+    };
+    const applied = mod.applyPresentation(baseApplyInput as never, mixedArchimateOptions());
+    expect(applied.outcome).toBe("ok");
+    if (applied.outcome !== "ok") return;
+    expect(applied.diagnostics).toEqual([]);
+    expect(applied.familyPins).toEqual(familyPins);
+    expect(applied.contractPin).toEqual(mod.DIAGRAM_PRESENTATION_CONTRACT_PIN);
+    const refusedMatrix = mod.applyPresentation(
+      { ...baseApplyInput, semanticDocument: reversed } as never,
+      mixedArchimateOptions(),
+    );
+    expect(refusedMatrix.outcome).toBe("refused");
+    if (refusedMatrix.outcome !== "refused") return;
+    expect(refusedMatrix.diagnostics.map((entry) => entry.code)).toContain("relationship-matrix-violation");
+    expect("view" in refusedMatrix).toBe(false);
     const missingGenericDoc = {
       ...document,
       profileRefs: ["archimate@2" as never],
@@ -308,6 +338,57 @@ describe("P-AM and P-UML witnesses", () => {
       },
     };
     expect(validateDocument(badMultiplicity, mixedUmlOptions()).map((d) => d.code)).toContain("multiplicity-invalid");
+    const umlFamilyPins = [mod.familyPinForProfile(mod.uml2Profile), mod.familyPinForProfile(mod.generic2Profile)];
+    const umlAdapterPin = mod.parsePinnedAdapterReference(
+      mod.DIAGRAM_PRESENTATION_PACKAGED_CATALOG.compatibilityAdapter,
+    );
+    expect(umlAdapterPin).toBeDefined();
+    const baseUmlInput = {
+      familyPins: umlFamilyPins,
+      semanticDocument: document,
+      sourceView: view,
+      contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
+      semanticCategoryPins: [],
+      adapterPin: umlAdapterPin as NonNullable<typeof umlAdapterPin>,
+    };
+    const appliedUml = mod.applyPresentation(baseUmlInput as never, mixedUmlOptions());
+    expect(appliedUml.outcome).toBe("ok");
+    if (appliedUml.outcome !== "ok") return;
+    expect(appliedUml.diagnostics).toEqual([]);
+    const refusedMultiplicity = mod.applyPresentation(
+      { ...baseUmlInput, semanticDocument: badMultiplicity } as never,
+      mixedUmlOptions(),
+    );
+    expect(refusedMultiplicity.outcome).toBe("refused");
+    if (refusedMultiplicity.outcome !== "refused") return;
+    expect(refusedMultiplicity.diagnostics.map((entry) => entry.code)).toContain("multiplicity-invalid");
+    expect("view" in refusedMultiplicity).toBe(false);
+    const stereotypeDoc = {
+      ...document,
+      entities: {
+        ...document.entities,
+        "entity:s": ent("s", "uml@2", "stereotype", {
+          name: text("S"),
+          extends: collection([{ kind: "enum", value: "class" }]),
+        }),
+        "entity:q": ent("q", "uml@2", "package", {
+          name: text("Q"),
+          visibility: enumeration("public"),
+          stereotypes: collection([{ kind: "reference", value: "entity:s" }]),
+        }),
+      },
+    };
+    expect(validateDocument(stereotypeDoc, mixedUmlOptions()).map((d) => d.code)).toContain(
+      "stereotype-application-invalid",
+    );
+    const refusedStereotype = mod.applyPresentation(
+      { ...baseUmlInput, semanticDocument: stereotypeDoc } as never,
+      mixedUmlOptions(),
+    );
+    expect(refusedStereotype.outcome).toBe("refused");
+    if (refusedStereotype.outcome !== "refused") return;
+    expect(refusedStereotype.diagnostics.map((entry) => entry.code)).toContain("stereotype-application-invalid");
+    expect("view" in refusedStereotype).toBe(false);
   });
 
   it("P-BPMN stays blocked on A-prime", async () => {

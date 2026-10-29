@@ -2,7 +2,7 @@
  * M1-e review pass 1 RED witnesses (must fail on e881248b, pass after fix).
  * English in code.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   archimate2Profile,
@@ -275,5 +275,32 @@ describe("finding 10: lazy binding preimage", () => {
     expect(descriptor?.get).toBeDefined();
     expect(mod.shippedExecutorBindings.rows.length).toBeGreaterThan(0);
     expect(contentDiagramDigest(archimate2Profile)).toHaveLength(64);
+  });
+
+  it("imports the root in a fresh context and counts preimage builds 0, 1, 1", async () => {
+    vi.resetModules();
+    let builds = 0;
+    vi.doMock("../src/bindings.js", async () => {
+      const actual = (await vi.importActual("../src/bindings.js")) as Record<string, unknown>;
+      const embedded = actual["embeddedExecutorBindings"] as (profiles: never) => unknown;
+      return {
+        ...(actual as object),
+        embeddedExecutorBindings: (profiles: never) => {
+          builds += 1;
+          return embedded(profiles);
+        },
+      };
+    });
+    const fresh = (await import("../src/index.js")) as typeof import("../src/index.js");
+    expect(builds).toBe(0);
+    const first = fresh.shippedExecutorBindings.rows;
+    expect(first.length).toBeGreaterThan(0);
+    expect(builds).toBe(1);
+    const second = fresh.shippedExecutorBindings.rows;
+    expect(second.length).toBeGreaterThan(0);
+    expect(builds).toBe(1);
+    expect(second).toBe(first);
+    vi.doUnmock("../src/bindings.js");
+    vi.resetModules();
   });
 });
