@@ -1223,71 +1223,78 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
     expect(active.get("(occurrence:CHAT,occurrence:MSGZ,solid)")?.definitionId).toBe("s1");
   });
 
-  it("B.7 boundary-crossing target while fold stays active", () => {
-    // Substitutions documented: pinned archimate/generic fixtures disallow
-    // relation targets (link/association target entity/port only), so relchain@2
-    // substitutes the profile to allow association source/target -> relation.
-    // grouping/business-actor/application-component stand in for pinned
-    // container/node types; Z/EXT/A1/flow/r map to the frozen B.7 route
-    // (junction/component/actor/assignment/flow). Fold stays active ([Z]);
-    // r crosses the boundary (EXT outside -> Z boundary) with RelationRef
-    // provenance (flow), and flow itself crosses (Z boundary -> A1 hidden).
-    const profile = {
-      ...generic2Profile,
-      id: "relchain@2" as never,
-      name: "relchain",
-      entityTypes: [
-        { id: "grouping", label: "Grouping", container: true, attributes: [{ name: "name", kind: "text", required: true, maxLength: 200 }] },
-        { id: "business-actor", label: "Business actor", attributes: [{ name: "name", kind: "text", required: true, maxLength: 200 }] },
-        { id: "application-component", label: "Application component", attributes: [{ name: "name", kind: "text", required: true, maxLength: 200 }] },
-      ],
-      relationTypes: [
-        {
-          id: "association",
-          label: "Association",
-          direction: "undirected",
-          roles: [{ role: "source", cardinality: { min: 1, max: 1 }, targets: ["entity", "port", "relation"] as never[] }, { role: "target", cardinality: { min: 1, max: 1 }, targets: ["entity", "port", "relation"] as never[] }],
-        },
-        {
-          id: "groupingContainment",
-          label: "Grouping containment",
-          direction: "directed",
-          roles: [{ role: "parent", cardinality: { min: 1, max: 1 }, targets: ["entity"] }, { role: "child", cardinality: { min: 1, max: 1 }, targets: ["entity"] }],
-          hierarchy: { id: "containment", shape: "tree", parentRole: "parent", childRole: "child" },
-        },
-      ],
-      constraints: [
-        { kind: "hierarchy", relationType: "groupingContainment", hierarchyId: "containment", parentRole: "parent", childRole: "child" },
-      ],
-      limits: {},
-      notes: [],
-    } as never;
-    const base = baseDocument(["relchain@2" as never]);
+  it("B.7 boundary-crossing target while fold stays active", async () => {
+    // Literal ArchiMate route on the pinned document with archimate@2
+    // (case_7096bf5c, C.6 "ArchiMate folded relation-to-relation"): the
+    // explicit @1 → @2 migration runs first, then the authored retypes.
+    // Fold stays active ([Z]); r crosses the boundary (EXT outside ->
+    // Z boundary). The source attachment names occurrence:flow with both
+    // provenance fields absent; the folded attachment carries the
+    // RelationRef provenance; unfolding restores the sourceliteral bytes.
+    const { readFileSync } = await import("node:fs");
+    const { dirname, join } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const { archimate2Profile, migrateArchimateV1ToV2 } = await import("../src/index.js");
+    const here = dirname(fileURLToPath(import.meta.url));
+    const pinned = JSON.parse(
+      readFileSync(join(here, "../fixtures/valid/archimate-skeleton-document.json"), "utf8"),
+    ) as { readonly document: SemanticDocument };
+    const migrated = migrateArchimateV1ToV2(pinned.document, {
+      entityTypes: {
+        "entity:actor": "business-actor",
+        "entity:process": "business-process",
+        "entity:component": "application-component",
+      },
+    });
+    expect(migrated.status).toBe("ok");
+    if (migrated.status !== "ok") return;
     const document: SemanticDocument = {
-      ...base,
+      ...migrated.document,
       revision: 1,
       entities: {
-        "entity:junction": ent("junction", "relchain@2" as never, "grouping", { name: text("J") }),
-        "entity:actor": ent("actor", "relchain@2" as never, "business-actor", { name: text("A1") }),
-        "entity:component": ent("component", "relchain@2" as never, "application-component", { name: text("EXT") }),
+        ...migrated.document.entities,
+        "entity:junction": {
+          id: entityRef("junction"),
+          profile: "archimate@2",
+          type: "grouping",
+          attributes: { name: text("Claims grouping") },
+        },
       },
       relations: {
-        "relation:assignment": rel("assignment", "relchain@2" as never, "association", [
-          { role: "source", target: "entity:junction" },
-          { role: "target", target: "entity:actor" },
-        ]),
-        "relation:serving": rel("serving", "relchain@2" as never, "groupingContainment", [
-          { role: "parent", target: "entity:junction" },
-          { role: "child", target: "entity:actor" },
-        ]),
-        "relation:flow": rel("flow", "relchain@2" as never, "association", [
-          { role: "source", target: "entity:component" },
-          { role: "target", target: "relation:assignment" },
-        ]),
+        ...migrated.document.relations,
+        "relation:assignment": {
+          id: relationRef("assignment"),
+          profile: "archimate@2",
+          type: "association",
+          endpoints: [
+            { role: "source", target: entityRef("junction") },
+            { role: "target", target: entityRef("actor") },
+          ],
+          attributes: {},
+        },
+        "relation:serving": {
+          id: relationRef("serving"),
+          profile: "archimate@2",
+          type: "groupingContainment",
+          endpoints: [
+            { role: "parent", target: entityRef("junction") },
+            { role: "child", target: entityRef("actor") },
+          ],
+          attributes: {},
+        },
+        "relation:flow": {
+          id: relationRef("flow"),
+          profile: "archimate@2",
+          type: "association",
+          endpoints: [
+            { role: "source", target: entityRef("component") },
+            { role: "target", target: relationRef("assignment") },
+          ],
+          attributes: {},
+        },
       },
-      ports: {},
     };
-    const scoped = { registry: createProfileRegistry([profile as never]), bindings: { schemaVersion: "1" as const, rows: [bindingRowFor(profile as never, SCOPED_CONSTRAINTS_ADAPTER)] } };
+    const scoped = { registry: createProfileRegistry([archimate2Profile]), bindings: { schemaVersion: "1" as const, rows: [bindingRowFor(archimate2Profile, SCOPED_CONSTRAINTS_ADAPTER)] } };
     const view = createView({ viewId: viewRef("b7cross"), semanticDocumentId: document.documentId });
     const source: ViewDocument = {
       ...view,
@@ -1313,13 +1320,23 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
             { role: "source", occurrence: occurrenceRef("Z") },
             { role: "target", occurrence: occurrenceRef("A1") },
           ],
+          waypoints: [
+            { x: 500, y: 200 },
+            { x: 270, y: 240 },
+          ],
         },
       },
       portOccurrences: {},
       groups: { "occurrence:Z": { id: "occurrence:Z", occurrence: occurrenceRef("Z"), collapsed: false } },
       filters: [],
     };
+    const { validateDocument } = await import("../src/index.js");
+    expect(validateDocument(document, scoped)).toEqual([]);
     expect(validateView(source, document, scoped)).toEqual([]);
+    expect(source.relationOccurrences["occurrence:r"]?.endpoints[1]).toEqual({
+      role: "target",
+      occurrence: occurrenceRef("flow"),
+    });
     const folded = projectView(document, source, [occurrenceRef("Z")]);
     expect(validateView(folded, document, scoped)).toEqual([]);
     expect(folded.relationOccurrences["occurrence:r"]?.endpoints[1]).toEqual({
@@ -1330,5 +1347,13 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
     });
     const scene = foldedScene(folded, document, [occurrenceRef("Z")]);
     expect(scene.drawnRelations).toEqual(["occurrence:r"]);
+    const unfolded = projectView(document, source, []);
+    expect(validateView(unfolded, document, scoped)).toEqual([]);
+    expect(unfolded.relationOccurrences["occurrence:r"]?.endpoints[1]).toEqual({
+      role: "target",
+      occurrence: occurrenceRef("flow"),
+    });
+    expect(unfolded.relationOccurrences["occurrence:r"]).toEqual(source.relationOccurrences["occurrence:r"]);
+    expect(unfolded.relationOccurrences["occurrence:flow"]).toEqual(source.relationOccurrences["occurrence:flow"]);
   });
 });

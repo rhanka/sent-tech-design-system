@@ -12,10 +12,14 @@ import { createProfileRegistry, type ProfileRegistry } from "../profile.js";
 import { genericProfile } from "./generic.js";
 import { generic2Profile } from "./generic2.js";
 import { archimateSkeletonProfile, bpmnSkeletonProfile, umlSkeletonProfile } from "./skeletons.js";
+import { archimate2Profile } from "./archimate2.js";
+import { uml2Profile } from "./uml2.js";
 
 export * from "./generic.js";
 export * from "./generic2.js";
 export * from "./skeletons.js";
+export * from "./archimate2.js";
+export * from "./uml2.js";
 
 /** `generic@1` alone: the only complete profile of this lot. */
 export const completeProfiles = [genericProfile] as const;
@@ -37,6 +41,17 @@ export const m3ProfileRegistry: ProfileRegistry = createProfileRegistry([
   ...completeProfiles,
   ...skeletonProfiles,
   generic2Profile,
+  archimate2Profile,
+  uml2Profile,
+]);
+
+/** All six @1/@2 ids for coexistence and reload witnesses (§3.13.2). */
+export const allProfilesRegistry: ProfileRegistry = createProfileRegistry([
+  ...completeProfiles,
+  ...skeletonProfiles,
+  generic2Profile,
+  archimate2Profile,
+  uml2Profile,
 ]);
 
 /**
@@ -49,6 +64,8 @@ export const shippedExecutorBindings: ExecutorProfileBindings = embeddedExecutor
   ...completeProfiles,
   ...skeletonProfiles,
   generic2Profile,
+  archimate2Profile,
+  uml2Profile,
 ]);
 
 /**
