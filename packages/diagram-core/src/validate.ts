@@ -1189,7 +1189,20 @@ function checkBoundPair(
     if (value.type === constraint.valueType) {
       const lower = value.fields[constraint.lowerField];
       const upper = value.fields[constraint.upperField];
+      const structSchemas = scopedRecordSchemas(resolver, profile, value.type);
+      const lowerSchema = structSchemas?.find((schema) => schema.name === constraint.lowerField);
+      const upperSchema = structSchemas?.find((schema) => schema.name === constraint.upperField);
+      const lowerValid =
+        lower !== undefined &&
+        lowerSchema !== undefined &&
+        validateAttributeValue(lowerSchema, lower, `${valuePath}.fields.${constraint.lowerField}`).length === 0;
+      const upperValid =
+        upper !== undefined &&
+        upperSchema !== undefined &&
+        validateAttributeValue(upperSchema, upper, `${valuePath}.fields.${constraint.upperField}`).length === 0;
       if (
+        lowerValid &&
+        upperValid &&
         lower?.kind === "quantity" &&
         upper?.kind === "quantity" &&
         typeof lower.value === "number" &&

@@ -414,14 +414,16 @@ function validateM3Declarations(
         let invalid = false;
         for (const tuple of constraint.tuples) {
           const key = `${tuple.relationType}\n${tuple.sourceType}\n${tuple.targetType}`;
+          const sourceKnown = tuple.sourceType === "@relation" || seenEntityTypes.has(tuple.sourceType);
+          const targetKnown = tuple.targetType === "@relation" || seenEntityTypes.has(tuple.targetType);
           if (
             tuple.relationType.length === 0 ||
             tuple.sourceType.length === 0 ||
             tuple.targetType.length === 0 ||
             seen.has(key) ||
             profile.relationTypes.every((declared) => declared.id !== tuple.relationType) ||
-            !seenEntityTypes.has(tuple.sourceType) ||
-            !seenEntityTypes.has(tuple.targetType)
+            !sourceKnown ||
+            !targetKnown
           ) {
             invalid = true;
             break;
