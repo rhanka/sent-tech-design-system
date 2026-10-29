@@ -17,7 +17,6 @@ import {
   canonicalBytes,
   contentDiagramDigest,
   createProfileRegistry,
-  DIAGRAM_PRESENTATION_PACKAGED_CATALOG,
   generic2Profile,
   genericProfile,
   SCOPED_CONSTRAINTS_ADAPTER,
@@ -29,7 +28,7 @@ import {
 import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
 
 beforeEach(() => {
-  vi.mocked(resolveGovernedCatalog).mockReturnValue(DIAGRAM_PRESENTATION_PACKAGED_CATALOG);
+  vi.mocked(resolveGovernedCatalog).mockReset();
 });
 import { baseDocument, ent, rel, scopedOptions, validGeneric2Document } from "./m3-helpers.js";
 import { text } from "../src/index.js";

@@ -10,6 +10,7 @@
 
 import { canonicalBytes, sha256Hex } from "./sha256.js";
 import { contentDiagramDigest } from "./bindings.js";
+import { resolveGovernedCatalog } from "./presentation-catalog.js";
 import type { Profile } from "./profile.js";
 import type { EntityRef, OccurrenceRef } from "./refs.js";
 
@@ -285,21 +286,16 @@ deepFreezeValue(PRIVATE_RECORD);
 
 export const DIAGRAM_PRESENTATION_RECORD = frozenCopy(PRIVATE_RECORD);
 
-/** Transitional executor/adapter refs, as governed by Engram (U-QUAL). */
-const PRIVATE_COMPATIBILITY = {
-  renderer: "transitional:ds-diagram-core-executor-unqualified",
-  adapter: "transitional:ds-schema-adapter-unqualified",
-} as const;
-deepFreezeValue(PRIVATE_COMPATIBILITY);
-
-export const DIAGRAM_PRESENTATION_COMPATIBILITY = frozenCopy(PRIVATE_COMPATIBILITY);
+/** Qualified executor/adapter refs from Engram catalog entry 2. */
+export const DIAGRAM_PRESENTATION_COMPATIBILITY = frozenCopy(
+  resolveGovernedCatalog().entry.ontology.compatibility,
+);
 
 /**
  * Resolved contract catalog entry used by application authentication.
- * The packaged entry carries the governed transitional adapter reference,
- * which is not a pinned reference, so application refuses while
- * qualification stays unresolved. Tests supply their own entry with a
- * real pinned adapter over actual bytes.
+ * The packaged entry binds the qualified adapter reference and its exact
+ * pinned entry bytes to the governed schema pin. Synthetic test catalogs
+ * use the same authentication checks without a production override path.
  */
 export interface PresentationContractCatalog {
   readonly compatibilityAdapter: string;
@@ -308,9 +304,9 @@ export interface PresentationContractCatalog {
 }
 
 const PRIVATE_PACKAGED_CATALOG_SNAPSHOT: PresentationContractCatalog = {
-  compatibilityAdapter: PRIVATE_COMPATIBILITY.adapter,
-  adapterBytes: undefined,
-  schemaPin: { ...PRIVATE_PRESENTATION_SCHEMA_PIN },
+  compatibilityAdapter: resolveGovernedCatalog().compatibilityAdapter,
+  adapterBytes: resolveGovernedCatalog().adapterBytes,
+  schemaPin: { ...resolveGovernedCatalog().schemaPin },
 };
 deepFreezeValue(PRIVATE_PACKAGED_CATALOG_SNAPSHOT);
 
