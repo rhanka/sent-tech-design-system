@@ -66,9 +66,17 @@ export interface SideDemand {
   readonly available: number;
 }
 
+export interface FixedOverflow {
+  readonly entity: EntityRef;
+  readonly side: PortSide;
+  readonly required: number;
+  readonly fitted: number;
+}
+
 export interface DockOutcome {
   readonly docks: ReadonlyMap<RelationRef, EdgeDocks>;
   readonly demands: readonly SideDemand[];
+  readonly fixedOverflows: readonly FixedOverflow[];
 }
 
 export const SIDE_NORMAL: Readonly<Record<PortSide, Vec2>> = {
@@ -151,8 +159,9 @@ export function dockEdges(input: {
   readonly direction: FlowDirection;
   readonly metrics: LayoutMetrics;
   readonly labelSizes: ReadonlyMap<RelationRef, TextSize>;
+  readonly fixed?: boolean;
 }): DockOutcome {
-  const { graph, rects, direction, metrics, labelSizes } = input;
+  const { graph, rects, direction, metrics, labelSizes, fixed } = input;
   const leftToRight = direction === "left-to-right";
   const ends: PendingEnd[] = [];
 
@@ -211,6 +220,7 @@ export function dockEdges(input: {
 
   const placed = new Map<string, Dock>();
   const demands: SideDemand[] = [];
+  const fixedOverflows: FixedOverflow[] = [];
   for (const key of [...groups.keys()].sort(byString)) {
     const group = groups.get(key)!;
     const entity = group[0]!.entity;
@@ -243,6 +253,94 @@ export function dockEdges(input: {
     const length = vertical ? rect.height : rect.width;
     const count = orderedKeys.length;
     const wanted = slotSpacingFor(metrics, count >= 2 ? thickness : 0);
+    if (fixed === true) {
+      const capacity = Math.max(1, Math.floor(length / wanted) + 1);
+      const centre = centreOf(rect);
+      const pointFor = (offset: number): Vec2 =>
+        side === "east"
+          ? { x: rect.x + rect.width, y: centre.y + offset }
+          : side === "west"
+            ? { x: rect.x, y: centre.y + offset }
+            : side === "north"
+              ? { x: centre.x + offset, y: rect.y }
+              : { x: centre.x + offset, y: rect.y + rect.height };
+      const anchorFor = (point: Vec2): number =>
+        vertical ? (point.y - rect.y) / rect.height : (point.x - rect.x) / rect.width;
+      if (count <= capacity) {
+        orderedKeys.forEach((slot, index) => {
+          const offset = (index - (count - 1) / 2) * wanted;
+          const point = pointFor(offset);
+          const anchor = anchorFor(point);
+          for (const end of slots.get(slot)!) {
+            const normal = SIDE_NORMAL[side];
+            placed.set(`${end.edge}#${end.role}`, {
+              entity,
+              point,
+              side,
+              exit: end.inner ? { x: -normal.x, y: -normal.y } : normal,
+              order: index,
+              anchor,
+              ...(end.port === undefined ? {} : { port: end.port }),
+            });
+          }
+        });
+      } else {
+        const declared = [...slots.keys()].sort(byString);
+        const fittedSet = new Set(declared.slice(0, capacity));
+        const fittedOrdered = orderedKeys.filter((slot) => fittedSet.has(slot));
+        const fittedPoints = new Map<string, { point: Vec2; anchor: number; order: number }>();
+        fittedOrdered.forEach((slot, index) => {
+          const offset = (index - (fittedOrdered.length - 1) / 2) * wanted;
+          const point = pointFor(offset);
+          const anchor = anchorFor(point);
+          fittedPoints.set(slot, { point, anchor, order: index });
+          for (const end of slots.get(slot)!) {
+            const normal = SIDE_NORMAL[side];
+            placed.set(`${end.edge}#${end.role}`, {
+              entity,
+              point,
+              side,
+              exit: end.inner ? { x: -normal.x, y: -normal.y } : normal,
+              order: index,
+              anchor,
+              ...(end.port === undefined ? {} : { port: end.port }),
+            });
+          }
+        });
+        const fullIndex = new Map<string, number>();
+        orderedKeys.forEach((slot, index) => fullIndex.set(slot, index));
+        const fittedList = [...fittedPoints.entries()];
+        for (const slot of declared.slice(capacity)) {
+          const idealOffset = ((fullIndex.get(slot) ?? 0) - (count - 1) / 2) * wanted;
+          const ideal = vertical ? centre.y + idealOffset : centre.x + idealOffset;
+          let best = fittedList[0]!;
+          let bestDistance = Number.POSITIVE_INFINITY;
+          for (const [, fitted] of fittedList) {
+            const at = vertical ? fitted.point.y : fitted.point.x;
+            const distance = Math.abs(at - ideal);
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              best = fittedList.find(([, candidate]) => candidate === fitted)!;
+            }
+          }
+          const nearest = best[1]!;
+          for (const end of slots.get(slot)!) {
+            const normal = SIDE_NORMAL[side];
+            placed.set(`${end.edge}#${end.role}`, {
+              entity,
+              point: nearest.point,
+              side,
+              exit: end.inner ? { x: -normal.x, y: -normal.y } : normal,
+              order: nearest.order,
+              anchor: nearest.anchor,
+              ...(end.port === undefined ? {} : { port: end.port }),
+            });
+          }
+        }
+        fixedOverflows.push({ entity, side, required: count, fitted: capacity });
+      }
+      continue;
+    }
     if (count >= 2 && wanted * (count + 1) > length) {
       demands.push({ entity, side, needed: wanted * (count + 1), available: length });
     }
@@ -278,5 +376,5 @@ export function dockEdges(input: {
   for (const edge of graph.edges) {
     docks.set(edge.id, { source: placed.get(`${edge.id}#source`)!, target: placed.get(`${edge.id}#target`)! });
   }
-  return { docks, demands };
+  return { docks, demands, fixedOverflows };
 }
