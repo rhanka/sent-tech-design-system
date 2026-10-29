@@ -15,7 +15,6 @@ import {
   canonicalBytes,
   contentDiagramDigest,
   createProfileRegistry,
-  DIAGRAM_PRESENTATION_PACKAGED_CATALOG,
   generic2Profile,
   genericProfile,
   sha256Hex,
@@ -26,7 +25,7 @@ import {
 import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
 
 beforeEach(() => {
-  vi.mocked(resolveGovernedCatalog).mockReturnValue(DIAGRAM_PRESENTATION_PACKAGED_CATALOG);
+  vi.mocked(resolveGovernedCatalog).mockReset();
 });
 import { baseDocument, ent, rel, scopedOptions, validGeneric2Document } from "./m3-helpers.js";
 import { text } from "../src/index.js";
@@ -40,7 +39,7 @@ function viewRefs() {
 }
 
 describe("fix 1: governed adapter authentication", () => {
-  it("refuses the packaged unqualified adapter with presentation-pin-mismatch at input.adapterPin", async () => {
+  it("refuses an invented adapter with presentation-pin-mismatch at input.adapterPin", async () => {
     const mod = (await import("../src/index.js")) as unknown as {
       applyPresentation: (input: unknown, options: unknown) => unknown;
       DIAGRAM_PRESENTATION_CONTRACT_PIN: { id: string; version: string; contentDigest: string };
@@ -1071,9 +1070,11 @@ describe("fix 10: complete governed draft G0 record", () => {
       compatibilityMatrixVersion: "1",
     });
     expect(typeof (binding["schemaPin"] as { contentDigest: string }).contentDigest).toBe("string");
-    // Qualification stays unresolved: no resolved evidence, no qualified adapter.
+    // The catalog now carries the qualified adapter; admission evidence stays unresolved.
     const compatibility = mod["DIAGRAM_PRESENTATION_COMPATIBILITY"] as Record<string, string>;
-    expect(compatibility["adapter"]).toMatch(/transitional:.*-unqualified/);
+    expect(compatibility["adapter"]).toBe(
+      "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e",
+    );
     // Contract bytes unchanged.
     expect((mod["DIAGRAM_PRESENTATION_CONTRACT_PIN"] as { contentDigest: string }).contentDigest).toBe(
       "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae",

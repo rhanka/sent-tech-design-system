@@ -1,0 +1,227 @@
+{
+  "entry1": {
+    "format": "sentropic.registry-entry/v1",
+    "contractVersion": "1.1.4",
+    "kind": "ontology",
+    "id": "engram-diagram-presentation-1",
+    "name": "diagram-presentation@1",
+    "description": "Governed typed presentation contract (S1 draft).",
+    "entryVersion": "1",
+    "publisher": {
+      "packageName": "engram-diagram-lot",
+      "packageVersion": "0.1.0"
+    },
+    "compatibility": {
+      "entryContract": "1.1.4",
+      "packages": [],
+      "schemaProfiles": [
+        "diagram-presentation-schema/1"
+      ],
+      "requiredHostFeatures": [
+        "ontology-descriptors"
+      ],
+      "optionalHostFeatures": []
+    },
+    "parameters": {
+      "schemaVersion": "1",
+      "schema": {
+        "$ref": "engram:diagram-presentation-schema"
+      },
+      "defaults": {}
+    },
+    "bindings": [
+      {
+        "key": "profile",
+        "contract": "engram:diagram-profile/1#sha256=60e3997a1f67259219eb8a7a9aa5ab8da4c89b85fe19b96e67326bc7fd386a2a",
+        "required": true
+      }
+    ],
+    "assets": [
+      {
+        "role": "profile-data",
+        "path": "contracts/diagram-presentation-1.json",
+        "mediaType": "application/json",
+        "sha256": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      }
+    ],
+    "ontology": {
+      "canonicalRef": "engram:diagram-presentation@1",
+      "namespace": "diagram",
+      "owner": "engram",
+      "profileShape": "mechanism-descriptor",
+      "artifactKind": "contract",
+      "profilePin": {
+        "id": "diagram-presentation",
+        "version": "1",
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      },
+      "stack": [
+        {
+          "id": "diagram-presentation",
+          "version": "1",
+          "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+        }
+      ],
+      "digests": {
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae",
+        "pinsDigest": "9be4a5ef9dcffa7697ffd3f279d2b062cff799ab36814a80c4371d7cebc41a80",
+        "resultEvidence": {
+          "evidenceState": "unresolved"
+        }
+      },
+      "ruleSheets": [],
+      "lifecycle": "draft",
+      "provenance": {
+        "sourceRef": "m3/SPEC_EVOL_GD_M3_DIAGRAM_MODEL-FROZEN-deb64b75.md",
+        "sourceRevision": "deb64b75e884bfefbdd97de698c899805568271ea1fc521fffe02cbc20288c2f"
+      },
+      "lineage": {
+        "parents": [],
+        "mappings": [],
+        "migrations": []
+      },
+      "conflictPolicy": "engram:g0-conflicts@1",
+      "completeness": "complete",
+      "corpusRef": {
+        "ref": "engram:diagram-lot-corpus/1",
+        "digest": "e946288de536075611c25e7b5e6078ea3def433b66d7a6ea60c1eb20cfebcf6e"
+      },
+      "receipts": [],
+      "migrations": [],
+      "consumers": [],
+      "compatibility": {
+        "renderer": "transitional:ds-diagram-core-executor-unqualified",
+        "adapter": "transitional:ds-schema-adapter-unqualified"
+      },
+      "visibility": "public",
+      "linkedTools": [],
+      "artifactBinding": {
+        "artifactKind": "contract",
+        "schemaPin": {
+          "id": "diagram-presentation-schema",
+          "version": "1",
+          "contentDigest": "f13d595793e17e1e4740c9203b19d8381fc55b90e37121d61f5037cb79f0281a"
+        },
+        "compatibilityMatrixVersion": "1"
+      }
+    }
+  },
+  "entry2": {
+    "format": "sentropic.registry-entry/v1",
+    "contractVersion": "1.1.4",
+    "kind": "ontology",
+    "id": "engram-diagram-presentation-2",
+    "name": "diagram-presentation@1",
+    "description": "Governed typed presentation contract with qualified DS adapter/renderer refs (entry revision 2; revises entry 1).",
+    "entryVersion": "2",
+    "publisher": {
+      "packageName": "engram-diagram-lot",
+      "packageVersion": "0.1.0"
+    },
+    "compatibility": {
+      "entryContract": "1.1.4",
+      "packages": [],
+      "schemaProfiles": [
+        "diagram-presentation-schema/1"
+      ],
+      "requiredHostFeatures": [
+        "ontology-descriptors"
+      ],
+      "optionalHostFeatures": []
+    },
+    "parameters": {
+      "schemaVersion": "1",
+      "schema": {
+        "$ref": "engram:diagram-presentation-schema"
+      },
+      "defaults": {}
+    },
+    "bindings": [
+      {
+        "key": "profile",
+        "contract": "engram:diagram-profile/1#sha256=60e3997a1f67259219eb8a7a9aa5ab8da4c89b85fe19b96e67326bc7fd386a2a",
+        "required": true
+      }
+    ],
+    "assets": [
+      {
+        "role": "profile-data",
+        "path": "contracts/diagram-presentation-1.json",
+        "mediaType": "application/json",
+        "sha256": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      }
+    ],
+    "ontology": {
+      "canonicalRef": "engram:diagram-presentation@1",
+      "namespace": "diagram",
+      "owner": "engram",
+      "profileShape": "mechanism-descriptor",
+      "artifactKind": "contract",
+      "profilePin": {
+        "id": "diagram-presentation",
+        "version": "1",
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      },
+      "stack": [
+        {
+          "id": "diagram-presentation",
+          "version": "1",
+          "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+        }
+      ],
+      "digests": {
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae",
+        "pinsDigest": "9be4a5ef9dcffa7697ffd3f279d2b062cff799ab36814a80c4371d7cebc41a80",
+        "resultEvidence": {
+          "evidenceState": "unresolved"
+        }
+      },
+      "ruleSheets": [],
+      "lifecycle": "draft",
+      "provenance": {
+        "sourceRef": "m3/SPEC_EVOL_GD_M3_DIAGRAM_MODEL-FROZEN-deb64b75.md",
+        "sourceRevision": "deb64b75e884bfefbdd97de698c899805568271ea1fc521fffe02cbc20288c2f"
+      },
+      "lineage": {
+        "parents": [],
+        "mappings": [],
+        "migrations": []
+      },
+      "conflictPolicy": "engram:g0-conflicts@1",
+      "completeness": "complete",
+      "corpusRef": {
+        "ref": "engram:diagram-lot-corpus/1",
+        "digest": "e946288de536075611c25e7b5e6078ea3def433b66d7a6ea60c1eb20cfebcf6e"
+      },
+      "receipts": [],
+      "migrations": [],
+      "consumers": [],
+      "compatibility": {
+        "renderer": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-apply.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=28c3607e5c4868d44c137b66fe8e6f6ed99cb578fc52a52f67442cca41802cd8",
+        "adapter": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e"
+      },
+      "visibility": "public",
+      "linkedTools": [],
+      "artifactBinding": {
+        "artifactKind": "contract",
+        "schemaPin": {
+          "id": "diagram-presentation-schema",
+          "version": "1",
+          "contentDigest": "f13d595793e17e1e4740c9203b19d8381fc55b90e37121d61f5037cb79f0281a"
+        },
+        "compatibilityMatrixVersion": "1"
+      }
+    }
+  },
+  "revision": {
+    "successor": {
+      "id": "engram-diagram-presentation-2",
+      "entryVersion": "2"
+    },
+    "predecessor": {
+      "id": "engram-diagram-presentation-1",
+      "entryVersion": "1",
+      "entryDigest": "a83e2c1d0ea9612d38a0b3ad1a0f0ae4e93e7f7a10fcee49ab57a6a06659da0a"
+    }
+  }
+}
