@@ -31,6 +31,7 @@ import {
   validateAgentPatch,
   validateAgentReadRequest,
   validateCollaborationColor,
+  validateFullBlockMetadata,
 } from "./collaboration.js";
 import type {
   AgentEditOperation,
@@ -480,5 +481,188 @@ describe("type-level fixtures (checked by the package type-check)", () => {
         requestedBy: "actor:agent-1",
       }),
     ).toBe("actor:agent-1");
+  });
+});
+
+describe("CL-1M review pass 1 (href syntax and whitespace, R-FULL-URL-1)", () => {
+  it("refuses empty-host and bracket-invalid http hrefs", () => {
+    expect(isAllowedHref("https://")).toBe(false);
+    expect(isAllowedHref("https://[invalid")).toBe(false);
+    expect(isAllowedHref("//[invalid")).toBe(false);
+  });
+
+  it("rejects leading Unicode whitespace before scheme detection", () => {
+    expect(isAllowedHref(" javascript:x")).toBe(false);
+    expect(isAllowedHref(" https://example.com")).toBe(false);
+    expect(isAllowedHref("https://example.com ")).toBe(false);
+  });
+
+  it("keeps valid network references, relative paths and mailto", () => {
+    expect(isAllowedHref("//host/path")).toBe(true);
+    expect(isAllowedHref("/absolute/path")).toBe(true);
+    expect(isAllowedHref("relative/path")).toBe(true);
+    expect(isAllowedHref("mailto:someone@example.com")).toBe(true);
+  });
+});
+
+describe("CL-1M review pass 1 (full metadata completeness, R-FULL-META-1)", () => {
+  function baseMetadata(record: Record<string, unknown>): Record<string, unknown> {
+    return {
+      listKind: "none",
+      listDepth: 0,
+      blockquoteDepth: 0,
+      containerOrder: [],
+      ...record,
+    };
+  }
+
+  it("requires headingLevel on headings and codeLanguage on code blocks", () => {
+    expect(
+      validateFullBlockMetadata(baseMetadata({ blockKind: "heading" })),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+    expect(
+      validateFullBlockMetadata(baseMetadata({ blockKind: "codeBlock" })),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+  });
+
+  it("refuses container counts inconsistent with depths", () => {
+    expect(
+      validateFullBlockMetadata(
+        baseMetadata({ blockKind: "paragraph", containerOrder: ["quote"] }),
+      ),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+  });
+
+  it("rejects C1 controls in codeLanguage", () => {
+    expect(
+      validateFullBlockMetadata(
+        baseMetadata({ blockKind: "codeBlock", codeLanguage: "xy" }),
+      ),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+  });
+});
+
+describe("CL-1M review pass 1 (size budgets refuse too-large)", () => {
+  function metadataRecord(record: Record<string, unknown>): Record<string, unknown> {
+    return {
+      listKind: "none",
+      listDepth: 0,
+      blockquoteDepth: 0,
+      containerOrder: [],
+      ...record,
+    };
+  }
+
+  function linkPatch(href: string): AgentPatch {
+    return basePatch([
+      {
+        type: "mark",
+        fieldKey: BINDING.fieldKey,
+        paragraphId: "paragraph:1",
+        range: { start: anchor(1), end: anchor(2) },
+        mark: "link",
+        href,
+      },
+    ]);
+  }
+
+  it("refuses over-budget language, ids, href and depths as too-large", () => {
+    expect(
+      validateFullBlockMetadata(
+        metadataRecord({ blockKind: "codeBlock", codeLanguage: "x".repeat(129) }),
+      ),
+    ).toMatchObject({ ok: false, reason: "too-large" });
+    expect(
+      validateAgentPatch(
+        basePatch([
+          {
+            type: "splitParagraph",
+            fieldKey: BINDING.fieldKey,
+            paragraphId: "paragraph:1",
+            at: anchor(1),
+            newParagraphId: "p".repeat(257),
+          },
+        ]),
+      ),
+    ).toMatchObject({ ok: false, reason: "too-large" });
+    expect(
+      validateFullBlockMetadata(
+        metadataRecord({
+          blockKind: "paragraph",
+          listKind: "none",
+          listItemId: "i".repeat(257),
+        }),
+      ),
+    ).toMatchObject({ ok: false, reason: "too-large" });
+    expect(
+      validateAgentPatch(linkPatch(`https://example.com/${"x".repeat(2029)}`)),
+    ).toMatchObject({ ok: false, reason: "too-large" });
+    expect(
+      validateFullBlockMetadata(
+        metadataRecord({ blockKind: "paragraph", listDepth: 2000 }),
+      ),
+    ).toMatchObject({ ok: false, reason: "too-large" });
+  });
+
+  it("keeps malformed values as incompatible-schema", () => {
+    expect(
+      validateAgentPatch(linkPatch("javascript:alert(1)")),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+    expect(
+      validateFullBlockMetadata(
+        metadataRecord({ blockKind: "heading", headingLevel: 7 }),
+      ),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+  });
+});
+
+describe("CL-1M review pass 1 (expiry compares instants)", () => {
+  it("treats offset spellings of the same instant as expired at equality", () => {
+    expect(
+      isLockExpired(
+        { expiresAt: "2026-10-29T12:00:00Z" },
+        "2026-10-29T12:00:00.000Z",
+      ),
+    ).toBe(true);
+    expect(
+      isLockExpired(
+        { expiresAt: "2026-10-29T13:00:00+01:00" },
+        "2026-10-29T12:00:00.000Z",
+      ),
+    ).toBe(true);
+  });
+
+  it("treats an unreadable clock or expiry as not expired", () => {
+    expect(isLockExpired({ expiresAt: "not-a-time" }, "2026-10-29T12:00:00.000Z")).toBe(
+      false,
+    );
+    expect(
+      isLockExpired({ expiresAt: "2026-10-29T12:00:00.000Z" }, "not-a-time"),
+    ).toBe(false);
+  });
+});
+
+describe("CL-1M review pass 1 (active lock requires a holder)", () => {
+  it("reports holder null with no expiry as no active lock", () => {
+    const presence = createPresenceSnapshot({
+      scopeRef: "scope:canvas-1",
+      actors: [actor("actor:self")],
+      currentActorId: "actor:self",
+    });
+    const state = derivePresenceBadgeState({
+      presence,
+      lock: {
+        unit: { scopeRef: "scope:canvas-1" },
+        holder: null,
+        expiresAt: null,
+        unlockRequestedBy: null,
+      },
+      capabilities: CAPABILITIES,
+      currentActorId: "actor:self",
+      nowIso: "2026-10-29T12:00:00.000Z",
+    });
+    expect(state.lockActive).toBe(false);
+    expect(state.role).toBe("viewer");
+    expect(state.canRequestUnlock).toBe(false);
   });
 });

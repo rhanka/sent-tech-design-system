@@ -393,6 +393,11 @@ const ALLOWED_HREF_SCHEMES: ReadonlySet<string> = new Set([
   "mailto",
 ]);
 const HREF_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+.-]*):/;
+/** Any Unicode whitespace anywhere (covers leading/trailing ASCII and
+    Unicode spaces such as U+00A0 before scheme detection). */
+const HREF_WHITESPACE_PATTERN = /\s/;
+/** Bracketed IPv6/IPvFuture host with an optional numeric port. */
+const HREF_BRACKETED_HOST_PATTERN = /^\[[0-9A-Za-z:.]+\](:\d*)?$/;
 
 function hasDisallowedHrefChar(href: string): boolean {
   for (let index = 0; index < href.length; index += 1) {
@@ -404,17 +409,50 @@ function hasDisallowedHrefChar(href: string): boolean {
   return false;
 }
 
+function hrefAuthorityHost(authority: string): string {
+  let end = authority.length;
+  for (const separator of ["/", "?", "#"]) {
+    const at = authority.indexOf(separator);
+    if (at !== -1 && at < end) {
+      end = at;
+    }
+  }
+  return authority.slice(0, end);
+}
+
+/** Host check for `http(s)` authorities and `//` network references:
+    non-empty, no whitespace, balanced brackets only as a bracketed
+    literal with an optional numeric port. */
+function isValidHrefHost(host: string): boolean {
+  if (host.length === 0) {
+    return false;
+  }
+  if (HREF_WHITESPACE_PATTERN.test(host)) {
+    return false;
+  }
+  if (host.includes("[") || host.includes("]")) {
+    return HREF_BRACKETED_HOST_PATTERN.test(host);
+  }
+  return true;
+}
+
 /** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
     UTF-16 units with an allowlisted scheme (`http`, `https`, `mailto`,
     case-insensitive) or a relative reference with no other scheme prefix.
-    Reject controls, backslashes, leading/trailing whitespace and malformed
-    URLs. Pure: the string is validated as given, after the caller decoded
-    clipboard entities and tokenized the input. */
+    Reject controls, backslashes, any whitespace (ASCII or Unicode,
+    checked before scheme detection) and malformed URLs (empty `http(s)`
+    host, unbalanced brackets in `http(s)` or `//` hosts). Pure: manual
+    string scan only, no DOM and no global `URL` dependency, so the check
+    does not vary across runtimes. The string is validated as given,
+    after the caller decoded clipboard entities and tokenized the input. */
 export function isAllowedHref(href: string): boolean {
   if (href.length === 0 || href.length > MAX_HREF_UNITS) {
     return false;
   }
   if (hasDisallowedHrefChar(href)) {
+    return false;
+  }
+  if (HREF_WHITESPACE_PATTERN.test(href)) {
     return false;
   }
   let boundary = href.length;
@@ -426,7 +464,24 @@ export function isAllowedHref(href: string): boolean {
   }
   const scheme = HREF_SCHEME_PATTERN.exec(href.slice(0, boundary));
   if (scheme !== null) {
-    return ALLOWED_HREF_SCHEMES.has(scheme[1].toLowerCase());
+    const name = scheme[1].toLowerCase();
+    if (!ALLOWED_HREF_SCHEMES.has(name)) {
+      return false;
+    }
+    if (name === "mailto") {
+      return true;
+    }
+    const rest = href.slice(scheme[0].length);
+    if (rest.length === 0) {
+      return false;
+    }
+    if (rest.startsWith("//")) {
+      return isValidHrefHost(hrefAuthorityHost(rest.slice(2)));
+    }
+    return true;
+  }
+  if (href.startsWith("//")) {
+    return isValidHrefHost(hrefAuthorityHost(href.slice(2)));
   }
   return true;
 }
@@ -459,14 +514,138 @@ function utf8ByteLength(text: string): number {
   return bytes;
 }
 
+const ISO_INSTANT_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:[.,](\d+))?(Z|[+-]\d{2}:?\d{2}|[+-]\d{2})?$/;
+
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+function daysInMonth(year: number, month: number): number {
+  if (month === 2) {
+    return isLeapYear(year) ? 29 : 28;
+  }
+  if (
+    month === 4 ||
+    month === 6 ||
+    month === 9 ||
+    month === 11
+  ) {
+    return 30;
+  }
+  return 31;
+}
+
+/** Days since 1970-01-01 for a civil date (proleptic Gregorian). */
+function daysFromCivil(year: number, month: number, day: number): number {
+  const adjustedYear = month <= 2 ? year - 1 : year;
+  const era = Math.floor(
+    (adjustedYear >= 0 ? adjustedYear : adjustedYear - 399) / 400,
+  );
+  const yearOfEra = adjustedYear - era * 400;
+  const monthPrime = (month + 9) % 12;
+  const dayOfYear =
+    Math.floor((153 * monthPrime + 2) / 5) + day - 1;
+  const dayOfEra =
+    yearOfEra * 365 +
+    Math.floor(yearOfEra / 4) -
+    Math.floor(yearOfEra / 100) +
+    dayOfYear;
+  return era * 146097 + dayOfEra - 719468;
+}
+
+interface ParsedInstant {
+  seconds: number;
+  nanos: number;
+}
+
+/** Manual ISO-8601 instant parse (no clock globals, no URI/URL globals):
+    calendar date plus time plus `Z` or numeric offset, fractional seconds
+    to nanosecond precision. Null on any unreadable value. */
+function parseIsoInstant(text: string): ParsedInstant | null {
+  const match = ISO_INSTANT_PATTERN.exec(text);
+  if (match === null) {
+    return null;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const zone = match[8];
+  if (
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > daysInMonth(year, month) ||
+    hour > 23 ||
+    minute > 59 ||
+    second > 59 ||
+    zone === undefined
+  ) {
+    return null;
+  }
+  let nanos = 0;
+  const fraction = match[7];
+  if (fraction !== undefined) {
+    const digits = fraction.slice(0, 9).padEnd(9, "0");
+    nanos = Number(digits);
+    if (!Number.isSafeInteger(nanos)) {
+      return null;
+    }
+  }
+  let offsetMinutes = 0;
+  if (zone !== "Z") {
+    const sign = zone[0] === "-" ? -1 : 1;
+    const digits = zone.slice(1).replace(":", "");
+    const padded = digits.length === 2 ? `${digits}00` : digits;
+    if (padded.length !== 4) {
+      return null;
+    }
+    const offsetHour = Number(padded.slice(0, 2));
+    const offsetMinute = Number(padded.slice(2, 4));
+    if (offsetHour > 23 || offsetMinute > 59) {
+      return null;
+    }
+    offsetMinutes = sign * (offsetHour * 60 + offsetMinute);
+  }
+  const seconds =
+    daysFromCivil(year, month, day) * 86400 +
+    hour * 3600 +
+    minute * 60 +
+    second -
+    offsetMinutes * 60;
+  if (!Number.isSafeInteger(seconds)) {
+    return null;
+  }
+  return { seconds, nanos };
+}
+
 /** Expiry evaluation against an injected clock. `nowIso` is the caller's
-    current time as an ISO-8601 string in a single comparable calendar; a
-    null expiry never expires. Pure string comparison: no clock is read. */
+    current time as an ISO-8601 instant in a single comparable calendar; a
+    null expiry never expires. Instants compare by time, not by spelling,
+    so `12:00:00Z`, `12:00:00.000Z` and `13:00:00+01:00` are the same
+    instant and expiry holds at equality. An unreadable `expiresAt` or
+    `nowIso` never counts as expired: without a readable deadline or a
+    readable clock there is no proof of expiry, so the lock stays active.
+    Pure of its arguments; the caller injects the clock. */
 export function isLockExpired(
   lock: Pick<LockSnapshot, "expiresAt">,
   nowIso: string,
 ): boolean {
-  return lock.expiresAt !== null && lock.expiresAt <= nowIso;
+  if (lock.expiresAt === null) {
+    return false;
+  }
+  const expires = parseIsoInstant(lock.expiresAt);
+  const now = parseIsoInstant(nowIso);
+  if (expires === null || now === null) {
+    return false;
+  }
+  if (expires.seconds !== now.seconds) {
+    return expires.seconds < now.seconds;
+  }
+  return expires.nanos <= now.nanos;
 }
 
 /** Build a presence snapshot from the full actor roster: `actors`
@@ -507,7 +686,9 @@ export function derivePresenceBadgeState(input: {
   nowIso: string;
 }): PresenceBadgeState {
   const lockActive =
-    input.lock !== null && !isLockExpired(input.lock, input.nowIso);
+    input.lock !== null &&
+    input.lock.holder !== null &&
+    !isLockExpired(input.lock, input.nowIso);
   const holderId =
     lockActive && input.lock !== null
       ? (input.lock.holder?.actorId ?? null)
@@ -606,19 +787,23 @@ const ADMITTED_METADATA_KEYS: ReadonlySet<string> = new Set([
 function hasDisallowedControlChar(text: string): boolean {
   for (let index = 0; index < text.length; index += 1) {
     const code = text.charCodeAt(index);
-    if (code <= 0x1f || code === 0x7f) {
+    if (code <= 0x1f || (code >= 0x7f && code <= 0x9f)) {
       return true;
     }
   }
   return false;
 }
 
-function isValidId(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    value.length > 0 &&
-    value.length <= MAX_ID_UNITS
-  );
+/** Id shape versus budget: empty/non-string is a shape refusal,
+    over 256 units is a size refusal. Null means the id is usable. */
+function idBudgetRefusal(value: unknown): PatchRefusalReason | null {
+  if (typeof value !== "string" || value.length === 0) {
+    return "incompatible-schema";
+  }
+  if (value.length > MAX_ID_UNITS) {
+    return "too-large";
+  }
+  return null;
 }
 
 /** Structural shape validation of one complete metadata record
@@ -661,12 +846,11 @@ export function validateFullBlockMetadata(
     };
   }
   const headingLevel = value["headingLevel"];
-  if (headingLevel !== undefined) {
+  if (blockKind === "heading") {
     if (
-      blockKind !== "heading" ||
       !isSafeInteger(headingLevel) ||
-      headingLevel < 1 ||
-      headingLevel > 6
+      (headingLevel as number) < 1 ||
+      (headingLevel as number) > 6
     ) {
       return {
         ok: false,
@@ -674,28 +858,51 @@ export function validateFullBlockMetadata(
         detail: "metadata headingLevel requires blockKind heading and level 1..6",
       };
     }
+  } else if (headingLevel !== undefined) {
+    return {
+      ok: false,
+      reason: "incompatible-schema",
+      detail: "metadata headingLevel requires blockKind heading and level 1..6",
+    };
   }
   const codeLanguage = value["codeLanguage"];
-  if (codeLanguage !== undefined) {
-    if (blockKind !== "codeBlock") {
+  if (blockKind === "codeBlock") {
+    if (codeLanguage === undefined) {
       return {
         ok: false,
         reason: "incompatible-schema",
         detail: "metadata codeLanguage requires blockKind codeBlock",
       };
     }
-    if (
-      codeLanguage !== null &&
-      (typeof codeLanguage !== "string" ||
-        codeLanguage.length > MAX_LANGUAGE_UNITS ||
-        hasDisallowedControlChar(codeLanguage))
-    ) {
-      return {
-        ok: false,
-        reason: "incompatible-schema",
-        detail: "metadata codeLanguage exceeds its budget or carries controls",
-      };
+    if (codeLanguage !== null) {
+      if (typeof codeLanguage !== "string") {
+        return {
+          ok: false,
+          reason: "incompatible-schema",
+          detail: "metadata codeLanguage must be a plain string or null",
+        };
+      }
+      if (codeLanguage.length > MAX_LANGUAGE_UNITS) {
+        return {
+          ok: false,
+          reason: "too-large",
+          detail: "metadata codeLanguage exceeds 128 units",
+        };
+      }
+      if (hasDisallowedControlChar(codeLanguage)) {
+        return {
+          ok: false,
+          reason: "incompatible-schema",
+          detail: "metadata codeLanguage carries control characters",
+        };
+      }
     }
+  } else if (codeLanguage !== undefined) {
+    return {
+      ok: false,
+      reason: "incompatible-schema",
+      detail: "metadata codeLanguage requires blockKind codeBlock",
+    };
   }
   const listKind = value["listKind"];
   if (listKind !== "none" && listKind !== "bullet" && listKind !== "ordered") {
@@ -706,36 +913,45 @@ export function validateFullBlockMetadata(
     };
   }
   const listDepth = value["listDepth"];
-  if (
-    !isSafeInteger(listDepth) ||
-    listDepth < 0 ||
-    listDepth > MAX_LIST_QUOTE_DEPTH
-  ) {
+  if (!isSafeInteger(listDepth) || (listDepth as number) < 0) {
     return {
       ok: false,
       reason: "incompatible-schema",
       detail: "metadata listDepth is out of range",
     };
   }
+  if ((listDepth as number) > MAX_LIST_QUOTE_DEPTH) {
+    return {
+      ok: false,
+      reason: "too-large",
+      detail: "metadata listDepth exceeds 1999",
+    };
+  }
   const blockquoteDepth = value["blockquoteDepth"];
-  if (
-    !isSafeInteger(blockquoteDepth) ||
-    blockquoteDepth < 0 ||
-    blockquoteDepth > MAX_LIST_QUOTE_DEPTH
-  ) {
+  if (!isSafeInteger(blockquoteDepth) || (blockquoteDepth as number) < 0) {
     return {
       ok: false,
       reason: "incompatible-schema",
       detail: "metadata blockquoteDepth is out of range",
     };
   }
+  if ((blockquoteDepth as number) > MAX_LIST_QUOTE_DEPTH) {
+    return {
+      ok: false,
+      reason: "too-large",
+      detail: "metadata blockquoteDepth exceeds 1999",
+    };
+  }
   for (const key of ["listItemId", "listRunId"] as const) {
-    if (value[key] !== undefined && !isValidId(value[key])) {
-      return {
-        ok: false,
-        reason: "incompatible-schema",
-        detail: `metadata ${key} exceeds its budget`,
-      };
+    if (value[key] !== undefined) {
+      const refusal = idBudgetRefusal(value[key]);
+      if (refusal !== null) {
+        return {
+          ok: false,
+          reason: refusal,
+          detail: `metadata ${key} exceeds its budget or is not a usable id`,
+        };
+      }
     }
   }
   if (value["orderedStart"] !== undefined) {
@@ -782,6 +998,26 @@ export function validateFullBlockMetadata(
       ok: false,
       reason: "incompatible-schema",
       detail: "metadata containerOrder must list quote/list entries only",
+    };
+  }
+  const quoteCount = containerOrder.filter(
+    (entry) => entry === "quote",
+  ).length;
+  const listCount = containerOrder.length - quoteCount;
+  if (quoteCount !== (blockquoteDepth as number)) {
+    return {
+      ok: false,
+      reason: "incompatible-schema",
+      detail: "metadata containerOrder quote count must equal blockquoteDepth",
+    };
+  }
+  const expectedListCount =
+    listKind === "none" ? 0 : (listDepth as number) + 1;
+  if (listCount !== expectedListCount) {
+    return {
+      ok: false,
+      reason: "incompatible-schema",
+      detail: "metadata containerOrder list count must equal list depth",
     };
   }
   if (utf8ByteLength(JSON.stringify(record)) > MAX_METADATA_BYTES) {
@@ -880,7 +1116,13 @@ function validateOperationShape(
           return refusePatch("incompatible-schema", "link is a full-profile mark", operationIndex);
         }
         if (operation.href !== null) {
-          if (typeof operation.href !== "string" || !isAllowedHref(operation.href)) {
+          if (typeof operation.href !== "string") {
+            return refusePatch("incompatible-schema", "link href is not allowlisted", operationIndex);
+          }
+          if (operation.href.length > MAX_HREF_UNITS) {
+            return refusePatch("too-large", "link href exceeds 2048 units", operationIndex);
+          }
+          if (!isAllowedHref(operation.href)) {
             return refusePatch("incompatible-schema", "link href is not allowlisted", operationIndex);
           }
         }
@@ -901,8 +1143,11 @@ function validateOperationShape(
       if (!isNonEmptyString(operation.paragraphId) || !isAnchorString(operation.at)) {
         return refusePatch("incompatible-schema", "splitParagraph needs paragraphId and at", operationIndex);
       }
-      if (!isValidId(operation.newParagraphId)) {
-        return refusePatch("incompatible-schema", "splitParagraph newParagraphId exceeds its budget", operationIndex);
+      {
+        const refusal = idBudgetRefusal(operation.newParagraphId);
+        if (refusal !== null) {
+          return refusePatch(refusal, "splitParagraph newParagraphId exceeds its budget or is not a usable id", operationIndex);
+        }
       }
       return { ok: true };
     }
@@ -932,8 +1177,11 @@ function validateOperationShape(
       if (!isAnchorString(operation.at)) {
         return refusePatch("incompatible-schema", "insertHorizontalRule needs at", operationIndex);
       }
-      if (!isValidId(operation.newParagraphId)) {
-        return refusePatch("incompatible-schema", "insertHorizontalRule newParagraphId exceeds its budget", operationIndex);
+      {
+        const refusal = idBudgetRefusal(operation.newParagraphId);
+        if (refusal !== null) {
+          return refusePatch(refusal, "insertHorizontalRule newParagraphId exceeds its budget or is not a usable id", operationIndex);
+        }
       }
       return { ok: true };
     }
@@ -944,11 +1192,11 @@ function validateOperationShape(
       if (!isNonEmptyString(operation.paragraphId)) {
         return refusePatch("incompatible-schema", "deleteHorizontalRule needs paragraphId", operationIndex);
       }
-      if (
-        operation.replacementParagraphId !== undefined &&
-        !isValidId(operation.replacementParagraphId)
-      ) {
-        return refusePatch("incompatible-schema", "deleteHorizontalRule replacementParagraphId exceeds its budget", operationIndex);
+      if (operation.replacementParagraphId !== undefined) {
+        const refusal = idBudgetRefusal(operation.replacementParagraphId);
+        if (refusal !== null) {
+          return refusePatch(refusal, "deleteHorizontalRule replacementParagraphId exceeds its budget or is not a usable id", operationIndex);
+        }
       }
       return { ok: true };
     }
