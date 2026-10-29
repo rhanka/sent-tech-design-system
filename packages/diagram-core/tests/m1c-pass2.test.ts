@@ -1356,4 +1356,125 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
     expect(unfolded.relationOccurrences["occurrence:r"]).toEqual(source.relationOccurrences["occurrence:r"]);
     expect(unfolded.relationOccurrences["occurrence:flow"]).toEqual(source.relationOccurrences["occurrence:flow"]);
   });
+
+  it("B.7 boundary-crossing target stays visible without provenance while fold stays active", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { dirname, join } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const { archimate2Profile, migrateArchimateV1ToV2 } = await import("../src/index.js");
+    const here = dirname(fileURLToPath(import.meta.url));
+    const pinned = JSON.parse(
+      readFileSync(join(here, "../fixtures/valid/archimate-skeleton-document.json"), "utf8"),
+    ) as { readonly document: SemanticDocument };
+    const migrated = migrateArchimateV1ToV2(pinned.document, {
+      entityTypes: {
+        "entity:actor": "business-actor",
+        "entity:process": "business-process",
+        "entity:component": "application-component",
+      },
+    });
+    expect(migrated.status).toBe("ok");
+    if (migrated.status !== "ok") return;
+    const document: SemanticDocument = {
+      ...migrated.document,
+      revision: 1,
+      entities: {
+        ...migrated.document.entities,
+        "entity:junction": {
+          id: entityRef("junction"),
+          profile: "archimate@2",
+          type: "grouping",
+          attributes: { name: text("Claims grouping") },
+        },
+      },
+      relations: {
+        ...migrated.document.relations,
+        "relation:assignment": {
+          id: relationRef("assignment"),
+          profile: "archimate@2",
+          type: "association",
+          endpoints: [
+            { role: "source", target: entityRef("component") },
+            { role: "target", target: entityRef("actor") },
+          ],
+          attributes: {},
+        },
+        "relation:serving": {
+          id: relationRef("serving"),
+          profile: "archimate@2",
+          type: "groupingContainment",
+          endpoints: [
+            { role: "parent", target: entityRef("junction") },
+            { role: "child", target: entityRef("actor") },
+          ],
+          attributes: {},
+        },
+        "relation:flow": {
+          id: relationRef("flow"),
+          profile: "archimate@2",
+          type: "association",
+          endpoints: [
+            { role: "source", target: entityRef("component") },
+            { role: "target", target: relationRef("assignment") },
+          ],
+          attributes: {},
+        },
+      },
+    };
+    const scoped = { registry: createProfileRegistry([archimate2Profile]), bindings: { schemaVersion: "1" as const, rows: [bindingRowFor(archimate2Profile, SCOPED_CONSTRAINTS_ADAPTER)] } };
+    const view = createView({ viewId: viewRef("b7boundary"), semanticDocumentId: document.documentId });
+    const source: ViewDocument = {
+      ...view,
+      revision: 1,
+      entityOccurrences: {
+        "occurrence:Z": { id: occurrenceRef("Z"), entity: entityRef("junction"), geometry: { x: 0, y: 0, width: 1000, height: 600 } },
+        "occurrence:A1": { id: occurrenceRef("A1"), entity: entityRef("actor"), geometry: { x: 40, y: 240, width: 460, height: 200 }, group: "occurrence:Z" },
+        "occurrence:EXT": { id: occurrenceRef("EXT"), entity: entityRef("component"), geometry: { x: 1200, y: 240, width: 460, height: 200 } },
+      },
+      relationOccurrences: {
+        "occurrence:r": {
+          id: occurrenceRef("r"),
+          relation: relationRef("flow"),
+          endpoints: [
+            { role: "source", occurrence: occurrenceRef("EXT") },
+            { role: "target", occurrence: occurrenceRef("flow") },
+          ],
+        },
+        "occurrence:flow": {
+          id: occurrenceRef("flow"),
+          relation: relationRef("assignment"),
+          endpoints: [
+            { role: "source", occurrence: occurrenceRef("EXT") },
+            { role: "target", occurrence: occurrenceRef("A1") },
+          ],
+          waypoints: [
+            { x: 500, y: 200 },
+            { x: 270, y: 240 },
+          ],
+        },
+      },
+      portOccurrences: {},
+      groups: { "occurrence:Z": { id: "occurrence:Z", occurrence: occurrenceRef("Z"), collapsed: false } },
+      filters: [],
+    };
+    const { validateDocument } = await import("../src/index.js");
+    expect(validateDocument(document, scoped)).toEqual([]);
+    expect(validateView(source, document, scoped)).toEqual([]);
+    expect(source.relationOccurrences["occurrence:r"]?.endpoints[1]).toEqual({
+      role: "target",
+      occurrence: occurrenceRef("flow"),
+    });
+    const folded = projectView(document, source, [occurrenceRef("Z")]);
+    expect(validateView(folded, document, scoped)).toEqual([]);
+    expect(folded.relationOccurrences["occurrence:r"]?.endpoints[1]).toEqual({
+      role: "target",
+      occurrence: occurrenceRef("flow"),
+    });
+    expect(folded.relationOccurrences["occurrence:flow"]?.endpoints).toEqual([
+      { role: "source", occurrence: occurrenceRef("EXT") },
+      { role: "target", occurrence: occurrenceRef("Z"), semanticTarget: entityRef("actor"), sourceOccurrence: occurrenceRef("A1") },
+    ]);
+    const scene = foldedScene(folded, document, [occurrenceRef("Z")]);
+    expect([...scene.drawnRelations].sort()).toEqual(["occurrence:flow", "occurrence:r"].sort());
+  });
 });

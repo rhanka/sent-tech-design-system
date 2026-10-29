@@ -6,14 +6,18 @@ import { describe, expect, it } from "vitest";
 
 import {
   archimate2Profile,
+  generic2Profile,
   uml2Profile,
   validateDocument,
+  validateView,
 } from "../src/index.js";
 import { baseDocument, ent, rel, scopedOptions } from "./m3-helpers.js";
 import { collection, enumeration, quantity, reference, structValue, text } from "../src/index.js";
 
 const archimateOptions = () => scopedOptions([archimate2Profile]);
 const umlOptions = () => scopedOptions([uml2Profile]);
+const mixedArchimateOptions = () => scopedOptions([archimate2Profile, generic2Profile]);
+const mixedUmlOptions = () => scopedOptions([uml2Profile, generic2Profile]);
 
 describe("archimate@2 execution", () => {
   it("accepts application-component access data-object and rejects the reverse", () => {
@@ -153,15 +157,157 @@ describe("uml@2 execution", () => {
 });
 
 describe("P-AM and P-UML witnesses", () => {
-  it("P-AM keeps two family contexts under one contract", async () => {
-    const { GENERIC2_PROFILE_ID } = await import("../src/index.js");
-    expect(GENERIC2_PROFILE_ID).toBe("generic@2");
-    expect(archimate2Profile.id).toBe("archimate@2");
+  it("P-AM applies card with categoryRef under two family contexts and keeps matrix governing", async () => {
+    const mod = (await import("../src/index.js")) as typeof import("../src/index.js");
+    const document = {
+      ...baseDocument(["archimate@2", "generic@2"]),
+      entities: {
+        "entity:a": ent("a", "archimate@2", "application-component", {
+          name: text("A"),
+          layer: enumeration("application"),
+          aspect: enumeration("active"),
+        }),
+        "entity:b": ent("b", "archimate@2", "data-object", {
+          name: text("B"),
+          layer: enumeration("application"),
+          aspect: enumeration("passive"),
+        }),
+        "entity:l": ent("l", "generic@2", "legend", { name: text("L") }),
+        "entity:k1": ent("k1", "generic@2", "legend-key", { name: text("K1"), category: text("risk") }),
+      },
+      relations: {
+        "relation:lk": rel("lk", "generic@2", "contains", [
+          { role: "parent", target: "entity:l" },
+          { role: "child", target: "entity:k1" },
+        ]),
+        "relation:access": rel("access", "archimate@2", "access", [
+          { role: "source", target: "entity:a" },
+          { role: "target", target: "entity:b" },
+        ]),
+      },
+    };
+    expect(validateDocument(document, mixedArchimateOptions())).toEqual([]);
+    const view = {
+      ...mod.createView({ viewId: mod.viewRef("pam"), semanticDocumentId: document.documentId }),
+      entityOccurrences: {
+        "occurrence:a": { id: mod.occurrenceRef("a"), entity: mod.entityRef("a"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:l": { id: mod.occurrenceRef("l"), entity: mod.entityRef("l"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:k": { id: mod.occurrenceRef("k"), entity: mod.entityRef("k1"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+      relationOccurrences: {},
+      presentation: {
+        camera: { x: 0, y: 0, zoom: 1 },
+        diagram: {
+          contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
+          entities: {
+            "occurrence:a": { form: "card", text: {}, categoryRef: mod.entityRef("k1") },
+            "occurrence:l": { form: "legend", text: {} },
+            "occurrence:k": { form: "legend-key", text: {} },
+          },
+          legends: { "occurrence:l": { order: [mod.entityRef("k1")] } },
+          categoryTokens: [{ legendRef: mod.entityRef("l"), category: "risk", token: "st-feedback-warning" }],
+        },
+      },
+    };
+    expect(validateView(view as never, document as never, mixedArchimateOptions())).toEqual([]);
+    const reversed = {
+      ...document,
+      relations: {
+        ...document.relations,
+        "relation:access": rel("access", "archimate@2", "access", [
+          { role: "source", target: "entity:b" },
+          { role: "target", target: "entity:a" },
+        ]),
+      },
+    };
+    expect(validateDocument(reversed, mixedArchimateOptions()).map((d) => d.code)).toContain(
+      "relationship-matrix-violation",
+    );
+    const missingGenericDoc = {
+      ...document,
+      profileRefs: ["archimate@2" as never],
+      entities: {
+        "entity:a": document.entities["entity:a"],
+        "entity:b": document.entities["entity:b"],
+      },
+      relations: {
+        "relation:access": document.relations["relation:access"],
+      },
+    };
+    const missingCodes = validateView(view as never, missingGenericDoc as never, mixedArchimateOptions()).map(
+      (d) => d.code,
+    );
+    expect(missingCodes).toContain("dangling-reference");
   });
 
-  it("P-UML validates multiplicity before application", () => {
-    expect(uml2Profile.id).toBe("uml@2");
-    expect(umlOptions().registry.list()).toContain("uml@2");
+  it("P-UML validates multiplicity and stereotype before application and draws card and container", async () => {
+    const mod = (await import("../src/index.js")) as typeof import("../src/index.js");
+    const document = {
+      ...baseDocument(["uml@2", "generic@2"]),
+      entities: {
+        "entity:c": ent("c", "uml@2", "class", {
+          name: text("C"),
+          visibility: enumeration("public"),
+          stereotypes: collection([]),
+        }),
+        "entity:p": ent("p", "uml@2", "package", {
+          name: text("P"),
+          visibility: enumeration("public"),
+          stereotypes: collection([]),
+        }),
+        "entity:l": ent("l", "generic@2", "legend", { name: text("L") }),
+        "entity:k1": ent("k1", "generic@2", "legend-key", { name: text("K1"), category: text("risk") }),
+      },
+      relations: {
+        "relation:lk": rel("lk", "generic@2", "contains", [
+          { role: "parent", target: "entity:l" },
+          { role: "child", target: "entity:k1" },
+        ]),
+      },
+    };
+    expect(validateDocument(document, mixedUmlOptions())).toEqual([]);
+    expect("card" in (uml2Profile.entityTypes.find((t) => t.id === "class")?.attributes ?? [])).toBe(false);
+    const view = {
+      ...mod.createView({ viewId: mod.viewRef("puml"), semanticDocumentId: document.documentId }),
+      entityOccurrences: {
+        "occurrence:c": { id: mod.occurrenceRef("c"), entity: mod.entityRef("c"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:p": { id: mod.occurrenceRef("p"), entity: mod.entityRef("p"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:l": { id: mod.occurrenceRef("l"), entity: mod.entityRef("l"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+        "occurrence:k": { id: mod.occurrenceRef("k"), entity: mod.entityRef("k1"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+      relationOccurrences: {},
+      presentation: {
+        camera: { x: 0, y: 0, zoom: 1 },
+        diagram: {
+          contractPin: mod.DIAGRAM_PRESENTATION_CONTRACT_PIN,
+          entities: {
+            "occurrence:c": { form: "card", text: {}, categoryRef: mod.entityRef("k1") },
+            "occurrence:p": { form: "container", text: {} },
+            "occurrence:l": { form: "legend", text: {} },
+            "occurrence:k": { form: "legend-key", text: {} },
+          },
+          legends: { "occurrence:l": { order: [mod.entityRef("k1")] } },
+          categoryTokens: [{ legendRef: mod.entityRef("l"), category: "risk", token: "st-feedback-warning" }],
+        },
+      },
+    };
+    expect(validateView(view as never, document as never, mixedUmlOptions())).toEqual([]);
+    const badMultiplicity = {
+      ...document,
+      entities: {
+        ...document.entities,
+        "entity:bad": ent("bad", "uml@2", "property", {
+          name: text("bad"),
+          visibility: enumeration("public"),
+          stereotypes: collection([]),
+          multiplicity: structValue("multiplicity", {
+            lower: quantity(3, "unit"),
+            upper: quantity(2, "unit"),
+          }),
+        }),
+      },
+    };
+    expect(validateDocument(badMultiplicity, mixedUmlOptions()).map((d) => d.code)).toContain("multiplicity-invalid");
   });
 
   it("P-BPMN stays blocked on A-prime", async () => {

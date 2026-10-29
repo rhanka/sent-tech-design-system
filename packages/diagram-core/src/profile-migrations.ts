@@ -7,12 +7,12 @@
  * never silently upgraded. Supersession is lifecycle metadata, never
  * composition ancestry.
  */
-import { contentDiagramDigest } from "./bindings.js";
+import { contentDiagramDigest, imposedAdapterFor, stableStringify } from "./bindings.js";
 import { canonicalise } from "./canonical.js";
 import { sha256Hex } from "./sha256.js";
-import type { AttributeValue } from "./attributes.js";
+import type { AttributeSchema, AttributeValue } from "./attributes.js";
 import type { SemanticDocument } from "./document.js";
-import type { ProfileId } from "./profile.js";
+import { entityTypeOf, type Profile, type ProfileId } from "./profile.js";
 import { archimateSkeletonProfile } from "./profiles/skeletons.js";
 import { umlSkeletonProfile } from "./profiles/skeletons.js";
 import { archimate2Profile } from "./profiles/archimate2.js";
@@ -20,12 +20,14 @@ import { uml2Profile } from "./profiles/uml2.js";
 import { ARCHIMATE_CATALOGUE } from "./profiles/archimate-matrix.js";
 import { expandArchimateTuples } from "./profiles/archimate2.js";
 import { parseMultiplicity } from "./multiplicity.js";
-import { validateDocument } from "./validate.js";
+import { validateDocument, validateState } from "./validate.js";
 import { createProfileRegistry } from "./profile.js";
-import { bindingRowFor, SCOPED_CONSTRAINTS_ADAPTER } from "./bindings.js";
+import { bindingRowFor } from "./bindings.js";
 import { genericProfile } from "./profiles/generic.js";
 import { generic2Profile } from "./profiles/generic2.js";
 import { bpmnSkeletonProfile } from "./profiles/skeletons.js";
+import { createTypeResolver } from "./resolver.js";
+import type { DiagramState } from "./state.js";
 
 export const BPMN_BLOCKED_ON_APRIME = true as const;
 
@@ -42,7 +44,8 @@ export type ProfileMigrationReason =
   | "incompatible-attribute-schema"
   | "type-definition-conflict"
   | "endpoint-role-unknown"
-  | "relationship-matrix-violation";
+  | "relationship-matrix-violation"
+  | "authored-value-collision";
 
 export interface ProfileMigrationUnmigrated {
   readonly path: string;
@@ -67,12 +70,15 @@ export interface ProfileMigrationReportBase {
   readonly supersession: { readonly superseded: ProfileId; readonly supersededBy: ProfileId; readonly migrationRef: string };
 }
 
+export type ProfileMigrationInput = SemanticDocument | DiagramState;
+
 export type ProfileMigrationOutcome =
   | (ProfileMigrationReportBase & {
       readonly status: "ok";
       readonly document: SemanticDocument;
-      readonly invert: (current?: SemanticDocument) =>
-        | { readonly status: "ok"; readonly document: SemanticDocument }
+      readonly state: DiagramState;
+      readonly invert: (current?: SemanticDocument | DiagramState) =>
+        | { readonly status: "ok"; readonly document: SemanticDocument; readonly state: DiagramState }
         | { readonly status: "refused"; readonly unmigrated: readonly ProfileMigrationUnmigrated[] };
     })
   | (ProfileMigrationReportBase & { readonly status: "refused" });
@@ -147,14 +153,101 @@ function scopedBindingsFor(ids: readonly ProfileId[]) {
   const rows = ids.map((id) => {
     const profile = registry.get(id);
     if (profile === undefined) throw new Error(`unknown profile ${id}`);
-    return bindingRowFor(profile, SCOPED_CONSTRAINTS_ADAPTER);
+    const imposed = imposedAdapterFor(id);
+    if (imposed === undefined) throw new Error(`no imposed executor adapter for profile ${id}`);
+    return bindingRowFor(profile, imposed);
   });
   return { registry, bindings: { schemaVersion: "1" as const, rows } };
 }
 
-function originalOf(source: SemanticDocument): { readonly canonical: string; readonly hash: string } {
-  const canonical = canonicalise(source);
+function isDiagramState(value: unknown): value is DiagramState {
+  if (typeof value !== "object" || value === null) return false;
+  const record = value as Record<string, unknown>;
+  const document = record["document"] as Record<string, unknown> | undefined;
+  const views = record["views"] as Record<string, unknown> | undefined;
+  return (
+    typeof document === "object" &&
+    document !== null &&
+    typeof (document as { documentId?: unknown }).documentId === "string" &&
+    typeof views === "object" &&
+    views !== null &&
+    !Array.isArray(views)
+  );
+}
+
+function splitInput(input: ProfileMigrationInput): { readonly document: SemanticDocument; readonly views: DiagramState["views"]; readonly isState: boolean } {
+  if (isDiagramState(input)) {
+    return { document: input.document, views: input.views, isState: true };
+  }
+  return { document: input, views: {}, isState: false };
+}
+
+function originalOfInput(input: ProfileMigrationInput): { readonly canonical: string; readonly hash: string } {
+  const canonical = canonicalise(input);
   return { canonical, hash: sha256Hex(canonical) };
+}
+
+function sectionIndex(path: string): number {
+  if (path === "profileRefs" || path.startsWith("profileRefs")) return 0;
+  if (path.startsWith("typeDefinitions")) return 1;
+  if (path.startsWith("entities")) return 2;
+  if (path.startsWith("relations")) return 3;
+  if (path.startsWith("ports")) return 4;
+  if (path.startsWith("views")) return 5;
+  return 6;
+}
+
+function orderOperations(operations: MigrationOperation[]): MigrationOperation[] {
+  return [...operations].sort((a, b) => {
+    const sectionA = sectionIndex(a.path);
+    const sectionB = sectionIndex(b.path);
+    if (sectionA !== sectionB) return sectionA - sectionB;
+    if (a.path < b.path) return -1;
+    if (a.path > b.path) return 1;
+    if (a.action < b.action) return -1;
+    if (a.action > b.action) return 1;
+    return 0;
+  });
+}
+
+function hasExactKeys(value: unknown, expected: readonly string[]): boolean {
+  if (!isRecord(value)) return false;
+  const keys = Object.keys(value).sort();
+  const wanted = [...expected].sort();
+  return keys.length === wanted.length && keys.every((key, index) => key === wanted[index]);
+}
+
+function targetAttributeSchemas(profile: Profile, typeId: string): readonly AttributeSchema[] {
+  const declared = entityTypeOf(profile, typeId);
+  return declared?.attributes ?? [];
+}
+
+function promoteCompatibleAttributes(
+  sourceAttributes: readonly AttributeSchema[],
+  targetAttributes: readonly AttributeSchema[],
+): { readonly retained: AttributeSchema[]; readonly incompatible: AttributeSchema | undefined } {
+  const targetByName = new Map(targetAttributes.map((schema) => [schema.name, schema] as const));
+  const retained: AttributeSchema[] = [];
+  for (const schema of sourceAttributes) {
+    const target = targetByName.get(schema.name);
+    if (target === undefined) {
+      retained.push(schema);
+      continue;
+    }
+    if (stableStringify(schema) === stableStringify(target)) continue;
+    return { retained: [], incompatible: schema };
+  }
+  return { retained, incompatible: undefined };
+}
+
+function schemasForEffectiveType(
+  resolver: ReturnType<typeof createTypeResolver>,
+  owner: Profile,
+  typeId: string,
+): readonly AttributeSchema[] | undefined {
+  const resolution = resolver.resolve(owner, typeId);
+  if (!resolution.ok) return undefined;
+  return resolution.resolved.schemas;
 }
 
 function baseOf(
@@ -182,72 +275,24 @@ function hasRelationTarget(document: SemanticDocument): boolean {
   return false;
 }
 
-function resolveArchimateBase(
-  source: SemanticDocument,
+function archimateBaseOf(
+  resolver: ReturnType<typeof createTypeResolver>,
   typeId: string,
-): { readonly ok: true; readonly base: string } | { readonly ok: false } {
-  if (typeId === "element" || typeId === "junction" || typeId === "grouping") return { ok: true, base: typeId };
-  const seen = new Set<string>([typeId]);
-  let current: string | undefined = typeId;
-  while (current !== undefined) {
-    const key: string = current;
-    const definition: SemanticDocument["typeDefinitions"][string] | undefined = source.typeDefinitions[key];
-    if (definition === undefined) return { ok: false };
-    const base: string = definition.baseType;
-    if (base === "element" || base === "junction" || base === "grouping") return { ok: true, base };
-    if (seen.has(base)) return { ok: false };
-    seen.add(base);
-    current = base;
-  }
-  return { ok: false };
-}
-
-function residualSchemaFor(name: string, value: AttributeValue): Record<string, unknown> {
-  switch (value.kind) {
-    case "text":
-      return { name, kind: "text" };
-    case "boolean":
-      return { name, kind: "boolean" };
-    case "date":
-      return { name, kind: "date" };
-    case "enum":
-      return { name, kind: "enum", values: [value.value] };
-    case "quantity":
-      return { name, kind: "quantity", units: [value.unit] };
-    case "reference":
-      return { name, kind: "reference", refKind: "entity" };
-    case "collection": {
-      const first = value.items[0];
-      if (first === undefined) return { name, kind: "collection", item: { kind: "text" }, maxItems: 0 };
-      if (first.kind === "text") return { name, kind: "collection", item: { kind: "text" }, maxItems: value.items.length };
-      if (first.kind === "enum")
-        return {
-          name,
-          kind: "collection",
-          item: { kind: "enum", values: [...new Set(value.items.flatMap((i) => (i.kind === "enum" ? [i.value] : [])))] },
-          maxItems: value.items.length,
-        };
-      if (first.kind === "boolean") return { name, kind: "collection", item: { kind: "boolean" }, maxItems: value.items.length };
-      if (first.kind === "quantity" && first.kind === "quantity")
-        return {
-          name,
-          kind: "collection",
-          item: { kind: "quantity", units: [(first as { readonly unit: string }).unit] },
-          maxItems: value.items.length,
-        };
-      return { name, kind: "collection", item: { kind: "text" }, maxItems: value.items.length };
-    }
-    case "struct":
-      return { name, kind: "struct", targetTypes: [value.type] };
-  }
+): { readonly ok: true; readonly base: string } | { readonly ok: false; readonly diagnostic: string } {
+  const resolution = resolver.resolve(archimateSkeletonProfile, typeId);
+  if (!resolution.ok) return { ok: false, diagnostic: `${resolution.diagnostic.code}: ${resolution.diagnostic.message}` };
+  const family = resolution.resolved.familyType;
+  if (family === "element" || family === "junction" || family === "grouping") return { ok: true, base: family };
+  return { ok: false, diagnostic: `unknown-entity-type: no archimate@1 family for ${typeId}` };
 }
 
 export function migrateArchimateV1ToV2(
-  source: SemanticDocument,
+  sourceInput: ProfileMigrationInput,
   mapping: { readonly entityTypes: Readonly<Record<string, string>> },
 ): ProfileMigrationOutcome {
+  const { document: source, views: sourceViews } = splitInput(sourceInput);
   const { from, to } = baseOf(source, "archimate@1", "archimate@2", "archimate@1->archimate@2");
-  const { canonical, hash } = originalOf(source);
+  const { canonical, hash } = originalOfInput(sourceInput);
   const supersession = {
     superseded: "archimate@1" as ProfileId,
     supersededBy: "archimate@2" as ProfileId,
@@ -264,7 +309,7 @@ export function migrateArchimateV1ToV2(
     unmigrated: detail === undefined ? [{ path, reason }] : [{ path, reason, detail }],
     supersession,
   });
-  if (!isRecord(mapping) || !isRecord((mapping as Record<string, unknown>)["entityTypes"])) {
+  if (!hasExactKeys(mapping, ["entityTypes"]) || !isRecord((mapping as Record<string, unknown>)["entityTypes"])) {
     return refused("mapping", "incompatible-attribute-schema");
   }
   const entityTypes = (mapping as { readonly entityTypes: Readonly<Record<string, string>> }).entityTypes;
@@ -276,6 +321,16 @@ export function migrateArchimateV1ToV2(
     return refused("", refs.includes("archimate@2") ? "target-already-present" : "missing-source-profile");
   }
   if (refs.includes("archimate@2")) return refused("", "target-already-present");
+  const sourceRegistry = fullRegistry();
+  const sourceDiagnostics =
+    sourceViews !== undefined && Object.keys(sourceViews).length > 0
+      ? validateState({ document: source, views: sourceViews }, { registry: sourceRegistry })
+      : validateDocument(source, { registry: sourceRegistry });
+  if (sourceDiagnostics.length > 0) {
+    const first = sourceDiagnostics[0] as (typeof sourceDiagnostics)[number];
+    return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
+  }
+  const sourceResolver = createTypeResolver(source);
   const nextRefs = refs.map((r) => (r === "archimate@1" ? ("archimate@2" as ProfileId) : r));
   const operations: MigrationOperation[] = [
     { path: "profileRefs", action: "replace-profile-ref", detail: "archimate@1→archimate@2" },
@@ -288,7 +343,7 @@ export function migrateArchimateV1ToV2(
   for (const [id, rawDefinition] of Object.entries(source.typeDefinitions).sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
   )) {
-    if (reserved.has(id)) return refused(`typeDefinitions.${id}`, "incompatible-attribute-schema");
+    if (reserved.has(id)) return refused(`typeDefinitions.${id}`, "type-definition-conflict", "target-reserved type id");
     const definition = clone(rawDefinition);
     if (definition.profile === "archimate@1") {
       nextDefinitions[id] = { ...definition, profile: "archimate@2" as const };
@@ -318,19 +373,51 @@ export function migrateArchimateV1ToV2(
     }
     const existing = nextDefinitions[definitionId];
     if (existing === undefined) return refused(`typeDefinitions.${definitionId}.baseType`, "missing-type-mapping");
-    nextDefinitions[definitionId] = { ...existing, baseType: single } as SemanticDocument["typeDefinitions"][string];
+    const targetSchemas = targetAttributeSchemas(archimate2Profile, single);
+    const promotion = promoteCompatibleAttributes(existing.attributes as AttributeSchema[], targetSchemas);
+    if (promotion.incompatible !== undefined) {
+      return refused(
+        `typeDefinitions.${definitionId}.attributes.${promotion.incompatible.name}`,
+        "type-definition-conflict",
+        "incompatible-attribute-schema",
+      );
+    }
+    nextDefinitions[definitionId] = {
+      ...existing,
+      baseType: single,
+      attributes: promotion.retained,
+    } as SemanticDocument["typeDefinitions"][string];
     operations.push({
       path: `typeDefinitions.${definitionId}.baseType`,
       action: "rebase-residual-refinement",
       detail: `element→${single}`,
     });
   }
+  for (const [id, rawDefinition] of Object.entries(nextDefinitions).sort(([a], [b]) =>
+    a < b ? -1 : a > b ? 1 : 0,
+  )) {
+    if (rawDefinition.profile !== "archimate@2") continue;
+    const original = source.typeDefinitions[id];
+    if (original === undefined || original.profile !== "archimate@1") continue;
+    if (original.baseType !== "junction" && original.baseType !== "grouping") continue;
+    const targetSchemas = targetAttributeSchemas(archimate2Profile, original.baseType);
+    const promotion = promoteCompatibleAttributes(rawDefinition.attributes as AttributeSchema[], targetSchemas);
+    if (promotion.incompatible !== undefined) {
+      return refused(
+        `typeDefinitions.${id}.attributes.${promotion.incompatible.name}`,
+        "type-definition-conflict",
+        "incompatible-attribute-schema",
+      );
+    }
+    if (promotion.retained.length !== (rawDefinition.attributes as readonly unknown[]).length) {
+      nextDefinitions[id] = { ...rawDefinition, attributes: promotion.retained as never };
+    }
+  }
   const tuples = expandArchimateTuples();
   const allows = (relationship: string, s: string, t: string): boolean =>
     tuples.some((x) => x.relationType === relationship && x.sourceType === s && x.targetType === t);
-  const entityTypeOf = new Map<string, string>();
+  const entityTypeById = new Map<string, string>();
   const entities: Record<string, SemanticDocument["entities"][string]> = {};
-  const residualDefinitions: Record<string, SemanticDocument["typeDefinitions"][string]> = {};
   for (const [id, rawEntity] of Object.entries(source.entities).sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
   )) {
@@ -339,42 +426,38 @@ export function migrateArchimateV1ToV2(
       entities[id] = clone(entity);
       continue;
     }
-    const resolved = resolveArchimateBase(source, entity.type);
-    if (!resolved.ok) return refused(`entities.${id}.type`, "incompatible-attribute-schema");
+    const resolved = archimateBaseOf(sourceResolver, entity.type);
+    if (!resolved.ok) return refused(`entities.${id}.type`, "type-definition-conflict", resolved.diagnostic);
     const sourceKind = resolved.base;
     if (sourceKind === "junction" || sourceKind === "grouping") {
       const mapped = entityTypes[id];
       if (mapped !== undefined && mapped !== sourceKind) {
-        return refused(`entities.${id}.type`, "incompatible-attribute-schema");
+        return refused(`entities.${id}.type`, "authored-value-collision", `mapping ${mapped} contradicts ${sourceKind} meaning`);
       }
-      entityTypeOf.set(id, sourceKind);
+      entityTypeById.set(id, sourceKind);
+      const targetAspect = sourceKind === "junction" ? "other" : "composite";
+      const authoredAspect = enumValue(entity.attributes["aspect"] as AttributeValue | undefined);
+      if (authoredAspect !== null && authoredAspect !== targetAspect) {
+        return refused(`entities.${id}.attributes.aspect`, "authored-value-collision", `authored aspect ${authoredAspect} collides with ${targetAspect}`);
+      }
+      const hasDefinition = source.typeDefinitions[entity.type] !== undefined;
       if (sourceKind === "junction") {
         const operator = enumValue(entity.attributes["operator"] as AttributeValue | undefined);
         if (operator !== "and" && operator !== "or") {
           return refused(`entities.${id}.attributes.operator`, "incompatible-attribute-schema");
         }
-        const extraKeys = Object.keys(entity.attributes).filter((k) => k !== "operator");
-        if (extraKeys.length > 0) {
-          const local = id.includes(":") ? id.slice(id.indexOf(":") + 1) : id;
-          const residualId = `residual-${local}`;
-          if (reserved.has(residualId) || nextDefinitions[residualId] !== undefined) {
-            return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
-          }
-          const extraSchemas = extraKeys.sort().map((k) => residualSchemaFor(k, entity.attributes[k] as AttributeValue));
-          residualDefinitions[residualId] = {
-            id: residualId,
-            profile: "archimate@2",
-            baseType: "junction",
-            attributes: extraSchemas as never,
-          };
-          operations.push({ path: `typeDefinitions.${residualId}`, action: "preserve-residual-refinement" });
+        const extraKeys = Object.keys(entity.attributes).filter((k) => k !== "operator" && k !== "aspect");
+        if (!hasDefinition && extraKeys.length > 0) {
+          return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
+        }
+        if (hasDefinition) {
           entities[id] = {
             ...clone(entity),
             profile: "archimate@2",
-            type: residualId,
+            type: entity.type,
             attributes: {
               ...clone(entity.attributes),
-              aspect: { kind: "enum", value: "other" } as AttributeValue,
+              aspect: { kind: "enum", value: targetAspect } as AttributeValue,
             },
           };
         } else {
@@ -384,7 +467,7 @@ export function migrateArchimateV1ToV2(
             type: "junction",
             attributes: {
               ...clone(entity.attributes),
-              aspect: { kind: "enum", value: "other" } as AttributeValue,
+              aspect: { kind: "enum", value: targetAspect } as AttributeValue,
             },
           };
         }
@@ -393,34 +476,24 @@ export function migrateArchimateV1ToV2(
         if (name !== undefined && (name.kind !== "text" || name.value.length > 200)) {
           return refused(`entities.${id}.attributes.name`, "incompatible-attribute-schema");
         }
-        const extraKeys = Object.keys(entity.attributes).filter((k) => k !== "name");
-        if (extraKeys.length > 0) {
-          const local = id.includes(":") ? id.slice(id.indexOf(":") + 1) : id;
-          const residualId = `residual-${local}`;
-          if (reserved.has(residualId) || nextDefinitions[residualId] !== undefined) {
-            return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
-          }
-          const extraSchemas = extraKeys.sort().map((k) => residualSchemaFor(k, entity.attributes[k] as AttributeValue));
-          residualDefinitions[residualId] = {
-            id: residualId,
-            profile: "archimate@2",
-            baseType: "grouping",
-            attributes: extraSchemas as never,
-          };
-          operations.push({ path: `typeDefinitions.${residualId}`, action: "preserve-residual-refinement" });
+        const extraKeys = Object.keys(entity.attributes).filter((k) => k !== "name" && k !== "aspect");
+        if (!hasDefinition && extraKeys.length > 0) {
+          return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
+        }
+        if (hasDefinition) {
           entities[id] = {
             ...clone(entity),
             profile: "archimate@2",
-            type: residualId,
+            type: entity.type,
             attributes: {
               ...clone(entity.attributes),
-              aspect: { kind: "enum", value: "composite" } as AttributeValue,
+              aspect: { kind: "enum", value: targetAspect } as AttributeValue,
             },
           };
         } else {
           const nextAttributes: Record<string, AttributeValue> = {
             ...(name !== undefined ? { name: clone(name) } : {}),
-            aspect: { kind: "enum", value: "composite" } as AttributeValue,
+            aspect: { kind: "enum", value: targetAspect } as AttributeValue,
           };
           entities[id] = { ...clone(entity), profile: "archimate@2", type: "grouping", attributes: nextAttributes };
         }
@@ -442,6 +515,14 @@ export function migrateArchimateV1ToV2(
     }
     const name = textValue(entity.attributes["name"] as AttributeValue | undefined);
     if (name === null) return refused(`entities.${id}.attributes.name`, "incompatible-attribute-schema");
+    const authoredLayer = enumValue(entity.attributes["layer"] as AttributeValue | undefined);
+    if (authoredLayer !== null && authoredLayer !== row.layer) {
+      return refused(`entities.${id}.attributes.layer`, "authored-value-collision", `authored layer ${authoredLayer} collides with ${row.layer}`);
+    }
+    const authoredAspect = enumValue(entity.attributes["aspect"] as AttributeValue | undefined);
+    if (authoredAspect !== null && authoredAspect !== row.aspect) {
+      return refused(`entities.${id}.attributes.aspect`, "authored-value-collision", `authored aspect ${authoredAspect} collides with ${row.aspect}`);
+    }
     const nextAttributes: Record<string, AttributeValue> = { ...(clone(entity.attributes) as Record<string, AttributeValue>) };
     if (row.layer !== "none") {
       nextAttributes["layer"] = { kind: "enum", value: row.layer } as AttributeValue;
@@ -451,26 +532,12 @@ export function migrateArchimateV1ToV2(
     nextAttributes["aspect"] = { kind: "enum", value: row.aspect } as AttributeValue;
     const declaredNames = new Set(["name", "layer", "aspect"]);
     const extraKeys = Object.keys(nextAttributes).filter((k) => !declaredNames.has(k));
-    const residualType = source.typeDefinitions[entity.type] !== undefined ? entity.type : mapped;
     if (extraKeys.length > 0 && source.typeDefinitions[entity.type] === undefined) {
-      const local = id.includes(":") ? id.slice(id.indexOf(":") + 1) : id;
-      const residualId = `residual-${local}`;
-      if (reserved.has(residualId) || nextDefinitions[residualId] !== undefined || residualDefinitions[residualId] !== undefined) {
-        return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
-      }
-      const extraSchemas = extraKeys.sort().map((k) => residualSchemaFor(k, nextAttributes[k] as AttributeValue));
-      residualDefinitions[residualId] = {
-        id: residualId,
-        profile: "archimate@2",
-        baseType: mapped,
-        attributes: extraSchemas as never,
-      };
-      operations.push({ path: `typeDefinitions.${residualId}`, action: "preserve-residual-refinement" });
-      entities[id] = { ...clone(entity), profile: "archimate@2", type: residualId, attributes: nextAttributes };
-    } else {
-      entities[id] = { ...clone(entity), profile: "archimate@2", type: residualType, attributes: nextAttributes };
+      return refused(`entities.${id}.attributes.${extraKeys.sort()[0]}`, "incompatible-attribute-schema");
     }
-    entityTypeOf.set(id, mapped);
+    const residualType = source.typeDefinitions[entity.type] !== undefined ? entity.type : mapped;
+    entities[id] = { ...clone(entity), profile: "archimate@2", type: residualType, attributes: nextAttributes };
+    entityTypeById.set(id, mapped);
     operations.push({ path: `entities.${id}.profile`, action: "rewrite-profile", detail: "archimate@1→archimate@2" });
     operations.push({ path: `entities.${id}.type`, action: "map-to-catalogue", detail: `${entity.type}→${mapped}` });
   }
@@ -488,8 +555,8 @@ export function migrateArchimateV1ToV2(
     if (sourceEndpoint === undefined || targetEndpoint === undefined) {
       return refused(`relations.${id}.endpoints`, "endpoint-role-unknown");
     }
-    const sourceType = entityTypeOf.get(sourceEndpoint.target);
-    const targetType = entityTypeOf.get(targetEndpoint.target);
+    const sourceType = entityTypeById.get(sourceEndpoint.target);
+    const targetType = entityTypeById.get(targetEndpoint.target);
     if (sourceType === undefined || targetType === undefined) {
       return refused(`relations.${id}.endpoints`, "missing-type-mapping");
     }
@@ -512,11 +579,10 @@ export function migrateArchimateV1ToV2(
     }
   }
   const ports = clone(source.ports);
-  const mergedDefinitions = { ...nextDefinitions, ...residualDefinitions };
   const target: SemanticDocument = {
     ...clone(source),
     profileRefs: nextRefs,
-    typeDefinitions: mergedDefinitions,
+    typeDefinitions: nextDefinitions,
     entities,
     relations,
     ports,
@@ -528,14 +594,23 @@ export function migrateArchimateV1ToV2(
     if ((relation.profile as string) === "archimate@1") return refused(`relations.${relation.id}.profile`, "incompatible-attribute-schema");
   }
   const check = scopedBindingsFor(target.profileRefs);
-  const diagnostics = validateDocument(target, { registry: check.registry, bindings: check.bindings });
+  const targetViews = clone(sourceViews);
+  const candidate: DiagramState = { document: target, views: targetViews };
+  const diagnostics =
+    Object.keys(targetViews).length > 0
+      ? validateState(candidate, { registry: check.registry, bindings: check.bindings })
+      : validateDocument(target, { registry: check.registry, bindings: check.bindings });
   if (diagnostics.length > 0) {
     const first = diagnostics[0] as (typeof diagnostics)[number] | undefined;
     if (first === undefined) return refused("target", "incompatible-attribute-schema");
     return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
   }
-  const ordered = [...operations].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
-  const snapshot = clone(source);
+  const ordered = orderOperations(operations);
+  const snapshotState: DiagramState =
+    sourceInput !== undefined && isDiagramState(sourceInput)
+      ? clone(sourceInput)
+      : { document: clone(source), views: {} };
+  const migratedState: DiagramState = { document: clone(target), views: clone(targetViews) };
   const migrated = clone(target);
   return {
     status: "ok",
@@ -548,46 +623,46 @@ export function migrateArchimateV1ToV2(
     unmigrated: [],
     supersession,
     document: migrated,
-    invert: (current?: SemanticDocument) => {
-      const checkDoc = current ?? migrated;
+    state: migratedState,
+    invert: (current?: SemanticDocument | DiagramState) => {
+      const checkDoc =
+        current === undefined ? migrated : isDiagramState(current) ? current.document : current;
       if (hasRelationTarget(checkDoc)) {
         return {
           status: "refused",
           unmigrated: [{ path: "relations", reason: "incompatible-attribute-schema", detail: "downgrade refused while relation targets exist" }],
         };
       }
-      return { status: "ok", document: clone(snapshot) };
+      return { status: "ok", document: clone(snapshotState.document), state: clone(snapshotState) };
     },
   };
 }
 
 const UML_STEREOTYPE_TARGETS: ReadonlySet<string> = new Set(["class", "interface", "package", "property", "operation"]);
 
-function umlEffectiveKind(source: SemanticDocument, typeId: string): string {
-  if (
-    typeId === "class" ||
-    typeId === "interface" ||
-    typeId === "package" ||
-    typeId === "property" ||
-    typeId === "operation" ||
-    typeId === "stereotype"
-  ) {
-    return typeId;
-  }
-  const definition = source.typeDefinitions[typeId];
-  if (definition === undefined) return typeId;
-  return umlEffectiveKind(source, definition.baseType);
+function umlEffectiveKind(
+  resolver: ReturnType<typeof createTypeResolver>,
+  typeId: string,
+): { readonly ok: true; readonly kind: string } | { readonly ok: false; readonly diagnostic: string } {
+  const direct = new Set(["class", "interface", "package", "property", "operation", "stereotype"]);
+  if (direct.has(typeId)) return { ok: true, kind: typeId };
+  const resolution = resolver.resolve(umlSkeletonProfile, typeId);
+  if (!resolution.ok) return { ok: false, diagnostic: `${resolution.diagnostic.code}: ${resolution.diagnostic.message}` };
+  const family = resolution.resolved.familyType;
+  if (direct.has(family)) return { ok: true, kind: family };
+  return { ok: false, diagnostic: `unknown-entity-type: no uml@1 family for ${typeId}` };
 }
 
 function resolveUmlStereotype(
   source: SemanticDocument,
+  resolver: ReturnType<typeof createTypeResolver>,
   ref: string,
 ): { readonly ok: true; readonly extends: readonly string[] } | { readonly ok: false; readonly missing: boolean } {
   const record = source.entities[ref];
   if (record === undefined) return { ok: false, missing: true };
   if (record.profile !== "uml@1") return { ok: false, missing: false };
-  const kind = umlEffectiveKind(source, record.type);
-  if (kind !== "stereotype") return { ok: false, missing: false };
+  const kind = umlEffectiveKind(resolver, record.type);
+  if (!kind.ok || kind.kind !== "stereotype") return { ok: false, missing: false };
   const extendsValue = record.attributes["extends"] as AttributeValue | undefined;
   if (extendsValue === undefined || extendsValue.kind !== "collection") return { ok: false, missing: false };
   const values: string[] = [];
@@ -605,11 +680,12 @@ function resolveUmlStereotype(
 }
 
 export function migrateUmlV1ToV2(
-  source: SemanticDocument,
+  sourceInput: ProfileMigrationInput,
   input: { readonly stereotypes: Readonly<Record<string, string>> },
 ): ProfileMigrationOutcome {
+  const { document: source, views: sourceViews } = splitInput(sourceInput);
   const { from, to } = baseOf(source, "uml@1", "uml@2", "uml@1->uml@2");
-  const { canonical, hash } = originalOf(source);
+  const { canonical, hash } = originalOfInput(sourceInput);
   const supersession = {
     superseded: "uml@1" as ProfileId,
     supersededBy: "uml@2" as ProfileId,
@@ -626,7 +702,7 @@ export function migrateUmlV1ToV2(
     unmigrated: detail === undefined ? [{ path, reason }] : [{ path, reason, detail }],
     supersession,
   });
-  if (!isRecord(input) || !isRecord((input as Record<string, unknown>)["stereotypes"])) {
+  if (!hasExactKeys(input, ["stereotypes"]) || !isRecord((input as Record<string, unknown>)["stereotypes"])) {
     return refused("mapping", "incompatible-attribute-schema");
   }
   const stereotypes = (input as { readonly stereotypes: Readonly<Record<string, string>> }).stereotypes;
@@ -638,6 +714,16 @@ export function migrateUmlV1ToV2(
     return refused("", refs.includes("uml@2") ? "target-already-present" : "missing-source-profile");
   }
   if (refs.includes("uml@2")) return refused("", "target-already-present");
+  const sourceRegistry = fullRegistry();
+  const sourceDiagnostics =
+    sourceViews !== undefined && Object.keys(sourceViews).length > 0
+      ? validateState({ document: source, views: sourceViews }, { registry: sourceRegistry })
+      : validateDocument(source, { registry: sourceRegistry });
+  if (sourceDiagnostics.length > 0) {
+    const first = sourceDiagnostics[0] as (typeof sourceDiagnostics)[number];
+    return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
+  }
+  const sourceResolver = createTypeResolver(source);
   const nextRefs = refs.map((r) => (r === "uml@1" ? ("uml@2" as ProfileId) : r));
   const operations: MigrationOperation[] = [
     { path: "profileRefs", action: "replace-profile-ref", detail: "uml@1→uml@2" },
@@ -650,7 +736,7 @@ export function migrateUmlV1ToV2(
   for (const [id, rawDefinition] of Object.entries(source.typeDefinitions).sort(([a], [b]) =>
     a < b ? -1 : a > b ? 1 : 0,
   )) {
-    if (reserved.has(id)) return refused(`typeDefinitions.${id}`, "incompatible-attribute-schema");
+    if (reserved.has(id)) return refused(`typeDefinitions.${id}`, "type-definition-conflict", "target-reserved type id");
     const definition = clone(rawDefinition);
     if (definition.profile === "uml@1") {
       nextDefinitions[id] = { ...definition, profile: "uml@2" as const } as SemanticDocument["typeDefinitions"][string];
@@ -668,7 +754,9 @@ export function migrateUmlV1ToV2(
       entities[id] = clone(entity);
       continue;
     }
-    const kind = umlEffectiveKind(source, entity.type);
+    const kindResolved = umlEffectiveKind(sourceResolver, entity.type);
+    if (!kindResolved.ok) return refused(`entities.${id}.type`, "type-definition-conflict", kindResolved.diagnostic);
+    const kind = kindResolved.kind;
     if (kind === "stereotype") {
       const name = textValue(entity.attributes["name"] as AttributeValue | undefined);
       if (name === null || name.length === 0 || name.length > 60) {
@@ -753,14 +841,14 @@ export function migrateUmlV1ToV2(
         if (label === null) return refused(`entities.${id}.attributes.stereotypes[${i}]`, "unmapped-stereotype");
         const ref = stereotypes[label];
         if (ref === undefined) return refused(`entities.${id}.attributes.stereotypes[${i}]`, "unmapped-stereotype");
-        const declared = resolveUmlStereotype(source, ref);
+        const declared = resolveUmlStereotype(source, sourceResolver, ref);
         if (declared.ok === false && declared.missing) {
           return refused(`entities.${id}.attributes.stereotypes[${i}]`, "unmapped-stereotype");
         }
         if (declared.ok === false) {
           return refused(`entities.${id}.attributes.stereotypes[${i}]`, "stereotype-application-invalid");
         }
-        if (!declared.extends.some((allowed) => umlEffectiveKind(source, entity.type) === allowed || kind === allowed)) {
+        if (!declared.extends.some((allowed) => kind === allowed)) {
           return refused(`entities.${id}.attributes.stereotypes[${i}]`, "stereotype-application-invalid");
         }
         converted.push({ kind: "reference", value: ref } as AttributeValue);
@@ -839,14 +927,23 @@ export function migrateUmlV1ToV2(
     if ((relation.profile as string) === "uml@1") return refused(`relations.${relation.id}.profile`, "incompatible-attribute-schema");
   }
   const check = scopedBindingsFor(target.profileRefs);
-  const diagnostics = validateDocument(target, { registry: check.registry, bindings: check.bindings });
+  const targetViews = clone(sourceViews);
+  const candidate: DiagramState = { document: target, views: targetViews };
+  const diagnostics =
+    Object.keys(targetViews).length > 0
+      ? validateState(candidate, { registry: check.registry, bindings: check.bindings })
+      : validateDocument(target, { registry: check.registry, bindings: check.bindings });
   if (diagnostics.length > 0) {
     const first = diagnostics[0] as (typeof diagnostics)[number] | undefined;
     if (first === undefined) return refused("target", "incompatible-attribute-schema");
     return refused(first.path, "incompatible-attribute-schema", `${first.code}: ${first.message}`);
   }
-  const ordered = [...operations].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
-  const snapshot = clone(source);
+  const ordered = orderOperations(operations);
+  const snapshotState: DiagramState =
+    sourceInput !== undefined && isDiagramState(sourceInput)
+      ? clone(sourceInput)
+      : { document: clone(source), views: {} };
+  const migratedState: DiagramState = { document: clone(target), views: clone(targetViews) };
   const migrated = clone(target);
   return {
     status: "ok",
@@ -859,6 +956,7 @@ export function migrateUmlV1ToV2(
     unmigrated: [],
     supersession,
     document: migrated,
-    invert: () => ({ status: "ok", document: clone(snapshot) }),
+    state: migratedState,
+    invert: () => ({ status: "ok", document: clone(snapshotState.document), state: clone(snapshotState) }),
   };
 }

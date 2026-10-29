@@ -8,7 +8,7 @@
  */
 
 import { embeddedExecutorBindings, type ExecutorProfileBindings } from "../bindings.js";
-import { createProfileRegistry, type ProfileRegistry } from "../profile.js";
+import { createProfileRegistry, type Profile, type ProfileRegistry } from "../profile.js";
 import { genericProfile } from "./generic.js";
 import { generic2Profile } from "./generic2.js";
 import { archimateSkeletonProfile, bpmnSkeletonProfile, umlSkeletonProfile } from "./skeletons.js";
@@ -59,8 +59,22 @@ export const allProfilesRegistry: ProfileRegistry = createProfileRegistry([
  * row per shipped profile, with its imposed adapter. Consumers pass it
  * explicitly; absence of a table never silently selects an adapter for a
  * profile outside the four retained identities.
+ *
+ * Computed lazily on first `rows` use so importing the root never builds
+ * the 1 047 531-byte preimage; the digest gate is unchanged.
  */
-export const shippedExecutorBindings: ExecutorProfileBindings = embeddedExecutorBindings([
+function lazyBindings(profiles: readonly Profile[]): ExecutorProfileBindings {
+  let cached: ExecutorProfileBindings | undefined;
+  return {
+    schemaVersion: "1",
+    get rows() {
+      if (cached === undefined) cached = embeddedExecutorBindings([...profiles]);
+      return cached.rows;
+    },
+  };
+}
+
+export const shippedExecutorBindings: ExecutorProfileBindings = lazyBindings([
   ...completeProfiles,
   ...skeletonProfiles,
   generic2Profile,
@@ -72,8 +86,10 @@ export const shippedExecutorBindings: ExecutorProfileBindings = embeddedExecutor
  * The packaged verified default rows for exactly the four retained @1
  * identities (M3 §5.3.1), each with `legacy-constraints@1`. Every other
  * profile, any version, requires its own verified row.
+ *
+ * Lazy like the shipped table: no preimage work at import time.
  */
-export const retainedExecutorBindings: ExecutorProfileBindings = embeddedExecutorBindings([
+export const retainedExecutorBindings: ExecutorProfileBindings = lazyBindings([
   ...completeProfiles,
   ...skeletonProfiles,
 ]);
