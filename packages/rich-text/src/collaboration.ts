@@ -396,8 +396,9 @@ const HREF_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+.-]*):/;
 /** Any Unicode whitespace anywhere (covers leading/trailing ASCII and
     Unicode spaces such as U+00A0 before scheme detection). */
 const HREF_WHITESPACE_PATTERN = /\s/;
-/** Bracketed IPv6/IPvFuture host with an optional numeric port. */
-const HREF_BRACKETED_HOST_PATTERN = /^\[[0-9A-Za-z:.]+\](:\d*)?$/;
+const HREF_PORT_PATTERN = /^\d*$/;
+const HREF_HEX_GROUP_PATTERN = /^[0-9A-Fa-f]{1,4}$/;
+const HREF_IPV_FUTURE_PATTERN = /^[Vv][0-9A-Fa-f]+\.[A-Za-z0-9\-._~!$&'()*+,;=:.]+$/;
 
 function hasDisallowedHrefChar(href: string): boolean {
   for (let index = 0; index < href.length; index += 1) {
@@ -420,31 +421,255 @@ function hrefAuthorityHost(authority: string): string {
   return authority.slice(0, end);
 }
 
-/** Host check for `http(s)` authorities and `//` network references:
-    non-empty, no whitespace, balanced brackets only as a bracketed
-    literal with an optional numeric port. */
-function isValidHrefHost(host: string): boolean {
-  if (host.length === 0) {
-    return false;
-  }
-  if (HREF_WHITESPACE_PATTERN.test(host)) {
-    return false;
-  }
-  if (host.includes("[") || host.includes("]")) {
-    return HREF_BRACKETED_HOST_PATTERN.test(host);
+function isHexDigitChar(value: string): boolean {
+  return (
+    (value >= "0" && value <= "9") ||
+    (value >= "a" && value <= "f") ||
+    (value >= "A" && value <= "F")
+  );
+}
+
+function isUnreservedChar(value: string): boolean {
+  return (
+    (value >= "a" && value <= "z") ||
+    (value >= "A" && value <= "Z") ||
+    (value >= "0" && value <= "9") ||
+    value === "-" ||
+    value === "." ||
+    value === "_" ||
+    value === "~"
+  );
+}
+
+function isSubDelimChar(value: string): boolean {
+  return (
+    value === "!" ||
+    value === "$" ||
+    value === "&" ||
+    value === "'" ||
+    value === "(" ||
+    value === ")" ||
+    value === "*" ||
+    value === "+" ||
+    value === "," ||
+    value === ";" ||
+    value === "="
+  );
+}
+
+/** Userinfo per RFC 3986: *( unreserved / pct-encoded / sub-delims / ":" ). */
+function isValidUserinfo(text: string): boolean {
+  for (let index = 0; index < text.length; index += 1) {
+    const value = text[index] as string;
+    if (value === "%") {
+      if (
+        index + 2 >= text.length ||
+        !isHexDigitChar(text[index + 1] as string) ||
+        !isHexDigitChar(text[index + 2] as string)
+      ) {
+        return false;
+      }
+      index += 2;
+    } else if (
+      !isUnreservedChar(value) &&
+      !isSubDelimChar(value) &&
+      value !== ":"
+    ) {
+      return false;
+    }
   }
   return true;
+}
+
+/** Registered name per RFC 3986: *( unreserved / pct-encoded / sub-delims ). */
+function isValidRegName(text: string): boolean {
+  if (text.length === 0) {
+    return false;
+  }
+  for (let index = 0; index < text.length; index += 1) {
+    const value = text[index] as string;
+    if (value === "%") {
+      if (
+        index + 2 >= text.length ||
+        !isHexDigitChar(text[index + 1] as string) ||
+        !isHexDigitChar(text[index + 2] as string)
+      ) {
+        return false;
+      }
+      index += 2;
+    } else if (!isUnreservedChar(value) && !isSubDelimChar(value)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isValidIPv4Address(text: string): boolean {
+  const parts = text.split(".");
+  if (parts.length !== 4) {
+    return false;
+  }
+  for (const part of parts) {
+    if (part.length === 0 || part.length > 3) {
+      return false;
+    }
+    for (const value of part) {
+      if (value < "0" || value > "9") {
+        return false;
+      }
+    }
+    if (Number(part) > 255) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isValidIPv6Groups(groups: readonly string[]): boolean {
+  for (const group of groups) {
+    if (!HREF_HEX_GROUP_PATTERN.test(group)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** IPv6 address per RFC 4291, with an optional embedded IPv4 tail. */
+function isValidIPv6Address(address: string): boolean {
+  if (address.length === 0) {
+    return false;
+  }
+  const compressed = address.split("::");
+  if (compressed.length > 2) {
+    return false;
+  }
+  if (compressed.length === 2) {
+    const headText = compressed[0] as string;
+    const tailText = compressed[1] as string;
+    const headGroups = headText === "" ? [] : headText.split(":");
+    const tailGroups = tailText === "" ? [] : tailText.split(":");
+    for (const group of headGroups) {
+      if (group.includes(".") || group.length === 0) {
+        return false;
+      }
+    }
+    const tailLast = tailGroups[tailGroups.length - 1];
+    const tailHead =
+      tailLast !== undefined && tailLast.includes(".")
+        ? tailGroups.slice(0, -1)
+        : tailGroups;
+    for (const group of tailHead) {
+      if (group.includes(".") || group.length === 0) {
+        return false;
+      }
+    }
+    if (tailLast !== undefined && tailLast.includes(".")) {
+      if (tailLast.length === 0 || !isValidIPv4Address(tailLast)) {
+        return false;
+      }
+      const hexGroups = [...headGroups, ...tailHead];
+      if (!isValidIPv6Groups(hexGroups)) {
+        return false;
+      }
+      return hexGroups.length <= 6;
+    }
+    if (tailLast !== undefined && tailLast.length === 0) {
+      return false;
+    }
+    if (!isValidIPv6Groups([...headGroups, ...tailGroups])) {
+      return false;
+    }
+    return headGroups.length + tailGroups.length <= 7;
+  }
+  const groups = address.split(":");
+  const last = groups[groups.length - 1] as string;
+  if (last.includes(".")) {
+    if (!isValidIPv4Address(last)) {
+      return false;
+    }
+    const hexGroups = groups.slice(0, -1);
+    if (hexGroups.length !== 6) {
+      return false;
+    }
+    return isValidIPv6Groups(hexGroups);
+  }
+  if (groups.length !== 8) {
+    return false;
+  }
+  return isValidIPv6Groups(groups);
+}
+
+/** Authority check for `http(s)` authorities and `//` network references
+    per RFC 3986: `[ userinfo "@" ] host [ ":" port ]` where host is an
+    IP-literal (`"[" IPv6 / IPvFuture "]"`), an IPv4 address or a
+    registered name, and port is entirely numeric. */
+function isValidHrefAuthority(authority: string): boolean {
+  if (authority.length === 0) {
+    return false;
+  }
+  if (HREF_WHITESPACE_PATTERN.test(authority)) {
+    return false;
+  }
+  let hostport = authority;
+  const at = authority.lastIndexOf("@");
+  if (at !== -1) {
+    if (!isValidUserinfo(authority.slice(0, at))) {
+      return false;
+    }
+    hostport = authority.slice(at + 1);
+    if (hostport.length === 0) {
+      return false;
+    }
+  }
+  if (hostport.startsWith("[")) {
+    const close = hostport.indexOf("]");
+    if (close === -1) {
+      return false;
+    }
+    const literal = hostport.slice(1, close);
+    const rest = hostport.slice(close + 1);
+    if (rest.length > 0) {
+      if (!rest.startsWith(":")) {
+        return false;
+      }
+      if (!HREF_PORT_PATTERN.test(rest.slice(1))) {
+        return false;
+      }
+    }
+    if (literal.length === 0) {
+      return false;
+    }
+    if (literal[0] === "v" || literal[0] === "V") {
+      return HREF_IPV_FUTURE_PATTERN.test(literal);
+    }
+    return isValidIPv6Address(literal);
+  }
+  if (hostport.includes("[") || hostport.includes("]")) {
+    return false;
+  }
+  const colon = hostport.indexOf(":");
+  if (colon !== -1) {
+    if (hostport.indexOf(":", colon + 1) !== -1) {
+      return false;
+    }
+    if (!HREF_PORT_PATTERN.test(hostport.slice(colon + 1))) {
+      return false;
+    }
+    return isValidRegName(hostport.slice(0, colon));
+  }
+  return isValidRegName(hostport);
 }
 
 /** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
     UTF-16 units with an allowlisted scheme (`http`, `https`, `mailto`,
     case-insensitive) or a relative reference with no other scheme prefix.
     Reject controls, backslashes, any whitespace (ASCII or Unicode,
-    checked before scheme detection) and malformed URLs (empty `http(s)`
-    host, unbalanced brackets in `http(s)` or `//` hosts). Pure: manual
-    string scan only, no DOM and no global `URL` dependency, so the check
-    does not vary across runtimes. The string is validated as given,
-    after the caller decoded clipboard entities and tokenized the input. */
+    checked before scheme detection) and malformed authorities validated
+    per RFC 3986 (userinfo, IP-literal with IPv6/IPvFuture, registered
+    name, numeric port). Pure: manual string scan only, no DOM and no
+    global `URL` dependency, so the check does not vary across runtimes.
+    The string is validated as given, after the caller decoded clipboard
+    entities and tokenized the input. */
 export function isAllowedHref(href: string): boolean {
   if (href.length === 0 || href.length > MAX_HREF_UNITS) {
     return false;
@@ -476,12 +701,12 @@ export function isAllowedHref(href: string): boolean {
       return false;
     }
     if (rest.startsWith("//")) {
-      return isValidHrefHost(hrefAuthorityHost(rest.slice(2)));
+      return isValidHrefAuthority(hrefAuthorityHost(rest.slice(2)));
     }
     return true;
   }
   if (href.startsWith("//")) {
-    return isValidHrefHost(hrefAuthorityHost(href.slice(2)));
+    return isValidHrefAuthority(hrefAuthorityHost(href.slice(2)));
   }
   return true;
 }
@@ -556,12 +781,28 @@ function daysFromCivil(year: number, month: number, day: number): number {
 
 interface ParsedInstant {
   seconds: number;
-  nanos: number;
+  /** Raw fractional-second digits without the separator, "" when absent. */
+  fraction: string;
+}
+
+/** Compare two fractional-second digit strings by numeric value. */
+function compareFractions(a: string, b: string): number {
+  const width = Math.max(a.length, b.length);
+  const paddedA = a.padEnd(width, "0");
+  const paddedB = b.padEnd(width, "0");
+  if (paddedA < paddedB) {
+    return -1;
+  }
+  if (paddedA > paddedB) {
+    return 1;
+  }
+  return 0;
 }
 
 /** Manual ISO-8601 instant parse (no clock globals, no URI/URL globals):
-    calendar date plus time plus `Z` or numeric offset, fractional seconds
-    to nanosecond precision. Null on any unreadable value. */
+    calendar date plus time plus `Z` or numeric offset, keeping the
+    complete fractional-second digits for exact comparison. Null on any
+    unreadable value. */
 function parseIsoInstant(text: string): ParsedInstant | null {
   const match = ISO_INSTANT_PATTERN.exec(text);
   if (match === null) {
@@ -586,15 +827,7 @@ function parseIsoInstant(text: string): ParsedInstant | null {
   ) {
     return null;
   }
-  let nanos = 0;
-  const fraction = match[7];
-  if (fraction !== undefined) {
-    const digits = fraction.slice(0, 9).padEnd(9, "0");
-    nanos = Number(digits);
-    if (!Number.isSafeInteger(nanos)) {
-      return null;
-    }
-  }
+  const fraction = match[7] ?? "";
   let offsetMinutes = 0;
   if (zone !== "Z") {
     const sign = zone[0] === "-" ? -1 : 1;
@@ -619,7 +852,7 @@ function parseIsoInstant(text: string): ParsedInstant | null {
   if (!Number.isSafeInteger(seconds)) {
     return null;
   }
-  return { seconds, nanos };
+  return { seconds, fraction };
 }
 
 /** Expiry evaluation against an injected clock. `nowIso` is the caller's
@@ -645,7 +878,7 @@ export function isLockExpired(
   if (expires.seconds !== now.seconds) {
     return expires.seconds < now.seconds;
   }
-  return expires.nanos <= now.nanos;
+  return compareFractions(expires.fraction, now.fraction) <= 0;
 }
 
 /** Build a presence snapshot from the full actor roster: `actors`
@@ -1040,12 +1273,86 @@ function refusePatch(
     : { ok: false, reason, detail, operationIndex };
 }
 
+const OPERATION_KEYS: Record<string, ReadonlySet<string>> = {
+  insert: new Set(["type", "fieldKey", "paragraphId", "at", "text"]),
+  insertHardBreak: new Set(["type", "fieldKey", "paragraphId", "at"]),
+  delete: new Set(["type", "fieldKey", "paragraphId", "range"]),
+  markBoolean: new Set([
+    "type",
+    "fieldKey",
+    "paragraphId",
+    "range",
+    "mark",
+    "applied",
+  ]),
+  markLink: new Set([
+    "type",
+    "fieldKey",
+    "paragraphId",
+    "range",
+    "mark",
+    "href",
+    "title",
+  ]),
+  splitParagraph: new Set([
+    "type",
+    "fieldKey",
+    "paragraphId",
+    "at",
+    "newParagraphId",
+  ]),
+  mergeWithPrevious: new Set(["type", "fieldKey", "paragraphId"]),
+  setBlockMetadata: new Set(["type", "fieldKey", "paragraphId", "metadata"]),
+  insertHorizontalRule: new Set([
+    "type",
+    "fieldKey",
+    "at",
+    "newParagraphId",
+  ]),
+  deleteHorizontalRule: new Set([
+    "type",
+    "fieldKey",
+    "paragraphId",
+    "replacementParagraphId",
+  ]),
+};
+
+/** Closed key set per operation variant (spec 723): any key outside the
+    admitted set for that variant refuses the whole patch. */
+function refuseExtraOperationKey(
+  operation: AgentEditOperation,
+  allowed: ReadonlySet<string>,
+  operationIndex: number,
+): PatchValidationResult | null {
+  for (const key of Object.keys(operation)) {
+    if (!allowed.has(key)) {
+      return refusePatch(
+        "incompatible-schema",
+        `operation carries an unadmitted key: ${key}`,
+        operationIndex,
+      );
+    }
+  }
+  return null;
+}
+
 function validateOperationShape(
   operation: AgentEditOperation,
   fieldKey: string,
   profile: AgentPatchProfile,
   operationIndex: number,
 ): PatchValidationResult {
+  if (
+    typeof operation !== "object" ||
+    operation === null ||
+    Array.isArray(operation)
+  ) {
+    return refusePatch(
+      "incompatible-schema",
+      "operation must be a record object",
+      operationIndex,
+    );
+  }
   if (operation.fieldKey !== fieldKey) {
     return refusePatch(
       "scope-denied",
@@ -1055,6 +1362,14 @@ function validateOperationShape(
   }
   switch (operation.type) {
     case "insert": {
+      const extra = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["insert"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extra !== null) {
+        return extra;
+      }
       if (!isNonEmptyString(operation.paragraphId) || !isAnchorString(operation.at)) {
         return refusePatch("incompatible-schema", "insert needs paragraphId and at", operationIndex);
       }
@@ -1071,12 +1386,28 @@ function validateOperationShape(
       return { ok: true };
     }
     case "insertHardBreak": {
+      const extraInsertBreak = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["insertHardBreak"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraInsertBreak !== null) {
+        return extraInsertBreak;
+      }
       if (!isNonEmptyString(operation.paragraphId) || !isAnchorString(operation.at)) {
         return refusePatch("incompatible-schema", "insertHardBreak needs paragraphId and at", operationIndex);
       }
       return { ok: true };
     }
     case "delete": {
+      const extraDelete = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["delete"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraDelete !== null) {
+        return extraDelete;
+      }
       if (!isNonEmptyString(operation.paragraphId)) {
         return refusePatch("incompatible-schema", "delete needs paragraphId", operationIndex);
       }
@@ -1097,12 +1428,28 @@ function validateOperationShape(
         operation.mark === "italic" ||
         operation.mark === "code"
       ) {
+        const extraBoolean = refuseExtraOperationKey(
+          operation,
+          OPERATION_KEYS["markBoolean"] as ReadonlySet<string>,
+          operationIndex,
+        );
+        if (extraBoolean !== null) {
+          return extraBoolean;
+        }
         if (typeof operation.applied !== "boolean") {
           return refusePatch("incompatible-schema", "boolean mark needs applied", operationIndex);
         }
         return { ok: true };
       }
       if (operation.mark === "strike" || operation.mark === "underline") {
+        const extraFullBoolean = refuseExtraOperationKey(
+          operation,
+          OPERATION_KEYS["markBoolean"] as ReadonlySet<string>,
+          operationIndex,
+        );
+        if (extraFullBoolean !== null) {
+          return extraFullBoolean;
+        }
         if (profile !== "full") {
           return refusePatch("incompatible-schema", "strike/underline are full-profile marks", operationIndex);
         }
@@ -1112,6 +1459,14 @@ function validateOperationShape(
         return { ok: true };
       }
       if (operation.mark === "link") {
+        const extraLink = refuseExtraOperationKey(
+          operation,
+          OPERATION_KEYS["markLink"] as ReadonlySet<string>,
+          operationIndex,
+        );
+        if (extraLink !== null) {
+          return extraLink;
+        }
         if (profile !== "full") {
           return refusePatch("incompatible-schema", "link is a full-profile mark", operationIndex);
         }
@@ -1137,9 +1492,34 @@ function validateOperationShape(
         }
         return { ok: true };
       }
+      const extraUnknownMark = refuseExtraOperationKey(
+        operation,
+        new Set([
+          "type",
+          "fieldKey",
+          "paragraphId",
+          "range",
+          "mark",
+          "applied",
+          "href",
+          "title",
+        ]),
+        operationIndex,
+      );
+      if (extraUnknownMark !== null) {
+        return extraUnknownMark;
+      }
       return refusePatch("incompatible-schema", "mark key is not admitted", operationIndex);
     }
     case "splitParagraph": {
+      const extraSplit = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["splitParagraph"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraSplit !== null) {
+        return extraSplit;
+      }
       if (!isNonEmptyString(operation.paragraphId) || !isAnchorString(operation.at)) {
         return refusePatch("incompatible-schema", "splitParagraph needs paragraphId and at", operationIndex);
       }
@@ -1152,12 +1532,28 @@ function validateOperationShape(
       return { ok: true };
     }
     case "mergeWithPrevious": {
+      const extraMerge = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["mergeWithPrevious"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraMerge !== null) {
+        return extraMerge;
+      }
       if (!isNonEmptyString(operation.paragraphId)) {
         return refusePatch("incompatible-schema", "mergeWithPrevious needs paragraphId", operationIndex);
       }
       return { ok: true };
     }
     case "setBlockMetadata": {
+      const extraMetadataOp = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["setBlockMetadata"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraMetadataOp !== null) {
+        return extraMetadataOp;
+      }
       if (profile !== "full") {
         return refusePatch("incompatible-schema", "setBlockMetadata is a full-profile operation", operationIndex);
       }
@@ -1171,6 +1567,14 @@ function validateOperationShape(
       return { ok: true };
     }
     case "insertHorizontalRule": {
+      const extraHr = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["insertHorizontalRule"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraHr !== null) {
+        return extraHr;
+      }
       if (profile !== "full") {
         return refusePatch("incompatible-schema", "insertHorizontalRule is a full-profile operation", operationIndex);
       }
@@ -1186,6 +1590,14 @@ function validateOperationShape(
       return { ok: true };
     }
     case "deleteHorizontalRule": {
+      const extraDeleteHr = refuseExtraOperationKey(
+        operation,
+        OPERATION_KEYS["deleteHorizontalRule"] as ReadonlySet<string>,
+        operationIndex,
+      );
+      if (extraDeleteHr !== null) {
+        return extraDeleteHr;
+      }
       if (profile !== "full") {
         return refusePatch("incompatible-schema", "deleteHorizontalRule is a full-profile operation", operationIndex);
       }

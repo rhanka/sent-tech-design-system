@@ -666,3 +666,148 @@ describe("CL-1M review pass 1 (active lock requires a holder)", () => {
     expect(state.canRequestUnlock).toBe(false);
   });
 });
+
+describe("CL-1M review pass 2 (authority syntax, R-FULL-URL-1)", () => {
+  it("refuses malformed authorities while keeping valid references", () => {
+    for (const href of [
+      "https://[invalid]",
+      "https://host:abc/path",
+      "https://user@",
+      "//host:abc/path",
+    ]) {
+      expect(isAllowedHref(href)).toBe(false);
+    }
+    for (const href of [
+      "https://u@[::1]/p",
+      "https://host:8080/p",
+      "//host/path",
+      "relative/path",
+      "mailto:someone@example.com",
+    ]) {
+      expect(isAllowedHref(href)).toBe(true);
+    }
+  });
+
+  it("refuses malformed authorities at patch level", () => {
+    const bad: AgentEditOperation = {
+      type: "mark",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      range: { start: anchor(1), end: anchor(2) },
+      mark: "link",
+      href: "https://host:abc/path",
+    };
+    expect(validateAgentPatch(basePatch([bad]))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+  });
+});
+
+describe("CL-1M review pass 2 (closed operation keys, spec 723)", () => {
+  function metadataOperation(
+    extra: Record<string, unknown>,
+  ): AgentEditOperation {
+    return {
+      type: "setBlockMetadata",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      metadata: {
+        blockKind: "paragraph",
+        listKind: "none",
+        listDepth: 0,
+        blockquoteDepth: 0,
+        containerOrder: [],
+      },
+      ...extra,
+    } as unknown as AgentEditOperation;
+  }
+
+  it("refuses extra keys on link, metadata and HR operations", () => {
+    const linkWithUnexpected = {
+      type: "mark",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      range: { start: anchor(1), end: anchor(2) },
+      mark: "link",
+      href: "https://example.com",
+      unexpected: true,
+    } as unknown as AgentEditOperation;
+    expect(
+      validateAgentPatch(basePatch([linkWithUnexpected])),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+
+    expect(
+      validateAgentPatch(basePatch([metadataOperation({ unexpected: true })])),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+
+    const hrWithUnexpected = {
+      type: "insertHorizontalRule",
+      fieldKey: BINDING.fieldKey,
+      at: anchor(1),
+      newParagraphId: "paragraph:hr-1",
+      unexpected: true,
+    } as unknown as AgentEditOperation;
+    expect(validateAgentPatch(basePatch([hrWithUnexpected]))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+  });
+
+  it("refuses presentation-only target on a link operation", () => {
+    const linkWithTarget = {
+      type: "mark",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      range: { start: anchor(1), end: anchor(2) },
+      mark: "link",
+      href: "https://example.com",
+      target: "_blank",
+    } as unknown as AgentEditOperation;
+    expect(validateAgentPatch(basePatch([linkWithTarget]))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+  });
+
+  it("refuses applied on a link mark and href on a boolean mark", () => {
+    const linkWithApplied = {
+      type: "mark",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      range: { start: anchor(1), end: anchor(2) },
+      mark: "link",
+      href: "https://example.com",
+      applied: true,
+    } as unknown as AgentEditOperation;
+    expect(validateAgentPatch(basePatch([linkWithApplied]))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+
+    const boldWithHref = {
+      type: "mark",
+      fieldKey: BINDING.fieldKey,
+      paragraphId: "paragraph:1",
+      range: { start: anchor(1), end: anchor(2) },
+      mark: "bold",
+      applied: true,
+      href: "https://example.com",
+    } as unknown as AgentEditOperation;
+    expect(validateAgentPatch(basePatch([boldWithHref]))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+  });
+});
+
+describe("CL-1M review pass 2 (full fractional-second comparison)", () => {
+  it("keeps the lock active when fractions differ beyond nine digits", () => {
+    expect(
+      isLockExpired(
+        { expiresAt: "2026-10-29T12:00:00.0000000009Z" },
+        "2026-10-29T12:00:00.0000000001Z",
+      ),
+    ).toBe(false);
+  });
+});
