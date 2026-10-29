@@ -10,19 +10,24 @@ import {
   entityRef,
   m3ProfileRegistry,
   occurrenceRef,
+  projectView,
   relationRef,
   shippedExecutorBindings,
   validateView,
   formatDiagnostics,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  type DiagramPresentation,
   type Entity,
   type Relation,
+  type RelationOccurrence,
   type SemanticDocument,
+  type ViewDocument,
 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
-import { layoutDocument, layoutFolded } from "../../src/index.js";
+import { type LayoutHints, layoutDocument, layoutFolded } from "../../src/index.js";
 import { buildDocument, measure } from "./fixtures.js";
 import {
+  asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
   layMeasured,
@@ -369,6 +374,128 @@ describe("REV2 item 1 — folding conserves the projected scene", () => {
       ),
     ).toBe("");
   });
+
+  it("emits an authored port occurrence with its own key and no generated twin", () => {
+    const genericPortDoc = buildDocument({
+      nodes: ["a", "lone"],
+      containers: { C: ["a"] },
+      ports: { pb: "lone" },
+      links: [["r1", "a", "pb"]],
+    });
+    const portDoc: SemanticDocument = {
+      ...asGeneric2Document(genericPortDoc),
+      ports: Object.fromEntries(
+        Object.entries(genericPortDoc.ports).map(([key, value]) => [key, { ...value, profile: "generic@2" }]),
+      ),
+    };
+    const presentation = makePresentation({ forms: { C: "container", a: "card", lone: "card" } });
+    const options = {
+      registry: m3ProfileRegistry,
+      measureText: measure,
+      targetWidth: 4000,
+      presentation,
+      measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
+    };
+    const source = layoutDocument(portDoc, options);
+    expect(source.status).toBe("laid-out");
+    if (source.status !== "laid-out") return;
+    const base = structuredClone(source.view);
+    const oldPort = Object.keys(base.portOccurrences)[0]!;
+    const baseRelation = base.relationOccurrences[occurrenceRef("r.r1")]!;
+    const authored: ViewDocument = {
+      ...base,
+      portOccurrences: {
+        [occurrenceRef("authored-port")]: {
+          ...base.portOccurrences[oldPort]!,
+          id: occurrenceRef("authored-port"),
+        },
+      },
+      relationOccurrences: {
+        ...base.relationOccurrences,
+        [occurrenceRef("r.r1")]: {
+          ...baseRelation,
+          endpoints: baseRelation.endpoints.map((endpoint) =>
+            endpoint.occurrence === oldPort ? { ...endpoint, occurrence: occurrenceRef("authored-port") } : endpoint,
+          ),
+          strokeStyle: "dashed" as const,
+        },
+      },
+      groups: { g: { id: "g", occurrence: occurrenceOfEntity("C"), collapsed: false } },
+      entityOccurrences: {
+        ...base.entityOccurrences,
+        [occurrenceOfEntity("a")]: { ...base.entityOccurrences[occurrenceOfEntity("a")]!, group: "g" },
+      },
+    };
+    expect(
+      formatDiagnostics(
+        validateView(authored, portDoc, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }),
+      ),
+    ).toBe("");
+    const expected = projectView(portDoc, authored, [occurrenceOfEntity("C")]);
+    const countOf = (view: typeof expected): number =>
+      Object.keys(view.entityOccurrences).length +
+      Object.keys(view.relationOccurrences).length +
+      Object.keys(view.portOccurrences).length;
+    expect(countOf(expected)).toBe(5);
+    const folded = layoutFolded(portDoc, authored, { ...options, collapsed: [occurrenceOfEntity("C")] });
+    expect(folded.status).toBe("laid-out");
+    if (folded.status !== "laid-out") return;
+    expect(countOf(folded.view)).toBe(5);
+    expect(Object.keys(folded.view.entityOccurrences).sort()).toEqual(
+      Object.keys(expected.entityOccurrences).sort(),
+    );
+    expect(Object.keys(folded.view.relationOccurrences).sort()).toEqual(
+      Object.keys(expected.relationOccurrences).sort(),
+    );
+    expect(Object.keys(folded.view.portOccurrences).sort()).toEqual(
+      Object.keys(expected.portOccurrences).sort(),
+    );
+    expect(
+      formatDiagnostics(
+        validateView(folded.view, portDoc, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }),
+      ),
+    ).toBe("");
+  });
+
+  it("keys the edge-label measurement by the authored relation occurrence", () => {
+    const document = asGeneric2Document(buildMeasuredDocument());
+    const presentation = makePresentation({
+      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      texts: { C: { title: "Container" }, a: { title: "Alpha" }, b: { title: "Beta" }, lone: { title: "Lone" } },
+    });
+    const options = {
+      registry: m3ProfileRegistry,
+      measureText: measure,
+      targetWidth: 4000,
+      presentation,
+      measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
+    };
+    const source = layoutDocument(document, options);
+    expect(source.status).toBe("laid-out");
+    if (source.status !== "laid-out") return;
+    const base = structuredClone(source.view);
+    const renamed: Record<string, RelationOccurrence> = {};
+    for (const [key, value] of Object.entries(base.relationOccurrences)) {
+      if (key === occurrenceRef("r.l1")) {
+        renamed[occurrenceRef("drawn-link")] = { ...value, id: occurrenceRef("drawn-link") };
+      } else {
+        renamed[key] = value;
+      }
+    }
+    const authored: ViewDocument = { ...base, relationOccurrences: renamed };
+    const folded = layoutFolded(document, authored, { ...options, collapsed: [occurrenceOfEntity("C")] });
+    expect(folded.status).toBe("laid-out");
+    if (folded.status !== "laid-out") return;
+    const edgeSlots = folded.measurements!.slots.filter((slot) => slot.role === "edge-label");
+    expect(edgeSlots.map((slot) => slot.occurrence)).toEqual([occurrenceRef("drawn-link")]);
+    expect(
+      formatDiagnostics(
+        validateView(folded.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }),
+      ),
+    ).toBe("");
+  });
 });
 
 // Item 2 — fresh synthesis emits presentation.diagram.
@@ -470,6 +597,127 @@ describe("REV2 item 3 — stretch before ancestor extents and headers", () => {
     expect(pWidth).toBeGreaterThan(1612);
     const titleCall = measurer.calls.find((call) => call.role === "title" && call.text === "Parent");
     expect(titleCall).toBeDefined();
+  });
+});
+
+// Item 3b — eleven-level columns reach their fixed point in one layout.
+describe("REV2 item 3b — eleven-level stretched columns", () => {
+  const DEPTH = 11;
+  const buildDeep = (): { document: SemanticDocument; presentation: DiagramPresentation; hints: LayoutHints } => {
+    const entities: Record<string, Entity> = {};
+    const relations: Record<string, Relation> = {};
+    const add = (local: string, type: "node" | "container"): void => {
+      const ref = entityRef(local);
+      entities[ref] = {
+        id: ref,
+        profile: "generic@1",
+        type,
+        attributes: { name: { kind: "text", value: local } },
+      };
+    };
+    add("leaf", "node");
+    for (let level = 0; level < DEPTH; level += 1) {
+      add(`A${level}`, "container");
+      add(`B${level}`, "container");
+      add(`b${level}`, "node");
+    }
+    add(`A${DEPTH}`, "container");
+    const contain = (parent: string, child: string): void => {
+      const relation = relationRef(`contains.${child}`);
+      relations[relation] = {
+        id: relation,
+        profile: "generic@1",
+        type: "contains",
+        endpoints: [
+          { role: "parent", target: entityRef(parent) },
+          { role: "child", target: entityRef(child) },
+        ],
+        attributes: {},
+      };
+    };
+    for (let level = 0; level < DEPTH; level += 1) {
+      contain(`A${level}`, `A${level + 1}`);
+      contain(`A${level}`, `B${level}`);
+      contain(`B${level}`, `b${level}`);
+    }
+    contain(`A${DEPTH}`, "leaf");
+    const document: SemanticDocument = {
+      documentId: documentRef("rev2-stretch-deep"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@1"],
+      typeDefinitions: {},
+      entities,
+      relations,
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const title = `${"a ".repeat(80)}`;
+    const presentation = makePresentation({
+      forms: {
+        ...Object.fromEntries(Array.from({ length: DEPTH + 1 }, (_, level) => [`A${level}`, "card"])),
+        ...Object.fromEntries(Array.from({ length: DEPTH }, (_, level) => [`B${level}`, "card"])),
+        leaf: "card",
+        ...Object.fromEntries(Array.from({ length: DEPTH }, (_, level) => [`b${level}`, "card"])),
+      },
+      texts: { [`A${DEPTH}`]: { title } },
+    });
+    const hints = {
+      grouping: Array.from({ length: DEPTH }, (_, level) => ({
+        id: `g${level}`,
+        direction: "columns" as const,
+        stretch: true,
+        items: [entityRef(`A${level + 1}`), entityRef(`B${level}`)],
+      })),
+    };
+    return { document, presentation, hints };
+  };
+
+  it("equalises every stretched sibling pair, contains children and measures the header at the final width", async () => {
+    const { headerAvailableWidth, innerWidthOf, UNWRAPPED_PROBE_WIDTH } = await import("../../src/index.js");
+    const { document, presentation, hints } = buildDeep();
+    const title = "a ".repeat(80);
+    const measurer = wordWrapMeasurer();
+    const measured = layMeasured(document, presentation, measurer, { hints });
+    expect(Object.keys(document.entities)).toHaveLength(35);
+    for (let level = 0; level < DEPTH; level += 1) {
+      expect(geometryOf(measured.view, `A${level + 1}`).width).toBe(geometryOf(measured.view, `B${level}`).width);
+    }
+    for (const [parent, child] of Object.entries({
+      [`A${DEPTH}`]: ["leaf"],
+      ...Object.fromEntries(
+        Array.from({ length: DEPTH }, (_, level) => [`A${level}`, [`A${level + 1}`, `B${level}`]]),
+      ),
+      ...Object.fromEntries(Array.from({ length: DEPTH }, (_, level) => [`B${level}`, [`b${level}`]])),
+    }).flatMap(([parent, children]) => (children as readonly string[]).map((child) => [parent, child] as const))) {
+      const outer = geometryOf(measured.view, parent);
+      const inner = geometryOf(measured.view, child);
+      expect(inner.x).toBeGreaterThanOrEqual(outer.x);
+      expect(inner.y).toBeGreaterThanOrEqual(outer.y);
+      expect(inner.x + inner.width).toBeLessThanOrEqual(outer.x + outer.width);
+      expect(inner.y + inner.height).toBeLessThanOrEqual(outer.y + outer.height);
+    }
+    const deepest = geometryOf(measured.view, `A${DEPTH}`);
+    const probeWidth = headerAvailableWidth(UNWRAPPED_PROBE_WIDTH, true);
+    const finals = measurer.calls.filter(
+      (call) => call.role === "title" && call.text === title && call.availableWidth !== probeWidth,
+    );
+    expect(finals.map((call) => call.availableWidth)).toEqual([
+      headerAvailableWidth(innerWidthOf(deepest.width), true),
+    ]);
+  });
+
+  it("stays byte-identical across record-insertion permutations", async () => {
+    const { serialiseView } = await import("@sentropic/diagram-core");
+    const { shuffled } = await import("./fixtures.js");
+    const { document, presentation, hints } = buildDeep();
+    const reference = serialiseView(layMeasured(document, presentation, wordWrapMeasurer(), { hints }).view);
+    for (const seed of [1, 2, 3, 4, 5]) {
+      expect(serialiseView(layMeasured(shuffled(document, seed), presentation, wordWrapMeasurer(), { hints }).view)).toBe(
+        reference,
+      );
+    }
   });
 });
 

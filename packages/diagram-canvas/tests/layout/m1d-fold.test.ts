@@ -2,7 +2,12 @@
  * M1-d folding witnesses (§5.6 layout half): fold→measure→place→route from the
  * retained source through the M1-c projection, never incrementally.
  */
-import { defaultProfileRegistry, serialiseView } from "@sentropic/diagram-core";
+import {
+  defaultProfileRegistry,
+  m3ProfileRegistry,
+  serialiseView,
+  shippedExecutorBindings,
+} from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import { layoutDocument, layoutFolded } from "../../src/index.js";
@@ -11,7 +16,6 @@ import {
   asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
-  layMeasured,
   layMeasured2,
   makePresentation,
   occurrenceOfEntity,
@@ -19,7 +23,7 @@ import {
 } from "./m1d-fixtures.js";
 
 const presentation = makePresentation({
-  forms: { C: "card", a: "card", b: "card", lone: "card" },
+  forms: { C: "container", a: "card", b: "card", lone: "card" },
   texts: {
     C: { kicker: "Zone", title: "Container" },
     a: { title: "Alpha" },
@@ -30,29 +34,31 @@ const presentation = makePresentation({
 
 describe("fold, measure, place, route", () => {
   it("restores the exact drawing with an empty collapse", () => {
-    const document = buildMeasuredDocument();
+    const document = asGeneric2Document(buildMeasuredDocument());
     const measurer = wordWrapMeasurer();
-    const direct = layMeasured(document, presentation, measurer);
+    const direct = layMeasured2(document, presentation, measurer);
     const folded = layoutFolded(document, direct.view, {
-      registry: defaultProfileRegistry,
+      registry: m3ProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
       presentation,
       measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
     });
     if (folded.status !== "laid-out") throw new Error(`refused: ${JSON.stringify(folded)}`);
     expect(serialiseView(folded.view)).toBe(serialiseView(direct.view));
   });
 
   it("gives equal drawings across fold, unfold and refold", () => {
-    const document = buildMeasuredDocument();
-    const source = layMeasured(document, presentation, wordWrapMeasurer());
+    const document = asGeneric2Document(buildMeasuredDocument());
+    const source = layMeasured2(document, presentation, wordWrapMeasurer());
     const options = {
-      registry: defaultProfileRegistry,
+      registry: m3ProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
       presentation,
       measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
     };
     const foldedOnce = layoutFolded(document, source.view, {
       ...options,
@@ -77,14 +83,15 @@ describe("fold, measure, place, route", () => {
   });
 
   it("keeps the document revision on every fold", () => {
-    const document = buildMeasuredDocument();
-    const source = layMeasured(document, presentation, wordWrapMeasurer());
+    const document = asGeneric2Document(buildMeasuredDocument());
+    const source = layMeasured2(document, presentation, wordWrapMeasurer());
     const folded = layoutFolded(document, source.view, {
-      registry: defaultProfileRegistry,
+      registry: m3ProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
       presentation,
       measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
       collapsed: [occurrenceOfEntity("C")],
     });
     if (folded.status !== "laid-out") throw new Error("fold refused");

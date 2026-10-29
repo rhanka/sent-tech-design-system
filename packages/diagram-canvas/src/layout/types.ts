@@ -171,7 +171,8 @@ export type LayoutRefusalCode =
   | "entity-type-unsupported"
   | "relation-type-unsupported"
   | "layout-hint-invalid"
-  | "measure-lines-missing";
+  | "measure-lines-missing"
+  | "stretch-unstable";
 
 export interface LayoutRefusal {
   readonly code: LayoutRefusalCode;

@@ -18,10 +18,12 @@
 import {
   collapsedOf,
   createTypeResolver,
+  foldGroupId,
   GENERIC_PROFILE_ID,
   hasErrors,
   localIdOf,
   occurrenceRef,
+  parentOccurrenceOf,
   projectView,
   validateDocument,
   validateView,
@@ -41,8 +43,8 @@ import {
   type ViewDocument,
 } from "@sentropic/diagram-core";
 
-import { dockEdges, parallelRelations, type Dock, type EdgeDocks } from "./dock.js";
-import { ancestorsOf, type LayoutEdge, type LayoutGraph, type LayoutNode } from "./graph.js";
+import { dockEdges, type Dock, type EdgeDocks } from "./dock.js";
+import type { LayoutEdge, LayoutGraph, LayoutNode } from "./graph.js";
 import {
   effectiveStretch,
   groupLeaves,
@@ -77,6 +79,7 @@ import {
 } from "./measure.js";
 import { routeEdges } from "./route.js";
 import type { Rect, Vec2 } from "../transform.js";
+import { evaluateVisibility } from "../visibility.js";
 import {
   DEFAULT_LAYOUT_METRICS,
   MIN_ZOOM,
@@ -99,6 +102,23 @@ type OccurrenceKind =
 
 /** Edge-label wrapping width: the label allocation of §4.6.3 step 5. */
 const EDGE_LABEL_WIDTH = 400;
+
+/** One end of a drawn relation, resolved from its projected endpoint occurrence. */
+type DrawnEnd = { readonly entity: EntityRef; readonly port?: PortRef };
+
+/**
+ * A relation occurrence the projected view draws, with both ends resolved to
+ * visible entity or port occurrences. Docking, routing and emission key every
+ * record by the relation OCCURRENCE id (cast once where the shared dock and
+ * route modules type it as a relation id; both treat it opaquely), never by
+ * the semantic relation id, so authored occurrence identities survive.
+ */
+type DrawnEdge = {
+  readonly occurrence: OccurrenceRef;
+  readonly relation: RelationRef;
+  readonly source: DrawnEnd;
+  readonly target: DrawnEnd;
+};
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 
@@ -290,8 +310,6 @@ export function layoutMeasured(
   // to the visible projected occurrences. Every transition recomputes from
   // the retained source.
   const occurrenceOf = (entity: EntityRef): OccurrenceRef => occurrenceRef(`e.${localIdOf(entity)}`);
-  const entityOfOccurrence = new Map<OccurrenceRef, EntityRef>();
-  for (const id of graph.nodes.keys()) entityOfOccurrence.set(occurrenceOf(id), id);
   const collapsedOccurrences =
     options.collapsed !== undefined
       ? new Set<OccurrenceRef>(options.collapsed)
@@ -299,14 +317,36 @@ export function layoutMeasured(
         ? new Set<OccurrenceRef>([...collapsedOf(sourceView)] as OccurrenceRef[])
         : new Set<OccurrenceRef>();
   const synthesizeRetained = (): ViewDocument => {
+    // Memberships mirror the semantic containment tree, with the M1-c fold
+    // group ids, so the projection can fold the synthesized view: without
+    // them every member would stay visible under any collapse. A fold
+    // binding is only declared over a container-family parent, which is
+    // what diagram-core validates; any other parent keeps the baseline
+    // drawing with no membership, and the projection leaves it unfolded.
+    const foldResolver = createTypeResolver(document);
+    const bindsFoldGroup = (parent: EntityRef): boolean => {
+      const entity = document.entities[parent];
+      const profile = entity === undefined ? undefined : options.registry.get(entity.profile as never);
+      if (entity === undefined || profile === undefined) return false;
+      const resolution = foldResolver.resolve(profile, entity.type);
+      return resolution.ok && resolution.resolved.container;
+    };
     const entityOccurrences: Record<string, EntityOccurrence> = {};
+    const synthesizedGroups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }> = {};
     for (const id of graph.nodes.keys()) {
       const occurrence = occurrenceOf(id);
+      const parent = graph.nodes.get(id)?.parent;
+      const group = parent === undefined || !bindsFoldGroup(parent) ? undefined : foldGroupId(occurrenceOf(parent));
       entityOccurrences[occurrence] = {
         id: occurrence,
         entity: id,
+        ...(group === undefined ? {} : { group }),
         geometry: { x: 0, y: 0, width: FIXED_CARD_WIDTH, height: 200 },
       };
+      if (group !== undefined) {
+        const parentOccurrence = occurrenceOf(parent as EntityRef);
+        synthesizedGroups[group] ??= { id: group, occurrence: parentOccurrence };
+      }
     }
     const portOccurrences: Record<string, PortOccurrence> = {};
     const coded = (value: string): string => `${value.length}.${value}`;
@@ -351,7 +391,7 @@ export function layoutMeasured(
       entityOccurrences,
       relationOccurrences,
       portOccurrences,
-      groups: {},
+      groups: synthesizedGroups,
       filters: [],
       presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: presentation },
     };
@@ -380,16 +420,24 @@ export function layoutMeasured(
     entityToOccurrences.set(occurrence.entity, list);
   }
   for (const list of entityToOccurrences.values()) list.sort(byString);
-  const representativeOf = (entity: EntityRef): OccurrenceRef =>
-    entityToOccurrences.get(entity)?.[0] ?? occurrenceOf(entity);
-  const collapsed = new Set<EntityRef>();
-  for (const id of collapsedOccurrences) {
-    const entity =
-      entityOfOccurrence.get(id) ??
-      sourceView?.entityOccurrences[id]?.entity ??
-      projected.entityOccurrences[id]?.entity;
-    if (entity !== undefined && graph.nodes.has(entity)) collapsed.add(entity);
+  // The projected occurrence visibility is the authority for geometry: an
+  // entity is drawn when the projected view shows at least one of its
+  // occurrences, never because its semantic ancestors stay visible. The
+  // representative prefers a visible occurrence so headers, slots and
+  // warnings name a drawing the scene actually contains.
+  const visibleOccurrences = evaluateVisibility({ document, view: projected }).visible;
+  const visibleEntities = new Set<EntityRef>();
+  for (const id of [...visibleOccurrences].sort(byString)) {
+    const entity = projected.entityOccurrences[id]?.entity;
+    if (entity !== undefined && graph.nodes.has(entity)) visibleEntities.add(entity);
   }
+  const visible = (id: EntityRef): boolean => visibleEntities.has(id);
+  const representativeOf = (entity: EntityRef): OccurrenceRef => {
+    const list = entityToOccurrences.get(entity) ?? [];
+    return (
+      list.find((occurrence) => visibleOccurrences.has(occurrence)) ?? list[0] ?? occurrenceOf(entity)
+    );
+  };
   const foldMetadata: {
     groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
     filters: ViewDocument["filters"];
@@ -405,23 +453,16 @@ export function layoutMeasured(
     projected,
     representativeOf,
   };
-  const hidden = new Set<EntityRef>();
-  for (const id of graph.nodes.keys()) {
-    for (const ancestor of ancestorsOf(graph, id)) {
-      if (collapsed.has(ancestor)) {
-        hidden.add(id);
-        break;
-      }
-    }
-  }
-  const visible = (id: EntityRef): boolean => !hidden.has(id);
+  // An entity draws collapsed when its projected representative occurrence is
+  // folded; hidden members keep their leaf kind but never reach geometry.
+  const isCollapsed = (id: EntityRef): boolean => collapsedOccurrences.has(representativeOf(id));
   const classify = (id: EntityRef): OccurrenceKind => {
     const node = graph.nodes.get(id)!;
     const form = formOf(presentation, representativeOf(id));
     if (form === "legend-key") return "legend-key";
-    if (form === "legend") return collapsed.has(id) ? "legend-collapsed" : "legend-expanded";
+    if (form === "legend") return isCollapsed(id) ? "legend-collapsed" : "legend-expanded";
     if (form === "container" || node.kind === "container") {
-      return collapsed.has(id) ? "container-collapsed" : "container-expanded";
+      return isCollapsed(id) ? "container-collapsed" : "container-expanded";
     }
     return "leaf";
   };
@@ -442,6 +483,30 @@ export function layoutMeasured(
       return resolveOrder(live, order);
     }
     return resolveOrder(live, hints.ordering?.[parent]);
+  };
+
+  // Placement follows the projected visibility: a visible entity is laid out
+  // inside its nearest visible expanded ancestor, while a visible entity
+  // under a collapsed or hidden ancestor is lifted to the enclosing level.
+  // For groupings that mirror the containment tree this is exactly the
+  // semantic nesting; it only differs when an authored grouping does.
+  const placementParentOf = (id: EntityRef): EntityRef | undefined => {
+    let current = graph.nodes.get(id)?.parent;
+    while (current !== undefined) {
+      if (visible(current)) {
+        const kind = kinds.get(current);
+        if (kind === "container-expanded" || kind === "legend-expanded") return current;
+      }
+      current = graph.nodes.get(current)?.parent;
+    }
+    return undefined;
+  };
+  const placedChildrenOf = (id: EntityRef): EntityRef[] => {
+    const kind = kinds.get(id);
+    if (kind !== "container-expanded" && kind !== "legend-expanded") return [];
+    return (graph.nodes.get(id)?.children ?? []).filter(
+      (child) => visible(child) && placementParentOf(child) === id,
+    );
   };
 
   const groupEffectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
@@ -574,7 +639,7 @@ export function layoutMeasured(
       outerWidths.set(id, 0);
       return 0;
     }
-    const ordered = childOrder(id, graph.nodes.get(id)!.children);
+    const ordered = childOrder(id, placedChildrenOf(id));
     for (const child of ordered) computeWidth(child);
     let widestChild = 0;
     for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
@@ -585,7 +650,10 @@ export function layoutMeasured(
     outerWidths.set(id, outer);
     return outer;
   };
-  const rootOrder = resolveOrder(graph.roots.filter(visible), undefined);
+  const rootOrder = resolveOrder(
+    [...graph.nodes.keys()].filter((id) => visible(id) && placementParentOf(id) === undefined).sort(byString),
+    undefined,
+  );
   for (const root of rootOrder) computeWidth(root);
   const effectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
     effectiveStretch(group.stretch, parentEffective);
@@ -632,7 +700,7 @@ export function layoutMeasured(
       void id;
     }
     if (kinds.get(id) !== "container-expanded" && kinds.get(id) !== "legend-expanded") return false;
-    const ordered = childOrder(id, graph.nodes.get(id)!.children);
+    const ordered = childOrder(id, placedChildrenOf(id));
     const inherited = contextStretchOf(id);
     let widest = 0;
     const enabled: EntityRef[] = [];
@@ -682,37 +750,21 @@ export function layoutMeasured(
     equalizeMembers(ungrouped);
     return changed;
   };
-  const recomputeAncestors = (): boolean => {
-    let changed = false;
-    const expanded = [...graph.nodes.values()]
-      .filter((node) => isStretchedBox(node.id) && visible(node.id))
-      .sort((left, right) => right.depth - left.depth);
-    for (const node of expanded) {
-      const ordered = childOrder(node.id, node.children);
-      let widestChild = 0;
-      for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
-      const grouping = groupingOuterWidth(ordered);
-      const headerDriven = unwrappedHeaderWidth(node.id) + 2 * 16 + 32;
-      const content = grouping ?? widestChild;
-      const computed = Math.max(
-        FIXED_CARD_WIDTH,
-        headerDriven,
-        content + (ordered.length > 0 ? 2 * 16 : 0),
-      );
-      const current = outerWidths.get(node.id) ?? 0;
-      const outer = Math.max(current, computed);
-      if (current !== outer) {
-        outerWidths.set(node.id, outer);
-        changed = true;
-      }
-    }
-    return changed;
+  const recomputeOne = (id: EntityRef): boolean => {
+    const ordered = childOrder(id, placedChildrenOf(id));
+    let widestChild = 0;
+    for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
+    const grouping = groupingOuterWidth(ordered);
+    const headerDriven = unwrappedHeaderWidth(id) + 2 * 16 + 32;
+    const content = grouping ?? widestChild;
+    const computed = Math.max(FIXED_CARD_WIDTH, headerDriven, content + (ordered.length > 0 ? 2 * 16 : 0));
+    const current = outerWidths.get(id) ?? 0;
+    const outer = Math.max(current, computed);
+    if (outer === current) return false;
+    outerWidths.set(id, outer);
+    return true;
   };
-  // Stretch is resolved completely (recursive): equalize hint groups and
-  // container levels with each member's effective local override, then
-  // recompute ancestor extents, repeating until stable. Headers are measured
-  // afterwards at the final width.
-  for (let iteration = 0; iteration < 10; iteration += 1) {
+  const equalizeGroups = (): boolean => {
     let changed = false;
     for (const group of hints.grouping ?? []) {
       const before = new Map(outerWidths);
@@ -724,14 +776,44 @@ export function layoutMeasured(
         }
       }
     }
-    for (const id of [...graph.nodes.keys()].sort(byString)) {
-      if (equalizeContainerChildren(id)) changed = true;
+    return changed;
+  };
+  // Stretch reaches its fixed point by construction: expanded containers are
+  // finalised deepest-first, so every sibling level is equalised before its
+  // ancestor is recomputed from it. The worklist repeats the sweep while any
+  // width moves; every update only grows a width, so the sweep always ends.
+  // The guard below is load-bearing: if it ever exhausts, the layout is
+  // refused with a named error instead of emitting an unfinished drawing.
+  // Headers are measured afterwards at the final width.
+  const expandedByDepth = [...graph.nodes.values()]
+    .filter((node) => isStretchedBox(node.id) && visible(node.id))
+    .sort((left, right) => right.depth - left.depth || byString(left.id, right.id));
+  const stretchGuard = graph.nodes.size * graph.nodes.size + 1;
+  let stretchChanged = true;
+  let stretchPasses = 0;
+  while (stretchChanged) {
+    if (stretchPasses >= stretchGuard) {
+      return {
+        status: "refused",
+        refusals: [
+          {
+            code: "stretch-unstable",
+            path: "hints.grouping",
+            message: `stretch did not reach a fixed point within ${String(stretchGuard)} passes; refusing an unfinished drawing`,
+          },
+        ],
+        diagnostics: [],
+      };
     }
-    if (equalizeRootLevel()) changed = true;
-    if (recomputeAncestors()) changed = true;
-    if (!changed) break;
+    stretchPasses += 1;
+    stretchChanged = false;
+    if (equalizeGroups()) stretchChanged = true;
+    for (const node of expandedByDepth) {
+      if (equalizeContainerChildren(node.id)) stretchChanged = true;
+      if (recomputeOne(node.id)) stretchChanged = true;
+    }
+    if (equalizeRootLevel()) stretchChanged = true;
   }
-  void levelStretchOf;
 
   // Step 3 — headers before any child placement; folded and expanded forms
   // are distinct inputs.
@@ -839,7 +921,7 @@ export function layoutMeasured(
     const header = headers.get(id)!;
     const outer = outerWidths.get(id) ?? FIXED_CARD_WIDTH;
     const inner = innerWidthOf(outer);
-    const ordered = childOrder(id, graph.nodes.get(id)!.children);
+    const ordered = childOrder(id, placedChildrenOf(id));
     const stretch = levelStretchOf(ordered, inheritedStretch);
     const childX = x + 16;
     let childY = y + 16 + header.height + 16;
@@ -988,105 +1070,55 @@ export function layoutMeasured(
     }
   }
 
-  // Visible edges: internal edges under a collapse are excluded; external
-  // edges are projected onto their outermost visible collapsed representatives.
-  const representativeEntityOf = (entity: EntityRef): EntityRef => {
-    if (visible(entity)) return entity;
-    let current: EntityRef | undefined = entity;
-    let representative: EntityRef | undefined;
-    while (current !== undefined) {
-      const node = graph.nodes.get(current);
-      const parent: EntityRef | undefined = node?.parent;
-      if (parent !== undefined && collapsed.has(parent) && visible(parent)) {
-        representative = parent;
-      }
-      current = parent;
+  // Visible edges: the link occurrences the projected view draws. Internal
+  // edges under a collapse are excluded by the same visibility; every
+  // surviving edge carries its projected representative endpoints, and
+  // geometry follows those endpoints, never the semantic ancestry.
+  const resolveDrawnEnd = (occurrence: OccurrenceRef): DrawnEnd | undefined => {
+    const entityOccurrence = projected.entityOccurrences[occurrence];
+    if (entityOccurrence !== undefined && visibleOccurrences.has(occurrence)) {
+      return { entity: entityOccurrence.entity };
     }
-    if (representative !== undefined) {
-      let outer: EntityRef = representative;
-      let cursor: EntityRef | undefined = graph.nodes.get(representative)?.parent;
-      while (cursor !== undefined) {
-        if (collapsed.has(cursor) && visible(cursor)) outer = cursor;
-        cursor = graph.nodes.get(cursor)?.parent;
-      }
-      return outer;
+    const portOccurrence = projected.portOccurrences[occurrence];
+    if (portOccurrence !== undefined && visibleOccurrences.has(occurrence)) {
+      const owner = projected.entityOccurrences[portOccurrence.ownerOccurrence];
+      if (owner === undefined || !visibleOccurrences.has(portOccurrence.ownerOccurrence)) return undefined;
+      return { entity: owner.entity, port: portOccurrence.port };
     }
-    return entity;
+    return undefined;
   };
-  type ProjectedEdge = {
-    readonly id: RelationRef;
-    readonly source: EntityRef;
-    readonly target: EntityRef;
-    readonly sourcePort: PortRef | undefined;
-    readonly targetPort: PortRef | undefined;
-    readonly originalSource: EntityRef;
-    readonly originalTarget: EntityRef;
-  };
-  const projectedEdges: ProjectedEdge[] = [];
-  if (sourceView === undefined) {
-    for (const edge of graph.edges) {
-      if (!visible(edge.source.entity) || !visible(edge.target.entity)) continue;
-      projectedEdges.push({
-        id: edge.id,
-        source: edge.source.entity,
-        target: edge.target.entity,
-        sourcePort: edge.source.port,
-        targetPort: edge.target.port,
-        originalSource: edge.source.entity,
-        originalTarget: edge.target.entity,
-      });
-    }
-  } else {
-    for (const edge of graph.edges) {
-      if (edge.source.port !== undefined || edge.target.port !== undefined) {
-        const repSource = representativeEntityOf(edge.source.entity);
-        const repTarget = representativeEntityOf(edge.target.entity);
-        const hiddenSource = !visible(edge.source.entity);
-        const hiddenTarget = !visible(edge.target.entity);
-        if (repSource === repTarget && (hiddenSource || hiddenTarget)) continue;
-        if (!visible(repSource) || !visible(repTarget)) continue;
-        projectedEdges.push({
-          id: edge.id,
-          source: repSource,
-          target: repTarget,
-          sourcePort: edge.source.port,
-          targetPort: edge.target.port,
-          originalSource: edge.source.entity,
-          originalTarget: edge.target.entity,
-        });
-        continue;
-      }
-      const repSource = representativeEntityOf(edge.source.entity);
-      const repTarget = representativeEntityOf(edge.target.entity);
-      const hiddenSource = !visible(edge.source.entity);
-      const hiddenTarget = !visible(edge.target.entity);
-      if (repSource === repTarget && (hiddenSource || hiddenTarget)) continue;
-      if (!visible(repSource) || !visible(repTarget)) continue;
-      projectedEdges.push({
-        id: edge.id,
-        source: repSource,
-        target: repTarget,
-        sourcePort: undefined,
-        targetPort: undefined,
-        originalSource: edge.source.entity,
-        originalTarget: edge.target.entity,
-      });
-    }
+  const drawnEdges: DrawnEdge[] = [];
+  for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
+    byString(left.id, right.id),
+  )) {
+    if (document.relations[occurrence.relation]?.type !== "link") continue;
+    const sourceEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "source");
+    const targetEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "target");
+    if (sourceEnd === undefined || targetEnd === undefined) continue;
+    const source = resolveDrawnEnd(sourceEnd.occurrence);
+    const target = resolveDrawnEnd(targetEnd.occurrence);
+    if (source === undefined || target === undefined) continue;
+    drawnEdges.push({ occurrence: occurrence.id, relation: occurrence.relation, source, target });
   }
-  const visibleEdges = projectedEdges;
   const filteredGraph: LayoutGraph = {
     nodes: new Map([...graph.nodes].filter(([id]) => visible(id))),
     roots: graph.roots.filter(visible),
-    edges: visibleEdges.map((edge) => ({
-      id: edge.id,
-      source: edge.sourcePort === undefined ? { entity: edge.source } : { entity: edge.source, port: edge.sourcePort },
-      target: edge.targetPort === undefined ? { entity: edge.target } : { entity: edge.target, port: edge.targetPort },
+    edges: drawnEdges.map((edge) => ({
+      id: edge.occurrence as unknown as RelationRef,
+      source:
+        edge.source.port === undefined
+          ? { entity: edge.source.entity }
+          : { entity: edge.source.entity, port: edge.source.port },
+      target:
+        edge.target.port === undefined
+          ? { entity: edge.target.entity }
+          : { entity: edge.target.entity, port: edge.target.port },
     })),
   };
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
-  for (const edge of [...visibleEdges].sort((left, right) => byString(left.id, right.id))) {
-    const label = edgeLabelOf(document, edge.id);
+  for (const edge of [...drawnEdges].sort((left, right) => byString(left.occurrence, right.occurrence))) {
+    const label = edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const layout = measure({
       text: label,
@@ -1095,9 +1127,11 @@ export function layoutMeasured(
       allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
       folded: false,
     });
-    edgeLayouts.set(edge.id, layout);
-    labelSizes.set(edge.id, { width: layout.width, height: layout.height });
-    recordSlot(occurrenceRef(`r.${localIdOf(edge.id)}`), "edge-label", layout, false);
+    // Measurements are keyed by the actual projected relation occurrence id.
+    const occurrenceId = edge.occurrence as unknown as RelationRef;
+    edgeLayouts.set(occurrenceId, layout);
+    labelSizes.set(occurrenceId, { width: layout.width, height: layout.height });
+    recordSlot(edge.occurrence, "edge-label", layout, false);
   }
 
   // Step 6 — dock and route against fixed boxes (§4.6.4/§4.6.5).
@@ -1131,15 +1165,35 @@ export function layoutMeasured(
     }
   }
   warnings.push(...dockingWarnings);
-  const requests = visibleEdges.map((edge) => {
-    const pair = finalDocks.get(edge.id)!;
+  // A route may cross the boundaries of its own occurrence-group ancestors
+  // (L-R8): the chain is read from the projected view, never from the
+  // semantic containment tree.
+  const projectedAncestorsOf = (occurrence: OccurrenceRef): EntityRef[] => {
+    const start = projected.portOccurrences[occurrence]?.ownerOccurrence ?? occurrence;
+    const found: EntityRef[] = [];
+    const seen = new Set<string>();
+    let current: OccurrenceRef | undefined = parentOccurrenceOf(projected, start);
+    while (current !== undefined && !seen.has(current)) {
+      seen.add(current);
+      const entity = projected.entityOccurrences[current]?.entity;
+      if (entity !== undefined && visible(entity)) found.push(entity);
+      current = parentOccurrenceOf(projected, current);
+    }
+    return found;
+  };
+  const requests = drawnEdges.map((edge) => {
+    const occurrence = projected.relationOccurrences[edge.occurrence]!;
+    const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
+    const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
+    const occurrenceId = edge.occurrence as unknown as RelationRef;
+    const pair = finalDocks.get(occurrenceId)!;
     const passable = new Set<EntityRef>([
-      ...ancestorsOf(filteredGraph, edge.source),
-      ...ancestorsOf(filteredGraph, edge.target),
+      ...projectedAncestorsOf(sourceRole.occurrence),
+      ...projectedAncestorsOf(targetRole.occurrence),
     ]);
     return {
-      id: edge.id,
-      pairKey: [edge.source, edge.target].sort().join("|"),
+      id: occurrenceId,
+      pairKey: [edge.source.entity, edge.target.entity].sort().join("|"),
       start: pair.source.point,
       startExit: pair.source.exit,
       end: pair.target.point,
@@ -1180,8 +1234,7 @@ export function layoutMeasured(
     routed.routes,
     options,
     foldMetadata,
-    visibleEdges,
-    occurrenceOf,
+    drawnEdges,
   );
   const bounds = unionOf(rects, routed.routes, labelBoxes);
   const width = bounds.width;
@@ -1272,14 +1325,6 @@ type MeasuredFoldMetadata = {
   representativeOf: (entity: EntityRef) => OccurrenceRef;
 };
 
-type MeasuredProjectedEdge = {
-  readonly id: RelationRef;
-  readonly source: EntityRef;
-  readonly target: EntityRef;
-  readonly originalSource: EntityRef;
-  readonly originalTarget: EntityRef;
-};
-
 function buildMeasuredView(
   document: SemanticDocument,
   graph: LayoutGraph,
@@ -1288,11 +1333,9 @@ function buildMeasuredView(
   routes: ReadonlyMap<RelationRef, readonly Vec2[]>,
   options: LayoutOptions,
   foldMetadata: MeasuredFoldMetadata,
-  projectedEdges: readonly MeasuredProjectedEdge[],
-  occurrenceOf: (entity: EntityRef) => OccurrenceRef,
+  drawnEdges: readonly DrawnEdge[],
 ): ViewDocument {
   const projected = foldMetadata.projected;
-  const representativeOf = foldMetadata.representativeOf;
   const maxContainerDepth = Math.max(
     -1,
     ...[...graph.nodes.values()].filter((node) => node.kind === "container").map((node) => node.depth),
@@ -1317,14 +1360,15 @@ function buildMeasuredView(
   for (const occurrence of Object.values(projected.portOccurrences)) {
     portOccurrences[occurrence.id] = { ...occurrence };
   }
+  // Relation occurrences keep their projected identities; only drawn
+  // occurrences take waypoints, looked up by occurrence id.
   const relationOccurrences: Record<string, RelationOccurrence> = {};
-  const coded = (value: string): string => `${value.length}.${value}`;
-  const parallel = parallelRelations(graph);
   for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
     byString(left.id, right.id),
   )) {
-    const pair = docks.get(occurrence.relation);
-    const route = routes.get(occurrence.relation);
+    const occurrenceId = occurrence.id as unknown as RelationRef;
+    const pair = docks.get(occurrenceId);
+    const route = routes.get(occurrenceId);
     if (pair !== undefined && route !== undefined) {
       const waypoints = route
         .slice(
@@ -1337,43 +1381,41 @@ function buildMeasuredView(
       relationOccurrences[occurrence.id] = { ...occurrence };
     }
   }
-  for (const edge of [...graph.edges].sort((left, right) => byString(left.id, right.id))) {
-    const pair = docks.get(edge.id);
+  // Ports keep their projected identities: every drawn end landing on a
+  // port occurrence updates that occurrence in place through its actual
+  // projected endpoint id. Nothing is generated here, so an authored port
+  // occurrence stays one drawing. When several drawn ends share one port
+  // occurrence, the smallest (edge, role) wins, deterministically.
+  const portClaims = new Map<OccurrenceRef, { readonly edge: OccurrenceRef; readonly role: string; readonly dock: Dock }[]>();
+  for (const edge of [...drawnEdges].sort((left, right) => byString(left.occurrence, right.occurrence))) {
+    const pair = docks.get(edge.occurrence as unknown as RelationRef);
     if (pair === undefined) continue;
+    const occurrence = projected.relationOccurrences[edge.occurrence];
+    if (occurrence === undefined) continue;
     for (const [dock, role] of [
       [pair.source, "source"],
       [pair.target, "target"],
     ] as const) {
       if (dock.port === undefined) continue;
-      const owner = (document.ports as Record<string, { owner?: unknown }>)[dock.port as string]?.owner;
-      if (owner !== undefined && owner !== dock.entity) continue;
-      const id = parallel.has(edge.id)
-        ? occurrenceRef(`p.e.${coded(localIdOf(dock.port))}.${coded(localIdOf(edge.id))}.${role}`)
-        : occurrenceRef(`p.s.${coded(localIdOf(dock.port))}`);
-      const ownerOccurrence = representativeOf(dock.entity);
-      const existing = portOccurrences[id];
-      if (existing !== undefined) {
-        portOccurrences[id] = {
-          ...existing,
-          ownerOccurrence,
-          side: dock.side,
-          order: dock.order,
-          anchor: clean(dock.anchor),
-        };
-      } else {
-        portOccurrences[id] = {
-          id,
-          port: dock.port,
-          ownerOccurrence,
-          side: dock.side,
-          order: dock.order,
-          anchor: clean(dock.anchor),
-        };
-      }
+      const endpoint = occurrence.endpoints.find((candidate) => candidate.role === role);
+      if (endpoint === undefined || projected.portOccurrences[endpoint.occurrence] === undefined) continue;
+      const claims = portClaims.get(endpoint.occurrence) ?? [];
+      claims.push({ edge: edge.occurrence, role, dock });
+      portClaims.set(endpoint.occurrence, claims);
     }
   }
-  void occurrenceOf;
-  void projectedEdges;
+  for (const [id, claims] of [...portClaims].sort(([left], [right]) => byString(left, right))) {
+    const winner = [...claims].sort(
+      (left, right) => byString(left.edge, right.edge) || byString(left.role, right.role),
+    )[0]!;
+    const existing = portOccurrences[id]!;
+    portOccurrences[id] = {
+      ...existing,
+      side: winner.dock.side,
+      order: winner.dock.order,
+      anchor: clean(winner.dock.anchor),
+    };
+  }
   const summaryLabels =
     foldMetadata.summaryLabels === undefined
       ? undefined

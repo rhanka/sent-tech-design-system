@@ -9,18 +9,24 @@ import {
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
   documentRef,
   entityRef,
+  formatDiagnostics,
   GENERIC_PROFILE_ID,
   m3ProfileRegistry,
   occurrenceRef,
+  projectView,
   relationRef,
   shippedExecutorBindings,
+  validateView,
   type Entity,
+  type EntityOccurrence,
+  type OccurrenceRef,
   type Relation,
   type SemanticDocument,
+  type ViewDocument,
 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { layoutDocument } from "../../src/index.js";
+import { buildScene, layoutDocument } from "../../src/index.js";
 import { buildDocument, measure } from "./fixtures.js";
 import {
   asGeneric2Document,
@@ -454,10 +460,66 @@ describe("RED item 3 — folding through projectView", () => {
     const relationIds = Object.values(folded.view.relationOccurrences).map((occurrence) => occurrence.relation);
     expect(relationIds).toContain(relationRef("l1"));
     expect(folded.view.groups["grp.3.e.C"]?.collapsed).toBe(true);
+    // The synthesized source carries the nested memberships, the folded
+    // relation names its projected representative with provenance, the scene
+    // excludes the hidden members, and the route attaches to the
+    // representative, never to the hidden member.
+    expect(source.view.entityOccurrences[occurrenceOfEntity("a")]?.group).toBe("grp.3.e.C");
+    expect(source.view.entityOccurrences[occurrenceOfEntity("b")]?.group).toBe("grp.3.e.C");
+    expect(source.view.groups["grp.3.e.C"]?.occurrence).toBe(occurrenceOfEntity("C"));
     const endpoints = folded.view.relationOccurrences[occurrenceRef("r.l1")]!.endpoints;
-    expect(endpoints.map((endpoint) => endpoint.occurrence).sort()).toEqual(
-      [occurrenceOfEntity("a"), occurrenceOfEntity("lone")].sort(),
+    expect(endpoints).toEqual([
+      {
+        role: "source",
+        occurrence: occurrenceOfEntity("C"),
+        semanticTarget: entityRef("a"),
+        sourceOccurrence: occurrenceOfEntity("a"),
+      },
+      { role: "target", occurrence: occurrenceOfEntity("lone") },
+    ]);
+    const waypoints = folded.view.relationOccurrences[occurrenceRef("r.l1")]!.waypoints ?? [];
+    expect(waypoints.length).toBeGreaterThan(0);
+    const boxOfOccurrence = (id: OccurrenceRef): { x: number; y: number; width: number; height: number } =>
+      folded.view.entityOccurrences[id]!.geometry;
+    const sourceBox = boxOfOccurrence(endpoints[0]!.occurrence);
+    const targetBox = boxOfOccurrence(endpoints[1]!.occurrence);
+    const first = waypoints[0]!;
+    const last = waypoints[waypoints.length - 1]!;
+    expect(first.x).toBeGreaterThanOrEqual(sourceBox.x);
+    expect(first.x).toBeLessThanOrEqual(sourceBox.x + sourceBox.width);
+    expect(first.y).toBeGreaterThanOrEqual(sourceBox.y);
+    expect(first.y).toBeLessThanOrEqual(sourceBox.y + sourceBox.height);
+    expect(last.x).toBeGreaterThanOrEqual(targetBox.x);
+    expect(last.x).toBeLessThanOrEqual(targetBox.x + targetBox.width);
+    expect(last.y).toBeGreaterThanOrEqual(targetBox.y);
+    expect(last.y).toBeLessThanOrEqual(targetBox.y + targetBox.height);
+    const frame = buildScene(
+      { document, views: { [folded.view.viewId]: folded.view } },
+      folded.view.viewId,
     );
+    expect(frame.exclusions).toContainEqual({
+      occurrence: occurrenceOfEntity("a"),
+      kind: "entity",
+      reason: "group-collapsed",
+      cause: "grp.3.e.C",
+    });
+    expect(frame.exclusions).toContainEqual({
+      occurrence: occurrenceOfEntity("b"),
+      kind: "entity",
+      reason: "group-collapsed",
+      cause: "grp.3.e.C",
+    });
+    expect(frame.items.some((item) => item.occurrence === occurrenceOfEntity("a"))).toBe(false);
+    const edge = frame.items.find((item) => item.occurrence === occurrenceRef("r.l1"));
+    if (edge?.kind !== "edge") throw new Error("folded relation r.l1 draws no scene edge");
+    const boxOf = (local: string): { x: number; y: number; width: number; height: number } =>
+      folded.view.entityOccurrences[occurrenceOfEntity(local)]!.geometry;
+    const centreOf = (box: { x: number; y: number; width: number; height: number }): { x: number; y: number } => ({
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+    });
+    expect(edge.path[0]).toEqual(centreOf(boxOf("C")));
+    expect(edge.path[edge.path.length - 1]).toEqual(centreOf(boxOf("lone")));
     const restored = layoutFolded(document, folded.view, {
       registry: m3ProfileRegistry,
       measureText: measure,
@@ -472,6 +534,87 @@ describe("RED item 3 — folding through projectView", () => {
     expect(Object.keys(restored.view.entityOccurrences).sort()).toEqual(
       Object.keys(source.view.entityOccurrences).sort(),
     );
+  });
+
+  it("routes the authored grouping through its projected representative", async () => {
+    const { layoutFolded } = await import("../../src/index.js");
+    const document = asGeneric2Document(buildMeasuredDocument());
+    const presentation = makePresentation({
+      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      texts: { C: { title: "Container" }, a: { title: "Alpha" }, b: { title: "Beta" }, lone: { title: "Lone" } },
+    });
+    const source = layMeasured2(document, presentation, wordWrapMeasurer());
+    const base = structuredClone(source.view);
+    const ungroup = (id: OccurrenceRef): EntityOccurrence => {
+      const { group: _dropped, ...rest } = base.entityOccurrences[id]!;
+      void _dropped;
+      return rest;
+    };
+    const authored: ViewDocument = {
+      ...base,
+      groups: { g: { id: "g", occurrence: occurrenceOfEntity("C"), collapsed: false } },
+      entityOccurrences: {
+        ...base.entityOccurrences,
+        [occurrenceOfEntity("a")]: ungroup(occurrenceOfEntity("a")),
+        [occurrenceOfEntity("b")]: ungroup(occurrenceOfEntity("b")),
+        [occurrenceOfEntity("lone")]: { ...base.entityOccurrences[occurrenceOfEntity("lone")]!, group: "g" },
+      },
+    };
+    expect(
+      formatDiagnostics(
+        validateView(authored, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }),
+      ),
+    ).toBe("");
+    const expected = projectView(document, authored, [occurrenceOfEntity("C")]);
+    expect(expected.relationOccurrences[occurrenceRef("r.l1")]!.endpoints).toEqual([
+      { role: "source", occurrence: occurrenceOfEntity("a") },
+      {
+        role: "target",
+        occurrence: occurrenceOfEntity("C"),
+        semanticTarget: entityRef("lone"),
+        sourceOccurrence: occurrenceOfEntity("lone"),
+      },
+    ]);
+    const result = layoutFolded(document, authored, {
+      registry: m3ProfileRegistry,
+      measureText: measure,
+      targetWidth: 4000,
+      presentation,
+      measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
+      collapsed: [occurrenceOfEntity("C")],
+    });
+    expect(result.status).toBe("laid-out");
+    if (result.status !== "laid-out") return;
+    expect(result.view.relationOccurrences[occurrenceRef("r.l1")]!.endpoints).toEqual(
+      expected.relationOccurrences[occurrenceRef("r.l1")]!.endpoints,
+    );
+    const emitted = result.view.relationOccurrences[occurrenceRef("r.l1")]!.endpoints;
+    const waypoints = result.view.relationOccurrences[occurrenceRef("r.l1")]!.waypoints ?? [];
+    expect(waypoints.length).toBeGreaterThan(0);
+    const boxOfOccurrence = (id: OccurrenceRef): { x: number; y: number; width: number; height: number } =>
+      result.view.entityOccurrences[id]!.geometry;
+    const sourceBox = boxOfOccurrence(emitted[0]!.occurrence);
+    const targetBox = boxOfOccurrence(emitted[1]!.occurrence);
+    const first = waypoints[0]!;
+    const last = waypoints[waypoints.length - 1]!;
+    expect(first.x).toBeGreaterThanOrEqual(sourceBox.x);
+    expect(first.x).toBeLessThanOrEqual(sourceBox.x + sourceBox.width);
+    expect(first.y).toBeGreaterThanOrEqual(sourceBox.y);
+    expect(first.y).toBeLessThanOrEqual(sourceBox.y + sourceBox.height);
+    expect(last.x).toBeGreaterThanOrEqual(targetBox.x);
+    expect(last.x).toBeLessThanOrEqual(targetBox.x + targetBox.width);
+    expect(last.y).toBeGreaterThanOrEqual(targetBox.y);
+    expect(last.y).toBeLessThanOrEqual(targetBox.y + targetBox.height);
+    const frame = buildScene({ document, views: { [result.view.viewId]: result.view } }, result.view.viewId);
+    const edge = frame.items.find((item) => item.occurrence === occurrenceRef("r.l1"));
+    if (edge?.kind !== "edge") throw new Error("authored relation r.l1 draws no scene edge");
+    const centreOfOccurrence = (id: OccurrenceRef): { x: number; y: number } => {
+      const box = result.view.entityOccurrences[id]!.geometry;
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    };
+    expect(edge.path[0]).toEqual(centreOfOccurrence(occurrenceOfEntity("a")));
+    expect(edge.path[edge.path.length - 1]).toEqual(centreOfOccurrence(occurrenceOfEntity("C")));
   });
 });
 
