@@ -410,15 +410,159 @@ function hasDisallowedHrefChar(href: string): boolean {
   return false;
 }
 
-function hrefAuthorityHost(authority: string): string {
-  let end = authority.length;
-  for (const separator of ["/", "?", "#"]) {
-    const at = authority.indexOf(separator);
-    if (at !== -1 && at < end) {
-      end = at;
+/** Split text at the first "#" then the first "?" into the part before
+    either marker plus the query and fragment bodies. */
+function splitHierQueryFragment(text: string): {
+  hier: string;
+  query: string;
+  fragment: string;
+} {
+  let hier = text;
+  let fragment = "";
+  const hash = hier.indexOf("#");
+  if (hash !== -1) {
+    fragment = hier.slice(hash + 1);
+    hier = hier.slice(0, hash);
+  }
+  let query = "";
+  const mark = hier.indexOf("?");
+  if (mark !== -1) {
+    query = hier.slice(mark + 1);
+    hier = hier.slice(0, mark);
+  }
+  return { hier, query, fragment };
+}
+
+/** One path segment: a "%" starts a pct-encoded run of exactly two hex
+    digits and every other unit is pchar, without ":" for a
+    path-noscheme opener. */
+function isValidSegment(text: string, allowColon: boolean): boolean {
+  for (let index = 0; index < text.length; index += 1) {
+    const value = text[index] as string;
+    if (value === "%") {
+      if (
+        index + 2 >= text.length ||
+        !isHexDigitChar(text[index + 1] as string) ||
+        !isHexDigitChar(text[index + 2] as string)
+      ) {
+        return false;
+      }
+      index += 2;
+    } else if (value === ":") {
+      if (!allowColon) {
+        return false;
+      }
+    } else if (
+      !isUnreservedChar(value) &&
+      !isSubDelimChar(value) &&
+      value !== "@"
+    ) {
+      return false;
     }
   }
-  return authority.slice(0, end);
+  return true;
+}
+
+/** Path-abempty per RFC 3986: empty or a run of "/" segments. */
+function isValidPathAbempty(text: string): boolean {
+  if (text === "") {
+    return true;
+  }
+  if (!text.startsWith("/")) {
+    return false;
+  }
+  const segments = text.split("/");
+  for (let index = 1; index < segments.length; index += 1) {
+    if (!isValidSegment(segments[index] as string, true)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Path-absolute per RFC 3986: "/" plus an optional segment-nz tail. */
+function isValidPathAbsolute(text: string): boolean {
+  if (!text.startsWith("/")) {
+    return false;
+  }
+  if (text === "/") {
+    return true;
+  }
+  const segments = text.slice(1).split("/");
+  if (segments[0] === "") {
+    return false;
+  }
+  for (const segment of segments) {
+    if (!isValidSegment(segment, true)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Shared tail for path-noscheme and path-rootless: a non-empty opener
+    plus *( "/" segment ). The noscheme opener refuses ":". */
+function isValidRootlessTail(
+  segments: readonly string[],
+  allowColon: boolean,
+): boolean {
+  if (segments.length === 0) {
+    return false;
+  }
+  const opener = segments[0] as string;
+  if (opener === "" || !isValidSegment(opener, allowColon)) {
+    return false;
+  }
+  for (let index = 1; index < segments.length; index += 1) {
+    if (!isValidSegment(segments[index] as string, true)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Path-noscheme per RFC 3986: segment-nz-nc *( "/" segment ). */
+function isValidPathNoscheme(text: string): boolean {
+  if (text === "") {
+    return false;
+  }
+  return isValidRootlessTail(text.split("/"), false);
+}
+
+/** Path-rootless per RFC 3986: segment-nz *( "/" segment ). */
+function isValidPathRootless(text: string): boolean {
+  if (text === "") {
+    return false;
+  }
+  return isValidRootlessTail(text.split("/"), true);
+}
+
+/** Query and fragment per RFC 3986: *( pchar / "/" / "?" ) with
+    pct-encoded runs of exactly two hex digits. */
+function isValidQueryOrFragment(text: string): boolean {
+  for (let index = 0; index < text.length; index += 1) {
+    const value = text[index] as string;
+    if (value === "%") {
+      if (
+        index + 2 >= text.length ||
+        !isHexDigitChar(text[index + 1] as string) ||
+        !isHexDigitChar(text[index + 2] as string)
+      ) {
+        return false;
+      }
+      index += 2;
+    } else if (
+      value !== "/" &&
+      value !== "?" &&
+      !isUnreservedChar(value) &&
+      !isSubDelimChar(value) &&
+      value !== ":" &&
+      value !== "@"
+    ) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function isHexDigitChar(value: string): boolean {
@@ -504,21 +648,29 @@ function isValidRegName(text: string): boolean {
   return true;
 }
 
+/** Dec-octet per RFC 3986: 0-255 with no leading zero on multi-digit octets. */
+function isValidDecOctet(part: string): boolean {
+  if (part.length === 0 || part.length > 3) {
+    return false;
+  }
+  for (const value of part) {
+    if (value < "0" || value > "9") {
+      return false;
+    }
+  }
+  if (part.length > 1 && part.startsWith("0")) {
+    return false;
+  }
+  return Number(part) <= 255;
+}
+
 function isValidIPv4Address(text: string): boolean {
   const parts = text.split(".");
   if (parts.length !== 4) {
     return false;
   }
   for (const part of parts) {
-    if (part.length === 0 || part.length > 3) {
-      return false;
-    }
-    for (const value of part) {
-      if (value < "0" || value > "9") {
-        return false;
-      }
-    }
-    if (Number(part) > 255) {
+    if (!isValidDecOctet(part)) {
       return false;
     }
   }
@@ -534,7 +686,10 @@ function isValidIPv6Groups(groups: readonly string[]): boolean {
   return true;
 }
 
-/** IPv6 address per RFC 4291, with an optional embedded IPv4 tail. */
+/** IPv6 address per RFC 3986 Appendix A: all nine ABNF forms with ls32.
+    A compressed address with an IPv4 tail (ls32 counts as two groups)
+    carries at most five hexadecimal groups, since "::" compresses at
+    least one group of an eight-group address. */
 function isValidIPv6Address(address: string): boolean {
   if (address.length === 0) {
     return false;
@@ -571,7 +726,7 @@ function isValidIPv6Address(address: string): boolean {
       if (!isValidIPv6Groups(hexGroups)) {
         return false;
       }
-      return hexGroups.length <= 6;
+      return hexGroups.length <= 5;
     }
     if (tailLast !== undefined && tailLast.length === 0) {
       return false;
@@ -660,16 +815,33 @@ function isValidHrefAuthority(authority: string): boolean {
   return isValidRegName(hostport);
 }
 
+/** Authority plus path-abempty for the "//" form: a non-empty authority
+    per RFC 3986 (`userinfo`, IP-literal / IPv4address / reg-name host,
+    numeric port) followed by a path-abempty tail. */
+function isValidAuthorityAndPath(text: string): boolean {
+  const slash = text.indexOf("/");
+  const authority = slash === -1 ? text : text.slice(0, slash);
+  const path = slash === -1 ? "" : text.slice(slash);
+  return isValidHrefAuthority(authority) && isValidPathAbempty(path);
+}
+
 /** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
-    UTF-16 units with an allowlisted scheme (`http`, `https`, `mailto`,
-    case-insensitive) or a relative reference with no other scheme prefix.
-    Reject controls, backslashes, any whitespace (ASCII or Unicode,
-    checked before scheme detection) and malformed authorities validated
-    per RFC 3986 (userinfo, IP-literal with IPv6/IPvFuture, registered
-    name, numeric port). Pure: manual string scan only, no DOM and no
-    global `URL` dependency, so the check does not vary across runtimes.
-    The string is validated as given, after the caller decoded clipboard
-    entities and tokenized the input. */
+    UTF-16 units as either an absolute URI with an allowlisted scheme
+    (`http`, `https`, `mailto`, case-insensitive) or a relative reference,
+    checked against the RFC 3986 Appendix A ABNF for `URI-reference` with
+    no whitespace anywhere. Required productions: `scheme`, `hier-part`
+    and `relative-part` ("//" authority with `path-abempty`,
+    `path-absolute`, `path-noscheme` for relative references so a first
+    segment carrying ":" refuses, `path-rootless` for mailto,
+    `path-empty`), `authority` (`userinfo`, `host` as IP-literal /
+    IPv4address / reg-name, `port` as digits), IP-literal (IPv6address in
+    all nine ABNF forms with ls32, IPvFuture), IPv4address with dec-octet
+    (no leading zero on multi-digit octets, 0-255), pct-encoded (exactly
+    two hex digits), `query` and `fragment`. The `http` and `https`
+    schemes additionally require a non-empty host. Pure: manual string
+    scan only, no DOM and no global URL dependency, so the check does not
+    vary across runtimes. The string is validated as given, after the
+    caller decoded clipboard entities and tokenized the input. */
 export function isAllowedHref(href: string): boolean {
   if (href.length === 0 || href.length > MAX_HREF_UNITS) {
     return false;
@@ -693,22 +865,45 @@ export function isAllowedHref(href: string): boolean {
     if (!ALLOWED_HREF_SCHEMES.has(name)) {
       return false;
     }
-    if (name === "mailto") {
-      return true;
-    }
-    const rest = href.slice(scheme[0].length);
-    if (rest.length === 0) {
+    const parts = splitHierQueryFragment(href.slice(scheme[0].length));
+    if (
+      !isValidQueryOrFragment(parts.query) ||
+      !isValidQueryOrFragment(parts.fragment)
+    ) {
       return false;
     }
-    if (rest.startsWith("//")) {
-      return isValidHrefAuthority(hrefAuthorityHost(rest.slice(2)));
+    if (name === "mailto") {
+      return parts.hier === "" || isValidPathRootless(parts.hier);
     }
-    return true;
+    if (!parts.hier.startsWith("//")) {
+      return false;
+    }
+    return isValidAuthorityAndPath(parts.hier.slice(2));
   }
   if (href.startsWith("//")) {
-    return isValidHrefAuthority(hrefAuthorityHost(href.slice(2)));
+    const parts = splitHierQueryFragment(href.slice(2));
+    if (
+      !isValidQueryOrFragment(parts.query) ||
+      !isValidQueryOrFragment(parts.fragment)
+    ) {
+      return false;
+    }
+    return isValidAuthorityAndPath(parts.hier);
   }
-  return true;
+  const parts = splitHierQueryFragment(href);
+  if (
+    !isValidQueryOrFragment(parts.query) ||
+    !isValidQueryOrFragment(parts.fragment)
+  ) {
+    return false;
+  }
+  if (parts.hier === "") {
+    return true;
+  }
+  if (parts.hier.startsWith("/")) {
+    return isValidPathAbsolute(parts.hier);
+  }
+  return isValidPathNoscheme(parts.hier);
 }
 
 /** Byte length of a string as UTF-8, computed without any codec global. */

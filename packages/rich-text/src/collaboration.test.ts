@@ -21,6 +21,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { isIP } from "node:net";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -809,5 +810,134 @@ describe("CL-1M review pass 2 (full fractional-second comparison)", () => {
         "2026-10-29T12:00:00.0000000001Z",
       ),
     ).toBe(false);
+  });
+});
+
+describe("CL-1M review pass 3 (RFC 3986 URI-reference grammar, R-FULL-URL-1)", () => {
+  function linkPatch(href: string): AgentPatch {
+    return basePatch([
+      {
+        type: "mark",
+        fieldKey: BINDING.fieldKey,
+        paragraphId: "paragraph:1",
+        range: { start: anchor(1), end: anchor(2) },
+        mark: "link",
+        href,
+      },
+    ]);
+  }
+
+  it("refuses malformed references at the validator level", () => {
+    for (const href of [
+      "https://[::ffff:192.168.001.1]/p",
+      "https://[1:2:3:4:5:6::192.0.2.1]/p",
+      "https:/",
+      "relative/%zz",
+      "1:bad",
+    ]) {
+      expect(isAllowedHref(href)).toBe(false);
+    }
+  });
+
+  it("refuses malformed references at the link-patch level", () => {
+    for (const href of [
+      "https://[::ffff:192.168.001.1]/p",
+      "https://[1:2:3:4:5:6::192.0.2.1]/p",
+      "https:/",
+      "relative/%zz",
+      "1:bad",
+    ]) {
+      expect(validateAgentPatch(linkPatch(href))).toMatchObject({
+        ok: false,
+        reason: "incompatible-schema",
+      });
+    }
+  });
+
+  it("keeps valid network references, relative paths, mailto and literals", () => {
+    for (const href of [
+      "https://u@[::1]/p",
+      "https://host:8080/p",
+      "//host/path",
+      "relative/path",
+      "/absolute/path",
+      "?query=1",
+      "#fragment",
+      "mailto:someone@example.com",
+      "mailto:",
+      "https://[::ffff:192.168.1.1]/p",
+      "https://[v1.fe]/p",
+      "https://[vF.a:b_c]/p",
+    ]) {
+      expect(isAllowedHref(href)).toBe(true);
+    }
+    expect(
+      validateAgentPatch(linkPatch("https://[::ffff:192.168.1.1]/p")),
+    ).toEqual({ ok: true });
+  });
+
+  it("matches Node net.isIP on every IPv6/IPv4 literal in the table", () => {
+    const literals = [
+      // All nine RFC 3986 IPv6address forms, ls32 as h16 pair and IPv4 tail.
+      "1:2:3:4:5:6:7:8",
+      "1:2:3:4:5:6:1.2.3.4",
+      "::1:2:3:4:5:6:7",
+      "::1:2:3:4:5:1.2.3.4",
+      "1::2:3:4:5:6:7",
+      "::2:3:4:5:6:7",
+      "1::2:3:4:5:1.2.3.4",
+      "1:2::3:4:5:6:7",
+      "1:2::3:4:5:1.2.3.4",
+      "1:2:3::4:5:6:7",
+      "1:2:3::4:5:1.2.3.4",
+      "1:2:3:4::5:6:7",
+      "1:2:3:4::5:1.2.3.4",
+      "1:2:3:4:5::6:7",
+      "1:2:3:4:5::1.2.3.4",
+      "::ffff:192.168.1.1",
+      "::1.2.3.4",
+      "64:ff9b::1.2.3.4",
+      "::ffff:0.0.0.0",
+      "0:0:0:0:0:0:0:0",
+      "0:0:0:0:0:0:13.1.68.3",
+      "1:2:3:4:5:6::7",
+      "::1",
+      "1:2:3:4:5:6:7::",
+      "1::",
+      "1::2",
+      "fe80::",
+      "::",
+      "0000:0000:0000:0000:0000:0000:0000:0001",
+      "ABCD::",
+      // Compression and group-count violations, with and without an IPv4 tail.
+      "1:2:3:4:5:6:7",
+      "1:2:3:4:5:6:7:8:9",
+      "1:2:3:4:5:1.2.3.4",
+      "1:2:3:4:5:6::1.2.3.4",
+      "1:2:3:4:5:6::192.0.2.1",
+      "1:2:3:4:5:6:7:8::",
+      "1::2::3",
+      "12345::",
+      ":",
+      "1:2:3:4:5:6:7:8:",
+      "::ffff:1.2.3.256",
+      // Leading-zero IPv4 octets are not dec-octets.
+      "::ffff:192.168.001.1",
+      "::ffff:01.02.03.04",
+    ];
+    expect(literals.length).toBeGreaterThan(0);
+    let accepted = 0;
+    let refused = 0;
+    for (const literal of literals) {
+      const expected = isIP(literal) !== 0;
+      if (expected) {
+        accepted += 1;
+      } else {
+        refused += 1;
+      }
+      expect(isAllowedHref(`https://[${literal}]/p`)).toBe(expected);
+    }
+    expect(accepted).toBeGreaterThan(0);
+    expect(refused).toBeGreaterThan(0);
   });
 });
