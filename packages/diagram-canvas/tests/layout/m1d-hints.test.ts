@@ -22,9 +22,11 @@ import { describe, expect, it } from "vitest";
 import { layoutDocument, type LayoutHints } from "../../src/index.js";
 import { measure } from "./fixtures.js";
 import {
+  asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
   layMeasured,
+  layMeasured2,
   makePresentation,
   occurrenceOfEntity,
   wordWrapMeasurer,
@@ -74,7 +76,7 @@ function buildZoneDocument(children: readonly string[], extraRoots: readonly str
 describe("ordering", () => {
   it("places siblings in the authored order", () => {
     const document = buildZoneDocument(["a", "b", "c"]);
-    const forms = { P: "container" as const, a: "card" as const, b: "card" as const, c: "card" as const };
+    const forms = { P: "card" as const, a: "card" as const, b: "card" as const, c: "card" as const };
     const hints: LayoutHints = { ordering: { [entityRef("P")]: [entityRef("c"), entityRef("a")] } };
     const measured = layMeasured(document, makePresentation({ forms }), wordWrapMeasurer(), { hints });
     const ys = ["c", "a", "b"].map((local) => geometryOf(measured.view, local).y);
@@ -87,7 +89,7 @@ describe("ordering", () => {
     // §8.7 A2 ordering for entity:RUNZ, transcribed verbatim.
     const runz = ["APP", "PUSH", "CONS", "CHATCLI", "AGENT", "QUERY", "ADMINT"];
     const document = buildZoneDocument([...runz, "ZED"]);
-    const forms: Record<string, "container" | "card"> = { P: "container" };
+    const forms: Record<string, "card"> = { P: "card" };
     for (const child of [...runz, "ZED"]) forms[child] = "card";
     const hints: LayoutHints = {
       ordering: { [entityRef("P")]: runz.map((local) => entityRef(local)) },
@@ -147,7 +149,7 @@ describe("oracle zone orderings", () => {
       resources: {},
       extensions: [],
     };
-    const forms: Record<string, "container" | "card"> = { GCP: "container", PROJ: "container" };
+    const forms: Record<string, "card"> = { GCP: "card", PROJ: "card" };
     for (const local of [...gcp.filter((entry) => entry !== "PROJ"), ...proj, "EXTRA"]) forms[local] = "card";
     const hints: LayoutHints = {
       ordering: {
@@ -173,7 +175,7 @@ describe("oracle A5 grouping", () => {
       const ref = entityRef(local);
       entities[ref] = {
         id: ref,
-        profile: GENERIC_PROFILE_ID,
+        profile: "generic@2",
         type,
         attributes: { name: { kind: "text", value: local } },
       };
@@ -186,7 +188,7 @@ describe("oracle A5 grouping", () => {
       const relation = relationRef(`contains.${child}`);
       relations[relation] = {
         id: relation,
-        profile: GENERIC_PROFILE_ID,
+        profile: "generic@2",
         type: "contains",
         endpoints: [
           { role: "parent", target: entityRef(parent) },
@@ -213,7 +215,7 @@ describe("oracle A5 grouping", () => {
       documentId: documentRef("m1d-a5"),
       schemaVersion: CURRENT_SCHEMA_VERSION,
       revision: 1,
-      profileRefs: [GENERIC_PROFILE_ID],
+      profileRefs: ["generic@2"],
       typeDefinitions: {},
       entities,
       relations,
@@ -221,10 +223,10 @@ describe("oracle A5 grouping", () => {
       resources: {},
       extensions: [],
     };
-    const forms: Record<string, "container" | "card" | "legend"> = {
+    const forms: Record<string, "card" | "container"> = {
       PEOPLE: "card",
       WS: "card",
-      LEGEND: "legend",
+      LEGEND: "container",
       GCP: "card",
       OUT: "container",
       PRODZ: "container",
@@ -265,7 +267,7 @@ describe("oracle A5 grouping", () => {
         { id: "OUT", direction: "columns", items: [entityRef("GITHUBZ"), entityRef("GITLABZ"), entityRef("AWSCI")] },
       ],
     };
-    const measured = layMeasured(document, makePresentation({ forms }), wordWrapMeasurer(), {
+    const measured = layMeasured2(document, makePresentation({ forms }), wordWrapMeasurer(), {
       hints,
       collapsed: [occurrenceOfEntity("LEGEND")],
     });
@@ -295,7 +297,7 @@ describe("oracle A5 grouping", () => {
 describe("hint refusals", () => {
   it("refuses duplicate leaf membership in one context", () => {
     const document = buildZoneDocument(["a", "b"]);
-    const forms = { P: "container" as const, a: "card" as const, b: "card" as const };
+    const forms = { P: "card" as const, a: "card" as const, b: "card" as const };
     const hints: LayoutHints = {
       grouping: [
         { id: "dup", direction: "rows", items: [entityRef("a"), entityRef("b"), entityRef("a")] },
@@ -318,7 +320,7 @@ describe("hint refusals", () => {
   it("refuses a reference outside its sibling context", () => {
     const document = buildZoneDocument(["a", "b"], ["stranger"]);
     const forms = {
-      P: "container" as const,
+      P: "card" as const,
       a: "card" as const,
       b: "card" as const,
       stranger: "card" as const,
@@ -390,9 +392,9 @@ const columnsForms = {
   WS: "card",
   GCP: "card",
   OUT: "card",
-  G: "container",
-  E1: "container",
-  E2: "container",
+  G: "card",
+  E1: "card",
+  E2: "card",
   k: "card",
 } as const;
 
@@ -495,10 +497,10 @@ describe("independent axis gaps", () => {
 
   it("drives bands from rankGap with absent values inheriting metrics", () => {
     const narrow = layMeasured(buildMeasuredDocument(), makePresentation({
-      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      forms: { C: "card", a: "card", b: "card", lone: "card" },
     }), wordWrapMeasurer(), { hints: { rankGap: 40 } });
     const wide = layMeasured(buildMeasuredDocument(), makePresentation({
-      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      forms: { C: "card", a: "card", b: "card", lone: "card" },
     }), wordWrapMeasurer(), { hints: { rankGap: 200 } });
     expect(geometryOf(wide.view, "lone").y - geometryOf(wide.view, "C").y).toBeGreaterThan(
       geometryOf(narrow.view, "lone").y - geometryOf(narrow.view, "C").y,
@@ -517,7 +519,7 @@ describe("insertion-order independence", () => {
       kinds.push(...Object.keys(entities).map((key) => key as EntityRef));
       return { ...source, entities, relations };
     };
-    const forms = { C: "container", a: "card", b: "card", lone: "card" } as const;
+    const forms = { C: "card", a: "card", b: "card", lone: "card" } as const;
     const hints: LayoutHints = { ordering: { [entityRef("C")]: [entityRef("b"), entityRef("a")] } };
     const first = layMeasured(buildMeasuredDocument(), makePresentation({ forms }), wordWrapMeasurer(), { hints });
     const second = layMeasured(reversed(), makePresentation({ forms }), wordWrapMeasurer(), { hints });

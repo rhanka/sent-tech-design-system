@@ -126,11 +126,11 @@ export function validateHints(hints: LayoutHints, scope: HintScope): LayoutRefus
     }
     for (const leaf of leaves) {
       const first = claimed.get(leaf);
-      if (first !== undefined && first !== group.id) {
+      if (first !== undefined) {
         refuse(`hints.grouping.${group.id}.items`, `duplicate leaf ${leaf} across groups ${first} and ${group.id}`, [leaf]);
         continue;
       }
-      if (first === undefined) claimed.set(leaf, group.id);
+      claimed.set(leaf, group.id);
     }
   }
   return refusals;

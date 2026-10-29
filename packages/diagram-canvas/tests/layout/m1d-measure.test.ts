@@ -5,9 +5,22 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { occurrenceRef } from "@sentropic/diagram-core";
+import {
+  CURRENT_SCHEMA_VERSION,
+  documentRef,
+  entityRef,
+  m3ProfileRegistry,
+  occurrenceRef,
+  relationRef,
+  shippedExecutorBindings,
+  type Entity,
+  type Relation,
+  type SemanticDocument,
+} from "@sentropic/diagram-core";
 
+import { layoutDocument } from "../../src/index.js";
 import { TOGGLE_ALLOCATION } from "../../src/index.js";
+import { measure } from "./fixtures.js";
 import {
   buildMeasuredDocument,
   fixedLinesMeasurer,
@@ -17,6 +30,51 @@ import {
   occurrenceOfEntity,
   wordWrapMeasurer,
 } from "./m1d-fixtures.js";
+import { formatDiagnostics, validateView } from "@sentropic/diagram-core";
+
+function buildGeneric2Document(): SemanticDocument {
+  const source = buildMeasuredDocument();
+  const entities: Record<string, Entity> = {};
+  for (const [id, entity] of Object.entries(source.entities)) {
+    entities[id] = { ...(entity as Entity), profile: "generic@2" };
+  }
+  const relations: Record<string, Relation> = {};
+  for (const [id, relation] of Object.entries(source.relations)) {
+    relations[id] = { ...(relation as Relation), profile: "generic@2" };
+  }
+  return {
+    ...source,
+    profileRefs: ["generic@2"],
+    entities,
+    relations,
+  };
+}
+
+function layMeasured2(
+  document: SemanticDocument,
+  presentation: ReturnType<typeof makePresentation>,
+  measureLines: ReturnType<typeof wordWrapMeasurer> | ReturnType<typeof fixedLinesMeasurer>,
+  extra: { collapsed?: readonly import("@sentropic/diagram-core").OccurrenceRef[] } = {},
+): { view: import("@sentropic/diagram-core").ViewDocument; headers: { occurrence: import("@sentropic/diagram-core").OccurrenceRef; kicker?: { lines: readonly string[] }; title: { lines: readonly string[] }; height: number; subtitle?: { lines: readonly string[] } }[]; slots: { occurrence: import("@sentropic/diagram-core").OccurrenceRef; role: string; layout: { lines: readonly string[]; overflow: boolean; width: number } }[] } {
+  const result = layoutDocument(document, {
+    registry: m3ProfileRegistry,
+    measureText: measure,
+    targetWidth: 4000,
+    presentation,
+    measureLines: measureLines as never,
+    bindings: shippedExecutorBindings,
+    ...(extra.collapsed !== undefined ? { collapsed: extra.collapsed } : {}),
+  });
+  if (result.status !== "laid-out" || result.measurements === undefined) {
+    throw new Error(`refused: ${JSON.stringify(result)}`);
+  }
+  expect(formatDiagnostics(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }))).toBe("");
+  return {
+    view: result.view,
+    headers: result.measurements.headers as never,
+    slots: result.measurements.slots as never,
+  };
+}
 
 const presentation = makePresentation({
   forms: { C: "container", a: "card", b: "card", lone: "card" },
@@ -34,9 +92,9 @@ const presentation = makePresentation({
 
 describe("measured subtitle height moves the first child row", () => {
   it("gives a first-child y delta equal to the header-height delta", () => {
-    const document = buildMeasuredDocument();
-    const one = layMeasured(document, presentation, fixedLinesMeasurer({ subtitle: 1 }));
-    const two = layMeasured(document, presentation, fixedLinesMeasurer({ subtitle: 2 }));
+    const document = buildGeneric2Document();
+    const one = layMeasured2(document, presentation, fixedLinesMeasurer({ subtitle: 1 }));
+    const two = layMeasured2(document, presentation, fixedLinesMeasurer({ subtitle: 2 }));
     const headerOne = one.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
     const headerTwo = two.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
     expect(headerTwo.height - headerOne.height).toBe(10);
@@ -48,9 +106,9 @@ describe("measured subtitle height moves the first child row", () => {
 
 describe("layout lines and emitted measurements share one result", () => {
   it("records the same lines for every slot", () => {
-    const document = buildMeasuredDocument();
+    const document = buildGeneric2Document();
     const measurer = wordWrapMeasurer({ charWidth: 8 });
-    const measured = layMeasured(document, presentation, measurer);
+    const measured = layMeasured2(document, presentation, measurer);
     expect(measured.headers.map((header) => header.occurrence).sort()).toEqual(
       [occurrenceOfEntity("C"), occurrenceOfEntity("a"), occurrenceOfEntity("b"), occurrenceOfEntity("lone")].sort(),
     );
@@ -145,10 +203,86 @@ describe("layout lines and emitted measurements share one result", () => {
 });
 
 describe("toggle-bearing headers wrap at the reduced width", () => {
+  it("wraps a collapsed toggle title differently at 396 versus 428 px", async () => {
+    const entities: Record<string, Entity> = {};
+    const relations: Record<string, Relation> = {};
+    for (const local of ["C", "a", "b"] as const) {
+      const ref = entityRef(local);
+      entities[ref] = {
+        id: ref,
+        profile: "generic@2",
+        type: local === "C" ? "container" : "node",
+        attributes: { name: { kind: "text", value: local } },
+      };
+    }
+    for (const child of ["a", "b"] as const) {
+      const rel = relationRef(`contains.${child}`);
+      relations[rel] = {
+        id: rel,
+        profile: "generic@2",
+        type: "contains",
+        endpoints: [
+          { role: "parent", target: entityRef("C") },
+          { role: "child", target: entityRef(child) },
+        ],
+        attributes: {},
+      };
+    }
+    const collapsedDocument: SemanticDocument = {
+      documentId: documentRef("rev2-witness-collapsed"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities,
+      relations,
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const title =
+      "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma tau";
+    const collapsedPresentation = makePresentation({
+      forms: { C: "container", a: "card", b: "card" },
+      texts: { C: { title }, a: { title: "Alpha" }, b: { title: "Beta" } },
+    });
+    const collapsedMeasurer = wordWrapMeasurer({ charWidth: 8 });
+    const collapsedResult = (
+      await import("../../src/index.js") as typeof import("../../src/index.js")
+    ).layoutDocument(collapsedDocument, {
+      registry: m3ProfileRegistry,
+      measureText: (await import("./fixtures.js") as typeof import("./fixtures.js")).measure,
+      targetWidth: 4000,
+      presentation: collapsedPresentation,
+      measureLines: collapsedMeasurer,
+      bindings: shippedExecutorBindings,
+      collapsed: [occurrenceOfEntity("C")],
+    });
+    expect(collapsedResult.status).toBe("laid-out");
+    if (collapsedResult.status !== "laid-out" || collapsedResult.measurements === undefined) return;
+    const collapsed = { headers: collapsedResult.measurements.headers };
+    const header = collapsed.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
+    const reduced = wordWrapMeasurer({ charWidth: 8 })({
+      text: title,
+      role: "title",
+      availableWidth: 396,
+      allocatedLines: 2,
+      folded: true,
+    });
+    const full = wordWrapMeasurer({ charWidth: 8 })({
+      text: title,
+      role: "title",
+      availableWidth: 428,
+      allocatedLines: 2,
+      folded: true,
+    });
+    expect(JSON.stringify(reduced.lines)).not.toBe(JSON.stringify(full.lines));
+    expect(header.title.lines).toEqual(reduced.lines);
+  });
   it("uses the reduced width in the input and the emitted measurement", () => {
-    const document = buildMeasuredDocument();
+    const document = buildGeneric2Document();
     const measurer = wordWrapMeasurer({ charWidth: 8 });
-    const measured = layMeasured(document, presentation, measurer);
+    const measured = layMeasured2(document, presentation, measurer);
     const containerTitle = "Container with a fairly long title that definitely wraps differently at full and toggle widths";
     // Header measurements only: width probes use a far larger allocation.
     const titleCalls = measurer.calls.filter((call) => call.role === "title" && call.availableWidth < 10000);

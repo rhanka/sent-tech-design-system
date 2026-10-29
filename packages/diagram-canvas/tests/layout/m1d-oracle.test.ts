@@ -8,12 +8,15 @@
  */
 import {
   CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
   documentRef,
   entityRef,
+  formatDiagnostics,
   m3ProfileRegistry,
   occurrenceRef,
   relationRef,
   shippedExecutorBindings,
+  validateView,
   type Entity,
   type Relation,
   type SemanticDocument,
@@ -1838,8 +1841,8 @@ function buildOrderingDocument(instanceId) {
     const type = parents.has(id) ? 'container' : 'node';
     entities[id] = { id, profile: 'generic@2', type, attributes: { name: { kind: 'text', value: local } } };
   }
-  // Legend + keys from categories (verbatim categories per instance from spec oracle counts? categories not in transcribed ordering; use fixed per instance from spec table)
-  const categoriesByInstance = { A2: ['genair','none','risk','specific'], A3: ['genair','none','specific'], A4a: ['genair','none','specific'], A4b: ['genair','none','specific'] };
+  // Exact oracle categories per instance from spec 8.7 (no invented specific, no omitted categories).
+  const categoriesByInstance = { A2: ['genair','none','risk','specific'], A3: ['added','genair','none','specific'], A4a: ['added','genair','none','risk','specific'], A4b: ['added','genair','none','removed','risk'] };
   const categories = categoriesByInstance[instanceId] ?? [];
   entities['entity:legend'] = { id: 'entity:legend', profile: 'generic@2', type: 'legend', attributes: { name: { kind: 'text', value: 'Legend' } } };
   for (const cat of categories) {
@@ -1861,6 +1864,9 @@ function buildOrderingDocument(instanceId) {
   return { documentId: documentRef('m1d-oracle-'+instanceId), schemaVersion: CURRENT_SCHEMA_VERSION, revision: 1, profileRefs: ['generic@2'], typeDefinitions: {}, entities, relations, ports: {}, resources: [], extensions: [] };
 }
 
+const ORACLE_TOKENS = { genair: 'st-semantic-data-category1', specific: 'st-semantic-feedback-warning', added: 'st-semantic-feedback-warning', removed: 'st-semantic-feedback-error', risk: 'st-semantic-feedback-error', custom: 'st-semantic-feedback-success', outside: 'st-semantic-feedback-warning', none: 'st-semantic-surface-raised', neutral: 'st-semantic-surface-raised', proposal: 'st-semantic-feedback-warning', identity: 'st-semantic-feedback-info' };
+const ORACLE_CATEGORIES = { A2: ['genair','none','risk','specific'], A3: ['added','genair','none','specific'], A4a: ['added','genair','none','risk','specific'], A4b: ['added','genair','none','removed','risk'], A5: ['genair','custom','outside','none'] };
+
 function presentationForOrdering(instanceId) {
   const ordering = ORDERING[instanceId];
   const parents = new Set(Object.keys(ordering));
@@ -1873,9 +1879,11 @@ function presentationForOrdering(instanceId) {
     else if (parents.has(id)) entities[occ] = { form: 'container', text: { title: local } };
     else entities[occ] = { form: 'card', text: { title: local } };
   }
-  const categoriesByInstance = { A2: ['genair','none','risk','specific'], A3: ['genair','none','specific'], A4a: ['genair','none','specific'], A4b: ['genair','none','specific'] };
-  const order = (categoriesByInstance[instanceId] ?? []).map(cat => 'entity:legend-key-'+cat);
-  return { contractPin: { id: 'diagram-presentation', version: '1', contentDigest: '0'.repeat(64) }, entities, legends: { ['occurrence:e.legend']: { order } }, categoryTokens: [] };
+  const categories = ORACLE_CATEGORIES[instanceId] ?? [];
+  const order = categories.map(cat => 'entity:legend-key-'+cat);
+  const legendRef = 'entity:legend';
+  const categoryTokens = categories.map(category => ({ legendRef, category, token: ORACLE_TOKENS[category] }));
+  return { contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN }, entities, legends: { ['occurrence:e.legend']: { order } }, categoryTokens };
 }
 
 describe('oracle ordering A2-A4', () => {
@@ -1883,11 +1891,16 @@ describe('oracle ordering A2-A4', () => {
     it('exercises every frozen parent list for '+instanceId, () => {
       const document = buildOrderingDocument(instanceId);
       const presentation = presentationForOrdering(instanceId);
+      expect(presentation.contractPin).toEqual(DIAGRAM_PRESENTATION_CONTRACT_PIN);
+      expect(presentation.contractPin.contentDigest).not.toBe('0'.repeat(64));
+      expect(presentation.categoryTokens).toEqual((ORACLE_CATEGORIES[instanceId] ?? []).map(category => ({ legendRef: 'entity:legend', category, token: ORACLE_TOKENS[category] })));
       const ordering = ORDERING[instanceId];
       const hints = { ordering };
       const result = layoutDocument(document, { registry: m3ProfileRegistry, measureText: measure, targetWidth: 4000, presentation, measureLines: wordWrapMeasurer(), hints, bindings: shippedExecutorBindings });
       expect(result.status).toBe('laid-out');
       if (result.status !== 'laid-out') return;
+      expect(result.view.presentation.diagram).toEqual(presentation);
+      expect(formatDiagnostics(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }))).toBe('');
       for (const [parent, list] of Object.entries(ordering)) {
         const ys = list.map(child => geometryOf(result.view, child.slice('entity:'.length)).y);
         for (let i=1;i<ys.length;i++) expect(ys[i]).toBeGreaterThan(ys[i-1]);
@@ -1929,9 +1942,11 @@ function presentationForA5() {
   const entities = {};
   for (const [occ, pres] of Object.entries(A5_PRESENTATION)) {
     const local = occ.slice('occurrence:'.length);
-    entities['occurrence:e.'+local] = { form: pres.form, text: pres.text ?? {} };
+    entities['occurrence:e.'+local] = { form: pres.form, text: pres.text ?? {}, ...(pres.icon === undefined ? {} : { icon: pres.icon }), ...(pres.categoryRef === undefined ? {} : { categoryRef: pres.categoryRef }) };
   }
-  return { contractPin: { id: 'diagram-presentation', version: '1', contentDigest: '0'.repeat(64) }, entities, legends: { ['occurrence:e.LEGEND']: { order: [...A5_LEGEND_ORDER] } }, categoryTokens: [] };
+  const categories = ORACLE_CATEGORIES['A5'] ?? [];
+  const categoryTokens = categories.map(category => ({ legendRef: 'entity:LEGEND', category, token: ORACLE_TOKENS[category] }));
+  return { contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN }, entities, legends: { ['occurrence:e.LEGEND']: { order: [...A5_LEGEND_ORDER] } }, categoryTokens };
 }
 
 describe('oracle A5 grouping', () => {
@@ -1947,14 +1962,31 @@ describe('oracle A5 grouping', () => {
       expect(document.relations[id].endpoints).toEqual([{ role: 'parent', target: parent }, { role: 'child', target: child }]);
     }
     const presentation = presentationForA5();
+    expect(presentation.contractPin).toEqual(DIAGRAM_PRESENTATION_CONTRACT_PIN);
+    expect(presentation.contractPin.contentDigest).not.toBe('0'.repeat(64));
+    expect(presentation.categoryTokens).toEqual(ORACLE_CATEGORIES['A5'].map(category => ({ legendRef: 'entity:LEGEND', category, token: ORACLE_TOKENS[category] })));
     const hints = { grouping: A5_GROUPING };
     const result = layoutDocument(document, { registry: m3ProfileRegistry, measureText: measure, targetWidth: 4000, presentation, measureLines: wordWrapMeasurer(), hints, bindings: shippedExecutorBindings });
     expect(result.status).toBe('laid-out');
     if (result.status !== 'laid-out') return;
+    expect(result.view.presentation.diagram).toEqual(presentation);
+    expect(formatDiagnostics(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }))).toBe('');
     expect(geometryOf(result.view, 'PSHARED').width).toBe(geometryOf(result.view, 'PPROZ').width);
     expect(geometryOf(result.view, 'E1' in document.entities ? 'E1' : 'MSGZ')).toBeDefined();
   });
   it('uses seven source folds', () => {
     expect(A5_FOLDS.length).toBe(7);
+  });
+  it('executes the seven A5 folds and conserves 87 occurrences with valid references', () => {
+    const document = buildA5Document();
+    const presentation = presentationForA5();
+    const hints = { grouping: A5_GROUPING };
+    const collapsed = A5_FOLDS.map(id => occurrenceOfEntity(id.slice('occurrence:'.length)));
+    const result = layoutDocument(document, { registry: m3ProfileRegistry, measureText: measure, targetWidth: 4000, presentation, measureLines: wordWrapMeasurer(), hints, bindings: shippedExecutorBindings, collapsed });
+    expect(result.status).toBe('laid-out');
+    if (result.status !== 'laid-out') return;
+    const total = Object.keys(result.view.entityOccurrences).length + Object.keys(result.view.relationOccurrences).length + Object.keys(result.view.portOccurrences).length;
+    expect(total).toBe(87);
+    expect(formatDiagnostics(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }))).toBe('');
   });
 });

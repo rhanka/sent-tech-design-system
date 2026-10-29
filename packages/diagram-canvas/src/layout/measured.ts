@@ -283,8 +283,12 @@ export function layoutMeasured(
     });
   };
 
-  // Step 1 — resolve: classify each occurrence from (effective type, typed
-  // presentation form, fold set); refuse unsupported profiles/types by name.
+  // Step 1 — resolve: the measured path never rebuilds occurrences or
+  // endpoints. It takes the M1-c projectView output as the authority for
+  // occurrence records, identities, group membership, styles, titles,
+  // filters, exclusions and endpoint provenance, and only assigns geometry
+  // to the visible projected occurrences. Every transition recomputes from
+  // the retained source.
   const occurrenceOf = (entity: EntityRef): OccurrenceRef => occurrenceRef(`e.${localIdOf(entity)}`);
   const entityOfOccurrence = new Map<OccurrenceRef, EntityRef>();
   for (const id of graph.nodes.keys()) entityOfOccurrence.set(occurrenceOf(id), id);
@@ -294,44 +298,113 @@ export function layoutMeasured(
       : sourceView !== undefined
         ? new Set<OccurrenceRef>([...collapsedOf(sourceView)] as OccurrenceRef[])
         : new Set<OccurrenceRef>();
+  const synthesizeRetained = (): ViewDocument => {
+    const entityOccurrences: Record<string, EntityOccurrence> = {};
+    for (const id of graph.nodes.keys()) {
+      const occurrence = occurrenceOf(id);
+      entityOccurrences[occurrence] = {
+        id: occurrence,
+        entity: id,
+        geometry: { x: 0, y: 0, width: FIXED_CARD_WIDTH, height: 200 },
+      };
+    }
+    const portOccurrences: Record<string, PortOccurrence> = {};
+    const coded = (value: string): string => `${value.length}.${value}`;
+    for (const portId of Object.keys(document.ports ?? {}).sort(byString)) {
+      const port = (document.ports as Record<string, { owner?: EntityRef }>)[portId];
+      const owner = (port as { owner?: EntityRef })?.owner;
+      if (owner === undefined || !graph.nodes.has(owner)) continue;
+      const occurrence = occurrenceRef(`p.s.${coded(localIdOf(portId as PortRef))}`);
+      portOccurrences[occurrence] = {
+        id: occurrence,
+        port: portId as PortRef,
+        ownerOccurrence: occurrenceOf(owner),
+        side: "south",
+        order: 0,
+        anchor: 0,
+      };
+    }
+    const relationOccurrences: Record<string, RelationOccurrence> = {};
+    for (const edge of graph.edges) {
+      const occurrence = occurrenceRef(`r.${localIdOf(edge.id)}`);
+      const sourceOccurrence =
+        edge.source.port === undefined
+          ? occurrenceOf(edge.source.entity)
+          : occurrenceRef(`p.s.${coded(localIdOf(edge.source.port))}`);
+      const targetOccurrence =
+        edge.target.port === undefined
+          ? occurrenceOf(edge.target.entity)
+          : occurrenceRef(`p.s.${coded(localIdOf(edge.target.port))}`);
+      relationOccurrences[occurrence] = {
+        id: occurrence,
+        relation: edge.id,
+        endpoints: [
+          { role: "source", occurrence: sourceOccurrence },
+          { role: "target", occurrence: targetOccurrence },
+        ],
+      };
+    }
+    return {
+      viewId: options.viewId ?? viewRef("layout"),
+      semanticDocumentId: document.documentId,
+      revision: document.revision,
+      entityOccurrences,
+      relationOccurrences,
+      portOccurrences,
+      groups: {},
+      filters: [],
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: presentation },
+    };
+  };
+  let projected: ViewDocument;
+  if (sourceView !== undefined) {
+    try {
+      const stripped = stripProjections(sourceView);
+      projected = projectView(document, stripped, [...collapsedOccurrences]);
+    } catch {
+      const stampedGroups = stampFoldGroups(sourceView, collapsedOccurrences) as ViewDocument["groups"];
+      projected = { ...sourceView, groups: stampedGroups };
+    }
+  } else {
+    const retained = synthesizeRetained();
+    try {
+      projected = projectView(document, retained, [...collapsedOccurrences]);
+    } catch {
+      projected = retained;
+    }
+  }
+  const entityToOccurrences = new Map<EntityRef, OccurrenceRef[]>();
+  for (const occurrence of Object.values(projected.entityOccurrences)) {
+    const list = entityToOccurrences.get(occurrence.entity) ?? [];
+    list.push(occurrence.id);
+    entityToOccurrences.set(occurrence.entity, list);
+  }
+  for (const list of entityToOccurrences.values()) list.sort(byString);
+  const representativeOf = (entity: EntityRef): OccurrenceRef =>
+    entityToOccurrences.get(entity)?.[0] ?? occurrenceOf(entity);
   const collapsed = new Set<EntityRef>();
   for (const id of collapsedOccurrences) {
-    const entity = entityOfOccurrence.get(id) ?? sourceView?.entityOccurrences[id]?.entity;
+    const entity =
+      entityOfOccurrence.get(id) ??
+      sourceView?.entityOccurrences[id]?.entity ??
+      projected.entityOccurrences[id]?.entity;
     if (entity !== undefined && graph.nodes.has(entity)) collapsed.add(entity);
   }
-  let foldMetadata: {
+  const foldMetadata: {
     groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
     filters: ViewDocument["filters"];
     presentationState: ViewDocument["presentation"];
     summaryLabels: ViewDocument["summaryLabels"];
+    projected: ViewDocument;
+    representativeOf: (entity: EntityRef) => OccurrenceRef;
   } = {
-    groups: {},
-    filters: [],
-    presentationState: { camera: { x: 0, y: 0, zoom: 1 } },
-    summaryLabels: undefined,
+    groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
+    filters: [...projected.filters],
+    presentationState: { ...projected.presentation, diagram: presentation },
+    summaryLabels: projected.summaryLabels,
+    projected,
+    representativeOf,
   };
-  if (sourceView !== undefined) {
-    try {
-      const stripped = stripProjections(sourceView);
-      const projected = projectView(document, stripped, [...collapsedOccurrences]);
-      foldMetadata = {
-        groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
-        filters: [...projected.filters],
-        presentationState: projected.presentation,
-        summaryLabels: projected.summaryLabels,
-      };
-    } catch {
-      foldMetadata = {
-        groups: stampFoldGroups(sourceView, collapsedOccurrences) as Record<
-          string,
-          { id: string; occurrence: OccurrenceRef; collapsed?: boolean }
-        >,
-        filters: [...sourceView.filters],
-        presentationState: sourceView.presentation,
-        summaryLabels: sourceView.summaryLabels,
-      };
-    }
-  }
   const hidden = new Set<EntityRef>();
   for (const id of graph.nodes.keys()) {
     for (const ancestor of ancestorsOf(graph, id)) {
@@ -344,7 +417,7 @@ export function layoutMeasured(
   const visible = (id: EntityRef): boolean => !hidden.has(id);
   const classify = (id: EntityRef): OccurrenceKind => {
     const node = graph.nodes.get(id)!;
-    const form = formOf(presentation, occurrenceOf(id));
+    const form = formOf(presentation, representativeOf(id));
     if (form === "legend-key") return "legend-key";
     if (form === "legend") return collapsed.has(id) ? "legend-collapsed" : "legend-expanded";
     if (form === "container" || node.kind === "container") {
@@ -364,7 +437,7 @@ export function layoutMeasured(
   const childOrder = (parent: EntityRef, children: readonly EntityRef[]): EntityRef[] => {
     const live = children.filter(visible);
     if (kinds.get(parent) === "legend-expanded") {
-      const order = (presentation.legends as Record<string, { order: readonly EntityRef[] }>)[occurrenceOf(parent)]
+      const order = (presentation.legends as Record<string, { order: readonly EntityRef[] }>)[representativeOf(parent)]
         ?.order;
       return resolveOrder(live, order);
     }
@@ -413,7 +486,7 @@ export function layoutMeasured(
   // grouping width implied by hints as an authored override (stretch).
   const outerWidths = new Map<EntityRef, number>();
   const unwrappedHeaderWidth = (id: EntityRef): number => {
-    const slots = slotTexts(document, presentation, occurrenceOf(id), id);
+    const slots = slotTexts(document, presentation, representativeOf(id), id);
     const width = headerAvailableWidth(UNWRAPPED_PROBE_WIDTH, true);
     let widest = 0;
     for (const role of ["kicker", "title"] as const) {
@@ -516,106 +589,149 @@ export function layoutMeasured(
   for (const root of rootOrder) computeWidth(root);
   const effectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
     effectiveStretch(group.stretch, parentEffective);
-  const equalizeRowsGroup = (group: LayoutGroup, parentEffective: boolean): void => {
+  // Deepest covering group for one member (global-based); undefined when uncovered.
+  const deepestCoveringEffective = (member: EntityRef): boolean | undefined => {
+    let best: boolean | undefined;
+    let bestDepth = -1;
+    const visit = (group: LayoutGroup, depth: number, parentEffective: boolean): void => {
+      const effective = effectiveOf(group, parentEffective);
+      if (groupLeaves(group).includes(member) && depth > bestDepth) {
+        best = effective;
+        bestDepth = depth;
+      }
+      for (const item of group.items) if (isLayoutGroup(item)) visit(item, depth + 1, effective);
+    };
+    for (const group of hints.grouping ?? []) visit(group, 0, globalStretch);
+    return bestDepth >= 0 ? best : undefined;
+  };
+  const memberEffective = (member: EntityRef, inherited: boolean): boolean =>
+    deepestCoveringEffective(member) ?? inherited;
+  const isStretchedBox = (id: EntityRef): boolean => {
+    const kind = kinds.get(id);
+    return kind === "container-expanded" || kind === "legend-expanded";
+  };
+  const equalizeGroup = (group: LayoutGroup, parentEffective: boolean): void => {
     const effective = effectiveOf(group, parentEffective);
-    if (group.direction === "rows" && effective) {
+    if (effective) {
       let widest = 0;
       for (const item of group.items) {
         if (isLayoutGroup(item)) continue;
         if (!visible(item)) continue;
-        const kind = kinds.get(item)!;
-        if (kind === "container-expanded" || kind === "legend-expanded") {
-          widest = Math.max(widest, outerWidths.get(item) ?? 0);
-        }
+        if (isStretchedBox(item)) widest = Math.max(widest, outerWidths.get(item) ?? 0);
       }
       for (const item of group.items) {
         if (isLayoutGroup(item)) continue;
         if (!visible(item)) continue;
-        const kind = kinds.get(item)!;
-        if (kind === "container-expanded" || kind === "legend-expanded") outerWidths.set(item, widest);
+        if (isStretchedBox(item)) outerWidths.set(item, widest);
       }
     }
-    for (const item of group.items) if (isLayoutGroup(item)) equalizeRowsGroup(item, effective);
+    for (const item of group.items) if (isLayoutGroup(item)) equalizeGroup(item, effective);
   };
-  for (const group of hints.grouping ?? []) equalizeRowsGroup(group, globalStretch);
-  for (const id of graph.nodes.keys()) {
-    if (kinds.get(id) !== "container-expanded" && kinds.get(id) !== "legend-expanded") continue;
+  const equalizeContainerChildren = (id: EntityRef): boolean => {
+    if (!isStretchedBox(id) && kinds.get(id) !== "container-expanded" && kinds.get(id) !== "legend-expanded") {
+      void id;
+    }
+    if (kinds.get(id) !== "container-expanded" && kinds.get(id) !== "legend-expanded") return false;
     const ordered = childOrder(id, graph.nodes.get(id)!.children);
-    const levelStretch = levelStretchOf(ordered, contextStretchOf(id));
-    if (!levelStretch) continue;
+    const inherited = contextStretchOf(id);
     let widest = 0;
+    const enabled: EntityRef[] = [];
     for (const child of ordered) {
-      const childKind = kinds.get(child)!;
-      if (childKind === "container-expanded" || childKind === "legend-expanded") {
-        widest = Math.max(widest, outerWidths.get(child) ?? 0);
+      if (!visible(child) || !isStretchedBox(child)) continue;
+      if (!memberEffective(child, inherited)) continue;
+      enabled.push(child);
+      widest = Math.max(widest, outerWidths.get(child) ?? 0);
+    }
+    if (enabled.length === 0) return false;
+    let changed = false;
+    for (const child of enabled) {
+      if ((outerWidths.get(child) ?? 0) !== widest) {
+        outerWidths.set(child, widest);
+        changed = true;
       }
     }
-    for (const child of ordered) {
-      const childKind = kinds.get(child)!;
-      if (childKind === "container-expanded" || childKind === "legend-expanded") outerWidths.set(child, widest);
-    }
-  }
-  {
+    return changed;
+  };
+  const equalizeRootLevel = (): boolean => {
     const rootGroups = (hints.grouping ?? []).filter((group) =>
       groupLeaves(group).every((leaf) => graph.roots.includes(leaf) && visible(leaf)),
     );
     const grouped = new Set<EntityRef>();
     for (const group of rootGroups) for (const leaf of groupLeaves(group)) grouped.add(leaf);
     const ungrouped = rootOrder.filter((id) => !grouped.has(id));
-    const stretchOfRoot = (root: EntityRef): boolean => contextStretchOf(root);
-    const expandedRoots = (roots: readonly EntityRef[]): EntityRef[] =>
-      roots.filter(
-        (root) => kinds.get(root) === "container-expanded" || kinds.get(root) === "legend-expanded",
-      );
-    const equalizeList = (roots: readonly EntityRef[], stretch: boolean): void => {
-      if (!stretch) return;
-      const expanded = expandedRoots(roots);
-      if (expanded.length === 0) return;
+    let changed = false;
+    const equalizeMembers = (members: readonly EntityRef[]): void => {
       let widest = 0;
-      for (const root of expanded) widest = Math.max(widest, outerWidths.get(root) ?? 0);
-      for (const root of expanded) outerWidths.set(root, widest);
+      const enabled: EntityRef[] = [];
+      for (const member of members) {
+        if (!visible(member) || !isStretchedBox(member)) continue;
+        if (!memberEffective(member, globalStretch)) continue;
+        enabled.push(member);
+        widest = Math.max(widest, outerWidths.get(member) ?? 0);
+      }
+      for (const member of enabled) {
+        if ((outerWidths.get(member) ?? 0) !== widest) {
+          outerWidths.set(member, widest);
+          changed = true;
+        }
+      }
     };
     for (const group of rootGroups) {
-      if (group.direction !== "rows") continue;
-      const leaves = groupLeaves(group).filter((leaf) => visible(leaf));
-      let effective = globalStretch;
-      const visit = (current: LayoutGroup, parentEffective: boolean): boolean | undefined => {
-        const currentEffective = effectiveOf(current, parentEffective);
-        if (current === group) return currentEffective;
-        for (const item of current.items) {
-          if (!isLayoutGroup(item)) continue;
-          if (groupLeaves(item).some((leaf) => leaves.includes(leaf))) {
-            const found = visit(item, currentEffective);
-            if (found !== undefined) return found;
-          }
+      equalizeMembers(groupLeaves(group).filter((leaf) => visible(leaf)));
+    }
+    equalizeMembers(ungrouped);
+    return changed;
+  };
+  const recomputeAncestors = (): boolean => {
+    let changed = false;
+    const expanded = [...graph.nodes.values()]
+      .filter((node) => isStretchedBox(node.id) && visible(node.id))
+      .sort((left, right) => right.depth - left.depth);
+    for (const node of expanded) {
+      const ordered = childOrder(node.id, node.children);
+      let widestChild = 0;
+      for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
+      const grouping = groupingOuterWidth(ordered);
+      const headerDriven = unwrappedHeaderWidth(node.id) + 2 * 16 + 32;
+      const content = grouping ?? widestChild;
+      const computed = Math.max(
+        FIXED_CARD_WIDTH,
+        headerDriven,
+        content + (ordered.length > 0 ? 2 * 16 : 0),
+      );
+      const current = outerWidths.get(node.id) ?? 0;
+      const outer = Math.max(current, computed);
+      if (current !== outer) {
+        outerWidths.set(node.id, outer);
+        changed = true;
+      }
+    }
+    return changed;
+  };
+  // Stretch is resolved completely (recursive): equalize hint groups and
+  // container levels with each member's effective local override, then
+  // recompute ancestor extents, repeating until stable. Headers are measured
+  // afterwards at the final width.
+  for (let iteration = 0; iteration < 10; iteration += 1) {
+    let changed = false;
+    for (const group of hints.grouping ?? []) {
+      const before = new Map(outerWidths);
+      equalizeGroup(group, globalStretch);
+      for (const [id, width] of outerWidths) {
+        if ((before.get(id) ?? 0) !== width) {
+          changed = true;
+          break;
         }
-        return undefined;
-      };
-      void visit;
-      const topEffective = (() => {
-        let best: boolean | undefined;
-        let bestDepth = -1;
-        const walk = (candidate: LayoutGroup, depth: number, parentEffective: boolean): void => {
-          const currentEffective = effectiveOf(candidate, parentEffective);
-          const candidateLeaves = new Set(groupLeaves(candidate));
-          if (leaves.every((leaf) => candidateLeaves.has(leaf)) && depth > bestDepth) {
-            best = currentEffective;
-            bestDepth = depth;
-          }
-          for (const item of candidate.items) if (isLayoutGroup(item)) walk(item, depth + 1, currentEffective);
-        };
-        for (const top of hints.grouping ?? []) walk(top, 0, globalStretch);
-        return bestDepth >= 0 ? (best as boolean) : globalStretch;
-      })();
-      effective = topEffective;
-      equalizeList(leaves, effective);
+      }
     }
-    if (ungrouped.length > 0) {
-      const stretch = globalStretch;
-      equalizeList(ungrouped, stretch);
+    for (const id of [...graph.nodes.keys()].sort(byString)) {
+      if (equalizeContainerChildren(id)) changed = true;
     }
-    void stretchOfRoot;
+    if (equalizeRootLevel()) changed = true;
+    if (recomputeAncestors()) changed = true;
+    if (!changed) break;
   }
+  void levelStretchOf;
 
   // Step 3 — headers before any child placement; folded and expanded forms
   // are distinct inputs.
@@ -630,11 +746,11 @@ export function layoutMeasured(
     const inner = folded ? innerWidthOf(FIXED_CARD_WIDTH) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH);
     const input: EntityMeasurementInput = {
       entity: id,
-      occurrence: occurrenceOf(id),
-      effectiveType: `${document.entities[id]?.profile ?? ""}:${document.entities[id]?.type ?? ""}/${formOf(presentation, occurrenceOf(id)) ?? graph.nodes.get(id)!.kind}`,
+      occurrence: representativeOf(id),
+      effectiveType: `${document.entities[id]?.profile ?? ""}:${document.entities[id]?.type ?? ""}/${formOf(presentation, representativeOf(id)) ?? graph.nodes.get(id)!.kind}`,
       folded,
       toggle,
-      slots: slotTexts(document, presentation, occurrenceOf(id), id),
+      slots: slotTexts(document, presentation, representativeOf(id), id),
       availableWidth: inner,
       allocatedLines: { ...DEFAULT_ALLOCATED_LINES },
     };
@@ -800,6 +916,21 @@ export function layoutMeasured(
   const slots: SlotMeasurement[] = [];
   const recordSlot = (occurrence: OccurrenceRef, role: TextRole, layout: LineLayout, zone: boolean): void => {
     slots.push({ occurrence, role, layout });
+    if (role === "legend-label" && layout.height > LEGEND_KEY_HEIGHT) {
+      const allocatedLines = DEFAULT_ALLOCATED_LINES[role];
+      warnOverflow(
+        {
+          occurrence,
+          slot: role,
+          neededHeight: layout.height,
+          allocatedHeight: LEGEND_KEY_HEIGHT,
+          lines: layout.lines.length,
+          allocatedLines,
+        },
+        zone,
+      );
+      return;
+    }
     if (layout.overflow) {
       const allocatedLines = DEFAULT_ALLOCATED_LINES[role];
       warnOverflow(
@@ -818,7 +949,7 @@ export function layoutMeasured(
   for (const id of [...graph.nodes.keys()].sort(byString)) {
     if (!visible(id)) continue;
     const kind = kinds.get(id)!;
-    const occurrence = occurrenceOf(id);
+    const occurrence = representativeOf(id);
     const text = slotTexts(document, presentation, occurrence, id);
     if (kind === "legend-key") {
       const parent = graph.nodes.get(id)?.parent;
@@ -908,11 +1039,16 @@ export function layoutMeasured(
   } else {
     for (const edge of graph.edges) {
       if (edge.source.port !== undefined || edge.target.port !== undefined) {
-        if (!visible(edge.source.entity) || !visible(edge.target.entity)) continue;
+        const repSource = representativeEntityOf(edge.source.entity);
+        const repTarget = representativeEntityOf(edge.target.entity);
+        const hiddenSource = !visible(edge.source.entity);
+        const hiddenTarget = !visible(edge.target.entity);
+        if (repSource === repTarget && (hiddenSource || hiddenTarget)) continue;
+        if (!visible(repSource) || !visible(repTarget)) continue;
         projectedEdges.push({
           id: edge.id,
-          source: edge.source.entity,
-          target: edge.target.entity,
+          source: repSource,
+          target: repTarget,
           sourcePort: edge.source.port,
           targetPort: edge.target.port,
           originalSource: edge.source.entity,
@@ -968,21 +1104,31 @@ export function layoutMeasured(
   const docked = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics, labelSizes, fixed: true });
   const finalDocks = new Map<RelationRef, EdgeDocks>(docked.docks);
   const dockingWarnings: LayoutWarning[] = [];
-  for (const overflow of [...docked.fixedOverflows].sort(
-    (left, right) => byString(left.entity, right.entity) || byString(left.side, right.side),
-  )) {
-    const occurrence = occurrenceOf(overflow.entity);
-    dockingWarnings.push({
-      code: "docking-overflow",
-      refs: [occurrence],
-      message: `side ${overflow.side} of ${occurrence} needs ${overflow.required} docks, fits ${overflow.fitted}`,
-      details: {
-        occurrence,
-        side: overflow.side,
-        required: overflow.required,
-        fitted: overflow.fitted,
-      },
-    });
+  {
+    const byEntity = new Map<EntityRef, { sides: PortSide[]; required: number; fitted: number }>();
+    for (const overflow of docked.fixedOverflows) {
+      const entry = byEntity.get(overflow.entity) ?? { sides: [], required: 0, fitted: 0 };
+      entry.sides.push(overflow.side);
+      entry.required += overflow.required;
+      entry.fitted += overflow.fitted;
+      byEntity.set(overflow.entity, entry);
+    }
+    for (const entity of [...byEntity.keys()].sort(byString)) {
+      const entry = byEntity.get(entity)!;
+      const sides = [...entry.sides].sort(byString);
+      const occurrence = representativeOf(entity);
+      dockingWarnings.push({
+        code: "docking-overflow",
+        refs: [occurrence],
+        message: `sides ${sides.join(",")} of ${occurrence} need ${entry.required} docks, fit ${entry.fitted}`,
+        details: {
+          occurrence,
+          sides: sides.join(","),
+          required: entry.required,
+          fitted: entry.fitted,
+        },
+      });
+    }
   }
   warnings.push(...dockingWarnings);
   const requests = visibleEdges.map((edge) => {
@@ -1122,6 +1268,8 @@ type MeasuredFoldMetadata = {
   filters: ViewDocument["filters"];
   presentationState: ViewDocument["presentation"];
   summaryLabels: ViewDocument["summaryLabels"];
+  projected: ViewDocument;
+  representativeOf: (entity: EntityRef) => OccurrenceRef;
 };
 
 type MeasuredProjectedEdge = {
@@ -1143,91 +1291,89 @@ function buildMeasuredView(
   projectedEdges: readonly MeasuredProjectedEdge[],
   occurrenceOf: (entity: EntityRef) => OccurrenceRef,
 ): ViewDocument {
+  const projected = foldMetadata.projected;
+  const representativeOf = foldMetadata.representativeOf;
   const maxContainerDepth = Math.max(
     -1,
     ...[...graph.nodes.values()].filter((node) => node.kind === "container").map((node) => node.depth),
   );
   const entityOccurrences: Record<string, EntityOccurrence> = {};
-  for (const id of [...graph.nodes.keys()].sort(byString)) {
-    const rect = rects.get(id)!;
-    const occurrence = occurrenceOf(id);
-    const node = graph.nodes.get(id)!;
-    entityOccurrences[occurrence] = {
-      id: occurrence,
-      entity: id,
-      geometry: { x: clean(rect.x), y: clean(rect.y), width: clean(rect.width), height: clean(rect.height) },
-      z: node.kind === "container" ? node.depth - (maxContainerDepth + 1) : 0,
-    };
+  for (const occurrence of Object.values(projected.entityOccurrences).sort((left, right) =>
+    byString(left.id, right.id),
+  )) {
+    const rect = rects.get(occurrence.entity);
+    const node = graph.nodes.get(occurrence.entity);
+    if (rect !== undefined && node !== undefined) {
+      entityOccurrences[occurrence.id] = {
+        ...occurrence,
+        geometry: { x: clean(rect.x), y: clean(rect.y), width: clean(rect.width), height: clean(rect.height) },
+        z: node.kind === "container" ? node.depth - (maxContainerDepth + 1) : 0,
+      };
+    } else {
+      entityOccurrences[occurrence.id] = { ...occurrence };
+    }
   }
   const portOccurrences: Record<string, PortOccurrence> = {};
+  for (const occurrence of Object.values(projected.portOccurrences)) {
+    portOccurrences[occurrence.id] = { ...occurrence };
+  }
   const relationOccurrences: Record<string, RelationOccurrence> = {};
   const coded = (value: string): string => `${value.length}.${value}`;
   const parallel = parallelRelations(graph);
-  const projectedById = new Map<RelationRef, MeasuredProjectedEdge>();
-  for (const edge of projectedEdges) projectedById.set(edge.id, edge);
+  for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
+    byString(left.id, right.id),
+  )) {
+    const pair = docks.get(occurrence.relation);
+    const route = routes.get(occurrence.relation);
+    if (pair !== undefined && route !== undefined) {
+      const waypoints = route
+        .slice(
+          pair.source.port === undefined ? 0 : 1,
+          pair.target.port === undefined ? route.length : route.length - 1,
+        )
+        .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
+      relationOccurrences[occurrence.id] = { ...occurrence, waypoints };
+    } else {
+      relationOccurrences[occurrence.id] = { ...occurrence };
+    }
+  }
   for (const edge of [...graph.edges].sort((left, right) => byString(left.id, right.id))) {
-    const pair = docks.get(edge.id)!;
-    const route = routes.get(edge.id)!;
-    const projected = projectedById.get(edge.id);
-    const endOccurrence = (dock: Dock, role: "source" | "target"): OccurrenceRef => {
-      if (dock.port === undefined) return occurrenceOf(dock.entity);
+    const pair = docks.get(edge.id);
+    if (pair === undefined) continue;
+    for (const [dock, role] of [
+      [pair.source, "source"],
+      [pair.target, "target"],
+    ] as const) {
+      if (dock.port === undefined) continue;
+      const owner = (document.ports as Record<string, { owner?: unknown }>)[dock.port as string]?.owner;
+      if (owner !== undefined && owner !== dock.entity) continue;
       const id = parallel.has(edge.id)
         ? occurrenceRef(`p.e.${coded(localIdOf(dock.port))}.${coded(localIdOf(edge.id))}.${role}`)
         : occurrenceRef(`p.s.${coded(localIdOf(dock.port))}`);
-      portOccurrences[id] ??= {
-        id,
-        port: dock.port,
-        ownerOccurrence: occurrenceOf(dock.entity),
-        side: dock.side,
-        order: dock.order,
-        anchor: clean(dock.anchor),
-      };
-      return id;
-    };
-    const waypoints = route
-      .slice(pair.source.port === undefined ? 0 : 1, pair.target.port === undefined ? route.length : route.length - 1)
-      .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
-    const id = occurrenceRef(`r.${localIdOf(edge.id)}`);
-    if (projected !== undefined && (projected.source !== projected.originalSource || projected.target !== projected.originalTarget)) {
-      const sourceOccurrence = occurrenceOf(projected.originalSource);
-      const targetOccurrence = occurrenceOf(projected.originalTarget);
-      const sourceRep = occurrenceOf(projected.source);
-      const targetRep = occurrenceOf(projected.target);
-      relationOccurrences[id] = {
-        id,
-        relation: edge.id,
-        endpoints: [
-          projected.source === projected.originalSource
-            ? { role: "source", occurrence: endOccurrence(pair.source, "source") }
-            : {
-                role: "source",
-                occurrence: sourceRep,
-                semanticTarget: projected.originalSource,
-                sourceOccurrence,
-              },
-          projected.target === projected.originalTarget
-            ? { role: "target", occurrence: endOccurrence(pair.target, "target") }
-            : {
-                role: "target",
-                occurrence: targetRep,
-                semanticTarget: projected.originalTarget,
-                sourceOccurrence: targetOccurrence,
-              },
-        ],
-        waypoints,
-      };
-      continue;
+      const ownerOccurrence = representativeOf(dock.entity);
+      const existing = portOccurrences[id];
+      if (existing !== undefined) {
+        portOccurrences[id] = {
+          ...existing,
+          ownerOccurrence,
+          side: dock.side,
+          order: dock.order,
+          anchor: clean(dock.anchor),
+        };
+      } else {
+        portOccurrences[id] = {
+          id,
+          port: dock.port,
+          ownerOccurrence,
+          side: dock.side,
+          order: dock.order,
+          anchor: clean(dock.anchor),
+        };
+      }
     }
-    relationOccurrences[id] = {
-      id,
-      relation: edge.id,
-      endpoints: [
-        { role: "source", occurrence: endOccurrence(pair.source, "source") },
-        { role: "target", occurrence: endOccurrence(pair.target, "target") },
-      ],
-      waypoints,
-    };
   }
+  void occurrenceOf;
+  void projectedEdges;
   const summaryLabels =
     foldMetadata.summaryLabels === undefined
       ? undefined

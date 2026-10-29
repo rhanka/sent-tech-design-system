@@ -8,18 +8,20 @@ import { describe, expect, it } from "vitest";
 import { layoutDocument, layoutFolded } from "../../src/index.js";
 import { measure } from "./fixtures.js";
 import {
+  asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
   layMeasured,
+  layMeasured2,
   makePresentation,
   occurrenceOfEntity,
   wordWrapMeasurer,
 } from "./m1d-fixtures.js";
 
 const presentation = makePresentation({
-  forms: { C: "container", a: "card", b: "card", lone: "card" },
+  forms: { C: "card", a: "card", b: "card", lone: "card" },
   texts: {
-    C: { kicker: "Zone", title: "Container", subtitle: "boxed" },
+    C: { kicker: "Zone", title: "Container" },
     a: { title: "Alpha" },
     b: { title: "Beta" },
     lone: { title: "Lone" },
@@ -91,7 +93,16 @@ describe("fold, measure, place, route", () => {
   });
 
   it("exposes the folded and expanded header forms as distinct inputs", () => {
-    const document = buildMeasuredDocument();
+    const document = asGeneric2Document(buildMeasuredDocument());
+    const foldedPresentation = makePresentation({
+      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      texts: {
+        C: { kicker: "Zone", title: "Container" },
+        a: { title: "Alpha" },
+        b: { title: "Beta" },
+        lone: { title: "Lone" },
+      },
+    });
     const seen: { folded: boolean; text: string }[] = [];
     const spy = wordWrapMeasurer();
     const recording = ((request: Parameters<typeof spy>[0]) => {
@@ -100,10 +111,10 @@ describe("fold, measure, place, route", () => {
       }
       return spy(request);
     }) as typeof spy;
-    layMeasured(document, presentation, recording, { collapsed: [occurrenceOfEntity("C")] });
+    layMeasured2(document, foldedPresentation, recording, { collapsed: [occurrenceOfEntity("C")] });
     expect(seen.map((entry) => entry.folded)).toEqual([true]);
     seen.length = 0;
-    layMeasured(document, presentation, recording);
+    layMeasured2(document, foldedPresentation, recording);
     expect(seen.map((entry) => entry.folded)).toEqual([false]);
   });
 

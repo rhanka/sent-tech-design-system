@@ -6,6 +6,7 @@
 import {
   CURRENT_SCHEMA_VERSION,
   defaultProfileRegistry,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
   documentRef,
   entityRef,
   GENERIC_PROFILE_ID,
@@ -22,9 +23,11 @@ import { describe, expect, it } from "vitest";
 import { layoutDocument } from "../../src/index.js";
 import { buildDocument, measure } from "./fixtures.js";
 import {
+  asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
   layMeasured,
+  layMeasured2,
   makePresentation,
   occurrenceOfEntity,
   wordWrapMeasurer,
@@ -33,23 +36,34 @@ import {
 function buildLegendDocument(): SemanticDocument {
   const entities: Record<string, Entity> = {};
   const relations: Record<string, Relation> = {};
-  const add = (local: string, type: "node" | "container"): void => {
+  const add = (local: string, type: "legend" | "legend-key"): void => {
     const ref = entityRef(local);
     entities[ref] = {
       id: ref,
-      profile: GENERIC_PROFILE_ID,
+      profile: "generic@2",
       type,
       attributes: { name: { kind: "text", value: local } },
     };
   };
-  add("LG", "container");
-  add("k1", "node");
-  add("k2", "node");
+  add("LG", "legend");
+  add("k1", "legend-key");
+  add("k2", "legend-key");
+  for (const key of ["k1", "k2"]) {
+    const ref = entityRef(key);
+    entities[ref] = {
+      ...(entities[ref] as Entity),
+      attributes: {
+        ...(entities[ref] as Entity).attributes,
+        category: { kind: "text", value: key },
+        description: { kind: "text", value: `${key} tone` },
+      },
+    };
+  }
   for (const child of ["k1", "k2"]) {
     const relation = relationRef(`contains.${child}`);
     relations[relation] = {
       id: relation,
-      profile: GENERIC_PROFILE_ID,
+      profile: "generic@2",
       type: "contains",
       endpoints: [
         { role: "parent", target: entityRef("LG") },
@@ -62,7 +76,7 @@ function buildLegendDocument(): SemanticDocument {
     documentId: documentRef("m1d-legend-red"),
     schemaVersion: CURRENT_SCHEMA_VERSION,
     revision: 1,
-    profileRefs: [GENERIC_PROFILE_ID],
+    profileRefs: ["generic@2"],
     typeDefinitions: {},
     entities,
     relations,
@@ -76,7 +90,7 @@ describe("RED item 1 — occurrence-keyed presentation", () => {
   it("keeps authored legend text and yields a 64-high key", () => {
     const document = buildLegendDocument();
     const presentation = {
-      contractPin: { id: "diagram-presentation", version: "1", contentDigest: "0".repeat(64) },
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
       entities: {
         [occurrenceOfEntity("LG")]: {
           form: "legend" as const,
@@ -90,7 +104,7 @@ describe("RED item 1 — occurrence-keyed presentation", () => {
       },
       categoryTokens: [],
     };
-    const measured = layMeasured(document, presentation, wordWrapMeasurer({ charWidth: 8 }));
+    const measured = layMeasured2(document, presentation, wordWrapMeasurer({ charWidth: 8 }));
     const key = geometryOf(measured.view, "k1");
     expect(key.height).toBe(64);
     const label = measured.slots.find(
@@ -142,7 +156,7 @@ describe("RED item 4 — recursive group extents before header", () => {
       extensions: [],
     };
     const presentation = makePresentation({
-      forms: { P: "container", a: "card", b: "card" },
+      forms: { P: "card", a: "card", b: "card" },
       texts: { P: { title: "P" }, a: { title: "Alpha" }, b: { title: "Beta" } },
     });
     const measured = layMeasured(document, presentation, wordWrapMeasurer(), {
@@ -163,7 +177,7 @@ describe("RED item 7 — synthesis requires a LineMeasurer", () => {
   it("refuses measured layout without measureLines", () => {
     const document = buildMeasuredDocument();
     const presentation = makePresentation({
-      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      forms: { C: "card", a: "card", b: "card", lone: "card" },
     });
     const result = layoutDocument(document, {
       registry: defaultProfileRegistry,
@@ -220,7 +234,7 @@ describe("RED item 9 — gapAfter replaces the inherited gap", () => {
       extensions: [],
     };
     const presentation = makePresentation({
-      forms: { P: "container", a: "card", b: "card" },
+      forms: { P: "card", a: "card", b: "card" },
     });
     const measured = layMeasured(document, presentation, wordWrapMeasurer(), {
       hints: {
@@ -281,7 +295,7 @@ describe("RED item 8 — hint ownership across groups", () => {
       registry: defaultProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
-      presentation: makePresentation({ forms: { P: "container", a: "card", b: "card" } }),
+      presentation: makePresentation({ forms: { P: "card", a: "card", b: "card" } }),
       measureLines: wordWrapMeasurer(),
       hints: {
         grouping: [
@@ -342,7 +356,7 @@ describe("RED item 12 — depth-dependent paint planes", () => {
     };
     const measured = layMeasured(
       document,
-      makePresentation({ forms: { Z: "container", A: "container", leaf: "card" } }),
+      makePresentation({ forms: { Z: "card", A: "card", leaf: "card" } }),
       wordWrapMeasurer(),
     );
     const zOuter = measured.view.entityOccurrences[occurrenceRef("e.Z")]!.z;
@@ -395,9 +409,9 @@ describe("RED item 2 — valid generic@2 executes", () => {
       extensions: [],
     } as unknown as SemanticDocument;
     const presentation = {
-      contractPin: { id: "diagram-presentation", version: "1", contentDigest: "0".repeat(64) },
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
       entities: {
-        [occurrenceOfEntity("c")]: { form: "container" as const, text: { title: "C" } },
+        [occurrenceOfEntity("c")]: { form: "card" as const, text: { title: "C" } },
         [occurrenceOfEntity("n")]: { form: "card" as const, text: { title: "N" } },
       },
       legends: {},
@@ -418,35 +432,39 @@ describe("RED item 2 — valid generic@2 executes", () => {
 describe("RED item 3 — folding through projectView", () => {
   it("conserves the scene and clears with collapsed []", async () => {
     const { layoutFolded } = await import("../../src/index.js");
-    const document = buildMeasuredDocument();
+    const document = asGeneric2Document(buildMeasuredDocument());
     const presentation = makePresentation({
       forms: { C: "container", a: "card", b: "card", lone: "card" },
       texts: { C: { title: "Container" }, a: { title: "Alpha" }, b: { title: "Beta" }, lone: { title: "Lone" } },
     });
-    const source = layMeasured(document, presentation, wordWrapMeasurer());
+    const source = layMeasured2(document, presentation, wordWrapMeasurer());
     const folded = layoutFolded(document, source.view, {
-      registry: defaultProfileRegistry,
+      registry: m3ProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
       presentation,
       measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
       collapsed: [occurrenceOfEntity("C")],
     });
     expect(folded.status).toBe("laid-out");
     if (folded.status !== "laid-out") return;
-    expect(folded.view.entityOccurrences[occurrenceOfEntity("a")]).toBeUndefined();
+    expect(folded.view.entityOccurrences[occurrenceOfEntity("a")]).toBeDefined();
+    expect(folded.view.entityOccurrences[occurrenceOfEntity("b")]).toBeDefined();
     const relationIds = Object.values(folded.view.relationOccurrences).map((occurrence) => occurrence.relation);
     expect(relationIds).toContain(relationRef("l1"));
+    expect(folded.view.groups["grp.3.e.C"]?.collapsed).toBe(true);
     const endpoints = folded.view.relationOccurrences[occurrenceRef("r.l1")]!.endpoints;
     expect(endpoints.map((endpoint) => endpoint.occurrence).sort()).toEqual(
-      [occurrenceOfEntity("C"), occurrenceOfEntity("lone")].sort(),
+      [occurrenceOfEntity("a"), occurrenceOfEntity("lone")].sort(),
     );
     const restored = layoutFolded(document, folded.view, {
-      registry: defaultProfileRegistry,
+      registry: m3ProfileRegistry,
       measureText: measure,
       targetWidth: 4000,
       presentation,
       measureLines: wordWrapMeasurer(),
+      bindings: shippedExecutorBindings,
       collapsed: [],
     });
     expect(restored.status).toBe("laid-out");
@@ -500,7 +518,7 @@ describe("RED item 5 — stretch per group and member", () => {
       extensions: [],
     };
     const presentation = makePresentation({
-      forms: { P1: "container", P2: "container", a: "card" },
+      forms: { P1: "card", P2: "card", a: "card" },
       texts: { P1: { title: "P1" }, P2: { title: "P2" }, a: { title: "Alpha" } },
     });
     const measured = layMeasured(document, presentation, wordWrapMeasurer(), {
@@ -559,7 +577,7 @@ describe("RED item 5 — stretch per group and member", () => {
       extensions: [],
     };
     const presentation = makePresentation({
-      forms: { P: "container", E1: "container", E2: "container", k: "card" },
+      forms: { P: "card", E1: "card", E2: "card", k: "card" },
     });
     const measured = layMeasured(document, presentation, wordWrapMeasurer(), {
       hints: {

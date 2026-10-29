@@ -5,12 +5,15 @@
 import {
   CURRENT_SCHEMA_VERSION,
   defaultProfileRegistry,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
   documentRef,
   entityRef,
   formatDiagnostics,
   GENERIC_PROFILE_ID,
+  m3ProfileRegistry,
   occurrenceRef,
   relationRef,
+  shippedExecutorBindings,
   validateView,
   type Entity,
   type Relation,
@@ -52,7 +55,7 @@ export function makePresentation(spec: {
     legends[occurrenceOfEntity(local)] = { order: order.map((entry) => entityRef(entry)) };
   }
   return {
-    contractPin: { id: "diagram-presentation", version: "1", contentDigest: "0".repeat(64) },
+    contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
     entities,
     legends,
     categoryTokens: [],
@@ -135,6 +138,56 @@ export function layMeasured(
   if (result.status !== "laid-out") throw new Error(`refused: ${JSON.stringify(result)}`);
   if (result.measurements === undefined) throw new Error("measured layout carries no measurements");
   const diagnostics = validateView(result.view, document, { registry: defaultProfileRegistry });
+  expect(formatDiagnostics(diagnostics)).toBe("");
+  return {
+    view: result.view,
+    headers: result.measurements.headers,
+    slots: result.measurements.slots,
+    warnings: [...result.warnings],
+    fit: { direction: result.fit.direction, width: result.fit.width, height: result.fit.height },
+  };
+}
+
+/** Clone a document onto the generic@2 profile (container and legend families). */
+export function asGeneric2Document(source: SemanticDocument): SemanticDocument {
+  const entities: Record<string, Entity> = {};
+  for (const [id, entity] of Object.entries(source.entities)) {
+    entities[id] = { ...(entity as Entity), profile: "generic@2" };
+  }
+  const relations: Record<string, Relation> = {};
+  for (const [id, relation] of Object.entries(source.relations)) {
+    relations[id] = { ...(relation as Relation), profile: "generic@2" };
+  }
+  return { ...source, profileRefs: ["generic@2"], entities, relations };
+}
+
+/** Measured layout through the m3 registry with executor bindings, validated. */
+export function layMeasured2(
+  document: SemanticDocument,
+  presentation: DiagramPresentation,
+  measureLines: LineMeasurer,
+  extra: {
+    readonly collapsed?: readonly OccurrenceRef[];
+    readonly hints?: LayoutHints;
+    readonly targetWidth?: number;
+  } = {},
+): Measured {
+  const result = layoutDocument(document, {
+    registry: m3ProfileRegistry,
+    measureText: measure,
+    targetWidth: extra.targetWidth ?? 4000,
+    presentation,
+    measureLines,
+    bindings: shippedExecutorBindings,
+    ...(extra.collapsed !== undefined ? { collapsed: extra.collapsed } : {}),
+    ...(extra.hints !== undefined ? { hints: extra.hints } : {}),
+  });
+  if (result.status !== "laid-out") throw new Error(`refused: ${JSON.stringify(result)}`);
+  if (result.measurements === undefined) throw new Error("measured layout carries no measurements");
+  const diagnostics = validateView(result.view, document, {
+    registry: m3ProfileRegistry,
+    bindings: shippedExecutorBindings,
+  });
   expect(formatDiagnostics(diagnostics)).toBe("");
   return {
     view: result.view,

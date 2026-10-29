@@ -19,18 +19,20 @@ import { describe, expect, it } from "vitest";
 import { layoutDocument, relationRoute } from "../../src/index.js";
 import { measure } from "./fixtures.js";
 import {
+  asGeneric2Document,
   buildMeasuredDocument,
   geometryOf,
   layMeasured,
+  layMeasured2,
   makePresentation,
   occurrenceOfEntity,
   wordWrapMeasurer,
 } from "./m1d-fixtures.js";
 
 const presentation = makePresentation({
-  forms: { C: "container", a: "card", b: "card", lone: "card" },
+  forms: { C: "card", a: "card", b: "card", lone: "card" },
   texts: {
-    C: { kicker: "Zone", title: "Container", subtitle: "boxed" },
+    C: { kicker: "Zone", title: "Container" },
     a: { title: "Alpha", body: "alpha body" },
     b: { title: "Beta" },
     lone: { title: "Lone" },
@@ -45,12 +47,21 @@ describe("fixed footprints", () => {
   });
 
   it("draws a collapsed container at 460x200 with no child occurrences", () => {
-    const measured = layMeasured(buildMeasuredDocument(), presentation, wordWrapMeasurer(), {
+    const containerPresentation = makePresentation({
+      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      texts: {
+        C: { kicker: "Zone", title: "Container" },
+        a: { title: "Alpha", body: "alpha body" },
+        b: { title: "Beta" },
+        lone: { title: "Lone" },
+      },
+    });
+    const measured = layMeasured2(asGeneric2Document(buildMeasuredDocument()), containerPresentation, wordWrapMeasurer(), {
       collapsed: [occurrenceOfEntity("C")],
     });
     expect(geometryOf(measured.view, "C")).toMatchObject({ width: 460, height: 200 });
-    expect(measured.view.entityOccurrences[occurrenceOfEntity("a")]).toBeUndefined();
-    expect(measured.view.entityOccurrences[occurrenceOfEntity("b")]).toBeUndefined();
+    expect(measured.view.entityOccurrences[occurrenceOfEntity("a")]).toBeDefined();
+    expect(measured.view.entityOccurrences[occurrenceOfEntity("b")]).toBeDefined();
   });
 
   it("computes an expanded container from header, children and insets", () => {
@@ -66,23 +77,32 @@ describe("fixed footprints", () => {
 function buildLegendDocument(): SemanticDocument {
   const entities: Record<string, Entity> = {};
   const relations: Record<string, Relation> = {};
-  const add = (local: string, type: "node" | "container"): void => {
+  const add = (local: string, type: "legend" | "legend-key"): void => {
     const ref = entityRef(local);
     entities[ref] = {
       id: ref,
-      profile: GENERIC_PROFILE_ID,
+      profile: "generic@2",
       type,
       attributes: { name: { kind: "text", value: local } },
     };
   };
-  add("LG", "container");
-  add("k1", "node");
-  add("k2", "node");
+  add("LG", "legend");
+  add("k1", "legend-key");
+  add("k2", "legend-key");
   for (const child of ["k1", "k2"]) {
     const relation = relationRef(`contains.${child}`);
+    const ref = entityRef(child);
+    entities[ref] = {
+      ...(entities[ref] as Entity),
+      attributes: {
+        ...(entities[ref] as Entity).attributes,
+        category: { kind: "text", value: child },
+        description: { kind: "text", value: `${child} tone` },
+      },
+    };
     relations[relation] = {
       id: relation,
-      profile: GENERIC_PROFILE_ID,
+      profile: "generic@2",
       type: "contains",
       endpoints: [
         { role: "parent", target: entityRef("LG") },
@@ -95,7 +115,7 @@ function buildLegendDocument(): SemanticDocument {
     documentId: documentRef("m1d-legend"),
     schemaVersion: CURRENT_SCHEMA_VERSION,
     revision: 1,
-    profileRefs: [GENERIC_PROFILE_ID],
+    profileRefs: ["generic@2"],
     typeDefinitions: {},
     entities,
     relations,
@@ -117,7 +137,7 @@ describe("legend keys", () => {
       legends: { LG: ["k1", "k2"] },
     });
     const measurer = wordWrapMeasurer({ charWidth: 8 });
-    const measured = layMeasured(buildLegendDocument(), legendPresentation, measurer);
+    const measured = layMeasured2(buildLegendDocument(), legendPresentation, measurer);
     const legend = geometryOf(measured.view, "LG");
     const key = geometryOf(measured.view, "k1");
     expect(key.height).toBe(64);
@@ -129,9 +149,9 @@ describe("legend keys", () => {
 
 describe("measurement overflow", () => {
   it("reports card-overflow with the box and every character kept", () => {
-    const longBody = Array.from({ length: 60 }, (_, index) => `word${index}`).join(" ");
+    const longBody = Array.from({ length: 50 }, (_, index) => `word${index}`).join(" ");
     const overflowing = makePresentation({
-      forms: { C: "container", a: "card", b: "card", lone: "card" },
+      forms: { C: "card", a: "card", b: "card", lone: "card" },
       texts: {
         C: { title: "Container" },
         a: { title: "Alpha", body: longBody },
@@ -159,7 +179,7 @@ describe("measurement overflow", () => {
         lone: { title: "Lone" },
       },
     });
-    const measured = layMeasured(buildMeasuredDocument(), overflowing, wordWrapMeasurer({ charWidth: 8 }));
+    const measured = layMeasured2(asGeneric2Document(buildMeasuredDocument()), overflowing, wordWrapMeasurer({ charWidth: 8 }));
     expect(measured.warnings.map((warning) => warning.code)).toContain("zone-overflow");
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
     expect(header.overflow).toBe(true);
