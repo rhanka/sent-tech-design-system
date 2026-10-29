@@ -492,6 +492,13 @@ describe("CL-1M review pass 1 (href syntax and whitespace, R-FULL-URL-1)", () =>
     expect(isAllowedHref("//[invalid")).toBe(false);
   });
 
+  it("refuses network-path references with an empty host (they resolve against the http(s) page scheme)", () => {
+    expect(isAllowedHref("//")).toBe(false);
+    expect(isAllowedHref("///path")).toBe(false);
+    expect(isAllowedHref("//?query")).toBe(false);
+    expect(isAllowedHref("//host/path")).toBe(true);
+  });
+
   it("rejects leading Unicode whitespace before scheme detection", () => {
     expect(isAllowedHref(" javascript:x")).toBe(false);
     expect(isAllowedHref(" https://example.com")).toBe(false);
