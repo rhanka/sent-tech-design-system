@@ -130,4 +130,3 @@ export function matrixAllows(tuples: readonly MatrixTuple[], relationship: strin
     (t) => t.relationType === relationship && t.sourceType === source && t.targetType === target,
   );
 }
-

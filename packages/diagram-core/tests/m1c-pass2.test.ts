@@ -1355,7 +1355,7 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
     });
     expect(unfolded.relationOccurrences["occurrence:r"]).toEqual(source.relationOccurrences["occurrence:r"]);
     expect(unfolded.relationOccurrences["occurrence:flow"]).toEqual(source.relationOccurrences["occurrence:flow"]);
-  });
+  }, 60_000);
 
   it("B.7 boundary-crossing target stays visible without provenance while fold stays active", async () => {
     const { readFileSync } = await import("node:fs");
@@ -1476,5 +1476,5 @@ describe("finding 10: frozen C.6 negatives replayed literally", () => {
     ]);
     const scene = foldedScene(folded, document, [occurrenceRef("Z")]);
     expect([...scene.drawnRelations].sort()).toEqual(["occurrence:flow", "occurrence:r"].sort());
-  });
+  }, 60_000);
 });

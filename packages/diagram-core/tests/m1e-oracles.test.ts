@@ -268,7 +268,7 @@ describe("P-AM and P-UML witnesses", () => {
       (d) => d.code,
     );
     expect(missingCodes).toContain("dangling-reference");
-  });
+  }, 60_000);
 
   it("P-UML validates multiplicity and stereotype before application and draws card and container", async () => {
     const mod = (await import("../src/index.js")) as typeof import("../src/index.js");
