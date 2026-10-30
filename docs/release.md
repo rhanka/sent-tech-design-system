@@ -139,6 +139,7 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/dataviz-angular` | 0.5.0 | E404 | bootstrap in `dataviz-publish.yml` |
 | `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
 | `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
+| `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
 
 For these three, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
