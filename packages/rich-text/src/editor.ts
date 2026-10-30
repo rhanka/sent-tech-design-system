@@ -1296,7 +1296,20 @@ export function createRichTextEditor(
   // then discards instead of committing: no `composition-commit` carries the
   // uncommitted text, the display reverts to the revision recorded at
   // composition start, and nothing is emitted after revocation.
-  let compositionBase: RichTextDocument | null = null;
+  //
+  // Committed-revision restoration: the pinned revision is the live
+  // ProseMirror content plus its wire/flag records at composition start.
+  // Local rollback restores both directly — never a Markdown reparse and
+  // never a seed-fresh classification — while the pre-composition
+  // acknowledgement state stays untouched.
+  let compositionBaseDoc: ProseMirrorNode | null = null;
+  let compositionBaseSeeds: {
+    texts: Map<string, string>;
+    touched: Set<string>;
+    preserved: Map<string, { hasRaw: boolean; hasKind: boolean }>;
+    versionTexts: Map<string, string>;
+    versionFlagTexts: Map<string, boolean>;
+  } | null = null;
   let compositionRevoked = false;
   const handleCompositionStart = (): void => {
     if (tracker.destroyed || !isActive()) return;
@@ -1304,7 +1317,19 @@ export function createRichTextEditor(
     composingAffected.clear();
     composingChanged = false;
     compositionRevoked = false;
-    compositionBase = displayedDocument();
+    // Recording read first so the version cache holds the committed
+    // revision's exact wire and flag.
+    displayedDocument();
+    compositionBaseDoc = editor.state.doc;
+    compositionBaseSeeds = {
+      texts: new Map(seeds.texts),
+      touched: new Set(seeds.touched),
+      preserved: new Map(
+        [...seeds.preserved].map(([key, value]) => [key, { ...value }] as const),
+      ),
+      versionTexts: new Map(seeds.versionTexts),
+      versionFlagTexts: new Map(seeds.versionFlagTexts),
+    };
     tracker.setComposing(true, currentCaptureResult);
   };
   const handleCompositionEnd = (): void => {
@@ -1337,13 +1362,39 @@ export function createRichTextEditor(
     // re-evaluated once under §5.6, against the reverted revision.
     if (compositionRevoked) {
       compositionRevoked = false;
-      const base = compositionBase;
-      compositionBase = null;
-      if (base !== null) {
+      const baseDoc = compositionBaseDoc;
+      const baseSeeds = compositionBaseSeeds;
+      compositionBaseDoc = null;
+      compositionBaseSeeds = null;
+      if (baseDoc !== null && baseSeeds !== null) {
         suppressEmit = true;
         try {
-          replaceDocument(base);
-          reseedConversion(seeds, base);
+          const restore = editor.state.tr.replaceWith(
+            0,
+            editor.state.doc.content.size,
+            baseDoc,
+          );
+          restore.setMeta("addToHistory", false);
+          restore.setMeta(PRESERVED_REPLACE_META, true);
+          editor.view.dispatch(restore);
+          // Restore the committed wire/flag records over any touched
+          // marking the flush and the revert dispatch just produced.
+          seeds.texts.clear();
+          for (const [key, value] of baseSeeds.texts) seeds.texts.set(key, value);
+          seeds.touched.clear();
+          for (const id of baseSeeds.touched) seeds.touched.add(id);
+          seeds.preserved.clear();
+          for (const [key, value] of baseSeeds.preserved) {
+            seeds.preserved.set(key, { ...value });
+          }
+          seeds.versionTexts.clear();
+          for (const [key, value] of baseSeeds.versionTexts) {
+            seeds.versionTexts.set(key, value);
+          }
+          seeds.versionFlagTexts.clear();
+          for (const [key, value] of baseSeeds.versionFlagTexts) {
+            seeds.versionFlagTexts.set(key, value);
+          }
         } finally {
           suppressEmit = false;
         }
@@ -1381,7 +1432,8 @@ export function createRichTextEditor(
       }
       return;
     }
-    compositionBase = null;
+    compositionBaseDoc = null;
+    compositionBaseSeeds = null;
     // §5.6 order: exactly one `composition-commit` first, then the deferred
     // external re-evaluation, then readiness opening and capture settlement.
     const changed = composingChanged;

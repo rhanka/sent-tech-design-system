@@ -1,11 +1,11 @@
 /**
- * CL-2 RED — adapter witnesses on the Svelte surface (spec §6.2, §8 CL-2).
+ * CL-2 adapter witnesses on the Svelte surface (spec §6.2, §8 CL-2).
  *
- * (1) Controlled surface, lock held by another ⇒ typing, paste, drop, cut
- * and mutation shortcuts are inert, no `onChange`, text still selectable.
- * (2) Acquiring the lock flips to editable without remount (same ProseMirror
- * instance, caret/selection preserved). (5) No provider ⇒ byte-identical
- * controlled behaviour to RT-1. (6) B8 with and without a live `binding`.
+ * RED: (1) controlled surface with the lock held by another, (2) acquiring
+ * the lock without remount, (6) B8 with and without a live `binding`.
+ * Compatibility coverage: (5) no provider ⇒ byte-identical controlled
+ * behaviour to RT-1. The `getBinding()` identity slot lives in seam-3
+ * coverage (`packages/rich-text/src/cl2-seams.test.ts`), never here.
  */
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render } from "@testing-library/svelte";
@@ -353,13 +353,12 @@ describe("CL-2 witness 6 — B8 with and without a live binding (RED)", () => {
   });
 });
 
-describe("CL-2 witness 5 — no provider ⇒ RT-1 behaviour byte-identically (RED)", () => {
+describe("CL-2 witness 5 — no provider ⇒ RT-1 behaviour byte-identically (compatibility coverage)", () => {
   it("omitting the new props mounts no live seam and keeps the RT-1 contract", async () => {
     const { collected, props } = collect({ editable: true });
     const { container } = render(RichTextEditor, { props });
     await tick();
     expect(container.querySelector('[data-testid="live-seam"]')).toBeNull();
-    expect(lastCore().getBinding()).toBeNull();
     const editable = editableOf(container);
     expect(editable.getAttribute("aria-label")).toBe("SENTINEL-EDITOR-LABEL");
     expect(editable.getAttribute("tabindex")).toBe("0");

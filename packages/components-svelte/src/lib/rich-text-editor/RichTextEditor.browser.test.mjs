@@ -123,6 +123,9 @@ const HARNESS_APP = `
     composition: {
       value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "start")] },
     },
+    "revoke-flagged": {
+      value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "")] },
+    },
     "capture-unmount": {
       value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "start")] },
     },
@@ -887,6 +890,82 @@ async function scenarioImeRevokeCapture(browser, base) {
   ok(label);
 }
 
+// P1 IME-LOCK-1 committed-revision restoration, representability send gate:
+// a committed non-representable draft survives revocation with its wire and
+// flag records. Probe: type literal `# titre` into the empty P0 paragraph
+// (capture flags it), start real IME composition, revoke, end composition
+// ⇒ display still shows `# titre`, capture still contains it with the same
+// flag, no extra change event; re-enable and type `X` ⇒ capture keeps
+// `# titre` plus `X`.
+async function scenarioImeRevokeFlagged(browser, base) {
+  const label = "ime-revoke-flagged";
+  const { page, done } = await openScenario(browser, base, "revoke-flagged");
+  await recordIdentity(page);
+  await page.click(".ProseMirror p");
+  await sleep(200);
+  await page.keyboard.type("# titre");
+  await sleep(400);
+  let events = await page.evaluate(() => window.__rt.events);
+  assert(events.changes.length >= 1, label, "typing # titre emitted no change");
+  const typedCount = events.changes.length;
+  let displayed = await page.evaluate(() => document.querySelector(".ProseMirror").textContent);
+  assert(displayed.includes("# titre"), label, `typed draft is not displayed: ${JSON.stringify(displayed)}`);
+  let captured = await page.evaluate(() => window.__rt.capture());
+  assert(captured.document.blocks[0].text === "# titre", label, `capture does not carry the typed draft: ${JSON.stringify(captured.document.blocks)}`);
+  assert(
+    Array.isArray(captured.representability.nonRepresentableParagraphIds) &&
+      captured.representability.nonRepresentableParagraphIds.length === 1,
+    label,
+    `typed draft is not flagged non-representable: ${JSON.stringify(captured.representability)}`,
+  );
+  const flaggedId = captured.representability.nonRepresentableParagraphIds[0];
+  const cdp = await page.createCDPSession();
+  const current = await docOf(page);
+  const end = current.blocks[0].text.length;
+  await cdp.send("Input.imeSetComposition", { selectionStart: end, selectionEnd: end, text: "pen" });
+  await sleep(200);
+  await page.evaluate(() => window.__rt.setEditable(false));
+  await sleep(300);
+  assert(await sameComponent(page), label, "revocation remounted the component");
+  await page.keyboard.type("X");
+  await sleep(300);
+  assert((await changesOf(page)).length === typedCount, label, "revoked surface accepted typing");
+  await page.evaluate(() => {
+    document.querySelector(".ProseMirror").dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+  });
+  await sleep(400);
+  events = await page.evaluate(() => window.__rt.events);
+  assert(events.changes.length === typedCount, label, `revocation discard emitted ${events.changes.length - typedCount} extra change(s)`);
+  displayed = await page.evaluate(() => document.querySelector(".ProseMirror").textContent);
+  assert(displayed.includes("# titre"), label, `committed draft vanished from the display: ${JSON.stringify(displayed)}`);
+  captured = await page.evaluate(() => window.__rt.capture());
+  assert(captured.document.blocks[0].text === "# titre", label, `capture lost the committed draft: ${JSON.stringify(captured.document.blocks)}`);
+  assert(
+    captured.representability.nonRepresentableParagraphIds.length === 1 &&
+      captured.representability.nonRepresentableParagraphIds[0] === flaggedId,
+    label,
+    `flag record did not survive revocation: ${JSON.stringify(captured.representability)}`,
+  );
+  await page.evaluate(() => window.__rt.setEditable(true));
+  await sleep(300);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.type("X");
+  await sleep(400);
+  assert(await sameComponent(page), label, "recovery remounted the component");
+  captured = await page.evaluate(() => window.__rt.capture());
+  assert(captured.document.blocks[0].text === "# titreX", label, `recovery lost the committed draft: ${JSON.stringify(captured.document.blocks)}`);
+  assert(
+    captured.representability.nonRepresentableParagraphIds.length === 1,
+    label,
+    `recovery dropped the flag: ${JSON.stringify(captured.representability)}`,
+  );
+  await cdp.detach();
+  await done(label);
+  ok(label);
+}
+
 // P2: noncanonical composer strings round-trip byte-identically through mount
 // and capture with no change event (leading/trailing/odd newline runs).
 async function scenarioComposerRoundtrip(browser, base) {
@@ -1371,6 +1450,7 @@ async function main() {
     await scenarioImeRevoke(browser, base);
     await scenarioImeRevokeAck(browser, base);
     await scenarioImeRevokeCapture(browser, base);
+    await scenarioImeRevokeFlagged(browser, base);
     await scenarioComposerRoundtrip(browser, base);
     await scenarioComposerImeSend(browser, base);
     await scenarioCaptureUnmount(browser, base);

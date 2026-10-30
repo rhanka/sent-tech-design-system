@@ -383,3 +383,70 @@ describe("revocation mid-composition discards (IME-LOCK-1 clauses 2/3/5, CL-2)",
     teardown();
   });
 });
+
+describe("revocation restores committed non-representable draft (IME-LOCK-1 committed-revision restoration, representability send gate)", () => {
+  function setupEmpty(): {
+    editor: RichTextEditor;
+    changes: RichTextChangeEvent[];
+    viewDom: HTMLElement;
+    teardown: () => void;
+  } {
+    const changes: RichTextChangeEvent[] = [];
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+    const editor: RichTextEditor = createRichTextEditor({
+      document: {
+        format: "focus.markdown.p0@1",
+        blocks: [paragraph("paragraph:1", "")],
+      },
+      messages: MESSAGES,
+      allocateId: (() => {
+        let n = 0;
+        return () => `paragraph:revflag-${++n}`;
+      })(),
+      element,
+      onChange: (event) => {
+        changes.push(event);
+      },
+    });
+    const viewDom =
+      (element.querySelector(".ProseMirror") as HTMLElement | null) ?? element;
+    return {
+      editor,
+      changes,
+      viewDom,
+      teardown: () => {
+        editor.destroy();
+        element.remove();
+      },
+    };
+  }
+
+  it("revocation during composition restores the committed ProseMirror content with its wire and flag records", async () => {
+    const { editor, changes, viewDom, teardown } = setupEmpty();
+    const id = "paragraph:1";
+    editor.typeText(id, "# titre");
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]).toMatchObject({ paragraphId: id, text: "# titre" });
+    expect(editor.view.dom.textContent ?? "").toContain("# titre");
+    let captured = await editor.captureDocument();
+    expect(captured.document.blocks[0]?.text).toBe("# titre");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    beginComposition(viewDom);
+    editor.setEditable(false);
+    endComposition(viewDom);
+    expect(changes).toHaveLength(1);
+    expect(editor.view.dom.textContent ?? "").toContain("# titre");
+    expect(editor.getDocument().blocks[0]).toMatchObject({ paragraphId: id, text: "# titre" });
+    captured = await editor.captureDocument();
+    expect(captured.document.blocks[0]?.text).toBe("# titre");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    editor.setEditable(true);
+    editor.typeText(id, "X");
+    expect(changes).toHaveLength(2);
+    captured = await editor.captureDocument();
+    expect(captured.document.blocks[0]?.text).toBe("# titreX");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    teardown();
+  });
+});

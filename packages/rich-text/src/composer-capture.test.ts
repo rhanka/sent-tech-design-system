@@ -107,4 +107,40 @@ describe("composer capture (CL-2 witness 7, RED)", () => {
       editor.destroy();
     }
   });
+
+  it("revocation during composition restores the committed flagged draft with its flag", async () => {
+    let changes = 0;
+    let sequence = 0;
+    const document = composerDocumentFromText("", () => `test:composer:${(sequence += 1)}`);
+    const editor = createRichTextEditor({
+      document,
+      messages: { ...MESSAGES },
+      element: globalThis.document.createElement("div"),
+      onChange: () => {
+        changes += 1;
+      },
+    });
+    const id = editor.getDocument().blocks[0]?.paragraphId as string;
+    editor.typeText(id, "# titre");
+    expect(changes).toBe(1);
+    let captured = await editor.captureDocument();
+    expect(composerTextFromDocument(captured.document)).toBe("# titre");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    const viewDom = editor.view.dom as HTMLElement;
+    viewDom.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    editor.setEditable(false);
+    viewDom.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+    expect(changes).toBe(1);
+    expect(editor.view.dom.textContent ?? "").toContain("# titre");
+    captured = await editor.captureDocument();
+    expect(composerTextFromDocument(captured.document)).toBe("# titre");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    editor.setEditable(true);
+    editor.typeText(id, "X");
+    expect(changes).toBe(2);
+    captured = await editor.captureDocument();
+    expect(composerTextFromDocument(captured.document)).toBe("# titreX");
+    expect(captured.representability.nonRepresentableParagraphIds).toEqual([id]);
+    editor.destroy();
+  });
 });
