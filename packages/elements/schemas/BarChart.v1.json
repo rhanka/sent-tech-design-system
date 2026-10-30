@@ -19,6 +19,18 @@
         },
         {
           "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
             "annotations": {
               "description": "Annotation overlay in data space (see ChartAnnotation).",
               "items": {
@@ -509,8 +521,36 @@
     }
   },
   "$id": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/BarChart.json",
-  "$ref": "#/$defs/component",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "The envelope schema specialised to one component (§5.2): it validates the envelope's root component object for BarChart, and its component part is equivalent (after canonical sorting) to the catalogue entry. Requires the A2UI common types under https://a2ui.org/specification/v0_9_1/common_types.json.",
-  "title": "BarChart component schema"
+  "description": "The envelope schema specialised to one component (§5.2): the §4.2 render envelope (optional catalogId, contract, optional mode, root) whose root is the BarChart component object; its component part ($defs.component) is equivalent, after canonical sorting, to catalog.json#/components/BarChart. Requires the A2UI common types under https://a2ui.org/specification/v0_9_1/common_types.json.",
+  "properties": {
+    "catalogId": {
+      "const": "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json",
+      "description": "Optional catalogue identifier; absent = the renderer's catalogue (§4.2).",
+      "type": "string"
+    },
+    "contract": {
+      "description": "Component-contract version the producer targets (§4.2, §4.4).",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "mode": {
+      "description": "\"snapshot\" (default) | \"preview\" (reserved, §10.3).",
+      "enum": [
+        "preview",
+        "snapshot"
+      ],
+      "type": "string"
+    },
+    "root": {
+      "$ref": "#/$defs/component"
+    }
+  },
+  "required": [
+    "contract",
+    "root"
+  ],
+  "title": "BarChart standalone envelope schema",
+  "type": "object",
+  "unevaluatedProperties": false
 }

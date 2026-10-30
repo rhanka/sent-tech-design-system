@@ -84,45 +84,70 @@ describe("compareJsonProps (the guard's comparison rule)", () => {
       },
       label: { type: "string" },
     };
-    expect(compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [] })).toEqual({
-      status: "match",
-      differences: [],
-    });
+    expect(
+      compareJsonProps(catalogProps, frameworkProps, {
+        excluded: [],
+        drops: [],
+        catalogRequired: ["data", "label"],
+        frameworkRequired: ["label", "data"],
+      }),
+    ).toEqual({ status: "match", differences: [] });
   });
 
   it("a declared narrowing drop is applied before comparing (dataLabels.format)", () => {
     const catalogDataLabels = { anyOf: [{ type: "boolean" }, { type: "object", properties: { position: { type: "string", enum: ["auto", "center", "inside", "outside", "top"] } }, additionalProperties: false }] };
     const frameworkDataLabels = { anyOf: [{ type: "boolean" }, { type: "object", properties: { format: { type: "object", $comment: "(value: number) => string" }, position: { type: "string", enum: ["auto", "inside", "outside", "top", "center"] } }, additionalProperties: false }] };
     expect(
-      compareJsonProps({ dataLabels: catalogDataLabels }, { dataLabels: frameworkDataLabels }, { excluded: [], drops: [{ prop: "dataLabels", members: ["format"] }] }),
+      compareJsonProps({ dataLabels: catalogDataLabels }, { dataLabels: frameworkDataLabels }, { excluded: [], drops: [{ prop: "dataLabels", members: ["format"] }], catalogRequired: [], frameworkRequired: [] }),
     ).toEqual({ status: "match", differences: [] });
   });
 
   it("an excluded prop is removed from the framework surface before comparing", () => {
     const frameworkProps = { ...catalogProps, onSelect: { type: "object", $comment: "(key: string) => void" } };
     expect(
-      compareJsonProps(catalogProps, frameworkProps, { excluded: [{ prop: "onSelect" }], drops: [] }),
+      compareJsonProps(catalogProps, frameworkProps, {
+        excluded: [{ prop: "onSelect" }],
+        drops: [],
+        catalogRequired: ["label", "data"],
+        // `onSelect` is required in the framework source but excluded from the
+        // compared surface: the required filter drops it with the prop.
+        frameworkRequired: ["label", "data", "onSelect"],
+      }),
     ).toEqual({ status: "match", differences: [] });
   });
 
   it("a missing catalogued prop is a mismatch", () => {
     const frameworkProps = { label: { type: "string" } };
-    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [] });
+    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [], catalogRequired: ["data", "label"], frameworkRequired: ["label"] });
     expect(result.status).toBe("mismatch");
     expect(result.differences).toContain("missing in framework: data");
   });
 
   it("a type drift is a mismatch", () => {
     const frameworkProps = { ...catalogProps, label: { type: "number" } };
-    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [] });
+    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [], catalogRequired: ["data", "label"], frameworkRequired: ["data", "label"] });
     expect(result.status).toBe("mismatch");
     expect(result.differences.some((difference) => difference.startsWith("label:"))).toBe(true);
   });
 
   it("an undeclared extra framework prop is a mismatch", () => {
     const frameworkProps = { ...catalogProps, surprise: { type: "string" } };
-    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [] });
+    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [], catalogRequired: ["data", "label"], frameworkRequired: ["data", "label"] });
     expect(result.status).toBe("mismatch");
     expect(result.differences).toContain("not catalogued, not excluded: surprise");
+  });
+
+  it("a prop required in the catalog but optional in the framework is a mismatch", () => {
+    const frameworkProps = { ...catalogProps };
+    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [], catalogRequired: ["data", "label"], frameworkRequired: ["data"] });
+    expect(result.status).toBe("mismatch");
+    expect(result.differences).toContain("label: required in catalog but optional in framework");
+  });
+
+  it("a prop optional in the catalog but required in the framework is a mismatch", () => {
+    const frameworkProps = { ...catalogProps };
+    const result = compareJsonProps(catalogProps, frameworkProps, { excluded: [], drops: [], catalogRequired: ["data"], frameworkRequired: ["data", "label"] });
+    expect(result.status).toBe("mismatch");
+    expect(result.differences).toContain("label: required in framework but optional in catalog");
   });
 });

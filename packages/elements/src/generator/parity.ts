@@ -28,6 +28,10 @@ export interface CompareOptions {
   readonly excluded: readonly { readonly prop: string }[];
   /** Declared narrowing drops, e.g. dataLabels.format. */
   readonly drops: readonly PropDrop[];
+  /** Top-level required props of the catalogued contract (compared too). */
+  readonly catalogRequired: readonly string[];
+  /** Top-level required props of the framework adapter, unfiltered. */
+  readonly frameworkRequired: readonly string[];
 }
 
 export interface CompareResult {
@@ -110,12 +114,28 @@ export function compareJsonProps(
     if (!(name in catalogProps)) differences.push(`not catalogued, not excluded: ${name}`);
   }
 
+  // Required-ness of the SHARED props is compared too: a prop required in
+  // the catalogue but optional in a framework adapter (or the reverse) is
+  // a drift even when the prop's JSON type matches. The framework set is
+  // filtered by membership in the post-exclusion surface, so excluded and
+  // dropped-away props do not count.
+  const frameworkRequired = new Set(options.frameworkRequired.filter((name) => name in frameworkProps));
+
   for (const name of catalogNames) {
     if (!(name in frameworkProps)) continue;
     const left = JSON.stringify(structuralSignature(catalogProps[name] as Json));
     const right = JSON.stringify(structuralSignature(frameworkProps[name] as Json));
     if (left !== right) {
       differences.push(`${name}: catalog ${left} != framework ${right}`);
+    }
+    const requiredInCatalog = options.catalogRequired.includes(name);
+    const requiredInFramework = frameworkRequired.has(name);
+    if (requiredInCatalog !== requiredInFramework) {
+      differences.push(
+        `${name}: required in ${requiredInCatalog ? "catalog" : "framework"} but optional in ${
+          requiredInCatalog ? "framework" : "catalog"
+        }`,
+      );
     }
   }
 
@@ -162,6 +182,16 @@ function propertiesOf(schema: Json): Record<string, Json> {
   return {};
 }
 
+function requiredOf(schema: Json): readonly string[] {
+  if (schema !== null && typeof schema === "object" && !Array.isArray(schema)) {
+    const required = (schema as { [key: string]: Json }).required;
+    if (Array.isArray(required)) {
+      return required.filter((name): name is string => typeof name === "string");
+    }
+  }
+  return [];
+}
+
 /** The `x-sentropic.parity` row for one framework. */
 export interface ParityRow {
   readonly status: "match" | "mismatch" | "source-of-truth" | "no-counterpart";
@@ -174,12 +204,14 @@ export interface ParityRow {
 
 /**
  * Runs the whole guard for one contract module against the committed catalog
- * entry's props, and returns the `x-sentropic.parity` rows. Throws on any
- * mismatch (§5.1: the guard fails) or on a stale contract declaration.
+ * entry's props (names, JSON types AND required-ness), and returns the
+ * `x-sentropic.parity` rows. Throws on any mismatch (§5.1: the guard fails)
+ * or on a stale contract declaration.
  */
 export function runParityGuard(
   contract: ContractModule,
   catalogProps: Record<string, Json>,
+  catalogRequired: readonly string[],
   repoRoot: string,
 ): Record<string, ParityRow> {
   const rows: Record<string, ParityRow> = {};
@@ -235,7 +267,12 @@ export function runParityGuard(
       prop: entry.prop === "class" && config.styleHook === "className" ? "className" : entry.prop,
     }));
     const drops = contract.narrowedUnions.map((entry) => ({ prop: entry.prop, members: entry.dropped }));
-    const result = compareJsonProps(catalogProps, frameworkProps, { excluded, drops });
+    const result = compareJsonProps(catalogProps, frameworkProps, {
+      excluded,
+      drops,
+      catalogRequired,
+      frameworkRequired: requiredOf(schema),
+    });
 
     rows[source.framework] = {
       status: result.status,

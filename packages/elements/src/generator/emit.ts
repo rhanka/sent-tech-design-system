@@ -12,11 +12,13 @@
  * schemas are then assembled and canonically ordered (§5.1), so a
  * regeneration without a type change produces no diff.
  *
- * The A2UI v0.9.1 common-types document (and the SDK catalogue schema its
- * `anyFunction` references live in) are vendored as a generated TypeScript
- * module (src/generated) — the installed SDK ships no v0_9_1 schema set, and
- * the validator needs the `ComponentCommon` graph registered under the v0.9.1
- * URI without reading files.
+ * The A2UI v0.9.1 common-types document is vendored as a generated
+ * TypeScript module (src/generated), beside a BUILT sibling `catalog.json`
+ * stub whose `anyFunction` is the empty-function-set union (`{ "not": {} }`,
+ * §5.2 `functions: {}`) — the installed SDK ships no v0_9_1 schema set, the
+ * validator needs the `ComponentCommon` graph registered under the v0.9.1
+ * URI without reading files, and no A2UI basic-catalogue function or
+ * component may validate inside an envelope (§4.1, §4.2).
  */
 
 import { createHash } from "node:crypto";
@@ -55,6 +57,31 @@ const ENVELOPE_DESCRIPTION =
 const CATALOG_COMPONENT_COMMON_DESCRIPTION =
   "The relative weight of this component within a Row or Column. This is similar to the CSS 'flex-grow' " +
   "property. Note: this may ONLY be set when the component is a direct descendant of a Row or Column.";
+
+/**
+ * The sibling `catalog.json` URI the vendored common types reference
+ * `anyFunction` by (common_types.json has exactly one reference into it,
+ * measured: `catalog.json#/$defs/anyFunction` from `FunctionCall`).
+ */
+const A2UI_SDK_CATALOG_ID = `${A2UI_COMMON_TYPES_ID.slice(0, A2UI_COMMON_TYPES_ID.lastIndexOf("/"))}/catalog.json`;
+
+/**
+ * The literal-only override of A2UI `ComponentCommon`'s `accessibility`
+ * (§4.1, §4.2). `ComponentCommon` types it as `DynamicString`
+ * (`string | DataBinding | FunctionCall`); v1 carries data only — every
+ * property value is a literal, the envelope never carries a function, and
+ * data binding is not used — so each entry's LOCAL allOf branch closes it
+ * to literal strings with no other keys, while the two §5.2 `allOf`
+ * references stay in place.
+ */
+const LITERAL_ACCESSIBILITY: Json = {
+  type: "object",
+  properties: {
+    label: { type: "string" },
+    description: { type: "string" },
+  },
+  additionalProperties: false,
+};
 
 function kebab(name: string): string {
   return name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
@@ -192,7 +219,7 @@ function reduceFragment(contract: ContractModule, fragment: Json, embedded: Embe
     properties.document = { $ref: `#/$defs/${embedded.name}` };
   }
 
-  const parity = runParityGuard(contract, fragmentProperties as Record<string, Json>, repoRoot);
+  const parity = runParityGuard(contract, fragmentProperties as Record<string, Json>, requiredProps, repoRoot);
 
   return {
     contract,
@@ -203,7 +230,11 @@ function reduceFragment(contract: ContractModule, fragment: Json, embedded: Embe
   };
 }
 
-/** The basic-catalogue entry (§5.2) with its x-sentropic block. */
+/**
+ * The basic-catalogue entry (§5.2) with its x-sentropic block. The local
+ * `allOf` branch carries the literal-only `accessibility` override (§4.1,
+ * §4.2 — see LITERAL_ACCESSIBILITY) beside the component's own props.
+ */
 function buildEntry(fragment: ContractFragment): Json {
   const { contract } = fragment;
   const xSentropic: Record<string, Json> = {
@@ -231,7 +262,11 @@ function buildEntry(fragment: ContractFragment): Json {
     allOf: [
       { $ref: COMPONENT_COMMON_REF },
       { $ref: "#/$defs/CatalogComponentCommon" },
-      { type: "object", properties: fragment.properties, required: [...fragment.required] },
+      {
+        type: "object",
+        properties: { ...fragment.properties, accessibility: LITERAL_ACCESSIBILITY },
+        required: [...fragment.required],
+      },
     ],
     unevaluatedProperties: false,
     "x-sentropic": xSentropic,
@@ -242,26 +277,31 @@ export interface VendoredA2uiSchemas {
   /** The vendored common-types document, `$id` rewritten to the v0.9.1 URI. */
   readonly commonTypes: Json;
   /**
-   * The SDK's basic-catalogue schema, `$id` rewritten to the sibling URI the
-   * common-types' `catalog.json#/$defs/anyFunction` reference expects.
+   * The BUILT sibling `catalog.json` document common_types references
+   * `anyFunction` by: an EMPTY function set (§5.2 `functions: {}`),
+   * serialised exactly as the SDK serialises one (`{ "not": {} }`,
+   * schema_serializer.js `EMPTY_UNION`) — every `FunctionCall` refuses.
    */
   readonly sdkCatalog: Json;
   readonly moduleText: string;
 }
 
 /**
- * Vendor the SDK's v0_9 common-types and basic-catalogue schemas as the
- * generated module under src/generated (§5.1: the generator is the single
- * source of the committed artifacts).
+ * Vendor the SDK's v0_9 common-types schema and BUILD the sibling
+ * `catalog.json` stub as the generated module under src/generated (§5.1:
+ * the generator is the single source of the committed artifacts).
  *
- * Both documents are needed: the catalogue's entries reference
- * `ComponentCommon`, whose reachable graph (accessibility, dynamic values,
- * function calls) ends at `anyFunction` — which lives in the SDK's catalogue
- * schema, not in common-types. The installed SDK ships no v0_9_1 schema set
- * (only v0_8, v0_9 and v1_0 — measured), so both are vendored with their
- * `$id`s rewritten to the v0.9.1 specification URIs: common-types to
- * `A2UI_COMMON_TYPES_ID`, and the basic-catalogue schema to its sibling name
- * `catalog.json`, the exact relative name common-types references it by.
+ * Only common_types.json is vendored: the catalogue's entries reference
+ * `ComponentCommon`, whose reachable graph ends at `anyFunction`, which
+ * lives in the sibling `catalog.json`. The SDK's basic catalogue that
+ * occupies that URI is deliberately NOT vendored: it would register the
+ * A2UI basic components and their 14 client-side functions, letting
+ * `FunctionCall` and `DataBinding` objects validate inside
+ * `root.accessibility` against §4.1 (the envelope never carries a
+ * function), §4.2 (literal-only values) and §5.2 (`functions: {}`). The
+ * stub carries the one `anyFunction` definition the graph needs, as the
+ * SDK itself serialises an empty function set: the empty union
+ * `{ "not": {} }` refuses every function call.
  */
 function vendorA2uiSchemas(repoRoot: string): VendoredA2uiSchemas {
   const sdkPackage = JSON.parse(
@@ -269,7 +309,6 @@ function vendorA2uiSchemas(repoRoot: string): VendoredA2uiSchemas {
   ) as { version: string };
   const sdkSchemasDir = join(repoRoot, "node_modules", "@a2ui", "web_core", "src", "v0_9", "schemas");
   const commonTypesBytes = readFileSync(join(sdkSchemasDir, "common_types.json"));
-  const sdkCatalogBytes = readFileSync(join(sdkSchemasDir, "catalogs", "basic", "catalog.json"));
 
   const commonTypesOriginal = JSON.parse(commonTypesBytes.toString("utf8")) as { [key: string]: Json };
   const commonTypesOriginalId = commonTypesOriginal.$id;
@@ -279,36 +318,35 @@ function vendorA2uiSchemas(repoRoot: string): VendoredA2uiSchemas {
   const commonTypesSha = sha256(commonTypesBytes);
   const commonTypes = canonicalize({ ...commonTypesOriginal, $id: A2UI_COMMON_TYPES_ID });
 
-  const sdkCatalogOriginal = JSON.parse(sdkCatalogBytes.toString("utf8")) as { [key: string]: Json };
-  const sdkCatalogOriginalId = sdkCatalogOriginal.$id;
-  if (typeof sdkCatalogOriginalId !== "string") {
-    throw new Error(`catalogs/basic/catalog.json from @a2ui/web_core has no $id to record`);
-  }
-  const sdkCatalogSha = sha256(sdkCatalogBytes);
-  const sdkCatalogId = `${A2UI_COMMON_TYPES_ID.slice(0, A2UI_COMMON_TYPES_ID.lastIndexOf("/"))}/catalog.json`;
-  const sdkCatalog = canonicalize({ ...sdkCatalogOriginal, $id: sdkCatalogId });
+  const sdkCatalog = canonicalize({
+    $schema: JSON_SCHEMA_2020_12,
+    $id: A2UI_SDK_CATALOG_ID,
+    $defs: {
+      anyFunction: { not: {} },
+    },
+  }) as Json;
 
   const header = [
     "/**",
     " * GENERATED FILE — do not edit. Regenerate with `npm run catalog:generate` in",
     " * packages/elements (the generator is the single source, §5.1).",
     " *",
-    " * Two A2UI schema documents, vendored from @a2ui/web_core@" + sdkPackage.version,
-    " * (src/v0_9/schemas — the installed SDK ships no v0_9_1 set; only v0_8,",
-    " * v0_9 and v1_0 exist, measured):",
-    " *",
-    " * 1. common_types.json (original $id " + commonTypesOriginalId + ",",
-    " *    sha256 " + commonTypesSha + "), $id rewritten to",
+    " * 1. common_types.json, vendored from @a2ui/web_core@" + sdkPackage.version,
+    " *    (src/v0_9/schemas — the installed SDK ships no v0_9_1 schema set; only",
+    " *    v0_8, v0_9 and v1_0 exist, measured). Original $id " + commonTypesOriginalId + ",",
+    " *    sha256 " + commonTypesSha + "; $id rewritten to",
     " *    " + A2UI_COMMON_TYPES_ID + " — the URI the catalogue's entries",
     " *    reference ComponentCommon by (§5.2).",
-    " * 2. catalogs/basic/catalog.json (original $id " + sdkCatalogOriginalId + ",",
-    " *    sha256 " + sdkCatalogSha + "), $id rewritten to",
-    " *    " + sdkCatalogId + " — the sibling name common_types",
-    " *    references anyFunction by; compiling an entry's ComponentCommon",
-    " *    graph needs it (accessibility -> dynamic values -> function calls).",
     " *",
-    " * The validator registers both under their rewritten $ids (plus v0_9-URI",
-    " * clones for the SDK's own absolute v0_9 references) so every entry",
+    " * 2. catalog.json, BUILT (not vendored): the sibling URI common_types",
+    " *    references anyFunction by (" + A2UI_SDK_CATALOG_ID + "), carrying",
+    " *    the single anyFunction definition of an EMPTY function set (§5.2",
+    ' *    `functions: {}`): the empty union `{ "not": {} }`, exactly as the',
+    " *    SDK serialises one (schema_serializer.js EMPTY_UNION). The A2UI",
+    " *    basic catalogue is deliberately NOT vendored — no A2UI function or",
+    " *    basic component may validate inside an envelope (§4.1, §4.2).",
+    " *",
+    " * The validator registers both documents under their $ids so every entry",
     " * reference resolves without network or file access.",
     " */",
     "export const a2uiCommonTypes: Record<string, unknown> = ",
@@ -386,25 +424,51 @@ export function buildArtifacts(repoRoot: string, packageDir: string): Artifacts 
   for (const fragment of fragments) {
     const { contract } = fragment;
     const catalogComponentCommon = defs.CatalogComponentCommon;
-    const componentSchema = components[contract.component];
-    if (catalogComponentCommon === undefined || componentSchema === undefined) {
+    if (catalogComponentCommon === undefined) {
       throw new Error(`${contract.component}: cannot assemble its standalone schema (missing shared definitions)`);
     }
+    // Built INDEPENDENTLY of the catalogue's entry object (§5.2): the
+    // standalone's component part must be EQUAL, after canonical sorting,
+    // to catalog.json#/components/<Name> — never the same in-memory
+    // reference, which would make the equivalence check a tautology.
+    const standaloneComponent = buildEntry(fragment);
     const standaloneDefs: Record<string, Json> = {
       CatalogComponentCommon: catalogComponentCommon,
-      component: componentSchema,
+      component: standaloneComponent,
     };
     if (fragment.embedded !== undefined) standaloneDefs[fragment.embedded.name] = fragment.embedded.schema;
     const standalone: Json = {
       $schema: JSON_SCHEMA_2020_12,
       $id: standaloneId(contract.component),
-      title: `${contract.component} component schema`,
+      title: `${contract.component} standalone envelope schema`,
       description:
-        `The envelope schema specialised to one component (§5.2): it validates the envelope's root component ` +
-        `object for ${contract.component}, and its component part is equivalent (after canonical sorting) to the ` +
-        `catalogue entry. Requires the A2UI common types under ${A2UI_COMMON_TYPES_ID}.`,
+        `The envelope schema specialised to one component (§5.2): the §4.2 render envelope ` +
+        `(optional catalogId, contract, optional mode, root) whose root is the ${contract.component} ` +
+        `component object; its component part ($defs.component) is equivalent, after canonical sorting, ` +
+        `to catalog.json#/components/${contract.component}. Requires the A2UI common types under ` +
+        `${A2UI_COMMON_TYPES_ID}.`,
+      type: "object",
+      properties: {
+        catalogId: {
+          type: "string",
+          const: CATALOG_ID,
+          description: "Optional catalogue identifier; absent = the renderer's catalogue (§4.2).",
+        },
+        contract: {
+          type: "string",
+          pattern: "^[0-9]+\\.[0-9]+$",
+          description: "Component-contract version the producer targets (§4.2, §4.4).",
+        },
+        mode: {
+          type: "string",
+          enum: ["snapshot", "preview"],
+          description: '"snapshot" (default) | "preview" (reserved, §10.3).',
+        },
+        root: { $ref: "#/$defs/component" },
+      },
+      required: ["contract", "root"],
+      unevaluatedProperties: false,
       $defs: standaloneDefs,
-      $ref: "#/$defs/component",
     };
     files.push({ path: `schemas/${contract.component}.v1.json`, text: stableStringify(standalone) });
   }
