@@ -122,9 +122,19 @@ vi.mock("@sentropic/design-system-rich-text/editor", async (importOriginal) => {
     createRichTextEditor: (
       options: Parameters<typeof actual.createRichTextEditor>[0],
     ) => {
-      const instance = actual.createRichTextEditor(options);
-      createdCores.push(instance);
-      return instance;
+      // Full construction is asynchronous (lazy full graph): record the
+      // settled instance, never the pending promise. P0 stays synchronous.
+      const maybe = actual.createRichTextEditor(options) as
+        | CoreEditor
+        | Promise<CoreEditor>;
+      if (maybe instanceof Promise) {
+        return maybe.then((instance) => {
+          createdCores.push(instance);
+          return instance;
+        });
+      }
+      createdCores.push(maybe);
+      return maybe;
     },
   };
 });
@@ -133,6 +143,19 @@ function lastCore(): CoreEditor {
   const instance = createdCores[createdCores.length - 1];
   expect(instance).toBeDefined();
   return instance as CoreEditor;
+}
+
+/** Deterministic mount wait for full-profile mounts (the full graph loads
+    on demand): poll for a core recorded after `previous` — bounded, fails
+    loudly when the mount never settles. P0 mounts settle synchronously. */
+async function waitForCore(previous: number): Promise<CoreEditor> {
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    if (createdCores.length > previous) {
+      return createdCores[createdCores.length - 1] as CoreEditor;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  throw new Error("editor core never settled");
 }
 
 function coreCount(): number {
@@ -986,6 +1009,62 @@ describe("nested controlled updates (review finding P2-1)", () => {
     expect(collected.conflicts).toHaveLength(1);
     expect(collected.conflicts[0]?.incoming.blocks[0]?.text).toBe("HOST-C");
     expect(editor.getDocument().blocks[0]?.text).toBe("Alpha one local");
+  });
+});
+
+describe("full-profile fingerprint (review 2 to-fix 2)", () => {
+  it("a controlled update changing only retainedRunMetadata is applied", async () => {
+    const collected = collect();
+    // A surviving member whose opener is gone: it carries the run id but
+    // no run values (R-FULL-META-2).
+    const memberMeta = (): Record<string, unknown> => ({
+      blockKind: "paragraph",
+      listKind: "ordered",
+      listDepth: 0,
+      listItemId: "m2",
+      listRunId: "list:1",
+      blockquoteDepth: 0,
+      containerOrder: ["list"],
+    });
+    const memberBlock = (): RichTextBlock => ({
+      paragraphId: "m2",
+      kind: "paragraph",
+      metadata: memberMeta() as never,
+      segments: [{ type: "text", text: "Second", marks: {} }],
+    });
+    const initial: RichTextDocument = {
+      format: "ds.markdown.full@1",
+      blocks: [memberBlock()],
+    };
+    const previous = createdCores.length;
+    const { rerender } = render(RichTextEditor, {
+      props: collected.props({ profile: "full", value: initial }),
+    });
+    await tick();
+    await waitForCore(previous);
+    expect(collected.conflicts).toHaveLength(0);
+    // The host supplies the deleted opener's source record through the
+    // retained map. Blocks are byte-identical: only the retained map
+    // changes, and the update must apply (Rule 4), never skip or conflict.
+    // (`orderedType: "1"` is the Tiptap-canonical absent value, dropped on
+    // capture like in every ordered fixture; `orderedStart` survives.)
+    const retained = {
+      "list:1": {
+        ...memberMeta(),
+        listItemId: "list:1",
+        orderedStart: 3,
+        listTight: true,
+      } as never,
+    };
+    const next: RichTextDocument = {
+      format: "ds.markdown.full@1",
+      blocks: [memberBlock()],
+      retainedRunMetadata: retained,
+    };
+    await rerender(collected.props({ profile: "full", value: next }));
+    await tick();
+    expect(collected.conflicts).toHaveLength(0);
+    expect(lastCore().getDocument().retainedRunMetadata).toEqual(retained);
   });
 });
 

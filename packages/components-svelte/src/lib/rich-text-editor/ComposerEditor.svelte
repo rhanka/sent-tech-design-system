@@ -13,6 +13,9 @@
   import {
     RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
     composerDocumentFromText,
+    composerFullSeededDocumentForText,
+    composerFullSeededDocumentFromText,
+    composerFullSeededTextFromDocument,
     composerTextFromDocument,
     createCaptureUnavailableError,
     formatUntranslatedMarker,
@@ -23,8 +26,8 @@
 
   /** Svelte props for the §6.2.1 string surface: the contract plus the
       identity injection point and a class passthrough. The `profile` prop
-      of the contract is accepted and pinned to the P0 conversion path;
-      `full` arrives with CL-2F (R-FULL-PROFILE-1). */
+      selects the conversion path (R-FULL-PROFILE-1): `p0` (default) keeps
+      the chunk mapping; `full` parses through the full Markdown bridge. */
   export interface ComposerEditorProps extends ComposerContract {
     allocateId?: () => string;
     class?: string;
@@ -32,6 +35,7 @@
 
   let {
     value,
+    profile = "p0",
     editable = true,
     disabled = false,
     messages,
@@ -45,9 +49,18 @@
 
   let root: HTMLDivElement | undefined;
   let mountEl: HTMLDivElement | undefined;
-  let core: CoreEditor | null = null;
+  let core = $state<CoreEditor | null>(null);
+  // In-flight full mount (review 3 blocking 1): `profile: "full"` builds
+  // asynchronously while P0 stays synchronous. `captureComposer()` awaits
+  // the pending mount and rejects only when unmounted during mount.
+  let pendingCore: Promise<CoreEditor | null> | null = null;
   let lastSeenValue: string | undefined;
   let localSequence = 0;
+  // Synthetic TrailingNode paragraph (review 3 blocking 3b): when the full
+  // mount ends with a non-paragraph block, Tiptap appends an empty trailing
+  // paragraph. Its id is recorded so the untouched composer re-emits the
+  // input byte-identically (R-COMP-2) instead of appending `"\n\n"`.
+  let trailingId: string | null = null;
 
   /** Mount-local fallback allocator (non-Focus default): identities stay
       internal to the composer and never reach the chat host. */
@@ -57,12 +70,57 @@
     return `composer:generated-${localSequence}`;
   }
 
+  /** Full-profile conversion seeds (review 1 item 10): untouched source
+      slice per block identity, retained across mount, edits and host
+      replacements so untouched slices re-emit byte-identically. Gesture
+      `affectedParagraphIds` mark the touched set; a host replacement
+      re-parses and resets both. P0 keeps the chunk mapping (no seeds). */
+  let fullSeeds: Map<string, string> = new Map();
+  let fullTouched: Set<string> = new Set();
+
   /** Controlled string → document with positional identity reuse: the
       chunk at an index the displayed document already holds keeps that
       block's identity, so a host echo of the last emitted string decides
       as §5.6 rule 1 (acknowledge, no conflict) instead of a spurious
-      session conflict. */
+      session conflict. The synthetic TrailingNode paragraph elides while
+      it stays empty and untouched, so an untouched composer whose last
+      block is not a paragraph captures byte-identically (R-COMP-2). */
+  function textFromDocument(document: RichTextDocument): string {
+    if (profile !== "full") return composerTextFromDocument(document);
+    if (document.blocks.length > 0) {
+      const last = document.blocks[document.blocks.length - 1];
+      const lastId = last?.paragraphId;
+      // The synthetic TrailingNode paragraph has no seed (it was never in
+      // the parsed input) and stays untouched: elide it while empty so an
+      // untouched composer captures byte-identically (R-COMP-2). A genuine
+      // trailing empty block carries its seed and is kept.
+      const synthetic =
+        lastId !== undefined &&
+        ((trailingId !== null && lastId === trailingId) || !fullSeeds.has(lastId)) &&
+        !fullTouched.has(lastId);
+      const empty =
+        last?.kind === "paragraph" &&
+        (last.segments === undefined || last.segments.length === 0) &&
+        (last.text === undefined || last.text === "");
+      if (synthetic && empty) {
+        return composerFullSeededTextFromDocument(
+          { format: "ds.markdown.full@1", blocks: document.blocks.slice(0, -1) },
+          fullSeeds,
+          fullTouched,
+        );
+      }
+    }
+    return composerFullSeededTextFromDocument(document, fullSeeds, fullTouched);
+  }
+
   function documentForText(text: string): RichTextDocument {
+    if (profile === "full") {
+      const previous = core?.getDocument()?.blocks ?? [];
+      const seeded = composerFullSeededDocumentForText(text, previous, freshId);
+      fullSeeds = seeded.seeds;
+      fullTouched = new Set();
+      return seeded.document;
+    }
     const chunks = splitComposerText(text);
     const previous = core?.getDocument()?.blocks ?? [];
     return {
@@ -79,6 +137,45 @@
         };
       }),
     };
+  }
+
+  function mountDocumentForText(text: string): RichTextDocument {
+    if (profile === "full") {
+      const seeded = composerFullSeededDocumentFromText(text, freshId);
+      fullSeeds = seeded.seeds;
+      fullTouched = new Set();
+      return seeded.document;
+    }
+    return composerDocumentFromText(text, freshId);
+  }
+
+  /** Record the synthetic TrailingNode paragraph appended on mount or host
+      replacement: exactly one extra empty paragraph whose id the input did
+      not carry. Any other shape leaves `trailingId` null. */
+  function refreshTrailingId(
+    inputBlocks: RichTextDocument["blocks"],
+    displayedBlocks: RichTextDocument["blocks"],
+  ): void {
+    if (profile !== "full") {
+      trailingId = null;
+      return;
+    }
+    if (displayedBlocks.length !== inputBlocks.length + 1) {
+      trailingId = null;
+      return;
+    }
+    const inputIds = new Set(inputBlocks.map((block) => block.paragraphId));
+    const last = displayedBlocks[displayedBlocks.length - 1];
+    if (
+      last?.kind === "paragraph" &&
+      !inputIds.has(last.paragraphId) &&
+      (last.segments === undefined || last.segments.length === 0) &&
+      (last.text === undefined || last.text === "")
+    ) {
+      trailingId = last.paragraphId;
+      return;
+    }
+    trailingId = null;
   }
 
   function isActive(): boolean {
@@ -136,11 +233,27 @@
       pending at unmount rejects exactly once with
       `RichTextCaptureUnavailable` (IME-LOCK-1 clause 4). */
   export function captureComposer(): Promise<ComposerCaptureResult> {
-    if (!core) return Promise.reject(createCaptureUnavailableError());
-    return core.captureDocument().then((captured) => ({
-      text: composerTextFromDocument(captured.document),
-      representability: captured.representability,
-    }));
+    if (core) {
+      return core.captureDocument().then((captured) => ({
+        text: textFromDocument(captured.document),
+        representability: captured.representability,
+      }));
+    }
+    // Mount pending (review 3 blocking 1): await the in-flight full mount
+    // and capture from the settled instance. Reject only when unmounted
+    // or failed during mount.
+    if (pendingCore !== null) {
+      return pendingCore.then((instance) => {
+        if (instance !== null && core !== null) {
+          return core.captureDocument().then((captured) => ({
+            text: textFromDocument(captured.document),
+            representability: captured.representability,
+          }));
+        }
+        return Promise.reject(createCaptureUnavailableError());
+      });
+    }
+    return Promise.reject(createCaptureUnavailableError());
   }
 
   export function readiness(): RichTextReadiness {
@@ -206,9 +319,52 @@
         event.target.blur();
       }
     };
+    const mountText = value;
+    const mountDoc = mountDocumentForText(value);
     lastSeenValue = value;
-    core = createRichTextEditor({
-      document: composerDocumentFromText(value, freshId),
+    let cancelled = false;
+    const settle = (instance: CoreEditor): void => {
+      if (cancelled) {
+        instance.destroy();
+        return;
+      }
+      core = instance;
+      host.addEventListener("keydown", forwardKey, true);
+      for (const type of stopTypes) {
+        host.addEventListener(type, stopAtBoundary);
+      }
+      host.addEventListener("mousedown", guardDisabledPointer);
+      host.addEventListener("focus", guardDisabledFocus, true);
+      // Reconcile prop updates that arrived while the full graph loaded
+      // (review 3 blocking 1): apply the latest host string and the current
+      // editability instead of leaving the mount snapshot stale.
+      instance.setEditable(editable);
+      instance.setDisabled(disabled);
+      const current = value;
+      if (current !== mountText) {
+        lastSeenValue = current;
+        untrack(() => {
+          const nextDoc = documentForText(current);
+          instance.applyExternalUpdate(nextDoc);
+          refreshTrailingId(nextDoc.blocks, instance.getDocument().blocks);
+        });
+      } else {
+        lastSeenValue = current;
+        refreshTrailingId(mountDoc.blocks, instance.getDocument().blocks);
+      }
+      syncChrome();
+      void tick().then(() => {
+        syncChrome();
+      });
+    };
+    // Single-prop opt-in (R-FULL-PROFILE-1): full construction loads the
+    // extension graph on demand and is asynchronous, P0 stays synchronous.
+    // The pending gap keeps `readiness()` not-ready while `core` is null;
+    // `captureComposer()` awaits the pending mount (rejecting only when
+    // unmounted or failed during mount).
+    const maybeCore = createRichTextEditor({
+      document: mountDoc,
+      profile,
       messages: {
         ...messages,
         placeholder: provided("placeholder") ?? formatUntranslatedMarker("placeholder"),
@@ -224,27 +380,46 @@
         // distinct value — send-clear, edit cancel, external replacement —
         // applies cleanly instead of raising a spurious session conflict.
         // Capture never sets or clears this flag; only this adoption does.
+        // Full seeds: the gesture's affected identities lose their source
+        // slice (they serialize canonically from here on); untouched
+        // identities keep re-emitting their seed bytes.
         const instance = core;
         if (instance) {
           instance.applyExternalUpdate(event.document);
         }
-        onChange?.(composerTextFromDocument(event.document));
+        if (profile === "full") {
+          for (const identity of event.gesture.affectedParagraphIds) {
+            fullTouched.add(identity);
+            fullSeeds.delete(identity);
+          }
+        }
+        onChange?.(textFromDocument(event.document));
       },
       onReadinessChange: (event) => {
         onReadinessChange?.(event);
       },
-    });
-    host.addEventListener("keydown", forwardKey, true);
-    for (const type of stopTypes) {
-      host.addEventListener(type, stopAtBoundary);
+    }) as CoreEditor | Promise<CoreEditor>;
+    if (maybeCore instanceof Promise) {
+      pendingCore = maybeCore.then(
+        (instance) => {
+          settle(instance);
+          return cancelled ? null : instance;
+        },
+        () => {
+          // A failed full-graph load leaves the surface unmounted; the host
+          // observes it through the pending readiness path (never a throw
+          // out of the mount effect).
+          return null;
+        },
+      );
+    } else {
+      pendingCore = null;
+      settle(maybeCore);
     }
-    host.addEventListener("mousedown", guardDisabledPointer);
-    host.addEventListener("focus", guardDisabledFocus, true);
-    syncChrome();
-    void tick().then(() => {
-      syncChrome();
-    });
     return () => {
+      cancelled = true;
+      pendingCore = null;
+      trailingId = null;
       host.removeEventListener("keydown", forwardKey, true);
       for (const type of stopTypes) {
         host.removeEventListener(type, stopAtBoundary);
@@ -272,10 +447,12 @@
     }
     lastSeenValue = snapshot;
     untrack(() => {
-      if (composerTextFromDocument(instance.getDocument()) === snapshot) {
+      if (textFromDocument(instance.getDocument()) === snapshot) {
         return;
       }
-      instance.applyExternalUpdate(documentForText(snapshot));
+      const nextDoc = documentForText(snapshot);
+      instance.applyExternalUpdate(nextDoc);
+      refreshTrailingId(nextDoc.blocks, instance.getDocument().blocks);
       syncChrome();
     });
   });

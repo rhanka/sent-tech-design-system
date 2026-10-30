@@ -7,6 +7,7 @@
 // capture/readiness state machine are all plain TypeScript over the model.
 
 import type {
+  RetainedRunMetadata,
   RichTextBlock,
   RichTextCaptureResult,
   RichTextDocument,
@@ -18,9 +19,18 @@ import {
   RICH_TEXT_CAPTURE_UNAVAILABLE_NAME,
 } from "./model.js";
 
-/** Copy one block with exactly its significant keys: `paragraph` blocks carry
-    `paragraphId`/`kind`/`text` only, `preserved` blocks carry
-    `paragraphId`/`kind`/`raw`/`preservedKind` only. Absent stays absent. */
+/** Copy one block with exactly its significant keys: P0 `paragraph` blocks
+    carry `paragraphId`/`kind`/`text` only, `preserved` blocks carry
+    `paragraphId`/`kind`/`raw`/`preservedKind` only, full text blocks carry
+    `paragraphId`/`kind`/`metadata`/`segments` (never `text`), and full
+    horizontal-rule atoms carry `paragraphId`/`kind`/`hrMetadata` only.
+    Absent stays absent. */
+function copyInlineMarks(
+  marks: Record<string, unknown>,
+): Record<string, unknown> {
+  return { ...marks };
+}
+
 function copyBlock(block: RichTextBlock): RichTextBlock {
   if (block.kind === "preserved") {
     const copy: RichTextBlock = {
@@ -33,6 +43,39 @@ function copyBlock(block: RichTextBlock): RichTextBlock {
     }
     return copy;
   }
+  if (block.kind === "horizontalRule") {
+    const copy: RichTextBlock = {
+      paragraphId: block.paragraphId,
+      kind: "horizontalRule",
+    };
+    if (block.hrMetadata !== undefined) {
+      copy.hrMetadata = copyFullMetadata(block.hrMetadata);
+    }
+    return copy;
+  }
+  if (block.segments !== undefined || block.metadata !== undefined) {
+    const copy: RichTextBlock = {
+      paragraphId: block.paragraphId,
+      kind: "paragraph",
+    };
+    if (block.metadata !== undefined) {
+      copy.metadata = copyFullMetadata(block.metadata);
+    }
+    if (block.segments !== undefined) {
+      copy.segments = block.segments.map((segment) =>
+        segment.type === "hardBreak"
+          ? { type: "hardBreak" as const }
+          : {
+              type: "text" as const,
+              text: segment.text,
+              marks: {
+                ...segment.marks,
+              },
+            },
+      );
+    }
+    return copy;
+  }
   const copy: RichTextBlock = {
     paragraphId: block.paragraphId,
     kind: "paragraph",
@@ -41,15 +84,38 @@ function copyBlock(block: RichTextBlock): RichTextBlock {
   return copy;
 }
 
+/** Copy one full metadata record with its significant keys: the scalar
+    fields plus an independent `containerOrder` array. Absent stays absent. */
+function copyFullMetadata<T extends { containerOrder: readonly unknown[] }>(
+  metadata: T,
+): T {
+  return {
+    ...metadata,
+    containerOrder: [...(metadata.containerOrder ?? [])],
+  };
+}
+
 /** Exact-key document copy: an independent value carrying only the §5.6
-    significant fields, so hosts can key-inspect the emitted surface. */
+    significant fields, so hosts can key-inspect the emitted surface. The
+    full run-source retention map (§4.3.2 R-FULL-META-2) travels with the
+    document so it survives capture, copy and remount. */
 export function copyRichTextDocument(
   document: RichTextDocument,
 ): RichTextDocument {
-  return {
+  const copy: RichTextDocument = {
     format: document.format,
     blocks: document.blocks.map(copyBlock),
   };
+  if (document.retainedRunMetadata !== undefined) {
+    const retained: RetainedRunMetadata = {};
+    for (const [runId, record] of Object.entries(
+      document.retainedRunMetadata,
+    )) {
+      retained[runId] = copyFullMetadata(record);
+    }
+    copy.retainedRunMetadata = retained;
+  }
+  return copy;
 }
 
 function optionalTextEqual(
@@ -59,10 +125,88 @@ function optionalTextEqual(
   return (left ?? undefined) === (right ?? undefined);
 }
 
+function marksEqual(
+  left: Record<string, unknown> | undefined,
+  right: Record<string, unknown> | undefined,
+): boolean {
+  const l = left ?? {};
+  const r = right ?? {};
+  const lKeys = Object.keys(l).sort();
+  const rKeys = Object.keys(r).sort();
+  if (lKeys.length !== rKeys.length) return false;
+  return lKeys.every((key, index) => key === rKeys[index] && l[key] === r[key]);
+}
+
+function segmentsEqual(
+  left: RichTextBlock["segments"],
+  right: RichTextBlock["segments"],
+): boolean {
+  if (left === undefined || right === undefined) return left === right;
+  if (left.length !== right.length) return false;
+  return left.every((segment, index) => {
+    const other = right[index];
+    if (other === undefined) return false;
+    if (segment.type !== other.type) return false;
+    if (segment.type === "hardBreak" || other.type === "hardBreak") return true;
+    return (
+      segment.text === other.text &&
+      marksEqual(
+        segment.marks as unknown as Record<string, unknown>,
+        (other as unknown as { marks: Record<string, unknown> }).marks,
+      )
+    );
+  });
+}
+
+/** Structural metadata equality: significant fields compared by value,
+    never by key insertion order. An absent field and an explicitly
+    `undefined` field are the same absence; `containerOrder` compares
+    element-wise. */
+function metadataEqual(
+  left: { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+  right: { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+): boolean {
+  if (left === undefined || right === undefined) return left === right;
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
+  for (const key of keys) {
+    const l = left[key];
+    const r = right[key];
+    if (l === undefined || r === undefined) {
+      if (l !== r) return false;
+      continue;
+    }
+    if (Array.isArray(l) || Array.isArray(r)) {
+      if (!Array.isArray(l) || !Array.isArray(r)) return false;
+      if (l.length !== r.length) return false;
+      for (let index = 0; index < l.length; index += 1) {
+        if (l[index] !== r[index]) return false;
+      }
+      continue;
+    }
+    if (l !== r) return false;
+  }
+  return true;
+}
+
 function blocksEqual(left: RichTextBlock, right: RichTextBlock): boolean {
+  if (left.paragraphId !== right.paragraphId || left.kind !== right.kind) {
+    return false;
+  }
+  if (left.kind === "horizontalRule" || right.kind === "horizontalRule") {
+    return metadataEqual(
+      left.hrMetadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+      right.hrMetadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+    );
+  }
+  if (left.segments !== undefined || right.segments !== undefined) {
+    return (
+      metadataEqual(
+        left.metadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+        right.metadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+      ) && segmentsEqual(left.segments, right.segments)
+    );
+  }
   return (
-    left.paragraphId === right.paragraphId &&
-    left.kind === right.kind &&
     optionalTextEqual(left.text, right.text) &&
     optionalTextEqual(left.raw, right.raw) &&
     optionalTextEqual(left.preservedKind, right.preservedKind)
@@ -73,11 +217,39 @@ function blocksEqual(left: RichTextBlock, right: RichTextBlock): boolean {
     significant field with absent-equals-absent strictness. Never a diff: a
     difference in `format` alone, in `kind` alone, or in the `raw` of one
     preserved block alone is a real difference, never an echo. */
+function retainedEqual(
+  left: RetainedRunMetadata | undefined,
+  right: RetainedRunMetadata | undefined,
+): boolean {
+  if (left === undefined || right === undefined) {
+    return (
+      (left === undefined || Object.keys(left).length === 0) &&
+      (right === undefined || Object.keys(right).length === 0)
+    );
+  }
+  const leftKeys = Object.keys(left).sort();
+  const rightKeys = Object.keys(right).sort();
+  if (leftKeys.length !== rightKeys.length) return false;
+  return leftKeys.every((key, index) => {
+    if (key !== rightKeys[index]) return false;
+    const l = left[key] as unknown as
+      | ({ containerOrder: readonly unknown[] } & Record<string, unknown>)
+      | undefined;
+    const r = (right as RetainedRunMetadata)[key] as unknown as
+      | ({ containerOrder: readonly unknown[] } & Record<string, unknown>)
+      | undefined;
+    return metadataEqual(l, r);
+  });
+}
+
 export function richTextDocumentsEqual(
   left: RichTextDocument,
   right: RichTextDocument,
 ): boolean {
   if (left.format !== right.format) return false;
+  if (!retainedEqual(left.retainedRunMetadata, right.retainedRunMetadata)) {
+    return false;
+  }
   if (left.blocks.length !== right.blocks.length) return false;
   return left.blocks.every((block, index) => {
     const other = right.blocks[index];
