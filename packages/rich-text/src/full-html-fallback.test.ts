@@ -10,16 +10,11 @@
  */
 import { describe, expect, it } from "vitest";
 import { createRichTextEditor } from "./editor.js";
-import {
-  createFullEditorExtensions,
-  ensureFullEditorExtensionsRegistered,
-} from "./editor-full-extensions.js";
+import { createFullEditorExtensions } from "./editor-full-extensions.js";
 import type { RichTextDocument } from "./model.js";
 import { parseFullMarkdown, serializeFullDocument } from "./editor-full-markdown.js";
 
 const HOSTILE = '<u class="x" onclick="alert(1)">Under</u>';
-
-ensureFullEditorExtensionsRegistered();
 
 function allocator(): () => string {
   let sequence = 0;
@@ -33,7 +28,7 @@ function emptyFullDocument(): RichTextDocument {
   };
 }
 
-function mountFull() {
+async function mountFull() {
   return createRichTextEditor({
     document: emptyFullDocument(),
     profile: "full",
@@ -63,7 +58,7 @@ function underlinedRuns(document: RichTextDocument): string[] {
 }
 
 describe("review 1 item 12: no generic Markdown HTML fallback in full", () => {
-  it("full graph contains no generic Markdown manager", () => {
+  it("full graph contains no generic Markdown manager", async () => {
     const extensions = createFullEditorExtensions({
       placeholder: "",
       placeholderMarker: () => null,
@@ -72,19 +67,19 @@ describe("review 1 item 12: no generic Markdown HTML fallback in full", () => {
     expect(extensions.map((extension) => extension.name)).not.toContain("markdown");
   });
 
-  it("parses attributed <u> as literal text with no underline mark", () => {
+  it("parses attributed <u> as literal text with no underline mark", async () => {
     const parsed = parseFullMarkdown(HOSTILE, allocator());
     expect(parsed.refusedKinds).toEqual([]);
     expect(underlinedRuns(parsed.document)).toEqual([]);
     expect(textOf(parsed.document)).toContain('<u class="x"');
   });
 
-  it("keeps an unmatched </u> as literal text", () => {
+  it("keeps an unmatched </u> as literal text", async () => {
     const parsed = parseFullMarkdown(HOSTILE, allocator());
     expect(textOf(parsed.document)).toContain("</u>");
   });
 
-  it("round-trips the hostile line losslessly through serialize", () => {
+  it("round-trips the hostile line losslessly through serialize", async () => {
     const first = parseFullMarkdown(HOSTILE, allocator());
     const wire = serializeFullDocument(first.document);
     const second = parseFullMarkdown(wire, allocator());
@@ -92,8 +87,8 @@ describe("review 1 item 12: no generic Markdown HTML fallback in full", () => {
     expect(underlinedRuns(second.document)).toEqual([]);
   });
 
-  it("pastes hostile markdown text as literal with no underline mark", () => {
-    const editor = mountFull();
+  it("pastes hostile markdown text as literal with no underline mark", async () => {
+    const editor = await mountFull();
     try {
       editor.paste({ text: HOSTILE });
       const after = editor.getDocument();
@@ -104,9 +99,9 @@ describe("review 1 item 12: no generic Markdown HTML fallback in full", () => {
     }
   });
 
-  it("refuses an HTML paste carrying an event handler whole", () => {
+  it("refuses an HTML paste carrying an event handler whole", async () => {
     const rejected: string[][] = [];
-    const rejecting = createRichTextEditor({
+    const rejecting = await createRichTextEditor({
       document: emptyFullDocument(),
       profile: "full",
       messages: { placeholder: "", placeholderMarker: "" },

@@ -2,7 +2,6 @@
   import { onMount, tick, untrack } from "svelte";
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
-  import { ensureFullEditorExtensionsRegistered } from "@sentropic/design-system-rich-text/editor-full-extensions";
   import type {
     ComposerCaptureResult,
     ComposerEditorProps as ComposerContract,
@@ -243,8 +242,30 @@
       }
     };
     lastSeenValue = value;
-    if (profile === "full") ensureFullEditorExtensionsRegistered();
-    core = createRichTextEditor({
+    let cancelled = false;
+    const settle = (instance: CoreEditor): void => {
+      if (cancelled) {
+        instance.destroy();
+        return;
+      }
+      core = instance;
+      host.addEventListener("keydown", forwardKey, true);
+      for (const type of stopTypes) {
+        host.addEventListener(type, stopAtBoundary);
+      }
+      host.addEventListener("mousedown", guardDisabledPointer);
+      host.addEventListener("focus", guardDisabledFocus, true);
+      syncChrome();
+      void tick().then(() => {
+        syncChrome();
+      });
+    };
+    // Single-prop opt-in (R-FULL-PROFILE-1): full construction loads the
+    // extension graph on demand and is asynchronous, P0 stays synchronous.
+    // The pending gap is absorbed by the existing mount-pending path
+    // (`readiness()` reports not-ready and `captureComposer()` rejects
+    // while `core` is null).
+    const maybeCore = createRichTextEditor({
       document: mountDocumentForText(value),
       profile,
       messages: {
@@ -280,18 +301,18 @@
       onReadinessChange: (event) => {
         onReadinessChange?.(event);
       },
-    });
-    host.addEventListener("keydown", forwardKey, true);
-    for (const type of stopTypes) {
-      host.addEventListener(type, stopAtBoundary);
+    }) as CoreEditor | Promise<CoreEditor>;
+    if (maybeCore instanceof Promise) {
+      void maybeCore.then(settle, () => {
+        // A failed full-graph load leaves the surface unmounted; the host
+        // observes it through the pending readiness path (never a throw
+        // out of the mount effect).
+      });
+    } else {
+      settle(maybeCore);
     }
-    host.addEventListener("mousedown", guardDisabledPointer);
-    host.addEventListener("focus", guardDisabledFocus, true);
-    syncChrome();
-    void tick().then(() => {
-      syncChrome();
-    });
     return () => {
+      cancelled = true;
       host.removeEventListener("keydown", forwardKey, true);
       for (const type of stopTypes) {
         host.removeEventListener(type, stopAtBoundary);

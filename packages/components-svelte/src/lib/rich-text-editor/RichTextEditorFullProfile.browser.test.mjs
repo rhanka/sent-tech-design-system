@@ -375,10 +375,39 @@ window.__rtUnmount = () => unmount(app);
 window.__rtRemount = (doc) => {
   unmount(app);
   window.__harnessValue = doc;
+  window.__rtReady = false;
   app = mount(HarnessApp, { target: document.getElementById("app") });
+  scheduleReadyMark();
   return true;
 };
-window.__rtReady = true;
+// Full construction loads the extension graph on demand (dynamic import),
+// so the core settles after mount: readiness gates on the component
+// reporting ready, absorbing the async gap (review 2 blocking 1). The
+// harness exposes the surfaces as __full/__composer (never __rt).
+window.__rtReady = false;
+function currentReadiness() {
+  try {
+    const composer = window.__composer;
+    if (composer && composer.editor()) return composer.readiness();
+  } catch {
+    // Not the composer surface: fall through to the document surface.
+  }
+  return window.__full.readiness();
+}
+function scheduleReadyMark() {
+  let ready = false;
+  try {
+    ready = currentReadiness().ready === true;
+  } catch {
+    ready = false;
+  }
+  if (ready) {
+    window.__rtReady = true;
+    return;
+  }
+  setTimeout(scheduleReadyMark, 25);
+}
+scheduleReadyMark();
 `;
 
 const HARNESS_HTML = `<!doctype html>
@@ -439,6 +468,10 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function openScenario(browser, base, scenario, surface = "document", extraQuery = "") {
   const page = await browser.newPage();
+  // Cache off: every navigation re-requests its modules, so the lazy
+  // full-graph chunk is observable on every full mount (positive control
+  // for review 2 blocking 1).
+  await page.setCacheEnabled(false);
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
   await page.evaluateOnNewDocument(() => {
@@ -478,6 +511,11 @@ async function openScenario(browser, base, scenario, surface = "document", extra
       }));
       assert(providerGlobals.y === "undefined", label, "a Yjs global landed on the offline page");
       assert(providerGlobals.hocuspocus === "undefined", label, "a Hocuspocus global landed on the offline page");
+      // Review 2 blocking 1, lazy-graph positive control: the full mount
+      // resolves its extension graph on demand through a dynamic chunk
+      // named after `editor-full-extensions`.
+      const fullChunk = requests.filter((entry) => entry.includes("editor-full-extensions"));
+      assert(fullChunk.length > 0, label, "full mount never requested the lazy extension graph chunk");
       const foreign = requests.filter((entry) => {
         const parts = entry.split(" ");
         const url = parts.slice(1, -1).join(" ");
@@ -531,7 +569,8 @@ const runItemsOf = (doc, run) => doc.blocks.filter((block) => block.metadata && 
 const remountCapture = async (page, label, step) => {
   const before = await docOf(page);
   await page.evaluate((doc) => window.__rtRemount(doc), before);
-  await sleep(500);
+  // The remounted full core settles after its on-demand graph load.
+  await page.waitForFunction("window.__rtReady === true", { timeout: 30000 });
   await recordIdentity(page);
   const after = await docOf(page);
   assert(JSON.stringify(after) === JSON.stringify(before), label, `${step} remount changed the capture`);

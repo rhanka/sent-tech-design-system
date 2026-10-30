@@ -7,10 +7,11 @@
 // helpers. The P0 module path (`editor.ts` + `editor-extensions.ts`) never
 // imports it, so an absent/P0 mount evaluates none of those packages.
 //
-// Loading is explicit: import this module and call
-// `ensureFullEditorExtensionsRegistered()` before mounting with
-// `profile: "full"`. A full mount without registration refuses with a
-// descriptive error instead of widening a P0 graph implicitly. The generic
+// Loading is on demand: `createRichTextEditor` dynamically imports this
+// module on the first `profile: "full"` mount, and the import
+// self-registers the factory (review 2 blocking 1). The module is internal
+// to the package — not a package export — so no P0 path references it.
+// The generic
 // Markdown manager extension is intentionally absent here (review 1 item 12):
 // the full wire is the DS-owned pure bridge in `editor-full-markdown.ts`,
 // and no generic Markdown HTML fallback renders in full.
@@ -37,7 +38,7 @@ import { HardBreak } from "@tiptap/extension-hard-break";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Dropcursor, Gapcursor, TrailingNode } from "@tiptap/extensions";
 import { mergeAttributes } from "@tiptap/core";
-import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
+import { isAllowedHref } from "./collaboration.js";
 import { Extension } from "@tiptap/core";
 import type { AnyExtension } from "@tiptap/core";
 import { Fragment } from "@tiptap/pm/model";
@@ -165,9 +166,9 @@ const SafeLink = Link.configure({
   autolink: true,
   defaultProtocol: "http",
   HTMLAttributes: {},
-  validate: (url: string): boolean => isAllowedHref(decodeHrefToken(url)),
-  isAllowedUri: (url: string): boolean => isAllowedHref(decodeHrefToken(url)),
-  shouldAutoLink: (url: string): boolean => isAllowedHref(decodeHrefToken(url)),
+  validate: (url: string): boolean => isAllowedHref(url),
+  isAllowedUri: (url: string): boolean => isAllowedHref(url),
+  shouldAutoLink: (url: string): boolean => isAllowedHref(url),
 }).extend({
   renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, unknown> }) {
     if (this.editor !== undefined && !this.editor.isEditable) {
@@ -200,10 +201,12 @@ const ForbiddenLinkGuard = Extension.create({
             for (const mark of node.marks ?? []) {
               if (mark.type.name !== "link") continue;
               const href = mark.attrs["href"];
+              // The single validator decodes entities itself: the
+              // entity-decoded and raw forms both refuse here.
               if (
                 typeof href === "string" &&
                 href !== "" &&
-                !isAllowedHref(decodeHrefToken(href))
+                !isAllowedHref(href)
               ) {
                 forbidden = true;
                 return false;

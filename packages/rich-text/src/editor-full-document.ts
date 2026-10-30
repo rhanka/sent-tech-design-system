@@ -45,9 +45,18 @@ function orderOf(block: RichTextBlock): readonly ("quote" | "list")[] {
   return block.metadata?.containerOrder ?? [];
 }
 
-function listDepthOf(block: RichTextBlock): number {
-  if (block.kind !== "paragraph") return 0;
-  return block.metadata?.listKind !== "none" ? (block.metadata?.listDepth ?? 0) : -1;
+/** List depth for projection grouping (review 2 to-fix 1): a
+    horizontal rule carries its wrapper metadata on `hrMetadata`, never on
+    `metadata`, so grouping must read it there — otherwise a rule inside a
+    nested list or quote projects outside its wrappers. */
+function projectionListDepth(block: RichTextBlock, fallback: number): number {
+  if (block.kind === "horizontalRule") {
+    const hr = block.hrMetadata;
+    if (hr !== undefined && hr.listKind !== "none") return hr.listDepth;
+    return fallback;
+  }
+  if (block.kind !== "paragraph") return fallback;
+  return block.metadata?.listDepth ?? fallback;
 }
 
 function isListBlock(block: RichTextBlock): boolean {
@@ -254,7 +263,7 @@ function buildListRun(
     currentItemBlocks = [];
   };
   for (const block of runBlocks) {
-    const depth = block.kind === "paragraph" ? (block.metadata?.listDepth ?? runDepth) : runDepth;
+    const depth = projectionListDepth(block, runDepth);
     if (depth === runDepth && itemIdOf(block) !== (currentItemBlocks.length > 0 ? itemIdOf(currentItemBlocks[0] as RichTextBlock) : null)) {
       flushItem();
       currentItemBlocks = [block];
@@ -335,7 +344,7 @@ function buildItemContent(
     quoteRun = [];
   };
   for (const block of blocks) {
-    const depth = block.kind === "paragraph" ? (block.metadata?.listDepth ?? runDepth) : runDepth;
+    const depth = projectionListDepth(block, runDepth);
     if (depth !== runDepth) {
       flushQuote();
       content.push({ type: "__nested__", attrs: {}, nestedBlock: block } as unknown as JSONContent);
@@ -466,13 +475,13 @@ function buildTopLevel(
     if (outer === "list") {
       const runBlocks: RichTextBlock[] = [block];
       const runId = runIdOf(block);
-      const runDepth = block.metadata?.listDepth ?? 0;
+      const runDepth = projectionListDepth(block, 0);
       const listKind = block.metadata?.listKind ?? "bullet";
       index += 1;
       while (index < blocks.length) {
         const next = blocks[index] as RichTextBlock;
         if (effectiveOuter(next) !== "list") break;
-        const nextDepth = next.metadata?.listDepth ?? 0;
+        const nextDepth = projectionListDepth(next, 0);
         // Deeper blocks nest inside the current run's last item; only a
         // same-or-shallower block with another run id closes the run.
         if (nextDepth <= runDepth && runIdOf(next) !== runId) break;

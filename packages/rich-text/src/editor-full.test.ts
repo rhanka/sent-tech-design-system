@@ -27,9 +27,6 @@ import {
   createRichTextEditor,
   type RichTextEditor,
 } from "./editor.js";
-import { ensureFullEditorExtensionsRegistered } from "./editor-full-extensions.js";
-
-ensureFullEditorExtensionsRegistered();
 
 const mounted: RichTextEditor[] = [];
 afterEach(() => {
@@ -71,7 +68,7 @@ function fullDoc(blocks: RichTextDocument["blocks"]): RichTextDocument {
   return { format: "ds.markdown.full@1", blocks };
 }
 
-function mountFull(
+async function mountFull(
   blocks: RichTextDocument["blocks"],
   options: {
     editable?: boolean;
@@ -80,8 +77,8 @@ function mountFull(
     placeholder?: string;
     placeholderMarker?: string;
   } = {},
-): RichTextEditor {
-  const editor = createRichTextEditor({
+): Promise<RichTextEditor> {
+  const editor = await createRichTextEditor({
     document: fullDoc(blocks),
     profile: "full",
     messages: {
@@ -132,11 +129,11 @@ function withCanonicalMaterialization(
     the first. A TrailingNode paragraph may follow the input blocks — real
     allocator-identified content (spec §2.8: it stays a content block under
     F01) — exactly when the last input block is not a plain paragraph. */
-function expectStableRemount(
+async function expectStableRemount(
   blocks: RichTextDocument["blocks"],
 ): RichTextDocument {
   const expected = withCanonicalMaterialization(blocks);
-  const first = mountFull(blocks);
+  const first = await mountFull(blocks);
   const capture1 = first.getDocument();
   expect(capture1.blocks.slice(0, expected.length)).toEqual(expected);
   const rest = capture1.blocks.slice(expected.length);
@@ -152,7 +149,7 @@ function expectStableRemount(
   } else {
     expect(isTopLevelParagraphBlock(expected[expected.length - 1])).toBe(true);
   }
-  const second = mountFull(capture1.blocks);
+  const second = await mountFull(capture1.blocks);
   const capture2 = second.getDocument();
   expect(capture2).toEqual(capture1);
   return capture1;
@@ -207,8 +204,8 @@ function pressKey(editor: RichTextEditor, key: string, extra: Partial<KeyboardEv
 }
 
 describe("CL-2F-F01 paragraphs E/P/C", () => {
-  it("CL-2F-F01-E-text: types, clears and splits paragraphs keeping identities", () => {
-    const editor = mountFull([
+  it("CL-2F-F01-E-text: types, clears and splits paragraphs keeping identities", async () => {
+    const editor = await mountFull([
       para("p1", [textRun("Hello")]),
       para("p2", [], {}),
       para("p3", [textRun("Tail")]),
@@ -225,8 +222,8 @@ describe("CL-2F-F01 paragraphs E/P/C", () => {
     expect(split.blocks[0]).toMatchObject({ paragraphId: "p1" });
   });
 
-  it("CL-2F-F01-P-text: pastes paragraphs keeping breaks and allocating identities", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F01-P-text: pastes paragraphs keeping breaks and allocating identities", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "First\n\nSecond" });
     const after = editor.getDocument();
     expect(after.blocks.length).toBeGreaterThan(2);
@@ -241,8 +238,8 @@ describe("CL-2F-F01 paragraphs E/P/C", () => {
     }
   });
 
-  it("CL-2F-F01-C-text: capture remounts byte-stable", () => {
-    const capture = expectStableRemount([
+  it("CL-2F-F01-C-text: capture remounts byte-stable", async () => {
+    const capture = await expectStableRemount([
       para("p1", [textRun("First")]),
       para("p2", [], {}),
       para("p3", [textRun("Third")]),
@@ -259,9 +256,9 @@ describe("CL-2F-F02 headings E/P/C", () => {
   ): RichTextDocument["blocks"][number] =>
     para(id, [textRun(text)], { blockKind: "heading", headingLevel: level });
 
-  it("CL-2F-F02-E-heading: converts and edits every level keeping ids", () => {
+  it("CL-2F-F02-E-heading: converts and edits every level keeping ids", async () => {
     const levels = [1, 2, 3, 4, 5, 6] as const;
-    const editor = mountFull(levels.map((level, index) => heading(`h${index}`, level, `Title ${level}`)));
+    const editor = await mountFull(levels.map((level, index) => heading(`h${index}`, level, `Title ${level}`)));
     editor.typeText("h2", "!");
     const after = editor.getDocument();
     // The trailing node helper appends one identified empty paragraph after
@@ -276,8 +273,8 @@ describe("CL-2F-F02 headings E/P/C", () => {
     }
   });
 
-  it("CL-2F-F02-P-heading: pastes ATX and Setext headings to heading blocks", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F02-P-heading: pastes ATX and Setext headings to heading blocks", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "# Pasted\n\nSetext\n===" });
     const after = editor.getDocument();
     const headings = after.blocks.filter(
@@ -288,8 +285,8 @@ describe("CL-2F-F02 headings E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("# Pasted");
   });
 
-  it("CL-2F-F02-C-heading: heading capture remounts stable", () => {
-    expectStableRemount([
+  it("CL-2F-F02-C-heading: heading capture remounts stable", async () => {
+    await expectStableRemount([
       heading("h1", 1, "One"),
       heading("h2", 6, "Six"),
     ]);
@@ -312,8 +309,8 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
     }),
   ];
 
-  it("CL-2F-F03-E-bullet: indents with Tab keeping content, ids and starts", () => {
-    const editor = mountFull([
+  it("CL-2F-F03-E-bullet: indents with Tab keeping content, ids and starts", async () => {
+    const editor = await mountFull([
       para("a1", [textRun("Alpha")], {
         listKind: "bullet", listDepth: 0, listRunId: "a1", listItemId: "a1",
         listTight: true, containerOrder: ["list"],
@@ -334,8 +331,8 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
     expect(JSON.stringify(beta)).toContain("Beta");
   });
 
-  it("CL-2F-F04-E-ordered: keeps the start across edits and remounts", () => {
-    const editor = mountFull(listFixture());
+  it("CL-2F-F04-E-ordered: keeps the start across edits and remounts", async () => {
+    const editor = await mountFull(listFixture());
     editor.typeText("o2", "!");
     const after = editor.getDocument();
     const opener = after.blocks.find((block) => block.paragraphId === "o1");
@@ -346,8 +343,8 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("4. Second!");
   });
 
-  it("CL-2F-F05-P-list: pastes markdown lists to editable structure", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F05-P-list: pastes markdown lists to editable structure", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     // Canonical nesting sits at the parent content column (three spaces
     // under "2. "); a two-space indent is a sibling under CommonMark.
     editor.paste({ text: "1. First\n2. Second\n   - Nested" });
@@ -363,12 +360,81 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("1. First\n2. Second\n   - Nested");
   });
 
-  it("CL-2F-F05-C-list: list capture remounts stable", () => {
-    expectStableRemount(listFixture());
+  it("CL-2F-F05-C-list: list capture remounts stable", async () => {
+    await expectStableRemount(listFixture());
   });
 
-  it("CL-2F-F05-C-loose: loose runs keep their separation", () => {
-    const capture = expectStableRemount([
+  it("CL-2F-review2-hr-nested-list: an HR inside a nested list projects inside its wrappers", async () => {
+    // The rule carries its wrapper metadata on `hrMetadata` (never on
+    // `metadata`): projection must read it there, so the rule neither
+    // splits the parent run into two items nor escapes to top level.
+    const editor = await mountFull([
+      para("l1", [textRun("One")], {
+        listKind: "bullet", listDepth: 0, listRunId: "l1", listItemId: "l1",
+        containerOrder: ["list"],
+      }),
+      {
+        paragraphId: "hr1",
+        kind: "horizontalRule",
+        hrMetadata: {
+          listKind: "bullet",
+          listDepth: 1,
+          listItemId: "nx",
+          listRunId: "l1",
+          blockquoteDepth: 0,
+          containerOrder: ["list", "list"],
+        },
+      } as never,
+      para("l2", [textRun("Two")], {
+        listKind: "bullet", listDepth: 1, listRunId: "l1", listItemId: "l2",
+        containerOrder: ["list", "list"],
+      }),
+    ]);
+    const json = editor.view.state.doc.toJSON() as {
+      content: { type: string; content?: { type: string }[] }[];
+    };
+    const lists = (json.content ?? []).filter((node) => node.type === "bulletList");
+    expect(lists).toHaveLength(1);
+    const items = (lists[0]?.content ?? []).filter((node) => node.type === "listItem");
+    // No run split: the parent item holds the paragraph, the rule and the
+    // nested list together.
+    expect(items).toHaveLength(1);
+    expect((items[0]?.content ?? []).map((node) => node.type)).toEqual([
+      "paragraph",
+      "horizontalRule",
+      "bulletList",
+    ]);
+  });
+
+  it("CL-2F-review2-hr-nested-quote: an HR inside a nested quote projects inside its wrappers", async () => {
+    const editor = await mountFull([
+      para("q1", [textRun("One")], { blockquoteDepth: 1, containerOrder: ["quote"] }),
+      {
+        paragraphId: "hr1",
+        kind: "horizontalRule",
+        hrMetadata: {
+          listKind: "none",
+          listDepth: 0,
+          blockquoteDepth: 1,
+          containerOrder: ["quote"],
+        },
+      } as never,
+      para("q2", [textRun("Two")], { blockquoteDepth: 1, containerOrder: ["quote"] }),
+    ]);
+    const json = editor.view.state.doc.toJSON() as {
+      content: { type: string; content?: { type: string }[] }[];
+    };
+    const quotes = (json.content ?? []).filter((node) => node.type === "blockquote");
+    expect(quotes).toHaveLength(1);
+    expect((quotes[0]?.content ?? []).map((node) => node.type)).toEqual([
+      "paragraph",
+      "horizontalRule",
+      "paragraph",
+    ]);
+  });
+
+  it("CL-2F-F05-C-loose: loose runs keep their separation", async () => {
+    const capture = await expectStableRemount([
       para("l1", [textRun("One")], {
         listKind: "bullet", listDepth: 0, listRunId: "l1", listItemId: "l1",
         listTight: false, containerOrder: ["list"],
@@ -385,8 +451,8 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
 });
 
 describe("CL-2F-F06/F07 links E/P/C", () => {
-  it("CL-2F-F06-E-link: sets a labeled link with optional title through the surface", () => {
-    const editor = mountFull([para("p1", [textRun("Read the source")])]);
+  it("CL-2F-F06-E-link: sets a labeled link with optional title through the surface", async () => {
+    const editor = await mountFull([para("p1", [textRun("Read the source")])]);
     setCursor(editor, "p1", 0);
     const { state } = editor.view;
     const tr = state.tr.setSelection(
@@ -411,8 +477,8 @@ describe("CL-2F-F06/F07 links E/P/C", () => {
     expect(serializeFullDocument(after)).toContain('[the source](https://example.com "Title")');
   });
 
-  it("CL-2F-F07-P-link: pastes URL text to an autolinked run", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F07-P-link: pastes URL text to an autolinked run", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "See https://example.com for details" });
     const after = editor.getDocument();
     const wire = serializeFullDocument(after);
@@ -423,8 +489,8 @@ describe("CL-2F-F06/F07 links E/P/C", () => {
     expect(linked.length).toBeGreaterThan(0);
   });
 
-  it("CL-2F-F06-C-link: link capture remounts stable", () => {
-    expectStableRemount([
+  it("CL-2F-F06-C-link: link capture remounts stable", async () => {
+    await expectStableRemount([
       para("p1", [
         textRun("Read "),
         textRun("the source", { link: "https://example.com", linkTitle: "Title" }),
@@ -440,8 +506,8 @@ describe("CL-2F-F08 blockquote E/P/C", () => {
     para("q2", [textRun("Second")], { blockquoteDepth: 1, containerOrder: ["quote"] }),
   ];
 
-  it("CL-2F-F08-E-quote: wraps a paragraph through the command path", () => {
-    const editor = mountFull([para("p1", [textRun("Wrap me")])]);
+  it("CL-2F-F08-E-quote: wraps a paragraph through the command path", async () => {
+    const editor = await mountFull([para("p1", [textRun("Wrap me")])]);
     setCursor(editor, "p1", 0);
     const command = wrapIn(editor.view.state.schema.nodes["blockquote"]);
     command(editor.view.state, editor.view.dispatch);
@@ -450,8 +516,8 @@ describe("CL-2F-F08 blockquote E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("> Wrap me");
   });
 
-  it("CL-2F-F08-P-quote: pastes quote prefixes to nested depth", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F08-P-quote: pastes quote prefixes to nested depth", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "> Quoted\n>\n> Second" });
     const after = editor.getDocument();
     const quoted = after.blocks.filter((block) => (block.metadata?.blockquoteDepth ?? 0) > 0);
@@ -459,8 +525,8 @@ describe("CL-2F-F08 blockquote E/P/C", () => {
     expect(quoted.every((block) => block.metadata?.blockquoteDepth === 1)).toBe(true);
   });
 
-  it("CL-2F-F08-C-quote: quote capture remounts stable", () => {
-    expectStableRemount(quoteFixture());
+  it("CL-2F-F08-C-quote: quote capture remounts stable", async () => {
+    await expectStableRemount(quoteFixture());
   });
 });
 
@@ -471,8 +537,8 @@ describe("CL-2F-F09/F10 code E/P/C", () => {
     }),
   ];
 
-  it("CL-2F-F09-E-code: toggles inline code without dropping sibling marks", () => {
-    const editor = mountFull([para("p1", [textRun("Bold and code", { bold: true })])]);
+  it("CL-2F-F09-E-code: toggles inline code without dropping sibling marks", async () => {
+    const editor = await mountFull([para("p1", [textRun("Bold and code", { bold: true })])]);
     setCursor(editor, "p1", 0);
     const { state } = editor.view;
     editor.view.dispatch(state.tr.setSelection(TextSelection.create(state.doc, 10, 14)));
@@ -485,8 +551,8 @@ describe("CL-2F-F09/F10 code E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("`");
   });
 
-  it("CL-2F-F10-E-block: converts a prose block to code keeping language and lines", () => {
-    const editor = mountFull([para("p1", [textRun("const x = 1;")])]);
+  it("CL-2F-F10-E-block: converts a prose block to code keeping language and lines", async () => {
+    const editor = await mountFull([para("p1", [textRun("const x = 1;")])]);
     setCursor(editor, "p1", 0);
     const { state } = editor.view;
     const command = setBlockType(
@@ -500,12 +566,22 @@ describe("CL-2F-F09/F10 code E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("```js\nconst x = 1;\n```");
   });
 
-  it("CL-2F-F10-C-code-controlled: conversion clears inline formats and never resurrects them", () => {
-    const editor = mountFull([
+  it("CL-2F-F10-C-code-controlled: conversion clears every inline attribute and never resurrects it", async () => {
+    // Spec §8 (CL-2F-F10-C-code-controlled): the input prose carries every
+    // admitted inline attribute (bold, italic, code, strike, underline,
+    // link, linkTitle) plus a hard break for LF preservation.
+    const editor = await mountFull([
       para("p1", [
-        textRun("Bold", { bold: true }),
-        textRun(" and "),
-        textRun("linked", { link: "https://example.com" }),
+        textRun("BoldItalic", { bold: true, italic: true }),
+        textRun("Code", { code: true }),
+        textRun("Strike", { strike: true }),
+        textRun("Under", { underline: true }),
+        textRun("Linked", {
+          link: "https://example.com/guide",
+          linkTitle: "Guide title",
+        }),
+        { type: "hardBreak" },
+        textRun("Tail"),
       ]),
     ]);
     setCursor(editor, "p1", 0);
@@ -520,35 +596,53 @@ describe("CL-2F-F09/F10 code E/P/C", () => {
     ).toBe(true);
     const asCode = editor.getDocument();
     expect(asCode.blocks[0]?.metadata?.blockKind).toBe("codeBlock");
+    expect(asCode.blocks[0]?.metadata).toMatchObject({ codeLanguage: "ts" });
     const codeSegments = asCode.blocks[0]?.kind === "paragraph" ? (asCode.blocks[0].segments ?? []) : [];
+    // Unmarked code with the same text, LF and language.
+    expect(
+      codeSegments
+        .map((segment) => (segment.type === "hardBreak" ? "\n" : (segment as { text: string }).text))
+        .join(""),
+    ).toBe("BoldItalicCodeStrikeUnderLinked\nTail");
     for (const segment of codeSegments) {
       if (segment.type === "text") expect(segment.marks).toEqual({});
     }
-    // Converting back resurrects nothing: provenance of the clearing stands.
-    setCursor(editor, "p1", 0);
-    const toProse = setBlockType(editor.view.state.schema.nodes["paragraph"], {
+    expect(serializeFullDocument(asCode)).toContain(
+      "```ts\nBoldItalicCodeStrikeUnderLinked\nTail\n```",
+    );
+    // Retained provenance asserted separately: the controlled conversion
+    // records no run-source provenance for the converted block.
+    expect(asCode.retainedRunMetadata ?? {}).toEqual({});
+    // Remount: capture/remount contains the same unmarked code.
+    const remounted = await mountFull(asCode.blocks);
+    expect(remounted.getDocument()).toEqual(asCode);
+    // Converting back restores no mark: none of the seven inline
+    // attributes return.
+    setCursor(remounted, "p1", 0);
+    const toProse = setBlockType(remounted.view.state.schema.nodes["paragraph"], {
       paragraphId: "p1",
     });
     expect(
-      toProse(editor.view.state, editor.view.dispatch, editor.view),
+      toProse(remounted.view.state, remounted.view.dispatch, remounted.view),
     ).toBe(true);
-    const backToProse = editor.getDocument();
+    const backToProse = remounted.getDocument();
     const proseSegments =
       backToProse.blocks[0]?.kind === "paragraph" ? (backToProse.blocks[0].segments ?? []) : [];
+    expect(proseSegments.length).toBeGreaterThan(0);
     for (const segment of proseSegments) {
       if (segment.type === "text") expect(segment.marks).toEqual({});
     }
   });
 
-  it("CL-2F-F10-P-code: pastes fenced blocks with language and longer fences", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F10-P-code: pastes fenced blocks with language and longer fences", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "````\ncode with ``` inside\n````" });
     const after = editor.getDocument();
     expect(after.blocks.some((block) => block.metadata?.blockKind === "codeBlock")).toBe(true);
   });
 
-  it("CL-2F-F10-C-code: code capture remounts stable", () => {
-    const capture = expectStableRemount(codeFixture());
+  it("CL-2F-F10-C-code: code capture remounts stable", async () => {
+    const capture = await expectStableRemount(codeFixture());
     expect(serializeFullDocument(capture)).toContain(
       "```js\nconst count = 1;\nconst total = count;\n```",
     );
@@ -556,8 +650,8 @@ describe("CL-2F-F09/F10 code E/P/C", () => {
 });
 
 describe("CL-2F-F11/F12/F13/F14 marks E/P/C", () => {
-  it("CL-2F-F11/12-E-bold-italic: toggles bold and italic through the surface", () => {
-    const editor = mountFull([para("p1", [textRun("Make me bold and italic")])]);
+  it("CL-2F-F11/12-E-bold-italic: toggles bold and italic through the surface", async () => {
+    const editor = await mountFull([para("p1", [textRun("Make me bold and italic")])]);
     const { state } = editor.view;
     editor.view.dispatch(state.tr.setSelection(TextSelection.create(state.doc, 1, 8)));
     const schema = editor.view.state.schema;
@@ -572,8 +666,8 @@ describe("CL-2F-F11/F12/F13/F14 marks E/P/C", () => {
     expect(wire).toBe("**Make me** bold *and italic*");
   });
 
-  it("CL-2F-F13-E-strike: toggles strike and keeps it on the wire", () => {
-    const editor = mountFull([para("p1", [textRun("Remove this")])]);
+  it("CL-2F-F13-E-strike: toggles strike and keeps it on the wire", async () => {
+    const editor = await mountFull([para("p1", [textRun("Remove this")])]);
     const { state } = editor.view;
     editor.view.dispatch(state.tr.setSelection(TextSelection.create(state.doc, 1, 7)));
     const strike = toggleMark(editor.view.state.schema.marks["strike"]);
@@ -581,8 +675,8 @@ describe("CL-2F-F11/F12/F13/F14 marks E/P/C", () => {
     expect(serializeFullDocument(editor.getDocument())).toBe("~~Remove~~ this");
   });
 
-  it("CL-2F-F14-P-underline: pastes <u> and styled underline to the mark", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F14-P-underline: pastes <u> and styled underline to the mark", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ html: "<p>Plain <u>under</u> and <span style=\"text-decoration: underline;\">styled</span></p>" });
     const after = editor.getDocument();
     const underlined = after.blocks.flatMap((block) =>
@@ -592,8 +686,8 @@ describe("CL-2F-F11/F12/F13/F14 marks E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("<u>under</u>");
   });
 
-  it("CL-2F-F11/12/13/14-C-marks: mark capture remounts stable", () => {
-    expectStableRemount([
+  it("CL-2F-F11/12/13/14-C-marks: mark capture remounts stable", async () => {
+    await expectStableRemount([
       para("p1", [
         textRun("Bold", { bold: true }),
         textRun(" "),
@@ -608,8 +702,8 @@ describe("CL-2F-F11/F12/F13/F14 marks E/P/C", () => {
 });
 
 describe("CL-2F-F15 horizontal rule E/P/C", () => {
-  it("CL-2F-F15-E-hr: inserts an atomic rule keeping its identity", () => {
-    const editor = mountFull([para("p1", [textRun("Before")])]);
+  it("CL-2F-F15-E-hr: inserts an atomic rule keeping its identity", async () => {
+    const editor = await mountFull([para("p1", [textRun("Before")])]);
     setCursor(editor, "p1", 6);
     const hr = editor.view.state.schema.nodes["horizontalRule"]?.create({ paragraphId: "hr1" });
     expect(hr).toBeDefined();
@@ -622,15 +716,15 @@ describe("CL-2F-F15 horizontal rule E/P/C", () => {
     expect(serializeFullDocument(after)).toBe("Before\n\n---\n\n");
   });
 
-  it("CL-2F-F15-P-hr: pastes rule spellings to one atom", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F15-P-hr: pastes rule spellings to one atom", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "Before\n\n***\n\nAfter" });
     const after = editor.getDocument();
     expect(after.blocks.some((block) => block.kind === "horizontalRule")).toBe(true);
   });
 
-  it("CL-2F-F15-C-hr: rule capture remounts stable", () => {
-    const capture = expectStableRemount([
+  it("CL-2F-F15-C-hr: rule capture remounts stable", async () => {
+    const capture = await expectStableRemount([
       para("p1", [textRun("Before")]),
       { paragraphId: "hr1", kind: "horizontalRule" },
       para("p3", [textRun("After")]),
@@ -640,8 +734,8 @@ describe("CL-2F-F15 horizontal rule E/P/C", () => {
 });
 
 describe("CL-2F-F16 hard breaks E/P/C", () => {
-  it("CL-2F-F16-E-break: Shift+Enter inserts a break without splitting", () => {
-    const editor = mountFull([para("p1", [textRun("Hardbreak")])]);
+  it("CL-2F-F16-E-break: Shift+Enter inserts a break without splitting", async () => {
+    const editor = await mountFull([para("p1", [textRun("Hardbreak")])]);
     setCursor(editor, "p1", 4);
     pressKey(editor, "Enter", { shiftKey: true });
     const after = editor.getDocument();
@@ -649,8 +743,8 @@ describe("CL-2F-F16 hard breaks E/P/C", () => {
     expect(serializeFullDocument(after)).toBe("Hard\\\nbreak");
   });
 
-  it("CL-2F-F16-P-break: pastes backslash and two-space breaks", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F16-P-break: pastes backslash and two-space breaks", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     editor.paste({ text: "Hard\\\nbreak\n\nTwo  \nspaces" });
     const after = editor.getDocument();
     const withBreak = after.blocks.filter(
@@ -662,8 +756,8 @@ describe("CL-2F-F16 hard breaks E/P/C", () => {
     expect(serializeFullDocument(after)).toContain("Hard\\\nbreak");
   });
 
-  it("CL-2F-F16-C-break: terminal breaks stay in capture, off the wire", () => {
-    const capture = expectStableRemount([
+  it("CL-2F-F16-C-break: terminal breaks stay in capture, off the wire", async () => {
+    const capture = await expectStableRemount([
       para("p1", [textRun("Twin"), { type: "hardBreak" }]),
       para("p2", [textRun("Twin"), { type: "hardBreak" }]),
     ]);
@@ -674,8 +768,8 @@ describe("CL-2F-F16 hard breaks E/P/C", () => {
 });
 
 describe("CL-2F-F17 document E/C", () => {
-  it("CL-2F-F17-E-doc: edits inside a mixed document keep wrappers and order", () => {
-    const editor = mountFull([
+  it("CL-2F-F17-E-doc: edits inside a mixed document keep wrappers and order", async () => {
+    const editor = await mountFull([
       para("h1", [textRun("Title")], { blockKind: "heading", headingLevel: 1 }),
       para("q1", [textRun("Quoted")], { blockquoteDepth: 1, containerOrder: ["quote"] }),
       para("o1", [textRun("Item")], {
@@ -694,8 +788,8 @@ describe("CL-2F-F17 document E/C", () => {
     expect(serializeFullDocument(after)).toContain("> Quoted!");
   });
 
-  it("CL-2F-F17-C-doc: mixed document capture remounts stable", () => {
-    expectStableRemount([
+  it("CL-2F-F17-C-doc: mixed document capture remounts stable", async () => {
+    await expectStableRemount([
       para("h1", [textRun("Title")], { blockKind: "heading", headingLevel: 2 }),
       para("q1", [textRun("Quoted")], { blockquoteDepth: 1, containerOrder: ["quote"] }),
       para("o1", [textRun("One")], {
@@ -714,8 +808,8 @@ describe("CL-2F-F18/F19 helpers and placeholders", () => {
   // `full-host-document.test.ts` on the pinned host document
   // (CL-2F-F18-E-host, CL-2F-F19-C-host, CL-2F-F18-P-host,
   // CL-2F-F18-C-host, CL-2F-F19-P-host); the M halves follow below.
-  it("CL-2F-F19-E-history: undo and redo traverse full edits", () => {
-    const editor = mountFull([para("p1", [textRun("One")])]);
+  it("CL-2F-F19-E-history: undo and redo traverse full edits", async () => {
+    const editor = await mountFull([para("p1", [textRun("One")])]);
     editor.typeText("p1", " two");
     expect(JSON.stringify(editor.getDocument())).toContain("One two");
     editor.undo();
@@ -782,7 +876,7 @@ describe("CL-2F-F17/F18/F19 M: host-document bridge round-trips", () => {
     return parts.join("\n");
   }
 
-  it("CL-2F-F17-M-host: the host document parses, edits and re-serializes stably", () => {
+  it("CL-2F-F17-M-host: the host document parses, edits and re-serializes stably", async () => {
     const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
     expect(parsed.refusedKinds).toEqual([]);
     const document = parseHost();
@@ -828,7 +922,7 @@ describe("CL-2F-F17/F18/F19 M: host-document bridge round-trips", () => {
     expect(textOf(reparsed.document as RichTextDocument)).toContain("Last line.!");
   });
 
-  it("CL-2F-F18-M-host: the host wire carries no placeholder or helper artefacts", () => {
+  it("CL-2F-F18-M-host: the host wire carries no placeholder or helper artefacts", async () => {
     const document = parseHost();
     const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
     const wire = serializeFullDocument(document, { seeds: parsed.seeds });
@@ -843,7 +937,7 @@ describe("CL-2F-F17/F18/F19 M: host-document bridge round-trips", () => {
     expect(textOf(document).split("\n").pop()).toBe("Last line.");
   });
 
-  it("CL-2F-F19-M-host: the host document round-trips with its trailing content identified", () => {
+  it("CL-2F-F19-M-host: the host document round-trips with its trailing content identified", async () => {
     const document = parseHost();
     const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
     const wire = serializeFullDocument(document, { seeds: parsed.seeds });
@@ -863,13 +957,13 @@ describe("CL-2F-F17/F18/F19 M: host-document bridge round-trips", () => {
 });
 
 describe("CL-2F review 1 item 4: absent metadata is canonical before classification", () => {
-  it("R4: a metadata-free paragraph mounts as a plain paragraph and captures canonical defaults", () => {
+  it("R4: a metadata-free paragraph mounts as a plain paragraph and captures canonical defaults", async () => {
     const bare = {
       paragraphId: "p1",
       kind: "paragraph",
       segments: [textRun("Plain")],
     } as unknown as RichTextDocument["blocks"][number];
-    const editor = mountFull([bare]);
+    const editor = await mountFull([bare]);
     const after = editor.getDocument();
     expect(after.blocks).toHaveLength(1);
     expect(after.blocks[0]).toMatchObject({ paragraphId: "p1", kind: "paragraph" });
@@ -900,8 +994,8 @@ describe("CL-2F review 1 item 5: ordered wrapper stack projection and capture", 
     }),
   ];
 
-  it("R5: a citation inside a list item stays inside that item", () => {
-    const editor = mountFull(quotedItemDoc());
+  it("R5: a citation inside a list item stays inside that item", async () => {
+    const editor = await mountFull(quotedItemDoc());
     const after = editor.getDocument();
     const quoted = after.blocks.find((block) => block.paragraphId === "q1");
     expect(quoted?.metadata?.listItemId).toBe("i1");
@@ -930,8 +1024,8 @@ describe("CL-2F review 1 item 5: ordered wrapper stack projection and capture", 
     expect(serializeFullDocument(after)).toContain("Quoted");
   });
 
-  it("R5: a list-contained HR keeps its wrappers", () => {
-    const editor = mountFull([
+  it("R5: a list-contained HR keeps its wrappers", async () => {
+    const editor = await mountFull([
       para("i1", [textRun("One")], {
         listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i1",
         listTight: true, containerOrder: ["list"],
@@ -959,12 +1053,12 @@ describe("CL-2F review 1 item 5: ordered wrapper stack projection and capture", 
     expect(validateFullBlockMetadata(
       hr?.kind === "horizontalRule" ? hr.hrMetadata : undefined,
     )).toMatchObject({ ok: true });
-    const second = mountFull(after.blocks);
+    const second = await mountFull(after.blocks);
     expect(second.getDocument()).toEqual(after);
   });
 
-  it("R5: nested lists and quotes capture one order entry per nesting level", () => {
-    const capture = expectStableRemount([
+  it("R5: nested lists and quotes capture one order entry per nesting level", async () => {
+    const capture = await expectStableRemount([
       para("o1", [textRun("First")], {
         listKind: "ordered", listDepth: 0, listRunId: "o1", listItemId: "o1",
         orderedStart: 3, listTight: true, containerOrder: ["list"],
@@ -996,6 +1090,89 @@ describe("CL-2F review 1 item 5: ordered wrapper stack projection and capture", 
   });
 });
 
+describe("CL-2F review 2 blocking 3: containerOrder counts and mounted baseline", () => {
+  it("R3b: the parser emits one containerOrder entry per nesting level", async () => {
+    const cases: Record<string, string> = {
+      "nested ordered list": "1. a\n   1. b\n",
+      "nested bullet list": "- a\n  - b\n",
+      "nested quote": ">> text\n",
+      "quote-wrapped nested list": "> - a\n>   - b\n",
+      "quote-wrapped rule": "> ---\n",
+    };
+    for (const [label, markdown] of Object.entries(cases)) {
+      const parsed = parseFullMarkdown(markdown, allocator(`r3:${label}`));
+      expect(parsed.document, `${label} parses`).not.toBeNull();
+      for (const block of parsed.document?.blocks ?? []) {
+        if (block.kind === "preserved") continue;
+        const record = block.kind === "horizontalRule" ? block.hrMetadata : block.metadata;
+        expect(
+          validateFullBlockMetadata(record),
+          `${label} block ${block.paragraphId} must validate`,
+        ).toMatchObject({ ok: true });
+      }
+    }
+    const nested = parseFullMarkdown("1. a\n   1. b\n", allocator("r3:nested"));
+    const depths = (nested.document?.blocks ?? []).map((block) =>
+      block.kind === "paragraph" ? block.metadata?.containerOrder : block.hrMetadata?.containerOrder,
+    );
+    expect(depths).toEqual([["list"], ["list", "list"]]);
+    const quoted = parseFullMarkdown(">> text\n", allocator("r3:quote"));
+    expect(
+      quoted.document?.blocks.map((block) =>
+        block.kind === "paragraph" ? block.metadata?.containerOrder : [],
+      ),
+    ).toEqual([["quote", "quote"]]);
+  });
+
+  it("R3b: a parsed nested document capture is a remount fixed point", async () => {
+    // The mounted capture normalizes library-canonical defaults (the
+    // `orderedType: "1"` arabic default the parser records is the
+    // Tiptap-canonical absent value, as in every existing ordered
+    // fixture); the fixed point — capture, remount, identical capture —
+    // is what the clean-mount baseline relies on.
+    const parsed = parseFullMarkdown("1. a\n   1. b\n", allocator("r3:remount"));
+    expect(parsed.document).not.toBeNull();
+    const first = await mountFull(parsed.document?.blocks ?? []);
+    const capture1 = first.getDocument();
+    expect(capture1.blocks.slice(0, 2).map((block) => block.paragraphId)).toHaveLength(2);
+    const second = await mountFull(capture1.blocks);
+    expect(second.getDocument()).toEqual(capture1);
+  });
+
+  it("R3b: a clean mount applies the host echo without conflict", async () => {
+    const hosts: RichTextDocument["blocks"][] = [
+      // Nested list (normalized containerOrder on mount).
+      (parseFullMarkdown("1. a\n   1. b\n", allocator("r3:echo1")).document?.blocks ?? []),
+      // Metadata-free paragraph (materialized canonical defaults).
+      [{ paragraphId: "p1", kind: "paragraph", segments: [{ type: "text", text: "hi", marks: {} }] } as never],
+      // Trailing non-paragraph block (TrailingNode paragraph on mount).
+      [
+        para("p1", [textRun("hi")]),
+        para("h1", [textRun("Title")], { blockKind: "heading", headingLevel: 1 }),
+      ],
+    ];
+    for (const blocks of hosts) {
+      expect(blocks.length).toBeGreaterThan(0);
+      let conflicted = 0;
+      const editor = await createRichTextEditor({
+        document: fullDoc(blocks),
+        profile: "full",
+        messages: { placeholder: "", placeholderMarker: "" },
+        allocateId: allocator("r3:echo"),
+        onExternalConflict: () => {
+          conflicted += 1;
+        },
+      });
+      mounted.push(editor);
+      // The host echo: the exact pre-mount input pushed back. A clean
+      // mount has no local edits, so the update applies (Rule 4) instead
+      // of raising onExternalConflict (Rule 3).
+      editor.applyExternalUpdate(fullDoc(blocks));
+      expect(conflicted).toBe(0);
+    }
+  });
+});
+
 describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
   const orderedRun = (): RichTextDocument["blocks"] => [
     para("a", [textRun("First")], {
@@ -1008,8 +1185,8 @@ describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
     }),
   ];
 
-  it("R6: deleting the opener does not transfer start/type/tight onto the survivor", () => {
-    const editor = mountFull(orderedRun());
+  it("R6: deleting the opener does not transfer start/type/tight onto the survivor", async () => {
+    const editor = await mountFull(orderedRun());
     editor.deleteBlocks(["a"]);
     const after = editor.getDocument();
     // The opener identity is gone from the blocks, but the run still
@@ -1035,8 +1212,8 @@ describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
     expect(serializeFullDocument(after)).toMatch(/^3\. /m);
   });
 
-  it("R6: retained metadata survives capture, copy and remount", () => {
-    const editor = mountFull(orderedRun());
+  it("R6: retained metadata survives capture, copy and remount", async () => {
+    const editor = await mountFull(orderedRun());
     editor.deleteBlocks(["a"]);
     const capture1 = editor.getDocument();
     expect(capture1.retainedRunMetadata?.["a"]).toBeDefined();
@@ -1044,7 +1221,7 @@ describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
     expect(copied).toEqual(capture1);
     expect(copied.retainedRunMetadata).not.toBe(capture1.retainedRunMetadata);
     // Remount the copied document with its retained map: capture stays equal.
-    const editor2 = createRichTextEditor({
+    const editor2 = await createRichTextEditor({
       document: copied,
       profile: "full",
       messages: { placeholder: "", placeholderMarker: "" },
@@ -1060,8 +1237,8 @@ describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
 });
 
 describe("CL-2F review 1 item 9: native clipboard and URL over selection", () => {
-  it("R9: native HTML paste preserves nested and top-level inline marks", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("R9: native HTML paste preserves nested and top-level inline marks", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     setCursor(editor, "p1", 4);
     editor.paste({ html: "Top <b>bold <i>both</i></b> tail" });
     const after = editor.getDocument();
@@ -1083,8 +1260,8 @@ describe("CL-2F review 1 item 9: native clipboard and URL over selection", () =>
     ]);
   });
 
-  it("R9: URL paste over a selected label links the label instead of replacing it", () => {
-    const editor = mountFull([para("p1", [textRun("click here to continue")])]);
+  it("R9: URL paste over a selected label links the label instead of replacing it", async () => {
+    const editor = await mountFull([para("p1", [textRun("click here to continue")])]);
     const { state } = editor.view;
     editor.view.dispatch(
       state.tr.setSelection(TextSelection.create(state.doc, 7, 11)),
@@ -1103,8 +1280,8 @@ describe("CL-2F review 1 item 9: native clipboard and URL over selection", () =>
     ]);
   });
 
-  it("R9: URL paste over a selection with a forbidden href refuses whole", () => {
-    const editor = mountFull([para("p1", [textRun("click here")])]);
+  it("R9: URL paste over a selection with a forbidden href refuses whole", async () => {
+    const editor = await mountFull([para("p1", [textRun("click here")])]);
     const before = editor.getDocument();
     const { state } = editor.view;
     editor.view.dispatch(
@@ -1130,8 +1307,8 @@ describe("CL-2F review 1 item 3: code capture and paste", () => {
     segments,
   });
 
-  it("R3: leading and all-LF lines survive capture with no duplicate terminal break", () => {
-    const editor = mountFull([
+  it("R3: leading and all-LF lines survive capture with no duplicate terminal break", async () => {
+    const editor = await mountFull([
       codeOf("c1", [
         { type: "hardBreak" },
         { type: "hardBreak" },
@@ -1155,8 +1332,8 @@ describe("CL-2F review 1 item 3: code capture and paste", () => {
     ]);
   });
 
-  it("R3: paste inside code inserts literal text with LFs kept", () => {
-    const editor = mountFull([
+  it("R3: paste inside code inserts literal text with LFs kept", async () => {
+    const editor = await mountFull([
       codeOf("c1", [{ type: "text", text: "existing", marks: {} }]),
     ]);
     const { state } = editor.view;
@@ -1179,7 +1356,7 @@ describe("CL-2F review 1 item 3: code capture and paste", () => {
 });
 
 describe("CL-2F-F-DEFAULT profile selection", () => {
-  it("CL-2F-F-DEFAULT: absent profile stays byte-identical to P0 behaviour", () => {
+  it("CL-2F-F-DEFAULT: absent profile stays byte-identical to P0 behaviour", async () => {
     const document: RichTextDocument = {
       format: "focus.markdown.p0@1",
       blocks: [{ paragraphId: "p1", kind: "paragraph", text: "Hello **world**" }],
@@ -1199,13 +1376,13 @@ describe("CL-2F-F-DEFAULT profile selection", () => {
       }),
     ).toThrow(/profile/);
     // A P0 payload refuses the full construction.
-    expect(() =>
+    await expect(
       createRichTextEditor({
         document,
         profile: "full",
         messages: { placeholder: "", placeholderMarker: "" },
       }),
-    ).toThrow(/profile-format-mismatch/);
+    ).rejects.toThrow(/profile-format-mismatch/);
   });
 
   it("CL-2F-F-DEFAULT: full controlled editing loads no live/collaboration machinery", async () => {
@@ -1225,21 +1402,21 @@ describe("CL-2F-F-DEFAULT profile selection", () => {
 });
 
 describe("CL-2F review 1 item 2: entity decoding and global refusal (R-FULL-URL-1)", () => {
-  it("R2: entity-encoded javascript: refuses on Markdown parse", () => {
+  it("R2: entity-encoded javascript: refuses on Markdown parse", async () => {
     const parsed = parseFullMarkdown("[bad](jav&#x61;script:alert(1))", allocator("full"));
     expect(parsed.document).toBeNull();
     expect(parsed.refusedKinds).toContain("link");
   });
 
-  it("R2: entity-encoded javascript: refuses on paste without changing the draft", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("R2: entity-encoded javascript: refuses on paste without changing the draft", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     const before = editor.getDocument();
     editor.paste({ text: "Click [bad](jav&#x61;script:alert(1))." });
     expect(editor.getDocument()).toEqual(before);
   });
 
-  it("R2: entity-encoded javascript: refuses on HTML paste without changing the draft", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("R2: entity-encoded javascript: refuses on HTML paste without changing the draft", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     const before = editor.getDocument();
     editor.paste({
       html: '<p>Click <a href="jav&amp;#x61;script:alert(1)">bad</a></p>',
@@ -1247,14 +1424,14 @@ describe("CL-2F review 1 item 2: entity decoding and global refusal (R-FULL-URL-
     expect(editor.getDocument()).toEqual(before);
   });
 
-  it("R2: a structured import with a forbidden href refuses construction whole", () => {
-    expect(() =>
+  it("R2: a structured import with a forbidden href refuses construction whole", async () => {
+    await expect(
       mountFull([para("p1", [textRun("bad", { link: "javascript:alert(1)" })])]),
-    ).toThrow(/forbidden-href/);
+    ).rejects.toThrow(/forbidden-href/);
   });
 
-  it("R2: a command-added forbidden link is refused, the draft keeps no link", () => {
-    const editor = mountFull([para("p1", [textRun("click here")])]);
+  it("R2: a command-added forbidden link is refused, the draft keeps no link", async () => {
+    const editor = await mountFull([para("p1", [textRun("click here")])]);
     const { state } = editor.view;
     const schemaLink = state.schema.marks["link"];
     expect(schemaLink).toBeDefined();
@@ -1273,9 +1450,9 @@ describe("CL-2F review 1 item 2: entity decoding and global refusal (R-FULL-URL-
     expect(after.blocks[0]).toMatchObject({ paragraphId: "p1" });
   });
 
-  it("R2: an external update with a forbidden href conflicts, the draft is preserved", () => {
+  it("R2: an external update with a forbidden href conflicts, the draft is preserved", async () => {
     let conflicted = 0;
-    const editor2 = createRichTextEditor({
+    const editor2 = await createRichTextEditor({
       document: fullDoc([para("p1", [textRun("Seed")])]),
       profile: "full",
       messages: { placeholder: "", placeholderMarker: "" },
@@ -1294,12 +1471,117 @@ describe("CL-2F review 1 item 2: entity decoding and global refusal (R-FULL-URL-
   });
 });
 
+describe("CL-2F review 2 blocking 2: the single href validator", () => {
+  // Validator and agent-patch levels live in `collaboration.test.ts`; every
+  // surface below reaches them through the single `isAllowedHref`.
+  it("R2b: a structured import with an entity-encoded href refuses construction whole", async () => {
+    await expect(
+      mountFull([para("p1", [textRun("bad", { link: "data&colon;text/html,x" })])]),
+    ).rejects.toThrow(/forbidden-href/);
+  });
+
+  it("R2b: an external update with an entity-encoded href conflicts, the draft is preserved", async () => {
+    let conflicted = 0;
+    const editor = await createRichTextEditor({
+      document: fullDoc([para("p1", [textRun("Seed")])]),
+      profile: "full",
+      messages: { placeholder: "", placeholderMarker: "" },
+      allocateId: allocator("fullx"),
+      onExternalConflict: () => {
+        conflicted += 1;
+      },
+    });
+    mounted.push(editor);
+    const before = editor.getDocument();
+    editor.applyExternalUpdate(
+      fullDoc([para("p1", [textRun("bad", { link: "vbscript&colon;x" })])]),
+    );
+    expect(conflicted).toBe(1);
+    expect(editor.getDocument()).toEqual(before);
+  });
+
+  it("R2b: a guard-level entity-encoded link mark is refused, the draft keeps no link", async () => {
+    const editor = await mountFull([para("p1", [textRun("click here")])]);
+    const { state } = editor.view;
+    const schemaLink = state.schema.marks["link"];
+    expect(schemaLink).toBeDefined();
+    editor.view.dispatch(
+      state.tr.addMark(
+        1,
+        6,
+        (schemaLink as unknown as { create: (attrs: unknown) => unknown }).create({
+          href: "javascript&colon;alert(1)",
+        }) as never,
+      ),
+    );
+    const after = editor.getDocument();
+    expect(JSON.stringify(after)).not.toContain("javascript");
+    expect(JSON.stringify(after)).not.toContain("colon");
+    expect(after.blocks).toHaveLength(1);
+    expect(after.blocks[0]).toMatchObject({ paragraphId: "p1" });
+  });
+
+  it("R2b: entity-encoded colons refuse on Markdown parse, HTML paste and URL paste", async () => {
+    const parsed = parseFullMarkdown("[bad](javascript&colon;alert(1))", allocator("full"));
+    expect(parsed.document).toBeNull();
+    expect(parsed.refusedKinds).toContain("link");
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
+    const before = editor.getDocument();
+    editor.paste({
+      html: '<p>Click <a href="javascript&colon;alert(1)">bad</a></p>',
+    });
+    expect(editor.getDocument()).toEqual(before);
+  });
+
+  it("R2b: URL paste over a selection with an encoded scheme refuses without replacing the label", async () => {
+    const editor = await mountFull([para("p1", [textRun("click here")])]);
+    const { state } = editor.view;
+    editor.view.dispatch(
+      state.tr.setSelection(TextSelection.create(state.doc, 1, 5)),
+    );
+    editor.paste({ text: "javascript&colon;alert(1)" });
+    const after = editor.getDocument();
+    // The payload is refused whole: the label keeps its text with no link.
+    expect(JSON.stringify(after)).not.toContain("javascript");
+    expect(after.blocks).toHaveLength(1);
+    expect(after.blocks[0]?.kind === "paragraph" ? (after.blocks[0].segments ?? []) : []).toEqual([
+      { type: "text", text: "click here", marks: {} },
+    ]);
+  });
+
+  it("R2b: a whitespace-padded HTML href stores trimmed and capture keeps the link", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
+    editor.paste({
+      html: '<p><a href=" https://example.com ">site</a></p>',
+    });
+    const after = editor.getDocument();
+    const links = after.blocks.flatMap((block) =>
+      block.kind === "paragraph"
+        ? ((block.segments ?? []) as { type: string; marks?: Record<string, unknown> }[]).filter(
+            (segment) => segment.type === "text" && segment.marks?.["link"] !== undefined,
+          )
+        : [],
+    );
+    expect(links).toHaveLength(1);
+    // Stored value equals the validated value: no padding survives.
+    expect((links[0] as { marks: { link: string } }).marks.link).toBe("https://example.com");
+    const recaptured = (await mountFull(after.blocks)).getDocument();
+    expect(JSON.stringify(recaptured)).toContain("https://example.com");
+  });
+
+  it("R2b: a whitespace-padded structured href refuses instead of stripping on capture", async () => {
+    await expect(
+      mountFull([para("p1", [textRun("bad", { link: " https://example.com " })])]),
+    ).rejects.toThrow(/forbidden-href/);
+  });
+});
+
 describe("CL-2F-F-URL link safety", () => {
   const linkPara = (href: string): RichTextDocument["blocks"] => [
     para("p1", [textRun("Go ", {}), textRun("there", { link: href })]),
   ];
 
-  it("CL-2F-F-URL: admits http/https/mailto/relative and refuses javascript/data/vbscript whole", () => {
+  it("CL-2F-F-URL: admits http/https/mailto/relative and refuses javascript/data/vbscript whole", async () => {
     for (const href of [
       "http://example.com",
       "https://example.com/path?q=1#f",
@@ -1308,12 +1590,12 @@ describe("CL-2F-F-URL link safety", () => {
       "#fragment",
       "?query=1",
     ]) {
-      const editor = mountFull(linkPara(href));
+      const editor = await mountFull(linkPara(href));
       editor.paste({ text: `See [label](${href}).` });
       expect(editor.getDocument().blocks.length).toBeGreaterThan(0);
     }
     for (const href of ["javascript:alert(1)", "data:text/html,hi", "vbscript:msgbox(1)"]) {
-      const editor = mountFull([para("p1", [textRun("Seed")])]);
+      const editor = await mountFull([para("p1", [textRun("Seed")])]);
       let changed = 0;
       editor.view.dom.addEventListener("x", () => {
         changed += 1;
@@ -1325,8 +1607,8 @@ describe("CL-2F-F-URL link safety", () => {
     }
   });
 
-  it("CL-2F-F-URL: refuses hostile HTML payloads whole without changing the draft", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F-URL: refuses hostile HTML payloads whole without changing the draft", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     const before = editor.getDocument();
     editor.paste({
       html: "<p>Hi</p><script>alert(1)</script><p><a href=\"javascript:alert(1)\">x</a></p>",
@@ -1336,8 +1618,8 @@ describe("CL-2F-F-URL link safety", () => {
     expect(editor.getDocument()).toEqual(before);
   });
 
-  it("CL-2F-F-URL: drops remote images to alt text and reports them", () => {
-    const editor = mountFull([para("p1", [textRun("Seed")])]);
+  it("CL-2F-F-URL: drops remote images to alt text and reports them", async () => {
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
     const reported: string[][] = [];
     void reported;
     editor.paste({ html: "<p>Look <img src=\"https://example.com/i.png\" alt=\"pic\"> here</p>" });
@@ -1346,8 +1628,8 @@ describe("CL-2F-F-URL link safety", () => {
     expect(JSON.stringify(after)).not.toContain("https://example.com/i.png");
   });
 
-  it("CL-2F-F-URL: links stay inert in editable and read-only rendering", () => {
-    const editor = mountFull(linkPara("https://example.com"), { editable: true });
+  it("CL-2F-F-URL: links stay inert in editable and read-only rendering", async () => {
+    const editor = await mountFull(linkPara("https://example.com"), { editable: true });
     const anchor = editor.view.dom.querySelector("a[href]");
     expect(anchor).not.toBeNull();
     const locationBefore = window.location.href;
@@ -1380,8 +1662,8 @@ describe("CL-2F-F-URL link safety", () => {
     expect(restored?.textContent).toBe("there");
   });
 
-  it("CL-2F-F-URL item 1: disabled mounts render no navigable link attributes", () => {
-    const editor = mountFull(linkPara("https://example.com"), { disabled: true });
+  it("CL-2F-F-URL item 1: disabled mounts render no navigable link attributes", async () => {
+    const editor = await mountFull(linkPara("https://example.com"), { disabled: true });
     expect(editor.view.dom.querySelector("a[href]")).toBeNull();
     const anchor = editor.view.dom.querySelector("a");
     expect(anchor?.textContent).toBe("there");
@@ -1400,8 +1682,8 @@ describe("CL-2F-FK keyboard families", () => {
     }),
   ];
 
-  it("CL-2F-FK1: Tab and Shift+Tab indent and outdent keeping run lineage", () => {
-    const editor = mountFull(twoItems());
+  it("CL-2F-FK1: Tab and Shift+Tab indent and outdent keeping run lineage", async () => {
+    const editor = await mountFull(twoItems());
     setCursor(editor, "k2", 0);
     pressKey(editor, "Tab");
     let after = editor.getDocument();
@@ -1415,8 +1697,8 @@ describe("CL-2F-FK keyboard families", () => {
     expect(JSON.stringify(back)).toContain("Second");
   });
 
-  it("CL-2F-FK2: Enter splits an item and Backspace rejoins at the edge", () => {
-    const editor = mountFull(twoItems());
+  it("CL-2F-FK2: Enter splits an item and Backspace rejoins at the edge", async () => {
+    const editor = await mountFull(twoItems());
     setCursor(editor, "k1", 2);
     pressKey(editor, "Enter");
     let after = editor.getDocument();
@@ -1434,8 +1716,8 @@ describe("CL-2F-FK keyboard families", () => {
     expect(JSON.stringify(after.blocks[0])).toContain("First");
   });
 
-  it("CL-2F-FK3: Enter adds code lines and triple-Enter at the end exits the block", () => {
-    const editor = mountFull([
+  it("CL-2F-FK3: Enter adds code lines and triple-Enter at the end exits the block", async () => {
+    const editor = await mountFull([
       para("c1", [textRun("line one")], { blockKind: "codeBlock", codeLanguage: "js" }),
       para("p2", [textRun("After")]),
     ]);
@@ -1455,13 +1737,13 @@ describe("CL-2F-FK keyboard families", () => {
     expect(after.blocks.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("CL-2F-FK4: Enter in prose splits, Shift+Enter breaks without splitting", () => {
-    const editor = mountFull([para("p1", [textRun("Hello world")])]);
+  it("CL-2F-FK4: Enter in prose splits, Shift+Enter breaks without splitting", async () => {
+    const editor = await mountFull([para("p1", [textRun("Hello world")])]);
     setCursor(editor, "p1", 5);
     pressKey(editor, "Enter");
     let after = editor.getDocument();
     expect(after.blocks.length).toBe(2);
-    const editor2 = mountFull([para("q1", [textRun("Hello world")])]);
+    const editor2 = await mountFull([para("q1", [textRun("Hello world")])]);
     setCursor(editor2, "q1", 5);
     pressKey(editor2, "Enter", { shiftKey: true });
     after = editor2.getDocument();
@@ -1469,8 +1751,8 @@ describe("CL-2F-FK keyboard families", () => {
     expect(serializeFullDocument(after)).toBe("Hello\\\n world");
   });
 
-  it("CL-2F-FK1-list-enter: Enter at the end of an item opens a fresh sibling", () => {
-    const editor = mountFull(twoItems());
+  it("CL-2F-FK1-list-enter: Enter at the end of an item opens a fresh sibling", async () => {
+    const editor = await mountFull(twoItems());
     setCursor(editor, "k2", 6);
     pressKey(editor, "Enter");
     const after = editor.getDocument();

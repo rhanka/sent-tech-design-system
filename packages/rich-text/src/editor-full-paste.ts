@@ -12,7 +12,7 @@ import { DOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import type { JSONContent } from "@tiptap/core";
 import type { Schema } from "@tiptap/pm/model";
 import type { Selection } from "@tiptap/pm/state";
-import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
+import { isAllowedHref } from "./collaboration.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import {
   parseFullMarkdown,
@@ -97,14 +97,20 @@ export function sanitizeFullPastedHtml(html: string): {
         name === "id"
       ) {
         element.removeAttribute(attribute.name);
-      } else if (
-        (name === "href" || name === "src" || name === "xlink:href") &&
-        // The DOM decoded entities once; decode any remainder (double
-        // encoding such as `&amp;#x61;`) before validation so an encoded
-        // `javascript:` refuses whole instead of passing as relative.
-        !isAllowedHref(decodeHrefToken(attribute.value))
-      ) {
-        reportKind(refusedKinds, "link");
+      } else if (name === "href" || name === "src" || name === "xlink:href") {
+        // The DOM decoded entities once; the validator decodes any
+        // remainder (double encoding such as `&amp;#x61;`) itself, so an
+        // encoded `javascript:` refuses whole instead of passing as
+        // relative. Whitespace-padded values trim at this producer
+        // boundary and the trimmed value is stored, so the stored value
+        // always equals the validated value (never silently stripped on
+        // capture).
+        const trimmed = attribute.value.trim();
+        if (!isAllowedHref(trimmed)) {
+          reportKind(refusedKinds, "link");
+        } else {
+          element.setAttribute(name, trimmed);
+        }
       } else if (name === "class" || name === "style") {
         const tag = element.tagName.toLowerCase();
         const keepUnderline =

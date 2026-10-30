@@ -360,6 +360,10 @@ function expectChanges(label, events, count) {
 
 async function openScenario(browser, base, scenario, surface = "document") {
   const page = await browser.newPage();
+  // Cache off: every navigation re-requests its modules, so the full-graph
+  // chunk below is observable whenever any mount loads it (review 2
+  // blocking 1: a P0 mount must never request it).
+  await page.setCacheEnabled(false);
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
   await page.evaluateOnNewDocument(() => {
@@ -415,6 +419,12 @@ async function openScenario(browser, base, scenario, surface = "document") {
       // same-origin injected image (`/injected.png`) or beacon (`/beacon`)
       // shares the base but matches no entry below, so it fails. `data:`
       // and `blob:` URLs are not network traffic.
+      // Review 2 blocking 1, P0 isolation witness: no P0 mount may load
+      // the full extension graph. The lazy graph ships as a dynamic chunk
+      // named after `editor-full-extensions`; with the cache off above,
+      // any load would surface as a request here.
+      const fullChunk = requests.filter((entry) => entry.includes("editor-full-extensions"));
+      assert(fullChunk.length === 0, label, `P0 mount loaded the full extension graph (${(fullChunk[0] ?? "?").slice(0, 200)})`);
       const foreign = requests.filter((entry) => {
         const parts = entry.split(" ");
         const url = parts.slice(1, -1).join(" ");

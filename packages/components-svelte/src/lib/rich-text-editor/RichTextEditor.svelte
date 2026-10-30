@@ -2,7 +2,6 @@
   import { onMount, tick, untrack } from "svelte";
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
-  import { ensureFullEditorExtensionsRegistered } from "@sentropic/design-system-rich-text/editor-full-extensions";
   import type {
     CollaborationActor,
     CollaborationCapabilities,
@@ -129,6 +128,7 @@
         JSON.stringify(block.hrMetadata ?? null),
       );
     }
+    parts.push(JSON.stringify(document.retainedRunMetadata ?? null));
     return JSON.stringify(parts);
   }
 
@@ -313,8 +313,34 @@
     // reference, so it is recorded as seen without a §5.6 evaluation.
     lastSeenValue = value;
     lastSeenFingerprint = fingerprintOf(value);
-    if (profile === "full") ensureFullEditorExtensionsRegistered();
-    core = createRichTextEditor({
+    let cancelled = false;
+    const settle = (instance: CoreEditor): void => {
+      if (cancelled) {
+        instance.destroy();
+        return;
+      }
+      core = instance;
+      for (const type of stopTypes) {
+        host.addEventListener(type, stopAtBoundary);
+      }
+      host.addEventListener("mousedown", guardDisabledPointer);
+      // `focus` does not bubble: capture from the host so a programmatic
+      // `focus()` on the editable element is still observed.
+      host.addEventListener("focus", guardDisabledFocus, true);
+      syncChrome();
+      // Placeholder decorations land after the ProseMirror observer flush,
+      // past the synchronous mount sync: re-sync once settled so the
+      // displaying paragraph carries the marker with no transaction.
+      void tick().then(() => {
+        syncChrome();
+      });
+    };
+    // Single-prop opt-in (R-FULL-PROFILE-1): full construction loads the
+    // extension graph on demand and is asynchronous, P0 stays synchronous.
+    // The pending gap is absorbed by the existing mount-pending path
+    // (`readiness()` reports not-ready and `captureDocument()` is
+    // unavailable while `core` is null).
+    const maybeCore = createRichTextEditor({
       document: value,
       profile,
       messages: {
@@ -339,22 +365,18 @@
       onReadinessChange: (event) => {
         onReadinessChange?.(event);
       },
-    });
-    for (const type of stopTypes) {
-      host.addEventListener(type, stopAtBoundary);
+    }) as CoreEditor | Promise<CoreEditor>;
+    if (maybeCore instanceof Promise) {
+      void maybeCore.then(settle, () => {
+        // A failed full-graph load leaves the surface unmounted; the host
+        // observes it through the pending readiness path (never a throw
+        // out of the mount effect).
+      });
+    } else {
+      settle(maybeCore);
     }
-    host.addEventListener("mousedown", guardDisabledPointer);
-    // `focus` does not bubble: capture from the host so a programmatic
-    // `focus()` on the editable element is still observed.
-    host.addEventListener("focus", guardDisabledFocus, true);
-    syncChrome();
-    // Placeholder decorations land after the ProseMirror observer flush,
-    // past the synchronous mount sync: re-sync once settled so the
-    // displaying paragraph carries the marker with no transaction.
-    void tick().then(() => {
-      syncChrome();
-    });
     return () => {
+      cancelled = true;
       for (const type of stopTypes) {
         host.removeEventListener(type, stopAtBoundary);
       }

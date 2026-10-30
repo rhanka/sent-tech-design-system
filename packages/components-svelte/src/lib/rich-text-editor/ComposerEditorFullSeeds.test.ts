@@ -28,9 +28,19 @@ vi.mock("@sentropic/design-system-rich-text/editor", async (importOriginal) => {
     createRichTextEditor: (
       options: Parameters<typeof actual.createRichTextEditor>[0],
     ) => {
-      const instance = actual.createRichTextEditor(options);
-      createdCores.push(instance);
-      return instance;
+      // Full construction is asynchronous (lazy full graph): record the
+      // settled instance, never the pending promise.
+      const maybe = actual.createRichTextEditor(options) as
+        | CoreEditor
+        | Promise<CoreEditor>;
+      if (maybe instanceof Promise) {
+        return maybe.then((instance) => {
+          createdCores.push(instance);
+          return instance;
+        });
+      }
+      createdCores.push(maybe);
+      return maybe;
     },
   };
 });
@@ -39,6 +49,19 @@ function lastCore(): CoreEditor {
   const instance = createdCores[createdCores.length - 1];
   expect(instance).toBeDefined();
   return instance as CoreEditor;
+}
+
+/** Deterministic mount wait: the full graph loads on demand, so the core
+    settles after the dynamic import — poll for a core recorded after
+    `previous` (bounded, fails loudly when the mount never settles). */
+async function waitForCore(previous: number): Promise<CoreEditor> {
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    if (createdCores.length > previous) {
+      return createdCores[createdCores.length - 1] as CoreEditor;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  throw new Error("full composer core never settled");
 }
 
 const MESSAGES: RichTextMessages = {
@@ -67,16 +90,19 @@ const BREAK_TWINS = "Twin\n\nTwin\n\nHard  \nbreak\n\n";
 
 describe("full composer seeds (review 1 item 10, RED)", () => {
   it("initial capture keeps two-space hard breaks", async () => {
+    const previous = createdCores.length;
     const { component } = render(ComposerEditor, {
       props: composerProps({ value: BREAK_TWINS }),
     });
     await tick();
+    await waitForCore(previous);
     const captured = await component.captureComposer();
     expect(captured.text).toBe(BREAK_TWINS);
   });
 
   it("a neighboring edit keeps untouched source slices", async () => {
     const seen: string[] = [];
+    const previous = createdCores.length;
     const { component } = render(ComposerEditor, {
       props: composerProps({
         value: BREAK_TWINS,
@@ -86,6 +112,7 @@ describe("full composer seeds (review 1 item 10, RED)", () => {
       }),
     });
     await tick();
+    await waitForCore(previous);
     const firstId = lastCore().getDocument().blocks[0]?.paragraphId as string;
     lastCore().typeText(firstId, "!");
     await tick();

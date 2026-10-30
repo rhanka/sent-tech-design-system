@@ -9,15 +9,12 @@
  * edit cannot keep untouched slices.
  */
 import { describe, expect, it } from "vitest";
-import { ensureFullEditorExtensionsRegistered } from "./editor-full-extensions.js";
 import { createRichTextEditor } from "./editor.js";
 import {
   composerFullSeededDocumentForText,
   composerFullSeededDocumentFromText,
   composerFullSeededTextFromDocument,
 } from "./composer-document.js";
-
-ensureFullEditorExtensionsRegistered();
 
 const MESSAGES = {
   editorLabel: "SENTINEL-EDITOR-LABEL",
@@ -28,13 +25,13 @@ const MESSAGES = {
 
 const BREAK_TWINS = "Twin\n\nTwin\n\nHard  \nbreak\n\n";
 
-function mountComposer(text: string) {
+async function mountComposer(text: string) {
   let sequence = 0;
   const seeded = composerFullSeededDocumentFromText(
     text,
     () => `test:composer:${(sequence += 1)}`,
   );
-  const editor = createRichTextEditor({
+  const editor = await createRichTextEditor({
     document: seeded.document,
     profile: "full",
     messages: { ...MESSAGES },
@@ -54,7 +51,7 @@ function mountComposer(text: string) {
 
 describe("review 1 item 10: seeds through the composer surface", () => {
   it("initial composer capture keeps two-space hard breaks", async () => {
-    const { editor, captureComposer } = mountComposer(BREAK_TWINS);
+    const { editor, captureComposer } = await mountComposer(BREAK_TWINS);
     try {
       expect(await captureComposer()).toBe(BREAK_TWINS);
     } finally {

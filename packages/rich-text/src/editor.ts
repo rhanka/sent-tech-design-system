@@ -157,18 +157,22 @@ export interface RichTextEditorCallbacks {
 }
 
 /** Full-profile extension factory, supplied by the separate full module
-    graph (`editor-full-extensions.ts`). The editor entry never imports that
-    graph itself (review 1 item 11): an absent/P0 mount evaluates none of the
-    eight full extension packages. */
+    graph (`editor-full-extensions.ts`). The editor entry never statically
+    imports that graph (review 1 item 11, review 2 blocking 1): an absent/P0
+    mount evaluates none of the eight full extension packages. The full
+    branch of `createRichTextEditor` loads the graph on demand through a
+    dynamic import, so `profile: "full"` stays a single-prop opt-in with no
+    registration ceremony. */
 export type FullEditorExtensionFactory = (
   options: P0EditorExtensionOptions,
 ) => AnyExtension[];
 
 let fullExtensionFactory: FullEditorExtensionFactory | null = null;
 
-/** Explicit full-graph loading (review 1 item 11): register the factory from
-    `editor-full-extensions.ts` before mounting with `profile: "full"`.
-    Idempotent; the last registration wins. */
+/** Full-graph registration entry point, called by the lazily loaded
+    `editor-full-extensions.ts` module (and idempotent for any other
+    caller); the last registration wins. Consumers never call this
+    directly: mounting with `profile: "full"` registers on demand. */
 export function registerFullEditorExtensions(
   factory: FullEditorExtensionFactory,
 ): void {
@@ -241,10 +245,40 @@ function defaultAllocateId(): string {
 
 /** Create the Tiptap-bound editor: document in, document plus gesture out.
     The factory copies the supplied document, initialises the acknowledgement
-    reference to that copy, and never mutates the caller's value. */
+    reference to that copy, and never mutates the caller's value.
+    `profile: "full"` is a single-prop opt-in (R-FULL-PROFILE-1) with no
+    registration ceremony: the full extension graph loads on demand through
+    a dynamic import, so full construction is asynchronous while P0
+    construction stays synchronous. The async gap precedes the handle, so
+    the mount/readiness contract (§5.6, §6.6) is unchanged: the returned
+    handle is fully mounted, and adapters bridge the gap with their existing
+    mount-pending path (no core yet ⇒ `readiness()` reports not-ready and
+    `captureDocument()` is unavailable). */
+export function createRichTextEditor(
+  options: RichTextEditorOptions & { profile: "full" },
+): Promise<RichTextEditor>;
 export function createRichTextEditor(
   options: RichTextEditorOptions,
-): RichTextEditor {
+): RichTextEditor;
+export function createRichTextEditor(
+  options: RichTextEditorOptions,
+): RichTextEditor | Promise<RichTextEditor> {
+  const profile: RichTextProfile = options.profile ?? "p0";
+  if (profile !== "full") {
+    return buildEditor(options);
+  }
+  return (async (): Promise<RichTextEditor> => {
+    // Lazy full graph (review 2 blocking 1): evaluated here — on the first
+    // full mount — never on a P0 path. The module self-registers on import.
+    const full = await import("./editor-full-extensions.js");
+    full.ensureFullEditorExtensionsRegistered();
+    return buildEditor(options);
+  })();
+}
+
+/** Synchronous editor construction over an already-available extension
+    graph (P0 always; full only after the lazy loader registered it). */
+function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   const profile: RichTextProfile = options.profile ?? "p0";
   const isFull = profile === "full";
   // R-FULL-PROFILE-1: `full` requires `ds.markdown.full@1`; P0 keeps its
@@ -346,8 +380,12 @@ export function createRichTextEditor(
   };
   const fullFactory = isFull ? fullExtensionFactory : null;
   if (isFull && fullFactory === null) {
+    // Internal invariant: the `createRichTextEditor` full branch registers
+    // the graph before reaching construction. Only profile/format mismatch
+    // or a forbidden href may refuse a full construction (R-FULL-PROFILE-1,
+    // R-FULL-URL-1).
     throw new Error(
-      'rich-text: full profile not registered; import "@sentropic/design-system-rich-text/editor-full-extensions" and call ensureFullEditorExtensionsRegistered() before mounting with profile "full"',
+      "rich-text.internal: full extension graph unavailable after lazy load",
     );
   }
   const editor = new Editor({
@@ -1350,7 +1388,15 @@ export function createRichTextEditor(
         replaceDocument(incoming);
         reseedConversion(seeds, incoming);
       }
-      lastAcknowledged = copyRichTextDocument(incoming);
+      // Mounted baseline (review 2 blocking 3, full only): the
+      // acknowledgement reference is the canonical mounted document —
+      // normalized containerOrder, materialized defaults, the
+      // TrailingNode paragraph — never the pre-replace input, so a clean
+      // editor reports no local edits on the next external update.
+      // P0 keeps the input-copy baseline byte-identical to RT-1.
+      lastAcknowledged = isFull
+        ? copyRichTextDocument(displayedDocument())
+        : copyRichTextDocument(incoming);
       // Rule-4 application completes: the revision flag clears (§5.6). The
       // replacement ran suppressed, so no emission set it back.
       hasUnacknowledgedLocalRevision = false;
@@ -1973,6 +2019,15 @@ export function createRichTextEditor(
     // Recording read (see rule-4 application above): records each mount
     // version's exact text with no bridge call.
     displayedDocument();
+    if (isFull) {
+      // Mounted baseline (review 2 blocking 3): the acknowledgement
+      // reference is the canonical mounted document — normalized
+      // containerOrder, materialized defaults, the TrailingNode
+      // paragraph — never the pre-mount input, so a clean mount reports
+      // no local edits on the next external update (Rule 4 applies it).
+      // P0 keeps the input-copy baseline byte-identical to RT-1.
+      lastAcknowledged = copyRichTextDocument(displayedDocument());
+    }
     // Read-only/disabled mounts render no navigable link attributes from
     // the first paint (CL-2F-F-URL item 1).
     syncLinkInertness();

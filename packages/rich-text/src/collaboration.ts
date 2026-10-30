@@ -840,32 +840,40 @@ function isValidAuthorityAndPath(text: string): boolean {
     two hex digits), `query` and `fragment`. The `http` and `https`
     schemes additionally require a non-empty host. Pure: manual string
     scan only, no DOM and no global URL dependency, so the check does not
-    vary across runtimes. The string is validated as given, after the
-    caller decoded clipboard entities and tokenized the input. */
+    vary across runtimes. The validator decodes HTML entities itself, so
+    the entity-decoded and raw forms both pass every surface: an encoded
+    scheme (`javascript&colon:`, numeric references) is judged on what the
+    browser would navigate to. No trimming: whitespace anywhere refuses,
+    and every producer boundary trims before storing, so the stored value
+    always equals the validated value. */
 export function isAllowedHref(href: string): boolean {
-  if (href.length === 0 || href.length > MAX_HREF_UNITS) {
+  // Single-validator decode (review 2 blocking 2): the decoded form is
+  // what the browser navigates to, so it is the validated form.
+  const decoded = decodeHrefToken(href);
+  if (decoded.length === 0 || decoded.length > MAX_HREF_UNITS) {
     return false;
   }
-  if (hasDisallowedHrefChar(href)) {
+  if (hasDisallowedHrefChar(decoded)) {
     return false;
   }
-  if (HREF_WHITESPACE_PATTERN.test(href)) {
+  if (HREF_WHITESPACE_PATTERN.test(decoded)) {
     return false;
   }
-  let boundary = href.length;
+  const candidate = decoded;
+  let boundary = candidate.length;
   for (const separator of ["/", "?", "#"]) {
-    const at = href.indexOf(separator);
+    const at = candidate.indexOf(separator);
     if (at !== -1 && at < boundary) {
       boundary = at;
     }
   }
-  const scheme = HREF_SCHEME_PATTERN.exec(href.slice(0, boundary));
+  const scheme = HREF_SCHEME_PATTERN.exec(candidate.slice(0, boundary));
   if (scheme !== null) {
     const name = scheme[1].toLowerCase();
     if (!ALLOWED_HREF_SCHEMES.has(name)) {
       return false;
     }
-    const parts = splitHierQueryFragment(href.slice(scheme[0].length));
+    const parts = splitHierQueryFragment(candidate.slice(scheme[0].length));
     if (
       !isValidQueryOrFragment(parts.query) ||
       !isValidQueryOrFragment(parts.fragment)
@@ -880,8 +888,8 @@ export function isAllowedHref(href: string): boolean {
     }
     return isValidAuthorityAndPath(parts.hier.slice(2));
   }
-  if (href.startsWith("//")) {
-    const parts = splitHierQueryFragment(href.slice(2));
+  if (candidate.startsWith("//")) {
+    const parts = splitHierQueryFragment(candidate.slice(2));
     if (
       !isValidQueryOrFragment(parts.query) ||
       !isValidQueryOrFragment(parts.fragment)
@@ -890,7 +898,7 @@ export function isAllowedHref(href: string): boolean {
     }
     return isValidAuthorityAndPath(parts.hier);
   }
-  const parts = splitHierQueryFragment(href);
+  const parts = splitHierQueryFragment(candidate);
   if (
     !isValidQueryOrFragment(parts.query) ||
     !isValidQueryOrFragment(parts.fragment)
@@ -961,14 +969,15 @@ function decodeNumericReference(code: number): string | null {
   return String.fromCodePoint(code);
 }
 
-/** Clipboard tokenization for hrefs (R-FULL-URL-1): trim the raw token,
-    then decode HTML entities — decimal/hexadecimal numeric references
-    (semicolon optional) and the ASCII-output named entities — before
-    `isAllowedHref` runs. Decode failures keep the raw text so the validator
-    judges what the browser would navigate to. */
+/** Clipboard tokenization for hrefs (R-FULL-URL-1): decode HTML entities —
+    decimal/hexadecimal numeric references (semicolon optional) and the
+    ASCII-output named entities — before `isAllowedHref` runs. Decode
+    failures keep the raw text so the validator judges what the browser
+    would navigate to. No trimming here: `isAllowedHref` validates the
+    exact stored string, and every producer boundary trims explicitly before
+    storing, so the stored value always equals the validated value. */
 export function decodeHrefToken(raw: string): string {
-  const token = raw.trim();
-  return token.replace(
+  return raw.replace(
     /&(?:#(\d+)|#[xX]([\da-fA-F]+)|([a-zA-Z][a-zA-Z0-9]*));?/g,
     (
       whole: string,

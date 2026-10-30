@@ -22,10 +22,6 @@
     "./editor": {
       "types": "./dist/editor.d.ts",
       "import": "./dist/editor.js"
-    },
-    "./editor-full-extensions": {
-      "types": "./dist/editor-full-extensions.d.ts",
-      "import": "./dist/editor-full-extensions.js"
     }
   },
   "files": [

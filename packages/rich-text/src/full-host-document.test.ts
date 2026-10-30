@@ -17,19 +17,6 @@ import type { RichTextDocument } from "./model.js";
 
 // The split full graph (absent on f1533bdd) requires explicit registration
 // before a full mount. The specifier is assembled opaquely so no bundler
-// resolves it statically: on main the runtime import rejects and the mount
-// falls back to the inline graph, and the assertions then fail on
-// structure, which is the witnessed RED.
-try {
-  const parts = ["./editor-full-", "extensions.js"];
-  const full = (await import(parts.join(""))) as {
-    ensureFullEditorExtensionsRegistered?: () => void;
-  };
-  full.ensureFullEditorExtensionsRegistered?.();
-} catch {
-  // No split graph on this tree (f1533bdd): full mounts inline.
-}
-
 const MESSAGES = {
   placeholder: "",
   placeholderMarker: "",
@@ -172,7 +159,7 @@ function hostBlocks(): RichTextDocument["blocks"] {
   ] as RichTextDocument["blocks"];
 }
 
-function mountFull(blocks: RichTextDocument["blocks"]) {
+async function mountFull(blocks: RichTextDocument["blocks"]) {
   let sequence = 0;
   return createRichTextEditor({
     document: { format: "ds.markdown.full@1", blocks },
@@ -193,12 +180,12 @@ function segmentsTextOf(block: { segments?: readonly unknown[] }): string {
 
 /** Mount → capture against the expected document → remount → capture
     equality, with no first-capture self-comparison. */
-function expectHostRemount(expected: RichTextDocument["blocks"]): RichTextDocument {
-  const first = mountFull(expected);
+async function expectHostRemount(expected: RichTextDocument["blocks"]): Promise<RichTextDocument> {
+  const first = await mountFull(expected);
   try {
     const capture1 = first.getDocument();
     expect(capture1.blocks).toEqual(expected);
-    const second = mountFull(capture1.blocks);
+    const second = await mountFull(capture1.blocks);
     try {
       expect(second.getDocument()).toEqual(capture1);
     } finally {
@@ -211,8 +198,8 @@ function expectHostRemount(expected: RichTextDocument["blocks"]): RichTextDocume
 }
 
 describe("review 1 item 13: F17/F18/F19 host-document witnesses", () => {
-  it("CL-2F-F18-E-host: placeholder context accepts the host wire with exact segments", () => {
-    const editor = mountFull([]);
+  it("CL-2F-F18-E-host: placeholder context accepts the host wire with exact segments", async () => {
+    const editor = await mountFull([]);
     try {
       editor.setPlaceholder("Write something", "empty-document");
       expect(
@@ -260,8 +247,8 @@ describe("review 1 item 13: F17/F18/F19 host-document witnesses", () => {
     }
   });
 
-  it("CL-2F-F19-C-host: the host document captures and remounts with its tail identified", () => {
-    const capture = expectHostRemount(hostBlocks());
+  it("CL-2F-F19-C-host: the host document captures and remounts with its tail identified", async () => {
+    const capture = await expectHostRemount(hostBlocks());
     const last = capture.blocks[capture.blocks.length - 1];
     expect(last?.paragraphId).toBe("t1");
     expect(
@@ -273,8 +260,8 @@ describe("review 1 item 13: F17/F18/F19 host-document witnesses", () => {
     }
   });
 
-  it("CL-2F-F17-P-host: pasting the host wire builds the editable structure with fresh identities", () => {
-    const editor = mountFull([
+  it("CL-2F-F17-P-host: pasting the host wire builds the editable structure with fresh identities", async () => {
+    const editor = await mountFull([
       {
         paragraphId: "seed",
         kind: "paragraph",
@@ -329,8 +316,8 @@ describe("review 1 item 13: F17/F18/F19 host-document witnesses", () => {
     }
   });
 
-  it("CL-2F-F18-P-host: pasting the host document into the placeholder context keeps full shape", () => {
-    const editor = mountFull([]);
+  it("CL-2F-F18-P-host: pasting the host document into the placeholder context keeps full shape", async () => {
+    const editor = await mountFull([]);
     try {
       editor.paste({ text: HOST_WIRE });
       const after = editor.getDocument();
@@ -352,12 +339,12 @@ describe("review 1 item 13: F17/F18/F19 host-document witnesses", () => {
     }
   });
 
-  it("CL-2F-F18-C-host: the host document captures and remounts from the placeholder context", () => {
-    expectHostRemount(hostBlocks());
+  it("CL-2F-F18-C-host: the host document captures and remounts from the placeholder context", async () => {
+    await expectHostRemount(hostBlocks());
   });
 
-  it("CL-2F-F19-P-host: pasting into the editing helper traverses history intact", () => {
-    const editor = mountFull(hostBlocks());
+  it("CL-2F-F19-P-host: pasting into the editing helper traverses history intact", async () => {
+    const editor = await mountFull(hostBlocks());
     try {
       const before = editor.getDocument();
       editor.paste({ text: "Appended" });

@@ -324,12 +324,13 @@ function parseInlineLine(line: string): InlineParseResult {
           continue;
         }
       }
-      // Autolink <href>: entities decode before validation, and the
+      // Autolink <href>: the validator decodes entities itself, and the
       // decoded value is what the link stores.
       const autolink = /^<((?:https?|mailto):[^<>\s]+)>/i.exec(rest);
       if (autolink !== undefined && autolink !== null) {
-        const href = decodeHrefToken(autolink[1] as string);
-        if (!isAllowedHref(href)) return { segments: [], refused: true };
+        const raw = autolink[1] as string;
+        if (!isAllowedHref(raw)) return { segments: [], refused: true };
+        const href = decodeHrefToken(raw);
         flush();
         segments.push({ type: "text", text: href, marks: { ...currentMarks, link: href } });
         index += autolink[0].length;
@@ -341,12 +342,14 @@ function parseInlineLine(line: string): InlineParseResult {
         const match = /^\[([^\]]*)\]\(\s*(\S+?)(?:\s+(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'|\(((?:[^)\\]|\\.)*)\)))?\s*\)/.exec(rest);
         if (match !== null) {
           const label = match[1] as string;
-          // Entities decode before validation (R-FULL-URL-1): an encoded
-          // `jav&#x61;script:` refuses whole instead of passing as relative.
-          const href = decodeHrefToken(match[2] as string);
+          // The validator decodes entities itself (R-FULL-URL-1): an
+          // encoded `jav&#x61;script:` refuses whole instead of passing
+          // as relative. The stored value is the decoded validated value.
+          const rawHref = match[2] as string;
+          if (!isAllowedHref(rawHref)) return { segments: [], refused: true };
+          const href = decodeHrefToken(rawHref);
           const rawTitle = (match[3] ?? match[4] ?? match[5] ?? undefined) as string | undefined;
           const title = rawTitle === undefined ? undefined : unescapeLinkTitle(rawTitle);
-          if (!isAllowedHref(href)) return { segments: [], refused: true };
           flush();
           const labelParsed = parseInlineLine(label);
           if (labelParsed.refused) return { segments: [], refused: true };
@@ -370,13 +373,13 @@ function parseInlineLine(line: string): InlineParseResult {
         }
       }
       // Bare-URL autolink (editor autolink behavior, R-FULL-URL-1):
-      // entities decode before validation; the cursor advances over the
-      // raw token while the link stores the decoded value.
+      // the validator decodes entities itself; the cursor advances over
+      // the raw token while the link stores the decoded validated value.
       const bare = /^(https?:\/\/[^\s<]+|mailto:[^\s<]+)/i.exec(rest);
       if (bare !== null) {
         const raw = bare[1] as string;
-        const href = decodeHrefToken(raw);
-        if (isAllowedHref(href)) {
+        if (isAllowedHref(raw)) {
+          const href = decodeHrefToken(raw);
           flush();
           segments.push({ type: "text", text: href, marks: { ...currentMarks, link: href } });
           index += raw.length;
@@ -643,13 +646,18 @@ export function parseFullMarkdown(
         orderedStart: null,
         orderedType: null,
         listTight: true,
-        containerOrder:
-          blockquoteDepth > 0 ? (["quote"] as const) : ([] as unknown as readonly ("quote" | "list")[]),
+        containerOrder: Array.from(
+          { length: blockquoteDepth },
+          () => "quote" as const,
+        ),
       };
     }
-    const order: ("quote" | "list")[] = [];
-    if (blockquoteDepth > 0) order.push("quote");
-    order.push("list");
+    // One order entry per nesting level: the quote prefix plus one list
+    // entry per open run level (`listDepth + 1` total for the item).
+    const order: ("quote" | "list")[] = [
+      ...Array.from({ length: blockquoteDepth }, () => "quote" as const),
+      ...Array.from({ length: listStack.length }, () => "list" as const),
+    ];
     return {
       blockquoteDepth,
       listKind: top.kind,
@@ -938,7 +946,15 @@ export function parseFullMarkdown(
       const content = (bullet?.[3] ?? ordered?.[4] ?? "") as string;
       const base = currentListContext(0);
       void base;
-      const order: ("quote" | "list")[] = ["list"];
+      // One order entry per nesting level (review 2 blocking 3): a list
+      // item at `depth` carries `depth + 1` list entries, so the record
+      // validates (`listCount === listDepth + 1`). Items parse at
+      // `blockquoteDepth: 0`; quote depth arrives through
+      // `parseBlocksWithDepth`, which prepends the quote entries.
+      const order: ("quote" | "list")[] = Array.from(
+        { length: depth + 1 },
+        () => "list" as const,
+      );
       const context: BlockContext = {
         blockquoteDepth: 0,
         listKind: kind,
@@ -1114,26 +1130,51 @@ function parseBlocksWithDepth(
       blocks.push(block);
       continue;
     }
+    // One order entry per nesting level (review 2 blocking 3): the inner
+    // parse already emitted one list entry per list level, so the outer
+    // quote only prepends the missing quote entries. The effective depth
+    // is the maximum (an inner line may nest deeper than the group's
+    // first line), keeping `quoteCount === blockquoteDepth` valid.
     if (block.kind === "horizontalRule") {
+      const innerHr = block.hrMetadata ?? canonicalHrDefaults();
+      const innerLists =
+        innerHr.listKind === "none" ? 0 : innerHr.listDepth + 1;
+      const hrDepth = Math.max(depth, innerHr.blockquoteDepth);
       blocks.push({
         paragraphId: block.paragraphId,
         kind: "horizontalRule",
         hrMetadata: {
-          listKind: "none",
-          listDepth: 0,
-          blockquoteDepth: depth,
-          containerOrder: depth > 0 ? ["quote"] : [],
+          listKind: innerHr.listKind,
+          listDepth: innerHr.listDepth,
+          blockquoteDepth: hrDepth,
+          containerOrder: [
+            ...Array.from({ length: hrDepth }, () => "quote" as const),
+            ...Array.from({ length: innerLists }, () => "list" as const),
+          ],
         },
       });
       continue;
     }
     const metadata = block.metadata ?? canonicalPlainMetadata();
-    const order: ("quote" | "list")[] = [...metadata.containerOrder];
-    if (!order.includes("quote")) order.unshift("quote");
+    const resultDepth = Math.max(depth, metadata.blockquoteDepth);
+    const haveQuotes = metadata.containerOrder.filter(
+      (entry) => entry === "quote",
+    ).length;
+    const order: ("quote" | "list")[] = [
+      ...Array.from(
+        { length: Math.max(0, resultDepth - haveQuotes) },
+        () => "quote" as const,
+      ),
+      ...metadata.containerOrder,
+    ];
     blocks.push({
       paragraphId: block.paragraphId,
       kind: "paragraph",
-      metadata: { ...metadata, blockquoteDepth: depth, containerOrder: order },
+      metadata: {
+        ...metadata,
+        blockquoteDepth: resultDepth,
+        containerOrder: order,
+      },
       segments: block.segments ?? [],
     });
   }
