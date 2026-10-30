@@ -1250,13 +1250,19 @@ export interface PresenceBadgeState {
 /** Badge state derivation as pure data (§6.4): the holder, requester,
     admin and viewer states derive from the snapshots plus the injected
     capabilities (never from snapshots alone) and from expiry against the
-    injected clock. An expired lock renders as no lock. Pure. */
+    injected clock. An expired lock renders as no lock. The avatar list keeps
+    roster order except that the lock holder (when present in the list) moves
+    last, matching the sentropic badge. Read-only mode suppresses
+    request-unlock. Pure of its arguments; the caller injects the clock. */
 export function derivePresenceBadgeState(input: {
   presence: PresenceSnapshot;
   lock: LockSnapshot | null;
   capabilities: CollaborationCapabilities;
   currentActorId: string;
   nowIso: string;
+  /** Read-only mode (§6.4): the badge still renders but request-unlock is
+      suppressed. Defaults to false. */
+  readOnly?: boolean;
 }): PresenceBadgeState {
   const lockActive =
     input.lock !== null &&
@@ -1278,17 +1284,34 @@ export function derivePresenceBadgeState(input: {
   } else if (input.capabilities.canForceUnlock) {
     role = "admin";
   }
+  const readOnly = input.readOnly === true;
+  const actors =
+    holderId === null
+      ? input.presence.actors
+      : orderHolderLast(input.presence.actors, holderId);
   return {
     total: input.presence.total,
-    actors: input.presence.actors,
+    actors,
     lockActive,
     role,
     canRequestUnlock:
+      !readOnly &&
       lockActive &&
       holderId !== null &&
       holderId !== input.currentActorId &&
       input.capabilities.canRequestUnlock,
   };
+}
+
+/** Stable owner-last ordering: the holder moves last, others keep roster
+    order. Pure. */
+function orderHolderLast(
+  actors: readonly CollaborationActor[],
+  holderId: string,
+): readonly CollaborationActor[] {
+  const index = actors.findIndex((actor) => actor.actorId === holderId);
+  if (index === -1) return actors;
+  return [...actors.slice(0, index), ...actors.slice(index + 1), actors[index] as CollaborationActor];
 }
 
 export type AgentPatchProfile = "p0" | "full";
