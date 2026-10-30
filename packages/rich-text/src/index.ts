@@ -29,11 +29,19 @@ export {
   RICH_TEXT_CAPTURE_UNAVAILABLE_MESSAGE,
   RICH_TEXT_CAPTURE_UNAVAILABLE_NAME,
 } from "./model.js";
-export type { RichTextMessageKey, RichTextMessages } from "./messages.js";
+export type {
+  CollabMessageKey,
+  RichTextMessageKey,
+  RichTextMessages,
+} from "./messages.js";
 export {
+  COLLAB_MESSAGE_KEYS,
+  COLLAB_MESSAGE_NAMESPACE,
   RICH_TEXT_MESSAGE_KEYS,
   RICH_TEXT_MESSAGE_NAMESPACE,
   RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
+  collabUntranslatedDataValue,
+  formatCollabUntranslatedMarker,
   formatUntranslatedMarker,
   untranslatedDataValue,
 } from "./messages.js";
@@ -82,6 +90,7 @@ export type {
   AgentParagraphState,
   AgentPatch,
   AgentPatchKey,
+  EffectiveEditableInput,
   AgentPatchProfile,
   AgentPatchReceipt,
   AgentPatchResult,
@@ -132,6 +141,7 @@ export {
   MAX_READ_SERIALIZED_BYTES,
   MAX_READ_TEXT_UNITS,
   MAX_TITLE_UNITS,
+  computeEffectiveEditable,
   createPresenceSnapshot,
   derivePresenceBadgeState,
   isAllowedHref,
@@ -141,3 +151,9 @@ export {
   validateCollaborationColor,
   validateFullBlockMetadata,
 } from "./collaboration.js";
+export {
+  composerDocumentFromText,
+  composerTextFromDocument,
+  joinComposerText,
+  splitComposerText,
+} from "./composer-document.js";
