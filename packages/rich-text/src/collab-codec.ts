@@ -315,7 +315,10 @@ function insertTextRun(
   if (attributes !== undefined && Object.keys(attributes).length > 0) {
     ytext.insert(index, text, attributes);
   } else {
-    ytext.insert(index, text);
+    // Explicit empty attributes: a bare Yjs insert inherits the left
+    // neighbour's marks, which would corrupt a plain run seeded right
+    // after a marked one.
+    ytext.insert(index, text, {});
   }
   return index + text.length;
 }

@@ -53,6 +53,10 @@ describe("CL-3a bound history seam", () => {
     const provider = createInMemoryTestDoubleProvider();
     const source = provider.openSession("canvas:h1", "session:h1", ["body"]);
     const identity = { documentId: "canvas:h1", sessionId: "session:h1", fieldKey: "body" };
+    // R-MAP-3 (review 2 B-NEW-1): the host seeds the field at session open;
+    // an unseeded field refuses the bound mount instead of auto-seeding.
+    const seeded = source.resolveBinding(identity);
+    seedFieldFromDocument(seeded.text, seeded.fieldMeta, "body", p0Doc());
     const bound = await createBoundRichTextEditor({
       document: p0Doc(),
       messages: { ...MESSAGES },

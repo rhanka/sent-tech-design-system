@@ -42,6 +42,12 @@ export interface P0EditorExtensionOptions {
   /** Whether the editor is currently editable. The marker decorates only
       when true, mirroring the placeholder's own `showOnlyWhenEditable`. */
   isEditable: () => boolean;
+  /** Whether this editor mounts a collaboration binding (bound mode). The
+      full profile composes its helper set accordingly: a helper that
+      creates content the projection never sees must stay out, because the
+      bound ProseMirror document is the deterministic projection of the
+      shared state on every replica. */
+  bound: boolean;
 }
 
 /** Paragraph with the opaque identity attribute (spec §5.2): the attribute
