@@ -253,6 +253,12 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // although apps/docs already shows its import on the getting-started page.
     removeWhen: "@sentropic/design-system-theme-quebec has had a first successful npm publish",
   },
+  "rich-text-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/design-system-rich-text has a first
+    // successful `npm publish`. Measured 404 (never published) on 2026-10-30.
+    removeWhen: "@sentropic/design-system-rich-text has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
