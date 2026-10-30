@@ -272,6 +272,16 @@ export function createRichTextEditor(
   options: RichTextEditorOptions,
 ): RichTextEditor | Promise<RichTextEditor> {
   const profile: RichTextProfile = options.profile ?? "p0";
+  const bound =
+    options.collaborationBinding !== undefined &&
+    options.collaborationBinding !== null &&
+    options.collaborationSource !== undefined &&
+    options.collaborationSource !== null;
+  if (bound) {
+    throw new Error(
+      "rich-text.bound-entry: use createBoundRichTextEditor from ./editor-bound.js for bound mounts (keeps the controlled graph free of the collaboration runtime)",
+    );
+  }
   if (profile !== "full") {
     return buildEditor(options);
   }
@@ -284,9 +294,37 @@ export function createRichTextEditor(
   })();
 }
 
+export interface BoundImpl {
+  ytext: { length: number };
+  fieldMeta: { size?: number };
+  binding: { identity: FieldBindingIdentity };
+  codec: {
+    captureDocumentFromField: (
+      ytext: never,
+      fieldMeta: never,
+      format: never,
+    ) => { document: RichTextDocument; representability: { nonRepresentableParagraphIds: string[] } };
+  };
+  projection: {
+    BINDING_ORIGIN_META: string;
+    buildSelectionMap: (doc: never, ytext: never) => never;
+    projectPmTransactionToYText: (binding: never, before: never, tr: never) => void;
+    applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
+    linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
+    affectedBlocksFromDelta: (
+      pre: never,
+      post: never,
+      delta: never,
+    ) => string[];
+  };
+  initialDocument: RichTextDocument;
+}
+
 /** Synchronous editor construction over an already-available extension
-    graph (P0 always; full only after the lazy loader registered it). */
-function buildEditor(options: RichTextEditorOptions): RichTextEditor {
+    graph (P0 always; full only after the lazy loader registered it).
+    Exported for the bound entry (`./editor-bound.js`), which supplies the
+    collaboration runtime that the controlled graph never loads. */
+export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImpl): RichTextEditor {
   const profile: RichTextProfile = options.profile ?? "p0";
   const isFull = profile === "full";
   // R-FULL-PROFILE-1: `full` requires `ds.markdown.full@1`; P0 keeps its
@@ -337,6 +375,11 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // mode. The Yjs UndoManager itself lands in CL-3b; until then bound
   // undo/redo fail closed through the placeholder below.
   const boundCollaboration = binding !== null && bindingSource !== null;
+  let isProjecting = false;
+  let lastLinearBlocks: Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }> | null = null;
+  let lastYTransaction: unknown = null;
+  let yTextHandler: ((event: never, transaction: never) => void) | null = null;
+  let fieldMetaHandler: ((event: never, transaction: never) => void) | null = null;
   const callbacks: RichTextEditorCallbacks = {
     onChange: options.onChange,
     onExternalConflict: options.onExternalConflict,
@@ -361,16 +404,17 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // the marker decoration beside the text and never in the DOM alone.
   let livePlaceholder = options.messages.placeholder;
   let livePlaceholderMarker: string | null = null;
-  const seeds: ConversionSeeds = createConversionSeeds(options.document);
-  let documentFormat: RichTextFormat = options.document.format;
+  const mountDocument = boundImpl?.initialDocument ?? options.document;
+  const seeds: ConversionSeeds = createConversionSeeds(mountDocument);
+  let documentFormat: RichTextFormat = mountDocument.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
-  let lastAcknowledged = copyRichTextDocument(options.document);
+  let lastAcknowledged = copyRichTextDocument(mountDocument);
   // The host's pre-canonical input (review 3 blocking 3): the mounted
   // document canonicalizes (TrailingNode, defaults, normalized order) while
   // the host echo carries the exact pre-mount bytes. Rule-1 echo recognizes
   // the host input when the displayed document still equals the canonical
   // acknowledgement, even though the bytes differ.
-  let lastAcceptedInput = copyRichTextDocument(options.document);
+  let lastAcceptedInput = copyRichTextDocument(mountDocument);
   // §5.6 unacknowledged local revision: set by any user transaction that
   // modifies the live content (every `emitChange`, including a wire-identical
   // one), cleared only by a rule-1 acknowledgement or a rule-4 application.
@@ -748,8 +792,102 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // live document never stores it, so the session carries the previous
   // capture's map as the next capture's incoming base.
   let fullRetained: RetainedRunMetadata = {
-    ...(options.document.retainedRunMetadata ?? {}),
+    ...(mountDocument.retainedRunMetadata ?? {}),
   };
+
+  if (boundImpl !== undefined) {
+    lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+    const ytextObs = boundImpl.ytext as unknown as {
+      observe: (fn: (event: never, transaction: never) => void) => void;
+      unobserve: (fn: (event: never, transaction: never) => void) => void;
+    };
+    const metaObs = boundImpl.fieldMeta as unknown as {
+      observe: (fn: (event: never, transaction: never) => void) => void;
+      unobserve: (fn: (event: never, transaction: never) => void) => void;
+    };
+    yTextHandler = ((event: never, transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      if (transaction === lastYTransaction) return;
+      lastYTransaction = transaction;
+      try {
+        const delta = (event as unknown as { changes: { delta: unknown[] } }).changes.delta as Array<{
+          insert?: string | Record<string, unknown>;
+          delete?: number;
+          retain?: number;
+        }>;
+        const pre = lastLinearBlocks ?? [];
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as Array<{
+          paragraphId: string;
+          separatorIndex: number;
+          contentStart: number;
+          contentEnd: number;
+        }>;
+        const affected = boundImpl.projection.affectedBlocksFromDelta(pre as never, post as never, delta as never) as string[];
+        if (affected.length === 0) {
+          lastLinearBlocks = post as never;
+          return;
+        }
+        boundImpl.projection.applyRemoteUpdateIncrementally({
+          view: editor.view,
+          ytext: boundImpl.ytext,
+          fieldMeta: boundImpl.fieldMeta,
+          format: documentFormat,
+          fieldKey: binding?.fieldKey ?? "",
+          affectedParagraphIds: affected,
+        } as never);
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      } catch {
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      }
+    }) as never;
+    fieldMetaHandler = ((event: never, transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      if (transaction === lastYTransaction) return;
+      try {
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as Array<{
+          paragraphId: string;
+          separatorIndex: number;
+          contentStart: number;
+          contentEnd: number;
+        }>;
+        if (lastLinearBlocks !== null && JSON.stringify(post) !== JSON.stringify(lastLinearBlocks)) {
+          return;
+        }
+        lastYTransaction = transaction;
+        const keys = (event as unknown as { changes: { keys: Map<string, { action: string }> } }).changes.keys;
+        const postIds = new Set(post.map((block) => block.paragraphId));
+        const affectedSet = new Set<string>();
+        const fieldMetaMap = boundImpl.fieldMeta as unknown as Map<string, unknown>;
+        for (const [key, change] of keys) {
+          void change;
+          if (postIds.has(key)) {
+            affectedSet.add(key);
+            continue;
+          }
+          for (const block of post) {
+            const record = fieldMetaMap.get(block.paragraphId) as { listRunId?: unknown } | undefined;
+            if (record?.listRunId === key) {
+              affectedSet.add(block.paragraphId);
+            }
+          }
+        }
+        if (affectedSet.size === 0) return;
+        boundImpl.projection.applyRemoteUpdateIncrementally({
+          view: editor.view,
+          ytext: boundImpl.ytext,
+          fieldMeta: boundImpl.fieldMeta,
+          format: documentFormat,
+          fieldKey: binding?.fieldKey ?? "",
+          affectedParagraphIds: [...affectedSet],
+        } as never);
+      } catch {
+        // Metadata-only rebuild failures never break the session; the next
+        // text change re-evaluates the wrappers.
+      }
+    }) as never;
+    ytextObs.observe(yTextHandler as never);
+    metaObs.observe(fieldMetaHandler as never);
+  }
 
   /** Synchronize inert link rendering with editability (CL-2F-F-URL item 1):
       read-only/disabled mounts render no `href`, and toggling editability
@@ -804,6 +942,17 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   };
 
   const displayedDocument = (): RichTextDocument => {
+    if (boundImpl !== undefined) {
+      const cap = boundImpl.codec.captureDocumentFromField(
+        boundImpl.ytext as never,
+        boundImpl.fieldMeta as never,
+        documentFormat as never,
+      );
+      if (isFull) {
+        fullRetained = { ...(cap.document.retainedRunMetadata ?? {}) };
+      }
+      return cap.document;
+    }
     if (isFull) {
       const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
       fullRetained = read.retainedRunMetadata;
@@ -813,6 +962,20 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   };
 
   const displayedCaptureResult = (): RichTextCaptureResult => {
+    if (boundImpl !== undefined) {
+      const cap = boundImpl.codec.captureDocumentFromField(
+        boundImpl.ytext as never,
+        boundImpl.fieldMeta as never,
+        documentFormat as never,
+      );
+      if (isFull) {
+        fullRetained = { ...(cap.document.retainedRunMetadata ?? {}) };
+      }
+      return {
+        document: cap.document,
+        representability: { nonRepresentableParagraphIds: [] },
+      };
+    }
     if (isFull) {
       const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
       fullRetained = read.retainedRunMetadata;
@@ -1115,6 +1278,14 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       (programmatic-gesture) transactions only record. */
   function handleTransaction(transaction: Transaction): void {
     if (tracker.destroyed) return;
+    if (
+      boundImpl !== undefined &&
+      transaction.getMeta(boundImpl.projection.BINDING_ORIGIN_META) === true
+    ) {
+      prevUndoDepth = undoDepth(editor.state);
+      prevRedoDepth = redoDepth(editor.state);
+      return;
+    }
     if (transaction.getMeta(IDENTITY_FIX_META) === true) {
       prevUndoDepth = undoDepth(editor.state);
       prevRedoDepth = redoDepth(editor.state);
@@ -1122,6 +1293,31 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     }
     if (transaction.docChanged) lastDispatchChanged = true;
     markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction, [], touchedPredicate);
+    if (
+      boundImpl !== undefined &&
+      transaction.docChanged &&
+      transaction.getMeta(PRESERVED_REPLACE_META) !== true &&
+      !editor.view.composing &&
+      !tracker.composing
+    ) {
+      isProjecting = true;
+      try {
+        boundImpl.projection.projectPmTransactionToYText(
+          {
+            ytext: boundImpl.ytext,
+            fieldMeta: boundImpl.fieldMeta,
+            fieldKey: binding?.fieldKey ?? "",
+            allocateId: allocateFresh,
+            format: documentFormat,
+          } as never,
+          transaction.before as never,
+          transaction as never,
+        );
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      } finally {
+        isProjecting = false;
+      }
+    }
     if (suppressEmit) {
       markTouchedFromTransaction(
         suppressedAffected,
@@ -2055,8 +2251,8 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // history: mounting emits no `onChange` and is never undone.
   suppressEmit = true;
   try {
-    replaceDocument(options.document);
-    reseedConversion(seeds, options.document);
+    replaceDocument(mountDocument);
+    reseedConversion(seeds, mountDocument);
     // Recording read (see rule-4 application above): records each mount
     // version's exact text with no bridge call.
     displayedDocument();
@@ -2446,6 +2642,29 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
         destroyedDocument = displayedDocument();
       } catch {
         destroyedDocument = null;
+      }
+      if (boundImpl !== undefined) {
+        try {
+          const ytextObs = boundImpl.ytext as unknown as {
+            unobserve: (fn: (event: never, transaction: never) => void) => void;
+          };
+          const metaObs = boundImpl.fieldMeta as unknown as {
+            unobserve: (fn: (event: never, transaction: never) => void) => void;
+          };
+          if (yTextHandler !== null) ytextObs.unobserve(yTextHandler as never);
+          if (fieldMetaHandler !== null) metaObs.unobserve(fieldMetaHandler as never);
+        } catch {
+          // Unobserving never blocks teardown.
+        }
+        yTextHandler = null;
+        fieldMetaHandler = null;
+        try {
+          if (binding !== null && bindingSource !== null) {
+            bindingSource.releaseBinding(binding);
+          }
+        } catch {
+          // Release failures never break teardown; the binding is gone with the view.
+        }
       }
       tracker.destroy();
       editor.destroy();

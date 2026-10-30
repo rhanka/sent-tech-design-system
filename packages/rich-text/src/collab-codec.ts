@@ -112,19 +112,27 @@ export function attributesToMarks(
   const booleans = admittedBooleanMarks(format);
   for (const [key, value] of Object.entries(attributes)) {
     if (booleans.has(key)) {
-      if (value === true) {
-        (marks as Record<string, unknown>)[key] = true;
+      if (value !== true) {
+        throw new Error(`rich-text.collab-invalid-mark: mark "${key}" carries no other value shape`);
       }
+      (marks as Record<string, unknown>)[key] = true;
       continue;
     }
-    if (format === "ds.markdown.full@1" && key === "link" && typeof value === "string") {
+    if (format === "ds.markdown.full@1" && key === "link") {
+      if (typeof value !== "string" || !isAllowedHref(value)) {
+        throw new Error("rich-text.collab-invalid-mark: unsafe href refuses the whole update");
+      }
       marks.link = value;
       continue;
     }
-    if (format === "ds.markdown.full@1" && key === "linkTitle" && typeof value === "string") {
+    if (format === "ds.markdown.full@1" && key === "linkTitle") {
+      if (typeof value !== "string") {
+        throw new Error('rich-text.collab-invalid-mark: linkTitle is a plain string');
+      }
       marks.linkTitle = value;
       continue;
     }
+    throw new Error(`rich-text.collab-invalid-mark: mark "${key}" is outside the admitted table`);
   }
   return marks;
 }
@@ -137,7 +145,12 @@ export function marksToAttributes(marks: RichTextInlineMarks): Record<string, un
   if (marks.code === true) attributes["code"] = true;
   if (marks.strike === true) attributes["strike"] = true;
   if (marks.underline === true) attributes["underline"] = true;
-  if (typeof marks.link === "string") attributes["link"] = marks.link;
+  if (typeof marks.link === "string") {
+    if (!isAllowedHref(marks.link)) {
+      throw new Error("rich-text.forbidden-href: seed carries a link the R-FULL-URL-1 validator refuses");
+    }
+    attributes["link"] = marks.link;
+  }
   if (typeof marks.linkTitle === "string") attributes["linkTitle"] = marks.linkTitle;
   return attributes;
 }
@@ -474,6 +487,7 @@ export function captureDocumentFromField(
   fieldMeta: Y.Map<unknown>,
   format: RichTextFormat,
 ): { document: RichTextDocument; representability: { nonRepresentableParagraphIds: string[] } } {
+  validateFieldState(ytext, fieldMeta, format);
   const delta = ytext.toDelta() as Array<{
     insert?: string | Record<string, unknown>;
     attributes?: Record<string, unknown>;
@@ -504,15 +518,25 @@ export function captureDocumentFromField(
         throw new Error("rich-text.collab-invalid-field: first item is a separator embed");
       }
       if (isHardBreakValue(insert)) {
+        if (current.kind === "preserved" || current.kind === "horizontalRule") {
+          throw new Error("rich-text.collab-invalid-segment: no text inside preserved/HR segments");
+        }
         current.hardBreaks += 1;
         current.runs.push({ text: "\n", attributes: {} });
         continue;
       }
       if (isPreservedValue(insert)) {
+        if (current.kind !== "preserved") {
+          throw new Error("rich-text.collab-invalid-preserved: preserved embed outside its segment");
+        }
         current.preservedRaw = insert.preserved.raw;
         continue;
       }
       if (isHorizontalRuleValue(insert)) {
+        const atomId = (insert.horizontalRule as { paragraphId: string }).paragraphId;
+        if (atomId !== current.paragraphId) {
+          throw new Error("rich-text.collab-invalid-hr: mismatched atom identities refuse whole");
+        }
         current.hrSeen = true;
         continue;
       }
@@ -524,6 +548,9 @@ export function captureDocumentFromField(
       }
       if (insert.includes("\n")) {
         throw new Error("rich-text.collab-invalid-text: no string insert contains U+000A");
+      }
+      if (current.kind === "preserved" || current.kind === "horizontalRule") {
+        throw new Error("rich-text.collab-invalid-segment: no text inside preserved/HR segments");
       }
       current.runs.push({ text: insert, attributes: { ...(op.attributes ?? {}) } });
       continue;
@@ -724,7 +751,12 @@ export function validateFieldState(
       if (first) {
         throw new Error("rich-text.collab-invalid-field: first item is a separator embed");
       }
-      if (isHardBreakValue(insert)) continue;
+      if (isHardBreakValue(insert)) {
+        if (currentKind === "preserved" || currentKind === "horizontalRule") {
+          throw new Error("rich-text.collab-invalid-segment: no text inside preserved/HR segments");
+        }
+        continue;
+      }
       if (isPreservedValue(insert)) {
         if (currentKind !== "preserved") {
           throw new Error("rich-text.collab-invalid-preserved: preserved embed outside its segment");
