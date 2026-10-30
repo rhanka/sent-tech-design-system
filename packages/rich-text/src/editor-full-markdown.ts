@@ -593,10 +593,19 @@ export function parseFullMarkdown(
       codeLanguage: null,
     });
     // Run-source opener records carry start/type/tight; members omit them.
+    // Arabic `1.` is the default and omits `orderedType` (matching
+    // `fullProseMirrorToDocument`, which records a type only for a/A/i/I).
     if (pending.context.listKind === "ordered" && pending.runSource) {
       metadata.orderedStart = pending.context.orderedStart ?? 1;
-      const orderedType = pending.context.orderedType ?? "1";
-      if (isOrderedTypeToken(orderedType)) metadata.orderedType = orderedType;
+      const orderedType = pending.context.orderedType;
+      if (
+        orderedType !== null &&
+        orderedType !== undefined &&
+        orderedType !== "1" &&
+        isOrderedTypeToken(orderedType)
+      ) {
+        metadata.orderedType = orderedType;
+      }
       metadata.listTight = pending.context.listTight;
     } else if (pending.context.listKind === "bullet" && pending.runSource) {
       metadata.listTight = pending.context.listTight;
@@ -963,7 +972,7 @@ export function parseFullMarkdown(
         listItemId: itemId,
         orderedStart:
           kind === "ordered" && ordered !== null ? parseInt(ordered[2] as string, 10) : null,
-        orderedType: "1",
+        orderedType: null,
         listTight: run.tight,
         containerOrder: order,
       };

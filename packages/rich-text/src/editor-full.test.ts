@@ -1125,16 +1125,20 @@ describe("CL-2F review 2 blocking 3: containerOrder counts and mounted baseline"
   });
 
   it("R3b: a parsed nested document capture is a remount fixed point", async () => {
-    // The mounted capture normalizes library-canonical defaults (the
-    // `orderedType: "1"` arabic default the parser records is the
-    // Tiptap-canonical absent value, as in every existing ordered
-    // fixture); the fixed point — capture, remount, identical capture —
-    // is what the clean-mount baseline relies on.
+    // Review 3 blocking 3a: the parser omits `orderedType` for Arabic
+    // `1.` lists, matching `fullProseMirrorToDocument` (which records a
+    // type only for a/A/i/I), so the mounted capture equals the parse for
+    // the input blocks; the TrailingNode paragraph may follow.
     const parsed = parseFullMarkdown("1. a\n   1. b\n", allocator("r3:remount"));
     expect(parsed.document).not.toBeNull();
+    for (const block of parsed.document?.blocks ?? []) {
+      if (block.kind === "paragraph") {
+        expect(block.metadata?.orderedType ?? null).toBeNull();
+      }
+    }
     const first = await mountFull(parsed.document?.blocks ?? []);
     const capture1 = first.getDocument();
-    expect(capture1.blocks.slice(0, 2).map((block) => block.paragraphId)).toHaveLength(2);
+    expect(capture1.blocks.slice(0, 2)).toEqual(parsed.document?.blocks.slice(0, 2));
     const second = await mountFull(capture1.blocks);
     expect(second.getDocument()).toEqual(capture1);
   });
@@ -1164,12 +1168,41 @@ describe("CL-2F review 2 blocking 3: containerOrder counts and mounted baseline"
         },
       });
       mounted.push(editor);
-      // The host echo: the exact pre-mount input pushed back. A clean
-      // mount has no local edits, so the update applies (Rule 4) instead
-      // of raising onExternalConflict (Rule 3).
+      // Review 3 blocking 3c: the host echo of the exact pre-mount input
+      // is Rule-1 echo (no replace, no conflict), even though the mounted
+      // canonical document differs (TrailingNode, defaults, order).
+      const canonical = editor.getDocument();
+      const trailingBefore = canonical.blocks[canonical.blocks.length - 1]?.paragraphId;
       editor.applyExternalUpdate(fullDoc(blocks));
       expect(conflicted).toBe(0);
+      const afterEcho = editor.getDocument();
+      expect(afterEcho).toEqual(canonical);
+      expect(afterEcho.blocks[afterEcho.blocks.length - 1]?.paragraphId).toBe(trailingBefore);
     }
+  });
+
+  it("R3c: host echo after undo to the clean mount stays echo, not conflict", async () => {
+    // RED on 825a15d1: after typing and undoing back to the clean mount,
+    // the host echo of the pre-mount input missed Rule 1 (canonical !=
+    // input) and raised a false onExternalConflict via the revision flag.
+    const input = parseFullMarkdown("# Title", allocator("r3:undo-echo")).document;
+    expect(input).not.toBeNull();
+    let conflicted = 0;
+    const editor = await createRichTextEditor({
+      document: { format: "ds.markdown.full@1", blocks: input?.blocks ?? [] },
+      profile: "full",
+      messages: { placeholder: "", placeholderMarker: "" },
+      allocateId: allocator("r3:undo-echo2"),
+      onExternalConflict: () => {
+        conflicted += 1;
+      },
+    });
+    mounted.push(editor);
+    const firstId = editor.getDocument().blocks[0]?.paragraphId as string;
+    editor.typeText(firstId, "!");
+    editor.undo();
+    editor.applyExternalUpdate({ format: "ds.markdown.full@1", blocks: input?.blocks ?? [] });
+    expect(conflicted).toBe(0);
   });
 });
 
@@ -1573,6 +1606,43 @@ describe("CL-2F review 2 blocking 2: the single href validator", () => {
     await expect(
       mountFull([para("p1", [textRun("bad", { link: " https://example.com " })])]),
     ).rejects.toThrow(/forbidden-href/);
+  });
+
+  it("R3b2: raw entity-encoded scheme refuses while valid ampersands store the validated value", async () => {
+    // RED on 825a15d1: `https&colon;//x` passed and an over-cap
+    // entity-padded href passed the 2048 cap.
+    const overCap = `https://example.com/${"&#48;".repeat(500)}`;
+    expect(overCap.length).toBeGreaterThan(2048);
+    await expect(mountFull([para("p1", [textRun("bad", { link: overCap })])])).rejects.toThrow();
+    await expect(
+      mountFull([para("p1", [textRun("bad", { link: "https&colon;//x" })])]),
+    ).rejects.toThrow(/forbidden-href/);
+    const editor = await mountFull([para("p1", [textRun("Seed")])]);
+    editor.paste({
+      html: '<p><a href="https://e.com/?a=1&amp;b=2">site</a></p>',
+    });
+    const stored = editor
+      .getDocument()
+      .blocks.flatMap((block) =>
+        block.kind === "paragraph"
+          ? ((block.segments ?? []) as { type: string; marks?: Record<string, unknown> }[]).filter(
+              (segment) => segment.type === "text" && segment.marks?.["link"] !== undefined,
+            )
+          : [],
+      );
+    expect(stored).toHaveLength(1);
+    expect((stored[0] as { marks: { link: string } }).marks.link).toBe("https://e.com/?a=1&b=2");
+    // Over-cap and encoded-scheme HTML pastes refuse whole. The DOM decodes
+    // entities once before validation, so the HTML source uses double
+    // encoding (`&amp;#48;`, `&amp;colon;`) to present the validator with
+    // the over-cap / scheme-mismatched raw token; the stored value always
+    // equals the validated DOM-decoded value.
+    const overCapHtml = `https://example.com/${"&amp;#48;".repeat(500)}`;
+    const before = editor.getDocument();
+    editor.paste({ html: `<p><a href="${overCapHtml}">x</a></p>` });
+    expect(editor.getDocument()).toEqual(before);
+    editor.paste({ html: '<p><a href="https&amp;colon;//x">x</a></p>' });
+    expect(editor.getDocument()).toEqual(before);
   });
 });
 

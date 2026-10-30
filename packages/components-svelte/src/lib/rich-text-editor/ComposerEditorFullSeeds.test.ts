@@ -1,68 +1,19 @@
 /**
- * Review 1 item 10 — seeds through the full composer surface.
+ * Review 1 item 10 (seeds) + review 3 blocking 1 (async mount) + review 3
+ * blocking 3b (TrailingNode byte-identity) through the real full composer
+ * surface: no `vi.mock`, no polling — `captureComposer()` awaits the pending
+ * mount itself.
  *
- * RED on cc91ac7c: mounting `ComposerEditor` with `profile: "full"` on the
- * pinned `break-twins` value already normalizes its two-space hard breaks
- * to backslashes on the initial `captureComposer()`, and a neighboring edit
- * cannot keep the untouched slices byte-identical: the composer mapping
- * keeps no source seeds.
+ * RED on 825a15d1: `captureComposer()` rejected while the full graph loaded,
+ * prop flips during mount were dropped, unmount during mount did not reject
+ * through the pending promise, and an untouched composer ending with a list,
+ * code block, heading or quote captured with an extra `"\n\n"`.
  */
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/svelte";
-import { tick } from "svelte";
 import type { RichTextMessages } from "@sentropic/design-system-rich-text";
-import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
 import ComposerEditor from "./ComposerEditor.svelte";
 import type { ComposerEditorProps } from "./ComposerEditor.svelte";
-
-const { createdCores } = vi.hoisted(() => ({
-  createdCores: [] as CoreEditor[],
-}));
-vi.mock("@sentropic/design-system-rich-text/editor", async (importOriginal) => {
-  const actual =
-    await importOriginal<
-      typeof import("@sentropic/design-system-rich-text/editor")
-    >();
-  return {
-    ...actual,
-    createRichTextEditor: (
-      options: Parameters<typeof actual.createRichTextEditor>[0],
-    ) => {
-      // Full construction is asynchronous (lazy full graph): record the
-      // settled instance, never the pending promise.
-      const maybe = actual.createRichTextEditor(options) as
-        | CoreEditor
-        | Promise<CoreEditor>;
-      if (maybe instanceof Promise) {
-        return maybe.then((instance) => {
-          createdCores.push(instance);
-          return instance;
-        });
-      }
-      createdCores.push(maybe);
-      return maybe;
-    },
-  };
-});
-
-function lastCore(): CoreEditor {
-  const instance = createdCores[createdCores.length - 1];
-  expect(instance).toBeDefined();
-  return instance as CoreEditor;
-}
-
-/** Deterministic mount wait: the full graph loads on demand, so the core
-    settles after the dynamic import — poll for a core recorded after
-    `previous` (bounded, fails loudly when the mount never settles). */
-async function waitForCore(previous: number): Promise<CoreEditor> {
-  for (let attempt = 0; attempt < 200; attempt += 1) {
-    if (createdCores.length > previous) {
-      return createdCores[createdCores.length - 1] as CoreEditor;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 5));
-  }
-  throw new Error("full composer core never settled");
-}
 
 const MESSAGES: RichTextMessages = {
   editorLabel: "SENTINEL-EDITOR-LABEL",
@@ -88,22 +39,74 @@ function composerProps(extra?: Partial<ComposerEditorProps>): ComposerEditorProp
 
 const BREAK_TWINS = "Twin\n\nTwin\n\nHard  \nbreak\n\n";
 
-describe("full composer seeds (review 1 item 10, RED)", () => {
+describe("full composer seeds and async mount (reviews 1 and 3, RED)", () => {
   it("initial capture keeps two-space hard breaks", async () => {
-    const previous = createdCores.length;
     const { component } = render(ComposerEditor, {
       props: composerProps({ value: BREAK_TWINS }),
     });
-    await tick();
-    await waitForCore(previous);
     const captured = await component.captureComposer();
     expect(captured.text).toBe(BREAK_TWINS);
   });
 
-  it("a neighboring edit keeps untouched source slices", async () => {
-    const seen: string[] = [];
-    const previous = createdCores.length;
+  it("capture during mount resolves to the mounted document", async () => {
     const { component } = render(ComposerEditor, {
+      props: composerProps({ value: BREAK_TWINS }),
+    });
+    // No tick, no wait: the capture awaits the pending full mount itself.
+    const captured = await component.captureComposer();
+    expect(captured.text).toBe(BREAK_TWINS);
+  });
+
+  it("prop flip during mount applies the latest value", async () => {
+    const { component, rerender } = render(ComposerEditor, {
+      props: composerProps({ value: "first" }),
+    });
+    await rerender({ ...composerProps({ value: "second" }) });
+    const captured = await component.captureComposer();
+    expect(captured.text).toBe("second");
+  });
+
+  it("unmount during mount rejects capture", async () => {
+    const { component, unmount } = render(ComposerEditor, {
+      props: composerProps({ value: BREAK_TWINS }),
+    });
+    const pending = component.captureComposer();
+    await unmount();
+    await expect(pending).rejects.toMatchObject({
+      name: "RichTextCaptureUnavailable",
+    });
+  });
+
+  it("untouched list-final composer captures byte-identically", async () => {
+    const input = "- item one\n- item two";
+    const { component } = render(ComposerEditor, {
+      props: composerProps({ value: input }),
+    });
+    const captured = await component.captureComposer();
+    expect(captured.text).toBe(input);
+  });
+
+  it("untouched code-final composer captures byte-identically", async () => {
+    const input = "```ts\nconst x = 1;\n```";
+    const { component } = render(ComposerEditor, {
+      props: composerProps({ value: input }),
+    });
+    const captured = await component.captureComposer();
+    expect(captured.text).toBe(input);
+  });
+
+  it("untouched heading-final composer captures byte-identically", async () => {
+    const input = "# Title";
+    const { component } = render(ComposerEditor, {
+      props: composerProps({ value: input }),
+    });
+    const captured = await component.captureComposer();
+    expect(captured.text).toBe(input);
+  });
+
+  it("a host replacement keeps untouched source slices", async () => {
+    const seen: string[] = [];
+    const { component, rerender } = render(ComposerEditor, {
       props: composerProps({
         value: BREAK_TWINS,
         onChange: (text: string) => {
@@ -111,13 +114,18 @@ describe("full composer seeds (review 1 item 10, RED)", () => {
         },
       }),
     });
-    await tick();
-    await waitForCore(previous);
-    const firstId = lastCore().getDocument().blocks[0]?.paragraphId as string;
-    lastCore().typeText(firstId, "!");
-    await tick();
-    expect(seen).toEqual(["Twin!\n\nTwin\n\nHard  \nbreak\n\n"]);
+    const first = await component.captureComposer();
+    expect(first.text).toBe(BREAK_TWINS);
+    await rerender({
+      ...composerProps({
+        value: "Twin!\n\nTwin\n\nHard  \nbreak\n\n",
+        onChange: (text: string) => {
+          seen.push(text);
+        },
+      }),
+    });
     const captured = await component.captureComposer();
     expect(captured.text).toBe("Twin!\n\nTwin\n\nHard  \nbreak\n\n");
+    expect(seen).not.toContain(BREAK_TWINS);
   });
 });

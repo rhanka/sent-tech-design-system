@@ -825,41 +825,24 @@ function isValidAuthorityAndPath(text: string): boolean {
   return isValidHrefAuthority(authority) && isValidPathAbempty(path);
 }
 
-/** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
-    UTF-16 units as either an absolute URI with an allowlisted scheme
+/** Single-token href check (R-FULL-URL-1): the RFC 3986 allowlist applied
+    to exactly one token, with no decoding. Admit non-empty tokens up to
+    2048 UTF-16 units as either an absolute URI with an allowlisted scheme
     (`http`, `https`, `mailto`, case-insensitive) or a relative reference,
     checked against the RFC 3986 Appendix A ABNF for `URI-reference` with
-    no whitespace anywhere. Required productions: `scheme`, `hier-part`
-    and `relative-part` ("//" authority with `path-abempty`,
-    `path-absolute`, `path-noscheme` for relative references so a first
-    segment carrying ":" refuses, `path-rootless` for mailto,
-    `path-empty`), `authority` (`userinfo`, `host` as IP-literal /
-    IPv4address / reg-name, `port` as digits), IP-literal (IPv6address in
-    all nine ABNF forms with ls32, IPvFuture), IPv4address with dec-octet
-    (no leading zero on multi-digit octets, 0-255), pct-encoded (exactly
-    two hex digits), `query` and `fragment`. The `http` and `https`
-    schemes additionally require a non-empty host. Pure: manual string
-    scan only, no DOM and no global URL dependency, so the check does not
-    vary across runtimes. The validator decodes HTML entities itself, so
-    the entity-decoded and raw forms both pass every surface: an encoded
-    scheme (`javascript&colon:`, numeric references) is judged on what the
-    browser would navigate to. No trimming: whitespace anywhere refuses,
-    and every producer boundary trims before storing, so the stored value
-    always equals the validated value. */
-export function isAllowedHref(href: string): boolean {
-  // Single-validator decode (review 2 blocking 2): the decoded form is
-  // what the browser navigates to, so it is the validated form.
-  const decoded = decodeHrefToken(href);
-  if (decoded.length === 0 || decoded.length > MAX_HREF_UNITS) {
+    no whitespace anywhere. Pure: manual string scan only, no DOM and no
+    global URL dependency. No trimming: whitespace anywhere refuses. */
+function isValidSingleHrefToken(token: string): boolean {
+  if (token.length === 0 || token.length > MAX_HREF_UNITS) {
     return false;
   }
-  if (hasDisallowedHrefChar(decoded)) {
+  if (hasDisallowedHrefChar(token)) {
     return false;
   }
-  if (HREF_WHITESPACE_PATTERN.test(decoded)) {
+  if (HREF_WHITESPACE_PATTERN.test(token)) {
     return false;
   }
-  const candidate = decoded;
+  const candidate = token;
   let boundary = candidate.length;
   for (const separator of ["/", "?", "#"]) {
     const at = candidate.indexOf(separator);
@@ -912,6 +895,62 @@ export function isAllowedHref(href: string): boolean {
     return isValidPathAbsolute(parts.hier);
   }
   return isValidPathNoscheme(parts.hier);
+}
+
+/** Scheme name of one href token (lowercased) or null when it carries no
+    scheme before the first `/`, `?` or `#`. Used to require the raw and the
+    decoded token to agree: an entity-encoded scheme delimiter (`https&colon;`,
+    numeric `&#104;`) decodes to an absolute URL while the raw stays relative,
+    so the pair disagrees and refuses. A valid `&amp;` in an already-valid URL
+    keeps the same scheme on both sides and passes. */
+function hrefSchemeName(token: string): string | null {
+  let boundary = token.length;
+  for (const separator of ["/", "?", "#"]) {
+    const at = token.indexOf(separator);
+    if (at !== -1 && at < boundary) {
+      boundary = at;
+    }
+  }
+  const scheme = HREF_SCHEME_PATTERN.exec(token.slice(0, boundary));
+  return scheme === null ? null : scheme[1].toLowerCase();
+}
+
+/** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
+    UTF-16 units as either an absolute URI with an allowlisted scheme
+    (`http`, `https`, `mailto`, case-insensitive) or a relative reference,
+    checked against the RFC 3986 Appendix A ABNF for `URI-reference` with
+    no whitespace anywhere. Both the raw and the entity-decoded token pass,
+    with the same scheme on both sides: an entity-encoded scheme delimiter
+    (`https&colon;`, numeric `&#104;`) refuses unless the producer decoded
+    it first (as the Markdown parser does for its stored value). Double
+    encoding refuses via the stability check, while a valid `&` / `&amp;`
+    query keeps the same scheme on both sides and passes. No trimming:
+    whitespace anywhere refuses, and every producer boundary trims before
+    storing, so the stored value always equals the validated value. */
+export function isAllowedHref(href: string): boolean {
+  // Both the raw and the decoded token pass (review 3 blocking 2): the raw
+  // length cap applies to the stored value, and an entity-encoded scheme
+  // delimiter refuses unless the producer decoded it first (as the Markdown
+  // parser does for its stored value). Double encoding refuses via the
+  // stability check, while a valid `&` / `&amp;` query keeps the same scheme
+  // on both sides and passes.
+  if (href.length === 0 || href.length > MAX_HREF_UNITS) {
+    return false;
+  }
+  const decoded = decodeHrefToken(href);
+  if (decoded.length === 0 || decoded.length > MAX_HREF_UNITS) {
+    return false;
+  }
+  if (decodeHrefToken(decoded) !== decoded) {
+    return false;
+  }
+  if (!isValidSingleHrefToken(href)) {
+    return false;
+  }
+  if (!isValidSingleHrefToken(decoded)) {
+    return false;
+  }
+  return hrefSchemeName(href) === hrefSchemeName(decoded);
 }
 
 /** Named HTML entities with an ASCII output, for href tokenization

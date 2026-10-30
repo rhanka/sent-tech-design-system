@@ -97,7 +97,12 @@
 
   let root: HTMLDivElement | undefined;
   let mountEl: HTMLDivElement | undefined;
-  let core: CoreEditor | null = null;
+  let core = $state<CoreEditor | null>(null);
+  // In-flight full mount (review 3 blocking 1): `createRichTextEditor`
+  // stays synchronous for P0 and asynchronous for `profile: "full"`. While
+  // pending, prop updates are recorded by the value/editable effects and
+  // `captureDocument()` awaits the mount instead of rejecting.
+  let pendingCore: Promise<CoreEditor | null> | null = null;
   // Last `value` handed to the §5.6 decision, as a reference plus a snapshot
   // of the significant document fields. A host that re-passes the identical
   // reference (coarse prop update, unrelated re-render) supplies no new
@@ -272,8 +277,17 @@
   );
 
   export function captureDocument(): Promise<RichTextCaptureResult> {
-    if (!core) return Promise.reject(createCaptureUnavailableError());
-    return core.captureDocument();
+    if (core) return core.captureDocument();
+    // Mount pending (review 3 blocking 1): await the in-flight full mount
+    // and capture from the settled instance. Reject with the
+    // capture-unavailable error only when unmounted or failed during mount.
+    if (pendingCore !== null) {
+      return pendingCore.then((instance) => {
+        if (instance !== null && core !== null) return core.captureDocument();
+        return Promise.reject(createCaptureUnavailableError());
+      });
+    }
+    return Promise.reject(createCaptureUnavailableError());
   }
 
   export function readiness(): RichTextReadiness {
@@ -311,8 +325,12 @@
     // props they read stay live, so a parent re-render never needs a remount.
     // The mount document initialises the core and the acknowledgement
     // reference, so it is recorded as seen without a §5.6 evaluation.
+    // The mount snapshot below reconciles any prop flip that arrives while
+    // the full graph loads (review 3 blocking 1).
+    const mountValue = value;
+    const mountFingerprint = fingerprintOf(value);
     lastSeenValue = value;
-    lastSeenFingerprint = fingerprintOf(value);
+    lastSeenFingerprint = mountFingerprint;
     let cancelled = false;
     const settle = (instance: CoreEditor): void => {
       if (cancelled) {
@@ -327,6 +345,21 @@
       // `focus` does not bubble: capture from the host so a programmatic
       // `focus()` on the editable element is still observed.
       host.addEventListener("focus", guardDisabledFocus, true);
+      // Reconcile prop updates that arrived while the full graph loaded:
+      // the value effect recorded the latest host value while `core` was
+      // null, so apply it now instead of leaving the mount value stale;
+      // effective editability follows the current props, not the mount.
+      instance.setEditable(effectiveEditable);
+      instance.setDisabled(disabled);
+      const current = value;
+      const currentFingerprint = fingerprintOf(current);
+      if (current !== mountValue || currentFingerprint !== mountFingerprint) {
+        lastSeenValue = current;
+        lastSeenFingerprint = currentFingerprint;
+        untrack(() => {
+          instance.applyExternalUpdate(current);
+        });
+      }
       syncChrome();
       // Placeholder decorations land after the ProseMirror observer flush,
       // past the synchronous mount sync: re-sync once settled so the
@@ -337,9 +370,9 @@
     };
     // Single-prop opt-in (R-FULL-PROFILE-1): full construction loads the
     // extension graph on demand and is asynchronous, P0 stays synchronous.
-    // The pending gap is absorbed by the existing mount-pending path
-    // (`readiness()` reports not-ready and `captureDocument()` is
-    // unavailable while `core` is null).
+    // The pending gap keeps `readiness()` not-ready while `core` is null;
+    // `captureDocument()` awaits the pending mount (rejecting only when
+    // unmounted or failed during mount).
     const maybeCore = createRichTextEditor({
       document: value,
       profile,
@@ -367,16 +400,25 @@
       },
     }) as CoreEditor | Promise<CoreEditor>;
     if (maybeCore instanceof Promise) {
-      void maybeCore.then(settle, () => {
-        // A failed full-graph load leaves the surface unmounted; the host
-        // observes it through the pending readiness path (never a throw
-        // out of the mount effect).
-      });
+      pendingCore = maybeCore.then(
+        (instance) => {
+          settle(instance);
+          return cancelled ? null : instance;
+        },
+        () => {
+          // A failed full-graph load leaves the surface unmounted; the host
+          // observes it through the pending readiness path (never a throw
+          // out of the mount effect).
+          return null;
+        },
+      );
     } else {
+      pendingCore = null;
       settle(maybeCore);
     }
     return () => {
       cancelled = true;
+      pendingCore = null;
       for (const type of stopTypes) {
         host.removeEventListener(type, stopAtBoundary);
       }

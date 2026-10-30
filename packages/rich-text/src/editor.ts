@@ -81,6 +81,7 @@ import {
   copyRichTextDocument,
   createCaptureTracker,
   decideExternalUpdate,
+  richTextDocumentsEqual,
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
@@ -349,6 +350,12 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   let documentFormat: RichTextFormat = options.document.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
   let lastAcknowledged = copyRichTextDocument(options.document);
+  // The host's pre-canonical input (review 3 blocking 3): the mounted
+  // document canonicalizes (TrailingNode, defaults, normalized order) while
+  // the host echo carries the exact pre-mount bytes. Rule-1 echo recognizes
+  // the host input when the displayed document still equals the canonical
+  // acknowledgement, even though the bytes differ.
+  let lastAcceptedInput = copyRichTextDocument(options.document);
   // §5.6 unacknowledged local revision: set by any user transaction that
   // modifies the live content (every `emitChange`, including a wire-identical
   // one), cleared only by a rule-1 acknowledgement or a rule-4 application.
@@ -1393,10 +1400,13 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       // normalized containerOrder, materialized defaults, the
       // TrailingNode paragraph — never the pre-replace input, so a clean
       // editor reports no local edits on the next external update.
-      // P0 keeps the input-copy baseline byte-identical to RT-1.
+      // P0 keeps the input-copy baseline byte-identical to RT-1. The
+      // pre-canonical host input is retained beside it (review 3
+      // blocking 3): its echo is Rule 1, not a Rule-4 replace.
       lastAcknowledged = isFull
         ? copyRichTextDocument(displayedDocument())
         : copyRichTextDocument(incoming);
+      lastAcceptedInput = copyRichTextDocument(incoming);
       // Rule-4 application completes: the revision flag clears (§5.6). The
       // replacement ran suppressed, so no emission set it back.
       hasUnacknowledgedLocalRevision = false;
@@ -1448,6 +1458,17 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   };
 
   const settleExternal = (incoming: RichTextDocument): void => {
+    // Pre-canonical host echo (review 3 blocking 3, §5.6 Rule 1): the host
+    // replays the exact pre-mount input while the displayed document is the
+    // canonical mount. Acknowledge with no replace and no conflict.
+    if (
+      richTextDocumentsEqual(incoming, lastAcceptedInput) &&
+      richTextDocumentsEqual(displayedDocument(), lastAcknowledged)
+    ) {
+      lastAcceptedInput = copyRichTextDocument(incoming);
+      hasUnacknowledgedLocalRevision = false;
+      return;
+    }
     const decision = decideExternalUpdate({
       displayed: displayedDocument(),
       lastAcknowledged,
@@ -1457,6 +1478,7 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     });
     if (decision === "echo") {
       lastAcknowledged = copyRichTextDocument(incoming);
+      lastAcceptedInput = copyRichTextDocument(incoming);
       hasUnacknowledgedLocalRevision = false;
       return;
     }
@@ -2328,6 +2350,18 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
         });
         return;
       }
+      // Pre-canonical host echo (review 3 blocking 3, §5.6 Rule 1): the
+      // host replays the exact pre-mount input while the displayed
+      // document is the canonical mount. Acknowledge with no replace and
+      // no conflict, without moving the acknowledgement off canonical.
+      if (
+        richTextDocumentsEqual(incoming, lastAcceptedInput) &&
+        richTextDocumentsEqual(displayedDocument(), lastAcknowledged)
+      ) {
+        lastAcceptedInput = copyRichTextDocument(incoming);
+        hasUnacknowledgedLocalRevision = false;
+        return;
+      }
       // §5.6 rule order via the pure decision (§5.6, never restated here).
       const decision = decideExternalUpdate({
         displayed: displayedDocument(),
@@ -2340,6 +2374,7 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       // (clears the revision flag). The format is part of the equality.
       if (decision === "echo") {
         lastAcknowledged = incoming;
+        lastAcceptedInput = copyRichTextDocument(incoming);
         hasUnacknowledgedLocalRevision = false;
         return;
       }
