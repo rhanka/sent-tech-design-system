@@ -8,7 +8,8 @@
  *   1. JSON-serializable, then the 1 MiB UTF-8 budget (§4.3 item 3) — a
  *      payload over the budget is refused whole, before anything parses it;
  *   2. envelope structure (§4.2: `catalogId`, `contract`, `mode`, `root`);
- *   3. the envelope's `catalogId` must name THIS catalogue;
+ *   3. the envelope's OPTIONAL `catalogId`, when present, must name THIS
+ *      catalogue (absent = the renderer's catalogue, §4.2);
  *   4. `mode`: `preview` is reserved (§10.3) and refuses;
  *   5. `root.component` must be catalogued (`unknown-component`);
  *   6. a placeholder entry refuses (`component-unavailable`, §5.2 status);
@@ -189,9 +190,11 @@ export function createEnvelopeValidatorCore(
       if (envelopeIssues.length > 0) return structureDiagnostics(envelopeIssues, "");
       const envelope = input as Record<string, unknown>;
 
-      // 3. The envelope must name THIS catalogue.
+      // 3. `catalogId` is optional (§4.2: default = the renderer's catalogue):
+      // absent names THIS catalogue; present, it must name THIS catalogue.
+      // A non-string value that survived step 2 still refuses here.
       const envelopeCatalogId = envelope.catalogId;
-      if (typeof envelopeCatalogId !== "string" || envelopeCatalogId !== catalog.catalogId) {
+      if (envelopeCatalogId !== undefined && envelopeCatalogId !== catalog.catalogId) {
         return [
           {
             code: "schema-violation",
