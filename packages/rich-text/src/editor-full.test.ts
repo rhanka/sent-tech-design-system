@@ -10,17 +10,26 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { TextSelection } from "@tiptap/pm/state";
 import { setBlockType, toggleMark, wrapIn } from "@tiptap/pm/commands";
-import type { RichTextDocument } from "./model.js";
+import type { FullInlineSegment, RichTextDocument } from "./model.js";
 import type { FullBlockMetadata, RichTextInlineMarks } from "./collaboration.js";
 import {
+  canonicalHrDefaults,
   canonicalPlainMetadata,
   parseFullMarkdown,
   serializeFullDocument,
 } from "./editor-full-markdown.js";
 import {
+  copyRichTextDocument,
+  richTextDocumentsEqual,
+} from "./document.js";
+import { validateFullBlockMetadata } from "./collaboration.js";
+import {
   createRichTextEditor,
   type RichTextEditor,
 } from "./editor.js";
+import { ensureFullEditorExtensionsRegistered } from "./editor-full-extensions.js";
+
+ensureFullEditorExtensionsRegistered();
 
 const mounted: RichTextEditor[] = [];
 afterEach(() => {
@@ -88,10 +97,61 @@ function mountFull(
   return editor;
 }
 
-/** Mount → capture → remount → capture equality (C half). */
-function expectStableRemount(blocks: RichTextDocument["blocks"]): RichTextDocument {
+/** A top-level plain ProseMirror paragraph block: the only shape after
+    which TrailingNode adds nothing (a paragraph nested in a quote or a
+    list still ends the document with a wrapper node). */
+function isTopLevelParagraphBlock(
+  block: RichTextDocument["blocks"][number] | undefined,
+): boolean {
+  if (block?.kind !== "paragraph") return false;
+  const metadata = block.metadata;
+  return (
+    (metadata?.blockKind ?? "paragraph") === "paragraph" &&
+    (metadata?.blockquoteDepth ?? 0) === 0 &&
+    (metadata?.listKind ?? "none") === "none"
+  );
+}
+
+/** Expected capture of an input block list: the input blocks with the
+    canonical materializations capture performs (absent HR metadata
+    materializes the container defaults, spec §4.3.2). */
+function withCanonicalMaterialization(
+  blocks: RichTextDocument["blocks"],
+): RichTextDocument["blocks"] {
+  return blocks.map((block) => {
+    if (block.kind === "horizontalRule" && block.hrMetadata === undefined) {
+      return { ...block, hrMetadata: canonicalHrDefaults() };
+    }
+    return block;
+  });
+}
+
+/** Mount → capture → remount → capture equality (C half, review 1 item 13):
+    the first capture equals the expected input document (mount fidelity,
+    never a first-capture self-comparison), and the remounted capture equals
+    the first. A TrailingNode paragraph may follow the input blocks — real
+    allocator-identified content (spec §2.8: it stays a content block under
+    F01) — exactly when the last input block is not a plain paragraph. */
+function expectStableRemount(
+  blocks: RichTextDocument["blocks"],
+): RichTextDocument {
+  const expected = withCanonicalMaterialization(blocks);
   const first = mountFull(blocks);
   const capture1 = first.getDocument();
+  expect(capture1.blocks.slice(0, expected.length)).toEqual(expected);
+  const rest = capture1.blocks.slice(expected.length);
+  if (rest.length > 0) {
+    expect(rest.length).toBe(1);
+    const trailing = rest[0] as RichTextDocument["blocks"][number];
+    expect(trailing.kind).toBe("paragraph");
+    expect(trailing.segments ?? []).toEqual([]);
+    expect(
+      typeof trailing.paragraphId === "string" && trailing.paragraphId !== "",
+    ).toBe(true);
+    expect(isTopLevelParagraphBlock(expected[expected.length - 1])).toBe(false);
+  } else {
+    expect(isTopLevelParagraphBlock(expected[expected.length - 1])).toBe(true);
+  }
   const second = mountFull(capture1.blocks);
   const capture2 = second.getDocument();
   expect(capture2).toEqual(capture1);
@@ -248,7 +308,7 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
     }),
     para("b1", [textRun("Nested")], {
       listKind: "bullet", listDepth: 1, listRunId: "b1", listItemId: "b1",
-      listTight: true, containerOrder: ["list"],
+      listTight: true, containerOrder: ["list", "list"],
     }),
   ];
 
@@ -288,7 +348,9 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
 
   it("CL-2F-F05-P-list: pastes markdown lists to editable structure", () => {
     const editor = mountFull([para("p1", [textRun("Seed")])]);
-    editor.paste({ text: "1. First\n2. Second\n  - Nested" });
+    // Canonical nesting sits at the parent content column (three spaces
+    // under "2. "); a two-space indent is a sibling under CommonMark.
+    editor.paste({ text: "1. First\n2. Second\n   - Nested" });
     const after = editor.getDocument();
     const listed = after.blocks.filter((block) => block.metadata?.listKind !== "none");
     expect(listed.map((block) => block.metadata?.listKind)).toEqual([
@@ -298,7 +360,7 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
       (block) => block.paragraphId === block.metadata?.listRunId,
     );
     expect(opener?.metadata?.orderedStart).toBe(1);
-    expect(serializeFullDocument(after)).toContain("1. First\n2. Second\n  - Nested");
+    expect(serializeFullDocument(after)).toContain("1. First\n2. Second\n   - Nested");
   });
 
   it("CL-2F-F05-C-list: list capture remounts stable", () => {
@@ -313,7 +375,7 @@ describe("CL-2F-F03/F04/F05 lists E/P/C", () => {
       }),
       para("l2", [textRun("Two")], {
         listKind: "bullet", listDepth: 0, listRunId: "l1", listItemId: "l2",
-        listTight: false, containerOrder: ["list"],
+        containerOrder: ["list"],
       }),
     ]);
     const wire = serializeFullDocument(capture);
@@ -648,20 +710,10 @@ describe("CL-2F-F17 document E/C", () => {
 });
 
 describe("CL-2F-F18/F19 helpers and placeholders", () => {
-  it("CL-2F-F18-E-placeholder: an empty full document shows the placeholder and accepts the first paragraph", () => {
-    const editor = mountFull([], {
-      editable: true,
-      placeholder: "Write something",
-    });
-    editor.setPlaceholder("Write something", "empty-document");
-    const placeholder = editor.view.dom.querySelector("[data-untranslated]");
-    expect(placeholder).not.toBeNull();
-    editor.paste({ text: "First words" });
-    const after = editor.getDocument();
-    expect(after.blocks.length).toBe(1);
-    expect(JSON.stringify(after.blocks[0])).toContain("First words");
-  });
-
+  // The placeholder/trailing E/C/P witnesses live in
+  // `full-host-document.test.ts` on the pinned host document
+  // (CL-2F-F18-E-host, CL-2F-F19-C-host, CL-2F-F18-P-host,
+  // CL-2F-F18-C-host, CL-2F-F19-P-host); the M halves follow below.
   it("CL-2F-F19-E-history: undo and redo traverse full edits", () => {
     const editor = mountFull([para("p1", [textRun("One")])]);
     editor.typeText("p1", " two");
@@ -672,12 +724,457 @@ describe("CL-2F-F18/F19 helpers and placeholders", () => {
     editor.redo();
     expect(JSON.stringify(editor.getDocument())).toContain("One two");
   });
+});
 
-  it("CL-2F-F19-C-trailing: a trailing paragraph is identified content", () => {
-    const capture = expectStableRemount([para("p1", [textRun("Content")])]);
-    const last = capture.blocks[capture.blocks.length - 1];
-    expect(last?.paragraphId).toBeDefined();
-    expect(last?.paragraphId).not.toBe("");
+describe("CL-2F-F17/F18/F19 M: host-document bridge round-trips", () => {
+  // The same pinned bytes as `full-host-document.test.ts` (HOST_WIRE):
+  // heading, quote, ordered run with a non-1 start, nested bullet run,
+  // code block, titled link, HR and a two-space hard break.
+  const HOST_WIRE = [
+    "# Host Document",
+    "",
+    "> Quoted intro",
+    "",
+    "3. First ordered",
+    "4. Second ordered",
+    "   - Nested bullet",
+    "",
+    "```js",
+    "const x = 1;",
+    "```",
+    "",
+    'Read [the source](https://example.com/ "A title") carefully.',
+    "",
+    "---",
+    "",
+    "Tail with a break.  ",
+    "Last line.",
+  ].join("\n");
+
+  function parseHost(): RichTextDocument {
+    const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
+    expect(parsed.refusedKinds, "host wire refused").toEqual([]);
+    expect(parsed.document, "host wire has no document").not.toBeNull();
+    return parsed.document as RichTextDocument;
+  }
+
+  function textOf(document: RichTextDocument): string {
+    const parts: string[] = [];
+    for (const block of document.blocks) {
+      if (block.kind === "paragraph") {
+        const segments = (block.segments ?? []) as {
+          type?: string;
+          text?: string;
+        }[];
+        parts.push(
+          segments
+            .map((segment) =>
+              segment.type === "hardBreak" ? "\n" : (segment.text ?? ""),
+            )
+            .join(""),
+        );
+      } else if (block.kind === "horizontalRule") {
+        parts.push("---");
+      } else {
+        parts.push("");
+      }
+    }
+    return parts.join("\n");
+  }
+
+  it("CL-2F-F17-M-host: the host document parses, edits and re-serializes stably", () => {
+    const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
+    expect(parsed.refusedKinds).toEqual([]);
+    const document = parseHost();
+    // Untouched blocks re-emit their source bytes: byte-identical wire.
+    expect(serializeFullDocument(document, { seeds: parsed.seeds })).toBe(
+      HOST_WIRE,
+    );
+    // Edit the tail: neighbors keep their source slices on the wire.
+    const tailId = document.blocks
+      .filter((block) => block.kind === "paragraph")
+      .pop()?.paragraphId as string;
+    const edited: RichTextDocument = {
+      format: "ds.markdown.full@1",
+      blocks: document.blocks.map((block) =>
+        block.paragraphId === tailId && block.kind === "paragraph"
+          ? {
+              ...block,
+              segments: [
+                ...((block.segments ?? []) as {
+                  type: "text";
+                  text: string;
+                  marks: RichTextInlineMarks;
+                }[]),
+                textRun("!", {}),
+              ],
+            }
+          : block,
+      ),
+    };
+    const wire = serializeFullDocument(edited, {
+      seeds: parsed.seeds,
+      touched: new Set([tailId]),
+    });
+    expect(wire).toContain("3. First ordered");
+    expect(wire).toContain("   - Nested bullet");
+    expect(wire).toContain("# Host Document");
+    const reparsed = parseFullMarkdown(wire, allocator("host"));
+    expect(reparsed.refusedKinds).toEqual([]);
+    const again = parseFullMarkdown(wire, allocator("host"));
+    expect(serializeFullDocument(again.document as RichTextDocument, {
+      seeds: again.seeds,
+    })).toBe(wire);
+    expect(textOf(reparsed.document as RichTextDocument)).toContain("Last line.!");
+  });
+
+  it("CL-2F-F18-M-host: the host wire carries no placeholder or helper artefacts", () => {
+    const document = parseHost();
+    const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
+    const wire = serializeFullDocument(document, { seeds: parsed.seeds });
+    expect(wire).not.toContain("Write something");
+    expect(wire).not.toContain("data-untranslated");
+    expect(wire).not.toContain("history");
+    expect(wire).not.toMatch(/paragraph:[a-z0-9-]+/);
+    // Every content block keeps a defined identity; the tail is intact.
+    for (const block of document.blocks) {
+      expect(typeof block.paragraphId === "string" && block.paragraphId !== "").toBe(true);
+    }
+    expect(textOf(document).split("\n").pop()).toBe("Last line.");
+  });
+
+  it("CL-2F-F19-M-host: the host document round-trips with its trailing content identified", () => {
+    const document = parseHost();
+    const parsed = parseFullMarkdown(HOST_WIRE, allocator("host"));
+    const wire = serializeFullDocument(document, { seeds: parsed.seeds });
+    const reparsed = parseFullMarkdown(wire, allocator("host"));
+    expect(reparsed.refusedKinds).toEqual([]);
+    const again = reparsed.document as RichTextDocument;
+    // Same block count and identities modulo fresh allocation: compare the
+    // text spine and the trailing block exactly.
+    expect(again.blocks.length).toBe(document.blocks.length);
+    expect(textOf(again).split("\n").slice(-2)).toEqual([
+      "Tail with a break.",
+      "Last line.",
+    ]);
+    const wire2 = serializeFullDocument(again, { seeds: reparsed.seeds });
+    expect(wire2).toBe(wire);
+  });
+});
+
+describe("CL-2F review 1 item 4: absent metadata is canonical before classification", () => {
+  it("R4: a metadata-free paragraph mounts as a plain paragraph and captures canonical defaults", () => {
+    const bare = {
+      paragraphId: "p1",
+      kind: "paragraph",
+      segments: [textRun("Plain")],
+    } as unknown as RichTextDocument["blocks"][number];
+    const editor = mountFull([bare]);
+    const after = editor.getDocument();
+    expect(after.blocks).toHaveLength(1);
+    expect(after.blocks[0]).toMatchObject({ paragraphId: "p1", kind: "paragraph" });
+    // Canonical defaults materialize on capture (§4.3.2 capture data).
+    expect(after.blocks[0]?.kind === "paragraph" ? after.blocks[0].metadata : undefined).toEqual(
+      canonicalPlainMetadata(),
+    );
+    expect(validateFullBlockMetadata(
+      after.blocks[0]?.kind === "paragraph" ? after.blocks[0].metadata : undefined,
+    )).toMatchObject({ ok: true });
+    expect(serializeFullDocument(after)).toBe("Plain");
+  });
+});
+
+describe("CL-2F review 1 item 5: ordered wrapper stack projection and capture", () => {
+  const quotedItemDoc = (): RichTextDocument["blocks"] => [
+    para("i1", [textRun("One")], {
+      listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i1",
+      listTight: true, containerOrder: ["list"],
+    }),
+    para("q1", [textRun("Quoted")], {
+      listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i1",
+      blockquoteDepth: 1, containerOrder: ["list", "quote"],
+    }),
+    para("i2", [textRun("Two")], {
+      listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i2",
+      containerOrder: ["list"],
+    }),
+  ];
+
+  it("R5: a citation inside a list item stays inside that item", () => {
+    const editor = mountFull(quotedItemDoc());
+    const after = editor.getDocument();
+    const quoted = after.blocks.find((block) => block.paragraphId === "q1");
+    expect(quoted?.metadata?.listItemId).toBe("i1");
+    expect(quoted?.metadata?.blockquoteDepth).toBe(1);
+    expect(quoted?.metadata?.containerOrder).toEqual(["list", "quote"]);
+    // The item still holds three blocks in one run (plus the identified
+    // trailing paragraph the helper appends after a closing list, as in F02-E).
+    expect(after.blocks.slice(0, 3).map((block) => block.paragraphId)).toEqual(["i1", "q1", "i2"]);
+    for (const block of after.blocks) {
+      if (block.kind !== "paragraph") continue;
+      expect(validateFullBlockMetadata(block.metadata)).toMatchObject({ ok: true });
+    }
+    // The ProseMirror structure nests the quote inside the item.
+    let quoteInsideItem = 0;
+    editor.view.state.doc.descendants((node) => {
+      if (node.type.name === "listItem") {
+        node.descendants((child) => {
+          if (child.type.name === "blockquote") quoteInsideItem += 1;
+          return true;
+        });
+      }
+      return true;
+    });
+    expect(quoteInsideItem).toBe(1);
+    // The quoted text is not lost on the wire.
+    expect(serializeFullDocument(after)).toContain("Quoted");
+  });
+
+  it("R5: a list-contained HR keeps its wrappers", () => {
+    const editor = mountFull([
+      para("i1", [textRun("One")], {
+        listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i1",
+        listTight: true, containerOrder: ["list"],
+      }),
+      {
+        paragraphId: "hr1",
+        kind: "horizontalRule",
+        hrMetadata: {
+          listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i1",
+          blockquoteDepth: 0, containerOrder: ["list"],
+        },
+      } as RichTextDocument["blocks"][number],
+      para("i2", [textRun("Two")], {
+        listKind: "bullet", listDepth: 0, listRunId: "r1", listItemId: "i2",
+        containerOrder: ["list"],
+      }),
+    ]);
+    const after = editor.getDocument();
+    expect(after.blocks.slice(0, 3).map((block) => block.kind)).toEqual([
+      "paragraph", "horizontalRule", "paragraph",
+    ]);
+    const hr = after.blocks[1];
+    expect(hr?.kind === "horizontalRule" ? hr.hrMetadata?.listRunId : undefined).toBe("r1");
+    expect(hr?.kind === "horizontalRule" ? hr.hrMetadata?.containerOrder : undefined).toEqual(["list"]);
+    expect(validateFullBlockMetadata(
+      hr?.kind === "horizontalRule" ? hr.hrMetadata : undefined,
+    )).toMatchObject({ ok: true });
+    const second = mountFull(after.blocks);
+    expect(second.getDocument()).toEqual(after);
+  });
+
+  it("R5: nested lists and quotes capture one order entry per nesting level", () => {
+    const capture = expectStableRemount([
+      para("o1", [textRun("First")], {
+        listKind: "ordered", listDepth: 0, listRunId: "o1", listItemId: "o1",
+        orderedStart: 3, listTight: true, containerOrder: ["list"],
+      }),
+      para("o2", [textRun("Second")], {
+        listKind: "ordered", listDepth: 0, listRunId: "o1", listItemId: "o2",
+        containerOrder: ["list"],
+      }),
+      para("b1", [textRun("Nested")], {
+        listKind: "bullet", listDepth: 1, listRunId: "b1", listItemId: "b1",
+        listTight: true, containerOrder: ["list", "list"],
+      }),
+      para("q1", [textRun("Deep quote")], {
+        listKind: "bullet", listDepth: 1, listRunId: "b1", listItemId: "b1",
+        blockquoteDepth: 1, containerOrder: ["list", "list", "quote"],
+      }),
+    ]);
+    const nested = capture.blocks.find((block) => block.paragraphId === "b1");
+    expect(nested?.metadata?.containerOrder).toEqual(["list", "list"]);
+    const deep = capture.blocks.find((block) => block.paragraphId === "q1");
+    expect(deep?.metadata?.containerOrder).toEqual(["list", "list", "quote"]);
+    for (const block of capture.blocks) {
+      if (block.kind !== "paragraph") continue;
+      expect(
+        validateFullBlockMetadata(block.metadata),
+        `block ${block.paragraphId} must validate`,
+      ).toMatchObject({ ok: true });
+    }
+  });
+});
+
+describe("CL-2F review 1 item 6: run-source retention (R-FULL-META-2)", () => {
+  const orderedRun = (): RichTextDocument["blocks"] => [
+    para("a", [textRun("First")], {
+      listKind: "ordered", listDepth: 0, listRunId: "a", listItemId: "a",
+      orderedStart: 3, listTight: true, containerOrder: ["list"],
+    }),
+    para("b", [textRun("Second")], {
+      listKind: "ordered", listDepth: 0, listRunId: "a", listItemId: "b",
+      containerOrder: ["list"],
+    }),
+  ];
+
+  it("R6: deleting the opener does not transfer start/type/tight onto the survivor", () => {
+    const editor = mountFull(orderedRun());
+    editor.deleteBlocks(["a"]);
+    const after = editor.getDocument();
+    // The opener identity is gone from the blocks, but the run still
+    // references it (plus the identified trailing paragraph).
+    expect(after.blocks.some((block) => block.paragraphId === "a")).toBe(false);
+    const members = after.blocks.filter(
+      (block) => block.kind === "paragraph" && block.metadata?.listRunId === "a",
+    );
+    expect(members.length).toBeGreaterThan(0);
+    expect(members.some((block) => block.paragraphId === "b")).toBe(true);
+    for (const member of members) {
+      expect(member.kind === "paragraph" ? member.metadata : undefined).not.toHaveProperty("orderedStart");
+      expect(member.kind === "paragraph" ? member.metadata : undefined).not.toHaveProperty("orderedType");
+      expect(member.kind === "paragraph" ? member.metadata : undefined).not.toHaveProperty("listTight");
+    }
+    // The retained source record keeps the original values.
+    expect(after.retainedRunMetadata?.["a"]).toMatchObject({
+      orderedStart: 3,
+      listTight: true,
+      listRunId: "a",
+    });
+    // The wire still numbers from the retained source, not from 1.
+    expect(serializeFullDocument(after)).toMatch(/^3\. /m);
+  });
+
+  it("R6: retained metadata survives capture, copy and remount", () => {
+    const editor = mountFull(orderedRun());
+    editor.deleteBlocks(["a"]);
+    const capture1 = editor.getDocument();
+    expect(capture1.retainedRunMetadata?.["a"]).toBeDefined();
+    const copied = copyRichTextDocument(capture1);
+    expect(copied).toEqual(capture1);
+    expect(copied.retainedRunMetadata).not.toBe(capture1.retainedRunMetadata);
+    // Remount the copied document with its retained map: capture stays equal.
+    const editor2 = createRichTextEditor({
+      document: copied,
+      profile: "full",
+      messages: { placeholder: "", placeholderMarker: "" },
+      allocateId: allocator("full2"),
+    });
+    mounted.push(editor2);
+    const capture2 = editor2.getDocument();
+    expect(richTextDocumentsEqual(capture1, capture2)).toBe(true);
+    expect(capture2.retainedRunMetadata?.["a"]).toMatchObject({ orderedStart: 3 });
+    // The remount still numbers from the retained source.
+    expect(serializeFullDocument(capture2)).toMatch(/^3\. /m);
+  });
+});
+
+describe("CL-2F review 1 item 9: native clipboard and URL over selection", () => {
+  it("R9: native HTML paste preserves nested and top-level inline marks", () => {
+    const editor = mountFull([para("p1", [textRun("Seed")])]);
+    setCursor(editor, "p1", 4);
+    editor.paste({ html: "Top <b>bold <i>both</i></b> tail" });
+    const after = editor.getDocument();
+    const texts = after.blocks.flatMap((block) =>
+      block.kind === "paragraph" ? ((block.segments ?? []) as { type: string; text?: string; marks?: Record<string, unknown> }[]) : [],
+    );
+    // No text lost across the fragment.
+    expect(texts.map((segment) => segment.text ?? "").join("")).toBe(
+      "SeedTop bold both tail",
+    );
+    // Nested and top-level marks survive on their own runs.
+    expect(
+      texts.filter(
+        (segment) => segment.type === "text" && Object.keys(segment.marks ?? {}).length > 0,
+      ),
+    ).toEqual([
+      { type: "text", text: "bold ", marks: { bold: true } },
+      { type: "text", text: "both", marks: { bold: true, italic: true } },
+    ]);
+  });
+
+  it("R9: URL paste over a selected label links the label instead of replacing it", () => {
+    const editor = mountFull([para("p1", [textRun("click here to continue")])]);
+    const { state } = editor.view;
+    editor.view.dispatch(
+      state.tr.setSelection(TextSelection.create(state.doc, 7, 11)),
+    );
+    editor.paste({ text: "https://example.com/guide" });
+    const after = editor.getDocument();
+    expect(after.blocks).toHaveLength(1);
+    expect(after.blocks[0]?.kind === "paragraph" ? after.blocks[0].segments : undefined).toEqual([
+      { type: "text", text: "click ", marks: {} },
+      {
+        type: "text",
+        text: "here",
+        marks: { link: "https://example.com/guide" },
+      },
+      { type: "text", text: " to continue", marks: {} },
+    ]);
+  });
+
+  it("R9: URL paste over a selection with a forbidden href refuses whole", () => {
+    const editor = mountFull([para("p1", [textRun("click here")])]);
+    const before = editor.getDocument();
+    const { state } = editor.view;
+    editor.view.dispatch(
+      state.tr.setSelection(TextSelection.create(state.doc, 7, 11)),
+    );
+    editor.paste({ text: "javascript:alert(1)" });
+    expect(editor.getDocument()).toEqual(before);
+  });
+});
+
+describe("CL-2F review 1 item 3: code capture and paste", () => {
+  const codeOf = (
+    id: string,
+    segments: FullInlineSegment[],
+  ): RichTextDocument["blocks"][number] => ({
+    paragraphId: id,
+    kind: "paragraph",
+    metadata: {
+      ...canonicalPlainMetadata(),
+      blockKind: "codeBlock",
+      codeLanguage: "js",
+    },
+    segments,
+  });
+
+  it("R3: leading and all-LF lines survive capture with no duplicate terminal break", () => {
+    const editor = mountFull([
+      codeOf("c1", [
+        { type: "hardBreak" },
+        { type: "hardBreak" },
+        { type: "text", text: "A", marks: {} },
+        { type: "hardBreak" },
+      ]),
+      codeOf("c2", [{ type: "hardBreak" }, { type: "hardBreak" }]),
+    ]);
+    const after = editor.getDocument();
+    const first = after.blocks.find((block) => block.paragraphId === "c1");
+    expect(first?.kind === "paragraph" ? first.segments : undefined).toEqual([
+      { type: "hardBreak" },
+      { type: "hardBreak" },
+      { type: "text", text: "A", marks: {} },
+      { type: "hardBreak" },
+    ]);
+    const second = after.blocks.find((block) => block.paragraphId === "c2");
+    expect(second?.kind === "paragraph" ? second.segments : undefined).toEqual([
+      { type: "hardBreak" },
+      { type: "hardBreak" },
+    ]);
+  });
+
+  it("R3: paste inside code inserts literal text with LFs kept", () => {
+    const editor = mountFull([
+      codeOf("c1", [{ type: "text", text: "existing", marks: {} }]),
+    ]);
+    const { state } = editor.view;
+    editor.view.dispatch(
+      state.tr.setSelection(TextSelection.create(state.doc, 5)),
+    );
+    editor.paste({ text: "Line one\nLine two" });
+    const after = editor.getDocument();
+    // No code/prose/code split: one code block plus the identified trailing
+    // paragraph, with the pasted LFs kept as hard breaks.
+    expect(after.blocks.filter((block) => block.kind === "paragraph")).toHaveLength(2);
+    const code = after.blocks.find((block) => block.paragraphId === "c1");
+    expect(code?.kind === "paragraph" ? code.metadata?.blockKind : undefined).toBe("codeBlock");
+    expect(code?.kind === "paragraph" ? code.segments : undefined).toEqual([
+      { type: "text", text: "exisLine one", marks: {} },
+      { type: "hardBreak" },
+      { type: "text", text: "Line twoting", marks: {} },
+    ]);
   });
 });
 
@@ -724,6 +1221,76 @@ describe("CL-2F-F-DEFAULT profile selection", () => {
       expect(source).not.toMatch(/from ["']yjs["']/);
       expect(source).not.toMatch(/y-prosemirror/);
     }
+  });
+});
+
+describe("CL-2F review 1 item 2: entity decoding and global refusal (R-FULL-URL-1)", () => {
+  it("R2: entity-encoded javascript: refuses on Markdown parse", () => {
+    const parsed = parseFullMarkdown("[bad](jav&#x61;script:alert(1))", allocator("full"));
+    expect(parsed.document).toBeNull();
+    expect(parsed.refusedKinds).toContain("link");
+  });
+
+  it("R2: entity-encoded javascript: refuses on paste without changing the draft", () => {
+    const editor = mountFull([para("p1", [textRun("Seed")])]);
+    const before = editor.getDocument();
+    editor.paste({ text: "Click [bad](jav&#x61;script:alert(1))." });
+    expect(editor.getDocument()).toEqual(before);
+  });
+
+  it("R2: entity-encoded javascript: refuses on HTML paste without changing the draft", () => {
+    const editor = mountFull([para("p1", [textRun("Seed")])]);
+    const before = editor.getDocument();
+    editor.paste({
+      html: '<p>Click <a href="jav&amp;#x61;script:alert(1)">bad</a></p>',
+    });
+    expect(editor.getDocument()).toEqual(before);
+  });
+
+  it("R2: a structured import with a forbidden href refuses construction whole", () => {
+    expect(() =>
+      mountFull([para("p1", [textRun("bad", { link: "javascript:alert(1)" })])]),
+    ).toThrow(/forbidden-href/);
+  });
+
+  it("R2: a command-added forbidden link is refused, the draft keeps no link", () => {
+    const editor = mountFull([para("p1", [textRun("click here")])]);
+    const { state } = editor.view;
+    const schemaLink = state.schema.marks["link"];
+    expect(schemaLink).toBeDefined();
+    editor.view.dispatch(
+      state.tr.addMark(
+        1,
+        6,
+        (schemaLink as unknown as { create: (attrs: unknown) => unknown }).create({
+          href: "javascript:alert(1)",
+        }) as never,
+      ),
+    );
+    const after = editor.getDocument();
+    expect(JSON.stringify(after)).not.toContain("javascript");
+    expect(after.blocks).toHaveLength(1);
+    expect(after.blocks[0]).toMatchObject({ paragraphId: "p1" });
+  });
+
+  it("R2: an external update with a forbidden href conflicts, the draft is preserved", () => {
+    let conflicted = 0;
+    const editor2 = createRichTextEditor({
+      document: fullDoc([para("p1", [textRun("Seed")])]),
+      profile: "full",
+      messages: { placeholder: "", placeholderMarker: "" },
+      allocateId: allocator("fullx"),
+      onExternalConflict: () => {
+        conflicted += 1;
+      },
+    });
+    mounted.push(editor2);
+    const before = editor2.getDocument();
+    editor2.applyExternalUpdate(
+      fullDoc([para("p1", [textRun("bad", { link: "javascript:alert(1)" })])]),
+    );
+    expect(conflicted).toBe(1);
+    expect(editor2.getDocument()).toEqual(before);
   });
 });
 
@@ -796,15 +1363,28 @@ describe("CL-2F-F-URL link safety", () => {
     (anchor as HTMLElement).dispatchEvent(
       new MouseEvent("auxclick", { bubbles: true, cancelable: true, button: 1 }),
     );
-    // Read-only rendering keeps links selectable but inert.
+    // Read-only rendering keeps links selectable but renders no navigable
+    // attribute (item 1): `a[href]` is gone, the text stays.
     editor.setEditable(false);
-    const readAnchor = editor.view.dom.querySelector("a[href]");
-    expect(readAnchor).not.toBeNull();
+    expect(editor.view.dom.querySelector("a[href]")).toBeNull();
+    const readAnchor = editor.view.dom.querySelector("a");
     expect(readAnchor?.textContent).toBe("there");
     (readAnchor as HTMLElement).dispatchEvent(
       new MouseEvent("click", { bubbles: true, cancelable: true }),
     );
     expect(window.location.href).toBe(locationBefore);
+    // Re-enabling restores the href from the live document state.
+    editor.setEditable(true);
+    const restored = editor.view.dom.querySelector("a[href]");
+    expect(restored?.getAttribute("href")).toBe("https://example.com");
+    expect(restored?.textContent).toBe("there");
+  });
+
+  it("CL-2F-F-URL item 1: disabled mounts render no navigable link attributes", () => {
+    const editor = mountFull(linkPara("https://example.com"), { disabled: true });
+    expect(editor.view.dom.querySelector("a[href]")).toBeNull();
+    const anchor = editor.view.dom.querySelector("a");
+    expect(anchor?.textContent).toBe("there");
   });
 });
 

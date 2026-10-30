@@ -7,6 +7,13 @@ import type {
   RichTextInlineMarks,
 } from "./collaboration.js";
 
+/** Still-referenced run-source records whose separators are gone
+    (spec §4.3.2 R-FULL-META-2): keyed by `listRunId`, each value is the sole
+    run-value source (run start/type/tight plus the source's last observed
+    block-local attributes). Live source records remain solely on their own
+    captured blocks; this map carries no entry for a live source. */
+export type RetainedRunMetadata = Record<string, FullBlockMetadata>;
+
 export type RichTextFormat =
   | "focus.markdown.p0@1"
   | "text/plain"
@@ -49,6 +56,11 @@ export interface RichTextBlock {
 export interface RichTextDocument {
   format: RichTextFormat;
   blocks: readonly RichTextBlock[];
+  /** Full-profile only (`ds.markdown.full@1`): the §4.3.2 run-source
+      retention map. Absent (or empty) when every referenced run source is
+      live on its own block; present entries survive capture, copy and
+      remount so promotion never transfers run ownership. */
+  retainedRunMetadata?: RetainedRunMetadata;
 }
 
 export type RichTextGestureKind =

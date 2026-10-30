@@ -16,7 +16,7 @@ import type {
   FullBlockMetadata,
   RichTextInlineMarks,
 } from "./collaboration.js";
-import { isAllowedHref } from "./collaboration.js";
+import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
 import type {
   FullInlineSegment,
   RichTextBlock,
@@ -167,6 +167,7 @@ function parseInlineLine(line: string): InlineParseResult {
   let strike = false;
   let underline = false;
   let inlineCode = false;
+  let codeFenceLength = 0;
   const recompute = (): void => {
     currentMarks = emptyMarks();
     if (bold) currentMarks.bold = true;
@@ -200,8 +201,23 @@ function parseInlineLine(line: string): InlineParseResult {
       let run = 0;
       while (line[index + run] === "`") run += 1;
       if (!inlineCode) {
-        // Opening run: find the matching closing run of the same length.
-        const closing = line.indexOf("`".repeat(run), index + run);
+        // Opening run: find the first exact-length closing run. A longer
+        // run is content, never a closer ("``a```" stays literal).
+        let closing = -1;
+        let scan = index + run;
+        while (scan < line.length) {
+          if (line[scan] !== "`") {
+            scan += 1;
+            continue;
+          }
+          let closeRun = 0;
+          while (line[scan + closeRun] === "`") closeRun += 1;
+          if (closeRun === run) {
+            closing = scan;
+            break;
+          }
+          scan += closeRun;
+        }
         if (closing === -1) {
           currentText += "`".repeat(run);
           index += run;
@@ -209,18 +225,27 @@ function parseInlineLine(line: string): InlineParseResult {
         }
         flush();
         inlineCode = true;
+        codeFenceLength = run;
         recompute();
         index += run;
         continue;
       }
-      flush();
-      inlineCode = false;
-      recompute();
+      if (run === codeFenceLength) {
+        flush();
+        inlineCode = false;
+        recompute();
+        index += run;
+        continue;
+      }
+      // A shorter or longer run inside a span is literal content.
+      currentText += "`".repeat(run);
       index += run;
       continue;
     }
     if (!inlineCode) {
-      // Underline open/close.
+      // Underline open: only the exact attribute-free `<u>` token opens.
+      // Anything else starting with `<u` (attributes, case variants) stays
+      // literal text and never renders HTML.
       if (rest.startsWith("<u>")) {
         flush();
         underline = true;
@@ -228,7 +253,9 @@ function parseInlineLine(line: string): InlineParseResult {
         index += 3;
         continue;
       }
-      if (rest.startsWith("</u>")) {
+      // Underline close: only a matching open pair consumes `</u>`. An
+      // unmatched closer is literal text, never silently dropped.
+      if (rest.startsWith("</u>") && underline) {
         flush();
         underline = false;
         recompute();
@@ -275,12 +302,21 @@ function parseInlineLine(line: string): InlineParseResult {
           continue;
         }
       }
-      // Italic _: opens only after a boundary, closes only before one.
+      // Italic _: CommonMark left/right flanking. An underscore run opens
+      // when left-flanking and not (right-flanking without a preceding
+      // punctuation), and closes when right-flanking and not (left-flanking
+      // without a following punctuation) — so `_italic_ tail` ends the
+      // emphasis after a word char while `a_b` stays literal.
       if (rest.startsWith("_")) {
         const after = line.slice(index + 1, index + 2);
         const afterBlank = after === "" || after === " " || after === "\t";
-        const prevWord = prevChar !== "" && /[\p{L}\p{N}]/u.test(prevChar);
-        if ((!italic && prevBlank && !afterBlank) || (italic && !prevWord && afterBlank)) {
+        const isPrevPunct = !prevBlank && /[\p{P}\p{S}]/u.test(prevChar);
+        const isAfterPunct = !afterBlank && /[\p{P}\p{S}]/u.test(after);
+        const leftFlanking = !afterBlank && (!isAfterPunct || prevBlank || isPrevPunct);
+        const rightFlanking = !prevBlank && (!isPrevPunct || afterBlank || isAfterPunct);
+        const canOpen = leftFlanking && (!rightFlanking || isPrevPunct);
+        const canClose = rightFlanking && (!leftFlanking || isAfterPunct);
+        if ((!italic && canOpen) || (italic && canClose)) {
           flush();
           italic = !italic;
           recompute();
@@ -288,23 +324,28 @@ function parseInlineLine(line: string): InlineParseResult {
           continue;
         }
       }
-      // Autolink <href>.
+      // Autolink <href>: entities decode before validation, and the
+      // decoded value is what the link stores.
       const autolink = /^<((?:https?|mailto):[^<>\s]+)>/i.exec(rest);
       if (autolink !== undefined && autolink !== null) {
-        const href = autolink[1] as string;
+        const href = decodeHrefToken(autolink[1] as string);
         if (!isAllowedHref(href)) return { segments: [], refused: true };
         flush();
         segments.push({ type: "text", text: href, marks: { ...currentMarks, link: href } });
         index += autolink[0].length;
         continue;
       }
-      // Inline link [label](href "title").
+      // Inline link [label](href "title"): titles support backslash-escaped
+      // quotes so a title carrying `"` round-trips losslessly.
       if (rest.startsWith("[")) {
-        const match = /^\[([^\]]*)\]\(\s*(\S+?)(?:\s+(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?\s*\)/.exec(rest);
+        const match = /^\[([^\]]*)\]\(\s*(\S+?)(?:\s+(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'|\(((?:[^)\\]|\\.)*)\)))?\s*\)/.exec(rest);
         if (match !== null) {
           const label = match[1] as string;
-          const href = match[2] as string;
-          const title = (match[3] ?? match[4] ?? match[5] ?? undefined) as string | undefined;
+          // Entities decode before validation (R-FULL-URL-1): an encoded
+          // `jav&#x61;script:` refuses whole instead of passing as relative.
+          const href = decodeHrefToken(match[2] as string);
+          const rawTitle = (match[3] ?? match[4] ?? match[5] ?? undefined) as string | undefined;
+          const title = rawTitle === undefined ? undefined : unescapeLinkTitle(rawTitle);
           if (!isAllowedHref(href)) return { segments: [], refused: true };
           flush();
           const labelParsed = parseInlineLine(label);
@@ -328,14 +369,17 @@ function parseInlineLine(line: string): InlineParseResult {
           continue;
         }
       }
-      // Bare-URL autolink (editor autolink behavior, R-FULL-URL-1).
+      // Bare-URL autolink (editor autolink behavior, R-FULL-URL-1):
+      // entities decode before validation; the cursor advances over the
+      // raw token while the link stores the decoded value.
       const bare = /^(https?:\/\/[^\s<]+|mailto:[^\s<]+)/i.exec(rest);
       if (bare !== null) {
-        const href = bare[1] as string;
+        const raw = bare[1] as string;
+        const href = decodeHrefToken(raw);
         if (isAllowedHref(href)) {
           flush();
           segments.push({ type: "text", text: href, marks: { ...currentMarks, link: href } });
-          index += href.length;
+          index += raw.length;
           continue;
         }
       }
@@ -511,9 +555,9 @@ export function parseFullMarkdown(
           }
         });
       }
-      // A trailing newline in the fenced body is one final empty line split:
-      // represent it as a closing hard break so capture retains every LF.
-      if (text.endsWith("\n")) segments.push({ type: "hardBreak" });
+      // A trailing newline in the fenced body already produced its final
+      // empty line split above (which yields the closing hard break);
+      // pushing another one would duplicate the terminal break.
       blocks.push({
         paragraphId: pending.paragraphId,
         kind: "paragraph",
@@ -576,6 +620,9 @@ export function parseFullMarkdown(
     runId: string;
     tight: boolean;
     indent: number;
+    /** The column where this level's item content starts (indent plus
+        marker width): a deeper-indented marker nests only at or past it. */
+    contentIndent: number;
     placeholder: boolean;
   }[] = [];
 
@@ -818,7 +865,20 @@ export function parseFullMarkdown(
       if (refused !== null) return refused;
       const indentText = ((bullet?.[1] ?? ordered?.[1]) as string).replace(/\t/g, "  ");
       const indent = indentText.length;
-      const depth = Math.floor(indent / 2);
+      const markerWidth =
+        bullet !== null
+          ? 2
+          : (ordered?.[2] as string).length + (ordered?.[3] as string).length + 1;
+      const contentIndent = indent + markerWidth;
+      // The nesting depth is structural, not two-space levels: a marker
+      // nests under every open level whose content column it reaches, so
+      // wide ordered markers ("10. ") keep their children at depth + 1 and
+      // over-indented markers do not fabricate phantom levels.
+      let depth = 0;
+      for (const entry of listStack) {
+        if (indent >= entry.contentIndent) depth += 1;
+        else break;
+      }
       const kind = bullet !== null ? "bullet" : "ordered";
       // The item identity is allocated first: a fresh run is keyed by its
       // opening item paragraph (R-FULL-META-1 listRunId).
@@ -852,15 +912,17 @@ export function parseFullMarkdown(
         // depths with kind-only placeholders, then open the run on this item.
         while (listStack.length > depth) listStack.pop();
         while (listStack.length < depth) {
+          const placeholderIndent = listStack.length * 2;
           listStack.push({
             kind: "bullet",
             runId: "",
             tight: true,
-            indent: listStack.length * 2,
+            indent: placeholderIndent,
+            contentIndent: placeholderIndent + 2,
             placeholder: true,
           });
         }
-        listStack.push({ kind, runId: itemId, tight: true, indent, placeholder: false });
+        listStack.push({ kind, runId: itemId, tight: true, indent, contentIndent, placeholder: false });
         freshRun = true;
       } else if (blankSinceItem) {
         top.tight = false;
@@ -870,6 +932,7 @@ export function parseFullMarkdown(
         runId: string;
         tight: boolean;
         indent: number;
+        contentIndent: number;
         placeholder: boolean;
       };
       const content = (bullet?.[3] ?? ordered?.[4] ?? "") as string;
@@ -1133,7 +1196,9 @@ function serializeInline(
       openState.bold = false;
     }
     if (openLink !== null) {
-      const title = openTitle !== undefined ? ` "${openTitle.replace(/"/g, "'")}"` : "";
+      const title = openTitle !== undefined
+        ? ` "${openTitle.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`
+        : "";
       output += `](${openLink}${title})`;
       openLink = null;
       openTitle = undefined;
@@ -1292,6 +1357,45 @@ export interface FullSerializeOptions {
   touched?: ReadonlySet<string>;
 }
 
+/** Escape a canonical inline line whose start would otherwise reparse as a
+    block structure (ATX heading, quote, list, fence, rule or tag-shaped
+    line): a backslash before the first structural character keeps the
+    paragraph literal, and the inline escape round-trips it back. Digit
+    delimiters escape on the delimiter (`1\\.`), since a backslash cannot
+    precede the digit itself. */
+export function escapeBlockStart(line: string): string {
+  if (/^( {0,3})#{1,6}[ \t]+/.test(line)) {
+    return line.replace(/^( {0,3})#/, "$1\\#");
+  }
+  if (/^( {0,3})>/.test(line)) {
+    return line.replace(/^( {0,3})>/, "$1\\>");
+  }
+  if (/^([ \t]*)([-*+])[ \t]+/.test(line)) {
+    return line.replace(/^([ \t]*)([-*+])/, "$1\\$2");
+  }
+  if (/^([ \t]*\d+)([.)])[ \t]+/.test(line)) {
+    return line.replace(/^([ \t]*\d+)([.)])/, "$1\\$2");
+  }
+  if (/^( {0,3})(`{3,}|~{3,})/.test(line)) {
+    return line.replace(/^( {0,3})([`~])/, "$1\\$2");
+  }
+  if (/^ {0,3}((-[ \t]*){3,}|(\*[ \t]*){3,}|(_[ \t]*){3,})[ \t]*$/.test(line)) {
+    return line.replace(/^([ \t]*)([-*_])/, "$1\\$2");
+  }
+  if (/^[ \t]*<\/?[a-zA-Z!][^>]*>[ \t]*$/.test(line)) {
+    return line.replace(/</, "\\<");
+  }
+  return line;
+}
+
+/** Unescape a link title parsed with backslash-escaped quotes, mirroring
+    the inline escape set so titles carrying `"` round-trip losslessly. */
+export function unescapeLinkTitle(title: string): string {
+  // Like the inline escape set plus the double quote: `\"` inside a
+  // double-quoted title reads back as `"`.
+  return title.replace(/\\([\\`*_{}[\]()#+\-.!"<>~])/g, "$1");
+}
+
 /** Serialize a full document to its canonical Markdown wire (§2.9). */
 export function serializeFullDocument(
   document: RichTextDocument,
@@ -1302,6 +1406,68 @@ export function serializeFullDocument(
   const runCounters = new Map<string, number>();
   // Last emitted marker width per run, for continuation alignment (F05).
   const lastMarkerWidths = new Map<string, number>();
+  // Content column per list depth (item 7): set when an item marker emits,
+  // read when a nested marker or rule indents under it.
+  const listColumns: number[] = [];
+
+  /** Marker width (and ordered number) of a seeded item opener's source
+      slice, tolerating quote prefixes: seeded blocks re-emit verbatim but
+      must still advance the run counters and content columns so a later
+      canonical neighbor in the same run numbers and indents correctly. */
+  const markerOfSeed = (
+    seed: string,
+    listKind: "bullet" | "ordered",
+  ): { width: number; number?: number } | null => {
+    const firstLine = (seed.split("\n")[0] ?? "").replace(/^(>\s*)+/, "");
+    if (listKind === "bullet") {
+      return /^\s*[-*+] /.test(firstLine) ? { width: 2 } : null;
+    }
+    const marker = /^\s*(\d+)([.)]) /.exec(firstLine);
+    if (marker === null) return null;
+    return {
+      width: (marker[1] as string).length + 2,
+      number: parseInt(marker[1] as string, 10),
+    };
+  };
+
+  /** Advance run counters, marker widths and content columns for a seeded
+      (verbatim) list item opener. Continuations and rules carry no tracking
+      state of their own. */
+  const trackSeededBlock = (block: RichTextBlock, seed: string): void => {
+    const metadata = block.metadata;
+    if (block.kind !== "paragraph" || metadata === undefined) return;
+    if (metadata.listKind === "none") return;
+    if (block.paragraphId !== (metadata.listItemId ?? block.paragraphId)) return;
+    const marker = markerOfSeed(seed, metadata.listKind);
+    const width = marker?.width ?? (metadata.listKind === "bullet" ? 2 : 3);
+    const runId = metadata.listRunId ?? block.paragraphId;
+    if (marker?.number !== undefined) runCounters.set(runId, marker.number + 1);
+    lastMarkerWidths.set(runId, width);
+    const column = metadata.listDepth === 0 ? 0 : (listColumns[metadata.listDepth - 1] ?? metadata.listDepth * 2);
+    listColumns[metadata.listDepth] = column + width;
+  };
+
+  // Run values survive opener deletion through the retained map
+  // (R-FULL-META-2): a member never carries start/type/tight, so the wire
+  // consults the retained source record before falling back to defaults.
+  const retainedStartOf = (metadata: FullBlockMetadata | undefined): number => {
+    if (metadata?.orderedStart !== undefined) return metadata.orderedStart;
+    const runId = metadata?.listRunId;
+    if (runId !== undefined) {
+      const retained = document.retainedRunMetadata?.[runId]?.orderedStart;
+      if (typeof retained === "number") return retained;
+    }
+    return 1;
+  };
+  const retainedTightOf = (metadata: FullBlockMetadata | undefined): boolean => {
+    if (metadata?.listTight !== undefined) return metadata.listTight;
+    const runId = metadata?.listRunId;
+    if (runId !== undefined) {
+      const retained = document.retainedRunMetadata?.[runId]?.listTight;
+      if (typeof retained === "boolean") return retained;
+    }
+    return true;
+  };
 
   const emitBlock = (block: RichTextBlock): void => {
     if (block.kind === "preserved") {
@@ -1313,8 +1479,9 @@ export function serializeFullDocument(
       const quotePrefix = metadata !== undefined && metadata.blockquoteDepth > 0
         ? "> ".repeat(metadata.blockquoteDepth)
         : "";
+      const listDepth = metadata?.listDepth ?? 0;
       const indent = metadata !== undefined && metadata.listKind !== "none"
-        ? "  ".repeat(metadata.listDepth)
+        ? " ".repeat(listDepth === 0 ? 0 : (listColumns[listDepth - 1] ?? listDepth * 2))
         : "";
       lines.push(`${quotePrefix}${indent}---`);
       return;
@@ -1349,6 +1516,11 @@ export function serializeFullDocument(
       return;
     }
     let inline = serializeInline(segments, false);
+    // Nested list indentation (R-FULL-META-2 item 7): every depth resolves
+    // to its parent item's content column, never to two-space levels, so an
+    // independent CommonMark parser recovers the same nesting.
+    const parentColumn = (depth: number): number =>
+      depth === 0 ? 0 : (listColumns[depth - 1] ?? depth * 2);
     // F16-M: elide the final consecutive hard-break run of a prose block.
     inline = inline.replace(/(\\\n)+$/, "");
     const headingLevel = metadata.blockKind === "heading"
@@ -1357,7 +1529,8 @@ export function serializeFullDocument(
     const headingPrefix = headingLevel !== null ? `${"#".repeat(headingLevel)} ` : "";
     if (metadata.listKind !== "none") {
       const isContinuation = block.paragraphId !== (metadata.listItemId ?? block.paragraphId);
-      const indent = "  ".repeat(metadata.listDepth);
+      const column = parentColumn(metadata.listDepth);
+      const indent = " ".repeat(column);
       if (isContinuation) {
         // Multi-paragraph item: continuation lines carry no marker and align
         // under the item content column (F05).
@@ -1368,7 +1541,7 @@ export function serializeFullDocument(
           return;
         }
         for (const inlineLine of inline.split("\n")) {
-          lines.push(`${quotePrefix}${contIndent}${inlineLine}`);
+          lines.push(`${quotePrefix}${contIndent}${escapeBlockStart(inlineLine)}`);
         }
         return;
       }
@@ -1379,13 +1552,18 @@ export function serializeFullDocument(
         const runId = metadata.listRunId ?? block.paragraphId;
         let next = runCounters.get(runId);
         if (next === undefined) {
-          next = metadata.orderedStart ?? 1;
+          next = retainedStartOf(metadata);
         }
         marker = `${next}. `;
         runCounters.set(runId, next + 1);
       }
       lastMarkerWidths.set(metadata.listRunId ?? block.paragraphId, marker.length);
-      lines.push(`${quotePrefix}${indent}${marker}${headingPrefix}${inline}`);
+      listColumns[metadata.listDepth] = column + marker.length;
+      // Every inline line escapes a block-start shape: the first line would
+      // otherwise reparse as a structure, and hard-break lines after it are
+      // re-scanned for structures too.
+      const escapedInline = inline.split("\n").map(escapeBlockStart).join("\n");
+      lines.push(`${quotePrefix}${indent}${marker}${headingPrefix}${escapedInline}`);
       return;
     }
     if (inline === "") {
@@ -1394,8 +1572,10 @@ export function serializeFullDocument(
       else lines.push("");
       return;
     }
-    // Multi-line inline (interior hard breaks) stays inside the block.
-    const inlineLines = inline.split("\n");
+    // Multi-line inline (interior hard breaks) stays inside the block; every
+    // line escapes a block-start shape so a paragraph starting with `#`
+    // (or a hard-break line starting with one) reparses as a paragraph.
+    const inlineLines = inline.split("\n").map(escapeBlockStart);
     inlineLines.forEach((inlineLine, inlineIndex) => {
       if (inlineIndex === 0) lines.push(`${quotePrefix}${headingPrefix}${inlineLine}`);
       else lines.push(`${quotePrefix}${inlineLine}`);
@@ -1424,7 +1604,7 @@ export function serializeFullDocument(
       if (sameQuote && (sameItem || !sameDepth)) {
         adjacent = true;
       } else if (sameQuote && sameRun && sameDepth) {
-        adjacent = (prevMeta.listTight ?? true) && (currMeta.listTight ?? true);
+        adjacent = retainedTightOf(prevMeta) && retainedTightOf(currMeta);
       }
     }
     return !adjacent;
@@ -1438,6 +1618,8 @@ export function serializeFullDocument(
     ) {
       if (needsBlank(block, blockIndex)) lines.push("");
       for (const seedLine of seed.split("\n")) lines.push(seedLine);
+      // Verbatim reuse still advances run tracking for later neighbors.
+      trackSeededBlock(block, seed);
       return;
     }
     if (needsBlank(block, blockIndex)) lines.push("");

@@ -5,7 +5,20 @@
   "corpusSource": "rhanka/sentropic (read-only git show)",
   "fixturePath": "packages/rich-text/tests/fixtures/canvas-live/b1-content.json",
   "fixtureDigest": "sha256:35bbb994e22ab63b72059d139c1e447d18b44c3b3b8fb05498f9dbde28f239a1",
-  "apiSavePayloadsDigest": "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1bd76",
+  "fixtureSources": {
+    "sourceCommit": "5e986a0b6cd2dfecfbde6a588d30055271124696",
+    "sources": {
+      "export": "e2e/tests/07-import-export.spec.ts:30-60",
+      "store": "ui/tests/stores/initiatives.test.ts:79",
+      "markdown": "ui/tests/utils/markdown.test.ts:11-51",
+      "listCodec": "ui/src/lib/utils/markdown.ts:131-138",
+      "matrix": "api/src/config/default-matrix.ts:7-12,66-126",
+      "comments": "ui/tests/chat/comment-adapter.test.ts:75-94",
+      "synthetic": "New H0 edge cases; not stored production content"
+    }
+  },
+  "apiSavePayloadsDigest": "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1fbd76",
+  "hostAcceptance": "pending-host",
   "command": "vitest run src/w1-full-roundtrip.test.ts",
   "cases": [
     {
@@ -18,7 +31,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "prose-link",
@@ -31,7 +46,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "folder-context",
@@ -43,7 +60,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "benefit-list",
@@ -55,7 +74,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "unicode-bullets",
@@ -70,7 +91,11 @@
       ],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "beforeBytes": "• First item\r\n• Second item\r\nSingle line",
+      "afterBytes": "• First item\n• Second item\nSingle line",
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "unicode-list-array",
@@ -85,7 +110,11 @@
       ],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "beforeBytes": "• First item\r\n• Second item\r\nSingle line",
+      "afterBytes": "• First item\n• Second item\nSingle line",
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "matrix-value-name",
@@ -97,7 +126,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "matrix-complexity-name",
@@ -109,7 +140,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "matrix-level",
@@ -121,7 +154,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "citation-wire",
@@ -133,7 +168,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "comment-draft",
@@ -145,7 +182,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "message-edit",
@@ -157,7 +196,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "ai-draft",
@@ -169,7 +210,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "folder-name",
@@ -181,7 +224,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "organization-name",
@@ -193,7 +238,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "initiative-name",
@@ -205,7 +252,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "plain-singleline",
@@ -217,7 +266,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "score-marks",
@@ -229,7 +280,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "matrix-formatted-name",
@@ -241,7 +294,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "heading-link",
@@ -254,7 +309,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "ordered-nested-list",
@@ -264,32 +321,35 @@
       "inputDigest": "7591e692eb9cdd2033b24b46616276fcf065387e87cf3b7a40b7a14d91f28944",
       "result": "normalized",
       "rules": [
-        "SOFTBREAK",
-        "TRAILING-NL",
-        "LIST-INDENT"
+        "TRAILING-NL"
       ],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "beforeBytes": "1. First\n   - Nested\n2. Second\n\n",
+      "afterBytes": "1. First\n   - Nested\n2. Second",
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "preserved-constructs",
       "classes": [
         "blockquote",
         "code-block",
-        "link",
-        "image-preserved",
-        "table-preserved",
         "marks",
         "horizontal-rule",
-        "hard-break"
+        "hard-break",
+        "table-preserved",
+        "image-preserved"
       ],
       "inputDigest": "b68bdf833ada7debe519ca9ab98cc6e50b61e55f7160319310c0753790d09596",
       "result": "byte-identical",
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "break-twins",
@@ -301,7 +361,9 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "line-endings",
@@ -316,7 +378,11 @@
       ],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "beforeBytes": "line1\r\nline2\rline3\nline4",
+      "afterBytes": "line1\nline2\nline3\nline4",
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "empty",
@@ -328,7 +394,9 @@
       "rules": [],
       "edited": false,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "whitespace",
@@ -338,13 +406,16 @@
       "inputDigest": "8f1ec3413a21691e2bb836c2c73c9dbbaf7faeec81899def9e53cd0ff74cc244",
       "result": "normalized",
       "rules": [
-        "TRAILING-NL",
-        "BLANK-ONLY",
-        "HARD-BREAK-FORM"
+        "TRAILING-SPACE",
+        "BLANK-ONLY"
       ],
       "edited": false,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "beforeBytes": "  \n\n\n",
+      "afterBytes": "\n\n",
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "ime",
@@ -356,19 +427,23 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "hostile-paste",
       "classes": [
-        "prose"
+        "link"
       ],
       "inputDigest": "98ac213c9bfaf5adb51e5e19838ef87ca004dd4796ec196a65ffc7310a369fe9",
       "result": "byte-identical",
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     },
     {
       "id": "heading-paste",
@@ -380,13 +455,17 @@
       "rules": [],
       "edited": true,
       "neighborSeedsKept": true,
-      "usedFeatureLoss": []
+      "usedFeatureLoss": [],
+      "f16TerminalBreaks": 0,
+      "f10TrailingCodeLf": 0
     }
   ],
   "summary": {
     "total": 29,
     "byteIdentical": 24,
     "normalized": 5,
-    "usedFeatureLosses": []
+    "usedFeatureLosses": [],
+    "f16TerminalBreaks": 0,
+    "f10TrailingCodeLf": 0
   }
 }

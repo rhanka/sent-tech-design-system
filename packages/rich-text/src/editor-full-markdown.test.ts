@@ -73,8 +73,10 @@ describe("full bridge lists (F03/F04/F05)", () => {
   });
 
   it("round-trips nested mixed lists and continuation blocks", () => {
-    const { wire } = roundTrip("1. First\n  - Nested\n2. Second");
-    expect(wire).toBe("1. First\n  - Nested\n2. Second");
+    // Canonical nesting sits at the parent content column (three spaces
+    // under "1. "): a two-space indent is a sibling under CommonMark.
+    const { wire } = roundTrip("1. First\n   - Nested\n2. Second");
+    expect(wire).toBe("1. First\n   - Nested\n2. Second");
   });
 
   it("keeps only the run opener carrying start/type/tight values", () => {
@@ -154,6 +156,116 @@ describe("full bridge blockquote, code and HR (F08/F10/F15)", () => {
     const { document, wire } = roundTrip("Before\n\n---\n\nAfter");
     expect(wire).toBe("Before\n\n---\n\nAfter");
     expect(document.blocks[1]?.kind).toBe("horizontalRule");
+  });
+});
+
+describe("CL-2F review 1 item 3: code LF fidelity (R-FULL-CODE-1)", () => {
+  const codeSegments = (markdown: string): unknown[] => {
+    const document = parse(markdown);
+    expect(document.blocks).toHaveLength(1);
+    const block = document.blocks[0];
+    if (block?.kind !== "paragraph") throw new Error("expected a code paragraph");
+    return (block.segments ?? []) as unknown[];
+  };
+
+  it("R3: leading LFs survive parsing without drops", () => {
+    expect(codeSegments("```\n\n\nA\n```")).toEqual([
+      { type: "hardBreak" },
+      { type: "hardBreak" },
+      { type: "text", text: "A", marks: {} },
+    ]);
+  });
+
+  it("R3: an all-LF body is preserved, not emptied", () => {
+    expect(codeSegments("```\n\n\n\n```")).toEqual([
+      { type: "hardBreak" },
+      { type: "hardBreak" },
+    ]);
+  });
+
+  it("R3: a single trailing LF yields one closing break, not two", () => {
+    expect(codeSegments("```\nA\n\n```")).toEqual([
+      { type: "text", text: "A", marks: {} },
+      { type: "hardBreak" },
+    ]);
+  });
+});
+
+describe("CL-2F review 1 item 7: nested list columns", () => {
+  it("R7: ordered-nested-list serializes at each parent content column", () => {
+    const document = parse("1. First\n   - Nested\n2. Second\n\n");
+    const nested = document.blocks.find((block) => block.paragraphId !== undefined && block.kind === "paragraph" && (block.metadata?.listDepth ?? 0) === 1);
+    expect(nested?.metadata?.listDepth).toBe(1);
+    const wire = serializeFullDocument(document);
+    // The nested marker sits at the parent content column (3), not at two spaces.
+    expect(wire).toBe("1. First\n   - Nested\n2. Second");
+  });
+
+  it("R7: wide ordered markers keep their nested column on reparse", () => {
+    const document = parse("10. Item\n    - nested\n11. Next");
+    const nested = document.blocks.find(
+      (block) => block.kind === "paragraph" && (block.metadata?.listDepth ?? 0) === 1,
+    );
+    expect(nested?.metadata?.listDepth).toBe(1);
+    const wire = serializeFullDocument(document);
+    expect(wire).toBe("10. Item\n    - nested\n11. Next");
+    const reparsed = parse(wire);
+    const again = reparsed.blocks.find(
+      (block) => block.kind === "paragraph" && (block.metadata?.listDepth ?? 0) === 1,
+    );
+    expect(again).toBeDefined();
+    expect(serializeFullDocument(reparsed)).toBe(wire);
+  });
+});
+
+describe("CL-2F review 1 item 8: inline fidelity", () => {
+  const firstSegments = (markdown: string): unknown[] => {
+    const document = parse(markdown);
+    const block = document.blocks[0];
+    if (block?.kind !== "paragraph") throw new Error("expected a paragraph");
+    return (block.segments ?? []) as unknown[];
+  };
+
+  it("R8: a double-backtick span containing a single backtick keeps its content", () => {
+    expect(firstSegments("`` `x` ``")).toEqual([
+      { type: "text", text: " `x` ", marks: { code: true } },
+    ]);
+  });
+
+  it("R8: a longer backtick run does not close a shorter span early", () => {
+    expect(firstSegments("``a```")).toEqual([
+      { type: "text", text: "``a```", marks: {} },
+    ]);
+  });
+
+  it("R8: a closing underscore after a word char ends the emphasis", () => {
+    expect(firstSegments("_italic_ tail")).toEqual([
+      { type: "text", text: "italic", marks: { italic: true } },
+      { type: "text", text: " tail", marks: {} },
+    ]);
+  });
+
+  it("R8: a paragraph starting with # re-emits escaped", () => {
+    const document = parse("\\# literal");
+    expect(serializeFullDocument(document)).toBe("\\# literal");
+    expect(firstSegments("\\# literal")).toEqual([
+      { type: "text", text: "# literal", marks: {} },
+    ]);
+  });
+
+  it("R8: link titles carrying quotes survive exactly", () => {
+    const segments = firstSegments('[a](https://example.com "say \\"hi\\"")');
+    expect(segments).toEqual([
+      {
+        type: "text",
+        text: "a",
+        marks: { link: "https://example.com", linkTitle: 'say "hi"' },
+      },
+    ]);
+    const document = parse('[a](https://example.com "say \\"hi\\"")');
+    const wire = serializeFullDocument(document);
+    expect(wire).toBe('[a](https://example.com "say \\"hi\\"")');
+    expect(firstSegments(wire)).toEqual(segments);
   });
 });
 

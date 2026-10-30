@@ -2,6 +2,7 @@
   import { onMount, tick, untrack } from "svelte";
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
+  import { ensureFullEditorExtensionsRegistered } from "@sentropic/design-system-rich-text/editor-full-extensions";
   import type {
     CollaborationActor,
     CollaborationCapabilities,
@@ -312,6 +313,7 @@
     // reference, so it is recorded as seen without a §5.6 evaluation.
     lastSeenValue = value;
     lastSeenFingerprint = fingerprintOf(value);
+    if (profile === "full") ensureFullEditorExtensionsRegistered();
     core = createRichTextEditor({
       document: value,
       profile,

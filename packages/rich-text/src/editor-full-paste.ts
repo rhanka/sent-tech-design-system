@@ -11,7 +11,8 @@
 import { DOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import type { JSONContent } from "@tiptap/core";
 import type { Schema } from "@tiptap/pm/model";
-import { isAllowedHref } from "./collaboration.js";
+import type { Selection } from "@tiptap/pm/state";
+import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import {
   parseFullMarkdown,
@@ -98,7 +99,10 @@ export function sanitizeFullPastedHtml(html: string): {
         element.removeAttribute(attribute.name);
       } else if (
         (name === "href" || name === "src" || name === "xlink:href") &&
-        !isAllowedHref(attribute.value)
+        // The DOM decoded entities once; decode any remainder (double
+        // encoding such as `&amp;#x61;`) before validation so an encoded
+        // `javascript:` refuses whole instead of passing as relative.
+        !isAllowedHref(decodeHrefToken(attribute.value))
       ) {
         reportKind(refusedKinds, "link");
       } else if (name === "class" || name === "style") {
@@ -122,6 +126,33 @@ export function sanitizeFullPastedHtml(html: string): {
   const container = document.createElement("div");
   container.appendChild(root.cloneNode(true));
   return { html: container.innerHTML, imageSeen, refusedKinds: [] };
+}
+
+/** Plain text of an HTML payload: the body's text content, for code-context
+    literal insertion. */
+export function htmlToPlainText(html: string): string {
+  // The global HTML parser, not the ProseMirror DOMParser imported above:
+  // code-context insertion only needs the payload's readable text.
+  const parsed = new globalThis.DOMParser().parseFromString(html, "text/html");
+  return parsed.body.textContent ?? "";
+}
+
+/** Code-context literal paste (R-FULL-CODE-1): when the whole selection
+    sits inside one code block, pasting inserts literal text — LFs kept as
+    text newlines, no marks, no code/prose/code split. Returns the replace
+    slice, or null when the selection is not code-contained. */
+export function codeLiteralSlice(
+  schema: Schema,
+  selection: Selection,
+  text: string | null,
+  html: string | null,
+): Slice | null {
+  if (selection.$from.parent.type.name !== "codeBlock") return null;
+  if (selection.$to.parent !== selection.$from.parent) return null;
+  const literal =
+    text !== null && text !== "" ? text : html !== null ? htmlToPlainText(html) : "";
+  if (literal === "") return null;
+  return new Slice(Fragment.from(schema.text(literal)), 0, 0);
 }
 
 /** Plan an HTML paste against the full schema. */
@@ -160,10 +191,19 @@ export function planFullHtmlPaste(
   parsed.content.forEach((node) => {
     if (node.type.name === "text") {
       if ((node.textContent ?? "") === "") return;
+      // Top-level inline nodes keep their marks (nested or not): dropping
+      // them would flatten styled spans to plain text.
+      const textJson: JSONContent = { type: "text", text: node.textContent };
+      if (node.marks.length > 0) {
+        textJson.marks = node.marks.map((mark) => ({
+          type: mark.type.name,
+          attrs: { ...mark.attrs },
+        }));
+      }
       blocks.push({
         type: "paragraph",
         attrs: { [PARAGRAPH_ID_ATTRIBUTE]: allocateId() },
-        content: [{ type: "text", text: node.textContent }],
+        content: [textJson],
       });
       return;
     }

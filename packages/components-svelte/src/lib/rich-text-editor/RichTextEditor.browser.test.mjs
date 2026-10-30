@@ -89,6 +89,29 @@ function assert(condition, label, message) {
   return Boolean(condition);
 }
 
+// Follow-up fixtures: the boundary-aware provider-free scan still catches
+// real collaboration imports while ignoring linkifyjs. Runs at load, before
+// any browser work, and fails the run on a scan regression.
+for (const [text, marker, expected] of [
+  [`import { Doc } from "yjs"`, "yjs", true],
+  [`import { awarenessProtocol } from "y-protocols/awareness"`, "y-protocols", true],
+  [`import "y-protocols/awareness"`, "yjs", false],
+  [`import "y-prosemirror"`, "y-prosemirror", true],
+  [`const provider = new HocuspocusProvider()`, "HocuspocusProvider", true],
+  [`new WebsocketProvider(url, name, doc)`, "WebsocketProvider", true],
+  [`/* yjs collaboration */`, "yjs", true],
+  [`import { linkify } from "linkifyjs"`, "yjs", false],
+  [`import "linkify-html"`, "yjs", false],
+  [`const myjs = 1`, "yjs", false],
+  [`const yjsx = 1`, "yjs", false],
+]) {
+  assert(
+    containsRuntimeMarker(text, marker) === expected,
+    "provider-markers",
+    `scan ${expected ? "missed" : "flagged"} ${JSON.stringify(marker)} in ${JSON.stringify(text)}`,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Embedded harness: mounts the real component from source with a scriptable
 // window.__rt surface. Plain JavaScript (no TS) so no extra preprocess is

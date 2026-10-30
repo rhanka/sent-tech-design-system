@@ -2,6 +2,7 @@
   import { onMount, tick, untrack } from "svelte";
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
+  import { ensureFullEditorExtensionsRegistered } from "@sentropic/design-system-rich-text/editor-full-extensions";
   import type {
     ComposerCaptureResult,
     ComposerEditorProps as ComposerContract,
@@ -13,9 +14,9 @@
   import {
     RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
     composerDocumentFromText,
-    composerFullDocumentForText,
-    composerFullDocumentFromText,
-    composerFullTextFromDocument,
+    composerFullSeededDocumentForText,
+    composerFullSeededDocumentFromText,
+    composerFullSeededTextFromDocument,
     composerTextFromDocument,
     createCaptureUnavailableError,
     formatUntranslatedMarker,
@@ -61,6 +62,14 @@
     return `composer:generated-${localSequence}`;
   }
 
+  /** Full-profile conversion seeds (review 1 item 10): untouched source
+      slice per block identity, retained across mount, edits and host
+      replacements so untouched slices re-emit byte-identically. Gesture
+      `affectedParagraphIds` mark the touched set; a host replacement
+      re-parses and resets both. P0 keeps the chunk mapping (no seeds). */
+  let fullSeeds: Map<string, string> = new Map();
+  let fullTouched: Set<string> = new Set();
+
   /** Controlled string → document with positional identity reuse: the
       chunk at an index the displayed document already holds keeps that
       block's identity, so a host echo of the last emitted string decides
@@ -68,14 +77,17 @@
       session conflict. */
   function textFromDocument(document: RichTextDocument): string {
     return profile === "full"
-      ? composerFullTextFromDocument(document)
+      ? composerFullSeededTextFromDocument(document, fullSeeds, fullTouched)
       : composerTextFromDocument(document);
   }
 
   function documentForText(text: string): RichTextDocument {
     if (profile === "full") {
       const previous = core?.getDocument()?.blocks ?? [];
-      return composerFullDocumentForText(text, previous, freshId);
+      const seeded = composerFullSeededDocumentForText(text, previous, freshId);
+      fullSeeds = seeded.seeds;
+      fullTouched = new Set();
+      return seeded.document;
     }
     const chunks = splitComposerText(text);
     const previous = core?.getDocument()?.blocks ?? [];
@@ -96,9 +108,13 @@
   }
 
   function mountDocumentForText(text: string): RichTextDocument {
-    return profile === "full"
-      ? composerFullDocumentFromText(text, freshId)
-      : composerDocumentFromText(text, freshId);
+    if (profile === "full") {
+      const seeded = composerFullSeededDocumentFromText(text, freshId);
+      fullSeeds = seeded.seeds;
+      fullTouched = new Set();
+      return seeded.document;
+    }
+    return composerDocumentFromText(text, freshId);
   }
 
   function isActive(): boolean {
@@ -227,6 +243,7 @@
       }
     };
     lastSeenValue = value;
+    if (profile === "full") ensureFullEditorExtensionsRegistered();
     core = createRichTextEditor({
       document: mountDocumentForText(value),
       profile,
@@ -245,9 +262,18 @@
         // distinct value — send-clear, edit cancel, external replacement —
         // applies cleanly instead of raising a spurious session conflict.
         // Capture never sets or clears this flag; only this adoption does.
+        // Full seeds: the gesture's affected identities lose their source
+        // slice (they serialize canonically from here on); untouched
+        // identities keep re-emitting their seed bytes.
         const instance = core;
         if (instance) {
           instance.applyExternalUpdate(event.document);
+        }
+        if (profile === "full") {
+          for (const identity of event.gesture.affectedParagraphIds) {
+            fullTouched.add(identity);
+            fullSeeds.delete(identity);
+          }
         }
         onChange?.(textFromDocument(event.document));
       },

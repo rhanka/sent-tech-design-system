@@ -906,6 +906,103 @@ export function isAllowedHref(href: string): boolean {
   return isValidPathNoscheme(parts.hier);
 }
 
+/** Named HTML entities with an ASCII output, for href tokenization
+    (R-FULL-URL-1): no named entity decodes to an ASCII letter or digit, so
+    only scheme punctuation, whitespace and structural characters matter
+    here. Unknown entities are left as written. */
+const NAMED_HREF_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+  Tab: "	",
+  NewLine: "\n",
+  colon: ":",
+  semi: ";",
+  sol: "/",
+  bsol: "\\",
+  quest: "?",
+  num: "#",
+  percnt: "%",
+  plus: "+",
+  equals: "=",
+  commat: "@",
+  excl: "!",
+  dollar: "$",
+  period: ".",
+  comma: ",",
+  lpar: "(",
+  rpar: ")",
+  ast: "*",
+  verbar: "|",
+  lowbar: "_",
+  Hat: "^",
+  grave: "`",
+  lcub: "{",
+  rcub: "}",
+  lsqb: "[",
+  rsqb: "]",
+  tilde: "~",
+};
+
+/** Decode one numeric character reference to its character, or null when
+    the code point is not a valid scalar value. */
+function decodeNumericReference(code: number): string | null {
+  if (code <= 0 || code > 0x10ffff) return null;
+  if (code >= 0xd800 && code <= 0xdfff) return null;
+  if (
+    (code >= 0xfdd0 && code <= 0xfdef) ||
+    (code & 0xfffe) === 0xfffe
+  ) {
+    return null;
+  }
+  return String.fromCodePoint(code);
+}
+
+/** Clipboard tokenization for hrefs (R-FULL-URL-1): trim the raw token,
+    then decode HTML entities — decimal/hexadecimal numeric references
+    (semicolon optional) and the ASCII-output named entities — before
+    `isAllowedHref` runs. Decode failures keep the raw text so the validator
+    judges what the browser would navigate to. */
+export function decodeHrefToken(raw: string): string {
+  const token = raw.trim();
+  return token.replace(
+    /&(?:#(\d+)|#[xX]([\da-fA-F]+)|([a-zA-Z][a-zA-Z0-9]*));?/g,
+    (
+      whole: string,
+      decimal: string | undefined,
+      hex: string | undefined,
+      name: string | undefined,
+      offset: number,
+      source: string,
+    ) => {
+      if (decimal !== undefined) {
+        const decoded = decodeNumericReference(parseInt(decimal, 10));
+        return decoded ?? whole;
+      }
+      if (hex !== undefined) {
+        const decoded = decodeNumericReference(parseInt(hex, 16));
+        return decoded ?? whole;
+      }
+      if (name !== undefined) {
+        const known = NAMED_HREF_ENTITIES[name];
+        if (known === undefined) return whole;
+        if (!whole.endsWith(";")) {
+          // Without the semicolon only the five legacy entities decode,
+          // and only when not followed by an ASCII letter, digit or `=`.
+          if (!["amp", "lt", "gt", "quot", "nbsp"].includes(name)) return whole;
+          const after = source[offset + whole.length] ?? "";
+          if (/[a-zA-Z0-9=]/.test(after)) return whole;
+        }
+        return known;
+      }
+      return whole;
+    },
+  );
+}
+
 /** Byte length of a string as UTF-8, computed without any codec global. */
 function utf8ByteLength(text: string): number {
   let bytes = 0;

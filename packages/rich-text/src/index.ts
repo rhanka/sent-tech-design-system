@@ -164,11 +164,15 @@ export {
   composerDocumentFromText,
   composerFullDocumentForText,
   composerFullDocumentFromText,
+  composerFullSeededDocumentForText,
+  composerFullSeededDocumentFromText,
+  composerFullSeededTextFromDocument,
   composerFullTextFromDocument,
   composerTextFromDocument,
   joinComposerText,
   splitComposerText,
 } from "./composer-document.js";
+export type { ComposerFullSeededDocument } from "./composer-document.js";
 export type {
   FullNormalizationRule,
   FullParseResult,

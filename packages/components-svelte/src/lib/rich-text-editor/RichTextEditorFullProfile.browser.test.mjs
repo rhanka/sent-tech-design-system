@@ -91,6 +91,29 @@ function assert(condition, label, message) {
   return Boolean(condition);
 }
 
+// Follow-up fixtures: the boundary-aware provider-free scan still catches
+// real collaboration imports while ignoring linkifyjs. Runs at load, before
+// any browser work, and fails the run on a scan regression.
+for (const [text, marker, expected] of [
+  [`import { Doc } from "yjs"`, "yjs", true],
+  [`import { awarenessProtocol } from "y-protocols/awareness"`, "y-protocols", true],
+  [`import "y-protocols/awareness"`, "yjs", false],
+  [`import "y-prosemirror"`, "y-prosemirror", true],
+  [`const provider = new HocuspocusProvider()`, "HocuspocusProvider", true],
+  [`new WebsocketProvider(url, name, doc)`, "WebsocketProvider", true],
+  [`/* yjs collaboration */`, "yjs", true],
+  [`import { linkify } from "linkifyjs"`, "yjs", false],
+  [`import "linkify-html"`, "yjs", false],
+  [`const myjs = 1`, "yjs", false],
+  [`const yjsx = 1`, "yjs", false],
+]) {
+  assert(
+    containsRuntimeMarker(text, marker) === expected,
+    "provider-markers",
+    `scan ${expected ? "missed" : "flagged"} ${JSON.stringify(marker)} in ${JSON.stringify(text)}`,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Embedded harness: mounts the real components from source with `profile`
 // set to `full`, exposing a scriptable window.__full surface (document) and
@@ -106,6 +129,8 @@ const HARNESS_APP = `
   const params = new URLSearchParams(location.search);
   const scenario = params.get("scenario") ?? "full-list";
   const surface = params.get("surface") ?? "document";
+  const editableParam = params.get("editable");
+  const disabledParam = params.get("disabled");
 
   const SENTINEL = {
     editorLabel: "SENTINEL-EDITOR-LABEL",
@@ -134,13 +159,64 @@ const HARNESS_APP = `
     containerOrder: ["list"],
     ...extra,
   });
+  // Ordered item: one order entry per nesting level (item 5/13).
+  const oitem = (id, text, run, depth = 0, extra = {}) => {
+    const order = [];
+    for (let level = 0; level <= depth; level += 1) order.push("list");
+    return para(id, [seg(text)], {
+      listKind: "ordered",
+      listDepth: depth,
+      listRunId: run,
+      listItemId: id,
+      listTight: true,
+      containerOrder: order,
+      ...extra,
+    });
+  };
 
   const SCENARIOS = {
     "full-list": {
       value: { format: FORMAT, blocks: [item("k1", "First", "k1"), item("k2", "Second", "k1")] },
     },
+    "full-link": {
+      value: {
+        format: FORMAT,
+        blocks: [
+          para("p1", [
+            { type: "text", text: "Go ", marks: {} },
+            { type: "text", text: "there", marks: { link: "https://example.com/" } },
+          ]),
+        ],
+      },
+    },
     "full-list-break": {
       value: { format: FORMAT, blocks: [item("b1", "Alpha beta", "b1"), item("b2", "Gamma", "b1")] },
+    },
+    "full-ordered": {
+      value: {
+        format: FORMAT,
+        blocks: [
+          oitem("o1", "First", "o1", 0, { orderedStart: 2 }),
+          oitem("o2", "Second", "o1"),
+        ],
+      },
+    },
+    "full-nested": {
+      value: {
+        format: FORMAT,
+        blocks: [
+          oitem("o1", "First", "o1", 0, { orderedStart: 3 }),
+          oitem("o2", "Second", "o1"),
+          para("b1", [seg("Nested")], {
+            listKind: "bullet",
+            listDepth: 1,
+            listRunId: "b1",
+            listItemId: "b1",
+            listTight: true,
+            containerOrder: ["list", "list"],
+          }),
+        ],
+      },
     },
     "full-code": {
       value: {
@@ -166,7 +242,9 @@ const HARNESS_APP = `
   };
 
   const initial = SCENARIOS[scenario] ?? SCENARIOS["full-list"];
-  let value = $state(initial.value);
+  // Item 13 remounts set window.__harnessValue to the captured document;
+  // a fresh load uses the scenario fixture.
+  let value = $state(window.__harnessValue ?? initial.value);
   let messages = $state({ ...SENTINEL });
   let editorRef = $state(null);
   let composerValue = $state(initial.composer ?? "");
@@ -274,6 +352,8 @@ const HARNESS_APP = `
       bind:this={editorRef}
       {value}
       profile="full"
+      editable={editableParam === null ? true : editableParam !== "0"}
+      disabled={disabledParam === "1"}
       {messages}
       onChange={(event) => events.changes.push(clone(event))}
       onExternalConflict={(event) => events.conflicts.push(clone(event))}
@@ -288,8 +368,16 @@ const HARNESS_MAIN = `
 import { mount, unmount } from "svelte";
 import HarnessApp from "./HarnessApp.svelte";
 
-const app = mount(HarnessApp, { target: document.getElementById("app") });
+let app = mount(HarnessApp, { target: document.getElementById("app") });
 window.__rtUnmount = () => unmount(app);
+// Item 13 remount: destroy the app and mount it again on the supplied
+// document (capture → remount → capture equality after every FK path).
+window.__rtRemount = (doc) => {
+  unmount(app);
+  window.__harnessValue = doc;
+  app = mount(HarnessApp, { target: document.getElementById("app") });
+  return true;
+};
 window.__rtReady = true;
 `;
 
@@ -349,7 +437,7 @@ function serveDirectory(root, port) {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function openScenario(browser, base, scenario, surface = "document") {
+async function openScenario(browser, base, scenario, surface = "document", extraQuery = "") {
   const page = await browser.newPage();
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
@@ -374,7 +462,7 @@ async function openScenario(browser, base, scenario, surface = "document") {
   });
   const requests = [];
   page.on("request", (request) => requests.push(`${request.method()} ${request.url()} ${request.resourceType()}`));
-  await page.goto(`${base}/?surface=${surface}&scenario=${scenario}`, { waitUntil: "load", timeout: 30000 });
+  await page.goto(`${base}/?surface=${surface}&scenario=${scenario}${extraQuery}`, { waitUntil: "load", timeout: 30000 });
   await page.waitForFunction("window.__rtReady === true", { timeout: 30000 });
   return {
     page,
@@ -436,6 +524,20 @@ const sameComposer = (page) =>
   page.evaluate(() => window.__baselineComposer === window.__composer.editor());
 
 const runItemsOf = (doc, run) => doc.blocks.filter((block) => block.metadata && block.metadata.listRunId === run);
+
+// Item 13: destroy the app and mount it again on the captured document,
+// re-baseline the component identity, and assert the capture round-trips.
+// Every ordered/nested FK path ends with one of these.
+const remountCapture = async (page, label, step) => {
+  const before = await docOf(page);
+  await page.evaluate((doc) => window.__rtRemount(doc), before);
+  await sleep(500);
+  await recordIdentity(page);
+  const after = await docOf(page);
+  assert(JSON.stringify(after) === JSON.stringify(before), label, `${step} remount changed the capture`);
+  assert(await sameComponent(page), label, `${step} remounted the component`);
+  return after;
+};
 const segmentsTextOf = (block) =>
   ((block.kind === "paragraph" ? block.segments : []) ?? [])
     .map((segment) => (segment.type === "hardBreak" ? "\n" : segment.text ?? ""))
@@ -697,6 +799,100 @@ async function scenarioFullFk4List(browser, base) {
   ok(label);
 }
 
+// CL-2F-FK-ORDERED (item 13): ordered edges — Enter at the end of an item
+// opens a numbered sibling on the same run keeping the opener start, and a
+// mid-item split keeps run lineage and continued numbering. Capture and
+// remount after each path.
+async function scenarioFullFkOrdered(browser, base) {
+  const label = "full-fk-ordered";
+  const { page, done } = await openScenario(browser, base, "full-ordered");
+  await recordIdentity(page);
+  // Path 1: Enter at the end of o2 opens an empty o3 on run o1.
+  await page.click('[data-paragraph-id="o2"]');
+  await sleep(300);
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.press("Enter");
+  await sleep(400);
+  let displayed = await docOf(page);
+  let run = runItemsOf(displayed, "o1");
+  assert(run.length === 3, label, `end-of-item Enter opened no sibling: ${JSON.stringify(displayed.blocks)}`);
+  assert(run[0].paragraphId === "o1" && segmentsTextOf(run[0]) === "First", label, `head moved: ${JSON.stringify(run[0])}`);
+  assert(run[0].metadata.orderedStart === 2, label, `opener lost its start: ${JSON.stringify(run[0].metadata)}`);
+  assert(segmentsTextOf(run[1]) === "Second", label, `middle moved: ${JSON.stringify(run[1])}`);
+  const third = run[2];
+  assert(segmentsTextOf(third) === "", label, `fresh sibling not empty: ${JSON.stringify(third.segments)}`);
+  assert(third.metadata.listRunId === "o1", label, "fresh sibling left the run");
+  assert(third.metadata.orderedStart === undefined, label, "fresh sibling carries an opener-only start");
+  assert(await sameComponent(page), label, "ordered sibling remounted the component");
+  await remountCapture(page, label, "end-of-item Enter");
+  // Path 2: split o1 mid-word keeps the run and continues numbering.
+  await page.click('[data-paragraph-id="o1"]');
+  await sleep(300);
+  await page.keyboard.press("End");
+  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowLeft");
+  await sleep(200);
+  await page.keyboard.press("Enter");
+  await sleep(400);
+  displayed = await docOf(page);
+  run = runItemsOf(displayed, "o1");
+  assert(run.length === 4, label, `mid-item split opened no sibling: ${JSON.stringify(displayed.blocks)}`);
+  assert(run[0].paragraphId === "o1" && segmentsTextOf(run[0]) === "Fir", label, `split head is wrong: ${JSON.stringify(run[0])}`);
+  assert(segmentsTextOf(run[1]) === "st", label, `split tail is wrong: ${JSON.stringify(run[1])}`);
+  assert(run[1].metadata.listRunId === "o1", label, "split tail left the run");
+  assert(segmentsTextOf(run[2]) === "Second", label, `middle moved across the split: ${JSON.stringify(run[2])}`);
+  assert(run[0].metadata.orderedStart === 2, label, "split moved the opener start");
+  assert(await sameComponent(page), label, "ordered split remounted the component");
+  await remountCapture(page, label, "mid-item split");
+  await done(label);
+  ok(label);
+}
+
+// CL-2F-FK-NESTED (item 13): nested edges on a mixed ordered/bullet run
+// pair — outdenting the nested bullet to depth 0 keeps its content and
+// order entries, and indenting an ordered item opens a nested run.
+// Capture and remount after each path.
+async function scenarioFullFkNested(browser, base) {
+  const label = "full-fk-nested";
+  const { page, done } = await openScenario(browser, base, "full-nested");
+  await recordIdentity(page);
+  // Path 1: Shift+Tab outdents the nested bullet to depth 0.
+  await page.click('[data-paragraph-id="b1"]');
+  await sleep(300);
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.down("Shift");
+  await page.keyboard.press("Tab");
+  await page.keyboard.up("Shift");
+  await sleep(400);
+  let displayed = await docOf(page);
+  let nested = displayed.blocks.find((block) => block.paragraphId === "b1");
+  assert(nested !== undefined, label, "nested item lost its identity across Shift+Tab");
+  assert(nested.metadata.listDepth === 0, label, `Shift+Tab did not outdent the item: ${JSON.stringify(nested.metadata)}`);
+  assert(JSON.stringify(nested.metadata.containerOrder) === JSON.stringify(["list"]), label, `outdent broke the order entries: ${JSON.stringify(nested.metadata)}`);
+  assert(segmentsTextOf(nested) === "Nested", label, `Shift+Tab altered the item content: ${JSON.stringify(nested.segments)}`);
+  assert(await sameComponent(page), label, "nested outdent remounted the component");
+  await remountCapture(page, label, "nested outdent");
+  // Path 2: Tab indents o2 under o1, opening a nested run.
+  await page.click('[data-paragraph-id="o2"]');
+  await sleep(300);
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.press("Tab");
+  await sleep(400);
+  displayed = await docOf(page);
+  const indented = displayed.blocks.find((block) => block.paragraphId === "o2");
+  assert(indented !== undefined, label, "indented item lost its identity across Tab");
+  assert(indented.metadata.listDepth === 1, label, `Tab did not indent the item: ${JSON.stringify(indented.metadata)}`);
+  assert(indented.metadata.listRunId !== "o1", label, "nested item kept the parent run");
+  assert(segmentsTextOf(indented) === "Second", label, `Tab altered the item content: ${JSON.stringify(indented.segments)}`);
+  assert(await sameComponent(page), label, "nested indent remounted the component");
+  await remountCapture(page, label, "nested indent");
+  await done(label);
+  ok(label);
+}
+
 // Full-profile composition: a real IME commit inside a heading emits one
 // composition-commit change carrying the composed text, with readiness
 // start/end and a matching capture.
@@ -803,6 +999,94 @@ async function scenarioFullComposerEnter(browser, base) {
   ok(label);
 }
 
+// CL-2F-F-URL item 1: links stay inert in a real browser — plain click,
+// Ctrl/Meta click, middle click and keyboard Enter open nothing (no new
+// tab, no navigation); read-only/disabled mounts render no navigable
+// attributes while the text stays selectable. Capture and no-remount after
+// every path.
+async function scenarioFullLink(browser, base) {
+  const label = "full-link";
+  const { page, done } = await openScenario(browser, base, "full-link");
+  await recordIdentity(page);
+  const urlBefore = page.url();
+  const targetsBefore = (await browser.targets()).length;
+  const assertCalm = async (step, expectSplit = false) => {
+    await sleep(400);
+    const targets = await browser.targets();
+    assert(targets.length === targetsBefore, label, `${step} opened a new tab (${targetsBefore} -> ${targets.length})`);
+    assert(page.url() === urlBefore, label, `${step} navigated the page (${urlBefore} -> ${page.url()})`);
+    const displayed = await docOf(page);
+    const joined = displayed.blocks
+      .map((block) => ((block.kind === "paragraph" ? block.segments : []) ?? [])
+        .map((segment) => segment.text ?? "")
+        .join(""))
+      .join("\n");
+    // Enter legitimately splits the paragraph at the selection left by the
+    // middle click; every other path keeps a single block. Either way no
+    // character may be lost or added.
+    const expected = expectSplit ? joined.replace(/\n/g, "") : joined;
+    assert(expected === "Go there", label, `${step} altered the text: ${JSON.stringify(joined)}`);
+    assert(await sameComponent(page), label, `${step} remounted the component`);
+  };
+  const href = await page.evaluate(() => document.querySelector("a[href]")?.getAttribute("href"));
+  assert(href === "https://example.com/", label, `editable link href missing: ${href}`);
+  // Plain click opens nothing.
+  await page.click("a[href]");
+  await assertCalm("plain click");
+  // Ctrl/Meta click opens nothing.
+  await page.keyboard.down("Control");
+  await page.click("a[href]");
+  await page.keyboard.up("Control");
+  await assertCalm("ctrl click");
+  // Middle click opens nothing.
+  await page.click("a[href]", { button: "middle" });
+  await assertCalm("middle click");
+  // Keyboard Enter on the focused link opens nothing (the paragraph split is
+  // the legitimate editing behavior).
+  await page.evaluate(() => document.querySelector("a[href]")?.focus());
+  await sleep(200);
+  await page.keyboard.press("Enter");
+  await assertCalm("keyboard enter", true);
+  await done(label);
+  ok(`${label} editable`);
+
+  // Read-only: no navigable attribute rendered, text selectable, clicks inert.
+  {
+    const read = await openScenario(browser, base, "full-link", "document", "&editable=0");
+    const readUrlBefore = read.page.url();
+    const readTargetsBefore = (await browser.targets()).length;
+    const roHref = await read.page.evaluate(() => document.querySelector("a[href]"));
+    assert(roHref === null, label, "read-only mount rendered a navigable href");
+    const roText = await read.page.evaluate(() => document.querySelector("a")?.textContent);
+    assert(roText === "there", label, `read-only link text lost: ${roText}`);
+    await read.page.click("a");
+    await sleep(400);
+    assert(read.page.url() === readUrlBefore, label, "read-only click navigated the page");
+    assert((await browser.targets()).length === readTargetsBefore, label, "read-only click opened a new tab");
+    const roDoc = await docOf(read.page);
+    assert(roDoc.blocks.length >= 1, label, "read-only capture lost the document");
+    await read.done(`${label} readonly`);
+    ok(`${label} readonly`);
+  }
+
+  // Disabled: same inert rendering and behavior.
+  {
+    const dis = await openScenario(browser, base, "full-link", "document", "&disabled=1");
+    const disUrlBefore = dis.page.url();
+    const disTargetsBefore = (await browser.targets()).length;
+    const disHref = await dis.page.evaluate(() => document.querySelector("a[href]"));
+    assert(disHref === null, label, "disabled mount rendered a navigable href");
+    const disText = await dis.page.evaluate(() => document.querySelector("a")?.textContent);
+    assert(disText === "there", label, `disabled link text lost: ${disText}`);
+    await dis.page.click("a");
+    await sleep(400);
+    assert(dis.page.url() === disUrlBefore, label, "disabled click navigated the page");
+    assert((await browser.targets()).length === disTargetsBefore, label, "disabled click opened a new tab");
+    await dis.done(`${label} disabled`);
+    ok(`${label} disabled`);
+  }
+}
+
 async function main() {
   const chrome = findChrome();
   const { execFileSync } = await import("node:child_process");
@@ -866,8 +1150,11 @@ async function main() {
     await scenarioFullFk3(browser, base);
     await scenarioFullFk4(browser, base);
     await scenarioFullFk4List(browser, base);
+    await scenarioFullFkOrdered(browser, base);
+    await scenarioFullFkNested(browser, base);
     await scenarioFullComposition(browser, base);
     await scenarioFullComposerEnter(browser, base);
+    await scenarioFullLink(browser, base);
   } finally {
     await cleanup();
   }
