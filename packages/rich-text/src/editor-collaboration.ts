@@ -74,6 +74,7 @@ interface SessionRecord {
   ydoc: Y.Doc;
   awareness: Awareness;
   fields: Set<string>;
+  holders: Map<string, number>;
 }
 
 function requireCoordinate(value: string, name: string): void {
@@ -114,7 +115,7 @@ export function createInMemoryTestDoubleProvider(): {
       let record = sessions.get(key);
       if (record === undefined) {
         const ydoc = new Y.Doc();
-        record = { ydoc, awareness: new Awareness(ydoc), fields: new Set(fieldKeys) };
+        record = { ydoc, awareness: new Awareness(ydoc), fields: new Set(fieldKeys), holders: new Map() };
         sessions.set(key, record);
       } else {
         for (const fieldKey of fieldKeys) record.fields.add(fieldKey);
@@ -129,6 +130,7 @@ export function createInMemoryTestDoubleProvider(): {
           if (!live.fields.has(identity.fieldKey)) {
             throw new Error("rich-text.binding-identity: different field fails closed (R-BIND-1)");
           }
+          live.holders.set(identity.fieldKey, (live.holders.get(identity.fieldKey) ?? 0) + 1);
           return {
             identity: { ...identity },
             text: live.ydoc.getText(fieldTextName(identity.fieldKey)),
@@ -141,6 +143,15 @@ export function createInMemoryTestDoubleProvider(): {
           if (identity.documentId !== documentId || identity.sessionId !== sessionId) {
             throw new Error("rich-text.binding-identity: different document/session fails closed (R-BIND-1)");
           }
+          if (!live.fields.has(identity.fieldKey)) {
+            throw new Error("rich-text.binding-identity: different field fails closed (R-BIND-1)");
+          }
+          const holders = live.holders.get(identity.fieldKey) ?? 0;
+          if (holders > 1) {
+            live.holders.set(identity.fieldKey, holders - 1);
+            return;
+          }
+          live.holders.delete(identity.fieldKey);
           live.fields.delete(identity.fieldKey);
           if (live.fields.size === 0) sessions.delete(key);
         },

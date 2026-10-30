@@ -62,29 +62,34 @@ function fullFixture(): RichTextDocument {
       // F03/F04/F05 lists: bullet, ordered with start/type, nested, mixed, continuation
       para("p:bullet-1", [textRun("bullet one")], {
         listKind: "bullet", listDepth: 0, listItemId: "p:bullet-1", listRunId: "p:bullet-1", listTight: true,
+        containerOrder: ["list"],
       }),
       para("p:bullet-2", [textRun("bullet two")], {
         listKind: "bullet", listDepth: 0, listItemId: "p:bullet-2", listRunId: "p:bullet-1",
+        containerOrder: ["list"],
       }),
       para("p:ordered-1", [textRun("ordered one")], {
         listKind: "ordered", listDepth: 0, listItemId: "p:ordered-1", listRunId: "p:ordered-1",
-        orderedStart: 3, orderedType: "a", listTight: true,
+        orderedStart: 3, orderedType: "a", listTight: true, containerOrder: ["list"],
       }),
       para("p:ordered-2", [textRun("ordered two")], {
         listKind: "ordered", listDepth: 0, listItemId: "p:ordered-2", listRunId: "p:ordered-1",
+        containerOrder: ["list"],
       }),
       para("p:nested", [textRun("nested")], {
         listKind: "bullet", listDepth: 1, listItemId: "p:nested", listRunId: "p:bullet-1",
+        containerOrder: ["list", "list"],
       }),
       para("p:continuation", [textRun("continuation")], {
         listKind: "bullet", listDepth: 0, listItemId: "p:bullet-2", listRunId: "p:bullet-1",
+        containerOrder: ["list"],
       }),
       // F08 blockquotes (single, nested, with continuation)
       para("p:quote-1", [textRun("quoted")], {
         blockquoteDepth: 1, containerOrder: ["quote"],
       }),
       para("p:quote-2", [textRun("deep quote")], {
-        blockquoteDepth: 2, containerOrder: ["quote"],
+        blockquoteDepth: 2, containerOrder: ["quote", "quote"],
       }),
       para("p:quote-list", [textRun("quoted list")], {
         listKind: "bullet", listDepth: 0, listItemId: "p:quote-list", listRunId: "p:quote-list",
@@ -169,6 +174,7 @@ describe("CL-3-11 projection fidelity, full", () => {
       listDepth: 1,
       listItemId: "p:bullet-2",
       listRunId: "p:bullet-1",
+      containerOrder: ["list", "list"],
     });
     textB.insert(1, "!");
     Y.applyUpdate(replicaA, Y.encodeStateAsUpdate(replicaB));
@@ -221,10 +227,11 @@ describe("CL-3-11 projection fidelity, full", () => {
       blocks: [
         para("p:run", [textRun("one")], {
           listKind: "ordered", listDepth: 0, listItemId: "p:run", listRunId: "p:run",
-          orderedStart: 1, orderedType: "1", listTight: true,
+          orderedStart: 1, orderedType: "1", listTight: true, containerOrder: ["list"],
         }),
         para("p:member", [textRun("two")], {
           listKind: "ordered", listDepth: 0, listItemId: "p:member", listRunId: "p:run",
+          containerOrder: ["list"],
         }),
       ],
     };
@@ -244,6 +251,7 @@ describe("CL-3-11 projection fidelity, full", () => {
       orderedStart: 5,
       orderedType: "a",
       listTight: false,
+      containerOrder: ["list"],
     });
     (replicaB.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>).set("p:member", {
       ...canonicalPlainMetadata(),
@@ -252,6 +260,7 @@ describe("CL-3-11 projection fidelity, full", () => {
       listDepth: 2,
       listItemId: "p:member",
       listRunId: "p:run",
+      containerOrder: ["list", "list", "list"],
     });
     Y.applyUpdate(replicaA, Y.encodeStateAsUpdate(replicaB));
     Y.applyUpdate(replicaB, Y.encodeStateAsUpdate(replicaA));
@@ -282,13 +291,15 @@ describe("CL-3-11 projection fidelity, full", () => {
         para("p:intro", [textRun("intro")]),
         para("p:run", [textRun("one")], {
           listKind: "ordered", listDepth: 0, listItemId: "p:run", listRunId: "p:run",
-          orderedStart: 7, orderedType: "I", listTight: true,
+          orderedStart: 7, orderedType: "I", listTight: true, containerOrder: ["list"],
         }),
         para("p:m2", [textRun("two")], {
           listKind: "ordered", listDepth: 0, listItemId: "p:m2", listRunId: "p:run",
+          containerOrder: ["list"],
         }),
         para("p:m3", [textRun("three")], {
           listKind: "ordered", listDepth: 0, listItemId: "p:m3", listRunId: "p:run",
+          containerOrder: ["list"],
         }),
       ],
     };
@@ -330,5 +341,204 @@ describe("CL-3-11 projection fidelity, full", () => {
     const reseeded = seedFresh(captured.document);
     const recaptured = captureDocumentFromField(reseeded.ytext, reseeded.meta, "ds.markdown.full@1");
     expect(recaptured.document.retainedRunMetadata?.["p:run"]?.orderedStart).toBe(7);
+  });
+
+  it("CL-3-11-B6 wrappers and positions agree at PM level in both delivery orders", async () => {
+    const { createRichTextEditor } = await import("./editor.js");
+    const schemaEd = await createRichTextEditor({
+      document: {
+        format: "ds.markdown.full@1",
+        blocks: [
+          { paragraphId: "p:s", kind: "paragraph", metadata: { ...canonicalPlainMetadata() }, segments: [{ type: "text", text: "x", marks: {} }] } as never,
+        ],
+      },
+      profile: "full",
+      messages: { editorLabel: "L", placeholder: "P", preservedBlockLabel: "K-{kind}", externalConflictLabel: "C" },
+      allocateId: () => "test:schema:1",
+      element: globalThis.document.createElement("div"),
+    });
+    const schema = schemaEd.view.state.schema;
+    schemaEd.destroy();
+    const { yTextToPmDoc } = await import("./collab-projection.js");
+    const fixture = fullFixture();
+    const auth = seedFresh(fixture);
+    // Two concurrent pairs: same edits, opposite sync orders.
+    const setupPair = (): { a: Y.Doc; b: Y.Doc } => {
+      const a = new Y.Doc();
+      const b = new Y.Doc();
+      Y.applyUpdate(a, Y.encodeStateAsUpdate(auth.ydoc));
+      Y.applyUpdate(b, Y.encodeStateAsUpdate(auth.ydoc));
+      (a.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>).set("p:bullet-2", {
+        ...canonicalPlainMetadata(),
+        listKind: "bullet",
+        listDepth: 1,
+        listItemId: "p:bullet-2",
+        listRunId: "p:bullet-1",
+        containerOrder: ["list", "list"],
+      });
+      b.getText(fieldTextName(FIELD)).insert(1, "!");
+      return { a, b };
+    };
+    const pair1 = setupPair();
+    Y.applyUpdate(pair1.a, Y.encodeStateAsUpdate(pair1.b));
+    Y.applyUpdate(pair1.b, Y.encodeStateAsUpdate(pair1.a));
+    const pair2 = setupPair();
+    Y.applyUpdate(pair2.b, Y.encodeStateAsUpdate(pair2.a));
+    Y.applyUpdate(pair2.a, Y.encodeStateAsUpdate(pair2.b));
+    const docs = [pair1.a, pair1.b, pair2.a, pair2.b].map((ydoc) =>
+      yTextToPmDoc(
+        ydoc.getText(fieldTextName(FIELD)),
+        ydoc.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+        "ds.markdown.full@1",
+        schema,
+      ),
+    );
+    for (let index = 1; index < docs.length; index += 1) {
+      expect(docs[index]?.eq(docs[0] as never)).toBe(true);
+    }
+    // Wrapper/position spot check at PM level: the sunk member sits nested.
+    const json = JSON.stringify(docs[0]?.toJSON());
+    expect(json).toContain("bulletList");
+    expect(json).toContain("p:bullet-2");
+  });
+
+  it("CL-3-11-B6 code with leading and trailing LF converges at PM level", async () => {
+    const { createRichTextEditor } = await import("./editor.js");
+    const schemaEd = await createRichTextEditor({
+      document: {
+        format: "ds.markdown.full@1",
+        blocks: [
+          { paragraphId: "p:s", kind: "paragraph", metadata: { ...canonicalPlainMetadata() }, segments: [{ type: "text", text: "x", marks: {} }] } as never,
+        ],
+      },
+      profile: "full",
+      messages: { editorLabel: "L", placeholder: "P", preservedBlockLabel: "K-{kind}", externalConflictLabel: "C" },
+      allocateId: () => "test:schema:2",
+      element: globalThis.document.createElement("div"),
+    });
+    const schema = schemaEd.view.state.schema;
+    schemaEd.destroy();
+    const { yTextToPmDoc } = await import("./collab-projection.js");
+    const doc: RichTextDocument = {
+      format: "ds.markdown.full@1",
+      blocks: [
+        {
+          paragraphId: "p:code",
+          kind: "paragraph",
+          metadata: { ...canonicalPlainMetadata(), blockKind: "codeBlock", codeLanguage: "ts" },
+          segments: [
+            { type: "hardBreak" },
+            { type: "text", text: "const a = 1;", marks: {} },
+            { type: "hardBreak" },
+          ],
+        } as never,
+      ],
+    };
+    const auth = seedFresh(doc);
+    const replicaA = new Y.Doc();
+    const replicaB = new Y.Doc();
+    Y.applyUpdate(replicaA, Y.encodeStateAsUpdate(auth.ydoc));
+    Y.applyUpdate(replicaB, Y.encodeStateAsUpdate(auth.ydoc));
+    replicaA.getText(fieldTextName(FIELD)).insert(3, "// ");
+    replicaB.getText(fieldTextName(FIELD)).insert(5, "X");
+    Y.applyUpdate(replicaA, Y.encodeStateAsUpdate(replicaB));
+    Y.applyUpdate(replicaB, Y.encodeStateAsUpdate(replicaA));
+    const pmA = yTextToPmDoc(
+      replicaA.getText(fieldTextName(FIELD)),
+      replicaA.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+      "ds.markdown.full@1",
+      schema,
+    );
+    const pmB = yTextToPmDoc(
+      replicaB.getText(fieldTextName(FIELD)),
+      replicaB.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+      "ds.markdown.full@1",
+      schema,
+    );
+    expect(pmA.eq(pmB)).toBe(true);
+    expect(JSON.stringify(pmA.toJSON())).toContain("codeBlock");
+  });
+
+  it("CL-3-11-B6 opener delete promotes the first survivor at PM level", async () => {
+    const { createRichTextEditor } = await import("./editor.js");
+    const schemaEd = await createRichTextEditor({
+      document: {
+        format: "ds.markdown.full@1",
+        blocks: [
+          { paragraphId: "p:s", kind: "paragraph", metadata: { ...canonicalPlainMetadata() }, segments: [{ type: "text", text: "x", marks: {} }] } as never,
+        ],
+      },
+      profile: "full",
+      messages: { editorLabel: "L", placeholder: "P", preservedBlockLabel: "K-{kind}", externalConflictLabel: "C" },
+      allocateId: () => "test:schema:3",
+      element: globalThis.document.createElement("div"),
+    });
+    const schema = schemaEd.view.state.schema;
+    schemaEd.destroy();
+    const { yTextToPmDoc } = await import("./collab-projection.js");
+    const doc: RichTextDocument = {
+      format: "ds.markdown.full@1",
+      blocks: [
+        { paragraphId: "p:intro", kind: "paragraph", segments: [{ type: "text", text: "intro", marks: {} }] } as never,
+        {
+          paragraphId: "p:run", kind: "paragraph",
+          metadata: {
+            ...canonicalPlainMetadata(), listKind: "ordered", listDepth: 0, listItemId: "p:run",
+            listRunId: "p:run", orderedStart: 7, orderedType: "I", listTight: true, containerOrder: ["list"],
+          },
+          segments: [{ type: "text", text: "one", marks: {} }],
+        } as never,
+        {
+          paragraphId: "p:m2", kind: "paragraph",
+          metadata: {
+            ...canonicalPlainMetadata(), listKind: "ordered", listDepth: 0, listItemId: "p:m2",
+            listRunId: "p:run", containerOrder: ["list"],
+          },
+          segments: [{ type: "text", text: "two", marks: {} }],
+        } as never,
+      ],
+    };
+    const { ydoc, ytext } = seedFresh(doc);
+    let sepIndex = -1;
+    let linear = 0;
+    for (const op of ytext.toDelta() as Array<{ insert?: unknown }>) {
+      if (typeof op.insert === "object" && op.insert !== null) {
+        if (sepIndex === -1 && linear > 0) {
+          const payload = (op.insert as { separator?: { paragraphId?: string } }).separator;
+          if (payload?.paragraphId === "p:run") sepIndex = linear;
+        }
+        linear += 1;
+      } else if (typeof op.insert === "string") {
+        linear += (op.insert as string).length;
+      } else {
+        linear += 1;
+      }
+    }
+    expect(sepIndex).toBeGreaterThan(0);
+    ydoc.transact(() => {
+      ytext.delete(sepIndex, 1);
+    });
+    const pm = yTextToPmDoc(
+      ytext,
+      ydoc.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+      "ds.markdown.full@1",
+      schema,
+    );
+    const json = pm.toJSON() as { content?: Array<{ content?: Array<{ content?: Array<{ attrs?: { paragraphId?: string } }> }> }> };
+    const ids: string[] = [];
+    const walk = (node: unknown): void => {
+      if (Array.isArray(node)) {
+        for (const entry of node) walk(entry);
+        return;
+      }
+      if (typeof node === "object" && node !== null) {
+        const record = node as { type?: string; attrs?: { paragraphId?: string }; content?: unknown };
+        if (record.attrs?.paragraphId !== undefined) ids.push(record.attrs.paragraphId);
+        if (record.content !== undefined) walk(record.content);
+      }
+    };
+    walk(json.content);
+    expect(ids).toContain("p:m2");
+    expect(ids).not.toContain("p:run");
   });
 });
