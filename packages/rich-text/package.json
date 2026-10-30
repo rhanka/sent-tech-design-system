@@ -46,7 +46,9 @@
     "@tiptap/extension-text": "^3.0.0",
     "@tiptap/extension-underline": "^3.0.0",
     "@tiptap/extensions": "^3.0.0",
-    "@tiptap/pm": "^3.0.0"
+    "@tiptap/pm": "^3.0.0",
+    "y-protocols": "^1.0.7",
+    "yjs": "^13.6.33"
   },
   "dependencies": {
     "@tiptap/markdown": "^3.32.0"
