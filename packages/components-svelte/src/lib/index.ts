@@ -540,5 +540,3 @@ export { default as Dashboard } from "./Dashboard.svelte";
 export type { DashboardProps, DashboardNavItem, DashboardKpi } from "./Dashboard.svelte";
 export { default as Wizard } from "./Wizard.svelte";
 export type { WizardProps, WizardStep } from "./Wizard.svelte";
-export { default as LockPresenceBadge } from "./presence-badge/LockPresenceBadge.svelte";
-export type { LockPresenceBadgeProps } from "./presence-badge/LockPresenceBadge.svelte";
