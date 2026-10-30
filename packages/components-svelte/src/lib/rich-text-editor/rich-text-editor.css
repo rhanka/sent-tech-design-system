@@ -96,3 +96,20 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* CL-2 live composition seam (§6.4): plain facts line beside the editor
+   while CL-1B owns the full badge. Plain text and a native button only. */
+.st-rich-text-editor__live {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--st-component-richTextEditor-gap, var(--st-spacing-2, 0.5rem));
+  color: var(
+    --st-component-richTextEditor-liveText,
+    var(--st-semantic-text-secondary)
+  );
+}
+
+.st-rich-text-editor__unlock:disabled {
+  cursor: not-allowed;
+}

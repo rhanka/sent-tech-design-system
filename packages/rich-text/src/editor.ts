@@ -46,10 +46,11 @@
 //   or replace content with both selection ends re-anchored).
 // - `captureDocument()` resolves immediately when ready; during composition
 //   it waits for the commit and resolves once with the committed document. A
-//   capture still pending at `destroy()` rejects once with the neutral
-//   capture error; calls after destruction return an already-rejected
-//   promise; `readiness()` after destruction is `{ composing: false, ready:
-//   false }`.
+//   revocation discards the composition and rejects a pending capture once
+//   with the neutral error without destroying the session; a capture still
+//   pending at `destroy()` rejects once with the same error; calls after
+//   destruction return an already-rejected promise; `readiness()` after
+//   destruction is `{ composing: false, ready: false }`.
 
 import { Editor } from "@tiptap/core";
 import type { JSONContent } from "@tiptap/core";
@@ -73,6 +74,7 @@ import type {
   RichTextUnsupportedPasteEvent,
 } from "./model.js";
 import type { RichTextMessages } from "./messages.js";
+import type { FieldBindingIdentity } from "./collaboration.js";
 import {
   copyRichTextDocument,
   createCaptureTracker,
@@ -142,6 +144,13 @@ export interface RichTextEditorOptions extends RichTextEditorCallbacks {
   /** Mount element. Defaults to a detached element; jsdom and browsers both
       satisfy the ProseMirror `document` requirement. */
   element?: HTMLElement;
+  /** CL-2 collaboration slot (§6.3, seam 3): the full binding identity of the
+      live field this editor is bound to, if any. Empty by default: a
+      controlled editor carries `null` and never loads the collaboration
+      graph. The slot is identity only — no live session, no shared state, no
+      provider call happens here; the Yjs-backed binding (CL-3,
+      `editor-collaboration.ts`) resolves sessions against this identity. */
+  collaborationBinding?: FieldBindingIdentity | null;
 }
 
 export interface RichTextEditor extends RichTextEditorHandle {
@@ -171,6 +180,9 @@ export interface RichTextEditor extends RichTextEditorHandle {
   copyToPayload(paragraphIds: readonly string[]): PastePayload;
   paste(payload: PastePayload): void;
   applyExternalUpdate(next: RichTextDocument): void;
+  /** The collaboration binding this editor was constructed with (CL-2 §6.3
+      seam 3), or `null` for a controlled editor. Identity only. */
+  getBinding(): FieldBindingIdentity | null;
   destroy(): void;
 }
 
@@ -195,6 +207,11 @@ export function createRichTextEditor(
   );
   let editable = options.editable ?? true;
   let disabled = options.disabled ?? false;
+  // CL-2 §6.3 seam 3: the slot is identity only. The value is stored and
+  // re-readable; nothing here opens a session, touches shared state or calls
+  // a provider, so controlled construction never loads the collaboration
+  // graph (asserted in `src/cl2-seams.test.ts`).
+  const binding: FieldBindingIdentity | null = options.collaborationBinding ?? null;
   const callbacks: RichTextEditorCallbacks = {
     onChange: options.onChange,
     onExternalConflict: options.onExternalConflict,
@@ -1272,11 +1289,47 @@ export function createRichTextEditor(
   // jsdom exercises this wiring through synthetic view-level
   // `compositionstart`/`compositionend` events; the real-IME witness stays
   // in RT-1 (browser, CDP `Input.imeSetComposition`).
+  //
+  // IME-LOCK-1 clauses 2/3/5: a host-driven revocation (`setEditable(false)`
+  // or `setDisabled(true)`) mid-composition abandons the composition. The
+  // flag is set on the transition while composing; `handleCompositionEnd`
+  // then discards instead of committing: no `composition-commit` carries the
+  // uncommitted text, the display reverts to the revision recorded at
+  // composition start, and nothing is emitted after revocation.
+  //
+  // Committed-revision restoration: the pinned revision is the live
+  // ProseMirror content plus its wire/flag records at composition start.
+  // Local rollback restores both directly — never a Markdown reparse and
+  // never a seed-fresh classification — while the pre-composition
+  // acknowledgement state stays untouched.
+  let compositionBaseDoc: ProseMirrorNode | null = null;
+  let compositionBaseSeeds: {
+    texts: Map<string, string>;
+    touched: Set<string>;
+    preserved: Map<string, { hasRaw: boolean; hasKind: boolean }>;
+    versionTexts: Map<string, string>;
+    versionFlagTexts: Map<string, boolean>;
+  } | null = null;
+  let compositionRevoked = false;
   const handleCompositionStart = (): void => {
     if (tracker.destroyed || !isActive()) return;
     domComposing = true;
     composingAffected.clear();
     composingChanged = false;
+    compositionRevoked = false;
+    // Recording read first so the version cache holds the committed
+    // revision's exact wire and flag.
+    displayedDocument();
+    compositionBaseDoc = editor.state.doc;
+    compositionBaseSeeds = {
+      texts: new Map(seeds.texts),
+      touched: new Set(seeds.touched),
+      preserved: new Map(
+        [...seeds.preserved].map(([key, value]) => [key, { ...value }] as const),
+      ),
+      versionTexts: new Map(seeds.versionTexts),
+      versionFlagTexts: new Map(seeds.versionFlagTexts),
+    };
     tracker.setComposing(true, currentCaptureResult);
   };
   const handleCompositionEnd = (): void => {
@@ -1300,6 +1353,87 @@ export function createRichTextEditor(
     } catch {
       // An observer flush never blocks the commit.
     }
+    // A revocation mid-composition abandons it (IME-LOCK-1 clauses 3/5):
+    // only the uncommitted composition text is discarded — the display
+    // reverts to the revision recorded at composition start while the
+    // pre-composition acknowledgement state (`lastAcknowledged`,
+    // `hasUnacknowledgedLocalRevision`) is preserved — and no
+    // `composition-commit` is emitted. A deferred external arrival is still
+    // re-evaluated once under §5.6, against the reverted revision.
+    if (compositionRevoked) {
+      compositionRevoked = false;
+      const baseDoc = compositionBaseDoc;
+      const baseSeeds = compositionBaseSeeds;
+      compositionBaseDoc = null;
+      compositionBaseSeeds = null;
+      if (baseDoc !== null && baseSeeds !== null) {
+        suppressEmit = true;
+        try {
+          const restore = editor.state.tr.replaceWith(
+            0,
+            editor.state.doc.content.size,
+            baseDoc,
+          );
+          restore.setMeta("addToHistory", false);
+          restore.setMeta(PRESERVED_REPLACE_META, true);
+          editor.view.dispatch(restore);
+          // Restore the committed wire/flag records over any touched
+          // marking the flush and the revert dispatch just produced.
+          seeds.texts.clear();
+          for (const [key, value] of baseSeeds.texts) seeds.texts.set(key, value);
+          seeds.touched.clear();
+          for (const id of baseSeeds.touched) seeds.touched.add(id);
+          seeds.preserved.clear();
+          for (const [key, value] of baseSeeds.preserved) {
+            seeds.preserved.set(key, { ...value });
+          }
+          seeds.versionTexts.clear();
+          for (const [key, value] of baseSeeds.versionTexts) {
+            seeds.versionTexts.set(key, value);
+          }
+          seeds.versionFlagTexts.clear();
+          for (const [key, value] of baseSeeds.versionFlagTexts) {
+            seeds.versionFlagTexts.set(key, value);
+          }
+        } finally {
+          suppressEmit = false;
+        }
+      }
+      // Drop the pending-commit bookkeeping once the revert has landed:
+      // the flush above and the revert itself dispatch while still
+      // composing, which re-arms the accumulators — a later
+      // `compositionend` must never commit the abandoned text.
+      composingAffected.clear();
+      composingChanged = false;
+      // PM skips its own `compositionend` while the view is non-editable,
+      // so its `composing` flag would stick forever and suppress every
+      // later gesture. The end event arrived: clear the flag the way PM's
+      // own handler does, through the view's input state.
+      const input = (
+        editor.view as unknown as { input?: { composing?: boolean } }
+      ).input;
+      if (input !== undefined && input !== null && input.composing === true) {
+        input.composing = false;
+      }
+      // Clause 4: pending captures reject exactly once with the neutral
+      // error through a cancellation that leaves the session alive —
+      // witnessed separately from the destroy path. The flag closes after,
+      // with no pending left to resolve.
+      tracker.cancelPendingCaptures();
+      // Close the composition state BEFORE re-evaluating the deferred
+      // arrival: the settle dispatches its own replacement transaction,
+      // which must never be misread as pending composition work by the
+      // next `compositionend`.
+      tracker.setComposing(false, currentCaptureResult);
+      if (deferredExternal !== null && !editor.view.composing) {
+        const pending = deferredExternal;
+        deferredExternal = null;
+        settleExternal(pending);
+      }
+      return;
+    }
+    compositionBaseDoc = null;
+    compositionBaseSeeds = null;
     // §5.6 order: exactly one `composition-commit` first, then the deferred
     // external re-evaluation, then readiness opening and capture settlement.
     const changed = composingChanged;
@@ -1316,6 +1450,18 @@ export function createRichTextEditor(
       settleExternal(pending);
     }
     tracker.setComposing(false, currentCaptureResult);
+  };
+  // IME-LOCK-1 clause 2: revocation applies at once, without remount, even
+  // mid-composition. When the surface goes inert while composing, the open
+  // composition is marked revoked so its end discards instead of committing.
+  const flagRevokedIfComposing = (): void => {
+    if (tracker.composing || domComposing || editor.view.composing) {
+      compositionRevoked = true;
+    }
+  };
+  const markRevokedComposition = (): void => {
+    if (tracker.destroyed || isActive()) return;
+    flagRevokedIfComposing();
   };
   const domListeners: { type: string; handler: EventListener }[] = [];
   const listenDom = (type: string, handler: () => void): void => {
@@ -1355,14 +1501,22 @@ export function createRichTextEditor(
 
     setEditable(next: boolean): void {
       if (tracker.destroyed) return;
+      // Mark first: flipping editability can synchronously tear down the
+      // browser composition (a teardown `compositionend` must discard, never
+      // commit the uncommitted text — IME-LOCK-1 clauses 3/5).
+      if (!next) flagRevokedIfComposing();
       editable = next;
       editor.setEditable(isActive());
+      markRevokedComposition();
     },
 
     setDisabled(next: boolean): void {
       if (tracker.destroyed) return;
+      // Same teardown race as `setEditable`: mark before flipping.
+      if (next) flagRevokedIfComposing();
       disabled = next;
       editor.setEditable(isActive());
+      markRevokedComposition();
     },
 
     setPlaceholder(text: string, untranslated: string | null): void {
@@ -1596,6 +1750,10 @@ export function createRichTextEditor(
       const text = payload?.text ?? "";
       const origin = internalPayloads.has(payload) ? "internal" : "external";
       runPastePolicy(editor.view, html, text, origin);
+    },
+
+    getBinding(): FieldBindingIdentity | null {
+      return binding;
     },
 
     applyExternalUpdate(next: RichTextDocument): void {

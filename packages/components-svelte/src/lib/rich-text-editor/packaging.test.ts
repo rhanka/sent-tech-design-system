@@ -135,11 +135,12 @@ function resolveGraph(roots: string[]): ModuleGraph {
   return { files: [...seen], edges };
 }
 
-/** Source graph reachable from the subpath entry. */
+/** Source graph reachable from the subpath entry (document + composer). */
 function adapterGraph(): ModuleGraph {
   return resolveGraph([
     "src/lib/rich-text-editor/index.ts",
     "src/lib/rich-text-editor/RichTextEditor.svelte",
+    "src/lib/rich-text-editor/ComposerEditor.svelte",
   ]);
 }
 
@@ -391,6 +392,8 @@ describe("subpath entry (RT-1 half of RED-P)", () => {
     );
     expect(text).toContain("RichTextEditorProps");
     expect(text).toContain("RichTextEditorHandle");
+    expect(text).toContain("ComposerEditorProps");
+    expect(text).toContain("ComposerEditorHandle");
   });
 
   it("the subpath entry never reaches the barrel", () => {
