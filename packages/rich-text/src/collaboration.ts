@@ -1954,3 +1954,56 @@ export function validateAgentReadRequest(
   return { ok: true };
 }
 
+
+/** R-API-2 effective-editable input (spec §6.2). The host computes exactly
+    one editing fact per surface mode and the DS enforces it locally:
+    `effectiveEditable = binding ? (admittedEditable && !disabled) :
+    (l0Projection && !disabled)`. This helper is that computation as pure
+    data so both the host adapter and the Svelte surface share it:
+    - Live / L2 surfaces (`binding` present): admission decides. A lock
+      snapshot — including one held by another actor — never makes an
+      admitted L2 field read-only; it stays renderable information (badge).
+    - Controlled / L0 surfaces (no binding): the L0 lock snapshot projects
+      onto the editing fact. Holder === current actor and unheld units stay
+      editable; a lock held by another actor forces read-only.
+    Expiry is evaluated only against the injected `nowIso` clock (never a
+    clock read); without it a dated lock counts as active (fail closed), so a
+    host holding an expired lock passes `lock: null`. Without an `actorId` a
+    held lock counts as held-by-other (fail closed). Pure. */
+export interface EffectiveEditableInput {
+  /** Full binding identity when the surface is live (L2). Absent or null ⇒
+      controlled (L0) surface. */
+  binding?: FieldBindingIdentity | null;
+  /** Host-admitted editing fact: the admission outcome in L2, the L0
+      projection or the direct prop on controlled surfaces. Defaults true. */
+  editable?: boolean;
+  /** L0 lock snapshot. Information only when `binding` is present; it drives
+      inertness only on controlled surfaces. */
+  lock?: LockSnapshot | null;
+  /** Current actor identity for the holder comparison. */
+  actorId?: string | null;
+  /** Form-disabled wins over every mode. */
+  disabled?: boolean;
+  /** Injected clock for expiry, ISO-8601. Null or absent ⇒ dated locks count
+      as active. */
+  nowIso?: string | null;
+}
+
+/** R-API-2 effective-editable computation (spec §6.2). Pure. */
+export function computeEffectiveEditable(input: EffectiveEditableInput): boolean {
+  if (input.disabled === true) return false;
+  const editable = input.editable ?? true;
+  if (input.binding !== undefined && input.binding !== null) return editable;
+  const lock = input.lock ?? null;
+  if (lock === null || lock.holder === null) return editable;
+  const active =
+    lock.expiresAt === null ||
+    input.nowIso === undefined ||
+    input.nowIso === null ||
+    !isLockExpired(lock, input.nowIso);
+  if (!active) return editable;
+  if (input.actorId !== undefined && input.actorId !== null && lock.holder.actorId === input.actorId) {
+    return editable;
+  }
+  return false;
+}

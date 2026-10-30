@@ -112,6 +112,11 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     expect(pureEntryGraph()).toContain("collaboration.ts");
   });
 
+  it("the pure entry graph carries the CL-2 seams (no editor runtime)", () => {
+    expect(pureEntryGraph()).toContain("composer-document.ts");
+    expect(pureEntryGraph()).toContain("messages.ts");
+  });
+
   it("the built pure entry exposes pure helpers and no editor factory or codec", async () => {
     const built = (await import(
       resolve(SRC_DIR, "../dist/index.js")
@@ -125,6 +130,12 @@ describe("core entry import (RT-0 half of RED-P)", () => {
     expect(typeof built["validateAgentPatch"]).toBe("function");
     expect(typeof built["validateAgentReadRequest"]).toBe("function");
     expect(typeof built["validateCollaborationColor"]).toBe("function");
+    expect(typeof built["computeEffectiveEditable"]).toBe("function");
+    expect(typeof built["composerDocumentFromText"]).toBe("function");
+    expect(typeof built["composerTextFromDocument"]).toBe("function");
+    expect(typeof built["splitComposerText"]).toBe("function");
+    expect(typeof built["joinComposerText"]).toBe("function");
+    expect(typeof built["formatCollabUntranslatedMarker"]).toBe("function");
     expect(typeof built["validateFullBlockMetadata"]).toBe("function");
     expect(typeof built["isAllowedHref"]).toBe("function");
     expect(typeof built["isLockExpired"]).toBe("function");

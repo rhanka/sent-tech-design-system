@@ -174,6 +174,10 @@ export interface CaptureTracker {
   capture(
     current: () => RichTextCaptureResult,
   ): Promise<RichTextCaptureResult>;
+  /** Revocation cancellation (IME-LOCK-1 clause 4): reject every pending
+      capture exactly once with the neutral error without destroying the
+      session. The composing flag is untouched; the caller closes it after. */
+  cancelPendingCaptures(): void;
   destroy(): void;
 }
 
@@ -233,6 +237,14 @@ export function createCaptureTracker(callbacks?: {
         });
       }
       return Promise.resolve(copyRichTextCaptureResult(current()));
+    },
+    cancelPendingCaptures(): void {
+      if (destroyed) return;
+      const waiting = pending;
+      pending = [];
+      for (const capture of waiting) {
+        capture.reject(createCaptureUnavailableError());
+      }
     },
     destroy(): void {
       if (destroyed) return;

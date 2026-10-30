@@ -120,6 +120,45 @@ paragraph's Markdown goes through `@tiptap/markdown` per paragraph only.
 Unedited paragraphs keep the exact host-segmented slice that entered, so no
 block-content normalisation can manufacture false amendments.
 
+## CL-2 delta note (FE-2 seams)
+
+Canvas-live CL-2 (editor integration: L0 projection, live seams, composer
+surface) lands in three places: the adapter surface of spec §6.2 (the Svelte
+`RichTextEditor` beside the editor: `provider` / `binding` / `actor` / `lock`
+/ `presence` / `capabilities` props plus the `collab.*` message keys, with
+the R-API-2 `computeEffectiveEditable` computation shared from this entry),
+the §6.2.1 composer surface (`src/composer-document.ts` here, the
+`ComposerEditor` Svelte surface beside it), and the three §6.3 seams below.
+The `LiveSessionBindingSource` contract (Yjs-backed, §5.7) is intentionally
+absent: it arrives with the CL-3 Yjs binding, which resolves live sessions
+against the identity-only `collaborationBinding` slot. The `profile` prop is
+accepted and pinned to the P0 path; `full` arrives with CL-2F. The full badge
+is CL-1B's; CL-2 renders only the composition seam (lock/presence facts as
+injected text, never driving `editable`).
+
+1. Identity discipline — the allocator injection point is the single
+   identity source in both modes. The only `crypto.randomUUID()` call site
+   is the `defaultAllocateId` factory (non-Focus hosts only); no session
+   path (`editor*.ts`) mints identities. The composer reuses the same rule:
+   its identities come from the injected `allocateId` (or a mount-local
+   fallback) and never reach the chat host. Asserted by
+   `src/cl2-seams.test.ts`.
+2. Mode-neutral capture — `captureDocument()` returns `{ document,
+   representability }` as the freeze input whichever mode produced it; no
+   consumer assumes consecutive captures differ by one gesture. Witnessed by
+   an external replacement between two captures yielding a second capture
+   equal to the replacement (`src/cl2-seams.test.ts`).
+3. Empty provider slot — `"./editor"` accepts an optional identity-only
+   `collaborationBinding` at construction (`getBinding()`; `null` for
+   controlled editors) and the history extension is factored to the single
+   `createHistoryExtension()` replacement point where the CL-3 `UndoManager`
+   (no ProseMirror history) takes the place of `UndoRedo`. Controlled mode
+   loads no collaboration graph: no Yjs, `y-protocols`, Hocuspocus, Tiptap
+   collaboration extension, socket or framework import in the `editor*.ts`
+   graph (asserted by `src/cl2-seams.test.ts`; the `"."` entry additionally
+   asserts no editor/Yjs/DOM module in `src/packaging.test.ts`, and the
+   offline browser dossier asserts the built harness provider-free).
+
 ## Scripts
 
 - `npm --workspace @sentropic/design-system-rich-text run build`
@@ -150,6 +189,14 @@ tsconfig.json`, test `vitest run src`, Tiptap/ProseMirror as peers
   Markdown through `@tiptap/markdown`
 - `src/editor-paste.ts` — paste through the ProseMirror clipboard parser plus
   the Markdown bridge, with whole-refusal classification
+- `src/collaboration.ts` — CL-1M model plus the CL-2 R-API-2
+  `computeEffectiveEditable` computation (pure; also re-exported by `"."`)
+- `src/composer-document.ts` — CL-2 §6.2.1 string ↔ document conversion
+  (pure; blank-line paragraph split, positional identity reuse by the
+  adapter, preserved `raw` verbatim on join)
+- `src/cl2-seams.test.ts`, `src/composer-document.test.ts`,
+  `src/composer-capture.test.ts` — CL-2 witnesses (seams, conversion, core
+  capture over the real core)
 - `src/*.test.ts` — RT-0 tests (document, editor, identity, gesture,
   reactivity, roundtrip, paste, no-network, packaging)
 - `tests/fixtures/p0-corpus.md`, `tests/fixtures/list-corpus.md` — synthetic
