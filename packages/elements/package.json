@@ -10,6 +10,25 @@
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
     "directory": "packages/elements"
   },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./catalog.json": "./catalog.json",
+    "./envelope.json": "./envelope.json",
+    "./schemas/*": "./schemas/*"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.check.json",
+    "test": "vitest run",
+    "catalog:generate": "node dist/generator/main.js",
+    "catalog:check": "node dist/generator/main.js --check"
+  },
   "devDependencies": {
     "@a2ui/web_core": "0.14.0",
     "@sentropic/focus": "0.5.0-rc.9",
