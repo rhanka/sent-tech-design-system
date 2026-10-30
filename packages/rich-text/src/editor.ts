@@ -85,8 +85,9 @@ import {
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
-import { createP0EditorExtensions } from "./editor-extensions.js";
+import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
+import type { LiveSessionBindingSource } from "./editor-collaboration.js";
 import type { AnyExtension } from "@tiptap/core";
 import { FULL_PROFILE_ID } from "./profile.js";
 import type { RichTextProfile } from "./profile.js";
@@ -201,6 +202,12 @@ export interface RichTextEditorOptions extends RichTextEditorCallbacks {
       provider call happens here; the Yjs-backed binding (CL-3,
       `editor-collaboration.ts`) resolves sessions against this identity. */
   collaborationBinding?: FieldBindingIdentity | null;
+  /** CL-3a live source (§5.7, §6.3 seam 3): the host side of the binding,
+      resolving the identity above to the field `Y.Text` plus its metadata
+      map. Present together with `collaborationBinding` iff the editor is
+      bound; a controlled editor carries `null` and never loads the
+      collaboration graph (type-only import: erased at runtime). */
+  collaborationSource?: LiveSessionBindingSource | null;
 }
 
 export interface RichTextEditor extends RichTextEditorHandle {
@@ -320,8 +327,16 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // CL-2 §6.3 seam 3: the slot is identity only. The value is stored and
   // re-readable; nothing here opens a session, touches shared state or calls
   // a provider, so controlled construction never loads the collaboration
-  // graph (asserted in `src/cl2-seams.test.ts`).
+  // graph (asserted in `src/cl2-seams.test.ts`). CL-3a adds the live source
+  // beside the identity: bound iff both are present. The source type is a
+  // type-only import (erased at runtime), so the controlled path still loads
+  // no collaboration module.
   const binding: FieldBindingIdentity | null = options.collaborationBinding ?? null;
+  const bindingSource: LiveSessionBindingSource | null = options.collaborationSource ?? null;
+  // CL-3a bound mode (§4.5): exactly one history mechanism exists in either
+  // mode. The Yjs UndoManager itself lands in CL-3b; until then bound
+  // undo/redo fail closed through the placeholder below.
+  const boundCollaboration = binding !== null && bindingSource !== null;
   const callbacks: RichTextEditorCallbacks = {
     onChange: options.onChange,
     onExternalConflict: options.onExternalConflict,
@@ -395,12 +410,16 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       "rich-text.internal: full extension graph unavailable after lazy load",
     );
   }
+  const baseExtensions: AnyExtension[] = isFull
+    ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
+    : createP0EditorExtensions(extensionOptions);
+  // The single history replacement point (§4.5, CL-3a): when bound, UndoRedo
+  // is removed here and only here; the UndoManager itself is the CL-3b seam.
+  const composedExtensions = boundCollaboration ? removeHistoryExtension(baseExtensions) : baseExtensions;
   const editor = new Editor({
     element,
     extensions: [
-      ...(isFull
-        ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
-        : createP0EditorExtensions(extensionOptions)),
+      ...composedExtensions,
       createParagraphIdentityExtension(
         allocateFresh,
         {
@@ -2252,6 +2271,13 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     },
 
     undo(): void {
+      // CL-3a bound seam (§4.5): no ProseMirror history exists when bound
+      // (UndoRedo removed above) and the UndoManager lands in CL-3b. Fail
+      // closed — the same message as the collaboration placeholder — and
+      // never double-record.
+      if (boundCollaboration) {
+        throw new Error("rich-text.bound-undo-unavailable");
+      }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
       suppressedAffected.clear();
@@ -2273,6 +2299,9 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     },
 
     redo(): void {
+      if (boundCollaboration) {
+        throw new Error("rich-text.bound-undo-unavailable");
+      }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
       suppressedAffected.clear();
