@@ -42,6 +42,12 @@ export interface P0EditorExtensionOptions {
   /** Whether the editor is currently editable. The marker decorates only
       when true, mirroring the placeholder's own `showOnlyWhenEditable`. */
   isEditable: () => boolean;
+  /** Whether this editor mounts a collaboration binding (bound mode). The
+      full profile composes its helper set accordingly: a helper that
+      creates content the projection never sees must stay out, because the
+      bound ProseMirror document is the deterministic projection of the
+      shared state on every replica. */
+  bound: boolean;
 }
 
 /** Paragraph with the opaque identity attribute (spec §5.2): the attribute
@@ -175,6 +181,14 @@ export function createPlaceholderMarkerExtension(
     either mode. */
 export function createHistoryExtension(): AnyExtension {
   return UndoRedo;
+}
+
+/** The single history replacement point (spec §4.5, CL-3a): when bound, the
+    extension composition drops the `UndoRedo` entry returned above. The Yjs
+    `UndoManager` itself lands in CL-3b; until then bound undo/redo fail
+    closed through the placeholder and never double-record. */
+export function removeHistoryExtension(extensions: AnyExtension[]): AnyExtension[] {
+  return extensions.filter((extension) => extension.name !== "undoRedo");
 }
 
 /** Instantiate the P0 extension set in `P0_EXTENSION_NAMES` composition

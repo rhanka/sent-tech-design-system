@@ -227,6 +227,12 @@ const packages = [
       "dist/index.d.ts",
       "dist/editor.js",
       "dist/editor.d.ts",
+      // CL-3a fix 3: the bound factory ships behind its own subpath
+      // (`package.json#exports` `"./editor/collaboration"`), imported by
+      // bound callers; the strict consumer below resolves and imports it
+      // from the packed tarball.
+      "dist/editor-bound.js",
+      "dist/editor-bound.d.ts",
       "dist/profile.js",
       "dist/theme.js",
     ],

@@ -85,8 +85,9 @@ import {
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
-import { createP0EditorExtensions } from "./editor-extensions.js";
+import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
+import type { LiveSessionBindingSource } from "./editor-collaboration.js";
 import type { AnyExtension } from "@tiptap/core";
 import { FULL_PROFILE_ID } from "./profile.js";
 import type { RichTextProfile } from "./profile.js";
@@ -150,11 +151,23 @@ export interface RichTextSelectionSnapshot {
   headOffset: number;
 }
 
+/** A surfaced binding error (CL-3a review 2 B-NEW-6): the binding kept the
+    previous PM document and a correct shared-state baseline, and reports
+    the refusal through this typed event instead of an empty catch. */
+export interface RichTextBindingErrorEvent {
+  /** Stable binding-error message (`rich-text.collab-*` codes). */
+  message: string;
+  /** Where the error was contained: a remote application that could not be
+      projected, or a local projection that was rolled back on both sides. */
+  phase: "remote-application" | "local-projection";
+}
+
 export interface RichTextEditorCallbacks {
   onChange?: (event: RichTextChangeEvent) => void;
   onExternalConflict?: (event: RichTextExternalConflictEvent) => void;
   onUnsupportedPaste?: (event: RichTextUnsupportedPasteEvent) => void;
   onReadinessChange?: (event: RichTextReadiness) => void;
+  onBindingError?: (event: RichTextBindingErrorEvent) => void;
 }
 
 /** Full-profile extension factory, supplied by the separate full module
@@ -201,6 +214,21 @@ export interface RichTextEditorOptions extends RichTextEditorCallbacks {
       provider call happens here; the Yjs-backed binding (CL-3,
       `editor-collaboration.ts`) resolves sessions against this identity. */
   collaborationBinding?: FieldBindingIdentity | null;
+  /** CL-3a live source (§5.7, §6.3 seam 3): the host side of the binding,
+      resolving the identity above to the field `Y.Text` plus its metadata
+      map. Present together with `collaborationBinding` iff the editor is
+      bound; a controlled editor carries `null` and never loads the
+      collaboration graph (type-only import: erased at runtime). */
+  collaborationSource?: LiveSessionBindingSource | null;
+  /** CL-3a fix 3 (§6.3 seam 3, CL-3 witness 7): the bound factory, imported
+      by the caller from the `"./editor/collaboration"` subpath and injected
+      here. This entry accepts it and never imports it: no bundler can pull
+      the collaboration runtime into a controlled artefact, because no
+      module of this entry's static or dynamic import graph reaches it. A
+      bound mount is `collaborationRuntime` plus `collaborationBinding` and
+      `collaborationSource`; binding plus source without the runtime fail
+      closed instead of routing to a hidden import. */
+  collaborationRuntime?: RichTextCollaborationRuntime | null;
 }
 
 export interface RichTextEditor extends RichTextEditorHandle {
@@ -244,6 +272,17 @@ function defaultAllocateId(): string {
   return `paragraph:generated-${Math.floor(Math.random() * 2 ** 32).toString(16)}`;
 }
 
+/** The bound factory (§6.3 seam 3, CL-3a fix 3): the caller imports it from
+    the `"./editor/collaboration"` subpath and injects it through
+    `RichTextEditorOptions.collaborationRuntime`. This entry accepts it and
+    never imports it, so the static and dynamic import graph of `"./editor"`
+    (and of `"."`) reaches no collaboration module: a bundler building a
+    controlled consumer cannot emit the CRDT runtime as a chunk of the
+    controlled artefact (§4.9, §5.x line 550, CL-2F provider-free gate). */
+export type RichTextCollaborationRuntime = (
+  options: RichTextEditorOptions,
+) => Promise<RichTextEditor>;
+
 /** Create the Tiptap-bound editor: document in, document plus gesture out.
     The factory copies the supplied document, initialises the acknowledgement
     reference to that copy, and never mutates the caller's value.
@@ -254,9 +293,17 @@ function defaultAllocateId(): string {
     the mount/readiness contract (§5.6, §6.6) is unchanged: the returned
     handle is fully mounted, and adapters bridge the gap with their existing
     mount-pending path (no core yet ⇒ `readiness()` reports not-ready and
-    `captureDocument()` is unavailable). */
+    `captureDocument()` is unavailable). A bound mount is the same contract
+    through the injected `collaborationRuntime` factory (asynchronous). */
 export function createRichTextEditor(
   options: RichTextEditorOptions & { profile: "full" },
+): Promise<RichTextEditor>;
+export function createRichTextEditor(
+  options: RichTextEditorOptions & {
+    collaborationBinding: FieldBindingIdentity;
+    collaborationSource: LiveSessionBindingSource;
+    collaborationRuntime: RichTextCollaborationRuntime;
+  },
 ): Promise<RichTextEditor>;
 export function createRichTextEditor(
   options: RichTextEditorOptions,
@@ -265,6 +312,31 @@ export function createRichTextEditor(
   options: RichTextEditorOptions,
 ): RichTextEditor | Promise<RichTextEditor> {
   const profile: RichTextProfile = options.profile ?? "p0";
+  const hasBinding =
+    options.collaborationBinding !== undefined &&
+    options.collaborationBinding !== null;
+  const hasSource =
+    options.collaborationSource !== undefined &&
+    options.collaborationSource !== null;
+  const runtime = options.collaborationRuntime;
+  // §6.3 seam 3 (CL-3a fix 3): `"./editor"` accepts the optional
+  // collaboration binding at construction by injection — the caller
+  // imports the bound runtime from the `"./editor/collaboration"` subpath
+  // and passes it here; this entry never imports it, so a controlled
+  // mount's bundle reaches no collaboration module at all (witness 7:
+  // the offline artefact is byte-identical in behaviour to RT-1).
+  if (runtime !== undefined && runtime !== null) {
+    return runtime(options);
+  }
+  // Fail closed (never a silent controlled mount): a binding plus a source
+  // without the injected runtime is a bound mount this entry can no longer
+  // route to, because the dynamic-import route of CL-3a fix 2 leaked the
+  // collaboration graph into every controlled bundle.
+  if (hasBinding && hasSource) {
+    throw new Error(
+      'rich-text.collab-runtime-required: a bound mount injects the collaboration runtime (subpath "./editor/collaboration") through `collaborationRuntime`; this entry never imports it (§6.3: controlled mode never loads the collaboration graph)',
+    );
+  }
   if (profile !== "full") {
     return buildEditor(options);
   }
@@ -277,9 +349,39 @@ export function createRichTextEditor(
   })();
 }
 
+export interface BoundImpl {
+  ytext: { length: number; doc?: { on: (name: string, fn: (transaction: never) => void) => void; off: (name: string, fn: (transaction: never) => void) => void } };
+  fieldMeta: { size?: number };
+  binding: { identity: FieldBindingIdentity };
+  codec: {
+    captureDocumentFromField: (
+      ytext: never,
+      fieldMeta: never,
+      format: never,
+    ) => { document: RichTextDocument; representability: { nonRepresentableParagraphIds: string[] } };
+  };
+  projection: {
+    BINDING_ORIGIN_META: string;
+    buildSelectionMap: (doc: never, ytext: never) => never;
+    projectPmTransactionToYText: (binding: never, before: never, tr: never) => string[];
+    applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
+    yTextToPmDoc: (ytext: never, fieldMeta: never, format: never, schema: never) => never;
+    linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
+    affectedBlocksFromDelta: (
+      pre: never,
+      post: never,
+      delta: never,
+    ) => string[];
+  };
+  initialDocument: RichTextDocument;
+}
+
 /** Synchronous editor construction over an already-available extension
-    graph (P0 always; full only after the lazy loader registered it). */
-function buildEditor(options: RichTextEditorOptions): RichTextEditor {
+    graph (P0 always; full only after the lazy loader registered it).
+    Exported for the bound entry (`./editor-bound.js`, shipped behind the
+    `"./editor/collaboration"` subpath), which supplies the collaboration
+    runtime that the controlled graph never loads. */
+export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImpl): RichTextEditor {
   const profile: RichTextProfile = options.profile ?? "p0";
   const isFull = profile === "full";
   // R-FULL-PROFILE-1: `full` requires `ds.markdown.full@1`; P0 keeps its
@@ -320,13 +422,37 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // CL-2 §6.3 seam 3: the slot is identity only. The value is stored and
   // re-readable; nothing here opens a session, touches shared state or calls
   // a provider, so controlled construction never loads the collaboration
-  // graph (asserted in `src/cl2-seams.test.ts`).
+  // graph (asserted in `src/cl2-seams.test.ts`). CL-3a adds the live source
+  // beside the identity: bound iff both are present. The source type is a
+  // type-only import (erased at runtime), so the controlled path still loads
+  // no collaboration module.
   const binding: FieldBindingIdentity | null = options.collaborationBinding ?? null;
+  const bindingSource: LiveSessionBindingSource | null = options.collaborationSource ?? null;
+  // CL-3a bound mode (§4.5): exactly one history mechanism exists in either
+  // mode. The Yjs UndoManager itself lands in CL-3b; until then bound
+  // undo/redo fail closed through the placeholder below.
+  const boundCollaboration = binding !== null && bindingSource !== null;
+  let isProjecting = false;
+  let lastLinearBlocks: Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }> | null = null;
+  let yTextHandler: ((event: never, transaction: never) => void) | null = null;
+  let fieldMetaHandler: ((event: never, transaction: never) => void) | null = null;
+  let afterTransactionHandler: ((transaction: never) => void) | null = null;
   const callbacks: RichTextEditorCallbacks = {
     onChange: options.onChange,
     onExternalConflict: options.onExternalConflict,
     onUnsupportedPaste: options.onUnsupportedPaste,
     onReadinessChange: options.onReadinessChange,
+    onBindingError: options.onBindingError,
+  };
+  /** Surface a contained binding error (review 2 B-NEW-6): the previous PM
+      document and a correct shared-state baseline are kept; the typed event
+      reports the refusal, never an empty catch. */
+  const surfaceBindingError = (message: string, phase: "remote-application" | "local-projection"): void => {
+    try {
+      callbacks.onBindingError?.({ message, phase });
+    } catch {
+      // A failing host callback never breaks the session.
+    }
   };
   const tracker: CaptureTracker = createCaptureTracker({
     onReadinessChange: callbacks.onReadinessChange,
@@ -346,16 +472,17 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // the marker decoration beside the text and never in the DOM alone.
   let livePlaceholder = options.messages.placeholder;
   let livePlaceholderMarker: string | null = null;
-  const seeds: ConversionSeeds = createConversionSeeds(options.document);
-  let documentFormat: RichTextFormat = options.document.format;
+  const mountDocument = boundImpl?.initialDocument ?? options.document;
+  const seeds: ConversionSeeds = createConversionSeeds(mountDocument);
+  let documentFormat: RichTextFormat = mountDocument.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
-  let lastAcknowledged = copyRichTextDocument(options.document);
+  let lastAcknowledged = copyRichTextDocument(mountDocument);
   // The host's pre-canonical input (review 3 blocking 3): the mounted
   // document canonicalizes (TrailingNode, defaults, normalized order) while
   // the host echo carries the exact pre-mount bytes. Rule-1 echo recognizes
   // the host input when the displayed document still equals the canonical
   // acknowledgement, even though the bytes differ.
-  let lastAcceptedInput = copyRichTextDocument(options.document);
+  let lastAcceptedInput = copyRichTextDocument(mountDocument);
   // §5.6 unacknowledged local revision: set by any user transaction that
   // modifies the live content (every `emitChange`, including a wire-identical
   // one), cleared only by a rule-1 acknowledgement or a rule-4 application.
@@ -384,6 +511,7 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     placeholder: () => livePlaceholder,
     placeholderMarker: () => livePlaceholderMarker,
     isEditable: () => isActive(),
+    bound: boundCollaboration,
   };
   const fullFactory = isFull ? fullExtensionFactory : null;
   if (isFull && fullFactory === null) {
@@ -395,12 +523,16 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       "rich-text.internal: full extension graph unavailable after lazy load",
     );
   }
+  const baseExtensions: AnyExtension[] = isFull
+    ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
+    : createP0EditorExtensions(extensionOptions);
+  // The single history replacement point (§4.5, CL-3a): when bound, UndoRedo
+  // is removed here and only here; the UndoManager itself is the CL-3b seam.
+  const composedExtensions = boundCollaboration ? removeHistoryExtension(baseExtensions) : baseExtensions;
   const editor = new Editor({
     element,
     extensions: [
-      ...(isFull
-        ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
-        : createP0EditorExtensions(extensionOptions)),
+      ...composedExtensions,
       createParagraphIdentityExtension(
         allocateFresh,
         {
@@ -729,8 +861,144 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // live document never stores it, so the session carries the previous
   // capture's map as the next capture's incoming base.
   let fullRetained: RetainedRunMetadata = {
-    ...(options.document.retainedRunMetadata ?? {}),
+    ...(mountDocument.retainedRunMetadata ?? {}),
   };
+
+  if (boundImpl !== undefined) {
+    lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+    const ytextObs = boundImpl.ytext as unknown as {
+      observe: (fn: (event: never, transaction: never) => void) => void;
+      unobserve: (fn: (event: never, transaction: never) => void) => void;
+    };
+    const metaObs = boundImpl.fieldMeta as unknown as {
+      observe: (fn: (event: never, transaction: never) => void) => void;
+      unobserve: (fn: (event: never, transaction: never) => void) => void;
+    };
+    // One remote application per Yjs transaction (review 2 B-NEW-3): the
+    // observers accumulate the affected blocks — delta-affected from the
+    // text type, `keysChanged` (plus their run members) from the metadata
+    // map — and a single `afterTransaction` handler applies the union once,
+    // after both observers ran, so a transaction touching `Y.Text` and
+    // `fieldmeta` together updates the PM exactly once.
+    type LinearBlockShape = { paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number };
+    let pendingAffected: Set<string> | null = null;
+    let pendingDelta: Array<{ insert?: string | Record<string, unknown>; delete?: number; retain?: number }> | null = null;
+    let pendingPreBlocks: LinearBlockShape[] | null = null;
+    let pendingTransaction: unknown = null;
+    let forceFullRebuild = false;
+    const openPendingWindow = (transaction: never): void => {
+      if (pendingTransaction === transaction) return;
+      pendingTransaction = transaction;
+      pendingAffected = new Set<string>();
+      pendingDelta = null;
+      pendingPreBlocks = (lastLinearBlocks as LinearBlockShape[] | null) ?? [];
+    };
+    yTextHandler = ((event: never, transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      openPendingWindow(transaction);
+      try {
+        const delta = (event as unknown as { changes: { delta: unknown[] } }).changes.delta as Array<{
+          insert?: string | Record<string, unknown>;
+          delete?: number;
+          retain?: number;
+        }>;
+        pendingDelta = delta;
+        const pre = pendingPreBlocks ?? [];
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as LinearBlockShape[];
+        const affected = boundImpl.projection.affectedBlocksFromDelta(pre as never, post as never, delta as never) as string[];
+        for (const id of affected) (pendingAffected as Set<string>).add(id);
+      } catch (error) {
+        // Accumulation failure (review 2 B-NEW-6): never silent. The next
+        // application falls back to a full replacement — a partially
+        // accumulated affected set must not under-rebuild — and the refusal
+        // surfaces through the typed callback.
+        pendingDelta = null;
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
+      }
+    }) as never;
+    fieldMetaHandler = ((event: never, transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      openPendingWindow(transaction);
+      try {
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as LinearBlockShape[];
+        const keys = (event as unknown as { changes: { keys: Map<string, { action: string }> } }).changes.keys;
+        const postIds = new Set(post.map((block) => block.paragraphId));
+        const fieldMetaMap = boundImpl.fieldMeta as unknown as Map<string, unknown>;
+        for (const [key] of keys) {
+          if (postIds.has(key)) {
+            (pendingAffected as Set<string>).add(key);
+            continue;
+          }
+          for (const block of post) {
+            const record = fieldMetaMap.get(block.paragraphId) as { listRunId?: unknown } | undefined;
+            if (record?.listRunId === key) {
+              (pendingAffected as Set<string>).add(block.paragraphId);
+            }
+          }
+        }
+      } catch (error) {
+        // Accumulation failure (review 2 B-NEW-6): never silent. The next
+        // application falls back to a full replacement and the refusal
+        // surfaces through the typed callback.
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
+      }
+    }) as never;
+    afterTransactionHandler = ((transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      if (pendingTransaction !== transaction) return;
+      const affected = pendingAffected;
+      const delta = pendingDelta;
+      const preBlocks = pendingPreBlocks;
+      pendingTransaction = null;
+      pendingAffected = null;
+      pendingDelta = null;
+      pendingPreBlocks = null;
+      if (affected === null || affected.size === 0) {
+        // Baseline refresh: the next delta maps against the new layout.
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+        return;
+      }
+      try {
+        boundImpl.projection.applyRemoteUpdateIncrementally({
+          view: editor.view,
+          ytext: boundImpl.ytext,
+          fieldMeta: boundImpl.fieldMeta,
+          format: documentFormat,
+          fieldKey: binding?.fieldKey ?? "",
+          affectedParagraphIds: [...affected],
+          ...(forceFullRebuild ? { fullReplace: true } : {}),
+          ...(preBlocks !== null && preBlocks.length > 0 ? { preBlocks: preBlocks as never } : {}),
+          ...(delta !== null ? { delta: delta as never } : {}),
+        } as never);
+        forceFullRebuild = false;
+      } catch (error) {
+        // Review 2 B-NEW-6 (remote path): the previous PM document is kept,
+        // the baseline now includes the applied Y.Text change so the next
+        // delta maps correctly, and the next remote application
+        // resynchronizes through a full replacement. The refusal surfaces
+        // through the typed callback.
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
+      } finally {
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      }
+    }) as never;
+    ytextObs.observe(yTextHandler as never);
+    metaObs.observe(fieldMetaHandler as never);
+    const ydocObs = (boundImpl.ytext as unknown as { doc?: { on: (name: string, fn: (transaction: never) => void) => void; off: (name: string, fn: (transaction: never) => void) => void } }).doc;
+    ydocObs?.on("afterTransaction", afterTransactionHandler as never);
+  }
 
   /** Synchronize inert link rendering with editability (CL-2F-F-URL item 1):
       read-only/disabled mounts render no `href`, and toggling editability
@@ -785,6 +1053,17 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   };
 
   const displayedDocument = (): RichTextDocument => {
+    if (boundImpl !== undefined) {
+      const cap = boundImpl.codec.captureDocumentFromField(
+        boundImpl.ytext as never,
+        boundImpl.fieldMeta as never,
+        documentFormat as never,
+      );
+      if (isFull) {
+        fullRetained = { ...(cap.document.retainedRunMetadata ?? {}) };
+      }
+      return cap.document;
+    }
     if (isFull) {
       const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
       fullRetained = read.retainedRunMetadata;
@@ -794,6 +1073,20 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   };
 
   const displayedCaptureResult = (): RichTextCaptureResult => {
+    if (boundImpl !== undefined) {
+      const cap = boundImpl.codec.captureDocumentFromField(
+        boundImpl.ytext as never,
+        boundImpl.fieldMeta as never,
+        documentFormat as never,
+      );
+      if (isFull) {
+        fullRetained = { ...(cap.document.retainedRunMetadata ?? {}) };
+      }
+      return {
+        document: cap.document,
+        representability: { nonRepresentableParagraphIds: [] },
+      };
+    }
     if (isFull) {
       const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
       fullRetained = read.retainedRunMetadata;
@@ -1096,6 +1389,14 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
       (programmatic-gesture) transactions only record. */
   function handleTransaction(transaction: Transaction): void {
     if (tracker.destroyed) return;
+    if (
+      boundImpl !== undefined &&
+      transaction.getMeta(boundImpl.projection.BINDING_ORIGIN_META) === true
+    ) {
+      prevUndoDepth = undoDepth(editor.state);
+      prevRedoDepth = redoDepth(editor.state);
+      return;
+    }
     if (transaction.getMeta(IDENTITY_FIX_META) === true) {
       prevUndoDepth = undoDepth(editor.state);
       prevRedoDepth = redoDepth(editor.state);
@@ -1103,6 +1404,93 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     }
     if (transaction.docChanged) lastDispatchChanged = true;
     markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction, [], touchedPredicate);
+    if (
+      boundImpl !== undefined &&
+      transaction.docChanged &&
+      transaction.getMeta(PRESERVED_REPLACE_META) !== true &&
+      !editor.view.composing &&
+      !tracker.composing
+    ) {
+      let projectionFailure: unknown = null;
+      isProjecting = true;
+      try {
+        const revealedIds = (boundImpl.projection.projectPmTransactionToYText(
+          {
+            ytext: boundImpl.ytext,
+            fieldMeta: boundImpl.fieldMeta,
+            fieldKey: binding?.fieldKey ?? "",
+            allocateId: allocateFresh,
+            format: documentFormat,
+            // The live document after the identity plugin's repairs for
+            // this transaction (review 2 B-NEW-2): the projection adopts the
+            // minted split-tail and inserted-block identities instead of
+            // allocating a second, divergent one.
+            pmTransactionDoc: editor.state.doc,
+          } as never,
+          transaction.before as never,
+          transaction as never,
+        ) ?? []) as string[];
+        // R-FULL-CODE-1 (review 2 B-NEW-8): blocks that just left a
+        // codeBlock carry formats in the shared state that the ProseMirror
+        // side could not hold while the block was code. Rebuild them from
+        // the shared state so the hidden formats are revealed locally too
+        // (the remote replicas reveal through the metadata-only update).
+        if (revealedIds.length > 0) {
+          try {
+            boundImpl.projection.applyRemoteUpdateIncrementally({
+              view: editor.view,
+              ytext: boundImpl.ytext,
+              fieldMeta: boundImpl.fieldMeta,
+              format: documentFormat,
+              fieldKey: binding?.fieldKey ?? "",
+              affectedParagraphIds: revealedIds,
+            } as never);
+          } catch {
+            // The reveal is a display resynchronization: on failure the
+            // block keeps the user's transaction result and the shared
+            // state stays authoritative for the next application.
+          }
+        }
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      } catch (error) {
+        projectionFailure = error;
+      } finally {
+        isProjecting = false;
+      }
+      if (projectionFailure !== null) {
+        // Review 2 B-NEW-6 (local path): the projection refused the
+        // transaction and inverted the shared state inside its Yjs
+        // transaction, so both sides sit at the last agreed state after the
+        // PM view is rebuilt from the shared state here. The refusal
+        // surfaces through the typed callback; nothing propagates out of
+        // the dispatch.
+        const cause = projectionFailure instanceof Error ? projectionFailure.message : String(projectionFailure);
+        surfaceBindingError(
+          `rich-text.collab-step-failed: the local transaction was rolled back on both sides (${cause})`,
+          "local-projection",
+        );
+        try {
+          const sharedDoc = boundImpl.projection.yTextToPmDoc(
+            boundImpl.ytext as never,
+            boundImpl.fieldMeta as never,
+            documentFormat as never,
+            editor.view.state.schema as never,
+          ) as never as { content: unknown };
+          const rollback = editor.view.state.tr;
+          rollback.setMeta(boundImpl.projection.BINDING_ORIGIN_META, true);
+          rollback.setMeta("addToHistory", false);
+          rollback.replaceWith(0, editor.view.state.doc.content.size, sharedDoc.content as never);
+          editor.view.dispatch(rollback as never);
+        } catch {
+          // The shared state itself no longer projects: the surfaced error
+          // above already reports the refusal; keep the previous document.
+        }
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+        prevUndoDepth = undoDepth(editor.state);
+        prevRedoDepth = redoDepth(editor.state);
+        return;
+      }
+    }
     if (suppressEmit) {
       markTouchedFromTransaction(
         suppressedAffected,
@@ -2036,8 +2424,8 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
   // history: mounting emits no `onChange` and is never undone.
   suppressEmit = true;
   try {
-    replaceDocument(options.document);
-    reseedConversion(seeds, options.document);
+    replaceDocument(mountDocument);
+    reseedConversion(seeds, mountDocument);
     // Recording read (see rule-4 application above): records each mount
     // version's exact text with no bridge call.
     displayedDocument();
@@ -2252,6 +2640,13 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     },
 
     undo(): void {
+      // CL-3a bound seam (§4.5): no ProseMirror history exists when bound
+      // (UndoRedo removed above) and the UndoManager lands in CL-3b. Fail
+      // closed — the same message as the collaboration placeholder — and
+      // never double-record.
+      if (boundCollaboration) {
+        throw new Error("rich-text.bound-undo-unavailable");
+      }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
       suppressedAffected.clear();
@@ -2273,6 +2668,9 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
     },
 
     redo(): void {
+      if (boundCollaboration) {
+        throw new Error("rich-text.bound-undo-unavailable");
+      }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
       suppressedAffected.clear();
@@ -2417,6 +2815,32 @@ function buildEditor(options: RichTextEditorOptions): RichTextEditor {
         destroyedDocument = displayedDocument();
       } catch {
         destroyedDocument = null;
+      }
+      if (boundImpl !== undefined) {
+        try {
+          const ytextObs = boundImpl.ytext as unknown as {
+            unobserve: (fn: (event: never, transaction: never) => void) => void;
+          };
+          const metaObs = boundImpl.fieldMeta as unknown as {
+            unobserve: (fn: (event: never, transaction: never) => void) => void;
+          };
+          const ydocObs = (boundImpl.ytext as unknown as { doc?: { off: (name: string, fn: (transaction: never) => void) => void } }).doc;
+          if (yTextHandler !== null) ytextObs.unobserve(yTextHandler as never);
+          if (fieldMetaHandler !== null) metaObs.unobserve(fieldMetaHandler as never);
+          if (afterTransactionHandler !== null) ydocObs?.off("afterTransaction", afterTransactionHandler as never);
+        } catch {
+          // Unobserving never blocks teardown.
+        }
+        yTextHandler = null;
+        fieldMetaHandler = null;
+        afterTransactionHandler = null;
+        try {
+          if (binding !== null && bindingSource !== null) {
+            bindingSource.releaseBinding(binding);
+          }
+        } catch {
+          // Release failures never break teardown; the binding is gone with the view.
+        }
       }
       tracker.destroy();
       editor.destroy();
