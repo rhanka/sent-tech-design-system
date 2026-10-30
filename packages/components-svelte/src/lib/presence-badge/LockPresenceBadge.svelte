@@ -1,3 +1,7 @@
+<script module lang="ts">
+  let badgeTooltipSequence = 0;
+</script>
+
 <script lang="ts">
   import type {
     CollaborationActor,
@@ -146,11 +150,28 @@
     });
   }
 
+  function avatarLabelFor(entry: CollaborationActor): string {
+    if (requesterId !== null && requesterId === entry.actorId) {
+      return `${entry.displayLabel} ${keyTextFor(entry)}`;
+    }
+    return entry.displayLabel;
+  }
+
+  const tooltipId = `st-presence-badge-tooltip-${(badgeTooltipSequence += 1)}`;
+
+  const nonReadOnlyState = $derived(
+    derivePresenceBadgeState({
+      presence: presence ?? { scopeRef, actors: [], total: 0 },
+      lock,
+      capabilities,
+      currentActorId: capabilities.currentActorId,
+      nowIso,
+      readOnly: false,
+    }),
+  );
+
   const showRequest = $derived(
-    state.lockActive &&
-      holder !== null &&
-      holder.actorId !== capabilities.currentActorId &&
-      capabilities.canRequestUnlock,
+    state.canRequestUnlock || (readOnly && nonReadOnlyState.canRequestUnlock),
   );
   const showAccept = $derived(
     state.lockActive &&
@@ -176,12 +197,20 @@
   data-live={liveMode ? "true" : "false"}
   title={tooltip}
   aria-label={rosterText}
+  data-untranslated={isMissing("rosterLabel")
+    ? collabUntranslatedDataValue("rosterLabel")
+    : null}
+  tabindex="0"
+  aria-describedby={tooltipId}
 >
   <div
     class="st-presence-badge__stack"
     data-testid="avatar-stack"
     role="list"
     aria-label={rosterText}
+    data-untranslated={isMissing("rosterLabel")
+      ? collabUntranslatedDataValue("rosterLabel")
+      : null}
   >
     {#each state.actors as entry (entry.actorId)}
       <span
@@ -190,8 +219,7 @@
         data-testid="avatar"
         data-actor-id={entry.actorId}
         data-kind={entry.kind}
-        aria-label={entry.displayLabel}
-        title={entry.displayLabel}
+        aria-label={avatarLabelFor(entry)}
         style={avatarStyle(entry)}
       >
         <span class="st-presence-badge__initials" aria-hidden="true"
@@ -199,7 +227,13 @@
         >
         {#if requesterId !== null && requesterId === entry.actorId}
           <span class="st-presence-badge__key" aria-hidden="true"></span>
-          <span class="st-presence-badge__hidden">{keyTextFor(entry)}</span>
+          <span
+            class="st-presence-badge__hidden"
+            data-testid={`requester-key-${entry.actorId}`}
+            data-untranslated={isMissing("requesterKeyLabel")
+              ? collabUntranslatedDataValue("requesterKeyLabel")
+              : null}>{keyTextFor(entry)}</span
+          >
         {/if}
       </span>
     {/each}
@@ -224,6 +258,9 @@
     class="st-presence-badge__roster"
     data-testid="roster"
     aria-label={rosterText}
+    data-untranslated={isMissing("rosterLabel")
+      ? collabUntranslatedDataValue("rosterLabel")
+      : null}
   >
     {#each state.actors as entry (entry.actorId)}
       <li
@@ -306,6 +343,8 @@
   </div>
   <span
     class="st-presence-badge__tooltip"
+    id={tooltipId}
+    role="tooltip"
     data-testid="badge-tooltip"
     data-untranslated={isMissing(tooltipKey)
       ? collabUntranslatedDataValue(tooltipKey)
@@ -389,7 +428,8 @@
   }
 
   .st-presence-badge__roster {
-    display: none;
+    display: block;
+    flex-basis: 100%;
     list-style: none;
     margin: 0;
     padding: 0;

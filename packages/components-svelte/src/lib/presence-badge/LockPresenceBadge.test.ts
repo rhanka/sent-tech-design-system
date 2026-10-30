@@ -229,6 +229,9 @@ describe("CL-1B witness 1 — role from snapshots plus capabilities", () => {
         "data-role",
       ),
     ).toBe("requester");
+    expect(
+      requested.queryByRole("button", { name: "SENTINEL-UNLOCK-REQUEST" }),
+    ).toBeNull();
     requested.unmount();
   });
 
@@ -313,8 +316,8 @@ describe("CL-1B witness 3 — every visible string is injected", () => {
 
     const missing = render(LockPresenceBadge, {
       props: {
-        lock: lockSnapshot(OTHER, FUTURE),
-        presence: presenceOf([OTHER]),
+        lock: lockSnapshot(OTHER, FUTURE, THIRD),
+        presence: presenceOf([OTHER, THIRD]),
         capabilities: editorCaps(),
         messages: {
           editorLabel: "SENTINEL-EDITOR",
@@ -334,6 +337,27 @@ describe("CL-1B witness 3 — every visible string is injected", () => {
         "data-untranslated",
       ),
     ).toBe("collab.lockLabel");
+    expect(
+      badgeOf("presence-badge", missing.container)?.getAttribute("aria-label"),
+    ).toBe("⟦untranslated:collab.rosterLabel⟧");
+    expect(
+      badgeOf("presence-badge", missing.container)?.getAttribute(
+        "data-untranslated",
+      ),
+    ).toBe("collab.rosterLabel");
+    expect(badgeOf("roster", missing.container)?.getAttribute("aria-label")).toBe(
+      "⟦untranslated:collab.rosterLabel⟧",
+    );
+    expect(
+      badgeOf("roster", missing.container)?.getAttribute("data-untranslated"),
+    ).toBe("collab.rosterLabel");
+    const missingKey = badgeOf("requester-key-actor:third", missing.container);
+    expect(missingKey?.textContent).toBe(
+      "⟦untranslated:collab.requesterKeyLabel⟧",
+    );
+    expect(missingKey?.getAttribute("data-untranslated")).toBe(
+      "collab.requesterKeyLabel",
+    );
     missing.unmount();
   });
 
@@ -352,6 +376,19 @@ describe("CL-1B witness 3 — every visible string is injected", () => {
       (match) => match[0],
     );
     expect(labelled).toEqual([]);
+    const scripts = [...source.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)]
+      .map((match) => match[1] ?? "")
+      .join("\n");
+    const quoted = [
+      ...scripts.matchAll(/"([^"\\]*)"|'([^'\\]*)'|`([^`\\]*)`/g),
+    ].map((match) => match[1] ?? match[2] ?? match[3] ?? "");
+    const suspicious = quoted.filter(
+      (text) =>
+        /[A-Za-z]/.test(text) &&
+        text.includes(" ") &&
+        !(text.includes("{") && text.includes("}")),
+    );
+    expect(suspicious).toEqual([]);
     expect(source.includes("User")).toBe(false);
   });
 });
@@ -522,6 +559,33 @@ describe("CL-1B witness 6 — agent activity verbatim", () => {
     expect(activity?.textContent).toContain("SENTINEL-SCOPE");
     expect(activity?.textContent).toContain("holding");
     expect(activity?.textContent).toContain("SENTINEL-SINCE");
+    const roster = badgeOf("roster", container);
+    expect(roster).not.toBeNull();
+    for (const node of [
+      roster,
+      activity,
+      badgeOf("activity-scope-actor:agent-1", container),
+      badgeOf("activity-state-actor:agent-1", container),
+      badgeOf("activity-since-actor:agent-1", container),
+    ]) {
+      expect(node).not.toBeNull();
+      const style = getComputedStyle(node as Element);
+      expect(style.display).not.toBe("none");
+      expect(style.visibility).not.toBe("hidden");
+    }
+    // Svelte ships <style> unapplied in this jsdom run (no <style> tag in
+    // the document), so computed style alone cannot catch `display: none`.
+    // Assert the shipped rule directly as the environment-proof equivalent.
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "LockPresenceBadge.svelte"),
+      "utf8",
+    );
+    const styleBlock = source.split("<style")[1]?.split("</style>")[0] ?? "";
+    const rosterRules = [...styleBlock.matchAll(/\.st-presence-badge__roster\s*\{([^}]*)\}/g)]
+      .map((match) => match[1] ?? "")
+      .join(" ");
+    expect(rosterRules).not.toMatch(/display\s*:\s*none/);
+    expect(rosterRules).toMatch(/display\s*:\s*(block|flex|grid|inline|contents)/);
   });
 
   it("renders no scope line for an actor without activity", async () => {
@@ -539,7 +603,53 @@ describe("CL-1B witness 6 — agent activity verbatim", () => {
   });
 });
 
-describe("CL-1B witness 7 — B8 display half", () => {
+describe("CL-1B review 1 — requester name and keyboard tooltip", () => {
+  it("names the requester avatar with the key text and no title", async () => {
+    const { container } = render(LockPresenceBadge, {
+      props: {
+        lock: lockSnapshot(OTHER, FUTURE, THIRD),
+        presence: presenceOf([OTHER, THIRD]),
+        capabilities: editorCaps(),
+        messages: MESSAGES,
+        nowIso: NOW,
+      },
+    });
+    await tick();
+    const avatar = container.querySelector(
+      '[data-testid="avatar"][data-actor-id="actor:third"]',
+    );
+    expect(avatar).not.toBeNull();
+    expect(avatar?.getAttribute("aria-label")).toContain("SENTINEL-KEY-Third");
+    expect(
+      container.querySelectorAll('[data-testid="avatar"][title]').length,
+    ).toBe(0);
+  });
+
+  it("exposes the tooltip to keyboard through describedby", async () => {
+    const { container } = render(LockPresenceBadge, {
+      props: {
+        lock: lockSnapshot(OTHER, FUTURE),
+        presence: presenceOf([OTHER]),
+        capabilities: editorCaps(),
+        messages: MESSAGES,
+        nowIso: NOW,
+      },
+    });
+    await tick();
+    const badge = badgeOf("presence-badge", container);
+    expect(badge?.getAttribute("tabindex")).toBe("0");
+    const describedBy = badge?.getAttribute("aria-describedby") ?? "";
+    expect(describedBy.length).toBeGreaterThan(0);
+    const tooltip =
+      container.ownerDocument.getElementById(describedBy) ??
+      badgeOf("badge-tooltip", container);
+    expect(tooltip?.getAttribute("role")).toBe("tooltip");
+    expect(tooltip?.getAttribute("id")).toBe(describedBy);
+    expect(tooltip?.textContent).toContain("SENTINEL-TOOLTIP-LOCKED-Other");
+  });
+});
+
+describe("CL-1B witness 7 — B8 badge display half (badge only, no editor in fixture)", () => {
   it("shows lock facts beside a live binding without driving editable", async () => {
     const binding: FieldBindingIdentity = {
       documentId: "canvas:artifact-1",
@@ -569,6 +679,11 @@ describe("CL-1B witness 7 — B8 display half", () => {
     expect(container.querySelector('[role="textbox"]')).toBeNull();
     const badge = badgeOf("presence-badge", container);
     expect(badge?.getAttribute("data-editable")).toBeNull();
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "LockPresenceBadge.svelte"),
+      "utf8",
+    );
+    expect(source.includes("editable")).toBe(false);
   });
 });
 

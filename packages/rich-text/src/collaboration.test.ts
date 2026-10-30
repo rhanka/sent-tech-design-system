@@ -421,6 +421,7 @@ describe("expiry and badge derivation purity", () => {
       nowIso: NOW,
     });
     expect(requested.role).toBe("requester");
+    expect(requested.canRequestUnlock).toBe(false);
 
     const admin = derivePresenceBadgeState({
       presence,

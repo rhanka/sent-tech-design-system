@@ -1253,7 +1253,8 @@ export interface PresenceBadgeState {
     injected clock. An expired lock renders as no lock. The avatar list keeps
     roster order except that the lock holder (when present in the list) moves
     last, matching the sentropic badge. Read-only mode suppresses
-    request-unlock. Pure of its arguments; the caller injects the clock. */
+    request-unlock, and a pending requester cannot request again. Pure of its
+    arguments; the caller injects the clock. */
 export function derivePresenceBadgeState(input: {
   presence: PresenceSnapshot;
   lock: LockSnapshot | null;
@@ -1299,6 +1300,7 @@ export function derivePresenceBadgeState(input: {
       lockActive &&
       holderId !== null &&
       holderId !== input.currentActorId &&
+      requesterId !== input.currentActorId &&
       input.capabilities.canRequestUnlock,
   };
 }
