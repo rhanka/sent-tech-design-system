@@ -309,3 +309,59 @@ describe("capture/readiness pure state", () => {
   });
 });
 
+describe("review 1 to-fix: structural metadata equality", () => {
+  function fullParagraph(
+    metadata: Record<string, unknown>,
+  ): RichTextDocument {
+    return {
+      format: "ds.markdown.full@1",
+      blocks: [
+        {
+          paragraphId: "p1",
+          kind: "paragraph",
+          metadata: metadata as RichTextBlock["metadata"],
+          segments: [{ type: "text", text: "Same", marks: {} }],
+        },
+      ],
+    };
+  }
+
+  it("ignores key insertion order in block metadata", () => {
+    const left = fullParagraph({
+      blockKind: "paragraph",
+      listKind: "none",
+      listDepth: 0,
+      blockquoteDepth: 0,
+      containerOrder: [],
+    });
+    const right = fullParagraph({
+      containerOrder: [],
+      blockquoteDepth: 0,
+      listDepth: 0,
+      listKind: "none",
+      blockKind: "paragraph",
+    });
+    expect(richTextDocumentsEqual(left, left)).toBe(true);
+    expect(richTextDocumentsEqual(left, right)).toBe(true);
+    expect(richTextDocumentsEqual(right, left)).toBe(true);
+  });
+
+  it("still distinguishes significant metadata values", () => {
+    const base = fullParagraph({
+      blockKind: "paragraph",
+      listKind: "none",
+      listDepth: 0,
+      blockquoteDepth: 0,
+      containerOrder: [],
+    });
+    const deeper = fullParagraph({
+      blockKind: "paragraph",
+      listKind: "none",
+      listDepth: 1,
+      blockquoteDepth: 0,
+      containerOrder: [],
+    });
+    expect(richTextDocumentsEqual(base, deeper)).toBe(false);
+  });
+});
+

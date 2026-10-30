@@ -62,6 +62,7 @@ import { isHistoryTransaction, redoDepth, undoDepth } from "@tiptap/pm/history";
 import type { EditorView } from "@tiptap/pm/view";
 import type { MarkdownManager } from "@tiptap/markdown";
 import type {
+  RetainedRunMetadata,
   RichTextCaptureResult,
   RichTextChangeEvent,
   RichTextDocument,
@@ -75,15 +76,22 @@ import type {
 } from "./model.js";
 import type { RichTextMessages } from "./messages.js";
 import type { FieldBindingIdentity } from "./collaboration.js";
+import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
 import {
   copyRichTextDocument,
   createCaptureTracker,
   decideExternalUpdate,
+  richTextDocumentsEqual,
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import { createP0EditorExtensions } from "./editor-extensions.js";
+import type { P0EditorExtensionOptions } from "./editor-extensions.js";
+import type { AnyExtension } from "@tiptap/core";
+import { FULL_PROFILE_ID } from "./profile.js";
+import type { RichTextProfile } from "./profile.js";
 import {
+  FULL_IDENTITY_NODE_TYPES,
   IDENTITY_FIX_META,
   PRESERVED_REPLACE_META,
   createParagraphIdentityExtension,
@@ -93,11 +101,25 @@ import {
 import {
   createConversionSeeds,
   documentToProseMirror,
+  isFullIdentityNode,
   markTouchedFromTransaction,
   proseMirrorToCaptureResult,
   proseMirrorToDocument,
   reseedConversion,
 } from "./editor-conversion.js";
+import {
+  assertFullDocumentLinksAllowed,
+  fullDocumentToProseMirror,
+  fullProseMirrorToDocument,
+} from "./editor-full-document.js";
+import {
+  codeLiteralSlice,
+  planFullHtmlPaste,
+  planFullTextPaste,
+  sanitizeFullPastedHtml,
+  sliceForFullBlocks,
+  stripFullIdentityAttributes,
+} from "./editor-full-paste.js";
 import type { ConversionSeeds } from "./editor-conversion.js";
 import {
   planHtmlPaste,
@@ -135,8 +157,36 @@ export interface RichTextEditorCallbacks {
   onReadinessChange?: (event: RichTextReadiness) => void;
 }
 
+/** Full-profile extension factory, supplied by the separate full module
+    graph (`editor-full-extensions.ts`). The editor entry never statically
+    imports that graph (review 1 item 11, review 2 blocking 1): an absent/P0
+    mount evaluates none of the eight full extension packages. The full
+    branch of `createRichTextEditor` loads the graph on demand through a
+    dynamic import, so `profile: "full"` stays a single-prop opt-in with no
+    registration ceremony. */
+export type FullEditorExtensionFactory = (
+  options: P0EditorExtensionOptions,
+) => AnyExtension[];
+
+let fullExtensionFactory: FullEditorExtensionFactory | null = null;
+
+/** Full-graph registration entry point, called by the lazily loaded
+    `editor-full-extensions.ts` module (and idempotent for any other
+    caller); the last registration wins. Consumers never call this
+    directly: mounting with `profile: "full"` registers on demand. */
+export function registerFullEditorExtensions(
+  factory: FullEditorExtensionFactory,
+): void {
+  fullExtensionFactory = factory;
+}
+
 export interface RichTextEditorOptions extends RichTextEditorCallbacks {
   document: RichTextDocument;
+  /** Content profile (R-FULL-PROFILE-1): `p0` (default) or the CL-2F `full`
+      profile. `full` requires `document.format === "ds.markdown.full@1"`; a
+      mismatch refuses construction. A profile change is an explicit remount,
+      never implicit widening. */
+  profile?: RichTextProfile;
   messages: RichTextMessages;
   allocateId?: () => string;
   editable?: boolean;
@@ -196,10 +246,70 @@ function defaultAllocateId(): string {
 
 /** Create the Tiptap-bound editor: document in, document plus gesture out.
     The factory copies the supplied document, initialises the acknowledgement
-    reference to that copy, and never mutates the caller's value. */
+    reference to that copy, and never mutates the caller's value.
+    `profile: "full"` is a single-prop opt-in (R-FULL-PROFILE-1) with no
+    registration ceremony: the full extension graph loads on demand through
+    a dynamic import, so full construction is asynchronous while P0
+    construction stays synchronous. The async gap precedes the handle, so
+    the mount/readiness contract (§5.6, §6.6) is unchanged: the returned
+    handle is fully mounted, and adapters bridge the gap with their existing
+    mount-pending path (no core yet ⇒ `readiness()` reports not-ready and
+    `captureDocument()` is unavailable). */
+export function createRichTextEditor(
+  options: RichTextEditorOptions & { profile: "full" },
+): Promise<RichTextEditor>;
 export function createRichTextEditor(
   options: RichTextEditorOptions,
-): RichTextEditor {
+): RichTextEditor;
+export function createRichTextEditor(
+  options: RichTextEditorOptions,
+): RichTextEditor | Promise<RichTextEditor> {
+  const profile: RichTextProfile = options.profile ?? "p0";
+  if (profile !== "full") {
+    return buildEditor(options);
+  }
+  return (async (): Promise<RichTextEditor> => {
+    // Lazy full graph (review 2 blocking 1): evaluated here — on the first
+    // full mount — never on a P0 path. The module self-registers on import.
+    const full = await import("./editor-full-extensions.js");
+    full.ensureFullEditorExtensionsRegistered();
+    return buildEditor(options);
+  })();
+}
+
+/** Synchronous editor construction over an already-available extension
+    graph (P0 always; full only after the lazy loader registered it). */
+function buildEditor(options: RichTextEditorOptions): RichTextEditor {
+  const profile: RichTextProfile = options.profile ?? "p0";
+  const isFull = profile === "full";
+  // R-FULL-PROFILE-1: `full` requires `ds.markdown.full@1`; P0 keeps its
+  // existing Markdown/literal formats. A mismatch refuses construction.
+  // R-FULL-URL-1: a structured full import carrying a forbidden link target
+  // refuses the whole construction, never a single silently stripped link.
+  if (isFull) {
+    if (options.document.format !== FULL_PROFILE_ID) {
+      throw new Error(
+        `rich-text.profile-format-mismatch: profile "full" requires format "${FULL_PROFILE_ID}"`,
+      );
+    }
+    assertFullDocumentLinksAllowed(options.document);
+  } else if (options.document.format === FULL_PROFILE_ID) {
+    throw new Error(
+      'rich-text.profile-format-mismatch: profile "p0" cannot mount a full document; select profile "full"',
+    );
+  }
+  /** Identity-block names for this profile (P0 pair or full quintet). */
+  const isIdentityBlockName = (name: string): boolean =>
+    isFull
+      ? FULL_IDENTITY_NODE_TYPES.has(name)
+      : name === "paragraph" || name === "preservedBlock";
+  /** Touched predicate for this profile (P0 pair or full quintet). */
+  const touchedPredicate = isFull ? isFullIdentityNode : undefined;
+  /** Text parents accepting typed/cleared/split content in this profile. */
+  const isTextParentName = (name: string): boolean =>
+    name === "paragraph" ||
+    name === "heading" ||
+    (isFull && name === "codeBlock");
   const retiredIds = new Set<string>();
   const allocateFresh = createSessionAllocator(
     options.allocateId ?? defaultAllocateId,
@@ -240,6 +350,12 @@ export function createRichTextEditor(
   let documentFormat: RichTextFormat = options.document.format;
   const isPlainTextFormat = (): boolean => documentFormat === "text/plain";
   let lastAcknowledged = copyRichTextDocument(options.document);
+  // The host's pre-canonical input (review 3 blocking 3): the mounted
+  // document canonicalizes (TrailingNode, defaults, normalized order) while
+  // the host echo carries the exact pre-mount bytes. Rule-1 echo recognizes
+  // the host input when the displayed document still equals the canonical
+  // acknowledgement, even though the bytes differ.
+  let lastAcceptedInput = copyRichTextDocument(options.document);
   // §5.6 unacknowledged local revision: set by any user transaction that
   // modifies the live content (every `emitChange`, including a wire-identical
   // one), cleared only by a rule-1 acknowledgement or a rule-4 application.
@@ -264,21 +380,38 @@ export function createRichTextEditor(
 
   const element =
     options.element ?? globalThis.document.createElement("div");
+  const extensionOptions: P0EditorExtensionOptions = {
+    placeholder: () => livePlaceholder,
+    placeholderMarker: () => livePlaceholderMarker,
+    isEditable: () => isActive(),
+  };
+  const fullFactory = isFull ? fullExtensionFactory : null;
+  if (isFull && fullFactory === null) {
+    // Internal invariant: the `createRichTextEditor` full branch registers
+    // the graph before reaching construction. Only profile/format mismatch
+    // or a forbidden href may refuse a full construction (R-FULL-PROFILE-1,
+    // R-FULL-URL-1).
+    throw new Error(
+      "rich-text.internal: full extension graph unavailable after lazy load",
+    );
+  }
   const editor = new Editor({
     element,
     extensions: [
-      ...createP0EditorExtensions({
-        placeholder: () => livePlaceholder,
-        placeholderMarker: () => livePlaceholderMarker,
-        isEditable: () => isActive(),
-      }),
-      createParagraphIdentityExtension(allocateFresh, {
-        // Identities a select-all replacement consumed (N8, §5.2): retired
-        // inside the session, never reallocated.
-        onRetire: (ids) => {
-          for (const id of ids) retiredIds.add(id);
+      ...(isFull
+        ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
+        : createP0EditorExtensions(extensionOptions)),
+      createParagraphIdentityExtension(
+        allocateFresh,
+        {
+          // Identities a select-all replacement consumed (N8, §5.2): retired
+          // inside the session, never reallocated.
+          onRetire: (ids) => {
+            for (const id of ids) retiredIds.add(id);
+          },
         },
-      }),
+        isFull ? FULL_IDENTITY_NODE_TYPES : undefined,
+      ),
       createPreservedGuardExtension(isPlainTextFormat),
     ],
     content: { type: "doc", content: [{ type: "paragraph" }] },
@@ -319,7 +452,15 @@ export function createRichTextEditor(
             if (!rejected.includes(label)) rejected.push(label);
           } else if (
             node.type.name !== "paragraph" &&
-            node.type.name !== "text"
+            node.type.name !== "text" &&
+            !(isFull && isIdentityBlockName(node.type.name)) &&
+            !(
+              isFull &&
+              (node.type.name === "bulletList" ||
+                node.type.name === "orderedList" ||
+                node.type.name === "listItem" ||
+                node.type.name === "blockquote")
+            )
           ) {
             if (!rejected.includes(node.type.name)) {
               rejected.push(node.type.name);
@@ -336,6 +477,22 @@ export function createRichTextEditor(
             data?.getData("text/plain") ?? data?.getData("Text") ?? "";
           const classify = (): string[] => {
             const noop = (): string => "";
+            if (isFull) {
+              if (html !== "") {
+                const planned = planFullHtmlPaste(view.state.schema, html, noop);
+                if (planned.outcome === "refuse") {
+                  return [...planned.rejectedKinds];
+                }
+                return [];
+              }
+              if (text !== "") {
+                const planned = planFullTextPaste(text, noop);
+                if (planned.outcome === "refuse") {
+                  return [...planned.rejectedKinds];
+                }
+              }
+              return [];
+            }
             if (html !== "") {
               const planned = planHtmlPaste(
                 view.state.schema,
@@ -392,6 +549,37 @@ export function createRichTextEditor(
       // level and run the same shared policy (preventing the browser default).
       // Outside composition this stays inert and `handlePaste` owns the path.
       handleDOMEvents: {
+        auxclick: (view: EditorView, raw: Event): boolean => {
+          if (!isFull) return false;
+          const event = raw as MouseEvent;
+          const target = event.target as unknown as {
+            closest?: (selector: string) => unknown;
+          };
+          if (target !== null && typeof target === "object" && typeof target.closest === "function" && target.closest("a") !== null) {
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
+        // Inert links (CL-2F-F-URL item 1): `handleClickOn` preventDefaults
+        // the mouseup, but anchor navigation fires on the subsequent `click`
+        // event — plain clicks, modified clicks and keyboard-triggered
+        // activation (Enter on a focused link) all arrive here. This real
+        // DOM listener cancels the navigation default at the source.
+        click: (view: EditorView, raw: Event): boolean => {
+          if (!isFull) return false;
+          const event = raw as MouseEvent;
+          const target = event.target as unknown as {
+            closest?: (selector: string) => unknown;
+          };
+          if (target !== null && typeof target === "object" && typeof target.closest === "function" && target.closest("a[href]") !== null) {
+            if (!view.dom.contains(target as unknown as Node)) return false;
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
+          return false;
+        },
         paste: (view: EditorView, raw: Event): boolean => {
           if (tracker.destroyed || !isActive()) return false;
           if (!view.composing && !tracker.composing) return false;
@@ -432,13 +620,33 @@ export function createRichTextEditor(
       // Defence in depth for any path that still parses clipboard input
       // outside `handlePaste`: identities never survive the transform.
       transformPastedHTML: (html: string): string =>
-        sanitizePastedHtml(html).html,
+        isFull
+          ? sanitizeFullPastedHtml(html).html
+          : sanitizePastedHtml(html).html,
       transformPasted: (slice: Slice): Slice => stripSliceIdentities(slice),
       // Allocation-free literal fallback: the parsed slice is discarded by
       // `handlePaste` (which re-plans from the raw transfer), so this layer
       // must not consume allocator identities.
-      clipboardTextParser: (text: string): Slice => {
+      clipboardTextParser: (text: string, _context?: unknown, _plain?: boolean, parserView?: EditorView): Slice => {
         if (text === "") return Slice.empty;
+        if (isFull) {
+          const literal = codeLiteralSlice(
+            editor.schema,
+            (parserView ?? editor.view).state.selection,
+            text,
+            null,
+          );
+          if (literal !== null) return literal;
+          const planned = planFullTextPaste(text, () => "");
+          if (planned.outcome === "refuse" || planned.blocks.length === 0) {
+            return Slice.empty;
+          }
+          try {
+            return sliceForFullBlocks(editor.schema, planned.blocks);
+          } catch {
+            return Slice.empty;
+          }
+        }
         const paragraphs = text.split(/(?:\r\n?|\n)+/).map((line) => ({
           type: "paragraph",
           attrs: { [PARAGRAPH_ID_ATTRIBUTE]: "" },
@@ -469,6 +677,29 @@ export function createRichTextEditor(
         event.preventDefault();
         return true;
       },
+      // Inert links (CL-2F-F-URL): links never navigate — not by mouse,
+      // keyboard-triggered click, modified click or middle click — while
+      // staying selectable text. The mouseup half of the interception lives
+      // here; the navigation-cancelling `click` listener sits in
+      // `handleDOMEvents` above.
+      handleClickOn: (
+        _view: EditorView,
+        _pos: number,
+        _node: ProseMirrorNode,
+        _nodePos: number,
+        event: MouseEvent,
+        _direct: boolean,
+      ): boolean => {
+        if (!isFull) return false;
+        const target = event.target as unknown as {
+          closest?: (selector: string) => unknown;
+        };
+        if (target !== null && typeof target === "object" && typeof target.closest === "function" && target.closest("a") !== null) {
+          event.preventDefault();
+          return true;
+        }
+        return false;
+      },
       // `text/plain` is literal: typed characters insert verbatim and the
       // P0 Markdown input rules never fire. Direct props win over the
       // mark extensions' input-rule plugins.
@@ -494,10 +725,83 @@ export function createRichTextEditor(
 
   const manager = (): MarkdownManager => editor.storage.markdown.manager;
 
-  const displayedDocument = (): RichTextDocument =>
-    proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
+  // Full run-source retention across capture/remount (R-FULL-META-2): the
+  // live document never stores it, so the session carries the previous
+  // capture's map as the next capture's incoming base.
+  let fullRetained: RetainedRunMetadata = {
+    ...(options.document.retainedRunMetadata ?? {}),
+  };
+
+  /** Synchronize inert link rendering with editability (CL-2F-F-URL item 1):
+      read-only/disabled mounts render no `href`, and toggling editability
+      strips or restores the attribute synchronously. The DOM observer is
+      paused across the mutation so no spurious transaction is read back;
+      the render spec stays convergent because `SafeLink` renders from the
+      same `isEditable` state. Copy keeps link data from the live document
+      state, never from this DOM. */
+  const syncLinkInertness = (): void => {
+    if (!isFull) return;
+    const view = editor.view;
+    const inert = !isActive();
+    const observer = (
+      view as unknown as {
+        domObserver?: { stop?: () => void; start?: () => void };
+      }
+    ).domObserver;
+    try {
+      observer?.stop?.();
+    } catch {
+      // An observer pause never blocks the sync.
+    }
+    try {
+      const anchors = view.dom.querySelectorAll("a");
+      anchors.forEach((anchor) => {
+        if (inert) {
+          anchor.removeAttribute("href");
+          return;
+        }
+        if (anchor.hasAttribute("href")) return;
+        let position: number | null = null;
+        try {
+          position = view.posAtDOM(anchor, 0);
+        } catch {
+          position = null;
+        }
+        if (position === null) return;
+        const node = view.state.doc.nodeAt(position);
+        const link = node?.marks.find((mark) => mark.type.name === "link");
+        const href = link?.attrs["href"];
+        if (typeof href === "string" && href !== "") {
+          anchor.setAttribute("href", href);
+        }
+      });
+    } finally {
+      try {
+        observer?.start?.();
+      } catch {
+        // An observer restart never blocks the sync.
+      }
+    }
+  };
+
+  const displayedDocument = (): RichTextDocument => {
+    if (isFull) {
+      const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
+      fullRetained = read.retainedRunMetadata;
+      return read.document;
+    }
+    return proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
+  };
 
   const displayedCaptureResult = (): RichTextCaptureResult => {
+    if (isFull) {
+      const read = fullProseMirrorToDocument(editor.state.doc, fullRetained);
+      fullRetained = read.retainedRunMetadata;
+      return {
+        document: read.document,
+        representability: { nonRepresentableParagraphIds: read.nonRepresentableParagraphIds },
+      };
+    }
     const { document, nonRepresentableParagraphIds } =
       proseMirrorToCaptureResult(
         manager(),
@@ -570,11 +874,8 @@ export function createRichTextEditor(
     docNode: ProseMirrorNode,
   ): { id: string; text: string; contentKey: string }[] => {
     const blocks: { id: string; text: string; contentKey: string }[] = [];
-    docNode.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+    docNode.descendants((node) => {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && id !== "") {
           blocks.push({
@@ -584,6 +885,7 @@ export function createRichTextEditor(
           });
         }
       }
+      return true;
     });
     return blocks;
   };
@@ -615,17 +917,15 @@ export function createRichTextEditor(
   const orderIdsByDocument = (ids: readonly string[]): string[] => {
     const wanted = new Set(ids);
     const ordered: string[] = [];
-    editor.state.doc.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+    editor.state.doc.descendants((node) => {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && wanted.has(id)) {
           wanted.delete(id);
           ordered.push(id);
         }
       }
+      return true;
     });
     for (const id of ids) {
       if (wanted.has(id)) {
@@ -667,7 +967,7 @@ export function createRichTextEditor(
       // its identity while changing text, so the touched union (not the
       // fresh identities alone) names the modified block and the tail.
       const touched = new Set<string>();
-      markTouchedFromTransaction(touched, editor.state.doc, transaction);
+      markTouchedFromTransaction(touched, editor.state.doc, transaction, [], touchedPredicate);
       const affected = orderIdsByDocument([...new Set([...inserted, ...touched])]);
       const origin =
         lastNativeCopyText !== null &&
@@ -687,7 +987,7 @@ export function createRichTextEditor(
     }
     if (isHistoryTransaction(transaction)) {
       const affectedSet = new Set<string>();
-      markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
+      markTouchedFromTransaction(affectedSet, editor.state.doc, transaction, [], touchedPredicate);
       const affected = orderIdsByDocument([...affectedSet]);
       const directed = pendingHistory;
       pendingHistory = null;
@@ -786,7 +1086,7 @@ export function createRichTextEditor(
       };
     }
     const affectedSet = new Set<string>();
-    markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
+    markTouchedFromTransaction(affectedSet, editor.state.doc, transaction, [], touchedPredicate);
     return { kind: "type", affected: orderIdsByDocument([...affectedSet]) };
   };
 
@@ -802,12 +1102,14 @@ export function createRichTextEditor(
       return;
     }
     if (transaction.docChanged) lastDispatchChanged = true;
-    markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction);
+    markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction, [], touchedPredicate);
     if (suppressEmit) {
       markTouchedFromTransaction(
         suppressedAffected,
         editor.state.doc,
         transaction,
+        [],
+        touchedPredicate,
       );
     }
     if (editor.view.composing && !tracker.composing) {
@@ -820,6 +1122,8 @@ export function createRichTextEditor(
         composingAffected,
         editor.state.doc,
         transaction,
+        [],
+        touchedPredicate,
       );
       if (transaction.docChanged) composingChanged = true;
       prevUndoDepth = undoDepth(editor.state);
@@ -865,7 +1169,7 @@ export function createRichTextEditor(
     } | null = null;
     editor.state.doc.descendants((node, pos) => {
       if (
-        (node.type.name === "paragraph" || node.type.name === "preservedBlock") &&
+        isIdentityBlockName(node.type.name) &&
         node.attrs[PARAGRAPH_ID_ATTRIBUTE] === paragraphId
       ) {
         found = {
@@ -885,10 +1189,7 @@ export function createRichTextEditor(
   const identitySet = (): Set<string> => {
     const ids = new Set<string>();
     editor.state.doc.descendants((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string") ids.add(id);
       }
@@ -931,7 +1232,12 @@ export function createRichTextEditor(
     $pos: { parent: ProseMirrorNode; parentOffset: number },
   ): { paragraphId: string | null; offset: number } => {
     const parent = $pos.parent;
-    if (parent.type.name === "paragraph" || parent.type.name === "preservedBlock") {
+    if (
+      parent.type.name === "paragraph" ||
+      parent.type.name === "heading" ||
+      parent.type.name === "codeBlock" ||
+      parent.type.name === "preservedBlock"
+    ) {
       const id = parent.attrs[PARAGRAPH_ID_ATTRIBUTE];
       return {
         paragraphId: typeof id === "string" ? id : null,
@@ -960,7 +1266,9 @@ export function createRichTextEditor(
       nodes. */
   const replaceDocument = (incoming: RichTextDocument): void => {
     const node = editor.schema.nodeFromJSON(
-      documentToProseMirror(manager(), incoming),
+      isFull
+        ? fullDocumentToProseMirror(incoming, allocateFresh)
+        : documentToProseMirror(manager(), incoming),
     );
     const tr = editor.state.tr.replaceWith(
       0,
@@ -990,7 +1298,27 @@ export function createRichTextEditor(
         return false;
       }
       if (left.kind === "paragraph") {
+        if (left.segments !== undefined || right.segments !== undefined) {
+          if (
+            JSON.stringify(left.segments ?? null) !==
+              JSON.stringify(right.segments ?? null) ||
+            JSON.stringify(left.metadata ?? null) !==
+              JSON.stringify(right.metadata ?? null)
+          ) {
+            return false;
+          }
+          continue;
+        }
         if ((left.text ?? undefined) !== (right.text ?? undefined)) {
+          return false;
+        }
+        continue;
+      }
+      if (left.kind === "horizontalRule") {
+        if (
+          JSON.stringify(left.hrMetadata ?? null) !==
+          JSON.stringify(right.hrMetadata ?? null)
+        ) {
           return false;
         }
         continue;
@@ -1048,6 +1376,9 @@ export function createRichTextEditor(
   };
 
   const applyExternalDocument = (incoming: RichTextDocument): void => {
+    if (isFull) {
+      fullRetained = { ...(incoming.retainedRunMetadata ?? {}) };
+    }
     const saved = selectionSnapshot();
     const before = displayedDocument();
     const rawOnly = isRawOnlyPreservedChange(before, incoming);
@@ -1064,7 +1395,18 @@ export function createRichTextEditor(
         replaceDocument(incoming);
         reseedConversion(seeds, incoming);
       }
-      lastAcknowledged = copyRichTextDocument(incoming);
+      // Mounted baseline (review 2 blocking 3, full only): the
+      // acknowledgement reference is the canonical mounted document —
+      // normalized containerOrder, materialized defaults, the
+      // TrailingNode paragraph — never the pre-replace input, so a clean
+      // editor reports no local edits on the next external update.
+      // P0 keeps the input-copy baseline byte-identical to RT-1. The
+      // pre-canonical host input is retained beside it (review 3
+      // blocking 3): its echo is Rule 1, not a Rule-4 replace.
+      lastAcknowledged = isFull
+        ? copyRichTextDocument(displayedDocument())
+        : copyRichTextDocument(incoming);
+      lastAcceptedInput = copyRichTextDocument(incoming);
       // Rule-4 application completes: the revision flag clears (§5.6). The
       // replacement ran suppressed, so no emission set it back.
       hasUnacknowledgedLocalRevision = false;
@@ -1116,6 +1458,17 @@ export function createRichTextEditor(
   };
 
   const settleExternal = (incoming: RichTextDocument): void => {
+    // Pre-canonical host echo (review 3 blocking 3, §5.6 Rule 1): the host
+    // replays the exact pre-mount input while the displayed document is the
+    // canonical mount. Acknowledge with no replace and no conflict.
+    if (
+      richTextDocumentsEqual(incoming, lastAcceptedInput) &&
+      richTextDocumentsEqual(displayedDocument(), lastAcknowledged)
+    ) {
+      lastAcceptedInput = copyRichTextDocument(incoming);
+      hasUnacknowledgedLocalRevision = false;
+      return;
+    }
     const decision = decideExternalUpdate({
       displayed: displayedDocument(),
       lastAcknowledged,
@@ -1125,6 +1478,7 @@ export function createRichTextEditor(
     });
     if (decision === "echo") {
       lastAcknowledged = copyRichTextDocument(incoming);
+      lastAcceptedInput = copyRichTextDocument(incoming);
       hasUnacknowledgedLocalRevision = false;
       return;
     }
@@ -1141,7 +1495,8 @@ export function createRichTextEditor(
   /** Shared paste policy for the convenience method and the native pipeline:
       the P0 schema plus the Markdown bridge (literal text for `text/plain`),
       identity stripping, whole-refusal classification and the preserved-span
-      refusal. Emits exactly one `paste` event on insertion. */
+      refusal. The full profile plans through the full schema and bridge
+      instead. Emits exactly one `paste` event on insertion. */
   function runPastePolicy(
     view: EditorView,
     html: string,
@@ -1168,6 +1523,12 @@ export function createRichTextEditor(
         rejectedKinds: spannedKinds,
         clipboardFormats: formats,
       });
+      return;
+    }
+    if (isFull) {
+      if (runFullCodeLiteral(view, html, text, origin)) return;
+      if (runFullUrlOverSelection(view, html, text, origin)) return;
+      runFullPastePolicy(view, html, text, origin, formats);
       return;
     }
     let planned: PastePlan;
@@ -1261,26 +1622,224 @@ export function createRichTextEditor(
     }
   }
 
+  /** Full-profile paste policy (CL-2F P matrix): safe content enters as
+      editable structure with fresh identities; foreign ids are stripped, and
+      tables/task content/active HTML/unsafe hrefs refuse the payload whole. */
+  /** Code-context literal paste (R-FULL-CODE-1 item 3): when the whole
+      selection sits inside one code block the payload inserts as literal
+      text — LFs kept, no marks, no code/prose/code split. Emits exactly one
+      `paste` event. Returns true when the path applied. */
+  function runFullCodeLiteral(
+    view: EditorView,
+    html: string,
+    text: string,
+    origin: "internal" | "external",
+  ): boolean {
+    const literal = codeLiteralSlice(
+      view.state.schema,
+      view.state.selection,
+      text === "" ? null : text,
+      html === "" ? null : html,
+    );
+    if (literal === null) return false;
+    const codeId = view.state.selection.$from.parent.attrs[PARAGRAPH_ID_ATTRIBUTE];
+    const beforeIds = identitySet();
+    lastDispatchChanged = false;
+    suppressedAffected.clear();
+    suppressEmit = true;
+    try {
+      view.dispatch(view.state.tr.replaceSelection(literal));
+    } finally {
+      suppressEmit = false;
+    }
+    if (tracker.composing || view.composing) return true;
+    if (!lastDispatchChanged) return true;
+    const afterIds = identitySet();
+    const inserted = [...afterIds].filter((id) => !beforeIds.has(id));
+    for (const id of inserted) seeds.touched.add(id);
+    const affected = orderIdsByDocument([
+      ...(typeof codeId === "string" && codeId !== "" ? [codeId] : []),
+      ...inserted,
+      ...suppressedAffected,
+    ]);
+    const after = displayedCaptureResult();
+    emitChange(
+      "paste",
+      affected,
+      {
+        paste: { insertedParagraphIds: inserted, origin },
+      },
+      after,
+    );
+    return true;
+  }
+
+  /** URL paste over a selected label (F07 review 1 item 9): when the
+      payload is link intent — a single token carrying a URI scheme — and
+      the selection is a non-empty range inside one textblock, the label
+      keeps its text and gains the link instead of being replaced. The href
+      decodes and validates first (R-FULL-URL-1); a forbidden href refuses
+      the whole paste so the label is never destroyed for a refused link.
+      Returns true when the path applied (link or refusal). */
+  function runFullUrlOverSelection(
+    view: EditorView,
+    html: string,
+    text: string,
+    origin: "internal" | "external",
+  ): boolean {
+    if (html !== "") return false;
+    if (/\s/.test(text)) return false;
+    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(decodeHrefToken(text))) return false;
+    const { $from, $to } = view.state.selection;
+    if ($from.pos === $to.pos) return false;
+    if ($from.parent !== $to.parent || !$from.parent.isTextblock) return false;
+    if ($from.parent.type.name === "codeBlock") return false;
+    const href = decodeHrefToken(text);
+    if (!isAllowedHref(href)) {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: ["link"],
+        clipboardFormats: ["text/plain"],
+      });
+      return true;
+    }
+    const linkType = view.state.schema.marks["link"];
+    if (linkType === undefined) return false;
+    const blockId = $from.parent.attrs[PARAGRAPH_ID_ATTRIBUTE];
+    lastDispatchChanged = false;
+    suppressedAffected.clear();
+    suppressEmit = true;
+    try {
+      view.dispatch(
+        view.state.tr.addMark($from.pos, $to.pos, linkType.create({ href })),
+      );
+    } finally {
+      suppressEmit = false;
+    }
+    if (tracker.composing || view.composing) return true;
+    if (!lastDispatchChanged) return true;
+    const affected = orderIdsByDocument([
+      ...(typeof blockId === "string" && blockId !== "" ? [blockId] : []),
+      ...suppressedAffected,
+    ]);
+    const after = displayedCaptureResult();
+    emitChange(
+      "paste",
+      affected,
+      {
+        paste: { insertedParagraphIds: [], origin },
+      },
+      after,
+    );
+    return true;
+  }
+
+  function runFullPastePolicy(
+    view: EditorView,
+    html: string,
+    text: string,
+    origin: "internal" | "external",
+    formats: ("text/html" | "text/plain")[],
+  ): void {
+    const planned =
+      html !== ""
+        ? planFullHtmlPaste(view.state.schema, html, allocateFresh)
+        : planFullTextPaste(text, allocateFresh);
+    if (planned.outcome === "refuse") {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: [...planned.rejectedKinds],
+        clipboardFormats: formats,
+      });
+      return;
+    }
+    if (planned.imageReported && planned.blocks.length === 0) {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: ["image"],
+        clipboardFormats: formats,
+      });
+      return;
+    }
+    if (planned.blocks.length === 0) return;
+    const beforeIds = identitySet();
+    lastDispatchChanged = false;
+    suppressedAffected.clear();
+    suppressEmit = true;
+    try {
+      view.dispatch(
+        view.state.tr.replaceSelection(
+          sliceForFullBlocks(view.state.schema, planned.blocks),
+        ),
+      );
+    } finally {
+      suppressEmit = false;
+    }
+    if (tracker.composing || view.composing) return;
+    if (!lastDispatchChanged) {
+      if (planned.imageReported) {
+        callbacks.onUnsupportedPaste?.({
+          rejectedKinds: ["image"],
+          clipboardFormats: formats,
+        });
+      }
+      return;
+    }
+    const afterIds = identitySet();
+    const inserted = [...afterIds].filter((id) => !beforeIds.has(id));
+    for (const id of inserted) seeds.touched.add(id);
+    const affected = orderIdsByDocument([...inserted, ...suppressedAffected]);
+    const after = displayedCaptureResult();
+    emitChange(
+      "paste",
+      affected,
+      {
+        paste: { insertedParagraphIds: inserted, origin },
+      },
+      after,
+    );
+    if (planned.imageReported) {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: ["image"],
+        clipboardFormats: formats,
+      });
+    }
+  }
+
   /** Reset identity attributes on a pasted slice (defence in depth: the
       policy path re-plans from the raw transfer, so this transformed slice
       is discarded there; any other consumer still never trusts identities). */
   function stripSliceIdentities(slice: Slice): Slice {
     const nodes: ProseMirrorNode[] = [];
-    slice.content.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
-        nodes.push(
-          node.type.create(
-            { ...node.attrs, [PARAGRAPH_ID_ATTRIBUTE]: "" },
-            node.content,
-            node.marks,
-          ),
+    const stripDeep = (node: ProseMirrorNode): ProseMirrorNode => {
+      let remade = node;
+      if (isIdentityBlockName(node.type.name)) {
+        remade = node.type.create(
+          { ...node.attrs, [PARAGRAPH_ID_ATTRIBUTE]: "" },
+          node.content,
+          node.marks,
         );
-      } else {
-        nodes.push(node);
       }
+      if (node.type.name === "bulletList" || node.type.name === "orderedList") {
+        const cleared: ProseMirrorNode[] = [];
+        remade.content.forEach((child) => cleared.push(stripDeep(child)));
+        remade = node.type.create(
+          { ...node.attrs, listRunId: "" },
+          Fragment.from(cleared),
+        );
+      } else if (remade !== node || node.childCount > 0) {
+        const rebuilt: ProseMirrorNode[] = [];
+        let changed = remade !== node;
+        remade.content.forEach((child) => {
+          const next = stripDeep(child);
+          if (next !== child) changed = true;
+          rebuilt.push(next);
+        });
+        if (changed) {
+          remade = node.type.create(remade.attrs, Fragment.from(rebuilt), node.marks);
+        }
+      }
+      return remade;
+    };
+    slice.content.forEach((node) => {
+      nodes.push(stripDeep(node));
     });
     return new Slice(Fragment.from(nodes), slice.openStart, slice.openEnd);
   }
@@ -1482,6 +2041,18 @@ export function createRichTextEditor(
     // Recording read (see rule-4 application above): records each mount
     // version's exact text with no bridge call.
     displayedDocument();
+    if (isFull) {
+      // Mounted baseline (review 2 blocking 3): the acknowledgement
+      // reference is the canonical mounted document — normalized
+      // containerOrder, materialized defaults, the TrailingNode
+      // paragraph — never the pre-mount input, so a clean mount reports
+      // no local edits on the next external update (Rule 4 applies it).
+      // P0 keeps the input-copy baseline byte-identical to RT-1.
+      lastAcknowledged = copyRichTextDocument(displayedDocument());
+    }
+    // Read-only/disabled mounts render no navigable link attributes from
+    // the first paint (CL-2F-F-URL item 1).
+    syncLinkInertness();
   } finally {
     suppressEmit = false;
   }
@@ -1507,6 +2078,7 @@ export function createRichTextEditor(
       if (!next) flagRevokedIfComposing();
       editable = next;
       editor.setEditable(isActive());
+      syncLinkInertness();
       markRevokedComposition();
     },
 
@@ -1516,6 +2088,7 @@ export function createRichTextEditor(
       if (next) flagRevokedIfComposing();
       disabled = next;
       editor.setEditable(isActive());
+      syncLinkInertness();
       markRevokedComposition();
     },
 
@@ -1540,7 +2113,7 @@ export function createRichTextEditor(
     typeText(paragraphId: string, text: string): void {
       if (text === "") return;
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       runGesture(
         "type",
         () => {
@@ -1557,7 +2130,7 @@ export function createRichTextEditor(
 
     clearParagraph(paragraphId: string): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       if (target.end <= target.start) return;
       runGesture(
         "type",
@@ -1573,7 +2146,7 @@ export function createRichTextEditor(
 
     splitParagraph(paragraphId: string, offset: number): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       const size = target.end - target.start;
       const at = target.start + Math.max(0, Math.min(offset, size));
       const before = identitySet();
@@ -1602,12 +2175,12 @@ export function createRichTextEditor(
 
     mergeWithPrevious(paragraphId: string): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       const resolved = editor.state.doc.resolve(target.pos);
       const index = resolved.index();
       if (index === 0) return;
       const previous = resolved.parent.child(index - 1);
-      if (previous.type.name !== "paragraph") return;
+      if (previous.type.name !== target.name) return;
       const survivor = previous.attrs[PARAGRAPH_ID_ATTRIBUTE] as string;
       const before = identitySet();
       runGesture(
@@ -1725,10 +2298,7 @@ export function createRichTextEditor(
       const wanted = new Set(paragraphIds);
       const nodes: ProseMirrorNode[] = [];
       editor.state.doc.descendants((node) => {
-        if (
-          node.type.name === "paragraph" ||
-          node.type.name === "preservedBlock"
-        ) {
+        if (isIdentityBlockName(node.type.name)) {
           const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
           if (typeof id === "string" && wanted.has(id)) nodes.push(node);
         }
@@ -1759,6 +2329,39 @@ export function createRichTextEditor(
     applyExternalUpdate(next: RichTextDocument): void {
       if (tracker.destroyed) return;
       const incoming = copyRichTextDocument(next);
+      // R-FULL-PROFILE-1: a profile/format mismatch refuses the external
+      // update without changing the local draft. R-FULL-URL-1: an incoming
+      // full document carrying a forbidden link target refuses the same way.
+      const formatOk = isFull
+        ? incoming.format === FULL_PROFILE_ID
+        : incoming.format !== FULL_PROFILE_ID;
+      let hrefOk = true;
+      if (isFull && formatOk) {
+        try {
+          assertFullDocumentLinksAllowed(incoming);
+        } catch {
+          hrefOk = false;
+        }
+      }
+      if (!formatOk || !hrefOk) {
+        callbacks.onExternalConflict?.({
+          incoming: copyRichTextDocument(incoming),
+          local: displayedDocument(),
+        });
+        return;
+      }
+      // Pre-canonical host echo (review 3 blocking 3, §5.6 Rule 1): the
+      // host replays the exact pre-mount input while the displayed
+      // document is the canonical mount. Acknowledge with no replace and
+      // no conflict, without moving the acknowledgement off canonical.
+      if (
+        richTextDocumentsEqual(incoming, lastAcceptedInput) &&
+        richTextDocumentsEqual(displayedDocument(), lastAcknowledged)
+      ) {
+        lastAcceptedInput = copyRichTextDocument(incoming);
+        hasUnacknowledgedLocalRevision = false;
+        return;
+      }
       // §5.6 rule order via the pure decision (§5.6, never restated here).
       const decision = decideExternalUpdate({
         displayed: displayedDocument(),
@@ -1771,6 +2374,7 @@ export function createRichTextEditor(
       // (clears the revision flag). The format is part of the equality.
       if (decision === "echo") {
         lastAcknowledged = incoming;
+        lastAcceptedInput = copyRichTextDocument(incoming);
         hasUnacknowledgedLocalRevision = false;
         return;
       }

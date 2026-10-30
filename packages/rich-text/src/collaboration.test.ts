@@ -862,6 +862,46 @@ describe("CL-1M review pass 3 (RFC 3986 URI-reference grammar, R-FULL-URL-1)", (
     }
   });
 
+  it("refuses entity-encoded schemes at the validator and link-patch level (review 2 blocking 2)", () => {
+    // The single validator decodes entities itself: no caller-side decode
+    // is needed for the encoded form to refuse.
+    for (const href of [
+      "javascript&colon;alert(1)",
+      "data&colon;text/html,x",
+      "vbscript&colon;x",
+      "jav&#x61;script:alert(1)",
+      "jav&#x3A;script:alert(1)",
+      "&#106;avascript:alert(1)",
+    ]) {
+      expect(isAllowedHref(href)).toBe(false);
+      expect(validateAgentPatch(linkPatch(href))).toMatchObject({
+        ok: false,
+        reason: "incompatible-schema",
+      });
+    }
+  });
+
+  it("requires raw and decoded hrefs to pass with the same scheme (review 3 blocking 2)", () => {
+    // RED on 825a15d1: `isAllowedHref` validated only the decoded token, so
+    // an over-cap entity-padded href and `https&colon;//x` both passed.
+    const overCapEntityPadded = `https://example.com/${"&#48;".repeat(500)}`;
+    expect(overCapEntityPadded.length).toBeGreaterThan(2048);
+    expect(isAllowedHref(overCapEntityPadded)).toBe(false);
+    expect(isAllowedHref("https&colon;//x")).toBe(false);
+    expect(isAllowedHref("https&amp;colon;//x")).toBe(false);
+    // Valid query ampersands and `&amp;` in already-valid URLs still pass.
+    expect(isAllowedHref("https://e.com/?a=1&b=2")).toBe(true);
+    expect(isAllowedHref("https://e.com/?a=1&amp;b=2")).toBe(true);
+    expect(isAllowedHref("?a=1&amp;b=2")).toBe(true);
+    expect(validateAgentPatch(linkPatch(overCapEntityPadded))).toMatchObject({
+      ok: false,
+    });
+    expect(validateAgentPatch(linkPatch("https&colon;//x"))).toMatchObject({
+      ok: false,
+      reason: "incompatible-schema",
+    });
+  });
+
   it("keeps valid network references, relative paths, mailto and literals", () => {
     for (const href of [
       "https://u@[::1]/p",

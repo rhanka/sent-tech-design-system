@@ -35,6 +35,10 @@ const COMPOSER_SOURCE = path.join(HERE, "ComposerEditor.svelte");
 const COMPONENT_CSS = path.join(HERE, "rich-text-editor.css");
 // CL-2 offline gate: the browser harness must never load a collaboration
 // runtime. Any of these markers in a served harness asset fails the run.
+// Boundary-aware: a bare `includes` false-positives on `linkifyjs` (bundled
+// by the link extension of the full profile), so a marker only counts when
+// no identifier character flanks it. A real collaboration import still
+// matches (`"yjs"`, `(yjs`, ` yjs;` …).
 const PROVIDER_RUNTIME_MARKERS = [
   "yjs",
   "y-protocols",
@@ -43,6 +47,11 @@ const PROVIDER_RUNTIME_MARKERS = [
   "HocuspocusProvider",
   "WebsocketProvider",
 ];
+
+function containsRuntimeMarker(text, marker) {
+  const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^A-Za-z0-9_$])${escaped}([^A-Za-z0-9_$]|$)`).test(text);
+}
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_BIN,
@@ -78,6 +87,29 @@ function ok(label) {
 function assert(condition, label, message) {
   if (!condition) fail(label, message);
   return Boolean(condition);
+}
+
+// Follow-up fixtures: the boundary-aware provider-free scan still catches
+// real collaboration imports while ignoring linkifyjs. Runs at load, before
+// any browser work, and fails the run on a scan regression.
+for (const [text, marker, expected] of [
+  [`import { Doc } from "yjs"`, "yjs", true],
+  [`import { awarenessProtocol } from "y-protocols/awareness"`, "y-protocols", true],
+  [`import "y-protocols/awareness"`, "yjs", false],
+  [`import "y-prosemirror"`, "y-prosemirror", true],
+  [`const provider = new HocuspocusProvider()`, "HocuspocusProvider", true],
+  [`new WebsocketProvider(url, name, doc)`, "WebsocketProvider", true],
+  [`/* yjs collaboration */`, "yjs", true],
+  [`import { linkify } from "linkifyjs"`, "yjs", false],
+  [`import "linkify-html"`, "yjs", false],
+  [`const myjs = 1`, "yjs", false],
+  [`const yjsx = 1`, "yjs", false],
+]) {
+  assert(
+    containsRuntimeMarker(text, marker) === expected,
+    "provider-markers",
+    `scan ${expected ? "missed" : "flagged"} ${JSON.stringify(marker)} in ${JSON.stringify(text)}`,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -328,6 +360,10 @@ function expectChanges(label, events, count) {
 
 async function openScenario(browser, base, scenario, surface = "document") {
   const page = await browser.newPage();
+  // Cache off: every navigation re-requests its modules, so the full-graph
+  // chunk below is observable whenever any mount loads it (review 2
+  // blocking 1: a P0 mount must never request it).
+  await page.setCacheEnabled(false);
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
   await page.evaluateOnNewDocument(() => {
@@ -383,6 +419,12 @@ async function openScenario(browser, base, scenario, surface = "document") {
       // same-origin injected image (`/injected.png`) or beacon (`/beacon`)
       // shares the base but matches no entry below, so it fails. `data:`
       // and `blob:` URLs are not network traffic.
+      // Review 2 blocking 1, P0 isolation witness: no P0 mount may load
+      // the full extension graph. The lazy graph ships as a dynamic chunk
+      // named after `editor-full-extensions`; with the cache off above,
+      // any load would surface as a request here.
+      const fullChunk = requests.filter((entry) => entry.includes("editor-full-extensions"));
+      assert(fullChunk.length === 0, label, `P0 mount loaded the full extension graph (${(fullChunk[0] ?? "?").slice(0, 200)})`);
       const foreign = requests.filter((entry) => {
         const parts = entry.split(" ");
         const url = parts.slice(1, -1).join(" ");
@@ -1420,7 +1462,7 @@ async function main() {
       for (const name of assets) {
         const text = readFileSync(join(work, "dist", "assets", name), "utf8");
         for (const marker of PROVIDER_RUNTIME_MARKERS) {
-          assert(!text.includes(marker), "provider-free", `harness asset ${name} loads the collaboration runtime (${marker})`);
+          assert(!containsRuntimeMarker(text, marker), "provider-free", `harness asset ${name} loads the collaboration runtime (${marker})`);
         }
       }
       console.log(`ok provider-free: ${assets.length} harness asset(s) scanned, no collaboration runtime`);
