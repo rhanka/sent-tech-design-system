@@ -22,6 +22,10 @@
     "./editor": {
       "types": "./dist/editor.d.ts",
       "import": "./dist/editor.js"
+    },
+    "./editor/collaboration": {
+      "types": "./dist/editor-bound.d.ts",
+      "import": "./dist/editor-bound.js"
     }
   },
   "files": [

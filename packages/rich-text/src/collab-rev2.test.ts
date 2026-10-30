@@ -26,6 +26,12 @@ import {
   type RichTextEditor,
   type RichTextBindingErrorEvent,
 } from "./editor.js";
+// CL-3a fix 3: the bound runtime is imported by the caller (here: the test,
+// standing in for the host adapter that imports the
+// "@sentropic/design-system-rich-text/editor/collaboration" subpath) and
+// injected through `collaborationRuntime`; the `"./editor"` entry never
+// imports it, so the controlled graph reaches no collaboration module.
+import { createBoundRichTextEditor } from "./editor-bound.js";
 import { createInMemoryTestDoubleProvider } from "./editor-collaboration.js";
 import {
   captureDocumentFromField,
@@ -158,6 +164,7 @@ async function boundEditorOn(
     })(),
     collaborationBinding: identity,
     collaborationSource: source,
+    collaborationRuntime: createBoundRichTextEditor,
     ...(options.onBindingError !== undefined ? { onBindingError: options.onBindingError } : {}),
     element: globalThis.document.createElement("div"),
   });
@@ -278,6 +285,7 @@ describe("CL-3a fix 2 — B-NEW-1 bound entry (spec 6.3 seam 3)", () => {
         allocateId: () => "fresh:unseeded:1",
         collaborationBinding: identity,
         collaborationSource: source,
+        collaborationRuntime: createBoundRichTextEditor,
         element: globalThis.document.createElement("div"),
       }),
     ).rejects.toThrow("rich-text.collab-unseeded-field");

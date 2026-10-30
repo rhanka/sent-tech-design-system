@@ -38,6 +38,79 @@ function graphFrom(entry: string): string[] {
   return [...seen];
 }
 
+/** Comment-stripped source, string contents preserved: no comment text can
+    fake (or hide) a runtime import edge. */
+function withoutComments(source: string): string {
+  let out = "";
+  let index = 0;
+  while (index < source.length) {
+    const char = source[index] as string;
+    if (char === "/" && source[index + 1] === "/") {
+      const end = source.indexOf("\n", index);
+      index = end === -1 ? source.length : end;
+      continue;
+    }
+    if (char === "/" && source[index + 1] === "*") {
+      const end = source.indexOf("*/", index + 2);
+      index = end === -1 ? source.length : end + 2;
+      continue;
+    }
+    if (char === '"' || char === "'" || char === "`") {
+      let close = index + 1;
+      while (close < source.length && source[close] !== char) {
+        close += source[close] === "\\" ? 2 : 1;
+      }
+      out += source.slice(index, close + 1);
+      index = close + 1;
+      continue;
+    }
+    out += char;
+    index += 1;
+  }
+  return out;
+}
+
+/** Runtime import specifiers of a source file: static value imports and
+    re-exports, bare `import "x"`, and dynamic `import("x")`. Type-only
+    statements (`import type` / `export type`) are excluded: under
+    `verbatimModuleSyntax` they are erased, so a non-`type` statement or a
+    dynamic call in the comment-stripped source is exactly an edge of the
+    emitted ESM a bundler must follow. */
+function runtimeSpecifiersOf(file: string): string[] {
+  const code = withoutComments(readFileSync(join(SRC_DIR, file), "utf8"));
+  const patterns = [
+    /\b(?:import|export)\s+(?!type\b)[^;()]*?\bfrom\s+["']([^"']+)["']/g,
+    /\bimport\s+["']([^"']+)["']/g,
+    /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
+  ];
+  const specifiers: string[] = [];
+  for (const pattern of patterns) {
+    for (const match of code.matchAll(pattern)) {
+      specifiers.push(match[1] as string);
+    }
+  }
+  return specifiers;
+}
+
+/** Transitive closure over runtime edges (static and dynamic), relative
+    specifiers resolved to source files. */
+function runtimeGraphFrom(entry: string): string[] {
+  const seen = new Set<string>([entry]);
+  const queue = [entry];
+  while (queue.length > 0) {
+    const file = queue.pop() as string;
+    for (const specifier of runtimeSpecifiersOf(file)) {
+      if (!specifier.startsWith(".")) continue;
+      const target = `${specifier.replace(/\.js$/, "")}.ts`.replace(/^\.\//, "");
+      if (!seen.has(target)) {
+        seen.add(target);
+        queue.push(target);
+      }
+    }
+  }
+  return [...seen].sort();
+}
+
 const MESSAGES = {
   editorLabel: "SENTINEL-EDITOR-LABEL",
   placeholder: "SENTINEL-PLACEHOLDER",
@@ -59,6 +132,37 @@ describe("CL-3-07 packaging isolation", () => {
     for (const { file, specifier } of rows) {
       expect(specifier.startsWith("yjs"), `${file} imports "${specifier}"`).toBe(false);
       expect(specifier.startsWith("y-protocols"), `${file} imports "${specifier}"`).toBe(false);
+    }
+  });
+
+  it("the runtime graph of \".\" and \"./editor\", dynamic import() edges included, reaches no collaboration module (CL-3a fix 3)", () => {
+    for (const entry of ["index.ts", "editor.ts"] as const) {
+      const graph = runtimeGraphFrom(entry);
+      if (entry === "editor.ts") {
+        // Parser sanity anchors: the walk must see the static extension
+        // graph AND the lazy full-profile dynamic import, so a walker
+        // regression cannot turn this witness into a vacuous pass.
+        expect(graph).toContain("editor-extensions.ts");
+        expect(graph).toContain("editor-full-extensions.ts");
+      }
+      for (const file of graph) {
+        expect(
+          file === "editor-bound.ts",
+          `${entry}: the runtime graph reaches the bound entry "${file}"`,
+        ).toBe(false);
+        expect(
+          file === "editor-collaboration.ts",
+          `${entry}: the runtime graph reaches "${file}"`,
+        ).toBe(false);
+        expect(file.startsWith("collab-"), `${entry}: the runtime graph reaches "${file}"`).toBe(false);
+      }
+      const rows = graph.flatMap((file) =>
+        runtimeSpecifiersOf(file).map((specifier) => ({ file, specifier })),
+      );
+      for (const { file, specifier } of rows) {
+        expect(specifier.startsWith("yjs"), `${entry}: ${file} imports "${specifier}"`).toBe(false);
+        expect(specifier.startsWith("y-protocols"), `${entry}: ${file} imports "${specifier}"`).toBe(false);
+      }
     }
   });
 
