@@ -825,47 +825,38 @@ function isValidAuthorityAndPath(text: string): boolean {
   return isValidHrefAuthority(authority) && isValidPathAbempty(path);
 }
 
-/** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
-    UTF-16 units as either an absolute URI with an allowlisted scheme
+/** Single-token href check (R-FULL-URL-1): the RFC 3986 allowlist applied
+    to exactly one token, with no decoding. Admit non-empty tokens up to
+    2048 UTF-16 units as either an absolute URI with an allowlisted scheme
     (`http`, `https`, `mailto`, case-insensitive) or a relative reference,
     checked against the RFC 3986 Appendix A ABNF for `URI-reference` with
-    no whitespace anywhere. Required productions: `scheme`, `hier-part`
-    and `relative-part` ("//" authority with `path-abempty`,
-    `path-absolute`, `path-noscheme` for relative references so a first
-    segment carrying ":" refuses, `path-rootless` for mailto,
-    `path-empty`), `authority` (`userinfo`, `host` as IP-literal /
-    IPv4address / reg-name, `port` as digits), IP-literal (IPv6address in
-    all nine ABNF forms with ls32, IPvFuture), IPv4address with dec-octet
-    (no leading zero on multi-digit octets, 0-255), pct-encoded (exactly
-    two hex digits), `query` and `fragment`. The `http` and `https`
-    schemes additionally require a non-empty host. Pure: manual string
-    scan only, no DOM and no global URL dependency, so the check does not
-    vary across runtimes. The string is validated as given, after the
-    caller decoded clipboard entities and tokenized the input. */
-export function isAllowedHref(href: string): boolean {
-  if (href.length === 0 || href.length > MAX_HREF_UNITS) {
+    no whitespace anywhere. Pure: manual string scan only, no DOM and no
+    global URL dependency. No trimming: whitespace anywhere refuses. */
+function isValidSingleHrefToken(token: string): boolean {
+  if (token.length === 0 || token.length > MAX_HREF_UNITS) {
     return false;
   }
-  if (hasDisallowedHrefChar(href)) {
+  if (hasDisallowedHrefChar(token)) {
     return false;
   }
-  if (HREF_WHITESPACE_PATTERN.test(href)) {
+  if (HREF_WHITESPACE_PATTERN.test(token)) {
     return false;
   }
-  let boundary = href.length;
+  const candidate = token;
+  let boundary = candidate.length;
   for (const separator of ["/", "?", "#"]) {
-    const at = href.indexOf(separator);
+    const at = candidate.indexOf(separator);
     if (at !== -1 && at < boundary) {
       boundary = at;
     }
   }
-  const scheme = HREF_SCHEME_PATTERN.exec(href.slice(0, boundary));
+  const scheme = HREF_SCHEME_PATTERN.exec(candidate.slice(0, boundary));
   if (scheme !== null) {
     const name = scheme[1].toLowerCase();
     if (!ALLOWED_HREF_SCHEMES.has(name)) {
       return false;
     }
-    const parts = splitHierQueryFragment(href.slice(scheme[0].length));
+    const parts = splitHierQueryFragment(candidate.slice(scheme[0].length));
     if (
       !isValidQueryOrFragment(parts.query) ||
       !isValidQueryOrFragment(parts.fragment)
@@ -880,8 +871,8 @@ export function isAllowedHref(href: string): boolean {
     }
     return isValidAuthorityAndPath(parts.hier.slice(2));
   }
-  if (href.startsWith("//")) {
-    const parts = splitHierQueryFragment(href.slice(2));
+  if (candidate.startsWith("//")) {
+    const parts = splitHierQueryFragment(candidate.slice(2));
     if (
       !isValidQueryOrFragment(parts.query) ||
       !isValidQueryOrFragment(parts.fragment)
@@ -890,7 +881,7 @@ export function isAllowedHref(href: string): boolean {
     }
     return isValidAuthorityAndPath(parts.hier);
   }
-  const parts = splitHierQueryFragment(href);
+  const parts = splitHierQueryFragment(candidate);
   if (
     !isValidQueryOrFragment(parts.query) ||
     !isValidQueryOrFragment(parts.fragment)
@@ -904,6 +895,160 @@ export function isAllowedHref(href: string): boolean {
     return isValidPathAbsolute(parts.hier);
   }
   return isValidPathNoscheme(parts.hier);
+}
+
+/** Scheme name of one href token (lowercased) or null when it carries no
+    scheme before the first `/`, `?` or `#`. Used to require the raw and the
+    decoded token to agree: an entity-encoded scheme delimiter (`https&colon;`,
+    numeric `&#104;`) decodes to an absolute URL while the raw stays relative,
+    so the pair disagrees and refuses. A valid `&amp;` in an already-valid URL
+    keeps the same scheme on both sides and passes. */
+function hrefSchemeName(token: string): string | null {
+  let boundary = token.length;
+  for (const separator of ["/", "?", "#"]) {
+    const at = token.indexOf(separator);
+    if (at !== -1 && at < boundary) {
+      boundary = at;
+    }
+  }
+  const scheme = HREF_SCHEME_PATTERN.exec(token.slice(0, boundary));
+  return scheme === null ? null : scheme[1].toLowerCase();
+}
+
+/** One href validator (R-FULL-URL-1). Admit non-empty hrefs up to 2048
+    UTF-16 units as either an absolute URI with an allowlisted scheme
+    (`http`, `https`, `mailto`, case-insensitive) or a relative reference,
+    checked against the RFC 3986 Appendix A ABNF for `URI-reference` with
+    no whitespace anywhere. Both the raw and the entity-decoded token pass,
+    with the same scheme on both sides: an entity-encoded scheme delimiter
+    (`https&colon;`, numeric `&#104;`) refuses unless the producer decoded
+    it first (as the Markdown parser does for its stored value). Double
+    encoding refuses via the stability check, while a valid `&` / `&amp;`
+    query keeps the same scheme on both sides and passes. No trimming:
+    whitespace anywhere refuses, and every producer boundary trims before
+    storing, so the stored value always equals the validated value. */
+export function isAllowedHref(href: string): boolean {
+  // Both the raw and the decoded token pass (review 3 blocking 2): the raw
+  // length cap applies to the stored value, and an entity-encoded scheme
+  // delimiter refuses unless the producer decoded it first (as the Markdown
+  // parser does for its stored value). Double encoding refuses via the
+  // stability check, while a valid `&` / `&amp;` query keeps the same scheme
+  // on both sides and passes.
+  if (href.length === 0 || href.length > MAX_HREF_UNITS) {
+    return false;
+  }
+  const decoded = decodeHrefToken(href);
+  if (decoded.length === 0 || decoded.length > MAX_HREF_UNITS) {
+    return false;
+  }
+  if (decodeHrefToken(decoded) !== decoded) {
+    return false;
+  }
+  if (!isValidSingleHrefToken(href)) {
+    return false;
+  }
+  if (!isValidSingleHrefToken(decoded)) {
+    return false;
+  }
+  return hrefSchemeName(href) === hrefSchemeName(decoded);
+}
+
+/** Named HTML entities with an ASCII output, for href tokenization
+    (R-FULL-URL-1): no named entity decodes to an ASCII letter or digit, so
+    only scheme punctuation, whitespace and structural characters matter
+    here. Unknown entities are left as written. */
+const NAMED_HREF_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+  Tab: "	",
+  NewLine: "\n",
+  colon: ":",
+  semi: ";",
+  sol: "/",
+  bsol: "\\",
+  quest: "?",
+  num: "#",
+  percnt: "%",
+  plus: "+",
+  equals: "=",
+  commat: "@",
+  excl: "!",
+  dollar: "$",
+  period: ".",
+  comma: ",",
+  lpar: "(",
+  rpar: ")",
+  ast: "*",
+  verbar: "|",
+  lowbar: "_",
+  Hat: "^",
+  grave: "`",
+  lcub: "{",
+  rcub: "}",
+  lsqb: "[",
+  rsqb: "]",
+  tilde: "~",
+};
+
+/** Decode one numeric character reference to its character, or null when
+    the code point is not a valid scalar value. */
+function decodeNumericReference(code: number): string | null {
+  if (code <= 0 || code > 0x10ffff) return null;
+  if (code >= 0xd800 && code <= 0xdfff) return null;
+  if (
+    (code >= 0xfdd0 && code <= 0xfdef) ||
+    (code & 0xfffe) === 0xfffe
+  ) {
+    return null;
+  }
+  return String.fromCodePoint(code);
+}
+
+/** Clipboard tokenization for hrefs (R-FULL-URL-1): decode HTML entities —
+    decimal/hexadecimal numeric references (semicolon optional) and the
+    ASCII-output named entities — before `isAllowedHref` runs. Decode
+    failures keep the raw text so the validator judges what the browser
+    would navigate to. No trimming here: `isAllowedHref` validates the
+    exact stored string, and every producer boundary trims explicitly before
+    storing, so the stored value always equals the validated value. */
+export function decodeHrefToken(raw: string): string {
+  return raw.replace(
+    /&(?:#(\d+)|#[xX]([\da-fA-F]+)|([a-zA-Z][a-zA-Z0-9]*));?/g,
+    (
+      whole: string,
+      decimal: string | undefined,
+      hex: string | undefined,
+      name: string | undefined,
+      offset: number,
+      source: string,
+    ) => {
+      if (decimal !== undefined) {
+        const decoded = decodeNumericReference(parseInt(decimal, 10));
+        return decoded ?? whole;
+      }
+      if (hex !== undefined) {
+        const decoded = decodeNumericReference(parseInt(hex, 16));
+        return decoded ?? whole;
+      }
+      if (name !== undefined) {
+        const known = NAMED_HREF_ENTITIES[name];
+        if (known === undefined) return whole;
+        if (!whole.endsWith(";")) {
+          // Without the semicolon only the five legacy entities decode,
+          // and only when not followed by an ASCII letter, digit or `=`.
+          if (!["amp", "lt", "gt", "quot", "nbsp"].includes(name)) return whole;
+          const after = source[offset + whole.length] ?? "";
+          if (/[a-zA-Z0-9=]/.test(after)) return whole;
+        }
+        return known;
+      }
+      return whole;
+    },
+  );
 }
 
 /** Byte length of a string as UTF-8, computed without any codec global. */

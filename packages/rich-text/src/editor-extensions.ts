@@ -45,8 +45,9 @@ export interface P0EditorExtensionOptions {
 }
 
 /** Paragraph with the opaque identity attribute (spec §5.2): the attribute
-    is `paragraphId`, rendered to the DOM as `data-paragraph-id`. */
-const ParagraphWithIdentity = Paragraph.extend({
+    is `paragraphId`, rendered to the DOM as `data-paragraph-id`. Shared with
+    the full module graph, which carries no P0 duplication. */
+export const ParagraphWithIdentity = Paragraph.extend({
   addAttributes() {
     return {
       ...(this.parent?.() ?? {}),
@@ -67,8 +68,9 @@ const ParagraphWithIdentity = Paragraph.extend({
 
 /** Preserved block (spec §6.3): an atom block node carrying every unsupported
     block verbatim. `raw` is never regenerated from an AST; it travels in the
-    attributes and renders as inert text inside a non-editable region. */
-const PreservedBlock = Node.create({
+    attributes and renders as inert text inside a non-editable region. Shared
+    with the full module graph. */
+export const PreservedBlock = Node.create({
   name: "preservedBlock",
   group: "block",
   atom: true,
