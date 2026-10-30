@@ -101,6 +101,10 @@ async function verifySvelte() {
     fail("@sentropic/design-system-svelte", "the installed tarball carries no rich-text-editor/RichTextEditor.svelte");
     return;
   }
+  if (!svelteFiles.includes("presence-badge/LockPresenceBadge.svelte")) {
+    fail("@sentropic/design-system-svelte", "the installed tarball carries no presence-badge/LockPresenceBadge.svelte");
+    return;
+  }
 
   const preprocessor = vitePreprocess();
   const compileFailures = [];
@@ -149,6 +153,27 @@ async function verifySvelte() {
     return;
   }
   console.log("OK @sentropic/design-system-svelte: rich-text resolves to the candidate tarball");
+
+  // CL-1B: the presence-badge subpath resolves through the installed
+  // tarball's manifest exports map to its nested entry (never flat, never
+  // the barrel). Resolution only — Node cannot parse .svelte, so the
+  // compile loop above already covered the file itself.
+  try {
+    const badgeUrl = await import.meta.resolve("@sentropic/design-system-svelte/presence-badge");
+    const badgePath = fileURLToPath(badgeUrl);
+    if (!badgePath.endsWith("presence-badge/index.js")) {
+      fail("@sentropic/design-system-svelte", "presence-badge subpath resolves to an unexpected file: " + badgePath);
+      return;
+    }
+    if (!badgePath.startsWith(distDir)) {
+      fail("@sentropic/design-system-svelte", "presence-badge subpath resolves outside the installed tarball: " + badgePath);
+      return;
+    }
+  } catch (error) {
+    fail("@sentropic/design-system-svelte", "presence-badge subpath does not resolve: " + String(error.message).split("\n")[0]);
+    return;
+  }
+  console.log("OK @sentropic/design-system-svelte: presence-badge resolves to the installed tarball");
 }
 
 // Actually `import()`s the compiled package (its peer runtime - react,

@@ -421,6 +421,7 @@ describe("expiry and badge derivation purity", () => {
       nowIso: NOW,
     });
     expect(requested.role).toBe("requester");
+    expect(requested.canRequestUnlock).toBe(false);
 
     const admin = derivePresenceBadgeState({
       presence,
@@ -431,6 +432,58 @@ describe("expiry and badge derivation purity", () => {
     });
     expect(admin.role).toBe("admin");
     expect(admin.lockActive).toBe(false);
+  });
+
+  it("orders the holder last while keeping roster order otherwise (CL-1B)", () => {
+    const holder = actor("actor:holder");
+    const first = actor("actor:first");
+    const second = actor("actor:second");
+    const presence = createPresenceSnapshot({
+      scopeRef: "scope:canvas-1",
+      actors: [actor("actor:self"), holder, first, second],
+      currentActorId: "actor:self",
+    });
+    const state = derivePresenceBadgeState({
+      presence,
+      lock: lockSnapshot("actor:holder", "2026-10-29T13:00:00.000Z"),
+      capabilities: CAPABILITIES,
+      currentActorId: "actor:self",
+      nowIso: NOW,
+    });
+    expect(state.actors.map((entry) => entry.actorId)).toEqual([
+      "actor:first",
+      "actor:second",
+      "actor:holder",
+    ]);
+    expect(state.total).toBe(4);
+  });
+
+  it("suppresses request-unlock in read-only mode (CL-1B §6.4)", () => {
+    const presence = createPresenceSnapshot({
+      scopeRef: "scope:canvas-1",
+      actors: [actor("actor:self"), actor("actor:other")],
+      currentActorId: "actor:self",
+    });
+    const editable = derivePresenceBadgeState({
+      presence,
+      lock: lockSnapshot("actor:other", "2026-10-29T13:00:00.000Z"),
+      capabilities: CAPABILITIES,
+      currentActorId: "actor:self",
+      nowIso: NOW,
+      readOnly: false,
+    });
+    expect(editable.canRequestUnlock).toBe(true);
+    const readOnly = derivePresenceBadgeState({
+      presence,
+      lock: lockSnapshot("actor:other", "2026-10-29T13:00:00.000Z"),
+      capabilities: CAPABILITIES,
+      currentActorId: "actor:self",
+      nowIso: NOW,
+      readOnly: true,
+    });
+    expect(readOnly.canRequestUnlock).toBe(false);
+    expect(readOnly.lockActive).toBe(true);
+    expect(readOnly.role).toBe(editable.role);
   });
 
   it("reads no clock in the helpers (source scan)", () => {

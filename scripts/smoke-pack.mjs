@@ -205,6 +205,9 @@ const packages = [
     // flat), and the browser harness plus every test artefact stays out of
     // the published tarball.
     extraRequiredFiles: [
+      "dist/presence-badge/LockPresenceBadge.svelte",
+      "dist/presence-badge/index.js",
+      "dist/presence-badge/index.d.ts",
       "dist/rich-text-editor/RichTextEditor.svelte",
       "dist/rich-text-editor/index.js",
       "dist/rich-text-editor/index.d.ts",

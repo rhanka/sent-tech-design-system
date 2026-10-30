@@ -21,6 +21,26 @@ export interface RichTextMessages {
   unlockRequestLabel?: string;
   /** CL-2 live composition seam (§6.4): no-lock summary text. */
   noLockLabel?: string;
+  /** CL-1B badge (§6.4): accept-unlock action text. */
+  unlockAcceptLabel?: string;
+  /** CL-1B badge (§6.4): force-unlock action text. */
+  unlockForceLabel?: string;
+  /** CL-1B badge (§6.4): release-lock action text. */
+  unlockReleaseLabel?: string;
+  /** CL-1B badge (§6.4): tooltip template when locked, "{holder}"
+      interpolated with the holder display label. Carries the request
+      wording; the read-only variant omits it. */
+  tooltipLockedLabel?: string;
+  /** CL-1B badge (§6.4): tooltip template when locked in read-only mode,
+      "{holder}" interpolated. Omits the request wording. */
+  tooltipLockedReadOnlyLabel?: string;
+  /** CL-1B badge (§6.4): tooltip text when no lock is active. */
+  tooltipUnlockedLabel?: string;
+  /** CL-1B badge (§6.4): accessible label of the avatar roster. */
+  rosterLabel?: string;
+  /** CL-1B badge (§6.4): accessible label of the requester key overlay,
+      "{label}" interpolated with the requester display label. */
+  requesterKeyLabel?: string;
 }
 
 /** Key namespace of the catalogue. A missing key renders the marker
@@ -47,6 +67,14 @@ export const COLLAB_MESSAGE_KEYS = [
   "lockLabel",
   "unlockRequestLabel",
   "noLockLabel",
+  "unlockAcceptLabel",
+  "unlockForceLabel",
+  "unlockReleaseLabel",
+  "tooltipLockedLabel",
+  "tooltipLockedReadOnlyLabel",
+  "tooltipUnlockedLabel",
+  "rosterLabel",
+  "requesterKeyLabel",
 ] as const;
 
 export type CollabMessageKey = (typeof COLLAB_MESSAGE_KEYS)[number];
