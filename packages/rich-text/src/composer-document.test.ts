@@ -24,7 +24,7 @@ describe("composer string split/join (CL-2 witness 7, conversion half)", () => {
     expect(splitComposerText("hello")).toEqual(["hello"]);
     expect(splitComposerText("a\nb")).toEqual(["a\nb"]);
     expect(splitComposerText("a\n\nb")).toEqual(["a", "b"]);
-    expect(splitComposerText("a\n\n\n\nb")).toEqual(["a", "b"]);
+    expect(splitComposerText("a\n\n\n\nb")).toEqual(["a", "", "b"]);
     expect(splitComposerText("\n\nb")).toEqual(["", "b"]);
     expect(splitComposerText("a\n\n")).toEqual(["a", ""]);
   });
@@ -44,6 +44,32 @@ describe("composer string split/join (CL-2 witness 7, conversion half)", () => {
       "a\n\nb",
       "first\n\nsecond\n\nthird",
       "trailing  spaces  ",
+    ]) {
+      const document = composerDocumentFromText(text, allocator());
+      expect(composerTextFromDocument(document)).toBe(text);
+    }
+  });
+
+  it("preserves separator multiplicity on exact blank-line boundaries (P2)", () => {
+    expect(splitComposerText("a\n\n\n\nb")).toEqual(["a", "", "b"]);
+    expect(splitComposerText("a\n\n\nb")).toEqual(["a", "\nb"]);
+    expect(splitComposerText("\n\nb")).toEqual(["", "b"]);
+    expect(splitComposerText("a\n\n")).toEqual(["a", ""]);
+    expect(splitComposerText("\n\n")).toEqual(["", ""]);
+    expect(splitComposerText("\n\n\n")).toEqual(["", "\n"]);
+  });
+
+  it("round-trips noncanonical runs byte-identically (leading/trailing/odd)", () => {
+    for (const text of [
+      "a\n\n\n\nb",
+      "a\n\n\nb",
+      "\n\nb",
+      "a\n\n",
+      "\n\n",
+      "\n\n\n",
+      "\n\n\n\n",
+      "a\n\n\n\n\nb",
+      "\n\na\n\n",
     ]) {
       const document = composerDocumentFromText(text, allocator());
       expect(composerTextFromDocument(document)).toBe(text);

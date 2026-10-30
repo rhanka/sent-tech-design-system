@@ -370,3 +370,33 @@ describe("CL-2 witness 5 — no provider ⇒ RT-1 behaviour byte-identically (RE
     expect(collected.presences).toHaveLength(0);
   });
 });
+
+describe("unlock button untranslated marker (P2)", () => {
+  it("carries data-untranslated like the adjacent labels when the key is missing", async () => {
+    const { props } = collect({
+      editable: true,
+      actor: SELF,
+      lock: lockHeldBy(OTHER),
+      capabilities: CAPABILITIES,
+    });
+    const missing = {
+      ...props,
+      messages: {
+        editorLabel: "SENTINEL-EDITOR-LABEL",
+        placeholder: "SENTINEL-PLACEHOLDER",
+        preservedBlockLabel: "SENTINEL-PRESERVED-{kind}",
+        externalConflictLabel: "SENTINEL-CONFLICT",
+        presenceLabel: "SENTINEL-PRESENCE-{count}",
+        lockLabel: "SENTINEL-LOCK-{holder}",
+        noLockLabel: "SENTINEL-NOLOCK",
+      } as unknown as RichTextMessages,
+    };
+    const { container } = render(RichTextEditor, { props: missing });
+    await tick();
+    const unlock = container.querySelector(
+      ".st-rich-text-editor__unlock",
+    ) as HTMLElement | null;
+    expect(unlock).not.toBeNull();
+    expect(unlock?.getAttribute("data-untranslated")).toBe("collab.unlockRequestLabel");
+  });
+});

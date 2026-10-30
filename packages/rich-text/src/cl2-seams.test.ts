@@ -1,6 +1,14 @@
 /**
- * CL-2 RED — the three §6.3 seams plus capture neutrality and the
- * no-provider byte-identity gate (CL-2 witnesses 4 and 5).
+ * CL-2 seams: the three §6.3 seams plus capture neutrality and the
+ * no-provider parity gate against RT-1 baseline fixtures.
+ *
+ * Genuinely RED on 542220dd (RT-1): seam 3 binding slot (construction +
+ * default + history replacement point), the composer conversion/capture
+ * (witness 7), revocation acknowledgement/capture (P1), the composer
+ * `isComposing` native flag and the unlock `data-untranslated` marker.
+ * Compatibility coverage (already passing on 542220dd): seam 1 identity
+ * discipline, the no-graph check, capture neutrality (witness 4) and the
+ * no-provider parity against the RT-1 baseline below (witness 5).
  *
  * Seam 1 (identity discipline): no code path mints an identity from
  * `crypto.randomUUID()` inside a session; the factory default stays the only
@@ -43,7 +51,7 @@ const BINDING: FieldBindingIdentity = {
   fieldKey: "field:body",
 };
 
-describe("seam 1 — single identity source (CL-2 witness, RED)", () => {
+describe("seam 1 — single identity source (compatibility coverage)", () => {
   it("mints session identities only through the injected allocator", () => {
     const seen: string[] = [];
     const editor = createRichTextEditor({
@@ -125,7 +133,9 @@ describe("seam 3 — empty provider slot (CL-2 witnesses 5 and 6, RED)", () => {
     expect(names.filter((name) => name === "undoRedo")).toHaveLength(1);
     expect(names).toContain("undoRedo");
   });
+});
 
+describe("seam 3 — no collaboration graph (compatibility coverage)", () => {
   it("loads no collaboration graph in the editor entry", () => {
     const graph: string[] = ["editor.ts", "editor-extensions.ts", "editor-identity.ts", "editor-conversion.ts", "editor-paste.ts"];
     const forbidden = ["yjs", "y-prosemirror", "y-protocols", "hocuspocus", "@tiptap/extension-collaboration"];
@@ -141,7 +151,7 @@ describe("seam 3 — empty provider slot (CL-2 witnesses 5 and 6, RED)", () => {
   });
 });
 
-describe("capture neutrality (CL-2 witness 4, RED)", () => {
+describe("capture neutrality (compatibility coverage)", () => {
   it("an external replacement between two captures yields a second capture equal to the replacement", async () => {
     const editor = createRichTextEditor({
       document: doc("before"),
@@ -161,40 +171,120 @@ describe("capture neutrality (CL-2 witness 4, RED)", () => {
   });
 });
 
-describe("no provider ⇒ RT-1 behaviour byte-identically (CL-2 witness 5, RED)", () => {
-  it("a bound-slot-null editor emits the same documents as the RT-1 baseline", async () => {
-    const script = (editor: ReturnType<typeof createRichTextEditor>): void => {
-      editor.typeText("paragraph:1", "hello world");
-      editor.splitParagraph("paragraph:1", 5);
-      editor.undo();
-      editor.redo();
-    };
-    const run = async (withSlot: boolean) => {
-      const changes: RichTextDocument[] = [];
-      let sequence = 0;
-      const editor = createRichTextEditor({
-        document: doc("hello"),
-        messages: { ...MESSAGES },
-        allocateId: () => `test:slot:${(sequence += 1)}`,
-        ...(withSlot ? { collaborationBinding: null } : {}),
-        element: globalThis.document.createElement("div"),
-      });
-      editor.typeText("paragraph:1", "hello world");
-      changes.push(editor.getDocument());
-      editor.splitParagraph("paragraph:1", 5);
-      changes.push(editor.getDocument());
-      editor.undo();
-      changes.push(editor.getDocument());
-      editor.redo();
-      changes.push(editor.getDocument());
-      script(editor);
-      const captured = await editor.captureDocument();
-      editor.destroy();
-      return { changes, captured };
-    };
-    const baseline = await run(false);
-    const slotted = await run(true);
-    expect(slotted.changes).toEqual(baseline.changes);
-    expect(slotted.captured).toEqual(baseline.captured);
+// RT-1 baseline fixtures recorded from 542220dd behaviour (type, split,
+// undo, redo, type, split, undo, redo with `test:slot:N` identities): event
+// and capture sequences a bound-slot-null HEAD editor must reproduce
+// byte-identically.
+const BASELINE_CHANGES: RichTextDocument[] = [
+  { format: "focus.markdown.p0@1", blocks: [{ paragraphId: "paragraph:1", kind: "paragraph", text: "hellohello world" }] },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+  { format: "focus.markdown.p0@1", blocks: [{ paragraphId: "paragraph:1", kind: "paragraph", text: "hello" }] },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hellohello world" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+      { paragraphId: "test:slot:2", kind: "paragraph", text: "hello world" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+  {
+    format: "focus.markdown.p0@1",
+    blocks: [
+      { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+      { paragraphId: "test:slot:2", kind: "paragraph", text: "hello world" },
+      { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+    ],
+  },
+];
+
+const BASELINE_GESTURES: unknown[] = [
+  { gestureId: "gesture:1", kind: "type", affectedParagraphIds: ["paragraph:1"] },
+  {
+    gestureId: "gesture:2",
+    kind: "split",
+    affectedParagraphIds: ["paragraph:1", "test:slot:1"],
+    split: { sourceParagraphId: "paragraph:1", newParagraphIds: ["test:slot:1"] },
+  },
+  { gestureId: "gesture:3", kind: "undo", affectedParagraphIds: ["paragraph:1"] },
+  { gestureId: "gesture:4", kind: "redo", affectedParagraphIds: ["paragraph:1", "test:slot:1"] },
+  { gestureId: "gesture:5", kind: "type", affectedParagraphIds: ["paragraph:1"] },
+  {
+    gestureId: "gesture:6",
+    kind: "split",
+    affectedParagraphIds: ["paragraph:1", "test:slot:2"],
+    split: { sourceParagraphId: "paragraph:1", newParagraphIds: ["test:slot:2"] },
+  },
+  { gestureId: "gesture:7", kind: "undo", affectedParagraphIds: ["paragraph:1"] },
+  { gestureId: "gesture:8", kind: "redo", affectedParagraphIds: ["paragraph:1", "test:slot:2"] },
+];
+
+const BASELINE_CAPTURED: RichTextDocument = {
+  format: "focus.markdown.p0@1",
+  blocks: [
+    { paragraphId: "paragraph:1", kind: "paragraph", text: "hello" },
+    { paragraphId: "test:slot:2", kind: "paragraph", text: "hello world" },
+    { paragraphId: "test:slot:1", kind: "paragraph", text: "hello world" },
+  ],
+};
+
+const BASELINE_REPRESENTABILITY = { nonRepresentableParagraphIds: [] as string[] };
+
+describe("no provider ⇒ RT-1 baseline fixtures byte-identically (compatibility coverage)", () => {
+  it("a bound-slot-null editor emits the RT-1 event and capture sequences", async () => {
+    const changes: RichTextDocument[] = [];
+    const gestures: unknown[] = [];
+    let sequence = 0;
+    const editor = createRichTextEditor({
+      document: doc("hello"),
+      messages: { ...MESSAGES },
+      allocateId: () => `test:slot:${(sequence += 1)}`,
+      collaborationBinding: null,
+      element: globalThis.document.createElement("div"),
+      onChange: (event) => {
+        changes.push(event.document);
+        gestures.push(event.gesture);
+      },
+    });
+    editor.typeText("paragraph:1", "hello world");
+    editor.splitParagraph("paragraph:1", 5);
+    editor.undo();
+    editor.redo();
+    editor.typeText("paragraph:1", "hello world");
+    editor.splitParagraph("paragraph:1", 5);
+    editor.undo();
+    editor.redo();
+    const captured = await editor.captureDocument();
+    editor.destroy();
+    expect(changes).toEqual(BASELINE_CHANGES);
+    expect(gestures).toEqual(BASELINE_GESTURES);
+    expect(captured.document).toEqual(BASELINE_CAPTURED);
+    expect(captured.representability).toEqual(BASELINE_REPRESENTABILITY);
   });
 });

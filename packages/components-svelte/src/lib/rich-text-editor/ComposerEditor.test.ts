@@ -190,6 +190,30 @@ describe("composer key forwarding (CL-2 witness 7, RED)", () => {
     await tick();
   });
 
+  it("includes the native KeyboardEvent.isComposing flag alongside the core fact", async () => {
+    const forwarded: ComposerKeyEvent[] = [];
+    const { container } = render(ComposerEditor, {
+      props: composerProps({
+        value: "hello",
+        onKeyDown: (event) => {
+          forwarded.push(event);
+        },
+      }),
+    });
+    await tick();
+    const editable = editableOf(container);
+    const native = new KeyboardEvent("keydown", {
+      key: "Enter",
+      code: "Enter",
+      bubbles: true,
+      cancelable: true,
+    });
+    Object.defineProperty(native, "isComposing", { value: true });
+    editable.dispatchEvent(native);
+    expect(forwarded).toHaveLength(1);
+    expect(forwarded[0]).toMatchObject({ key: "Enter", isComposing: true });
+  });
+
   it("a host-handled Enter inserts no newline and performs no default action", async () => {
     const seen: string[] = [];
     const { container } = render(ComposerEditor, {

@@ -468,6 +468,9 @@
         <button
           type="button"
           class="st-rich-text-editor__unlock"
+          data-untranslated={isCollabMissing("unlockRequestLabel")
+            ? collabUntranslatedDataValue("unlockRequestLabel")
+            : null}
           disabled={!unlockEnabled}
           onclick={() => onRequestUnlock?.()}
         >{resolveCollabLabel("unlockRequestLabel")}</button>

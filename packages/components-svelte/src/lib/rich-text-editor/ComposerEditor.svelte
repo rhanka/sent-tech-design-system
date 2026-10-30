@@ -157,7 +157,7 @@
       ctrlKey: native.ctrlKey,
       metaKey: native.metaKey,
       altKey: native.altKey,
-      isComposing: active?.readiness().composing ?? false,
+      isComposing: native.isComposing || (active?.readiness().composing ?? false),
       preventDefault: () => native.preventDefault(),
       stopPropagation: () => native.stopPropagation(),
       get defaultPrevented() {

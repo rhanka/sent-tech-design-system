@@ -86,4 +86,25 @@ describe("composer capture (CL-2 witness 7, RED)", () => {
     expect(cleared.text).toBe("plain text");
     editor.destroy();
   });
+
+  it("an untouched noncanonical string captures byte-identically with no change event (P2)", async () => {
+    for (const text of ["a\n\n\n\nb", "a\n\n\nb", "\n\nb", "a\n\n", "\n\n\n"]) {
+      let changes = 0;
+      let sequence = 0;
+      const document = composerDocumentFromText(text, () => `test:composer:${(sequence += 1)}`);
+      const editor = createRichTextEditor({
+        document,
+        messages: { ...MESSAGES },
+        element: globalThis.document.createElement("div"),
+        onChange: () => {
+          changes += 1;
+        },
+      });
+      const captured = await editor.captureDocument();
+      expect(composerTextFromDocument(captured.document)).toBe(text);
+      expect(changes).toBe(0);
+      expect(captured.representability.nonRepresentableParagraphIds).toEqual([]);
+      editor.destroy();
+    }
+  });
 });

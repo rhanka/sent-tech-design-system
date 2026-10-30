@@ -311,4 +311,75 @@ describe("revocation mid-composition discards (IME-LOCK-1 clauses 2/3/5, CL-2)",
     expect(editor.getDocument()).toEqual(remote);
     teardown();
   });
+
+  it("discarding preserves the pre-composition acknowledgement so COMMITTED conflicts per §5.6 (P1)", async () => {
+    const { editor, changes, conflicts, viewDom, teardown } = setup();
+    // Type COMMITTED without a host echo: sets the §5.6 revision flag.
+    editor.typeText("paragraph:1", " COMMITTED");
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha COMMITTED");
+    changes.length = 0;
+    // Start composing, queue an external replacement, revoke, end.
+    beginComposition(viewDom);
+    editor.typeText("paragraph:1", " composing-bit");
+    expect(changes).toHaveLength(0);
+    const remote: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:9", "Remote")],
+    };
+    editor.applyExternalUpdate(remote);
+    expect(conflicts).toHaveLength(0);
+    editor.setEditable(false);
+    endComposition(viewDom);
+    // Only the composition is discarded: COMMITTED stays, the remote
+    // conflicts per §5.6 (rule 3) instead of silently replacing it.
+    expect(changes).toHaveLength(0);
+    expect(conflicts).toHaveLength(1);
+    expect(conflicts[0]?.local.blocks[0]?.text).toBe("Alpha COMMITTED");
+    expect(conflicts[0]?.incoming).toEqual(remote);
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha COMMITTED");
+    teardown();
+  });
+
+  it("revocation rejects a pending capture exactly once without destroying the editor (IME-LOCK-1 clause 4)", async () => {
+    const { editor, viewDom, teardown } = setup();
+    beginComposition(viewDom);
+    editor.typeText("paragraph:1", " composing-bit");
+    let settlements = 0;
+    let status: string | null = null;
+    let name: string | null = null;
+    let message: string | null = null;
+    void editor.captureDocument().then(
+      () => {
+        settlements += 1;
+        status = "resolved";
+      },
+      (error: Error) => {
+        settlements += 1;
+        status = "rejected";
+        name = error?.name ?? null;
+        message = error?.message ?? null;
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(settlements).toBe(0);
+    editor.setEditable(false);
+    endComposition(viewDom);
+    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    // Clause 4: exactly one rejection with the neutral error, through a
+    // cancellation that leaves the session alive.
+    expect(settlements).toBe(1);
+    expect(status).toBe("rejected");
+    expect(name).toBe("RichTextCaptureUnavailable");
+    expect(message).toBe("rich-text.capture-unavailable");
+    // The editor is not destroyed: re-enabling edits through the same
+    // instance and a later capture resolves.
+    editor.setEditable(true);
+    editor.typeText("paragraph:1", " after");
+    const recaptured = await editor.captureDocument();
+    expect(recaptured.document.blocks[0]?.text).toBe("Alpha after");
+    teardown();
+  });
 });

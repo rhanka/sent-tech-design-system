@@ -46,10 +46,11 @@
 //   or replace content with both selection ends re-anchored).
 // - `captureDocument()` resolves immediately when ready; during composition
 //   it waits for the commit and resolves once with the committed document. A
-//   capture still pending at `destroy()` rejects once with the neutral
-//   capture error; calls after destruction return an already-rejected
-//   promise; `readiness()` after destruction is `{ composing: false, ready:
-//   false }`.
+//   revocation discards the composition and rejects a pending capture once
+//   with the neutral error without destroying the session; a capture still
+//   pending at `destroy()` rejects once with the same error; calls after
+//   destruction return an already-rejected promise; `readiness()` after
+//   destruction is `{ composing: false, ready: false }`.
 
 import { Editor } from "@tiptap/core";
 import type { JSONContent } from "@tiptap/core";
@@ -1328,10 +1329,12 @@ export function createRichTextEditor(
       // An observer flush never blocks the commit.
     }
     // A revocation mid-composition abandons it (IME-LOCK-1 clauses 3/5):
-    // the uncommitted text is discarded, the display reverts to the
-    // revision recorded at composition start, and no `composition-commit`
-    // is emitted. A deferred external arrival is still re-evaluated once,
-    // against the reverted revision.
+    // only the uncommitted composition text is discarded — the display
+    // reverts to the revision recorded at composition start while the
+    // pre-composition acknowledgement state (`lastAcknowledged`,
+    // `hasUnacknowledgedLocalRevision`) is preserved — and no
+    // `composition-commit` is emitted. A deferred external arrival is still
+    // re-evaluated once under §5.6, against the reverted revision.
     if (compositionRevoked) {
       compositionRevoked = false;
       const base = compositionBase;
@@ -1341,8 +1344,6 @@ export function createRichTextEditor(
         try {
           replaceDocument(base);
           reseedConversion(seeds, base);
-          lastAcknowledged = copyRichTextDocument(base);
-          hasUnacknowledgedLocalRevision = false;
         } finally {
           suppressEmit = false;
         }
@@ -1363,6 +1364,11 @@ export function createRichTextEditor(
       if (input !== undefined && input !== null && input.composing === true) {
         input.composing = false;
       }
+      // Clause 4: pending captures reject exactly once with the neutral
+      // error through a cancellation that leaves the session alive —
+      // witnessed separately from the destroy path. The flag closes after,
+      // with no pending left to resolve.
+      tracker.cancelPendingCaptures();
       // Close the composition state BEFORE re-evaluating the deferred
       // arrival: the settle dispatches its own replacement transaction,
       // which must never be misread as pending composition work by the

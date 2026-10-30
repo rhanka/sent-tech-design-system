@@ -11,23 +11,25 @@
 // empty, keeps its seed text until touched, and flags once touched — the
 // host's send gate reads that flag from the capture, never from here.
 //
-// Blank-line runs separate paragraphs; single newlines stay inside the
-// chunk. Identities are fresh from the injected allocator, never derived
-// from content, and stay internal to the composer (never exposed to the
-// chat host, which only sees the string).
+// Exact `\n\n` boundaries separate paragraphs; single newlines stay inside
+// the chunk and extra newlines are carried faithfully (an empty chunk per
+// extra boundary, a leading newline on the next chunk). Identities are fresh
+// from the injected allocator, never derived from content, and stay internal
+// to the composer (never exposed to the chat host, which only sees the
+// string).
 
 import type { RichTextDocument, RichTextFormat } from "./model.js";
 
-/** Split a composer string into paragraph chunks. Blank-line runs (`\n\n+`)
-    separate paragraphs; single newlines stay inside the chunk. The empty
-    string is one empty chunk. */
+/** Split a composer string into paragraph chunks on exact `\n\n`
+    boundaries; single newlines stay inside the chunk and extra newlines are
+    carried faithfully. The empty string is one empty chunk. */
 export function splitComposerText(text: string): string[] {
   if (text === "") return [""];
-  return text.split(/\n\n+/);
+  return text.split("\n\n");
 }
 
 /** Join paragraph chunks into a composer string with one blank line between
-    chunks. Inverse of `splitComposerText` up to blank-run collapsing. */
+    chunks. Inverse of `splitComposerText`. */
 export function joinComposerText(chunks: readonly string[]): string {
   return chunks.join("\n\n");
 }

@@ -771,6 +771,146 @@ async function scenarioImeRevoke(browser, base) {
   ok(label);
 }
 
+// P1: discarding a composition on revocation preserves the pre-composition
+// acknowledgement state — only the composition is discarded, then a pending
+// external arrival is re-evaluated under §5.6. Probe: type COMMITTED without
+// host echo, start composing, queue an external replacement, revoke, end
+// composition ⇒ conflict per §5.6, COMMITTED never silently lost.
+async function scenarioImeRevokeAck(browser, base) {
+  const label = "ime-revoke-ack";
+  const { page, done } = await openScenario(browser, base, "composition");
+  await recordIdentity(page);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.type(" COMMITTED");
+  await sleep(300);
+  let events = await page.evaluate(() => window.__rt.events);
+  assert(events.changes.length >= 1, label, `typing COMMITTED emitted no change`);
+  const typedCount = events.changes.length;
+  const cdp = await page.createCDPSession();
+  const current = await docOf(page);
+  const end = current.blocks[0].text.length;
+  await cdp.send("Input.imeSetComposition", { selectionStart: end, selectionEnd: end, text: "pen" });
+  await sleep(200);
+  const remote = {
+    format: "focus.markdown.p0@1",
+    blocks: [{ paragraphId: "paragraph:9", kind: "paragraph", text: "Remote" }],
+  };
+  await page.evaluate((doc) => window.__rt.setValue(doc), remote);
+  await sleep(300);
+  assert((await conflictsOf(page)).length === 0, label, "external arrival mid-composition conflicted instead of deferring");
+  await page.evaluate(() => window.__rt.setEditable(false));
+  await sleep(300);
+  assert(await sameComponent(page), label, "revocation remounted the component");
+  await page.evaluate(() => {
+    document.querySelector(".ProseMirror").dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+  });
+  await sleep(400);
+  events = await page.evaluate(() => window.__rt.events);
+  assert(events.changes.length === typedCount, label, `revocation discard emitted ${events.changes.length - typedCount} extra change(s)`);
+  const conflicts = await conflictsOf(page);
+  assert(conflicts.length === 1, label, `expected exactly one conflict after the discard, saw ${conflicts.length}`);
+  assert(conflicts[0].local.blocks[0].text.includes("COMMITTED"), label, `conflict does not carry the COMMITTED local: ${JSON.stringify(conflicts[0].local.blocks)}`);
+  assert(conflicts[0].incoming.blocks[0].text === "Remote", label, "conflict does not carry the remote incoming");
+  const displayed = await docOf(page);
+  assert(displayed.blocks[0].text.includes("COMMITTED"), label, `COMMITTED was silently lost: ${JSON.stringify(displayed.blocks)}`);
+  assert(!displayed.blocks.some((block) => (block.text ?? "") === "Remote"), label, "remote silently replaced COMMITTED");
+  await cdp.detach();
+  await done(label);
+  ok(label);
+}
+
+// IME-LOCK-1 clause 4, witnessed separately from unmount: revocation rejects
+// a pending capture exactly once with RichTextCaptureUnavailable through a
+// cancellation that does not destroy the editor (real IME start).
+async function scenarioImeRevokeCapture(browser, base) {
+  const label = "ime-revoke-capture";
+  const { page, done } = await openScenario(browser, base, "composition");
+  await recordIdentity(page);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  const cdp = await page.createCDPSession();
+  await cdp.send("Input.imeSetComposition", { selectionStart: 5, selectionEnd: 5, text: "pen" });
+  await sleep(200);
+  await page.evaluate(() => {
+    window.__capOutcome = null;
+    window.__capSettlements = 0;
+    window.__rt
+      .capture()
+      .then(
+        (result) => {
+          window.__capSettlements += 1;
+          window.__capOutcome = { status: "resolved", document: result.document };
+        },
+        (error) => {
+          window.__capSettlements += 1;
+          window.__capOutcome = { status: "rejected", name: error && error.name, message: error && error.message };
+        },
+      );
+  });
+  await sleep(300);
+  let outcome = await page.evaluate(() => window.__capOutcome);
+  assert(outcome === null, label, `pending capture settled mid-composition: ${JSON.stringify(outcome)}`);
+  await page.evaluate(() => window.__rt.setEditable(false));
+  await sleep(300);
+  assert(await sameComponent(page), label, "revocation remounted the component");
+  await page.evaluate(() => {
+    document.querySelector(".ProseMirror").dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+  });
+  await sleep(400);
+  outcome = await page.evaluate(() => ({ settlements: window.__capSettlements, outcome: window.__capOutcome }));
+  assert(outcome.settlements === 1, label, `pending capture settled ${outcome.settlements} time(s), expected exactly once`);
+  assert(
+    outcome.outcome !== null &&
+      outcome.outcome.status === "rejected" &&
+      outcome.outcome.name === "RichTextCaptureUnavailable" &&
+      outcome.outcome.message === "rich-text.capture-unavailable",
+    label,
+    `revoked capture did not reject with the neutral error: ${JSON.stringify(outcome.outcome)}`,
+  );
+  // The session survives the cancellation: re-enabling edits through the
+  // same instance and a later capture resolves.
+  await page.evaluate(() => window.__rt.setEditable(true));
+  await sleep(300);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.type("Z");
+  await sleep(300);
+  assert(await sameComponent(page), label, "recovery remounted the component");
+  const recaptured = await page.evaluate(() => window.__rt.capture());
+  assert(recaptured.document.blocks[0].text.includes("Z"), label, "post-recovery capture does not carry the new edit");
+  await cdp.detach();
+  await done(label);
+  ok(label);
+}
+
+// P2: noncanonical composer strings round-trip byte-identically through mount
+// and capture with no change event (leading/trailing/odd newline runs).
+async function scenarioComposerRoundtrip(browser, base) {
+  const label = "composer-roundtrip";
+  const { page, done } = await openScenario(browser, base, "composer-send", "composer");
+  const cases = ["a\n\n\n\nb", "a\n\n\nb", "\n\nb", "a\n\n", "\n\n\n", "\n\n\n\n", "a\n\n\n\n\nb", "\n\na\n\n"];
+  for (const text of cases) {
+    await page.evaluate((next) => window.__composer.setValue(next), text);
+    await sleep(300);
+    const captured = await page.evaluate(() => window.__composer.capture());
+    assert(captured.text === text, label, `noncanonical round-trip mismatch for ${JSON.stringify(text)}: got ${JSON.stringify(captured.text)}`);
+    assert(
+      Array.isArray(captured.representability.nonRepresentableParagraphIds) &&
+        captured.representability.nonRepresentableParagraphIds.length === 0,
+      label,
+      `noncanonical capture flagged representability for ${JSON.stringify(text)}`,
+    );
+  }
+  const changes = await page.evaluate(() => window.__composer.events.changes.length);
+  assert(changes === 0, label, `untouched noncanonical strings emitted ${changes} change(s)`);
+  await done(label);
+  ok(label);
+}
+
 // CL-2 B1-L6 (a): a send initiated during an IME composition never captures
 // the pre-composition string and never loses the composed text — the host
 // awaits readiness/`captureComposer()` and sends the committed text once.
@@ -1229,6 +1369,9 @@ async function main() {
     await scenarioEcho(browser, base);
     await scenarioComposition(browser, base);
     await scenarioImeRevoke(browser, base);
+    await scenarioImeRevokeAck(browser, base);
+    await scenarioImeRevokeCapture(browser, base);
+    await scenarioComposerRoundtrip(browser, base);
     await scenarioComposerImeSend(browser, base);
     await scenarioCaptureUnmount(browser, base);
     await scenarioPreservedGestures(browser, base);
