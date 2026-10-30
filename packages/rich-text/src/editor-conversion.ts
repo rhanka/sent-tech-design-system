@@ -137,6 +137,18 @@ function isBlockNode(node: ProseMirrorNode): boolean {
   return node.type.name === "paragraph" || node.type.name === "preservedBlock";
 }
 
+/** Identity-block predicate for the full profile (CL-2F): every node type
+    carrying the opaque `paragraphId` attribute. */
+export function isFullIdentityNode(node: ProseMirrorNode): boolean {
+  return (
+    node.type.name === "paragraph" ||
+    node.type.name === "heading" ||
+    node.type.name === "codeBlock" ||
+    node.type.name === "horizontalRule" ||
+    node.type.name === "preservedBlock"
+  );
+}
+
 function blockIdentityOf(node: ProseMirrorNode): string | null {
   const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
   return typeof id === "string" && id !== "" ? id : null;
@@ -157,6 +169,7 @@ export function markTouchedFromTransaction(
   doc: ProseMirrorNode,
   transaction: Transaction,
   appended: readonly Transaction[] = [],
+  isBlock: (node: ProseMirrorNode) => boolean = isBlockNode,
 ): void {
   const size = doc.content.size;
   const clamp = (pos: number): number =>
@@ -169,7 +182,7 @@ export function markTouchedFromTransaction(
       let found = false;
       for (let depth = $pos.depth; depth >= 0; depth -= 1) {
         const ancestor = $pos.node(depth);
-        if (isBlockNode(ancestor)) {
+        if (isBlock(ancestor)) {
           const id = blockIdentityOf(ancestor);
           if (id !== null) touched.add(id);
           found = true;
@@ -180,7 +193,7 @@ export function markTouchedFromTransaction(
         // A boundary between two blocks: both neighbours are affected
         // (join/delete-span shape).
         for (const neighbour of [$pos.nodeBefore, $pos.nodeAfter]) {
-          if (neighbour !== null && isBlockNode(neighbour)) {
+          if (neighbour !== null && isBlock(neighbour)) {
             const id = blockIdentityOf(neighbour);
             if (id !== null) touched.add(id);
           }
@@ -191,7 +204,7 @@ export function markTouchedFromTransaction(
       // last top-level block so a trailing deletion is never silent.
       let last: string | null = null;
       doc.forEach((node) => {
-        if (isBlockNode(node)) {
+        if (isBlock(node)) {
           const id = blockIdentityOf(node);
           if (id !== null) last = id;
         }
@@ -205,7 +218,7 @@ export function markTouchedFromTransaction(
     const end = clamp(to);
     if (start < end) {
       doc.nodesBetween(start, end, (node) => {
-        if (isBlockNode(node)) {
+        if (isBlock(node)) {
           const id = blockIdentityOf(node);
           if (id !== null) touched.add(id);
         }
