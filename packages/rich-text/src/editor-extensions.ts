@@ -165,6 +165,16 @@ export function createPlaceholderMarkerExtension(
   });
 }
 
+/** The history extension of the P0 set (spec §4.5, CL-2 §6.3 seam 3): the
+    single replacement point where the DS binding's `UndoManager` (with no
+    ProseMirror history) takes the place of `UndoRedo` when a collaboration
+    binding is present (CL-3, `editor-collaboration.ts`). Controlled mode
+    keeps this `UndoRedo` unchanged. Exactly one history mechanism exists in
+    either mode. */
+export function createHistoryExtension(): AnyExtension {
+  return UndoRedo;
+}
+
 /** Instantiate the P0 extension set in `P0_EXTENSION_NAMES` composition
     order: document, paragraph (identity-carrying), text, bold, italic, code,
     hard break, undo/redo history, placeholder, Markdown bridge, and the
@@ -180,7 +190,7 @@ export function createP0EditorExtensions(
     Italic,
     Code,
     HardBreak,
-    UndoRedo,
+    createHistoryExtension(),
     Placeholder.configure({ placeholder: options.placeholder }),
     createPlaceholderMarkerExtension(
       options.placeholderMarker,

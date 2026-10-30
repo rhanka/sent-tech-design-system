@@ -3,6 +3,12 @@
   import { createRichTextEditor } from "@sentropic/design-system-rich-text/editor";
   import type { RichTextEditor as CoreEditor } from "@sentropic/design-system-rich-text/editor";
   import type {
+    CollaborationActor,
+    CollaborationCapabilities,
+    CollaborationProvider,
+    FieldBindingIdentity,
+    LockSnapshot,
+    PresenceSnapshot,
     RichTextCaptureResult,
     RichTextChangeEvent,
     RichTextDocument,
@@ -14,14 +20,22 @@
   } from "@sentropic/design-system-rich-text";
   import {
     RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
+    computeEffectiveEditable,
     createCaptureUnavailableError,
+    formatCollabUntranslatedMarker,
     formatUntranslatedMarker,
+    collabUntranslatedDataValue,
     untranslatedDataValue,
   } from "@sentropic/design-system-rich-text";
-  import type { RichTextMessageKey } from "@sentropic/design-system-rich-text";
+  import type {
+    CollabMessageKey,
+    RichTextMessageKey,
+  } from "@sentropic/design-system-rich-text";
 
   export interface RichTextEditorProps {
     value: RichTextDocument;
+    /** P0-only in CL-2; `full` arrives with CL-2F (R-FULL-PROFILE-1). */
+    profile?: "p0" | "full";
     editable?: boolean;
     disabled?: boolean;
     messages: RichTextMessages;
@@ -31,10 +45,34 @@
     onExternalConflict?: (event: RichTextExternalConflictEvent) => void;
     onUnsupportedPaste?: (event: RichTextUnsupportedPasteEvent) => void;
     onReadinessChange?: (event: RichTextReadiness) => void;
+    // ── CL-2 live extension (spec §6.2; the binding source arrives with the
+    // CL-3 Yjs binding, which resolves sessions against `binding`) ──
+    /** Injected collaboration provider. Accepted beside the editor; no
+        provider call happens in CL-2. Absent ⇒ controlled mode. */
+    provider?: CollaborationProvider | null;
+    /** Full binding identity of the live field, if any. Present ⇒ live
+        (L2) surface: admission decides, the L0 lock snapshot below stays
+        information only and never drives `editable` (R-API-2). */
+    binding?: FieldBindingIdentity | null;
+    /** The local actor for this binding. */
+    actor?: CollaborationActor | null;
+    /** L0 lock snapshot. Drives inertness only on controlled surfaces
+        (holder held by another actor ⇒ read-only); information only when
+        `binding` is present. An expired lock is passed as `null`. */
+    lock?: LockSnapshot | null;
+    /** Co-viewer presence snapshot (host-authoritative). */
+    presence?: PresenceSnapshot | null;
+    /** Badge derivation facts (B2 §5.1). */
+    capabilities?: CollaborationCapabilities | null;
+    onPresenceChange?: (snapshot: PresenceSnapshot) => void;
+    onLockChange?: (snapshot: LockSnapshot) => void;
+    /** Request-unlock action for the composition seam (§6.4). */
+    onRequestUnlock?: () => void;
   }
 
   let {
     value,
+    profile = "p0",
     editable = true,
     disabled = false,
     messages,
@@ -44,6 +82,15 @@
     onExternalConflict,
     onUnsupportedPaste,
     onReadinessChange,
+    provider = null,
+    binding = null,
+    actor = null,
+    lock = null,
+    presence = null,
+    capabilities = null,
+    onPresenceChange,
+    onLockChange,
+    onRequestUnlock,
   }: RichTextEditorProps = $props();
 
   let root: HTMLDivElement | undefined;
@@ -153,6 +200,70 @@
     }
   }
 
+  /** R-API-2 effective editing fact (spec §6.2): exactly one host-computed
+      fact per surface mode. A live `binding` keeps admitted editors editable
+      under a locked-by-other L0 snapshot; without a binding the same
+      snapshot makes the surface read-only. `disabled` wins everywhere. */
+  const effectiveEditable = $derived(
+    computeEffectiveEditable({
+      binding,
+      editable,
+      lock,
+      actorId: actor?.actorId ?? null,
+      disabled,
+    }),
+  );
+
+  /** Whether the L0 snapshot names an active hold (spec §6.4: an expired
+      lock arrives as `null`, so any named holder counts as active here). */
+  const lockActive = $derived(lock?.holder != null);
+
+  /** The live composition seam renders beside the editor while CL-1B owns
+      the full badge: lock/presence facts as injected text, never driving
+      `editable` (R-API-2 display half). */
+  const showLive = $derived(
+    binding !== null || lock !== null || presence !== null,
+  );
+
+  function collabProvided(key: CollabMessageKey): string | undefined {
+    const candidate: unknown = messages?.[key];
+    return typeof candidate === "string" ? candidate : undefined;
+  }
+
+  function resolveCollabLabel(key: CollabMessageKey): string {
+    return collabProvided(key) ?? formatCollabUntranslatedMarker(key);
+  }
+
+  function isCollabMissing(key: CollabMessageKey): boolean {
+    return collabProvided(key) === undefined;
+  }
+
+  function presenceText(): string {
+    const template = resolveCollabLabel("presenceLabel");
+    const count = String(presence?.total ?? 0);
+    return template.includes("{count}")
+      ? template.replace("{count}", count)
+      : template;
+  }
+
+  function lockText(): string {
+    const holder = lock?.holder ?? null;
+    if (holder === null) return resolveCollabLabel("noLockLabel");
+    const template = resolveCollabLabel("lockLabel");
+    return template.includes("{holder}")
+      ? template.replace("{holder}", holder.displayLabel)
+      : template;
+  }
+
+  /** Request-unlock is available only to a capable actor on an actively held
+      lock while the surface itself stays editable (spec §6.4: read-only mode
+      still shows the badge with request-unlock disabled). */
+  const unlockEnabled = $derived(
+    lockActive &&
+      effectiveEditable &&
+      (capabilities?.canRequestUnlock ?? false),
+  );
+
   export function captureDocument(): Promise<RichTextCaptureResult> {
     if (!core) return Promise.reject(createCaptureUnavailableError());
     return core.captureDocument();
@@ -202,8 +313,9 @@
         placeholder: provided("placeholder") ?? formatUntranslatedMarker("placeholder"),
       },
       ...(allocateId !== undefined ? { allocateId } : {}),
-      editable,
+      editable: effectiveEditable,
       disabled,
+      collaborationBinding: binding,
       element: mountTarget,
       onChange: (event) => {
         syncChrome();
@@ -277,7 +389,7 @@
   });
 
   $effect(() => {
-    core?.setEditable(editable);
+    core?.setEditable(effectiveEditable);
     core?.setDisabled(disabled);
     // Entering the disabled state releases focus: a caret left inside the
     // editor when the host disables it must not stay there (§5.4).
@@ -298,6 +410,33 @@
     syncChrome();
   });
 
+  // Snapshot subscriptions (CL-2 seam): the host owns the snapshots; the
+  // component notifies on every new snapshot reference, including the
+  // initial one. No provider call happens here; live subscription arrives
+  // with the CL-3 binding.
+  let lastNotifiedLock: LockSnapshot | null = null;
+  let lastNotifiedPresence: PresenceSnapshot | null = null;
+  $effect(() => {
+    const snapshot = lock;
+    if (snapshot !== lastNotifiedLock) {
+      lastNotifiedLock = snapshot;
+      if (snapshot !== null) {
+        const callback = onLockChange;
+        if (callback) untrack(() => callback(snapshot));
+      }
+    }
+  });
+  $effect(() => {
+    const snapshot = presence;
+    if (snapshot !== lastNotifiedPresence) {
+      lastNotifiedPresence = snapshot;
+      if (snapshot !== null) {
+        const callback = onPresenceChange;
+        if (callback) untrack(() => callback(snapshot));
+      }
+    }
+  });
+
   const classes = (): string =>
     ["st-rich-text-editor", className].filter((part) => part !== "").join(" ");
 
@@ -311,6 +450,33 @@
 
 <div class={classes()} bind:this={root}>
   <div class="st-rich-text-editor__surface" bind:this={mountEl}></div>
+  {#if showLive}
+    <div class="st-rich-text-editor__live" data-testid="live-seam">
+      <span
+        class="st-rich-text-editor__presence"
+        data-untranslated={isCollabMissing("presenceLabel")
+          ? collabUntranslatedDataValue("presenceLabel")
+          : null}
+      >{presenceText()}</span>
+      <span
+        class="st-rich-text-editor__lock"
+        data-untranslated={isCollabMissing(lock?.holder == null ? "noLockLabel" : "lockLabel")
+          ? collabUntranslatedDataValue(lock?.holder == null ? "noLockLabel" : "lockLabel")
+          : null}
+      >{lockText()}</span>
+      {#if capabilities?.canRequestUnlock}
+        <button
+          type="button"
+          class="st-rich-text-editor__unlock"
+          data-untranslated={isCollabMissing("unlockRequestLabel")
+            ? collabUntranslatedDataValue("unlockRequestLabel")
+            : null}
+          disabled={!unlockEnabled}
+          onclick={() => onRequestUnlock?.()}
+        >{resolveCollabLabel("unlockRequestLabel")}</button>
+      {/if}
+    </div>
+  {/if}
   <div
     class="st-rich-text-editor__status"
     data-untranslated={statusUntranslated()}
