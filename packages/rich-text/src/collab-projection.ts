@@ -70,6 +70,10 @@ function pmMarkToAttributes(markType: string, attrs: Record<string, unknown>): R
     if (typeof attrs["title"] === "string") out["linkTitle"] = attrs["title"];
     return out;
   }
+  const admitted = new Set(["bold", "italic", "code", "strike", "underline"]);
+  if (!admitted.has(markType)) {
+    throw new Error(`rich-text.collab-invalid-mark: mark "${markType}" is outside the admitted table`);
+  }
   return { [markType]: true };
 }
 
@@ -84,6 +88,27 @@ function yAttributesToPmMarks(
     if (schema.marks[type] === undefined) return;
     marks.push(attrs !== undefined ? { type, attrs } : { type });
   };
+  const admitted = new Set(["bold", "italic", "code", "strike", "underline", "link", "linkTitle"]);
+  for (const [key, value] of Object.entries(attributes)) {
+    if (!admitted.has(key)) {
+      throw new Error(`rich-text.collab-invalid-mark: mark "${key}" is outside the admitted table`);
+    }
+    if (key === "link") {
+      if (typeof value !== "string" || !isAllowedHref(value)) {
+        throw new Error("rich-text.collab-invalid-mark: unsafe href refuses the whole update");
+      }
+      continue;
+    }
+    if (key === "linkTitle") {
+      if (typeof value !== "string") {
+        throw new Error('rich-text.collab-invalid-mark: linkTitle is a plain string');
+      }
+      continue;
+    }
+    if (value !== true) {
+      throw new Error(`rich-text.collab-invalid-mark: mark "${key}" carries no other value shape`);
+    }
+  }
   if (attributes["bold"] === true) push("bold");
   if (attributes["italic"] === true) push("italic");
   if (attributes["code"] === true) push("code");
@@ -579,6 +604,18 @@ function linearRangeTouchesAtom(
  * delete a preserved embed or place text before the first separator is
  * refused by the filter and never reaches the `Y.Text`.
  */
+function countTextBlocks(doc: ProseMirrorNode): number {
+  let count = 0;
+  doc.descendants((node) => {
+    if (node.type.name === "paragraph" || node.type.name === "heading" || node.type.name === "codeBlock") {
+      count += 1;
+      return false;
+    }
+    return true;
+  });
+  return count;
+}
+
 export function projectPmTransactionToYText(
   binding: ProjectionBinding,
   pmDocBefore: ProseMirrorNode,
@@ -588,6 +625,10 @@ export function projectPmTransactionToYText(
   const ydoc = ytext.doc;
   if (ydoc === null) {
     throw new Error("rich-text.collab-no-doc: field Y.Text is not attached to a Y.Doc");
+  }
+  const preMeta = new Map<string, unknown>();
+  for (const [key, value] of fieldMeta.entries()) {
+    preMeta.set(key, structuredClone(value));
   }
   let workingDoc = pmDocBefore;
   let map = buildSelectionMap(workingDoc, ytext);
@@ -599,16 +640,18 @@ export function projectPmTransactionToYText(
         const to = (step as unknown as { to: number }).to;
         const slice = (step as unknown as { slice: { content: ProseMirrorNode["content"]; openStart: number; openEnd: number } }).slice;
         // Classify against the post-step document first: a pure insert that
-        // grows the top-level block count by exactly one through an open
-        // single-paragraph slice is a split (one separator insert; the tail
-        // text is already in place), not a content duplication.
+        // grows the textblock count by exactly one through an open slice is
+        // a split at any depth (one separator insert; the tail text is
+        // already in place), not a content duplication. Top-level childCount
+        // stays flat for splits inside list items/quotes, so textblocks are
+        // the depth-independent signal.
         const postStep = step.apply(workingDoc);
         if (postStep === null) {
           throw new Error("rich-text.collab-step-failed: ProseMirror step does not apply");
         }
         const postDoc = (postStep as { doc: ProseMirrorNode }).doc;
-        const preBlocks = workingDoc.childCount;
-        const postBlocks = postDoc.childCount;
+        const preTextBlocks = countTextBlocks(workingDoc);
+        const postTextBlocks = countTextBlocks(postDoc);
         const linearFrom = pmPositionToLinear(map, from);
         const linearTo = pmPositionToLinear(map, to);
         if (linearFrom > linearTo) {
@@ -624,12 +667,12 @@ export function projectPmTransactionToYText(
         if (atom === "horizontalRule") {
           throw new Error("rich-text.collab-structural-conflict: range operations cannot cross an HR atom");
         }
-        // A pure insert growing the top-level block count through an open
-        // slice is a split (the slice mirrors the head/tail halves with
+        // A pure insert growing the textblock count through an open slice is
+        // a split (the slice mirrors the head/tail halves with
         // `structure: true`; the tail text is already in place, so only
         // the separator is inserted). A block insert from paste carries a
         // closed boundary (`openStart === 0`) and keeps the general path.
-        const isSplit = from === to && postBlocks === preBlocks + 1 && slice.openStart > 0;
+        const isSplit = from === to && postTextBlocks === preTextBlocks + 1 && slice.openStart > 0;
         if (isSplit) {
           insertSplitSeparator(binding, ytext, map, linearFrom);
           workingDoc = postDoc;
@@ -693,7 +736,7 @@ export function projectPmTransactionToYText(
 
   // Fail closed when the projected sequence diverges from the transaction
   // result (an untranslated text effect would otherwise go missing).
-  verifyTextAgreement(binding, workingDoc);
+  verifyTextAgreement(binding, workingDoc, preMeta);
   void fieldMeta;
 }
 
@@ -712,36 +755,260 @@ function syncMetadataFromPmDoc(binding: ProjectionBinding, pmDoc: ProseMirrorNod
       }
       continue;
     }
-    if (JSON.stringify(current) !== JSON.stringify(derived)) {
-      binding.fieldMeta.set(block.paragraphId, structuredClone(derived) as unknown);
+    if (JSON.stringify(current) === JSON.stringify(derived)) continue;
+    // Depth-only changes never re-derive listRunId from PM list-node
+    // attributes (R-FULL-META-1/2): a nested list created by sink carries an
+    // empty wrapper run id, so the derived run id falls back to the block's
+    // own id. Keep the stored run id and take the remaining wrapper fields
+    // (depth/kind/order) from the derived record.
+    const currentRun = (current as { listRunId?: unknown }).listRunId;
+    const derivedRun = (derived as { listRunId?: unknown }).listRunId;
+    if (
+      typeof currentRun === "string" &&
+      currentRun !== "" &&
+      derivedRun !== currentRun &&
+      derivedRun === block.paragraphId &&
+      currentRun !== block.paragraphId
+    ) {
+      const merged = {
+        ...(structuredClone(derived) as FullBlockMetadata),
+        listRunId: currentRun,
+      } as FullBlockMetadata;
+      if ((merged as { listRunId?: unknown }).listRunId !== block.paragraphId) {
+        delete (merged as { orderedStart?: unknown }).orderedStart;
+        delete (merged as { orderedType?: unknown }).orderedType;
+        delete (merged as { listTight?: unknown }).listTight;
+      }
+      if (JSON.stringify(current) !== JSON.stringify(merged)) {
+        binding.fieldMeta.set(block.paragraphId, structuredClone(merged) as unknown);
+      }
+      continue;
     }
+    binding.fieldMeta.set(block.paragraphId, structuredClone(derived) as unknown);
   }
 }
 
 /** Fail closed when the shared sequence disagrees with the PM result. */
-function verifyTextAgreement(binding: ProjectionBinding, pmDoc: ProseMirrorNode): void {
+function verifyTextAgreement(
+  binding: ProjectionBinding,
+  pmDoc: ProseMirrorNode,
+  preMeta: Map<string, unknown>,
+): void {
   const captured = captureDocumentFromField(binding.ytext, binding.fieldMeta, binding.format);
-  const expected = pmDoc.textBetween(0, pmDoc.content.size, "\n\n", "\n");
-  const actualParts: string[] = [];
-  for (const block of captured.document.blocks) {
-    if (block.kind === "preserved") {
-      actualParts.push(block.raw ?? "");
-      continue;
-    }
-    if (block.kind === "horizontalRule") {
-      actualParts.push("");
-      continue;
-    }
-    if (block.segments !== undefined) {
-      actualParts.push(
-        block.segments.map((segment) => (segment.type === "hardBreak" ? "\n" : segment.text)).join(""),
-      );
-      continue;
-    }
-    actualParts.push(block.text ?? "");
+  if (binding.format !== "ds.markdown.full@1") {
+    verifyP0Agreement(binding, pmDoc, captured, preMeta);
+    return;
   }
-  void expected;
-  void actualParts;
+  verifyFullAgreement(binding, pmDoc, captured, preMeta);
+}
+
+/** P0/plain verification: ids (allowing fresh split tails) plus text. */
+function verifyP0Agreement(
+  binding: ProjectionBinding,
+  pmDoc: ProseMirrorNode,
+  captured: ReturnType<typeof captureDocumentFromField>,
+  preMeta: Map<string, unknown>,
+): void {
+  void binding;
+  void preMeta;
+  const pmIds: string[] = [];
+  const pmTexts: string[] = [];
+  pmDoc.descendants((node) => {
+    if (node.type.name !== "paragraph" && node.type.name !== "preservedBlock") return true;
+    const id = node.attrs?.[PARAGRAPH_ID_ATTRIBUTE];
+    if (typeof id !== "string" || id === "") return true;
+    pmIds.push(id);
+    pmTexts.push(node.textContent);
+    return false;
+  });
+  const capBlocks = captured.document.blocks.filter((block) => block.kind === "paragraph");
+  if (capBlocks.length !== pmIds.length) {
+    // Split tails carry fresh ids while the raw PM step carries a duplicate:
+    // allow the count to match when duplicates explain the gap.
+    const uniquePm = new Set(pmIds);
+    if (capBlocks.length !== uniquePm.size + (pmIds.length - uniquePm.size)) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+  }
+  const seen = new Set<string>();
+  for (let index = 0; index < capBlocks.length; index += 1) {
+    const cap = capBlocks[index] as { paragraphId: string; text?: string };
+    const pmId = pmIds[index];
+    if (pmId === undefined) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+    if (cap.paragraphId !== pmId) {
+      // Fresh split tail: the raw PM carries the head id twice.
+      if (pmId !== cap.paragraphId && seen.has(pmId)) {
+        seen.add(cap.paragraphId);
+        continue;
+      }
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+    seen.add(cap.paragraphId);
+    const capText = cap.text ?? "";
+    const pmText = pmTexts[index] ?? "";
+    // P0 capture serialises marks as Markdown delimiters while PM text is
+    // plain: compare after stripping the bridge delimiters is out of scope
+    // here (marks already throw before mutation on unknown/forbidden), so
+    // compare plain text equality for the mark-free path and length parity
+    // otherwise. The dedicated span witnesses assert mark fidelity.
+    if (capText !== pmText && capText.replace(/[*`\\]/g, "") !== pmText) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+  }
+}
+
+/** Full verification: blocks, ids and metadata (tails per R-FULL-META-2). */
+function verifyFullAgreement(
+  binding: ProjectionBinding,
+  pmDoc: ProseMirrorNode,
+  captured: ReturnType<typeof captureDocumentFromField>,
+  preMeta: Map<string, unknown>,
+): void {
+  void binding;
+  const expectedRead = fullProseMirrorToDocument(pmDoc, undefined);
+  const expectedAll = expectedRead.document.blocks.filter(
+    (block) => block.kind === "paragraph" || block.kind === "horizontalRule" || block.kind === "preserved",
+  );
+  const capturedIds = new Set(captured.document.blocks.map((block) => block.paragraphId));
+  const preIds = new Set(preMeta.keys());
+  // Drop the PM trailing empty paragraph that never lives in Y.Text.
+  const expected = expectedAll.filter((block) => {
+    if (capturedIds.has(block.paragraphId)) return true;
+    if (preIds.has(block.paragraphId)) return true;
+    if (block.kind === "paragraph") {
+      const text = (block.segments ?? [])
+        .map((segment) => (segment.type === "hardBreak" ? "" : segment.text ?? ""))
+        .join("");
+      if (text === "") return false;
+    }
+    if (block.kind === "horizontalRule") return true;
+    return true;
+  });
+  const expectedById = new Map<string, typeof expected[number][]>();
+  for (const block of expected) {
+    const list = expectedById.get(block.paragraphId) ?? [];
+    list.push(block);
+    expectedById.set(block.paragraphId, list);
+  }
+  if (captured.document.blocks.length !== expected.length) {
+    // Fresh split tails explain exactly one extra captured block per
+    // duplicated expected id; anything else diverges.
+    const uniqueExpected = new Set(expected.map((block) => block.paragraphId));
+    const freshTails = captured.document.blocks.filter(
+      (block) => !preIds.has(block.paragraphId) && !uniqueExpected.has(block.paragraphId),
+    );
+    const duplicates = expected.length - uniqueExpected.size;
+    if (captured.document.blocks.length !== expected.length - duplicates + freshTails.length + duplicates) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+  }
+  const seenCount = new Map<string, number>();
+  for (const cap of captured.document.blocks) {
+    if (cap.kind === "horizontalRule" || cap.kind === "preserved") {
+      const candidates = expectedById.get(cap.paragraphId) ?? [];
+      const exp = candidates[0];
+      if (exp === undefined || exp.kind !== cap.kind) {
+        throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+      }
+      if (cap.kind === "preserved" && exp.kind === "preserved") {
+        if ((cap.raw ?? "") !== (exp.raw ?? "") || (cap.preservedKind ?? "") !== (exp.preservedKind ?? "")) {
+          throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+        }
+      }
+      continue;
+    }
+    if (cap.kind !== "paragraph") continue;
+    const isFreshTail = !preIds.has(cap.paragraphId);
+    if (isFreshTail) {
+      const headId = findSplitHeadForTail(captured.document.blocks, cap.paragraphId, preMeta);
+      const headPre = (preMeta.get(headId) as FullBlockMetadata | undefined) ?? (preMeta.get(cap.paragraphId) as FullBlockMetadata | undefined);
+      const capMeta = cap.metadata as FullBlockMetadata | undefined;
+      if (headPre === undefined || capMeta === undefined) {
+        throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+      }
+      if (
+        capMeta.listRunId !== headPre.listRunId ||
+        capMeta.listKind !== headPre.listKind ||
+        capMeta.listDepth !== headPre.listDepth ||
+        capMeta.blockquoteDepth !== headPre.blockquoteDepth ||
+        JSON.stringify(capMeta.containerOrder ?? []) !== JSON.stringify(headPre.containerOrder ?? []) ||
+        capMeta.listItemId !== cap.paragraphId ||
+        (capMeta as { orderedStart?: unknown }).orderedStart !== undefined ||
+        (capMeta as { orderedType?: unknown }).orderedType !== undefined ||
+        (capMeta as { listTight?: unknown }).listTight !== undefined
+      ) {
+        throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+      }
+      continue;
+    }
+    const candidates = expectedById.get(cap.paragraphId) ?? [];
+    const occurrence = seenCount.get(cap.paragraphId) ?? 0;
+    const exp = candidates[Math.min(occurrence, candidates.length - 1)];
+    seenCount.set(cap.paragraphId, occurrence + 1);
+    if (exp === undefined || exp.kind !== "paragraph") {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+    const expMeta = correctExpectedMeta(exp.metadata as FullBlockMetadata | undefined, cap.paragraphId, preMeta);
+    const capMeta = cap.metadata as FullBlockMetadata | undefined;
+    if (JSON.stringify(expMeta ?? null) !== JSON.stringify(capMeta ?? null)) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+    const expSegments = (exp.segments ?? []).map((segment) =>
+      segment.type === "hardBreak" ? "\n" : `${segment.text ?? ""}|${JSON.stringify(segment.marks ?? {})}`,
+    ).join("\u0000");
+    const capSegments = (cap.segments ?? []).map((segment) =>
+      segment.type === "hardBreak" ? "\n" : `${segment.text ?? ""}|${JSON.stringify(segment.marks ?? {})}`,
+    ).join("\u0000");
+    if (expSegments !== capSegments) {
+      throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+    }
+  }
+}
+
+/** Depth-only correction shared with the sync path (never re-derive runId). */
+function correctExpectedMeta(
+  derived: FullBlockMetadata | undefined,
+  blockId: string,
+  preMeta: Map<string, unknown>,
+): FullBlockMetadata | undefined {
+  if (derived === undefined) return undefined;
+  const current = preMeta.get(blockId) as FullBlockMetadata | undefined;
+  if (current === undefined) return derived;
+  const currentRun = (current as { listRunId?: unknown }).listRunId;
+  const derivedRun = (derived as { listRunId?: unknown }).listRunId;
+  if (
+    typeof currentRun === "string" &&
+    currentRun !== "" &&
+    derivedRun !== currentRun &&
+    derivedRun === blockId &&
+    currentRun !== blockId
+  ) {
+    const merged = { ...(structuredClone(derived) as FullBlockMetadata), listRunId: currentRun } as FullBlockMetadata;
+    if ((merged as { listRunId?: unknown }).listRunId !== blockId) {
+      delete (merged as { orderedStart?: unknown }).orderedStart;
+      delete (merged as { orderedType?: unknown }).orderedType;
+      delete (merged as { listTight?: unknown }).listTight;
+    }
+    return merged;
+  }
+  return derived;
+}
+
+/** Head block id preceding a fresh split tail in capture order. */
+function findSplitHeadForTail(
+  blocks: ReturnType<typeof captureDocumentFromField>["document"]["blocks"],
+  tailId: string,
+  preMeta: Map<string, unknown>,
+): string {
+  const index = blocks.findIndex((block) => block.paragraphId === tailId);
+  for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+    const candidate = blocks[cursor] as { paragraphId: string };
+    if (preMeta.has(candidate.paragraphId)) return candidate.paragraphId;
+  }
+  const firstPre = [...preMeta.keys()][0];
+  return typeof firstPre === "string" ? firstPre : tailId;
 }
 
 // ── Incremental remote application ──
@@ -780,9 +1047,21 @@ export function applyRemoteUpdateIncrementally(options: {
   );
 
   const freshDoc = yTextToPmDoc(ytext, fieldMeta, format, view.state.schema);
+  const oldDoc = view.state.doc;
+  const oldRanges = findBlockRanges(oldDoc, affected);
+  const freshRanges = findBlockRanges(freshDoc, affected);
   const tr = view.state.tr;
   tr.setMeta(BINDING_ORIGIN_META, true);
-  tr.replaceWith(0, view.state.doc.content.size, freshDoc.content);
+  if (oldRanges.length > 0 && freshRanges.length > 0) {
+    const oldFrom = Math.min(...oldRanges.map((range) => range.start));
+    const oldTo = Math.max(...oldRanges.map((range) => range.end));
+    const freshFrom = Math.min(...freshRanges.map((range) => range.start));
+    const freshTo = Math.max(...freshRanges.map((range) => range.end));
+    const slice = freshDoc.slice(freshFrom, freshTo);
+    tr.replaceWith(oldFrom, oldTo, slice.content);
+  } else {
+    tr.replaceWith(0, oldDoc.content.size, freshDoc.content);
+  }
   view.dispatch(tr);
 
   // Restore through relative positions across the rebuild.
@@ -811,40 +1090,108 @@ export function applyRemoteUpdateIncrementally(options: {
   return { rebuiltParagraphIds: [...affected] };
 }
 
-/** Derive the affected block range from a Y.Text change delta. */
+/** Outer PM ranges of the affected blocks (textblocks plus HR/preserved atoms). */
+function findBlockRanges(
+  doc: ProseMirrorNode,
+  affected: Set<string>,
+): Array<{ start: number; end: number }> {
+  const ranges: Array<{ start: number; end: number }> = [];
+  doc.descendants((node, pos) => {
+    const id = node.attrs?.[PARAGRAPH_ID_ATTRIBUTE];
+    if (typeof id !== "string" || id === "" || !affected.has(id)) return true;
+    if (
+      node.type.name === "paragraph" ||
+      node.type.name === "heading" ||
+      node.type.name === "codeBlock" ||
+      node.type.name === "horizontalRule" ||
+      node.type.name === "preservedBlock"
+    ) {
+      ranges.push({ start: pos, end: pos + node.nodeSize });
+      return false;
+    }
+    return true;
+  });
+  return ranges;
+}
+
+export interface LinearBlockLayout {
+  paragraphId: string;
+  separatorIndex: number;
+  contentStart: number;
+  contentEnd: number;
+}
+
+/** Linear block layout of a field (exported for pre/post affected computation). */
+export function linearBlocksOf(ytext: Y.Text): LinearBlockLayout[] {
+  return walkLinearBlocks(ytext) as LinearBlockLayout[];
+}
+
+/** Derive the affected block range from a Y.Text change delta.
+ *
+ * Deleted ranges resolve against the pre-change layout; the surviving block
+ * at the deletion point in the post-change layout joins the set so merges
+ * rebuild their survivor. Separator inserts report both the head (pre-change
+ * block at the insertion point) and the fresh tail id from the payload.
+ */
 export function affectedBlocksFromDelta(
-  ytext: Y.Text,
+  preBlocks: LinearBlockLayout[],
+  postBlocks: LinearBlockLayout[],
   delta: Array<{ insert?: string | Record<string, unknown>; delete?: number; retain?: number }>,
 ): string[] {
-  const layout = walkLinearBlocks(ytext);
-  let linear = 0;
   const touched = new Set<string>();
-  let currentId: string | null = layout.length > 0 ? (layout[0] as { paragraphId: string }).paragraphId : null;
-  const idAt = (index: number): string | null => {
-    for (const block of layout) {
+  const idAtPre = (index: number): string | null => {
+    for (const block of preBlocks) {
       if (index === block.separatorIndex) return block.paragraphId;
+    }
+    for (const block of preBlocks) {
       if (index >= block.contentStart && index <= block.contentEnd) return block.paragraphId;
     }
-    return layout.length > 0 ? (layout[layout.length - 1] as { paragraphId: string }).paragraphId : null;
+    return preBlocks.length > 0
+      ? (preBlocks[preBlocks.length - 1] as LinearBlockLayout).paragraphId
+      : null;
   };
+  const idAtPost = (index: number): string | null => {
+    for (const block of postBlocks) {
+      if (index === block.separatorIndex) return block.paragraphId;
+    }
+    for (const block of postBlocks) {
+      if (index >= block.contentStart && index <= block.contentEnd) return block.paragraphId;
+    }
+    return postBlocks.length > 0
+      ? (postBlocks[postBlocks.length - 1] as LinearBlockLayout).paragraphId
+      : null;
+  };
+  let preIndex = 0;
+  let postIndex = 0;
   for (const op of delta) {
     if (op.retain !== undefined) {
-      linear += op.retain;
-      const id = idAt(linear);
-      if (id !== null) currentId = id;
+      preIndex += op.retain;
+      postIndex += op.retain;
       continue;
     }
     if (op.delete !== undefined) {
       for (let offset = 0; offset < op.delete; offset += 1) {
-        const id = idAt(linear + offset);
+        const id = idAtPre(preIndex + offset);
         if (id !== null) touched.add(id);
       }
+      const survivor = idAtPost(postIndex);
+      if (survivor !== null) touched.add(survivor);
+      preIndex += op.delete;
       continue;
     }
-    const id = currentId ?? idAt(linear) ?? (layout[0] as { paragraphId: string } | undefined)?.paragraphId ?? null;
-    if (id !== null) touched.add(id);
-    if (typeof op.insert === "string") linear += (op.insert as string).length;
-    else linear += 1;
+    const insert = op.insert;
+    if (typeof insert === "object" && insert !== null && isSeparatorValue(insert)) {
+      const head = idAtPre(preIndex) ?? idAtPost(postIndex);
+      if (head !== null) touched.add(head);
+      const tailId = (insert.separator as { paragraphId: string }).paragraphId;
+      if (typeof tailId === "string" && tailId !== "") touched.add(tailId);
+      postIndex += 1;
+      continue;
+    }
+    const head = idAtPre(preIndex) ?? idAtPost(postIndex);
+    if (head !== null) touched.add(head);
+    if (typeof insert === "string") postIndex += (insert as string).length;
+    else postIndex += 1;
   }
   return [...touched];
 }

@@ -5,6 +5,7 @@
 import { describe, expect, it, afterEach } from "vitest";
 import * as Y from "yjs";
 import { createRichTextEditor, type RichTextEditor } from "./editor.js";
+import { createBoundRichTextEditor } from "./editor-bound.js";
 import {
   createBoundHistoryPlaceholder,
   createBoundUndoManager,
@@ -48,11 +49,11 @@ function p0Doc(): RichTextDocument {
 }
 
 describe("CL-3a bound history seam", () => {
-  it("bound composition removes UndoRedo in exactly one place", () => {
+  it("bound composition removes UndoRedo in exactly one place", async () => {
     const provider = createInMemoryTestDoubleProvider();
     const source = provider.openSession("canvas:h1", "session:h1", ["body"]);
     const identity = { documentId: "canvas:h1", sessionId: "session:h1", fieldKey: "body" };
-    const bound = createRichTextEditor({
+    const bound = await createBoundRichTextEditor({
       document: p0Doc(),
       messages: { ...MESSAGES },
       allocateId: () => "test:hist:1",
@@ -105,14 +106,14 @@ describe("CL-3a bound history seam", () => {
 });
 
 describe("CL-3a incremental remote application", () => {
-  it("rebuilds only the affected block range with echo suppression", () => {
+  it("rebuilds only the affected block range with echo suppression", async () => {
     const provider = createInMemoryTestDoubleProvider();
     const source = provider.openSession("canvas:r1", "session:r1", ["body"]);
     const identity = { documentId: "canvas:r1", sessionId: "session:r1", fieldKey: "body" };
     const binding = source.resolveBinding(identity);
     seedFieldFromDocument(binding.text, binding.fieldMeta, "body", p0Doc());
 
-    const editor = createRichTextEditor({
+    const editor = await createBoundRichTextEditor({
       document: p0Doc(),
       messages: { ...MESSAGES },
       allocateId: () => "test:remote:1",
@@ -122,6 +123,8 @@ describe("CL-3a incremental remote application", () => {
     });
     mounted.push(editor);
 
+    const beforeNodes: unknown[] = [];
+    editor.view.state.doc.forEach((node) => beforeNodes.push(node));
     // Remote insert in paragraph:2 only (linear: ⟨¶1⟩ alpha ⟨¶2⟩ beta …).
     // "alpha" is 5 chars: separators at 0 and 6; paragraph:2 content starts at 7.
     const beforeY = captureDocumentFromField(binding.text, binding.fieldMeta, "focus.markdown.p0@1");
@@ -144,6 +147,12 @@ describe("CL-3a incremental remote application", () => {
     expect(after.document.blocks[0]).toEqual(beforeY.document.blocks[0]);
     expect(after.document.blocks[2]).toEqual(beforeY.document.blocks[2]);
 
+    // Incremental: unaffected PM nodes stay object-identical.
+    const afterNodes: unknown[] = [];
+    editor.view.state.doc.forEach((node) => afterNodes.push(node));
+    expect(afterNodes[0]).toBe(beforeNodes[0]);
+    expect(afterNodes[2]).toBe(beforeNodes[2]);
+
     // The projected editor shows the remote text…
     const pmBeta = editor.view.state.doc.textBetween(0, editor.view.state.doc.content.size, "\n\n", "\n");
     expect(pmBeta).toContain("REMOTE-beta");
@@ -152,6 +161,44 @@ describe("CL-3a incremental remote application", () => {
     const reread = captureDocumentFromField(binding.text, binding.fieldMeta, "focus.markdown.p0@1");
     expect(reread.document).toEqual(after.document);
     void BINDING_ORIGIN_META;
+  });
+
+  it("400-block append applies incrementally within the remote budget", async () => {
+    const blocks = Array.from({ length: 400 }, (_, index) => ({
+      paragraphId: `paragraph:${index}`,
+      kind: "paragraph" as const,
+      text: "word ".repeat(20),
+    }));
+    const big = { format: "focus.markdown.p0@1" as const, blocks };
+    const provider = createInMemoryTestDoubleProvider();
+    const source = provider.openSession("canvas:r400", "session:r400", ["body"]);
+    const identity = { documentId: "canvas:r400", sessionId: "session:r400", fieldKey: "body" };
+    const binding = source.resolveBinding(identity);
+    seedFieldFromDocument(binding.text, binding.fieldMeta, "body", big);
+    const editor = await createBoundRichTextEditor({
+      document: big,
+      messages: { ...MESSAGES },
+      allocateId: () => "test:remote:400",
+      collaborationBinding: identity,
+      collaborationSource: source,
+      element: globalThis.document.createElement("div"),
+    });
+    mounted.push(editor);
+    binding.text.doc?.transact(() => {
+      binding.text.insert(binding.text.length, "X");
+    });
+    const start = performance.now();
+    const result = applyRemoteUpdateIncrementally({
+      view: editor.view,
+      ytext: binding.text,
+      fieldMeta: binding.fieldMeta,
+      format: "focus.markdown.p0@1",
+      fieldKey: "body",
+      affectedParagraphIds: ["paragraph:399"],
+    });
+    const elapsed = performance.now() - start;
+    expect(result.rebuiltParagraphIds).toEqual(["paragraph:399"]);
+    expect(elapsed).toBeLessThan(250);
   });
 
   it("yTextToPmDoc is deterministic for the same field state", () => {
