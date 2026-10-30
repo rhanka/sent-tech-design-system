@@ -18,7 +18,21 @@
     }
   },
   "apiSavePayloadsDigest": "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1fbd76",
-  "hostAcceptance": "pending-host",
+  "hostAcceptance": "accepted",
+  "hostAcceptanceEvidence": {
+    "dsRevision": "18070a76",
+    "hostRevision": "97fe9f53e8079694e35771227c11544ce8658316",
+    "record": "rhanka/sentropic .tmp/canvas-live/W1-host-acceptance.md",
+    "recordDigest": "sha256:eae405be453fdeee403da296ffc72865da5ea608c82a7d7853feca9061ea858b",
+    "rules": {
+      "accepted": 17,
+      "amended": 0
+    },
+    "commands": [
+      "host-w1-full.mjs",
+      "host-w1-host.mjs"
+    ]
+  },
   "command": "vitest run src/w1-full-roundtrip.test.ts",
   "cases": [
     {
