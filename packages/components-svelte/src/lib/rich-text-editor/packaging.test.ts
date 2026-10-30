@@ -465,6 +465,98 @@ describe("barrel isolation (RT-1 half of RED-P)", () => {
   );
 });
 
+describe("presence-badge subpath (CL-1B fix)", () => {
+  /** Source graph reachable from the presence-badge subpath entry. */
+  function presenceBadgeGraph(): ModuleGraph {
+    return resolveGraph([
+      "src/lib/presence-badge/index.ts",
+      "src/lib/presence-badge/LockPresenceBadge.svelte",
+    ]);
+  }
+
+  it("the subpath entry resolves and exposes the component", async () => {
+    const entry = (await import(
+      "../presence-badge/index.js"
+    )) as Record<string, unknown>;
+    expect(entry["default"]).toBeDefined();
+    expect(entry["LockPresenceBadge"]).toBeDefined();
+  });
+
+  it("the subpath entry re-exports the prop type", () => {
+    const text = readFileSync(
+      join(LIB_DIR, "presence-badge", "index.ts"),
+      "utf8",
+    );
+    expect(text).toContain("LockPresenceBadge");
+    expect(text).toContain("LockPresenceBadgeProps");
+  });
+
+  it("the subpath entry never reaches the barrel", () => {
+    for (const file of presenceBadgeGraph().files) {
+      expect(
+        file === "src/lib/index.ts",
+        `presence-badge entry must not reach the barrel ("${file}")`,
+      ).toBe(false);
+    }
+  });
+
+  it("resolves through the manifest exports map (self-reference)", async () => {
+    const resolved = await import.meta.resolve(
+      "@sentropic/design-system-svelte/presence-badge",
+    );
+    expect(resolved).toContain("presence-badge");
+  });
+
+  it("the subpath imports only the pure rich-text entry (no editor, Yjs or DOM module)", () => {
+    // Every rich-text module that touches the editor runtime, Yjs or the DOM
+    // lives behind a rich-text subpath ("./editor"); the pure "." entry is
+    // the only bare specifier allowed here.
+    const graph = presenceBadgeGraph();
+    // Non-vacuous: the entry plus the component must both be walked.
+    expect(graph.files).toContain("src/lib/presence-badge/index.ts");
+    expect(graph.files).toContain(
+      "src/lib/presence-badge/LockPresenceBadge.svelte",
+    );
+    expect(graph.edges.length).toBeGreaterThan(0);
+    for (const { file, specifier } of graph.edges) {
+      if (specifier.includes("design-system-rich-text")) {
+        expect(
+          specifier,
+          `${file} must reach only the pure "." entry ("${specifier}")`,
+        ).toBe("@sentropic/design-system-rich-text");
+      }
+      expect(
+        specifier.startsWith("@tiptap/") || specifier.startsWith("prosemirror-"),
+        `${file} must not import the editor runtime ("${specifier}")`,
+      ).toBe(false);
+      expect(
+        specifier === "yjs" || specifier.startsWith("yjs/"),
+        `${file} must not import Yjs ("${specifier}")`,
+      ).toBe(false);
+    }
+  });
+
+  it("the barrel graph still has no rich-text edge and no presence-badge file", () => {
+    const graph = resolveGraph(["src/lib/index.ts"]);
+    // Non-vacuous: the barrel fans out over the component library, so a
+    // graph of a handful of files would mean the walk itself is broken.
+    expect(graph.files.length).toBeGreaterThan(10);
+    expect(graph.edges.length).toBeGreaterThan(0);
+    for (const file of graph.files) {
+      expect(
+        file.startsWith("src/lib/presence-badge/"),
+        `barrel must not reach the presence-badge subpath ("${file}")`,
+      ).toBe(false);
+    }
+    for (const { file, specifier } of graph.edges) {
+      expect(
+        specifier.includes("rich-text"),
+        `${file} must not reach the rich-text subpath ("${specifier}")`,
+      ).toBe(false);
+    }
+  });
+});
+
 describe("resolved consumer graphs (RED-P, fresh graphs with bare dependencies)", () => {
   it(
     "the barrel consumer graph loads no editor runtime",
@@ -539,6 +631,11 @@ describe("distribution wiring (RT-1)", () => {
       svelte: "./dist/index.js",
       types: "./dist/index.d.ts",
       import: "./dist/index.js",
+    });
+    expect(manifest.exports?.["./presence-badge"]).toEqual({
+      svelte: "./dist/presence-badge/index.js",
+      types: "./dist/presence-badge/index.d.ts",
+      import: "./dist/presence-badge/index.js",
     });
   });
 

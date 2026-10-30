@@ -22,6 +22,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./presence-badge": {
+      "svelte": "./dist/presence-badge/index.js",
+      "types": "./dist/presence-badge/index.d.ts",
+      "import": "./dist/presence-badge/index.js"
+    },
     "./rich-text-editor": {
       "svelte": "./dist/rich-text-editor/index.js",
       "types": "./dist/rich-text-editor/index.d.ts",
