@@ -45,9 +45,19 @@ const MANIFEST_PATH = join(import.meta.dirname, "../FULL-NORMALIZATIONS.md");
 // truncated 63-digit value.
 const API_DIGEST =
   "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1fbd76";
-// Review 1 item 13: host acceptance of the F10-M/F16-M manifest entries is
-// still pending on sentropic.
-const HOST_ACCEPTANCE = "pending-host";
+// Host acceptance by sentropic (canvas-live host): all 17 manifest rules
+// accepted without amendment, host W1 run on both bridges against DS main
+// 18070a76.
+const HOST_ACCEPTANCE = "accepted";
+const HOST_ACCEPTANCE_EVIDENCE = {
+  dsRevision: "18070a76",
+  hostRevision: "97fe9f53e8079694e35771227c11544ce8658316",
+  record: "rhanka/sentropic .tmp/canvas-live/W1-host-acceptance.md",
+  recordDigest:
+    "sha256:eae405be453fdeee403da296ffc72865da5ea608c82a7d7853feca9061ea858b",
+  rules: { accepted: 17, amended: 0 },
+  commands: ["host-w1-full.mjs", "host-w1-host.mjs"],
+};
 
 const MANIFEST_IDS = new Set(FULL_NORMALIZATION_MANIFEST.map((rule) => rule.id));
 
@@ -638,6 +648,7 @@ describe("CL-2F W1: pinned-corpus Markdown round-trip", () => {
       },
       apiSavePayloadsDigest: API_DIGEST,
       hostAcceptance: HOST_ACCEPTANCE,
+      hostAcceptanceEvidence: HOST_ACCEPTANCE_EVIDENCE,
       command: "vitest run src/w1-full-roundtrip.test.ts",
       cases,
       summary,
