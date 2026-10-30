@@ -151,11 +151,23 @@ export interface RichTextSelectionSnapshot {
   headOffset: number;
 }
 
+/** A surfaced binding error (CL-3a review 2 B-NEW-6): the binding kept the
+    previous PM document and a correct shared-state baseline, and reports
+    the refusal through this typed event instead of an empty catch. */
+export interface RichTextBindingErrorEvent {
+  /** Stable binding-error message (`rich-text.collab-*` codes). */
+  message: string;
+  /** Where the error was contained: a remote application that could not be
+      projected, or a local projection that was rolled back on both sides. */
+  phase: "remote-application" | "local-projection";
+}
+
 export interface RichTextEditorCallbacks {
   onChange?: (event: RichTextChangeEvent) => void;
   onExternalConflict?: (event: RichTextExternalConflictEvent) => void;
   onUnsupportedPaste?: (event: RichTextUnsupportedPasteEvent) => void;
   onReadinessChange?: (event: RichTextReadiness) => void;
+  onBindingError?: (event: RichTextBindingErrorEvent) => void;
 }
 
 /** Full-profile extension factory, supplied by the separate full module
@@ -266,6 +278,12 @@ export function createRichTextEditor(
   options: RichTextEditorOptions & { profile: "full" },
 ): Promise<RichTextEditor>;
 export function createRichTextEditor(
+  options: RichTextEditorOptions & {
+    collaborationBinding: FieldBindingIdentity;
+    collaborationSource: LiveSessionBindingSource;
+  },
+): Promise<RichTextEditor>;
+export function createRichTextEditor(
   options: RichTextEditorOptions,
 ): RichTextEditor;
 export function createRichTextEditor(
@@ -277,10 +295,18 @@ export function createRichTextEditor(
     options.collaborationBinding !== null &&
     options.collaborationSource !== undefined &&
     options.collaborationSource !== null;
+  // §6.3 seam 3: `"./editor"` accepts the collaboration binding at
+  // construction, so a bound mount routes to the bound entry instead of
+  // throwing. The route is a dynamic import: the Yjs modules load only on
+  // this path, so a controlled mount and the `"."` entry still load no Yjs
+  // module (witness 7); a re-export would pull `editor-bound.js` (and the
+  // collaboration runtime) into the controlled graph statically, and a new
+  // package export would widen the public surface the seam keeps closed.
   if (bound) {
-    throw new Error(
-      "rich-text.bound-entry: use createBoundRichTextEditor from ./editor-bound.js for bound mounts (keeps the controlled graph free of the collaboration runtime)",
-    );
+    return (async (): Promise<RichTextEditor> => {
+      const boundEntry = await import("./editor-bound.js");
+      return boundEntry.createBoundRichTextEditor(options);
+    })();
   }
   if (profile !== "full") {
     return buildEditor(options);
@@ -295,7 +321,7 @@ export function createRichTextEditor(
 }
 
 export interface BoundImpl {
-  ytext: { length: number };
+  ytext: { length: number; doc?: { on: (name: string, fn: (transaction: never) => void) => void; off: (name: string, fn: (transaction: never) => void) => void } };
   fieldMeta: { size?: number };
   binding: { identity: FieldBindingIdentity };
   codec: {
@@ -308,8 +334,9 @@ export interface BoundImpl {
   projection: {
     BINDING_ORIGIN_META: string;
     buildSelectionMap: (doc: never, ytext: never) => never;
-    projectPmTransactionToYText: (binding: never, before: never, tr: never) => void;
+    projectPmTransactionToYText: (binding: never, before: never, tr: never) => string[];
     applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
+    yTextToPmDoc: (ytext: never, fieldMeta: never, format: never, schema: never) => never;
     linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
     affectedBlocksFromDelta: (
       pre: never,
@@ -377,14 +404,25 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   const boundCollaboration = binding !== null && bindingSource !== null;
   let isProjecting = false;
   let lastLinearBlocks: Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }> | null = null;
-  let lastYTransaction: unknown = null;
   let yTextHandler: ((event: never, transaction: never) => void) | null = null;
   let fieldMetaHandler: ((event: never, transaction: never) => void) | null = null;
+  let afterTransactionHandler: ((transaction: never) => void) | null = null;
   const callbacks: RichTextEditorCallbacks = {
     onChange: options.onChange,
     onExternalConflict: options.onExternalConflict,
     onUnsupportedPaste: options.onUnsupportedPaste,
     onReadinessChange: options.onReadinessChange,
+    onBindingError: options.onBindingError,
+  };
+  /** Surface a contained binding error (review 2 B-NEW-6): the previous PM
+      document and a correct shared-state baseline are kept; the typed event
+      reports the refusal, never an empty catch. */
+  const surfaceBindingError = (message: string, phase: "remote-application" | "local-projection"): void => {
+    try {
+      callbacks.onBindingError?.({ message, phase });
+    } catch {
+      // A failing host callback never breaks the session.
+    }
   };
   const tracker: CaptureTracker = createCaptureTracker({
     onReadinessChange: callbacks.onReadinessChange,
@@ -443,6 +481,7 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     placeholder: () => livePlaceholder,
     placeholderMarker: () => livePlaceholderMarker,
     isEditable: () => isActive(),
+    bound: boundCollaboration,
   };
   const fullFactory = isFull ? fullExtensionFactory : null;
   if (isFull && fullFactory === null) {
@@ -805,88 +844,130 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       observe: (fn: (event: never, transaction: never) => void) => void;
       unobserve: (fn: (event: never, transaction: never) => void) => void;
     };
+    // One remote application per Yjs transaction (review 2 B-NEW-3): the
+    // observers accumulate the affected blocks — delta-affected from the
+    // text type, `keysChanged` (plus their run members) from the metadata
+    // map — and a single `afterTransaction` handler applies the union once,
+    // after both observers ran, so a transaction touching `Y.Text` and
+    // `fieldmeta` together updates the PM exactly once.
+    type LinearBlockShape = { paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number };
+    let pendingAffected: Set<string> | null = null;
+    let pendingDelta: Array<{ insert?: string | Record<string, unknown>; delete?: number; retain?: number }> | null = null;
+    let pendingPreBlocks: LinearBlockShape[] | null = null;
+    let pendingTransaction: unknown = null;
+    let forceFullRebuild = false;
+    const openPendingWindow = (transaction: never): void => {
+      if (pendingTransaction === transaction) return;
+      pendingTransaction = transaction;
+      pendingAffected = new Set<string>();
+      pendingDelta = null;
+      pendingPreBlocks = (lastLinearBlocks as LinearBlockShape[] | null) ?? [];
+    };
     yTextHandler = ((event: never, transaction: never) => {
       if (tracker.destroyed || isProjecting) return;
-      if (transaction === lastYTransaction) return;
-      lastYTransaction = transaction;
+      openPendingWindow(transaction);
       try {
         const delta = (event as unknown as { changes: { delta: unknown[] } }).changes.delta as Array<{
           insert?: string | Record<string, unknown>;
           delete?: number;
           retain?: number;
         }>;
-        const pre = lastLinearBlocks ?? [];
-        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as Array<{
-          paragraphId: string;
-          separatorIndex: number;
-          contentStart: number;
-          contentEnd: number;
-        }>;
+        pendingDelta = delta;
+        const pre = pendingPreBlocks ?? [];
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as LinearBlockShape[];
         const affected = boundImpl.projection.affectedBlocksFromDelta(pre as never, post as never, delta as never) as string[];
-        if (affected.length === 0) {
-          lastLinearBlocks = post as never;
-          return;
-        }
-        boundImpl.projection.applyRemoteUpdateIncrementally({
-          view: editor.view,
-          ytext: boundImpl.ytext,
-          fieldMeta: boundImpl.fieldMeta,
-          format: documentFormat,
-          fieldKey: binding?.fieldKey ?? "",
-          affectedParagraphIds: affected,
-        } as never);
-        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
-      } catch {
-        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+        for (const id of affected) (pendingAffected as Set<string>).add(id);
+      } catch (error) {
+        // Accumulation failure (review 2 B-NEW-6): never silent. The next
+        // application falls back to a full replacement — a partially
+        // accumulated affected set must not under-rebuild — and the refusal
+        // surfaces through the typed callback.
+        pendingDelta = null;
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
       }
     }) as never;
     fieldMetaHandler = ((event: never, transaction: never) => {
       if (tracker.destroyed || isProjecting) return;
-      if (transaction === lastYTransaction) return;
+      openPendingWindow(transaction);
       try {
-        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as Array<{
-          paragraphId: string;
-          separatorIndex: number;
-          contentStart: number;
-          contentEnd: number;
-        }>;
-        if (lastLinearBlocks !== null && JSON.stringify(post) !== JSON.stringify(lastLinearBlocks)) {
-          return;
-        }
-        lastYTransaction = transaction;
+        const post = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as LinearBlockShape[];
         const keys = (event as unknown as { changes: { keys: Map<string, { action: string }> } }).changes.keys;
         const postIds = new Set(post.map((block) => block.paragraphId));
-        const affectedSet = new Set<string>();
         const fieldMetaMap = boundImpl.fieldMeta as unknown as Map<string, unknown>;
-        for (const [key, change] of keys) {
-          void change;
+        for (const [key] of keys) {
           if (postIds.has(key)) {
-            affectedSet.add(key);
+            (pendingAffected as Set<string>).add(key);
             continue;
           }
           for (const block of post) {
             const record = fieldMetaMap.get(block.paragraphId) as { listRunId?: unknown } | undefined;
             if (record?.listRunId === key) {
-              affectedSet.add(block.paragraphId);
+              (pendingAffected as Set<string>).add(block.paragraphId);
             }
           }
         }
-        if (affectedSet.size === 0) return;
+      } catch (error) {
+        // Accumulation failure (review 2 B-NEW-6): never silent. The next
+        // application falls back to a full replacement and the refusal
+        // surfaces through the typed callback.
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
+      }
+    }) as never;
+    afterTransactionHandler = ((transaction: never) => {
+      if (tracker.destroyed || isProjecting) return;
+      if (pendingTransaction !== transaction) return;
+      const affected = pendingAffected;
+      const delta = pendingDelta;
+      const preBlocks = pendingPreBlocks;
+      pendingTransaction = null;
+      pendingAffected = null;
+      pendingDelta = null;
+      pendingPreBlocks = null;
+      if (affected === null || affected.size === 0) {
+        // Baseline refresh: the next delta maps against the new layout.
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+        return;
+      }
+      try {
         boundImpl.projection.applyRemoteUpdateIncrementally({
           view: editor.view,
           ytext: boundImpl.ytext,
           fieldMeta: boundImpl.fieldMeta,
           format: documentFormat,
           fieldKey: binding?.fieldKey ?? "",
-          affectedParagraphIds: [...affectedSet],
+          affectedParagraphIds: [...affected],
+          ...(forceFullRebuild ? { fullReplace: true } : {}),
+          ...(preBlocks !== null && preBlocks.length > 0 ? { preBlocks: preBlocks as never } : {}),
+          ...(delta !== null ? { delta: delta as never } : {}),
         } as never);
-      } catch {
-        // Metadata-only rebuild failures never break the session; the next
-        // text change re-evaluates the wrappers.
+        forceFullRebuild = false;
+      } catch (error) {
+        // Review 2 B-NEW-6 (remote path): the previous PM document is kept,
+        // the baseline now includes the applied Y.Text change so the next
+        // delta maps correctly, and the next remote application
+        // resynchronizes through a full replacement. The refusal surfaces
+        // through the typed callback.
+        forceFullRebuild = true;
+        surfaceBindingError(
+          error instanceof Error ? error.message : String(error),
+          "remote-application",
+        );
+      } finally {
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
       }
     }) as never;
     ytextObs.observe(yTextHandler as never);
     metaObs.observe(fieldMetaHandler as never);
+    const ydocObs = (boundImpl.ytext as unknown as { doc?: { on: (name: string, fn: (transaction: never) => void) => void; off: (name: string, fn: (transaction: never) => void) => void } }).doc;
+    ydocObs?.on("afterTransaction", afterTransactionHandler as never);
   }
 
   /** Synchronize inert link rendering with editability (CL-2F-F-URL item 1):
@@ -1300,22 +1381,84 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       !editor.view.composing &&
       !tracker.composing
     ) {
+      let projectionFailure: unknown = null;
       isProjecting = true;
       try {
-        boundImpl.projection.projectPmTransactionToYText(
+        const revealedIds = (boundImpl.projection.projectPmTransactionToYText(
           {
             ytext: boundImpl.ytext,
             fieldMeta: boundImpl.fieldMeta,
             fieldKey: binding?.fieldKey ?? "",
             allocateId: allocateFresh,
             format: documentFormat,
+            // The live document after the identity plugin's repairs for
+            // this transaction (review 2 B-NEW-2): the projection adopts the
+            // minted split-tail and inserted-block identities instead of
+            // allocating a second, divergent one.
+            pmTransactionDoc: editor.state.doc,
           } as never,
           transaction.before as never,
           transaction as never,
-        );
+        ) ?? []) as string[];
+        // R-FULL-CODE-1 (review 2 B-NEW-8): blocks that just left a
+        // codeBlock carry formats in the shared state that the ProseMirror
+        // side could not hold while the block was code. Rebuild them from
+        // the shared state so the hidden formats are revealed locally too
+        // (the remote replicas reveal through the metadata-only update).
+        if (revealedIds.length > 0) {
+          try {
+            boundImpl.projection.applyRemoteUpdateIncrementally({
+              view: editor.view,
+              ytext: boundImpl.ytext,
+              fieldMeta: boundImpl.fieldMeta,
+              format: documentFormat,
+              fieldKey: binding?.fieldKey ?? "",
+              affectedParagraphIds: revealedIds,
+            } as never);
+          } catch {
+            // The reveal is a display resynchronization: on failure the
+            // block keeps the user's transaction result and the shared
+            // state stays authoritative for the next application.
+          }
+        }
         lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+      } catch (error) {
+        projectionFailure = error;
       } finally {
         isProjecting = false;
+      }
+      if (projectionFailure !== null) {
+        // Review 2 B-NEW-6 (local path): the projection refused the
+        // transaction and inverted the shared state inside its Yjs
+        // transaction, so both sides sit at the last agreed state after the
+        // PM view is rebuilt from the shared state here. The refusal
+        // surfaces through the typed callback; nothing propagates out of
+        // the dispatch.
+        const cause = projectionFailure instanceof Error ? projectionFailure.message : String(projectionFailure);
+        surfaceBindingError(
+          `rich-text.collab-step-failed: the local transaction was rolled back on both sides (${cause})`,
+          "local-projection",
+        );
+        try {
+          const sharedDoc = boundImpl.projection.yTextToPmDoc(
+            boundImpl.ytext as never,
+            boundImpl.fieldMeta as never,
+            documentFormat as never,
+            editor.view.state.schema as never,
+          ) as never as { content: unknown };
+          const rollback = editor.view.state.tr;
+          rollback.setMeta(boundImpl.projection.BINDING_ORIGIN_META, true);
+          rollback.setMeta("addToHistory", false);
+          rollback.replaceWith(0, editor.view.state.doc.content.size, sharedDoc.content as never);
+          editor.view.dispatch(rollback as never);
+        } catch {
+          // The shared state itself no longer projects: the surfaced error
+          // above already reports the refusal; keep the previous document.
+        }
+        lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+        prevUndoDepth = undoDepth(editor.state);
+        prevRedoDepth = redoDepth(editor.state);
+        return;
       }
     }
     if (suppressEmit) {
@@ -2651,13 +2794,16 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           const metaObs = boundImpl.fieldMeta as unknown as {
             unobserve: (fn: (event: never, transaction: never) => void) => void;
           };
+          const ydocObs = (boundImpl.ytext as unknown as { doc?: { off: (name: string, fn: (transaction: never) => void) => void } }).doc;
           if (yTextHandler !== null) ytextObs.unobserve(yTextHandler as never);
           if (fieldMetaHandler !== null) metaObs.unobserve(fieldMetaHandler as never);
+          if (afterTransactionHandler !== null) ydocObs?.off("afterTransaction", afterTransactionHandler as never);
         } catch {
           // Unobserving never blocks teardown.
         }
         yTextHandler = null;
         fieldMetaHandler = null;
+        afterTransactionHandler = null;
         try {
           if (binding !== null && bindingSource !== null) {
             bindingSource.releaseBinding(binding);

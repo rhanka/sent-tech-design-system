@@ -331,7 +331,17 @@ export function createFullEditorExtensions(
     // After ListKeymap: for the shared Backspace binding the later
     // extension wins, so the DS rejoin preempts the library no-op.
     FullListJoinBackwards,
-    TrailingNode,
+    // Bound mounts compose no TrailingNode (review 2, found while
+    // witnessing the bound full path): the helper's appendTransaction
+    // creates an identified paragraph the dispatch pipeline reports only
+    // through the final document — the per-transaction projection never
+    // sees it, so the paragraph would exist in the local ProseMirror
+    // document but in no replica's shared state. The bound document is
+    // the deterministic projection of the shared state (§4.3.1 item 1)
+    // and a viewer mount may never mutate the shared state (R-API-4), so
+    // the bound helper set omits it; a paragraph the user creates is a
+    // normal projected local edit. Controlled full mounts keep F19.
+    ...(options.bound ? [] : [TrailingNode]),
     ForbiddenLinkGuard,
     PreservedBlock,
   ];

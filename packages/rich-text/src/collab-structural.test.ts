@@ -9,6 +9,7 @@ import * as Y from "yjs";
 import { createRichTextEditor, type RichTextEditor } from "./editor.js";
 import { seedFieldFromDocument, captureDocumentFromField } from "./collab-codec.js";
 import { projectPmTransactionToYText, yTextToPmDoc } from "./collab-projection.js";
+import { fullProseMirrorToDocument } from "./editor-full-document.js";
 import type { RichTextDocument } from "./model.js";
 
 const mounted: RichTextEditor[] = [];
@@ -66,12 +67,24 @@ async function setup() {
   const ydoc = new Y.Doc();
   const ytext = ydoc.getText("field:body");
   const meta = ydoc.getMap("fieldmeta:body");
-  seedFieldFromDocument(ytext, meta, "body", fullDoc());
+  // The full profile's TrailingNode appends an identified trailing
+  // paragraph at mount (profile table: "trailing paragraph is identified
+  // content"), so the projection's before-document is the editor's live
+  // document, not the nominal input. Seeding the shared field from that
+  // same read keeps the standalone projection's pre-state coherent with
+  // the PM before-document the tests pass (strict count verification,
+  // review 2 B-NEW-7).
+  seedFieldFromDocument(
+    ytext,
+    meta,
+    "body",
+    fullProseMirrorToDocument(ed.view.state.doc, undefined).document,
+  );
   return { ed, ydoc, ytext, meta };
 }
 
 describe("CL-3a-B3 nested split and sink", () => {
-  it("split inside a list keeps the tail in the run with a fresh item id", async () => {
+  it("continuation split inside one list item keeps the item id and the run (R-FULL-META-1)", async () => {
     const { ed, ytext, meta } = await setup();
     const { TextSelection } = await import("@tiptap/pm/state");
     let pos = -1;
@@ -81,7 +94,7 @@ describe("CL-3a-B3 nested split and sink", () => {
     expect(pos).toBeGreaterThan(0);
     const tr = ed.view.state.tr;
     tr.setSelection(TextSelection.create(ed.view.state.doc, pos));
-    const splitPos = ed.view.state.selection.from;
+    const splitPos = tr.selection.from;
     const splitTr = ed.view.state.tr;
     splitTr.split(splitPos, 1);
     projectPmTransactionToYText(
@@ -95,7 +108,11 @@ describe("CL-3a-B3 nested split and sink", () => {
     const tailMeta = (tail as { metadata?: Record<string, unknown> }).metadata ?? {};
     expect(tailMeta["listKind"]).toBe("bullet");
     expect(tailMeta["listRunId"]).toBe("p:2");
-    expect(tailMeta["listItemId"]).toBe("fresh:tail");
+    // A `split(pos, 1)` divides the paragraph only: the tail is a
+    // continuation paragraph of the SAME list item, so it names that item's
+    // opening paragraph id (spec R-FULL-META-1: "continuation paragraphs …
+    // name that same item"), never a minted item id.
+    expect(tailMeta["listItemId"]).toBe("p:3");
     expect(tailMeta["orderedStart"]).toBeUndefined();
     // Two replicas converge on the same PM (tail inside the list).
     const replica = new Y.Doc();
@@ -109,6 +126,58 @@ describe("CL-3a-B3 nested split and sink", () => {
     );
     expect(pm1.eq(pm2)).toBe(true);
     expect(JSON.stringify(pm1.toJSON())).toContain("fresh:tail");
+  });
+
+  it("item-boundary split opens a new item and mints the tail item id (R-FULL-META-1)", async () => {
+    const { ed, ytext, meta } = await setup();
+    const { TextSelection } = await import("@tiptap/pm/state");
+    // Split at the END of "item one" with depth 2: the slice opens the
+    // list item, so the tail opens a NEW item whose opening paragraph id
+    // is the tail id (item split, review 2 B-NEW-5).
+    let end = -1;
+    ed.view.state.doc.descendants((node, p) => {
+      if (node.isText && node.text?.includes("item one")) end = p + node.text.length;
+    });
+    expect(end).toBeGreaterThan(0);
+    const tr = ed.view.state.tr;
+    tr.setSelection(TextSelection.create(ed.view.state.doc, end));
+    const splitTr = ed.view.state.tr;
+    splitTr.split(tr.selection.from, 2);
+    projectPmTransactionToYText(
+      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:item", format: "ds.markdown.full@1" },
+      ed.view.state.doc,
+      splitTr,
+    );
+    const cap = captureDocumentFromField(ytext, meta, "ds.markdown.full@1");
+    const tail = cap.document.blocks.find((b) => b.paragraphId === "fresh:item");
+    expect(tail).toBeDefined();
+    const tailMeta = (tail as { metadata?: Record<string, unknown> }).metadata ?? {};
+    expect(tailMeta["listKind"]).toBe("bullet");
+    expect(tailMeta["listRunId"]).toBe("p:2");
+    expect(tailMeta["listItemId"]).toBe("fresh:item");
+    expect(tailMeta["orderedStart"]).toBeUndefined();
+    expect(tailMeta["listTight"]).toBeUndefined();
+    // The projection matches the transaction's PM result on every replica.
+    const replica = new Y.Doc();
+    Y.applyUpdate(replica, Y.encodeStateAsUpdate(ytext.doc as Y.Doc));
+    const pm1 = yTextToPmDoc(ytext, meta, "ds.markdown.full@1", ed.view.state.schema);
+    const pm2 = yTextToPmDoc(
+      replica.getText("field:body"),
+      replica.getMap("fieldmeta:body") as Y.Map<unknown>,
+      "ds.markdown.full@1",
+      ed.view.state.schema,
+    );
+    expect(pm1.eq(pm2)).toBe(true);
+    // The raw standalone transaction never ran the identity plugin, so its
+    // post-step document keeps a duplicated head id; the projection is the
+    // authoritative image (the tail item paragraph carries the minted id).
+    const list = pm1.firstChild;
+    expect(list?.type.name).toBe("bulletList");
+    expect(list?.childCount).toBe(3);
+    const tailItem = list?.child(1);
+    expect(tailItem?.type.name).toBe("listItem");
+    expect(tailItem?.textContent).toBe("");
+    expect(tailItem?.firstChild?.attrs?.["paragraphId"]).toBe("fresh:item");
   });
 
   it("sink preserves the run id and lift removes the list wrapper", async () => {
