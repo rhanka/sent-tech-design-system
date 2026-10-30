@@ -10,6 +10,7 @@
 // and is never re-exported here.
 
 export type {
+  FullInlineSegment,
   RichTextBlock,
   RichTextCaptureResult,
   RichTextCaptureUnavailableMessage,
@@ -45,12 +46,20 @@ export {
   formatUntranslatedMarker,
   untranslatedDataValue,
 } from "./messages.js";
-export type { P0ExtensionDescriptor } from "./profile.js";
+export type {
+  FullExtensionDescriptor,
+  P0ExtensionDescriptor,
+  RichTextProfile,
+} from "./profile.js";
 export {
+  FULL_EXTENSION_NAMES,
+  FULL_MARKDOWN_SERIALISATION,
+  FULL_PROFILE_ID,
   P0_EXTENSION_NAMES,
   P0_MARKDOWN_SERIALISATION,
   P0_UNDO_REDO_SOURCE,
   RICH_TEXT_PROFILE_ID,
+  createFullExtensions,
   createP0Extensions,
 } from "./profile.js";
 export type {
@@ -153,7 +162,24 @@ export {
 } from "./collaboration.js";
 export {
   composerDocumentFromText,
+  composerFullDocumentForText,
+  composerFullDocumentFromText,
+  composerFullTextFromDocument,
   composerTextFromDocument,
   joinComposerText,
   splitComposerText,
 } from "./composer-document.js";
+export type {
+  FullNormalizationRule,
+  FullParseResult,
+  FullSerializeOptions,
+} from "./editor-full-markdown.js";
+export {
+  FULL_NORMALIZATION_MANIFEST,
+  canonicalHrDefaults,
+  canonicalPlainMetadata,
+  escapeInlineText,
+  isPlainMetadata,
+  parseFullMarkdown,
+  serializeFullDocument,
+} from "./editor-full-markdown.js";

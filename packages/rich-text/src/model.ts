@@ -1,16 +1,30 @@
-// Framework-neutral controlled document model (spec §5.1, §5.3, §5.5, §5.6).
-// RT-0: type declarations only (the fixed contract, verbatim from the spec).
-// No runtime behaviour lives here.
+// Framework-neutral controlled document model (spec §5.1, §5.3, §5.5, §5.6,
+// canvas-live CL-2F §4.3.2).
+// Type declarations only (the fixed contract). No runtime behaviour lives here.
 
-export type RichTextFormat = "focus.markdown.p0@1" | "text/plain";
+import type {
+  FullBlockMetadata,
+  RichTextInlineMarks,
+} from "./collaboration.js";
+
+export type RichTextFormat =
+  | "focus.markdown.p0@1"
+  | "text/plain"
+  | "ds.markdown.full@1";
+
+/** One inline segment of a full text block (spec §4.3.2). */
+export type FullInlineSegment =
+  | { type: "text"; text: string; marks: RichTextInlineMarks }
+  | { type: "hardBreak" };
 
 export interface RichTextBlock {
   /** Opaque per-block identity, host-supplied. See spec §5.2. */
   paragraphId: string;
-  kind: "paragraph" | "preserved";
+  kind: "paragraph" | "preserved" | "horizontalRule";
   /** Editable paragraph text (Markdown inline source for
       `focus.markdown.p0@1`, literal text for `text/plain`).
-      Present iff kind === "paragraph". */
+      Present iff kind === "paragraph" on a P0 document. Full text blocks
+      carry `segments`/`metadata` instead and never use this field. */
   text?: string;
   /** Verbatim source slice of a preserved block. Present iff
       kind === "preserved". Never edited, never reserialised. */
@@ -18,6 +32,18 @@ export interface RichTextBlock {
   /** Preserved block kind as segmented host-side (e.g. "heading",
       "list", "table", "codeBlock", "diagram"). Display only. */
   preservedKind?: string;
+  /** Full text-block metadata (spec R-FULL-META-1). Present iff this block
+      belongs to a `ds.markdown.full@1` document and kind is "paragraph".
+      Absent materializes the canonical plain defaults on capture. */
+  metadata?: FullBlockMetadata;
+  /** Full wrapper metadata of a horizontal-rule atom (spec R-FULL-HR-1).
+      Wrapper/grouping keys only; never `blockKind`, `headingLevel` or
+      `codeLanguage`. Absent materializes the canonical defaults. */
+  hrMetadata?: FullBlockMetadata;
+  /** Ordered inline runs of a full text block (spec §4.3.2). Present iff
+      this block belongs to a `ds.markdown.full@1` document and kind is
+      "paragraph". Code lines are `hardBreak` segments per R-FULL-CODE-1. */
+  segments?: readonly FullInlineSegment[];
 }
 
 export interface RichTextDocument {

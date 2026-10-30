@@ -34,7 +34,9 @@
 
   export interface RichTextEditorProps {
     value: RichTextDocument;
-    /** P0-only in CL-2; `full` arrives with CL-2F (R-FULL-PROFILE-1). */
+    /** Content profile (R-FULL-PROFILE-1): `p0` (default) or the CL-2F
+        `full` profile. `full` requires `value.format` to be
+        `ds.markdown.full@1`; a mismatch refuses the mount. */
     profile?: "p0" | "full";
     editable?: boolean;
     disabled?: boolean;
@@ -109,8 +111,9 @@
 
   /** Significant document fields for the §5.6 decision (equality of §5.6,
       emission granularity of §5.3): `format` plus, per block in order,
-      `paragraphId`, `kind`, `text`, `raw` and `preservedKind`. Read
-      reactively (outside `untrack`) so nested host mutations subscribe. */
+      `paragraphId`, `kind`, P0 text/raw/kind fields and the full
+      metadata/segments shapes. Read reactively (outside `untrack`) so
+      nested host mutations subscribe. */
   function fingerprintOf(document: RichTextDocument): string {
     const parts: string[] = [document.format, String(document.blocks.length)];
     for (const block of document.blocks) {
@@ -120,6 +123,9 @@
         block.text ?? "",
         block.raw ?? "",
         block.preservedKind ?? "",
+        JSON.stringify(block.metadata ?? null),
+        JSON.stringify(block.segments ?? null),
+        JSON.stringify(block.hrMetadata ?? null),
       );
     }
     return JSON.stringify(parts);
@@ -308,6 +314,7 @@
     lastSeenFingerprint = fingerprintOf(value);
     core = createRichTextEditor({
       document: value,
+      profile,
       messages: {
         ...messages,
         placeholder: provided("placeholder") ?? formatUntranslatedMarker("placeholder"),

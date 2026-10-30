@@ -28,6 +28,16 @@ export const paragraphIdentityPluginKey = new PluginKey(
 
 const IDENTITY_NODE_TYPES = new Set(["paragraph", "preservedBlock"]);
 
+/** Identity node types for the full profile (CL-2F): every block carrying
+    the opaque `paragraphId` attribute. */
+export const FULL_IDENTITY_NODE_TYPES = new Set([
+  "paragraph",
+  "heading",
+  "codeBlock",
+  "horizontalRule",
+  "preservedBlock",
+]);
+
 /** Allocate with retired-ID non-reuse inside the editor session: identities
     the merge path retired are never handed out again by this factory. */
 export function createSessionAllocator(
@@ -57,8 +67,9 @@ export interface LiveParagraphIdentityHooks {
 export function createParagraphIdentityExtension(
   allocateId: () => string,
   hooks?: LiveParagraphIdentityHooks,
+  nodeTypes: ReadonlySet<string> = IDENTITY_NODE_TYPES,
 ): Extension {
-  const plugin = createLiveParagraphIdentityPlugin(allocateId, hooks);
+  const plugin = createLiveParagraphIdentityPlugin(allocateId, hooks, nodeTypes);
   return Extension.create({
     name: "richTextParagraphIdentity",
     addProseMirrorPlugins() {
@@ -77,6 +88,7 @@ export function createParagraphIdentityExtension(
 export function createLiveParagraphIdentityPlugin(
   allocateId: () => string,
   hooks?: LiveParagraphIdentityHooks,
+  nodeTypes: ReadonlySet<string> = IDENTITY_NODE_TYPES,
 ): Plugin {
   return new Plugin({
     key: paragraphIdentityPluginKey,
@@ -92,6 +104,10 @@ export function createLiveParagraphIdentityPlugin(
       // carry their own identities.
       const only =
         newState.doc.childCount === 1 ? newState.doc.firstChild : null;
+      const onlyIsIdentity =
+        only !== null &&
+        only !== undefined &&
+        nodeTypes.has(only.type.name);
       const onlyId =
         only !== null && only !== undefined
           ? only.attrs[PARAGRAPH_ID_ATTRIBUTE]
@@ -99,16 +115,18 @@ export function createLiveParagraphIdentityPlugin(
       if (
         only !== null &&
         only !== undefined &&
-        only.type.name === "paragraph" &&
+        onlyIsIdentity &&
+        only.type.name !== "preservedBlock" &&
         only.textContent === "" &&
         onlyId === ""
       ) {
         const before: string[] = [];
-        oldState.doc.forEach((node) => {
-          if (node.type.name === "paragraph") {
+        oldState.doc.descendants((node) => {
+          if (nodeTypes.has(node.type.name)) {
             const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
             if (typeof id === "string" && id !== "") before.push(id);
           }
+          return true;
         });
         const first = before[0];
         if (first !== undefined) {
@@ -123,7 +141,7 @@ export function createLiveParagraphIdentityPlugin(
       const seen = new Set<string>();
       const repairs: { pos: number; id: string }[] = [];
       newState.doc.descendants((node, pos) => {
-        if (!IDENTITY_NODE_TYPES.has(node.type.name)) return true;
+        if (!nodeTypes.has(node.type.name)) return true;
         const current = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof current === "string" && current !== "" && !seen.has(current)) {
           seen.add(current);

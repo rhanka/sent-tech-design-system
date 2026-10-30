@@ -82,8 +82,15 @@ import {
 } from "./document.js";
 import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
-import { createP0EditorExtensions } from "./editor-extensions.js";
 import {
+  createFullEditorExtensions,
+  createP0EditorExtensions,
+} from "./editor-extensions.js";
+import type { P0EditorExtensionOptions } from "./editor-extensions.js";
+import { FULL_PROFILE_ID } from "./profile.js";
+import type { RichTextProfile } from "./profile.js";
+import {
+  FULL_IDENTITY_NODE_TYPES,
   IDENTITY_FIX_META,
   PRESERVED_REPLACE_META,
   createParagraphIdentityExtension,
@@ -93,11 +100,23 @@ import {
 import {
   createConversionSeeds,
   documentToProseMirror,
+  isFullIdentityNode,
   markTouchedFromTransaction,
   proseMirrorToCaptureResult,
   proseMirrorToDocument,
   reseedConversion,
 } from "./editor-conversion.js";
+import {
+  fullDocumentToProseMirror,
+  fullProseMirrorToDocument,
+} from "./editor-full-document.js";
+import {
+  planFullHtmlPaste,
+  planFullTextPaste,
+  sanitizeFullPastedHtml,
+  sliceForFullBlocks,
+  stripFullIdentityAttributes,
+} from "./editor-full-paste.js";
 import type { ConversionSeeds } from "./editor-conversion.js";
 import {
   planHtmlPaste,
@@ -137,6 +156,11 @@ export interface RichTextEditorCallbacks {
 
 export interface RichTextEditorOptions extends RichTextEditorCallbacks {
   document: RichTextDocument;
+  /** Content profile (R-FULL-PROFILE-1): `p0` (default) or the CL-2F `full`
+      profile. `full` requires `document.format === "ds.markdown.full@1"`; a
+      mismatch refuses construction. A profile change is an explicit remount,
+      never implicit widening. */
+  profile?: RichTextProfile;
   messages: RichTextMessages;
   allocateId?: () => string;
   editable?: boolean;
@@ -200,6 +224,33 @@ function defaultAllocateId(): string {
 export function createRichTextEditor(
   options: RichTextEditorOptions,
 ): RichTextEditor {
+  const profile: RichTextProfile = options.profile ?? "p0";
+  const isFull = profile === "full";
+  // R-FULL-PROFILE-1: `full` requires `ds.markdown.full@1`; P0 keeps its
+  // existing Markdown/literal formats. A mismatch refuses construction.
+  if (isFull) {
+    if (options.document.format !== FULL_PROFILE_ID) {
+      throw new Error(
+        `rich-text.profile-format-mismatch: profile "full" requires format "${FULL_PROFILE_ID}"`,
+      );
+    }
+  } else if (options.document.format === FULL_PROFILE_ID) {
+    throw new Error(
+      'rich-text.profile-format-mismatch: profile "p0" cannot mount a full document; select profile "full"',
+    );
+  }
+  /** Identity-block names for this profile (P0 pair or full quintet). */
+  const isIdentityBlockName = (name: string): boolean =>
+    isFull
+      ? FULL_IDENTITY_NODE_TYPES.has(name)
+      : name === "paragraph" || name === "preservedBlock";
+  /** Touched predicate for this profile (P0 pair or full quintet). */
+  const touchedPredicate = isFull ? isFullIdentityNode : undefined;
+  /** Text parents accepting typed/cleared/split content in this profile. */
+  const isTextParentName = (name: string): boolean =>
+    name === "paragraph" ||
+    name === "heading" ||
+    (isFull && name === "codeBlock");
   const retiredIds = new Set<string>();
   const allocateFresh = createSessionAllocator(
     options.allocateId ?? defaultAllocateId,
@@ -264,21 +315,28 @@ export function createRichTextEditor(
 
   const element =
     options.element ?? globalThis.document.createElement("div");
+  const extensionOptions: P0EditorExtensionOptions = {
+    placeholder: () => livePlaceholder,
+    placeholderMarker: () => livePlaceholderMarker,
+    isEditable: () => isActive(),
+  };
   const editor = new Editor({
     element,
     extensions: [
-      ...createP0EditorExtensions({
-        placeholder: () => livePlaceholder,
-        placeholderMarker: () => livePlaceholderMarker,
-        isEditable: () => isActive(),
-      }),
-      createParagraphIdentityExtension(allocateFresh, {
-        // Identities a select-all replacement consumed (N8, §5.2): retired
-        // inside the session, never reallocated.
-        onRetire: (ids) => {
-          for (const id of ids) retiredIds.add(id);
+      ...(isFull
+        ? createFullEditorExtensions(extensionOptions)
+        : createP0EditorExtensions(extensionOptions)),
+      createParagraphIdentityExtension(
+        allocateFresh,
+        {
+          // Identities a select-all replacement consumed (N8, §5.2): retired
+          // inside the session, never reallocated.
+          onRetire: (ids) => {
+            for (const id of ids) retiredIds.add(id);
+          },
         },
-      }),
+        isFull ? FULL_IDENTITY_NODE_TYPES : undefined,
+      ),
       createPreservedGuardExtension(isPlainTextFormat),
     ],
     content: { type: "doc", content: [{ type: "paragraph" }] },
@@ -319,7 +377,15 @@ export function createRichTextEditor(
             if (!rejected.includes(label)) rejected.push(label);
           } else if (
             node.type.name !== "paragraph" &&
-            node.type.name !== "text"
+            node.type.name !== "text" &&
+            !(isFull && isIdentityBlockName(node.type.name)) &&
+            !(
+              isFull &&
+              (node.type.name === "bulletList" ||
+                node.type.name === "orderedList" ||
+                node.type.name === "listItem" ||
+                node.type.name === "blockquote")
+            )
           ) {
             if (!rejected.includes(node.type.name)) {
               rejected.push(node.type.name);
@@ -336,6 +402,22 @@ export function createRichTextEditor(
             data?.getData("text/plain") ?? data?.getData("Text") ?? "";
           const classify = (): string[] => {
             const noop = (): string => "";
+            if (isFull) {
+              if (html !== "") {
+                const planned = planFullHtmlPaste(view.state.schema, html, noop);
+                if (planned.outcome === "refuse") {
+                  return [...planned.rejectedKinds];
+                }
+                return [];
+              }
+              if (text !== "") {
+                const planned = planFullTextPaste(text, noop);
+                if (planned.outcome === "refuse") {
+                  return [...planned.rejectedKinds];
+                }
+              }
+              return [];
+            }
             if (html !== "") {
               const planned = planHtmlPaste(
                 view.state.schema,
@@ -392,6 +474,18 @@ export function createRichTextEditor(
       // level and run the same shared policy (preventing the browser default).
       // Outside composition this stays inert and `handlePaste` owns the path.
       handleDOMEvents: {
+        auxclick: (view: EditorView, raw: Event): boolean => {
+          if (!isFull) return false;
+          const event = raw as MouseEvent;
+          const target = event.target as unknown as {
+            closest?: (selector: string) => unknown;
+          };
+          if (target !== null && typeof target === "object" && typeof target.closest === "function" && target.closest("a") !== null) {
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
         paste: (view: EditorView, raw: Event): boolean => {
           if (tracker.destroyed || !isActive()) return false;
           if (!view.composing && !tracker.composing) return false;
@@ -432,13 +526,26 @@ export function createRichTextEditor(
       // Defence in depth for any path that still parses clipboard input
       // outside `handlePaste`: identities never survive the transform.
       transformPastedHTML: (html: string): string =>
-        sanitizePastedHtml(html).html,
+        isFull
+          ? sanitizeFullPastedHtml(html).html
+          : sanitizePastedHtml(html).html,
       transformPasted: (slice: Slice): Slice => stripSliceIdentities(slice),
       // Allocation-free literal fallback: the parsed slice is discarded by
       // `handlePaste` (which re-plans from the raw transfer), so this layer
       // must not consume allocator identities.
       clipboardTextParser: (text: string): Slice => {
         if (text === "") return Slice.empty;
+        if (isFull) {
+          const planned = planFullTextPaste(text, () => "");
+          if (planned.outcome === "refuse" || planned.blocks.length === 0) {
+            return Slice.empty;
+          }
+          try {
+            return sliceForFullBlocks(editor.schema, planned.blocks);
+          } catch {
+            return Slice.empty;
+          }
+        }
         const paragraphs = text.split(/(?:\r\n?|\n)+/).map((line) => ({
           type: "paragraph",
           attrs: { [PARAGRAPH_ID_ATTRIBUTE]: "" },
@@ -469,6 +576,28 @@ export function createRichTextEditor(
         event.preventDefault();
         return true;
       },
+      // Inert links (CL-2F-F-URL): links never navigate — not by mouse,
+      // keyboard-triggered click, modified click or middle click — while
+      // staying selectable text. The href stays in the DOM so copy keeps
+      // link data; every activation path is intercepted here instead.
+      handleClickOn: (
+        _view: EditorView,
+        _pos: number,
+        _node: ProseMirrorNode,
+        _nodePos: number,
+        event: MouseEvent,
+        _direct: boolean,
+      ): boolean => {
+        if (!isFull) return false;
+        const target = event.target as unknown as {
+          closest?: (selector: string) => unknown;
+        };
+        if (target !== null && typeof target === "object" && typeof target.closest === "function" && target.closest("a") !== null) {
+          event.preventDefault();
+          return true;
+        }
+        return false;
+      },
       // `text/plain` is literal: typed characters insert verbatim and the
       // P0 Markdown input rules never fire. Direct props win over the
       // mark extensions' input-rule plugins.
@@ -494,10 +623,19 @@ export function createRichTextEditor(
 
   const manager = (): MarkdownManager => editor.storage.markdown.manager;
 
-  const displayedDocument = (): RichTextDocument =>
-    proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
+  const displayedDocument = (): RichTextDocument => {
+    if (isFull) return fullProseMirrorToDocument(editor.state.doc).document;
+    return proseMirrorToDocument(manager(), editor.state.doc, documentFormat, seeds);
+  };
 
   const displayedCaptureResult = (): RichTextCaptureResult => {
+    if (isFull) {
+      const read = fullProseMirrorToDocument(editor.state.doc);
+      return {
+        document: read.document,
+        representability: { nonRepresentableParagraphIds: read.nonRepresentableParagraphIds },
+      };
+    }
     const { document, nonRepresentableParagraphIds } =
       proseMirrorToCaptureResult(
         manager(),
@@ -570,11 +708,8 @@ export function createRichTextEditor(
     docNode: ProseMirrorNode,
   ): { id: string; text: string; contentKey: string }[] => {
     const blocks: { id: string; text: string; contentKey: string }[] = [];
-    docNode.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+    docNode.descendants((node) => {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && id !== "") {
           blocks.push({
@@ -584,6 +719,7 @@ export function createRichTextEditor(
           });
         }
       }
+      return true;
     });
     return blocks;
   };
@@ -615,17 +751,15 @@ export function createRichTextEditor(
   const orderIdsByDocument = (ids: readonly string[]): string[] => {
     const wanted = new Set(ids);
     const ordered: string[] = [];
-    editor.state.doc.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+    editor.state.doc.descendants((node) => {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && wanted.has(id)) {
           wanted.delete(id);
           ordered.push(id);
         }
       }
+      return true;
     });
     for (const id of ids) {
       if (wanted.has(id)) {
@@ -667,7 +801,7 @@ export function createRichTextEditor(
       // its identity while changing text, so the touched union (not the
       // fresh identities alone) names the modified block and the tail.
       const touched = new Set<string>();
-      markTouchedFromTransaction(touched, editor.state.doc, transaction);
+      markTouchedFromTransaction(touched, editor.state.doc, transaction, [], touchedPredicate);
       const affected = orderIdsByDocument([...new Set([...inserted, ...touched])]);
       const origin =
         lastNativeCopyText !== null &&
@@ -687,7 +821,7 @@ export function createRichTextEditor(
     }
     if (isHistoryTransaction(transaction)) {
       const affectedSet = new Set<string>();
-      markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
+      markTouchedFromTransaction(affectedSet, editor.state.doc, transaction, [], touchedPredicate);
       const affected = orderIdsByDocument([...affectedSet]);
       const directed = pendingHistory;
       pendingHistory = null;
@@ -786,7 +920,7 @@ export function createRichTextEditor(
       };
     }
     const affectedSet = new Set<string>();
-    markTouchedFromTransaction(affectedSet, editor.state.doc, transaction);
+    markTouchedFromTransaction(affectedSet, editor.state.doc, transaction, [], touchedPredicate);
     return { kind: "type", affected: orderIdsByDocument([...affectedSet]) };
   };
 
@@ -802,12 +936,14 @@ export function createRichTextEditor(
       return;
     }
     if (transaction.docChanged) lastDispatchChanged = true;
-    markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction);
+    markTouchedFromTransaction(seeds.touched, editor.state.doc, transaction, [], touchedPredicate);
     if (suppressEmit) {
       markTouchedFromTransaction(
         suppressedAffected,
         editor.state.doc,
         transaction,
+        [],
+        touchedPredicate,
       );
     }
     if (editor.view.composing && !tracker.composing) {
@@ -820,6 +956,8 @@ export function createRichTextEditor(
         composingAffected,
         editor.state.doc,
         transaction,
+        [],
+        touchedPredicate,
       );
       if (transaction.docChanged) composingChanged = true;
       prevUndoDepth = undoDepth(editor.state);
@@ -865,7 +1003,7 @@ export function createRichTextEditor(
     } | null = null;
     editor.state.doc.descendants((node, pos) => {
       if (
-        (node.type.name === "paragraph" || node.type.name === "preservedBlock") &&
+        isIdentityBlockName(node.type.name) &&
         node.attrs[PARAGRAPH_ID_ATTRIBUTE] === paragraphId
       ) {
         found = {
@@ -885,10 +1023,7 @@ export function createRichTextEditor(
   const identitySet = (): Set<string> => {
     const ids = new Set<string>();
     editor.state.doc.descendants((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
+      if (isIdentityBlockName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string") ids.add(id);
       }
@@ -931,7 +1066,12 @@ export function createRichTextEditor(
     $pos: { parent: ProseMirrorNode; parentOffset: number },
   ): { paragraphId: string | null; offset: number } => {
     const parent = $pos.parent;
-    if (parent.type.name === "paragraph" || parent.type.name === "preservedBlock") {
+    if (
+      parent.type.name === "paragraph" ||
+      parent.type.name === "heading" ||
+      parent.type.name === "codeBlock" ||
+      parent.type.name === "preservedBlock"
+    ) {
       const id = parent.attrs[PARAGRAPH_ID_ATTRIBUTE];
       return {
         paragraphId: typeof id === "string" ? id : null,
@@ -960,7 +1100,9 @@ export function createRichTextEditor(
       nodes. */
   const replaceDocument = (incoming: RichTextDocument): void => {
     const node = editor.schema.nodeFromJSON(
-      documentToProseMirror(manager(), incoming),
+      isFull
+        ? fullDocumentToProseMirror(incoming, allocateFresh)
+        : documentToProseMirror(manager(), incoming),
     );
     const tr = editor.state.tr.replaceWith(
       0,
@@ -990,7 +1132,27 @@ export function createRichTextEditor(
         return false;
       }
       if (left.kind === "paragraph") {
+        if (left.segments !== undefined || right.segments !== undefined) {
+          if (
+            JSON.stringify(left.segments ?? null) !==
+              JSON.stringify(right.segments ?? null) ||
+            JSON.stringify(left.metadata ?? null) !==
+              JSON.stringify(right.metadata ?? null)
+          ) {
+            return false;
+          }
+          continue;
+        }
         if ((left.text ?? undefined) !== (right.text ?? undefined)) {
+          return false;
+        }
+        continue;
+      }
+      if (left.kind === "horizontalRule") {
+        if (
+          JSON.stringify(left.hrMetadata ?? null) !==
+          JSON.stringify(right.hrMetadata ?? null)
+        ) {
           return false;
         }
         continue;
@@ -1141,7 +1303,8 @@ export function createRichTextEditor(
   /** Shared paste policy for the convenience method and the native pipeline:
       the P0 schema plus the Markdown bridge (literal text for `text/plain`),
       identity stripping, whole-refusal classification and the preserved-span
-      refusal. Emits exactly one `paste` event on insertion. */
+      refusal. The full profile plans through the full schema and bridge
+      instead. Emits exactly one `paste` event on insertion. */
   function runPastePolicy(
     view: EditorView,
     html: string,
@@ -1168,6 +1331,10 @@ export function createRichTextEditor(
         rejectedKinds: spannedKinds,
         clipboardFormats: formats,
       });
+      return;
+    }
+    if (isFull) {
+      runFullPastePolicy(view, html, text, origin, formats);
       return;
     }
     let planned: PastePlan;
@@ -1261,26 +1428,116 @@ export function createRichTextEditor(
     }
   }
 
+  /** Full-profile paste policy (CL-2F P matrix): safe content enters as
+      editable structure with fresh identities; foreign ids are stripped, and
+      tables/task content/active HTML/unsafe hrefs refuse the payload whole. */
+  function runFullPastePolicy(
+    view: EditorView,
+    html: string,
+    text: string,
+    origin: "internal" | "external",
+    formats: ("text/html" | "text/plain")[],
+  ): void {
+    const planned =
+      html !== ""
+        ? planFullHtmlPaste(view.state.schema, html, allocateFresh)
+        : planFullTextPaste(text, allocateFresh);
+    if (planned.outcome === "refuse") {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: [...planned.rejectedKinds],
+        clipboardFormats: formats,
+      });
+      return;
+    }
+    if (planned.imageReported && planned.blocks.length === 0) {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: ["image"],
+        clipboardFormats: formats,
+      });
+      return;
+    }
+    if (planned.blocks.length === 0) return;
+    const beforeIds = identitySet();
+    lastDispatchChanged = false;
+    suppressedAffected.clear();
+    suppressEmit = true;
+    try {
+      view.dispatch(
+        view.state.tr.replaceSelection(
+          sliceForFullBlocks(view.state.schema, planned.blocks),
+        ),
+      );
+    } finally {
+      suppressEmit = false;
+    }
+    if (tracker.composing || view.composing) return;
+    if (!lastDispatchChanged) {
+      if (planned.imageReported) {
+        callbacks.onUnsupportedPaste?.({
+          rejectedKinds: ["image"],
+          clipboardFormats: formats,
+        });
+      }
+      return;
+    }
+    const afterIds = identitySet();
+    const inserted = [...afterIds].filter((id) => !beforeIds.has(id));
+    for (const id of inserted) seeds.touched.add(id);
+    const affected = orderIdsByDocument([...inserted, ...suppressedAffected]);
+    const after = displayedCaptureResult();
+    emitChange(
+      "paste",
+      affected,
+      {
+        paste: { insertedParagraphIds: inserted, origin },
+      },
+      after,
+    );
+    if (planned.imageReported) {
+      callbacks.onUnsupportedPaste?.({
+        rejectedKinds: ["image"],
+        clipboardFormats: formats,
+      });
+    }
+  }
+
   /** Reset identity attributes on a pasted slice (defence in depth: the
       policy path re-plans from the raw transfer, so this transformed slice
       is discarded there; any other consumer still never trusts identities). */
   function stripSliceIdentities(slice: Slice): Slice {
     const nodes: ProseMirrorNode[] = [];
-    slice.content.forEach((node) => {
-      if (
-        node.type.name === "paragraph" ||
-        node.type.name === "preservedBlock"
-      ) {
-        nodes.push(
-          node.type.create(
-            { ...node.attrs, [PARAGRAPH_ID_ATTRIBUTE]: "" },
-            node.content,
-            node.marks,
-          ),
+    const stripDeep = (node: ProseMirrorNode): ProseMirrorNode => {
+      let remade = node;
+      if (isIdentityBlockName(node.type.name)) {
+        remade = node.type.create(
+          { ...node.attrs, [PARAGRAPH_ID_ATTRIBUTE]: "" },
+          node.content,
+          node.marks,
         );
-      } else {
-        nodes.push(node);
       }
+      if (node.type.name === "bulletList" || node.type.name === "orderedList") {
+        const cleared: ProseMirrorNode[] = [];
+        remade.content.forEach((child) => cleared.push(stripDeep(child)));
+        remade = node.type.create(
+          { ...node.attrs, listRunId: "" },
+          Fragment.from(cleared),
+        );
+      } else if (remade !== node || node.childCount > 0) {
+        const rebuilt: ProseMirrorNode[] = [];
+        let changed = remade !== node;
+        remade.content.forEach((child) => {
+          const next = stripDeep(child);
+          if (next !== child) changed = true;
+          rebuilt.push(next);
+        });
+        if (changed) {
+          remade = node.type.create(remade.attrs, Fragment.from(rebuilt), node.marks);
+        }
+      }
+      return remade;
+    };
+    slice.content.forEach((node) => {
+      nodes.push(stripDeep(node));
     });
     return new Slice(Fragment.from(nodes), slice.openStart, slice.openEnd);
   }
@@ -1540,7 +1797,7 @@ export function createRichTextEditor(
     typeText(paragraphId: string, text: string): void {
       if (text === "") return;
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       runGesture(
         "type",
         () => {
@@ -1557,7 +1814,7 @@ export function createRichTextEditor(
 
     clearParagraph(paragraphId: string): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       if (target.end <= target.start) return;
       runGesture(
         "type",
@@ -1573,7 +1830,7 @@ export function createRichTextEditor(
 
     splitParagraph(paragraphId: string, offset: number): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       const size = target.end - target.start;
       const at = target.start + Math.max(0, Math.min(offset, size));
       const before = identitySet();
@@ -1602,12 +1859,12 @@ export function createRichTextEditor(
 
     mergeWithPrevious(paragraphId: string): void {
       const target = blockPosition(paragraphId);
-      if (target === null || target.name !== "paragraph") return;
+      if (target === null || !isTextParentName(target.name)) return;
       const resolved = editor.state.doc.resolve(target.pos);
       const index = resolved.index();
       if (index === 0) return;
       const previous = resolved.parent.child(index - 1);
-      if (previous.type.name !== "paragraph") return;
+      if (previous.type.name !== target.name) return;
       const survivor = previous.attrs[PARAGRAPH_ID_ATTRIBUTE] as string;
       const before = identitySet();
       runGesture(
@@ -1725,10 +1982,7 @@ export function createRichTextEditor(
       const wanted = new Set(paragraphIds);
       const nodes: ProseMirrorNode[] = [];
       editor.state.doc.descendants((node) => {
-        if (
-          node.type.name === "paragraph" ||
-          node.type.name === "preservedBlock"
-        ) {
+        if (isIdentityBlockName(node.type.name)) {
           const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
           if (typeof id === "string" && wanted.has(id)) nodes.push(node);
         }
@@ -1759,6 +2013,18 @@ export function createRichTextEditor(
     applyExternalUpdate(next: RichTextDocument): void {
       if (tracker.destroyed) return;
       const incoming = copyRichTextDocument(next);
+      // R-FULL-PROFILE-1: a profile/format mismatch refuses the external
+      // update without changing the local draft.
+      const formatOk = isFull
+        ? incoming.format === FULL_PROFILE_ID
+        : incoming.format !== FULL_PROFILE_ID;
+      if (!formatOk) {
+        callbacks.onExternalConflict?.({
+          incoming: copyRichTextDocument(incoming),
+          local: displayedDocument(),
+        });
+        return;
+      }
       // §5.6 rule order via the pure decision (§5.6, never restated here).
       const decision = decideExternalUpdate({
         displayed: displayedDocument(),

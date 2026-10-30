@@ -35,6 +35,10 @@ const COMPOSER_SOURCE = path.join(HERE, "ComposerEditor.svelte");
 const COMPONENT_CSS = path.join(HERE, "rich-text-editor.css");
 // CL-2 offline gate: the browser harness must never load a collaboration
 // runtime. Any of these markers in a served harness asset fails the run.
+// Boundary-aware: a bare `includes` false-positives on `linkifyjs` (bundled
+// by the link extension of the full profile), so a marker only counts when
+// no identifier character flanks it. A real collaboration import still
+// matches (`"yjs"`, `(yjs`, ` yjs;` …).
 const PROVIDER_RUNTIME_MARKERS = [
   "yjs",
   "y-protocols",
@@ -43,6 +47,11 @@ const PROVIDER_RUNTIME_MARKERS = [
   "HocuspocusProvider",
   "WebsocketProvider",
 ];
+
+function containsRuntimeMarker(text, marker) {
+  const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^A-Za-z0-9_$])${escaped}([^A-Za-z0-9_$]|$)`).test(text);
+}
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_BIN,
@@ -1420,7 +1429,7 @@ async function main() {
       for (const name of assets) {
         const text = readFileSync(join(work, "dist", "assets", name), "utf8");
         for (const marker of PROVIDER_RUNTIME_MARKERS) {
-          assert(!text.includes(marker), "provider-free", `harness asset ${name} loads the collaboration runtime (${marker})`);
+          assert(!containsRuntimeMarker(text, marker), "provider-free", `harness asset ${name} loads the collaboration runtime (${marker})`);
         }
       }
       console.log(`ok provider-free: ${assets.length} harness asset(s) scanned, no collaboration runtime`);

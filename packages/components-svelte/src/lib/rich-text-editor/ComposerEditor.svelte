@@ -13,6 +13,9 @@
   import {
     RICH_TEXT_UNTRANSLATED_DATA_ATTRIBUTE,
     composerDocumentFromText,
+    composerFullDocumentForText,
+    composerFullDocumentFromText,
+    composerFullTextFromDocument,
     composerTextFromDocument,
     createCaptureUnavailableError,
     formatUntranslatedMarker,
@@ -23,8 +26,8 @@
 
   /** Svelte props for the §6.2.1 string surface: the contract plus the
       identity injection point and a class passthrough. The `profile` prop
-      of the contract is accepted and pinned to the P0 conversion path;
-      `full` arrives with CL-2F (R-FULL-PROFILE-1). */
+      selects the conversion path (R-FULL-PROFILE-1): `p0` (default) keeps
+      the chunk mapping; `full` parses through the full Markdown bridge. */
   export interface ComposerEditorProps extends ComposerContract {
     allocateId?: () => string;
     class?: string;
@@ -32,6 +35,7 @@
 
   let {
     value,
+    profile = "p0",
     editable = true,
     disabled = false,
     messages,
@@ -62,7 +66,17 @@
       block's identity, so a host echo of the last emitted string decides
       as §5.6 rule 1 (acknowledge, no conflict) instead of a spurious
       session conflict. */
+  function textFromDocument(document: RichTextDocument): string {
+    return profile === "full"
+      ? composerFullTextFromDocument(document)
+      : composerTextFromDocument(document);
+  }
+
   function documentForText(text: string): RichTextDocument {
+    if (profile === "full") {
+      const previous = core?.getDocument()?.blocks ?? [];
+      return composerFullDocumentForText(text, previous, freshId);
+    }
     const chunks = splitComposerText(text);
     const previous = core?.getDocument()?.blocks ?? [];
     return {
@@ -79,6 +93,12 @@
         };
       }),
     };
+  }
+
+  function mountDocumentForText(text: string): RichTextDocument {
+    return profile === "full"
+      ? composerFullDocumentFromText(text, freshId)
+      : composerDocumentFromText(text, freshId);
   }
 
   function isActive(): boolean {
@@ -138,7 +158,7 @@
   export function captureComposer(): Promise<ComposerCaptureResult> {
     if (!core) return Promise.reject(createCaptureUnavailableError());
     return core.captureDocument().then((captured) => ({
-      text: composerTextFromDocument(captured.document),
+      text: textFromDocument(captured.document),
       representability: captured.representability,
     }));
   }
@@ -208,7 +228,8 @@
     };
     lastSeenValue = value;
     core = createRichTextEditor({
-      document: composerDocumentFromText(value, freshId),
+      document: mountDocumentForText(value),
+      profile,
       messages: {
         ...messages,
         placeholder: provided("placeholder") ?? formatUntranslatedMarker("placeholder"),
@@ -228,7 +249,7 @@
         if (instance) {
           instance.applyExternalUpdate(event.document);
         }
-        onChange?.(composerTextFromDocument(event.document));
+        onChange?.(textFromDocument(event.document));
       },
       onReadinessChange: (event) => {
         onReadinessChange?.(event);
@@ -272,7 +293,7 @@
     }
     lastSeenValue = snapshot;
     untrack(() => {
-      if (composerTextFromDocument(instance.getDocument()) === snapshot) {
+      if (textFromDocument(instance.getDocument()) === snapshot) {
         return;
       }
       instance.applyExternalUpdate(documentForText(snapshot));

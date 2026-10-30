@@ -1,0 +1,392 @@
+{
+  "lot": "CL-2F",
+  "check": "W1",
+  "corpusRevision": "a3204932e420efe6eeafa3428459fadb7f215aa7",
+  "corpusSource": "rhanka/sentropic (read-only git show)",
+  "fixturePath": "packages/rich-text/tests/fixtures/canvas-live/b1-content.json",
+  "fixtureDigest": "sha256:35bbb994e22ab63b72059d139c1e447d18b44c3b3b8fb05498f9dbde28f239a1",
+  "apiSavePayloadsDigest": "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1bd76",
+  "command": "vitest run src/w1-full-roundtrip.test.ts",
+  "cases": [
+    {
+      "id": "prose-export",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "422e1f44b7db8e992eb0924a51b1e4aef4de054c79980b4cb752f6eab6979f44",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "prose-link",
+      "classes": [
+        "link",
+        "marks"
+      ],
+      "inputDigest": "dd86907c5e8889aa04e7b22526e89bc4c814c0eea947c863bb73766bf1b89290",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "folder-context",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "91af27794c1729e24d29c9d2908f986a9e68b9acbef263e875ce710102fcf6fd",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "benefit-list",
+      "classes": [
+        "list"
+      ],
+      "inputDigest": "0dbbcf2c6654f1ced128ea5f3671ef95325496f3a05c47615189b55d10869ffd",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "unicode-bullets",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "4ca6b909990cfa6f4dabf9e1d6519e869beda79c3341ea59aa11e327c5464233",
+      "result": "normalized",
+      "rules": [
+        "LINE-ENDING",
+        "SOFTBREAK"
+      ],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "unicode-list-array",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "4ca6b909990cfa6f4dabf9e1d6519e869beda79c3341ea59aa11e327c5464233",
+      "result": "normalized",
+      "rules": [
+        "LINE-ENDING",
+        "SOFTBREAK"
+      ],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "matrix-value-name",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "d5f2b8e259dff22db8f74ecb5bea59c4beb0d436f1215565fb8ff29049298087",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "matrix-complexity-name",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "524449ebdf477fe1d94aa47cbafee4472b67405465d80da25a462831a55f70d0",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "matrix-level",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "29a471fbdaf30b66f4eaf03d74e5bcd8a0538a64e4fdb96b6c5b2ef5295c8a94",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "citation-wire",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "8a3b65ebcaeded29f225025a23bbe6431775d9e6a214c73fbd6e8a7775eaa61e",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "comment-draft",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "8b88a85089561b7978c4e52c3150112912125f3d34ec59b6ff1450fc1079979c",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "message-edit",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "8730d3c2022abf1f9665e4ca1da43e4d068843482053675af19176b0f6f51a3e",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "ai-draft",
+      "classes": [
+        "marks"
+      ],
+      "inputDigest": "ab88ef9745e1746546afd41a61c7ea661077bfcc3f7d94388290392bda958eb0",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "folder-name",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "508841364a7bdea358572b8be6213a0b8013cc0349068e7805b86e3cc527c332",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "organization-name",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "c2bd7575d1f90527173a9feca04caee9b2d520a9ffe9630f7a4324d11775b949",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "initiative-name",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "a98102b04ea20c20feddba575aadaccb9f6c55aa7e9bef06e5a2d19e52a9c007",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "plain-singleline",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "d12cd44362ad07b8bd2aad45150fa911ff076fdb8bb1eb1a9ade3ea23a4f3b53",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "score-marks",
+      "classes": [
+        "marks"
+      ],
+      "inputDigest": "c4351032d8f6a44cd68024d4b1c1a21f30b8570a0297a33462483e8034022d2b",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "matrix-formatted-name",
+      "classes": [
+        "marks"
+      ],
+      "inputDigest": "cd463a8ff6bb478fbd6c2c84f105689f64827aaf6c286cea8975c6dfb0e2c8e6",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "heading-link",
+      "classes": [
+        "heading",
+        "link"
+      ],
+      "inputDigest": "2364fce71c79ac89f0b37ae9be855cc5e1da42be44e1aa155e6ff639b71bb429",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "ordered-nested-list",
+      "classes": [
+        "list"
+      ],
+      "inputDigest": "7591e692eb9cdd2033b24b46616276fcf065387e87cf3b7a40b7a14d91f28944",
+      "result": "normalized",
+      "rules": [
+        "SOFTBREAK",
+        "TRAILING-NL",
+        "LIST-INDENT"
+      ],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "preserved-constructs",
+      "classes": [
+        "blockquote",
+        "code-block",
+        "link",
+        "image-preserved",
+        "table-preserved",
+        "marks",
+        "horizontal-rule",
+        "hard-break"
+      ],
+      "inputDigest": "b68bdf833ada7debe519ca9ab98cc6e50b61e55f7160319310c0753790d09596",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "break-twins",
+      "classes": [
+        "hard-break"
+      ],
+      "inputDigest": "f3b5248d797cb233fec47274bc10ffe7944268eb1738798759d8ee2c7dde61cd",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "line-endings",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "c7d024aa43c8399af75b92fb4665a92a564e981a90a0506f4c1d2fb0f8928c13",
+      "result": "normalized",
+      "rules": [
+        "LINE-ENDING",
+        "SOFTBREAK"
+      ],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "empty",
+      "classes": [
+        "empty"
+      ],
+      "inputDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": false,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "whitespace",
+      "classes": [
+        "whitespace-only"
+      ],
+      "inputDigest": "8f1ec3413a21691e2bb836c2c73c9dbbaf7faeec81899def9e53cd0ff74cc244",
+      "result": "normalized",
+      "rules": [
+        "TRAILING-NL",
+        "BLANK-ONLY",
+        "HARD-BREAK-FORM"
+      ],
+      "edited": false,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "ime",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "d345861f3e5114b9137850fc19f26edff8f452b5147a1e883b218762b2c983f4",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "hostile-paste",
+      "classes": [
+        "prose"
+      ],
+      "inputDigest": "98ac213c9bfaf5adb51e5e19838ef87ca004dd4796ec196a65ffc7310a369fe9",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    },
+    {
+      "id": "heading-paste",
+      "classes": [
+        "marks"
+      ],
+      "inputDigest": "3128218cbdc112c24fef760e74d3a38420cb6c3cac6f09160df35c1e9f1b8177",
+      "result": "byte-identical",
+      "rules": [],
+      "edited": true,
+      "neighborSeedsKept": true,
+      "usedFeatureLoss": []
+    }
+  ],
+  "summary": {
+    "total": 29,
+    "byteIdentical": 24,
+    "normalized": 5,
+    "usedFeatureLosses": []
+  }
+}

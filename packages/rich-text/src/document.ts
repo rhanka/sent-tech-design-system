@@ -18,9 +18,18 @@ import {
   RICH_TEXT_CAPTURE_UNAVAILABLE_NAME,
 } from "./model.js";
 
-/** Copy one block with exactly its significant keys: `paragraph` blocks carry
-    `paragraphId`/`kind`/`text` only, `preserved` blocks carry
-    `paragraphId`/`kind`/`raw`/`preservedKind` only. Absent stays absent. */
+/** Copy one block with exactly its significant keys: P0 `paragraph` blocks
+    carry `paragraphId`/`kind`/`text` only, `preserved` blocks carry
+    `paragraphId`/`kind`/`raw`/`preservedKind` only, full text blocks carry
+    `paragraphId`/`kind`/`metadata`/`segments` (never `text`), and full
+    horizontal-rule atoms carry `paragraphId`/`kind`/`hrMetadata` only.
+    Absent stays absent. */
+function copyInlineMarks(
+  marks: Record<string, unknown>,
+): Record<string, unknown> {
+  return { ...marks };
+}
+
 function copyBlock(block: RichTextBlock): RichTextBlock {
   if (block.kind === "preserved") {
     const copy: RichTextBlock = {
@@ -30,6 +39,45 @@ function copyBlock(block: RichTextBlock): RichTextBlock {
     if (block.raw !== undefined) copy.raw = block.raw;
     if (block.preservedKind !== undefined) {
       copy.preservedKind = block.preservedKind;
+    }
+    return copy;
+  }
+  if (block.kind === "horizontalRule") {
+    const copy: RichTextBlock = {
+      paragraphId: block.paragraphId,
+      kind: "horizontalRule",
+    };
+    if (block.hrMetadata !== undefined) {
+      copy.hrMetadata = {
+        ...block.hrMetadata,
+        containerOrder: [...block.hrMetadata.containerOrder],
+      } as RichTextBlock["hrMetadata"];
+    }
+    return copy;
+  }
+  if (block.segments !== undefined || block.metadata !== undefined) {
+    const copy: RichTextBlock = {
+      paragraphId: block.paragraphId,
+      kind: "paragraph",
+    };
+    if (block.metadata !== undefined) {
+      copy.metadata = {
+        ...block.metadata,
+        containerOrder: [...block.metadata.containerOrder],
+      } as RichTextBlock["metadata"];
+    }
+    if (block.segments !== undefined) {
+      copy.segments = block.segments.map((segment) =>
+        segment.type === "hardBreak"
+          ? { type: "hardBreak" as const }
+          : {
+              type: "text" as const,
+              text: segment.text,
+              marks: {
+                ...segment.marks,
+              },
+            },
+      );
     }
     return copy;
   }
@@ -59,10 +107,66 @@ function optionalTextEqual(
   return (left ?? undefined) === (right ?? undefined);
 }
 
+function marksEqual(
+  left: Record<string, unknown> | undefined,
+  right: Record<string, unknown> | undefined,
+): boolean {
+  const l = left ?? {};
+  const r = right ?? {};
+  const lKeys = Object.keys(l).sort();
+  const rKeys = Object.keys(r).sort();
+  if (lKeys.length !== rKeys.length) return false;
+  return lKeys.every((key, index) => key === rKeys[index] && l[key] === r[key]);
+}
+
+function segmentsEqual(
+  left: RichTextBlock["segments"],
+  right: RichTextBlock["segments"],
+): boolean {
+  if (left === undefined || right === undefined) return left === right;
+  if (left.length !== right.length) return false;
+  return left.every((segment, index) => {
+    const other = right[index];
+    if (other === undefined) return false;
+    if (segment.type !== other.type) return false;
+    if (segment.type === "hardBreak" || other.type === "hardBreak") return true;
+    return (
+      segment.text === other.text &&
+      marksEqual(
+        segment.marks as unknown as Record<string, unknown>,
+        (other as unknown as { marks: Record<string, unknown> }).marks,
+      )
+    );
+  });
+}
+
+function metadataEqual(
+  left: { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+  right: { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+): boolean {
+  if (left === undefined || right === undefined) return left === right;
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 function blocksEqual(left: RichTextBlock, right: RichTextBlock): boolean {
+  if (left.paragraphId !== right.paragraphId || left.kind !== right.kind) {
+    return false;
+  }
+  if (left.kind === "horizontalRule" || right.kind === "horizontalRule") {
+    return metadataEqual(
+      left.hrMetadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+      right.hrMetadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+    );
+  }
+  if (left.segments !== undefined || right.segments !== undefined) {
+    return (
+      metadataEqual(
+        left.metadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+        right.metadata as { containerOrder: readonly unknown[] } & Record<string, unknown> | undefined,
+      ) && segmentsEqual(left.segments, right.segments)
+    );
+  }
   return (
-    left.paragraphId === right.paragraphId &&
-    left.kind === right.kind &&
     optionalTextEqual(left.text, right.text) &&
     optionalTextEqual(left.raw, right.raw) &&
     optionalTextEqual(left.preservedKind, right.preservedKind)

@@ -100,7 +100,14 @@ describe("core entry import (RT-0 half of RED-P)", () => {
 
   it("the pure entry never reaches the editor entry", () => {
     const graph = pureEntryGraph();
+    // CL-2F exception, exactly one file: `editor-full-markdown.ts` is the
+    // pure full-profile Markdown bridge (no `@tiptap/*`, no DOM, no Node
+    // runtime — enforced by the two specifier tests above). It keeps the
+    // task-mandated name while the composer surface and the pure entry
+    // reach it; every other `editor-*.ts` helper stays editor-entry-only.
+    const pureBridgeAllowlist = new Set(["editor-full-markdown.ts"]);
     for (const file of graph) {
+      if (pureBridgeAllowlist.has(file)) continue;
       expect(
         file === "editor.ts" || file.startsWith("editor-"),
         `pure entry must not reach "${file}"`,
