@@ -28,6 +28,9 @@ import {
 } from "./collab-codec.js";
 import { yTextToPmDoc } from "./collab-projection.js";
 import { createRichTextEditor, type RichTextEditor } from "./editor.js";
+// CL-3a fix 3: the bound runtime is imported by the caller and injected
+// through `collaborationRuntime` (the `"./editor"` entry never imports it).
+import { createBoundRichTextEditor } from "./editor-bound.js";
 import { createInMemoryTestDoubleProvider } from "./editor-collaboration.js";
 import { canonicalPlainMetadata } from "./editor-full-markdown.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
@@ -489,6 +492,7 @@ describe("CL-3-13 formatting-span closure across contexts (B6 + review 2 B-NEW-8
         allocateId: () => "fresh:span-code:1",
         collaborationBinding: identity,
         collaborationSource: source,
+        collaborationRuntime: createBoundRichTextEditor,
         element: globalThis.document.createElement("div"),
       });
       mounted.push(ed);

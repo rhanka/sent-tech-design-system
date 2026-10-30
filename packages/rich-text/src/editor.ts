@@ -220,6 +220,15 @@ export interface RichTextEditorOptions extends RichTextEditorCallbacks {
       bound; a controlled editor carries `null` and never loads the
       collaboration graph (type-only import: erased at runtime). */
   collaborationSource?: LiveSessionBindingSource | null;
+  /** CL-3a fix 3 (§6.3 seam 3, CL-3 witness 7): the bound factory, imported
+      by the caller from the `"./editor/collaboration"` subpath and injected
+      here. This entry accepts it and never imports it: no bundler can pull
+      the collaboration runtime into a controlled artefact, because no
+      module of this entry's static or dynamic import graph reaches it. A
+      bound mount is `collaborationRuntime` plus `collaborationBinding` and
+      `collaborationSource`; binding plus source without the runtime fail
+      closed instead of routing to a hidden import. */
+  collaborationRuntime?: RichTextCollaborationRuntime | null;
 }
 
 export interface RichTextEditor extends RichTextEditorHandle {
@@ -263,6 +272,17 @@ function defaultAllocateId(): string {
   return `paragraph:generated-${Math.floor(Math.random() * 2 ** 32).toString(16)}`;
 }
 
+/** The bound factory (§6.3 seam 3, CL-3a fix 3): the caller imports it from
+    the `"./editor/collaboration"` subpath and injects it through
+    `RichTextEditorOptions.collaborationRuntime`. This entry accepts it and
+    never imports it, so the static and dynamic import graph of `"./editor"`
+    (and of `"."`) reaches no collaboration module: a bundler building a
+    controlled consumer cannot emit the CRDT runtime as a chunk of the
+    controlled artefact (§4.9, §5.x line 550, CL-2F provider-free gate). */
+export type RichTextCollaborationRuntime = (
+  options: RichTextEditorOptions,
+) => Promise<RichTextEditor>;
+
 /** Create the Tiptap-bound editor: document in, document plus gesture out.
     The factory copies the supplied document, initialises the acknowledgement
     reference to that copy, and never mutates the caller's value.
@@ -273,7 +293,8 @@ function defaultAllocateId(): string {
     the mount/readiness contract (§5.6, §6.6) is unchanged: the returned
     handle is fully mounted, and adapters bridge the gap with their existing
     mount-pending path (no core yet ⇒ `readiness()` reports not-ready and
-    `captureDocument()` is unavailable). */
+    `captureDocument()` is unavailable). A bound mount is the same contract
+    through the injected `collaborationRuntime` factory (asynchronous). */
 export function createRichTextEditor(
   options: RichTextEditorOptions & { profile: "full" },
 ): Promise<RichTextEditor>;
@@ -281,6 +302,7 @@ export function createRichTextEditor(
   options: RichTextEditorOptions & {
     collaborationBinding: FieldBindingIdentity;
     collaborationSource: LiveSessionBindingSource;
+    collaborationRuntime: RichTextCollaborationRuntime;
   },
 ): Promise<RichTextEditor>;
 export function createRichTextEditor(
@@ -290,23 +312,30 @@ export function createRichTextEditor(
   options: RichTextEditorOptions,
 ): RichTextEditor | Promise<RichTextEditor> {
   const profile: RichTextProfile = options.profile ?? "p0";
-  const bound =
+  const hasBinding =
     options.collaborationBinding !== undefined &&
-    options.collaborationBinding !== null &&
+    options.collaborationBinding !== null;
+  const hasSource =
     options.collaborationSource !== undefined &&
     options.collaborationSource !== null;
-  // §6.3 seam 3: `"./editor"` accepts the collaboration binding at
-  // construction, so a bound mount routes to the bound entry instead of
-  // throwing. The route is a dynamic import: the Yjs modules load only on
-  // this path, so a controlled mount and the `"."` entry still load no Yjs
-  // module (witness 7); a re-export would pull `editor-bound.js` (and the
-  // collaboration runtime) into the controlled graph statically, and a new
-  // package export would widen the public surface the seam keeps closed.
-  if (bound) {
-    return (async (): Promise<RichTextEditor> => {
-      const boundEntry = await import("./editor-bound.js");
-      return boundEntry.createBoundRichTextEditor(options);
-    })();
+  const runtime = options.collaborationRuntime;
+  // §6.3 seam 3 (CL-3a fix 3): `"./editor"` accepts the optional
+  // collaboration binding at construction by injection — the caller
+  // imports the bound runtime from the `"./editor/collaboration"` subpath
+  // and passes it here; this entry never imports it, so a controlled
+  // mount's bundle reaches no collaboration module at all (witness 7:
+  // the offline artefact is byte-identical in behaviour to RT-1).
+  if (runtime !== undefined && runtime !== null) {
+    return runtime(options);
+  }
+  // Fail closed (never a silent controlled mount): a binding plus a source
+  // without the injected runtime is a bound mount this entry can no longer
+  // route to, because the dynamic-import route of CL-3a fix 2 leaked the
+  // collaboration graph into every controlled bundle.
+  if (hasBinding && hasSource) {
+    throw new Error(
+      'rich-text.collab-runtime-required: a bound mount injects the collaboration runtime (subpath "./editor/collaboration") through `collaborationRuntime`; this entry never imports it (§6.3: controlled mode never loads the collaboration graph)',
+    );
   }
   if (profile !== "full") {
     return buildEditor(options);
@@ -349,8 +378,9 @@ export interface BoundImpl {
 
 /** Synchronous editor construction over an already-available extension
     graph (P0 always; full only after the lazy loader registered it).
-    Exported for the bound entry (`./editor-bound.js`), which supplies the
-    collaboration runtime that the controlled graph never loads. */
+    Exported for the bound entry (`./editor-bound.js`, shipped behind the
+    `"./editor/collaboration"` subpath), which supplies the collaboration
+    runtime that the controlled graph never loads. */
 export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImpl): RichTextEditor {
   const profile: RichTextProfile = options.profile ?? "p0";
   const isFull = profile === "full";

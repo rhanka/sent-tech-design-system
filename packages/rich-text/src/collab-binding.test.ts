@@ -107,6 +107,25 @@ describe("CL-3a bound history seam", () => {
     mounted.push(editor);
     expect(() => editor.undo()).not.toThrow();
   });
+
+  it("binding plus source without the injected runtime fails closed (CL-3a fix 3, §6.3 seam 3)", () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const source = provider.openSession("canvas:rt", "session:rt", ["body"]);
+    // A bound mount must come with `collaborationRuntime` (imported by the
+    // caller from the collaboration subpath); this entry never imports the
+    // bound runtime, so the forgotten injection is a typed refusal, never a
+    // silent controlled mount over a live shared field.
+    expect(() =>
+      createRichTextEditor({
+        document: p0Doc(),
+        messages: { ...MESSAGES },
+        allocateId: () => "test:rt:1",
+        collaborationBinding: { documentId: "canvas:rt", sessionId: "session:rt", fieldKey: "body" },
+        collaborationSource: source,
+        element: globalThis.document.createElement("div"),
+      }),
+    ).toThrow("rich-text.collab-runtime-required");
+  });
 });
 
 describe("CL-3a incremental remote application", () => {

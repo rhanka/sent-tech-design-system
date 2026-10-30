@@ -1,10 +1,13 @@
 /**
- * Bound editor entry (CL-3a): the collaboration runtime lives here, loaded
- * through a dynamic import from the `"./editor"` entry, never statically in
- * the controlled graph. The browser harness builds the controlled component
- * only, so no served harness asset contains the Yjs runtime; bound callers
- * reach this entry either directly or through `createRichTextEditor` with a
- * binding plus source.
+ * Bound editor entry (CL-3a): the collaboration runtime lives here, behind
+ * the `"./editor/collaboration"` subpath of `package.json#exports`. It is
+ * imported by the caller (host adapter or test) and injected into
+ * `createRichTextEditor` through `collaborationRuntime`; the `"./editor"`
+ * entry accepts the factory and never imports it, so no module of the
+ * `"."` / `"./editor"` graphs — static or dynamic — reaches this file and
+ * no bundler can emit the Yjs runtime as a chunk of a controlled artefact
+ * (spec §4.9, §6.3, CL-3 witness 7; observed as the browser harness
+ * provider-free failure on eb36556c, CL-3a fix 3).
  */
 import type { FieldBindingIdentity } from "./collaboration.js";
 import type { LiveSessionBindingSource } from "./editor-collaboration.js";

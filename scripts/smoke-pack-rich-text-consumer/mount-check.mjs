@@ -79,8 +79,21 @@ if (bundle && failures.length === 0) {
   if (window.__smokeMounted !== true) fail("the consumer app did not run to mount");
 }
 
+// CL-3a fix 3: the collaboration subpath resolves from the packed tarball
+// and exports the bound factory. The controlled bundle above stays free of
+// the CRDT runtime because the "./editor" entry accepts the factory and
+// never imports it; this import is the bound caller's side of the seam.
+try {
+  const collaboration = await import("@sentropic/design-system-rich-text/editor/collaboration");
+  if (typeof collaboration.createBoundRichTextEditor !== "function") {
+    fail("the collaboration subpath exports no createBoundRichTextEditor factory");
+  }
+} catch (error) {
+  fail(`the collaboration subpath failed to resolve from the packed tarball: ${error?.message ?? error}`);
+}
+
 if (failures.length > 0) {
   console.error(`FAILED rich-text consumer mount check (${failures.length} failure(s))`);
   process.exit(1);
 }
-console.log("OK rich-text consumer: subpath + stylesheet resolved, editor mounted from packed tarballs, offline");
+console.log("OK rich-text consumer: subpath + stylesheet + collaboration subpath resolved, editor mounted from packed tarballs, offline");
