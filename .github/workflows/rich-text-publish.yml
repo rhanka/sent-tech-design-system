@@ -1,0 +1,144 @@
+name: Rich Text Publish
+
+# Publication du modèle et de l'éditeur riche (@sentropic/design-system-rich-text),
+# sur sa propre ligne de version. Déclenchée par un tag `rich-text-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
+# jeton temporaire pour la PREMIÈRE publication, comme latex-publish.yml.
+#
+# Pourquoi un amorçage : @sentropic/design-system-rich-text n'existe pas au
+# registre (mesuré le 2026-10-30 : `npm view` rend E404), et npm ne permet de
+# déclarer un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
+# « The first publication used a temporary bootstrap token because npm Trusted
+# Publishing can only be configured after each package exists. »
+#
+# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
+#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
+#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
+#   3. poser le tag `rich-text-v<version>` — l'étape d'amorçage du job `publish`
+#      s'active seule quand le secret est présent et reste inerte quand il est
+#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
+#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
+#      rich-text-publish.yml) sur le paquet désormais créé ;
+#   5. supprimer le secret, révoquer le jeton, puis retirer l'étape d'amorçage ici
+#      et son entrée dans scripts/verify-workflow-invariants.test.mjs.
+#
+# @sentropic/design-system-svelte déclare ce paquet en peer optionnel de son
+# sous-chemin `./rich-text-editor` : il doit être au registre pour que ce
+# sous-chemin s'installe chez un consommateur.
+
+on:
+  push:
+    tags: ["rich-text-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Verify rich-text package
+        run: |
+          npm --workspace @sentropic/design-system-rich-text run build
+          npm --workspace @sentropic/design-system-rich-text run check
+          npm --workspace @sentropic/design-system-rich-text test
+      - name: Verify publishable licensing
+        run: npm run licensing:check
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/rich-text-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify rich-text version matches tag
+        run: |
+          EXPECTED="${TAG#rich-text-v}"
+          ACTUAL=$(node -p "require('./packages/rich-text/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/rich-text is ${ACTUAL}."
+            exit 1
+          fi
+          echo "rich-text version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/rich-text-v')
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/design-system-rich-text run build
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
+      - name: Publish rich-text package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Skipped when the version is already on npm; never republished.
+          VERSION="${TAG#rich-text-v}"
+          if npm view "@sentropic/design-system-rich-text@${VERSION}" version --silent > /dev/null 2>&1; then
+            echo "@sentropic/design-system-rich-text@${VERSION} is already on npm: skipped."
+          else
+            npm publish --workspace @sentropic/design-system-rich-text --access public
+          fi
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/rich-text-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#rich-text-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-rich-text@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-rich-text@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
