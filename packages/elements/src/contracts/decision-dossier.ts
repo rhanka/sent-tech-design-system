@@ -64,7 +64,10 @@ export const decisionDossierContract: ContractModule = {
         "embedded copy is scoped to its host: the root $id is dropped and every internal " +
         "#/$defs/X ref is rewritten to #/$defs/DecisionDossierDocument/$defs/X so it " +
         "resolves inside the catalogue and standalone documents; the urn identity stays " +
-        "in x-sentropic.semantic.schemaId and the sha256 pin verifies the source file.",
+        "in x-sentropic.semantic.schemaId and the sha256 pin verifies the source file. " +
+        "The pinned owner schema declares diagramNode.scene as an unconstrained object " +
+        "('{ \"type\": \"object\" }' plus its description): an owner declaration, not an " +
+        "implicit any of this generator — it is listed in the scan's inventory.",
       reason:
         "§5.1: the owner's schema is authoritative; the marker keeps the props interface " +
         "declared while the emitted schema is the owner's, sha256-pinned below.",

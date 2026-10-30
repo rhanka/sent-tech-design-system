@@ -253,6 +253,24 @@ describe("§4.5: every code is produced at least once", () => {
     expect(failed.detail).toMatchObject({ chunk: "bpmn-canvas", cause: "import failed" });
   });
 
+  it("engine-load-failed (a semantic port that THROWS mid-validation, through the real validator)", () => {
+    const port = createBpmnCanvasPort(() => {
+      throw new Error("chunk fetch failed");
+    });
+    const diagnostics = validateEnvelope(envelope({ contract: "1.0", root: JSON.parse(JSON.stringify(bpmnExample)) }), {
+      focus: focusPort,
+      "bpmn-canvas": port,
+    });
+    expect(diagnostics.length).toBe(1);
+    expect(diagnostics[0]).toMatchObject({
+      code: "engine-load-failed",
+      severity: "error",
+      path: "/root/document",
+      source: "host",
+    });
+    expect(diagnostics[0]!.detail).toMatchObject({ chunk: "bpmn-canvas", cause: "chunk fetch failed" });
+  });
+
   it("watermark-refused (pass-through warning from the engine port, severity warning)", () => {
     const port = createBpmnCanvasPort(() => ({
       ok: true,
@@ -289,9 +307,54 @@ describe("envelope structure (§4.2)", () => {
     expect(diagnostics.some((diagnostic) => diagnostic.path === "/catalogId")).toBe(true);
   });
 
+  it("an ABSENT catalogId is accepted: absent means the renderer's own catalogue (§4.2)", () => {
+    expect(validateEnvelope({ contract: "1.0", root: JSON.parse(JSON.stringify(barChartExample)) })).toEqual([]);
+    expect(validateEnvelope({ contract: "1.0", root: JSON.parse(JSON.stringify(bpmnExample)) })).toEqual([]);
+    expect(validateEnvelope({ contract: "1.0", root: JSON.parse(JSON.stringify(dossierExample)) })).toEqual([]);
+  });
+
   it("a clean envelope of every component validates with zero diagnostics", () => {
     expect(validateEnvelope(envelope({}))).toEqual([]);
     expect(validateEnvelope(envelope({ contract: "1.0", root: JSON.parse(JSON.stringify(bpmnExample)) }))).toEqual([]);
     expect(validateEnvelope(envelope({ contract: "1.0", root: JSON.parse(JSON.stringify(dossierExample)) }))).toEqual([]);
+  });
+});
+
+describe("BLOCKING-3: no A2UI function or data binding validates anywhere (§4.1, §4.2, §5.2)", () => {
+  /**
+   * RED HISTORY (observed 2026-11-04, before the fix): all three payloads
+   * were ACCEPTED with `[]` — `accessibility` was a free-shape object (the
+   * A2UI `ComponentCommon` reference accepts `FunctionCall` and
+   * `DataBinding` values for `label`). The fix closes `accessibility` to
+   * literal strings; §5.2's two allOf references are kept.
+   */
+  const withAccessibility = (accessibility: Record<string, unknown>): Record<string, unknown> =>
+    envelope({ root: { ...JSON.parse(JSON.stringify(barChartExample)), accessibility } });
+
+  it("a FunctionCall in accessibility.label is refused with schema-violation", () => {
+    const diagnostics = validateEnvelope(
+      withAccessibility({ label: { call: "formatString", args: { value: "x" }, returnType: "string" } }),
+    );
+    expect(codes(diagnostics)).toContain("schema-violation");
+    expect(diagnostics.some((diagnostic) => diagnostic.path === "/root/accessibility/label")).toBe(true);
+  });
+
+  it("a DataBinding in accessibility.label is refused with schema-violation", () => {
+    const diagnostics = validateEnvelope(withAccessibility({ label: { path: "/x" } }));
+    expect(codes(diagnostics)).toContain("schema-violation");
+    expect(diagnostics.some((diagnostic) => diagnostic.path === "/root/accessibility/label")).toBe(true);
+  });
+
+  it("an unknown key under accessibility is refused with schema-violation (closed literal-only object)", () => {
+    const diagnostics = validateEnvelope(withAccessibility({ label: "Répartition des ventes", surprise: 123 }));
+    expect(codes(diagnostics)).toContain("schema-violation");
+    expect(diagnostics.some((diagnostic) => diagnostic.path === "/root/accessibility/surprise")).toBe(true);
+  });
+
+  it("a plain literal accessibility still validates (the legitimate use is kept)", () => {
+    const diagnostics = validateEnvelope(
+      withAccessibility({ label: "Répartition des ventes", description: "Ventes par trimestre" }),
+    );
+    expect(diagnostics).toEqual([]);
   });
 });

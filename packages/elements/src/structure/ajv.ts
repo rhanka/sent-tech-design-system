@@ -13,25 +13,24 @@
  * without network or file access):
  * - the vendored A2UI common types under the v0.9.1 URI the entries
  *   reference `ComponentCommon` by;
- * - the vendored A2UI basic-catalogue schema under its sibling
- *   `catalog.json` URI — common-types' reachable graph ends at its
- *   `anyFunction` definition;
- * - clones of both under their original v0_9 URIs, because the SDK's
- *   catalogue schema references common-types by ABSOLUTE v0_9 URI;
+ * - the BUILT sibling `catalog.json` stub under its URI — common_types'
+ *   reachable graph ends at its `anyFunction` definition, the empty
+ *   function set `{ "not": {} }` (§5.2 `functions: {}`), so every A2UI
+ *   `FunctionCall` refuses (§4.1: the envelope never carries a function);
  * - the catalogue itself, so each entry compiles through
  *   `<catalogId>#/components/<Name>`.
  */
 
-import Ajv2020 from "ajv/dist/2020";
+// Plain-Node-ESM witness (review 1): ajv ships no `exports` map, so a deep
+// import must name the file — extensionless `ajv/dist/2020` loads under
+// bundlers and vitest's resolver but fails with ERR_MODULE_NOT_FOUND in
+// plain Node ESM (`dist/index.js` is imported with no toolchain).
+import Ajv2020 from "ajv/dist/2020.js";
 
 import { CATALOG_ID } from "../contracts/index.js";
 import { a2uiSdkCatalogSchema } from "../generated/a2ui-common-types.js";
 import type { CatalogDocument } from "../validate/envelope.js";
 import type { StructureIssue, StructureValidator } from "../validate/structure.js";
-
-/** The SDK's own absolute references (kept working through the clones). */
-const A2UI_V0_9_COMMON_TYPES_ID = "https://a2ui.org/specification/v0_9/common_types.json";
-const A2UI_V0_9_CATALOG_ID = "https://a2ui.org/specification/v0_9/catalog.json";
 
 type AjvInstance = InstanceType<typeof Ajv2020>;
 type CompiledSchema = ReturnType<AjvInstance["compile"]>;
@@ -48,11 +47,6 @@ export interface AjvStructureOptions {
   readonly envelopeSchema: Record<string, unknown>;
   /** The vendored A2UI common types (src/generated). */
   readonly commonTypes: Record<string, unknown>;
-}
-
-/** Deep clone with a `$id` override (the v0_9 clones). */
-function withId(schema: Record<string, unknown>, id: string): Record<string, unknown> {
-  return { ...(JSON.parse(JSON.stringify(schema)) as Record<string, unknown>), $id: id };
 }
 
 /** ajv errors become StructureIssues; the suffix params become token hints. */
@@ -74,12 +68,12 @@ function toIssues(compiled: CompiledSchema): readonly StructureIssue[] {
 
 /**
  * Builds the 2020-12 structure validator for one catalogue. The options are
- * strict-mode-agnostic on purpose: the A2UI documents carry vendor keywords
- * (`components`, `functions`, `catalogId`, `x-sentropic`) outside ajv's known
- * set, and their freshness is guarded by the generator's `--check`, so
- * `strict: false` trades nothing away here. The vendored SDK schema uses
- * `format: "uri"` (theme `iconUrl`); ajv ships no formats, so the name is
- * declared known-and-always-valid instead of warned-about on every compile.
+ * strict-mode-agnostic on purpose: the committed documents carry vendor
+ * keywords (`components`, `functions`, `catalogId`, `x-sentropic`) outside
+ * ajv's known set, and their freshness is guarded by the generator's
+ * `--check`, so `strict: false` trades nothing away here. No registered
+ * document declares a `format` (measured: common_types and the built stub
+ * carry none), so none is declared known.
  */
 export function createAjvStructure(options: AjvStructureOptions): StructureValidator {
   const catalogId = options.catalog.$id;
@@ -95,11 +89,9 @@ export function createAjvStructure(options: AjvStructureOptions): StructureValid
     }
   }
 
-  const ajv = new Ajv2020({ allErrors: true, strict: false, formats: { uri: true } });
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
   ajv.addSchema(options.commonTypes);
   ajv.addSchema(a2uiSdkCatalogSchema);
-  ajv.addSchema(withId(options.commonTypes, A2UI_V0_9_COMMON_TYPES_ID));
-  ajv.addSchema(withId(a2uiSdkCatalogSchema, A2UI_V0_9_CATALOG_ID));
   ajv.addSchema(options.catalog);
 
   const envelopeValidate = ajv.compile(options.envelopeSchema);

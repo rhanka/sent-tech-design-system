@@ -508,6 +508,18 @@
         },
         {
           "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
             "annotations": {
               "description": "Annotation overlay in data space (see ChartAnnotation).",
               "items": {
@@ -1006,6 +1018,18 @@
         },
         {
           "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
             "component": {
               "const": "BpmnCanvas"
             },
@@ -1072,7 +1096,7 @@
         },
         "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/BpmnCanvas.json",
         "semantic": {
-          "runtimePackage": "@sentropic/design-system-diagram-canvas",
+          "runtimePackage": "@sentropic/bpmn-canvas",
           "source": "bpmn-canvas"
         }
       }
@@ -1087,6 +1111,18 @@
         },
         {
           "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
             "component": {
               "const": "DecisionDossier"
             },
