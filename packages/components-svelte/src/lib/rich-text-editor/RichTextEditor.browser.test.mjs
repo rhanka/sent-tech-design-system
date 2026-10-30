@@ -19,7 +19,7 @@
  * RED state: fails because the subpath entry does not exist yet (the harness
  * build cannot resolve it).
  */
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -31,7 +31,18 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = path.resolve(HERE, "..", "..", "..");
 const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
 const COMPONENT_SOURCE = path.join(HERE, "RichTextEditor.svelte");
+const COMPOSER_SOURCE = path.join(HERE, "ComposerEditor.svelte");
 const COMPONENT_CSS = path.join(HERE, "rich-text-editor.css");
+// CL-2 offline gate: the browser harness must never load a collaboration
+// runtime. Any of these markers in a served harness asset fails the run.
+const PROVIDER_RUNTIME_MARKERS = [
+  "yjs",
+  "y-protocols",
+  "y-prosemirror",
+  "hocuspocus",
+  "HocuspocusProvider",
+  "WebsocketProvider",
+];
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_BIN,
@@ -79,10 +90,12 @@ function assert(condition, label, message) {
 const HARNESS_APP = `
 <script>
   import RichTextEditor from "__COMPONENT_SOURCE__";
+  import ComposerEditor from "__COMPOSER_SOURCE__";
   import "__COMPONENT_CSS__";
 
   const params = new URLSearchParams(location.search);
   const scenario = params.get("scenario") ?? "conflict-focused";
+  const surface = params.get("surface") ?? "document";
 
   const SENTINEL = {
     editorLabel: "SENTINEL-EDITOR-LABEL",
@@ -131,6 +144,10 @@ const HARNESS_APP = `
     network: {
       value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "net one"), paragraph("paragraph:2", "net two")] },
     },
+    "composer-send": {
+      value: { format: "focus.markdown.p0@1", blocks: [paragraph("paragraph:1", "unused")] },
+      composer: "",
+    },
   };
 
   const initial = SCENARIOS[scenario] ?? SCENARIOS["conflict-focused"];
@@ -139,8 +156,11 @@ const HARNESS_APP = `
   let editable = $state(true);
   let disabled = $state(false);
   let editorRef = $state(null);
+  let composerValue = $state(initial.composer ?? "");
+  let composerRef = $state(null);
 
   const events = { changes: [], conflicts: [], unsupported: [], readiness: [] };
+  const composerEvents = { changes: [], readiness: [] };
   const clone = (input) => JSON.parse(JSON.stringify(input));
 
   function selectionSnapshot() {
@@ -160,6 +180,24 @@ const HARNESS_APP = `
       head: describe(selection.focusNode, selection.focusOffset),
     };
   }
+
+  window.__composer = {
+    scenario,
+    surface,
+    events: composerEvents,
+    setValue(next) {
+      composerValue = next;
+    },
+    editor() {
+      return composerRef;
+    },
+    async capture() {
+      return composerRef.captureComposer();
+    },
+    readiness() {
+      return composerRef.readiness();
+    },
+  };
 
   window.__rt = {
     scenario,
@@ -192,17 +230,27 @@ const HARNESS_APP = `
 
 <div>
   <button type="button" data-testid="outside">outside</button>
-  <RichTextEditor
-    bind:this={editorRef}
-    {value}
-    {editable}
-    {disabled}
-    {messages}
-    onChange={(event) => events.changes.push(clone(event))}
-    onExternalConflict={(event) => events.conflicts.push(clone(event))}
-    onUnsupportedPaste={(event) => events.unsupported.push(clone(event))}
-    onReadinessChange={(event) => events.readiness.push({ ...event })}
-  />
+  {#if surface === "composer"}
+    <ComposerEditor
+      bind:this={composerRef}
+      value={composerValue}
+      {messages}
+      onChange={(text) => composerEvents.changes.push(text)}
+      onReadinessChange={(event) => composerEvents.readiness.push({ ...event })}
+    />
+  {:else}
+    <RichTextEditor
+      bind:this={editorRef}
+      {value}
+      {editable}
+      {disabled}
+      {messages}
+      onChange={(event) => events.changes.push(clone(event))}
+      onExternalConflict={(event) => events.conflicts.push(clone(event))}
+      onUnsupportedPaste={(event) => events.unsupported.push(clone(event))}
+      onReadinessChange={(event) => events.readiness.push({ ...event })}
+    />
+  {/if}
 </div>
 `;
 
@@ -245,10 +293,9 @@ function writeHarnessFiles(work) {
   writeFileSync(join(work, "src", "main.js"), HARNESS_MAIN);
   writeFileSync(
     join(work, "src", "HarnessApp.svelte"),
-    HARNESS_APP.replaceAll("__COMPONENT_SOURCE__", COMPONENT_SOURCE).replaceAll(
-      "__COMPONENT_CSS__",
-      COMPONENT_CSS,
-    ),
+    HARNESS_APP.replaceAll("__COMPONENT_SOURCE__", COMPONENT_SOURCE)
+      .replaceAll("__COMPOSER_SOURCE__", COMPOSER_SOURCE)
+      .replaceAll("__COMPONENT_CSS__", COMPONENT_CSS),
   );
 }
 
@@ -276,12 +323,13 @@ function expectChanges(label, events, count) {
   assert(events.changes.length === count, label, `expected ${count} onChange call(s), saw ${events.changes.length}`);
 }
 
-async function openScenario(browser, base, scenario) {
+async function openScenario(browser, base, scenario, surface = "document") {
   const page = await browser.newPage();
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
   await page.evaluateOnNewDocument(() => {
     window.__fetchCalls = [];
+    window.__wsCalls = [];
     window.fetch = (...args) => {
       window.__fetchCalls.push(args.map(String));
       return Promise.reject(new Error("fetch is blocked in the offline harness"));
@@ -295,10 +343,18 @@ async function openScenario(browser, base, scenario) {
     window.XMLHttpRequest.prototype.send = function (...args) {
       return send.apply(this, args);
     };
+    // CL-2 offline gate: the harness opens no socket. Any collaboration
+    // provider dialling home fails here instead of silently connecting.
+    const RealWebSocket = window.WebSocket;
+    window.WebSocket = function (...args) {
+      window.__wsCalls.push(args.map(String));
+      throw new Error("websocket is blocked in the offline harness");
+    };
+    window.WebSocket.prototype = RealWebSocket.prototype;
   });
   const requests = [];
   page.on("request", (request) => requests.push(`${request.method()} ${request.url()} ${request.resourceType()}`));
-  await page.goto(`${base}/?scenario=${scenario}`, { waitUntil: "load", timeout: 30000 });
+  await page.goto(`${base}/?surface=${surface}&scenario=${scenario}`, { waitUntil: "load", timeout: 30000 });
   await page.waitForFunction("window.__rtReady === true", { timeout: 30000 });
   // No clearing: mount-time traffic stays observed through unmount. Only
   // known harness assets (the locally served harness files) are excluded at
@@ -309,6 +365,16 @@ async function openScenario(browser, base, scenario) {
     async done(label) {
       const fetchCalls = await page.evaluate(() => window.__fetchCalls);
       assert(fetchCalls.length === 0, label, `fetch/XHR sentinel recorded ${fetchCalls.length} call(s): ${JSON.stringify(fetchCalls).slice(0, 300)}`);
+      // CL-2 offline gate, asserted provider-free: no socket ever opens and
+      // no collaboration global ever lands on the page.
+      const wsCalls = await page.evaluate(() => window.__wsCalls);
+      assert(wsCalls.length === 0, label, `websocket sentinel recorded ${wsCalls.length} call(s): ${JSON.stringify(wsCalls).slice(0, 300)}`);
+      const providerGlobals = await page.evaluate(() => ({
+        y: typeof window.Y,
+        hocuspocus: typeof window.Hocuspocus,
+      }));
+      assert(providerGlobals.y === "undefined", label, "a Yjs global landed on the offline page");
+      assert(providerGlobals.hocuspocus === "undefined", label, "a Hocuspocus global landed on the offline page");
       // Exact harness allowlist: only the served harness document and its
       // own assets are exempt — never every URL containing the base. A
       // same-origin injected image (`/injected.png`) or beacon (`/beacon`)
@@ -327,6 +393,7 @@ async function openScenario(browser, base, scenario) {
           return true;
         }
         if (path === "/" || path === "/index.html") return false;
+        if (path.startsWith("/?surface=")) return false;
         if (path.startsWith("/?scenario=")) return false;
         if (path.startsWith("/assets/")) return false;
         if (path.startsWith("/src/")) return false;
@@ -634,6 +701,110 @@ async function scenarioCaptureUnmount(browser, base) {
 
 function blocksEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+// CL-2 W-IME-1 verbatim, clauses 1/2/3/5 (clause 4 stays in
+// `capture-unmount`): an external arrival defers mid-composition, revocation
+// applies at once without remount, the abandoned composition discards with
+// no emission, and the deferred arrival still re-evaluates once.
+async function scenarioImeRevoke(browser, base) {
+  const label = "ime-revoke";
+  const { page, done } = await openScenario(browser, base, "composition");
+  await recordIdentity(page);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  const cdp = await page.createCDPSession();
+  await cdp.send("Input.imeSetComposition", { selectionStart: 5, selectionEnd: 5, text: "pen" });
+  await sleep(200);
+  const remote = {
+    format: "focus.markdown.p0@1",
+    blocks: [{ paragraphId: "paragraph:9", kind: "paragraph", text: "Remote" }],
+  };
+  await page.evaluate((doc) => window.__rt.setValue(doc), remote);
+  await sleep(300);
+  let events = await page.evaluate(() => window.__rt.events);
+  expectChanges(label, events, 0);
+  assert((await conflictsOf(page)).length === 0, label, "external arrival mid-composition conflicted instead of deferring");
+  // No capture mid-composition: it defers to the commit and would hang the
+  // call. Read the live DOM instead: the uncommitted composition shows,
+  // the deferred remote does not.
+  let liveText = await page.evaluate(() => document.querySelector(".ProseMirror").textContent);
+  assert(!liveText.includes("Remote"), label, `deferred arrival leaked into the display: ${JSON.stringify(liveText)}`);
+  let displayed = null;
+  // Clause 2: revocation is immediate, without remount, mid-composition.
+  await page.evaluate(() => window.__rt.setEditable(false));
+  await sleep(300);
+  assert(await sameComponent(page), label, "revocation remounted the component");
+  await page.keyboard.type("X");
+  await sleep(300);
+  assert((await changesOf(page)).length === 0, label, "revoked surface accepted typing");
+  // Clauses 3/5: the end discards the uncommitted text with no event, the
+  // display drops it, and the deferred arrival re-evaluates once.
+  await page.evaluate(() => {
+    document.querySelector(".ProseMirror").dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+  });
+  await sleep(400);
+  events = await page.evaluate(() => window.__rt.events);
+  expectChanges(label, events, 0);
+  displayed = await docOf(page);
+  assert(
+    !displayed.blocks.some((block) => (block.text ?? "").includes("pen")),
+    label,
+    `uncommitted composition text survived the discard: ${JSON.stringify(displayed.blocks)}`,
+  );
+  assert(blocksEqual(displayed.blocks, remote.blocks), label, `deferred external did not apply after the discard: ${JSON.stringify(displayed.blocks)}`);
+  assert((await conflictsOf(page)).length === 0, label, "deferred external conflicted after the discard");
+  // Recovery through the same instance (refocused: flipping editability
+  // can drop DOM focus, which is host focus management, not editor state).
+  await page.evaluate(() => window.__rt.setEditable(true));
+  await sleep(300);
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  await page.keyboard.type("Z");
+  await sleep(300);
+  assert((await changesOf(page)).length === 1, label, "re-enabled surface emitted no change");
+  assert(await sameComponent(page), label, "recovery remounted the component");
+  await cdp.detach();
+  await done(label);
+  ok(label);
+}
+
+// CL-2 B1-L6 (a): a send initiated during an IME composition never captures
+// the pre-composition string and never loses the composed text — the host
+// awaits readiness/`captureComposer()` and sends the committed text once.
+async function scenarioComposerImeSend(browser, base) {
+  const label = "composer-ime-send";
+  const { page, done } = await openScenario(browser, base, "composer-send", "composer");
+  await page.click(".ProseMirror p");
+  await page.keyboard.press("End");
+  await sleep(200);
+  const cdp = await page.createCDPSession();
+  await cdp.send("Input.imeSetComposition", { selectionStart: 0, selectionEnd: 0, text: "caf" });
+  await sleep(200);
+  await page.evaluate(() => {
+    window.__sendCount = 0;
+    window.__sentText = null;
+    window.__composer
+      .capture()
+      .then((result) => {
+        window.__sendCount += 1;
+        window.__sentText = result.text;
+      });
+  });
+  await sleep(300);
+  let sent = await page.evaluate(() => ({ count: window.__sendCount, text: window.__sentText }));
+  assert(sent.count === 0, label, `send captured the pre-composition string: ${JSON.stringify(sent)}`);
+  await cdp.send("Input.insertText", { text: "café" });
+  await sleep(400);
+  sent = await page.evaluate(() => ({ count: window.__sendCount, text: window.__sentText }));
+  const events = await page.evaluate(() => window.__composer.events);
+  assert(events.changes.length === 1, label, `composition commit emitted ${events.changes.length} onChange call(s), expected 1`);
+  assert(sent.count === 1 && sent.text === "café", label, `send did not fire exactly once with the committed text: ${JSON.stringify(sent)}`);
+  await cdp.detach();
+  await done(label);
+  ok(label);
 }
 
 async function scenarioPreservedGestures(browser, base) {
@@ -1022,6 +1193,19 @@ async function main() {
     symlinkSync(join(WORKTREE_ROOT, "node_modules"), join(work, "node_modules"), "dir");
     console.log("building harness with vite");
     execFileSync(join(WORKTREE_ROOT, "node_modules", ".bin", "vite"), ["build"], { cwd: work, stdio: "inherit" });
+    // CL-2 offline dossier, asserted provider-free: the built harness
+    // (document + composer surfaces) carries no collaboration runtime.
+    {
+      const assets = readdirSync(join(work, "dist", "assets")).filter((name) => name.endsWith(".js"));
+      assert(assets.length > 0, "provider-free", "harness build produced no JS assets to scan");
+      for (const name of assets) {
+        const text = readFileSync(join(work, "dist", "assets", name), "utf8");
+        for (const marker of PROVIDER_RUNTIME_MARKERS) {
+          assert(!text.includes(marker), "provider-free", `harness asset ${name} loads the collaboration runtime (${marker})`);
+        }
+      }
+      console.log(`ok provider-free: ${assets.length} harness asset(s) scanned, no collaboration runtime`);
+    }
     // Ephemeral port: the OS assigns a free one, so parallel runs never
     // collide on a fixed value.
     server = await serveDirectory(join(work, "dist"), 0);
@@ -1044,6 +1228,8 @@ async function main() {
     await scenarioClean(browser, base);
     await scenarioEcho(browser, base);
     await scenarioComposition(browser, base);
+    await scenarioImeRevoke(browser, base);
+    await scenarioComposerImeSend(browser, base);
     await scenarioCaptureUnmount(browser, base);
     await scenarioPreservedGestures(browser, base);
     await scenarioLocaleTheme(browser, base);

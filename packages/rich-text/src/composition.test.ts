@@ -263,3 +263,52 @@ describe("composition commit", () => {
     teardown();
   });
 });
+
+describe("revocation mid-composition discards (IME-LOCK-1 clauses 2/3/5, CL-2)", () => {
+  it("setEditable(false) applies at once without remount, then the end discards with no emission", () => {
+    const { editor, changes, viewDom, teardown } = setup();
+    const viewBefore = editor.view;
+    beginComposition(viewDom);
+    expect(editor.readiness()).toEqual({ composing: true, ready: false });
+    editor.typeText("paragraph:1", " uncommitted");
+    expect(changes).toHaveLength(0);
+    // Clause 2: revocation is immediate, without remount, mid-composition.
+    editor.setEditable(false);
+    expect(editor.view).toBe(viewBefore);
+    editor.typeText("paragraph:1", " blocked");
+    expect(changes).toHaveLength(0);
+    // Clauses 3/5: the end discards the uncommitted text — no commit, no
+    // event — and the display reverts to the last committed revision.
+    endComposition(viewDom);
+    expect(changes).toHaveLength(0);
+    expect(editor.getDocument().blocks[0]).toEqual(paragraph("paragraph:1", "Alpha"));
+    // Recovery: re-enabling edits through the same instance.
+    editor.setEditable(true);
+    expect(editor.view).toBe(viewBefore);
+    editor.typeText("paragraph:1", " after");
+    expect(changes).toHaveLength(1);
+    expect(editor.getDocument().blocks[0]?.text).toBe("Alpha after");
+    teardown();
+  });
+
+  it("a deferred external arrival is still re-evaluated once after the discard", async () => {
+    const { editor, changes, conflicts, viewDom, teardown } = setup();
+    beginComposition(viewDom);
+    editor.typeText("paragraph:1", " local");
+    const remote: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [paragraph("paragraph:9", "Remote")],
+    };
+    editor.applyExternalUpdate(remote);
+    expect(conflicts).toHaveLength(0);
+    editor.setEditable(false);
+    endComposition(viewDom);
+    // The discard emits nothing, then the deferred arrival applies cleanly
+    // against the reverted revision: the uncommitted text is gone, the
+    // remote document stands, and no conflict fired.
+    expect(changes).toHaveLength(0);
+    expect(conflicts).toHaveLength(0);
+    expect(editor.getDocument()).toEqual(remote);
+    teardown();
+  });
+});

@@ -25,6 +25,7 @@ import { isIP } from "node:net";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  computeEffectiveEditable,
   createPresenceSnapshot,
   derivePresenceBadgeState,
   isAllowedHref,
@@ -946,5 +947,76 @@ describe("CL-1M review pass 3 (RFC 3986 URI-reference grammar, R-FULL-URL-1)", (
     }
     expect(accepted).toBeGreaterThan(0);
     expect(refused).toBeGreaterThan(0);
+  });
+});
+
+describe("computeEffectiveEditable (CL-2 R-API-2, RED)", () => {
+  const BINDING_2 = {
+    documentId: "canvas:doc-1",
+    sessionId: "session:1",
+    fieldKey: "field:body",
+  };
+  const SELF = "actor:self";
+  const OTHER = "actor:other";
+  const heldByOther: LockSnapshot = {
+    unit: { scopeRef: "scope:1" },
+    holder: actor(OTHER, "#112233"),
+    expiresAt: null,
+  };
+  const heldBySelf: LockSnapshot = {
+    unit: { scopeRef: "scope:1" },
+    holder: actor(SELF, "#112233"),
+    expiresAt: null,
+  };
+  const unheld: LockSnapshot = {
+    unit: { scopeRef: "scope:1" },
+    holder: null,
+    expiresAt: null,
+  };
+
+  it("keeps admitted editors editable under a locked-by-other snapshot when bound", () => {
+    expect(
+      computeEffectiveEditable({ binding: BINDING_2, editable: true, lock: heldByOther, actorId: SELF }),
+    ).toBe(true);
+  });
+
+  it("renders the same snapshot read-only without a binding", () => {
+    expect(
+      computeEffectiveEditable({ binding: null, editable: true, lock: heldByOther, actorId: SELF }),
+    ).toBe(false);
+  });
+
+  it("keeps holder and unheld surfaces editable without a binding", () => {
+    expect(
+      computeEffectiveEditable({ binding: null, editable: true, lock: heldBySelf, actorId: SELF }),
+    ).toBe(true);
+    expect(
+      computeEffectiveEditable({ binding: null, editable: true, lock: unheld, actorId: SELF }),
+    ).toBe(true);
+  });
+
+  it("lets disabled win over every mode", () => {
+    expect(
+      computeEffectiveEditable({ binding: BINDING_2, editable: true, lock: null, actorId: SELF, disabled: true }),
+    ).toBe(false);
+    expect(
+      computeEffectiveEditable({ binding: null, editable: true, lock: unheld, actorId: SELF, disabled: true }),
+    ).toBe(false);
+  });
+
+  it("treats an expired held-by-other lock as no lock against the injected clock", () => {
+    const expired: LockSnapshot = {
+      ...heldByOther,
+      expiresAt: "2026-10-29T11:00:00.000Z",
+    };
+    expect(
+      computeEffectiveEditable({
+        binding: null,
+        editable: true,
+        lock: expired,
+        actorId: SELF,
+        nowIso: "2026-10-29T12:00:00.000Z",
+      }),
+    ).toBe(true);
   });
 });
