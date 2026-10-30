@@ -1,8 +1,10 @@
 /**
- * Bound editor entry (CL-3a): the collaboration runtime lives here, never in
- * the controlled graph (`./editor.js` throws for bound mounts). The browser
- * harness builds the controlled component only, so no served harness asset
- * contains the Yjs runtime; bound callers import this entry directly.
+ * Bound editor entry (CL-3a): the collaboration runtime lives here, loaded
+ * through a dynamic import from the `"./editor"` entry, never statically in
+ * the controlled graph. The browser harness builds the controlled component
+ * only, so no served harness asset contains the Yjs runtime; bound callers
+ * reach this entry either directly or through `createRichTextEditor` with a
+ * binding plus source.
  */
 import type { FieldBindingIdentity } from "./collaboration.js";
 import type { LiveSessionBindingSource } from "./editor-collaboration.js";
@@ -28,12 +30,12 @@ export async function createBoundRichTextEditor(
     import("./collab-codec.js"),
     import("./collab-projection.js"),
   ]);
-  if (resolved.text.length === 0 && (resolved.fieldMeta as unknown as { size?: number }).size === 0) {
-    codec.seedFieldFromDocument(
-      resolved.text as never,
-      resolved.fieldMeta as never,
-      bindingIdentity.fieldKey,
-      options.document,
+  // R-MAP-3: seeding is a host operation performed once at field open; the
+  // binding never reseeds. An empty field Y.Text means the host has not
+  // seeded it yet, so the mount fails closed instead of inventing content.
+  if (resolved.text.length === 0) {
+    throw new Error(
+      "rich-text.collab-unseeded-field: the host seeds the field Y.Text at session open (R-MAP-3); the binding never reseeds",
     );
   }
   const initial = codec.captureDocumentFromField(
