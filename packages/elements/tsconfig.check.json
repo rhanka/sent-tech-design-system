@@ -1,0 +1,12 @@
+{
+  // `npm run check` compiles the TESTS too (diagram-core precedent): the RED
+  // witness tests read the committed artifacts from disk with node builtins,
+  // and parity/contract assertions that only mean something under the
+  // compiler belong in here. The build configuration stays test-free.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["src", "tests"]
+}
