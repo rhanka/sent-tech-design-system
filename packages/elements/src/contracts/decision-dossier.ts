@@ -2,7 +2,8 @@
  * Contract module for `DecisionDossier` (§5.1, §5.4 — the composition pilot).
  *
  * SOURCE OF TRUTH: the `DecisionDossierDocument` of `@sentropic/focus`
- * (owner decision 2026-10-30: proceed on 0.5.0-rc.9, npm tag `next`). The pin
+ * (owner decision 2026-10-30 on 0.5.0-rc.9, pinned at 0.5.0 once it reached `latest`:
+ * same files as rc.9 except package.json, same v1 schema sha256). The pin
  * below records WHY v1: the package's `./validate` export validates legacy v1
  * by default when `schemaVersion` is absent (its d.ts names the v1 asset as
  * the published schema it matches, `DOSSIER_SCHEMA_VERSION = "1.0.0"`), while
@@ -143,7 +144,7 @@ export const decisionDossierContract: ContractModule = {
   },
   semantic: {
     source: "focus",
-    runtimePackage: "@sentropic/focus@0.5.0-rc.9",
+    runtimePackage: "@sentropic/focus@0.5.0",
     schemaSubpath: "schemas/decision-dossier-document.v1.schema.json",
     schemaId: "urn:sentropic:focus:DecisionDossierDocument:1.0.0",
     sha256: "725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852",
