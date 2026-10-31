@@ -32,11 +32,37 @@ function field(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
+/**
+ * The sanitizer allowlist (U-14, review 1 follow-up): EXACTLY the tag and
+ * attribute subset `renderMarkdown` emits — `p`, `ul`, `li`, `code`, `a`,
+ * `strong`, `em` and `href` on anchors only. No `h1`-`h4`, `blockquote`,
+ * `pre`, `ol`, `br`, tables or divs (the minimal subset never emits them);
+ * no event handlers, `style`, or `class`; no data attributes
+ * (`ALLOW_DATA_ATTR: false`); `href` limited to the package's own rule —
+ * `renderMarkdown` emits only `https:` anchors, so the sanitizer keeps only
+ * `https:` (`http:`, `mailto:`, relative, `javascript:` and `data:` lose the
+ * attribute). DOMPurify UNWRAPS a disallowed tag but keeps allowed children,
+ * so the invariant is on survivors, never on input shape.
+ */
+const SANITIZER_ALLOWED_TAGS = ["p", "ul", "li", "code", "a", "strong", "em"];
+const SANITIZER_ALLOWED_ATTR = ["href"];
+const SANITIZER_ALLOWED_URI = /^https:\/\/[^\s"'<>]+$/i;
+
+/** Sanitize one HTML string to the `renderMarkdown` subset (U-14). */
+export function renderMarkdownToSafeHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: SANITIZER_ALLOWED_TAGS,
+    ALLOWED_ATTR: SANITIZER_ALLOWED_ATTR,
+    ALLOW_DATA_ATTR: false,
+    ALLOWED_URI_REGEXP: SANITIZER_ALLOWED_URI,
+  });
+}
+
 /** One sanitized markdown block (U-14): the only `innerHTML` path. */
 function markdownBlock(source: string): HTMLDivElement {
   const block = document.createElement("div");
   block.className = "st-dossier__prose";
-  block.innerHTML = DOMPurify.sanitize(renderMarkdown(source), { USE_PROFILES: { html: true } });
+  block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source));
   return block;
 }
 

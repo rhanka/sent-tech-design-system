@@ -21,6 +21,11 @@
  *                  jsDelivr asset degradation) and zero CSP violations.
  *   no-bpmn.html — only st-bar-chart: the bpmn-canvas and focus engine chunks
  *                  are never requested (§6.6 lazy boundary witness).
+ *   invalid-engines.html — st-decision-dossier AND st-bpmn-canvas fed
+ *                  STRUCTURALLY INVALID envelopes, plus a st-decision-dossier
+ *                  fed a valid BarChart envelope (B7 mismatch): all three
+ *                  refuse with the error panel (§4.5) and NO engine chunk is
+ *                  requested (§6.6, B8 witness).
  *   theme.html   — hostConfig island selects `forge`: the theme id comes
  *                  from hostConfig, never the envelope (§6.3/§6.5), and the
  *                  scoped sheet applies inside the shadow root.
@@ -245,6 +250,13 @@ function elementWithIsland(tag, id, fixture) {
   return `<${tag} id="${id}">${islandScript(readFixture(fixture))}</${tag}>`;
 }
 
+/** One fixture mutated in memory (B8: structurally invalid engine envelopes). */
+function mutatedIsland(tag, id, fixture, mutate) {
+  const envelope = JSON.parse(readFixture(fixture));
+  mutate(envelope);
+  return `<${tag} id="${id}">${islandScript(JSON.stringify(envelope))}</${tag}>`;
+}
+
 function pageHtml(csp, body, head = "") {
   return `<!doctype html>
 <html lang="en">
@@ -292,6 +304,20 @@ const PAGES = {
     `
     ${islandScript(JSON.stringify(HOST_CONFIG_DEFAULT)).replace("<script", '<script id="st-host-config"')}
     ${elementWithIsland("st-bar-chart", "chart", "bar-chart-pdata-1.json")}
+    <script type="module" src="/bundle/elements.js"></script>
+  `,
+  ),
+  "/invalid-engines.html": pageHtml(
+    PILOT_CSP,
+    `
+    ${islandScript(JSON.stringify(HOST_CONFIG_DEFAULT)).replace("<script", '<script id="st-host-config"')}
+    ${mutatedIsland("st-decision-dossier", "dossier-invalid", "decision-dossier.json", (envelope) => {
+      delete envelope.root.document.title;
+    })}
+    ${mutatedIsland("st-bpmn-canvas", "bpmn-invalid", "bpmn-order-process.json", (envelope) => {
+      delete envelope.root.document.$type;
+    })}
+    ${elementWithIsland("st-decision-dossier", "dossier-mismatch", "bar-chart-pdata-1.json")}
     <script type="module" src="/bundle/elements.js"></script>
   `,
   ),
@@ -441,11 +467,22 @@ const BASE = `http://127.0.0.1:${PORT}`;
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
+// Snap-confined Chromium cannot create its SingletonLock under $TMPDIR
+// (Permission denied, measured); /tmp is writable to it, so the throwaway
+// browser profile lives there, never in the session tmp root.
+const chromiumProfile = mkdtempSync("/tmp/st-elements-chromium-");
 const browser = await puppeteer.default.launch({
   executablePath: findChrome(),
   headless: "new",
+  userDataDir: chromiumProfile,
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--font-render-hinting=none"],
 });
+
+// Everything below runs inside try/finally: the throwaway profile, the
+// server and the work dir are removed even when a page operation throws,
+// like RichTextEditor.browser.test.mjs (a top-level `process.exit` would
+// skip `finally`, so failures set `process.exitCode` instead).
+try {
 
 /**
  * One observed page: console + CSP partitioning with the U-12 offline rule.
@@ -843,6 +880,68 @@ async function shadowSvg(page, elementSelector) {
 }
 
 // ---------------------------------------------------------------------------
+// invalid-engines page: §6.6 — an invalid envelope renders its diagnostics
+// WITHOUT loading an engine (B8), on EACH lazy element; a mismatching
+// envelope on a lazy element refuses as unknown-component (B7) and also
+// loads nothing.
+// ---------------------------------------------------------------------------
+
+{
+  const observed = await openPage("/invalid-engines.html");
+  const page = observed.page;
+  const label = "invalid-engines";
+  for (const id of ["dossier-invalid", "bpmn-invalid", "dossier-mismatch"]) {
+    await waitFor(
+      page,
+      `() => document.getElementById('${id}') && document.getElementById('${id}').shadowRoot && document.getElementById('${id}').shadowRoot.querySelector('[data-st-error]')`,
+      20000,
+      `${id} refuses`,
+    );
+  }
+  ok(`${label}: both invalid envelopes and the mismatched envelope show the error panel (never blank)`);
+  const states = await page.evaluate(() =>
+    ["dossier-invalid", "bpmn-invalid", "dossier-mismatch"].map((id) => document.getElementById(id).state),
+  );
+  assert(
+    states.every((state) => state === "refused"),
+    `${label}: refused states`,
+    `expected all three elements refused, saw ${JSON.stringify(states)}`,
+  );
+  const panels = await page.evaluate(() =>
+    ["dossier-invalid", "bpmn-invalid", "dossier-mismatch"].map(
+      (id) => document.getElementById(id).shadowRoot.querySelector("[data-st-error]").textContent,
+    ),
+  );
+  assert(
+    panels[0].includes("schema-violation") && panels[0].includes("/root/document/title"),
+    `${label}: dossier-invalid diagnostic`,
+    `expected the missing-title schema-violation; saw: ${JSON.stringify(panels[0]).slice(0, 200)}`,
+  );
+  assert(
+    panels[1].includes("schema-violation"),
+    `${label}: bpmn-invalid diagnostic`,
+    `expected a schema-violation; saw: ${JSON.stringify(panels[1]).slice(0, 200)}`,
+  );
+  assert(
+    panels[2].includes("unknown-component") && panels[2].includes("/root/component"),
+    `${label}: dossier-mismatch diagnostic`,
+    `expected the B7 unknown-component at /root/component; saw: ${JSON.stringify(panels[2]).slice(0, 200)}`,
+  );
+  ok(`${label}: the diagnostics name their code and pointer`);
+  await sleep(500);
+  // B8: NO engine chunk was requested for any of the three refusals.
+  const lazyChunks = observed.requests.filter((url) => url.includes("/bundle/chunks/"));
+  assert(
+    lazyChunks.length === 0,
+    `${label}: no engine chunk on refused envelopes`,
+    `an invalid or mismatched envelope loaded an engine chunk: ${lazyChunks.join(", ")}`,
+  );
+  assert(observed.consoleErrors.length === 0, `${label}: zero console errors`, observed.consoleErrors.slice(0, 3).join(" | "));
+  ok(`${label}: invalid envelopes on both lazy elements request no engine chunk`);
+  await observed.close();
+}
+
+// ---------------------------------------------------------------------------
 // theme page: the theme id comes from hostConfig only (§6.3/§6.5).
 // ---------------------------------------------------------------------------
 
@@ -971,10 +1070,6 @@ async function shadowSvg(page, elementSelector) {
 // End.
 // ---------------------------------------------------------------------------
 
-await browser.close();
-server.close();
-rmSync(work, { recursive: true, force: true });
-
 console.log("");
 console.log("MEASUREMENTS");
 for (const line of measurements) console.log(`  ${line}`);
@@ -982,6 +1077,21 @@ console.log("");
 if (failures.length > 0) {
   console.error(`${failures.length} AC-L2 Chromium assertion(s) failed:`);
   for (const failure of failures) console.error(`  - ${failure}`);
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  console.log("AC-L2 Chromium suite: all assertions green.");
 }
-console.log("AC-L2 Chromium suite: all assertions green.");
+} finally {
+  try {
+    await browser.close();
+  } catch { /* already closed */ }
+  try {
+    server.close();
+  } catch { /* already closed */ }
+  try {
+    rmSync(work, { recursive: true, force: true });
+  } catch { /* already removed */ }
+  try {
+    rmSync(chromiumProfile, { recursive: true, force: true });
+  } catch { /* already removed */ }
+}
