@@ -590,7 +590,7 @@
         },
         "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/DecisionDossier.json",
         "semantic": {
-          "runtimePackage": "@sentropic/focus@0.5.0-rc.9",
+          "runtimePackage": "@sentropic/focus@0.5.0",
           "schemaId": "urn:sentropic:focus:DecisionDossierDocument:1.0.0",
           "schemaSubpath": "schemas/decision-dossier-document.v1.schema.json",
           "sha256": "725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852",
