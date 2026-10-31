@@ -1,0 +1,265 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BpmnCanvas",
+    "id": "root",
+    "document": {
+      "$type": "bpmn:Definitions",
+      "id": "order-process-definitions",
+      "targetNamespace": "https://example.com/order",
+      "rootElements": [
+        {
+          "$type": "bpmn:Process",
+          "id": "order-process",
+          "isExecutable": false,
+          "name": "Order process",
+          "flowElements": [
+            {
+              "$type": "bpmn:StartEvent",
+              "id": "event-order-received",
+              "name": "Order received"
+            },
+            {
+              "$type": "bpmn:Task",
+              "id": "task-check-payment",
+              "name": "Check payment"
+            },
+            {
+              "$type": "bpmn:ExclusiveGateway",
+              "id": "gateway-paid",
+              "name": "Paid?"
+            },
+            {
+              "$type": "bpmn:Task",
+              "id": "task-ship-order",
+              "name": "Ship order"
+            },
+            {
+              "$type": "bpmn:Task",
+              "id": "task-chase-payment",
+              "name": "Chase payment"
+            },
+            {
+              "$type": "bpmn:EndEvent",
+              "id": "event-order-shipped",
+              "name": "Order shipped"
+            },
+            {
+              "$type": "bpmn:SequenceFlow",
+              "id": "flow-received-to-check",
+              "sourceRef": "event-order-received",
+              "targetRef": "task-check-payment"
+            },
+            {
+              "$type": "bpmn:SequenceFlow",
+              "id": "flow-check-to-gateway",
+              "sourceRef": "task-check-payment",
+              "targetRef": "gateway-paid"
+            },
+            {
+              "$type": "bpmn:SequenceFlow",
+              "id": "flow-gateway-to-ship",
+              "name": "yes",
+              "sourceRef": "gateway-paid",
+              "targetRef": "task-ship-order"
+            },
+            {
+              "$type": "bpmn:SequenceFlow",
+              "id": "flow-gateway-to-chase",
+              "name": "no",
+              "sourceRef": "gateway-paid",
+              "targetRef": "task-chase-payment"
+            },
+            {
+              "$type": "bpmn:SequenceFlow",
+              "id": "flow-ship-to-end",
+              "sourceRef": "task-ship-order",
+              "targetRef": "event-order-shipped"
+            }
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "$type": "bpmndi:BPMNDiagram",
+          "id": "order-process-diagram",
+          "plane": {
+            "$type": "bpmndi:BPMNPlane",
+            "id": "order-process-plane",
+            "bpmnElement": "order-process",
+            "planeElement": [
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-event-order-received",
+                "bpmnElement": "event-order-received",
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 80,
+                  "y": 142,
+                  "width": 36,
+                  "height": 36
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-task-check-payment",
+                "bpmnElement": "task-check-payment",
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 160,
+                  "y": 120,
+                  "width": 80,
+                  "height": 80
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-gateway-paid",
+                "bpmnElement": "gateway-paid",
+                "isMarkerVisible": true,
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 284,
+                  "y": 132,
+                  "width": 56,
+                  "height": 56
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-task-ship-order",
+                "bpmnElement": "task-ship-order",
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 384,
+                  "y": 40,
+                  "width": 80,
+                  "height": 80
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-task-chase-payment",
+                "bpmnElement": "task-chase-payment",
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 384,
+                  "y": 224,
+                  "width": 80,
+                  "height": 80
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNShape",
+                "id": "shape-event-order-shipped",
+                "bpmnElement": "event-order-shipped",
+                "bounds": {
+                  "$type": "dc:Bounds",
+                  "x": 512,
+                  "y": 62,
+                  "width": 36,
+                  "height": 36
+                }
+              },
+              {
+                "$type": "bpmndi:BPMNEdge",
+                "id": "edge-flow-received-to-check",
+                "bpmnElement": "flow-received-to-check",
+                "waypoint": [
+                  {
+                    "$type": "dc:Point",
+                    "x": 116,
+                    "y": 160
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 160,
+                    "y": 160
+                  }
+                ]
+              },
+              {
+                "$type": "bpmndi:BPMNEdge",
+                "id": "edge-flow-check-to-gateway",
+                "bpmnElement": "flow-check-to-gateway",
+                "waypoint": [
+                  {
+                    "$type": "dc:Point",
+                    "x": 240,
+                    "y": 160
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 284,
+                    "y": 160
+                  }
+                ]
+              },
+              {
+                "$type": "bpmndi:BPMNEdge",
+                "id": "edge-flow-gateway-to-ship",
+                "bpmnElement": "flow-gateway-to-ship",
+                "waypoint": [
+                  {
+                    "$type": "dc:Point",
+                    "x": 340,
+                    "y": 132
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 340,
+                    "y": 80
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 384,
+                    "y": 80
+                  }
+                ]
+              },
+              {
+                "$type": "bpmndi:BPMNEdge",
+                "id": "edge-flow-gateway-to-chase",
+                "bpmnElement": "flow-gateway-to-chase",
+                "waypoint": [
+                  {
+                    "$type": "dc:Point",
+                    "x": 340,
+                    "y": 188
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 340,
+                    "y": 264
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 384,
+                    "y": 264
+                  }
+                ]
+              },
+              {
+                "$type": "bpmndi:BPMNEdge",
+                "id": "edge-flow-ship-to-end",
+                "bpmnElement": "flow-ship-to-end",
+                "waypoint": [
+                  {
+                    "$type": "dc:Point",
+                    "x": 464,
+                    "y": 80
+                  },
+                  {
+                    "$type": "dc:Point",
+                    "x": 512,
+                    "y": 80
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

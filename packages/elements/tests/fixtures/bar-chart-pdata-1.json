@@ -1,0 +1,15 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Revenue (M€)",
+    "data": [
+      { "label": "Q1", "value": 12 },
+      { "label": "Q2", "value": 18 },
+      { "label": "Q3", "value": 9 }
+    ],
+    "dataLabels": true,
+    "referenceLines": [{ "label": "Target", "value": 15 }]
+  }
+}

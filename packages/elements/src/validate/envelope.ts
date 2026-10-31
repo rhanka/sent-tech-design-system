@@ -65,6 +65,46 @@ function appendPointerToken(pointer: string, token: string): string {
 }
 
 /**
+ * The JSON-form contract (review 1, B1): the envelope IS a JSON value
+ * (§4.3) and the property channel (§6.2) feeds plain JS objects that may
+ * carry `undefined` values TypeScript callers routinely produce
+ * (`width: undefined`). `JSON.stringify` drops such keys, so the raw JS
+ * object and its serialized form disagree — and ajv itself is inconsistent
+ * on raw JS (`properties` skips an `undefined` value while
+ * `additionalProperties`/`unevaluatedProperties` iterate `Object.keys` and
+ * fire on it). The single JSON round-trip below defines the canonical form
+ * ONCE for both seams: size measurement and both validators judge exactly
+ * the bytes the host transmits. Chosen over ajv-mimicking `undefined`
+ * skips in the interpreter because the envelope's wire form is the only
+ * form both seams, the budget and the host ever share.
+ */
+export type NormalizedEnvelopeInput =
+  | { readonly ok: true; readonly value: unknown; readonly text: string }
+  | { readonly ok: false; readonly kind: "not-json-value" | "not-serializable"; readonly message: string };
+
+export function normalizeEnvelopeInput(input: unknown): NormalizedEnvelopeInput {
+  let text: string | undefined;
+  try {
+    const serialized = JSON.stringify(input);
+    if (typeof serialized !== "string") {
+      return {
+        ok: false,
+        kind: "not-json-value",
+        message: "the envelope is not a JSON value (§4.3)",
+      };
+    }
+    text = serialized;
+  } catch (error) {
+    return {
+      ok: false,
+      kind: "not-serializable",
+      message: `the envelope is not JSON-serializable (§4.3): ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+  return { ok: true, value: JSON.parse(text) as unknown, text };
+}
+
+/**
  * UTF-8 byte length without TextEncoder (the pure half stays free of
  * host-global identifiers; surrogates pair to 4 bytes like the encoder's).
  */
@@ -142,35 +182,22 @@ export function createEnvelopeValidatorCore(
 
   return {
     validate(input: unknown): readonly Diagnostic[] {
-      // 1. Serializable, then the size budget (§4.3 item 3).
-      let text: string;
-      try {
-        const serialized = JSON.stringify(input);
-        if (typeof serialized !== "string") {
-          return [
-            {
-              code: "schema-violation",
-              path: "",
-              message: "the envelope is not a JSON value (§4.3)",
-              severity: "error",
-              source: "catalog",
-            },
-          ];
-        }
-        text = serialized;
-      } catch (error) {
+      // 1. The JSON round-trip (B1): the canonical form for size AND
+      // validation. `undefined` keys vanish here, exactly as the wire sees
+      // them, so both structure seams judge the same value.
+      const normalized = normalizeEnvelopeInput(input);
+      if (!normalized.ok) {
         return [
           {
             code: "schema-violation",
             path: "",
-            message: `the envelope is not JSON-serializable (§4.3): ${
-              error instanceof Error ? error.message : String(error)
-            }`,
+            message: normalized.message,
             severity: "error",
             source: "catalog",
           },
         ];
       }
+      const text = normalized.text;
       const bytes = utf8ByteLength(text);
       if (bytes > ENVELOPE_LIMIT_BYTES) {
         return [
@@ -185,10 +212,10 @@ export function createEnvelopeValidatorCore(
         ];
       }
 
-      // 2. Envelope structure (§4.2).
-      const envelopeIssues = structure.validateEnvelope(input);
+      // 2. Envelope structure (§4.2), on the NORMALIZED value.
+      const envelopeIssues = structure.validateEnvelope(normalized.value);
       if (envelopeIssues.length > 0) return structureDiagnostics(envelopeIssues, "");
-      const envelope = input as Record<string, unknown>;
+      const envelope = normalized.value as Record<string, unknown>;
 
       // 3. `catalogId` is optional (§4.2: default = the renderer's catalogue):
       // absent names THIS catalogue; present, it must name THIS catalogue.
