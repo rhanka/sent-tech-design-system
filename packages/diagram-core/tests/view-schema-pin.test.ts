@@ -18,6 +18,7 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import * as core from "../src/index.js";
+import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
 import { canonicalBytes, sha256Hex } from "../src/sha256.js";
 import {
   DIAGRAM_VIEW_SCHEMA_ID,
@@ -101,6 +102,17 @@ describe("view-schema frozen record digest gate", () => {
     const v1PropsRoot = v1Root["properties"] as Record<string, unknown>;
     const v2PropsRoot = v2Root["properties"] as Record<string, unknown>;
     expect(v2PropsRoot["presentation"]).toEqual(v1PropsRoot["presentation"]);
+    const v1Diagram = ((v1PropsRoot["presentation"] as Record<string, unknown>)["properties"] as Record<string, unknown>)[
+      "diagram"
+    ] as Record<string, unknown>;
+    const v2Diagram = ((v2PropsRoot["presentation"] as Record<string, unknown>)["properties"] as Record<string, unknown>)[
+      "diagram"
+    ] as Record<string, unknown>;
+    const contractDiagram = core.DIAGRAM_PRESENTATION_SCHEMA as unknown as Record<string, unknown>;
+    expect(v1Diagram["properties"]).toEqual(contractDiagram["properties"]);
+    expect(v1Diagram["required"]).toEqual(contractDiagram["required"]);
+    expect(v2Diagram["properties"]).toEqual(contractDiagram["properties"]);
+    expect(v2Diagram["required"]).toEqual(contractDiagram["required"]);
   });
 
   it("keeps every vendored value deeply frozen with detached copies", () => {
@@ -110,6 +122,66 @@ describe("view-schema frozen record digest gate", () => {
     expectDeepFrozen(DIAGRAM_VIEW_SCHEMA_V2_PIN);
     expect(() => Object.assign(DIAGRAM_VIEW_SCHEMA_V1_PIN, { version: "9" })).toThrow();
     expect(() => Object.assign(DIAGRAM_VIEW_SCHEMA_V2, { $id: "mutated" })).toThrow();
+  });
+
+  it("binds every receipt hash to the tree so the receipt cannot drift", () => {
+    const receiptUrl = new URL("../view-schema-pin-receipt.json", import.meta.url);
+    const receipt = JSON.parse(readFileSync(receiptUrl, "utf8")) as {
+      viewSchema: {
+        v1: { version: string; $id: string; contentDigest: string; bytesDigest: string; fixture: string };
+        v2: { version: string; $id: string; contentDigest: string; bytesDigest: string; fixture: string };
+        record: string;
+        recordSha256: string;
+      };
+      dsRevision: { files: Record<string, string> };
+      presentation: { entryDigest: string; applySha256: string; validateSha256: string };
+      witnesses: string[];
+      reusedEvidence: string[];
+    };
+    const repoRoot = new URL("../../", receiptUrl);
+    const repoFile = (relative: string): string => readFileSync(new URL(relative, repoRoot), "utf8");
+    const sha256Of = (relative: string): string => createHash("sha256").update(repoFile(relative), "utf8").digest("hex");
+
+    // No legacy "sid" key survives beside "$id".
+    expect("sid" in (receipt.viewSchema.v1 as unknown as Record<string, unknown>)).toBe(false);
+    expect("sid" in (receipt.viewSchema.v2 as unknown as Record<string, unknown>)).toBe(false);
+    expect(receipt.viewSchema.v1.$id).toBe("engram:diagram-view-schema/1");
+    expect(receipt.viewSchema.v2.$id).toBe("engram:diagram-view-schema/2");
+
+    // Schema digests match the vendored bytes and the canonical fixtures.
+    for (const [key, schema] of [
+      ["v1", DIAGRAM_VIEW_SCHEMA_V1],
+      ["v2", DIAGRAM_VIEW_SCHEMA_V2],
+    ] as const) {
+      const entry = receipt.viewSchema[key];
+      expect(entry.contentDigest).toBe(sha256Hex(canonicalBytes(schema)));
+      expect(entry.bytesDigest).toBe(sha256Hex(canonicalBytes(schema)));
+      const rawFixture = repoFile(entry.fixture);
+      expect(canonicalBytes(schema)).toBe(rawFixture);
+      expect(createHash("sha256").update(rawFixture, "utf8").digest("hex")).toBe(entry.contentDigest);
+      expect((schema as Record<string, unknown>)["$id"]).toBe(entry.$id);
+    }
+
+    // Record file, DS revision files and presentation files match their hashes.
+    expect(sha256Of(receipt.viewSchema.record)).toBe(receipt.viewSchema.recordSha256);
+    for (const [relative, digest] of Object.entries(receipt.dsRevision.files)) {
+      expect(sha256Of(relative)).toBe(digest);
+    }
+    expect(sha256Of("packages/diagram-core/src/presentation-apply.ts")).toBe(receipt.presentation.applySha256);
+    expect(sha256Of("packages/diagram-core/src/presentation-validate.ts")).toBe(receipt.presentation.validateSha256);
+    expect(sha256Hex(canonicalBytes(resolveGovernedCatalog().entry))).toBe(receipt.presentation.entryDigest);
+
+    // Every witness, reused-evidence and fixture file exists.
+    for (const relative of [
+      ...receipt.witnesses,
+      ...receipt.reusedEvidence,
+      receipt.viewSchema.v1.fixture,
+      receipt.viewSchema.v2.fixture,
+      receipt.viewSchema.record,
+      ...Object.keys(receipt.dsRevision.files),
+    ]) {
+      expect(() => repoFile(relative), `missing receipt file: ${relative}`).not.toThrow();
+    }
   });
 
   it("stays private: nothing from the record is exported from the package entry", () => {

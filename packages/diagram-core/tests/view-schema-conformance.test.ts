@@ -161,6 +161,81 @@ describe("view-schema @2 DS semantics (native validation only)", () => {
     expect(dsCheckOf(view, document, "sum:unsorted")).toBe("summary-constituents-mismatch");
   });
 
+  it("refuses duplicate relationOccurrences with summary-constituents-mismatch", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:dup-occ": {
+        id: "sum:dup-occ",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "Kept",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+        relationOccurrences: [occurrenceRef("o1"), occurrenceRef("o1")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    expect(dsCheckOf(view, document, "sum:dup-occ")).toBe("summary-constituents-mismatch");
+  });
+
+  it("refuses unsorted relationOccurrences with summary-constituents-mismatch", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:unsorted-occ": {
+        id: "sum:unsorted-occ",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "Kept",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+        relationOccurrences: [occurrenceRef("o2"), occurrenceRef("o1")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    expect(dsCheckOf(view, document, "sum:unsorted-occ")).toBe("summary-constituents-mismatch");
+  });
+
+  it("accepts a valid non-empty relationOccurrences matching relationIds with no diagnostic", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:occ-ok": {
+        id: "sum:occ-ok",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "Kept",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+        relationOccurrences: [occurrenceRef("o1"), occurrenceRef("o2")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    expect(validateView(view, document, options())).toEqual([]);
+  });
+
+  it("keeps an empty label free of diagnostics", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:empty-label": {
+        id: "sum:empty-label",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    expect(validateView(view, document, options())).toEqual([]);
+  });
+
+  it("refuses an id-less summary with record-key-mismatch at its storage key", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:noid": {
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "Kept",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    const diagnostics = validateView(view, document, options());
+    expect(diagnostics.some((item) => item.code === "record-key-mismatch" && item.path === "summaryLabels.sum:noid")).toBe(
+      true,
+    );
+  });
+
   it("refuses an empty relationOccurrences list with summary-constituents-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
@@ -192,6 +267,28 @@ describe("view-schema @2 DS semantics (native validation only)", () => {
         targetOccurrence: occurrenceRef("b"),
         label: "Two",
         relationIds: [relationRef("r1"), relationRef("r2")],
+      },
+    } as unknown as ViewDocument["summaryLabels"]);
+    expect(dsCheckOf(view, document, "sum:two")).toBe("summary-duplicate-key");
+  });
+
+  it("reports summary-duplicate-key first for a duplicate triple carrying relationOccurrences: []", () => {
+    const document = conformanceDocument();
+    const view = conformanceView(document, {
+      "sum:one": {
+        id: "sum:one",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "One",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+      },
+      "sum:two": {
+        id: "sum:two",
+        sourceOccurrence: occurrenceRef("a"),
+        targetOccurrence: occurrenceRef("b"),
+        label: "Two",
+        relationIds: [relationRef("r1"), relationRef("r2")],
+        relationOccurrences: [],
       },
     } as unknown as ViewDocument["summaryLabels"]);
     expect(dsCheckOf(view, document, "sum:two")).toBe("summary-duplicate-key");
