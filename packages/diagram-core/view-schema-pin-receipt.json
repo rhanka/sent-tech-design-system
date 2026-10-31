@@ -1,0 +1,64 @@
+{
+  "kind": "ds-view-schema-pin-receipt/v1",
+  "description": "DS adoption receipt for Engram diagram-view-schema@2 (DS share of Engram lots 3 and 4). The DS commit sha is not known before the commit: file hashes are recorded below, and the commit is left to the PR.",
+  "dsCommit": "unknown-before-commit; to be recorded in the PR",
+  "engramSource": {
+    "repo": "rhanka/engram (local clone /home/antoinefa/src/graphify)",
+    "commit": "310a9270",
+    "spec": "SPEC_ONTOLOGY_DIAGRAM_VIEW_SCHEMA_V2.md",
+    "sourceFiles": [
+      "src/ontology-guardian/diagram-schemas.ts",
+      "src/ontology-guardian/canonical.ts",
+      "src/ontology-guardian/diagram-matrix-data.ts",
+      "tests/ontology-guardian-diagram-view-schema.test.ts"
+    ]
+  },
+  "viewSchema": {
+    "id": "diagram-view-schema",
+    "v1": {
+      "version": "1",
+      "sid": "engram:diagram-view-schema/1",
+      "contentDigest": "273351021b614523c2066098550f97b20b0aad6e6eb7b563aaad29b5481a6b7c",
+      "bytesDigest": "273351021b614523c2066098550f97b20b0aad6e6eb7b563aaad29b5481a6b7c",
+      "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-1-27335102.json"
+    },
+    "v2": {
+      "version": "2",
+      "sid": "engram:diagram-view-schema/2",
+      "contentDigest": "50c97fc87a9546facff86f2deab8fdb99073419f43eef09958b96225367037ef",
+      "bytesDigest": "50c97fc87a9546facff86f2deab8fdb99073419f43eef09958b96225367037ef",
+      "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
+    },
+    "record": "packages/diagram-core/src/view-schema-pin.ts",
+    "recordSha256": "8ed6ebe03218ebf57fbc26409d9b7f038480dd5e24242353ffb2ca98dfabeb84",
+    "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
+  },
+  "dsRevision": {
+    "note": "Files that implement validation of summaryLabels, with sha256 of their bytes at receipt time.",
+    "files": {
+      "packages/diagram-core/src/view.ts": "c1270cbcb4b8cc87e5511d67165ad66636a3ac56173a56537949ab9d8787af32",
+      "packages/diagram-core/src/fold.ts": "143c0be91a4cf1ad2263b5f0df729e6014462ee2a4a405999ff215a1282c1272",
+      "packages/diagram-core/src/validate.ts": "0cdbd62ab1ae65a2fc4f876f25f38df4435d4a2a08ea3574265c2679238b2a46"
+    }
+  },
+  "presentation": {
+    "entryDigest": "c430ff66df3b04e6d792dd1a60e40e01dbeaffa47b206da0021a937ca83fa4f9",
+    "applySha256": "28c3607e5c4868d44c137b66fe8e6f6ed99cb578fc52a52f67442cca41802cd8",
+    "validateSha256": "488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e"
+  },
+  "witnesses": [
+    "packages/diagram-core/tests/view-schema-pin.test.ts",
+    "packages/diagram-core/tests/view-schema-resolution.test.ts",
+    "packages/diagram-core/tests/view-schema-conformance.test.ts",
+    "packages/diagram-core/tests/view-schema-presentation-guard.test.ts"
+  ],
+  "reusedEvidence": [
+    "packages/diagram-core/tests/folded-view.test.ts",
+    "packages/diagram-core/tests/m1c-pass2.test.ts",
+    "packages/diagram-core/tests/model-shape.test.ts",
+    "packages/diagram-core/tests/m1c-pass3-reprojection.test.ts",
+    "packages/diagram-core/tests/m1c-pass3-stale-source.test.ts",
+    "packages/diagram-core/tests/m1c-pass3-absent-collapsed.test.ts",
+    "packages/diagram-core/tests/m1c-pass3-redo-chain.test.ts"
+  ]
+}
