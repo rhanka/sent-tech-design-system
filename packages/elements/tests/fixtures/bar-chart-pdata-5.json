@@ -1,0 +1,15 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Vote share (%)",
+    "invertAxis": true,
+    "selectedKeys": ["Beta"],
+    "data": [
+      { "label": "Alpha", "value": 41 },
+      { "label": "Beta", "value": 37 },
+      { "label": "Gamma", "value": 22 }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Yield (%)",
+    "data": [
+      { "label": "Line 1", "value": 92.5, "errorLow": 3, "errorHigh": 2 },
+      { "label": "Line 2", "value": 88.1, "errorLow": 1.5, "errorHigh": 4.5 },
+      { "label": "Line 3", "value": 95.2, "errorLow": 2.2, "errorHigh": 1.4 }
+    ],
+    "annotations": [
+      { "kind": "label", "text": "Target zone", "x": "Line 2", "y": 94 },
+      { "kind": "line", "axis": "y", "value": 90, "label": "Floor" }
+    ]
+  }
+}
