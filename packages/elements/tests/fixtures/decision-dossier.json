@@ -1,0 +1,55 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "DecisionDossier",
+    "id": "root",
+    "document": {
+      "ref": "decision-l2",
+      "subject": "JSON render standard",
+      "title": "Which rendering contract do we adopt?",
+      "hash": "b7d3f0c9",
+      "cursor": "2026-10-30T10:00:00Z",
+      "sections": [
+        {
+          "id": "p1",
+          "kind": "prose",
+          "targetRef": "decision-l2",
+          "markdown": "The **decision** turns on `isolation` and weight, not on the component API — see [the standard](https://example.com/spec)."
+        },
+        {
+          "id": "q1",
+          "kind": "question",
+          "targetRef": "decision-l2",
+          "question": "Which rendering contract do we adopt?",
+          "state": "open"
+        },
+        {
+          "id": "options-1",
+          "kind": "optionSet",
+          "targetRef": "decision-l2",
+          "questionId": "q1",
+          "options": [
+            {
+              "id": "opt-json",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Adopt the JSON render standard",
+              "annotation": "none"
+            },
+            {
+              "id": "opt-status-quo",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Keep the status quo",
+              "annotation": "none",
+              "body": "Every host keeps its own rendering path and drifts."
+            }
+          ]
+        }
+      ],
+      "interactions": [],
+      "provenance": { "source": "track", "readAt": "2026-10-30T10:00:00Z" },
+      "amendmentTrace": []
+    }
+  }
+}

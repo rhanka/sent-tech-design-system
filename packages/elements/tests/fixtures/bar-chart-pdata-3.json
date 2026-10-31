@@ -1,0 +1,15 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Requests per node (log)",
+    "scale": "log",
+    "data": [
+      { "label": "node-a", "value": 8100, "tone": "category2" },
+      { "label": "node-b", "value": 420 },
+      { "label": "node-c", "value": 55, "tone": "category4" },
+      { "label": "node-d", "value": 3 }
+    ]
+  }
+}

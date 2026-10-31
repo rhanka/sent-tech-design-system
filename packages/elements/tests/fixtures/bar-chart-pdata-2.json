@@ -1,0 +1,16 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Latency (ms)",
+    "orientation": "horizontal",
+    "data": [
+      { "label": "p50", "value": 120 },
+      { "label": "p90", "value": 310 },
+      { "label": "p99", "value": 940 }
+    ],
+    "bands": [{ "from": 300, "to": 500, "label": "SLO window" }],
+    "goalLine": { "value": 850, "label": "Budget" }
+  }
+}

@@ -11,6 +11,12 @@
     "directory": "packages/elements"
   },
   "sideEffects": false,
+  "files": [
+    "dist",
+    "catalog.json",
+    "envelope.json",
+    "schemas"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -24,7 +30,8 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "check": "tsc -p tsconfig.check.json",
+    "build:browser": "node scripts/build-browser.mjs",
+    "check": "tsc -p tsconfig.check.json && tsc -p tsconfig.dom.json",
     "test": "vitest run",
     "catalog:generate": "node dist/generator/main.js",
     "catalog:check": "node dist/generator/main.js --check"
