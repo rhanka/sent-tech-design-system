@@ -1,0 +1,23 @@
+{
+  // The DOM half of the element layer (§6.2): the wrapper components, the
+  // runtime holder, the theme sheets, the input islands and the lazy engines
+  // are BROWSER code — they need the DOM lib, which tsconfig.json refuses on
+  // purpose for the pure half (validator, ports, contracts). This config
+  // only CHECKS (noEmit): the shipped bundle is built by
+  // scripts/build-browser.mjs with vite + svelte.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/element/dom", "src/types"],
+  "exclude": ["node_modules"]
+}

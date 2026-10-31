@@ -1,0 +1,9 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "BarChart",
+    "id": "root",
+    "label": "Broken fixture",
+    "data": "not-an-array"
+  }
+}

@@ -3,10 +3,13 @@
   // witness tests read the committed artifacts from disk with node builtins,
   // and parity/contract assertions that only mean something under the
   // compiler belong in here. The build configuration stays test-free.
+  // The DOM half of the element layer (src/element/dom) is checked by
+  // tsconfig.dom.json instead — it needs the DOM lib.
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
     "rootDir": "."
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "exclude": ["dist", "node_modules", "src/element/dom"]
 }
