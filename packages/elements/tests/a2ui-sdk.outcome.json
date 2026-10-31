@@ -1,0 +1,6 @@
+{
+  "sdk": "0.14.0",
+  "protocolVersion": "0.9.1",
+  "outcome": "accepted",
+  "detail": "components loaded: BarChart, BpmnCanvas, DecisionDossier"
+}
