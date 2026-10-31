@@ -23,10 +23,12 @@ export {
 export type { StructureIssue, StructureValidator } from "./structure.js";
 export {
   createEnvelopeValidatorCore,
+  normalizeEnvelopeInput,
   type EnvelopeValidator,
   type EnvelopeValidatorOptions,
   type CatalogDocument,
   type CatalogComponentEntry,
+  type NormalizedEnvelopeInput,
 } from "./envelope.js";
 export { ENVELOPE_LIMIT_BYTES, utf8ByteLength } from "./envelope.js";
 export { createFocusPort, focusPathToPointer, type FocusValidate, type FocusValidationResult } from "../ports/focus.js";
