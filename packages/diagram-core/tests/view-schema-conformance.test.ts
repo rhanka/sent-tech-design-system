@@ -1,13 +1,14 @@
 /**
- * DS conformance with the exact @2 schema (Engram spec `SPEC_V2.md`
+ * DS semantics for the @2 summary shapes (Engram spec `SPEC_V2.md`
  * sections 3.1, 3.2 and 6.2; DS share of Engram lot 3, DS side; item 3).
  *
- * Test-only Ajv 2020-12 oracle compiled from the exact vendored @2 (and @1)
- * schemas. DS-valid persisted summary shapes validate against @2. The
- * shape-level acceptances of section 3.1 (duplicate/unsorted lists, empty
- * `relationOccurrences`, empty label) are accepted by @2 while DS semantic
- * validation still refuses what section 3.2 requires. @1-only negatives
- * stay refused by @1.
+ * This suite asserts only what the native DS validation reports, with no
+ * schema oracle and no third-party import. The shape matrix against the
+ * exact vendored @1 / @2 schemas (accepted by @2, refused by @1) lives in
+ * the repository guard `scripts/diagram-view-schema-conformance.test.mjs`,
+ * which compiles the exact schemas with the root-declared 2020-12 validator
+ * against the built `packages/diagram-core/dist/`. Every shape case there
+ * has its DS-semantic counterpart below.
  *
  * DS evidence reused (not duplicated): `tests/folded-view.test.ts` (B.4
  * source-valid summary at 1224-1284, B.5 duplicate key at 1286-1382,
@@ -21,9 +22,7 @@
  * B.4 `foldDocument`/`foldSourceView` pattern with a two-relation scene so
  * the sorted/distinct obligations are exercisable.
  */
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import Ajv2020 from "ajv/dist/2020.js";
 import {
   createView,
   entityRef,
@@ -35,7 +34,6 @@ import {
   type SemanticDocument,
   type ViewDocument,
 } from "../src/index.js";
-import { DIAGRAM_VIEW_SCHEMA_V1, DIAGRAM_VIEW_SCHEMA_V2 } from "../src/view-schema-pin.js";
 import { baseDocument, ent, rel, scopedOptions } from "./m3-helpers.js";
 
 const options = () => scopedOptions([generic2Profile]);
@@ -128,33 +126,14 @@ function dsCheckOf(view: ViewDocument, document: SemanticDocument, id: string): 
   return details?.check ?? entry.code;
 }
 
-describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
-  const ajv = new Ajv2020({ allErrors: true, strict: true });
-  const validateV2 = ajv.compile(DIAGRAM_VIEW_SCHEMA_V2 as unknown as Record<string, unknown>);
-  const validateV1 = ajv.compile(DIAGRAM_VIEW_SCHEMA_V1 as unknown as Record<string, unknown>);
-
-  it("compiles the exact @2 and @1 schemas with the test-only 2020-12 oracle", () => {
-    expect((DIAGRAM_VIEW_SCHEMA_V2 as Record<string, unknown>)["$id"]).toBe("engram:diagram-view-schema/2");
-    expect((DIAGRAM_VIEW_SCHEMA_V1 as Record<string, unknown>)["$id"]).toBe("engram:diagram-view-schema/1");
-    expect(typeof validateV2).toBe("function");
-    expect(typeof validateV1).toBe("function");
-  });
-
-  it("validates every DS-valid persisted view shape against @2", () => {
+describe("view-schema @2 DS semantics (native validation only)", () => {
+  it("keeps a DS-valid summary free of diagnostics", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, validSummary());
     expect(validateView(view, document, options())).toEqual([]);
-    expect(validateV2(view)).toBe(true);
-    expect(validateV1(view)).toBe(true);
-    const stored = JSON.parse(
-      readFileSync(new URL("../fixtures/valid/generic-state.json", import.meta.url), "utf8"),
-    ) as { views: Record<string, ViewDocument> };
-    for (const persisted of Object.values(stored.views)) {
-      expect(validateV2(persisted)).toBe(true);
-    }
   });
 
-  it("accepts duplicate relationIds at @2 shape while DS refuses summary-constituents-mismatch", () => {
+  it("refuses duplicate relationIds with summary-constituents-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:dup": {
@@ -165,11 +144,10 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationIds: [relationRef("r1"), relationRef("r1")],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
     expect(dsCheckOf(view, document, "sum:dup")).toBe("summary-constituents-mismatch");
   });
 
-  it("accepts unsorted relationIds at @2 shape while DS refuses summary-constituents-mismatch", () => {
+  it("refuses unsorted relationIds with summary-constituents-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:unsorted": {
@@ -180,11 +158,10 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationIds: [relationRef("r2"), relationRef("r1")],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
     expect(dsCheckOf(view, document, "sum:unsorted")).toBe("summary-constituents-mismatch");
   });
 
-  it("accepts an empty relationOccurrences list at @2 shape while DS refuses summary-constituents-mismatch", () => {
+  it("refuses an empty relationOccurrences list with summary-constituents-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:empty-occ": {
@@ -196,27 +173,10 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationOccurrences: [],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
-    expect(validateV1(view)).toBe(false);
     expect(dsCheckOf(view, document, "sum:empty-occ")).toBe("summary-constituents-mismatch");
   });
 
-  it("accepts an empty label at @2 shape while @1 refuses it", () => {
-    const document = conformanceDocument();
-    const view = conformanceView(document, {
-      "sum:empty-label": {
-        id: "sum:empty-label",
-        sourceOccurrence: occurrenceRef("a"),
-        targetOccurrence: occurrenceRef("b"),
-        label: "",
-        relationIds: [relationRef("r1"), relationRef("r2")],
-      },
-    } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
-    expect(validateV1(view)).toBe(false);
-  });
-
-  it("refuses a duplicate source triple in DS semantics with summary-duplicate-key", () => {
+  it("refuses a duplicate source triple with summary-duplicate-key", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:one": {
@@ -234,11 +194,10 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationIds: [relationRef("r1"), relationRef("r2")],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
     expect(dsCheckOf(view, document, "sum:two")).toBe("summary-duplicate-key");
   });
 
-  it("refuses an id/key disagreement in DS semantics with record-key-mismatch", () => {
+  it("refuses an id/key disagreement with record-key-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:key": {
@@ -249,14 +208,13 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationIds: [relationRef("r1"), relationRef("r2")],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(true);
     const diagnostics = validateView(view, document, options());
     expect(diagnostics.some((item) => item.code === "record-key-mismatch" && item.path === "summaryLabels.sum:key")).toBe(
       true,
     );
   });
 
-  it("refuses empty relationIds at @2 shape and in DS semantics", () => {
+  it("refuses empty relationIds with summary-constituents-mismatch", () => {
     const document = conformanceDocument();
     const view = conformanceView(document, {
       "sum:no-rel": {
@@ -267,32 +225,6 @@ describe("view-schema @2 conformance (Ajv oracle plus DS semantics)", () => {
         relationIds: [],
       },
     } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV2(view)).toBe(false);
     expect(dsCheckOf(view, document, "sum:no-rel")).toBe("summary-constituents-mismatch");
-  });
-
-  it("keeps @1-only negatives refused by @1", () => {
-    const document = conformanceDocument();
-    const withOccurrences = conformanceView(document, {
-      "sum:occ": {
-        id: "sum:occ",
-        sourceOccurrence: occurrenceRef("a"),
-        targetOccurrence: occurrenceRef("b"),
-        label: "Kept",
-        relationIds: [relationRef("r1")],
-        relationOccurrences: [occurrenceRef("o1")],
-      },
-    } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV1(withOccurrences)).toBe(false);
-    const idLess = conformanceView(document, {
-      "sum:noid": {
-        sourceOccurrence: occurrenceRef("a"),
-        targetOccurrence: occurrenceRef("b"),
-        label: "Kept",
-        relationIds: [relationRef("r1")],
-      },
-    } as unknown as ViewDocument["summaryLabels"]);
-    expect(validateV1(idLess)).toBe(true);
-    expect(validateV2(idLess)).toBe(false);
   });
 });

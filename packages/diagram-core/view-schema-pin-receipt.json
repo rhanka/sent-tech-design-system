@@ -50,6 +50,7 @@
     "packages/diagram-core/tests/view-schema-pin.test.ts",
     "packages/diagram-core/tests/view-schema-resolution.test.ts",
     "packages/diagram-core/tests/view-schema-conformance.test.ts",
+    "scripts/diagram-view-schema-conformance.test.mjs",
     "packages/diagram-core/tests/view-schema-presentation-guard.test.ts"
   ],
   "reusedEvidence": [
