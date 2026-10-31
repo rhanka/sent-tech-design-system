@@ -127,6 +127,25 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return proto === Object.prototype || proto === null;
 }
 
+const ALLOWED_PIN_KEYS = new Set(["id", "version", "contentDigest"]);
+
+/**
+ * Exact-key shape gate, mirroring `isWellFormedPin` in
+ * `presentation-apply.ts`: only own enumerable data properties named `id`,
+ * `version` or `contentDigest` are allowed. Subsets stay admissible here so
+ * the transitional/partial refusals below keep their cases; anything else
+ * (extra key, symbol key, non-enumerable property, accessor) is malformed.
+ */
+function hasOnlyAllowedOwnDataKeys(record: Record<string, unknown>): boolean {
+  const ownKeys = Reflect.ownKeys(record);
+  if (ownKeys.some((key) => typeof key !== "string" || !ALLOWED_PIN_KEYS.has(key))) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(record);
+  return (ownKeys as string[]).every((key) => {
+    const descriptor = descriptors[key];
+    return descriptor !== undefined && descriptor.enumerable === true && "value" in descriptor;
+  });
+}
+
 /**
  * Resolve a view schema by exact pin only. Never throws: every failure is a
  * typed refusal. No "latest", no fallback, no reverse migration.
@@ -140,6 +159,10 @@ export function resolveViewSchema(pin: unknown): ViewSchemaResolution {
       return { ok: false, refusal: { code: "partial-reference-refused" } };
     }
     if (!isPlainRecord(pin)) return { ok: false, refusal: { code: "pin-malformed" } };
+    // Shape first: an extra, symbol, non-enumerable or accessor own property
+    // is malformed even when `id` looks transitional or partial. Subsets of
+    // the allowed keys fall through to the transitional/partial refusals.
+    if (!hasOnlyAllowedOwnDataKeys(pin)) return { ok: false, refusal: { code: "pin-malformed" } };
     const id = pin["id"];
     const version = pin["version"];
     const contentDigest = pin["contentDigest"];

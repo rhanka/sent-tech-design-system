@@ -240,6 +240,61 @@ test("view-schema guard: unsorted relationIds accepted by @2, refused by DS sema
   assert.equal(dsCheckOf(core, view, document, "sum:unsorted"), "summary-constituents-mismatch");
 });
 
+test("view-schema guard: duplicate relationOccurrences accepted by @2, refused by DS semantics", async () => {
+  const { core, validateV2, validateV1 } = await loadMatrix();
+  const document = conformanceDocument(core);
+  const view = conformanceView(core, document, {
+    "sum:dup-occ": {
+      id: "sum:dup-occ",
+      sourceOccurrence: core.occurrenceRef("a"),
+      targetOccurrence: core.occurrenceRef("b"),
+      label: "Kept",
+      relationIds: [core.relationRef("r1"), core.relationRef("r2")],
+      relationOccurrences: [core.occurrenceRef("o1"), core.occurrenceRef("o1")],
+    },
+  });
+  assert.equal(validateV2(view), true);
+  assert.equal(validateV1(view), false);
+  assert.equal(dsCheckOf(core, view, document, "sum:dup-occ"), "summary-constituents-mismatch");
+});
+
+test("view-schema guard: unsorted relationOccurrences accepted by @2, refused by DS semantics", async () => {
+  const { core, validateV2, validateV1 } = await loadMatrix();
+  const document = conformanceDocument(core);
+  const view = conformanceView(core, document, {
+    "sum:unsorted-occ": {
+      id: "sum:unsorted-occ",
+      sourceOccurrence: core.occurrenceRef("a"),
+      targetOccurrence: core.occurrenceRef("b"),
+      label: "Kept",
+      relationIds: [core.relationRef("r1"), core.relationRef("r2")],
+      relationOccurrences: [core.occurrenceRef("o2"), core.occurrenceRef("o1")],
+    },
+  });
+  assert.equal(validateV2(view), true);
+  assert.equal(validateV1(view), false);
+  assert.equal(dsCheckOf(core, view, document, "sum:unsorted-occ"), "summary-constituents-mismatch");
+});
+
+test("view-schema guard: valid non-empty relationOccurrences accepted by @2, refused by @1, accepted by DS", async () => {
+  const { core, validateV2, validateV1 } = await loadMatrix();
+  const document = conformanceDocument(core);
+  const options = scopedOptions(core, [core.generic2Profile]);
+  const view = conformanceView(core, document, {
+    "sum:occ-ok": {
+      id: "sum:occ-ok",
+      sourceOccurrence: core.occurrenceRef("a"),
+      targetOccurrence: core.occurrenceRef("b"),
+      label: "Kept",
+      relationIds: [core.relationRef("r1"), core.relationRef("r2")],
+      relationOccurrences: [core.occurrenceRef("o1"), core.occurrenceRef("o2")],
+    },
+  });
+  assert.equal(validateV2(view), true);
+  assert.equal(validateV1(view), false);
+  assert.deepEqual(core.validateView(view, document, options), []);
+});
+
 test("view-schema guard: empty relationOccurrences accepted by @2, refused by @1 and DS semantics", async () => {
   const { core, validateV2, validateV1 } = await loadMatrix();
   const document = conformanceDocument(core);
@@ -258,9 +313,10 @@ test("view-schema guard: empty relationOccurrences accepted by @2, refused by @1
   assert.equal(dsCheckOf(core, view, document, "sum:empty-occ"), "summary-constituents-mismatch");
 });
 
-test("view-schema guard: empty label accepted by @2, refused by @1", async () => {
+test("view-schema guard: empty label accepted by @2, refused by @1, accepted by DS", async () => {
   const { core, validateV2, validateV1 } = await loadMatrix();
   const document = conformanceDocument(core);
+  const options = scopedOptions(core, [core.generic2Profile]);
   const view = conformanceView(core, document, {
     "sum:empty-label": {
       id: "sum:empty-label",
@@ -272,6 +328,7 @@ test("view-schema guard: empty label accepted by @2, refused by @1", async () =>
   });
   assert.equal(validateV2(view), true);
   assert.equal(validateV1(view), false);
+  assert.deepEqual(core.validateView(view, document, options), []);
 });
 
 test("view-schema guard: duplicate source triple refused by DS semantics with summary-duplicate-key", async () => {
@@ -348,6 +405,7 @@ test("view-schema guard: @1-only negatives stay refused by @1", async () => {
     },
   });
   assert.equal(validateV1(withOccurrences), false);
+  assert.equal(validateV2(withOccurrences), true);
   const idLess = conformanceView(core, document, {
     "sum:noid": {
       sourceOccurrence: core.occurrenceRef("a"),
@@ -358,4 +416,34 @@ test("view-schema guard: @1-only negatives stay refused by @1", async () => {
   });
   assert.equal(validateV1(idLess), true);
   assert.equal(validateV2(idLess), false);
+  const options = scopedOptions(core, [core.generic2Profile]);
+  const idLessDiagnostics = core.validateView(idLess, document, options);
+  assert.equal(
+    idLessDiagnostics.some((item) => item.code === "record-key-mismatch" && item.path === "summaryLabels.sum:noid"),
+    true,
+  );
+});
+
+test("view-schema guard: duplicate triple with relationOccurrences [] reports summary-duplicate-key first", async () => {
+  const { core, validateV2 } = await loadMatrix();
+  const document = conformanceDocument(core);
+  const view = conformanceView(core, document, {
+    "sum:one": {
+      id: "sum:one",
+      sourceOccurrence: core.occurrenceRef("a"),
+      targetOccurrence: core.occurrenceRef("b"),
+      label: "One",
+      relationIds: [core.relationRef("r1"), core.relationRef("r2")],
+    },
+    "sum:two": {
+      id: "sum:two",
+      sourceOccurrence: core.occurrenceRef("a"),
+      targetOccurrence: core.occurrenceRef("b"),
+      label: "Two",
+      relationIds: [core.relationRef("r1"), core.relationRef("r2")],
+      relationOccurrences: [],
+    },
+  });
+  assert.equal(validateV2(view), true);
+  assert.equal(dsCheckOf(core, view, document, "sum:two"), "summary-duplicate-key");
 });

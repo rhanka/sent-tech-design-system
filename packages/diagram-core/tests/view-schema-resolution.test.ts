@@ -66,6 +66,57 @@ describe("view-schema exact-pin resolution", () => {
     expect(result.refusal.code).toBe("pin-malformed");
   });
 
+  it.each([
+    ["extra key on an exact pin", { id: "diagram-view-schema", version: "2", contentDigest: V2_DIGEST, fallback: "1" }],
+    ["extra key replacing a missing key", { id: "diagram-view-schema", extra: 123 }],
+    ["empty object with an extra key", { extra: "no" }],
+  ])("refuses a non-exact pin object (%s) as pin-malformed without throwing", (_label, pin) => {
+    expect(() => resolveViewSchema(pin)).not.toThrow();
+    expect(resolveViewSchema(pin)).toEqual({ ok: false, refusal: { code: "pin-malformed" } });
+  });
+
+  it("refuses symbol-keyed, non-enumerable and accessor own properties as pin-malformed", () => {
+    const base = { id: "diagram-view-schema", version: "2", contentDigest: V2_DIGEST };
+    const withSymbol = { ...base };
+    (withSymbol as Record<PropertyKey, unknown>)[Symbol("pin")] = "smuggled";
+    expect(resolveViewSchema(withSymbol)).toEqual({ ok: false, refusal: { code: "pin-malformed" } });
+
+    const nonEnumerable: Record<string, unknown> = {};
+    Object.defineProperty(nonEnumerable, "id", { value: "diagram-view-schema", enumerable: false });
+    nonEnumerable["version"] = "2";
+    nonEnumerable["contentDigest"] = V2_DIGEST;
+    expect(resolveViewSchema(nonEnumerable)).toEqual({ ok: false, refusal: { code: "pin-malformed" } });
+
+    const getterExtra = { ...base };
+    Object.defineProperty(getterExtra, "extra", { enumerable: true, get() { return "no"; } });
+    expect(resolveViewSchema(getterExtra)).toEqual({ ok: false, refusal: { code: "pin-malformed" } });
+
+    const getterId: Record<string, unknown> = { version: "2", contentDigest: V2_DIGEST };
+    Object.defineProperty(getterId, "id", {
+      enumerable: true,
+      get() { return "diagram-view-schema"; },
+    });
+    expect(resolveViewSchema(getterId)).toEqual({ ok: false, refusal: { code: "pin-malformed" } });
+  });
+
+  it("applies the shape gate before the transitional and partial refusals", () => {
+    // A transitional id with an extra own key is malformed, not transitional.
+    expect(resolveViewSchema({ id: "transitional:ds-schema-adapter-unqualified", version: "2", contentDigest: V2_DIGEST, extra: 1 })).toEqual(
+      { ok: false, refusal: { code: "pin-malformed" } },
+    );
+    // Exact-shape transitional pins still refuse as transitional, and exact-shape
+    // subsets still refuse as partial: the shape gate only rejects non-exact keys.
+    expect(resolveViewSchema({ id: "transitional:ds-schema-adapter-unqualified", version: "2", contentDigest: V2_DIGEST })).toEqual(
+      { ok: false, refusal: { code: "transitional-reference-refused" } },
+    );
+    expect(resolveViewSchema({ id: "transitional:ds-schema-adapter-unqualified", version: "2" })).toEqual(
+      { ok: false, refusal: { code: "transitional-reference-refused" } },
+    );
+    expect(resolveViewSchema({ id: "diagram-view-schema", version: "2" })).toEqual(
+      { ok: false, refusal: { code: "partial-reference-refused" } },
+    );
+  });
+
   it("refuses an unknown schema id without throwing", () => {
     const result = resolveViewSchema({ id: "diagram-presentation", version: "1", contentDigest: ZEROS });
     expect(result).toEqual({ ok: false, refusal: { code: "unknown-schema-id" } });
