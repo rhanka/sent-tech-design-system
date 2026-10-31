@@ -4,7 +4,9 @@
   // are BROWSER code — they need the DOM lib, which tsconfig.json refuses on
   // purpose for the pure half (validator, ports, contracts). This config
   // only CHECKS (noEmit): the shipped bundle is built by
-  // scripts/build-browser.mjs with vite + svelte.
+  // scripts/build-browser.mjs with vite + svelte. It also checks the two
+  // witness suites that exercise this half (review 1): they import the
+  // runtime holder and the focus renderer, which need the DOM lib.
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
@@ -18,6 +20,6 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/element/dom", "src/types"],
+  "include": ["src/element/dom", "src/types", "tests/element-runtime.test.ts", "tests/element-sanitizer.test.ts"],
   "exclude": ["node_modules"]
 }

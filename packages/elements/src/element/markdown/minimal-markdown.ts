@@ -9,6 +9,12 @@
  * paragraphs split on blank lines, `**bold**`, `*italic*`, `` `code` ``,
  * `[text](https://…)` links and `- ` bullet lists. Everything else is TEXT.
  *
+ * Emitted markup, exactly (the DOMPurify allowlist in
+ * `src/element/dom/engines/focus-renderer.ts` mirrors this subset, U-14):
+ * tags `p`, `ul`, `li`, `code`, `a`, `strong`, `em` only; attribute `href`
+ * on anchors only, `https:` URLs only; no data attributes, no event
+ * handlers, no `style`, no other tags.
+ *
  * Pure half: raw HTML in the source is ESCAPED here, and the DOM half
  * (`src/element/dom`) passes this module's output through DOMPurify before
  * insertion anyway (§6.4 defense in depth; U-14: DOMPurify 3.4.15 is the

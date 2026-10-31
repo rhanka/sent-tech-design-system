@@ -16,13 +16,18 @@
  * `required`, `additionalProperties`, `unevaluatedProperties`, `items`,
  * `minItems`, `maxItems`, `allOf`, `anyOf`, `oneOf`, `not`) and REFUSES
  * CONSTRUCTION when a registered document grows a standard 2020-12 keyword
- * outside that set, so a catalogue change cannot silently weaken the
- * browser validation. Non-standard keywords are annotations and are
- * ignored, exactly as ajv with `strict: false` treats them.
+ * outside that set, or any UNKNOWN keyword at all, so a catalogue change
+ * cannot silently weaken the browser validation. The only allowed
+ * non-standard keys are the explicitly allowlisted annotation and
+ * catalogue-container keys (`ANNOTATION_KEYWORDS`, including `x-*`);
+ * anything else throws at construction (review 1, B3) — never silently
+ * ignored.
  *
  * Equivalence with the ajv bridge is pinned by `tests/structure-interpreter
- * .test.ts`: the two seams must accept and refuse the same corpus with the
- * same (pointer, keyword, param) issue sets.
+ * .test.ts` (issue-for-issue on the catalogue corpus) and by
+ * `tests/structure-differential.test.ts` (same verdicts and same failing
+ * pointer/keyword sets on both seams over the examples, the catalogue-test
+ * mutations, the B1–B6 reproductions and a seeded generated corpus).
  */
 
 import { a2uiSdkCatalogSchema } from "../generated/a2ui-common-types.js";
@@ -77,6 +82,14 @@ const ANNOTATION_KEYWORDS = new Set([
   "deprecated",
   "readOnly",
   "writeOnly",
+  // A2UI catalogue container keys: the catalogue document's own shape
+  // (§5.2), never a JSON Schema validation keyword. Allowed here so the
+  // drift gate audits the schemas they CONTAIN without refusing the
+  // container itself; any other unknown key still throws (B3).
+  "catalogId",
+  "components",
+  "functions",
+  "x-sentropic",
 ]);
 
 /** Standard 2020-12 VALIDATION keywords this interpreter does not implement. */
@@ -225,8 +238,9 @@ function pointerLookup(document: unknown, pointer: string, ref: string): unknown
 /**
  * The drift gate: walks one registered document and throws when a schema
  * node carries a standard 2020-12 validation keyword outside the
- * implemented surface, or `items` in its legacy tuple form. Unknown
- * keywords stay annotations (JSON Schema semantics; ajv `strict: false`).
+ * implemented surface, an unknown keyword, or a malformed subschema form
+ * (`items` tuple, non-boolean/non-object `items`/`not`/
+ * `additionalProperties`/`unevaluatedProperties`, non-array applicators).
  */
 function auditDocument(schema: unknown, label: string): void {
   if (typeof schema === "boolean") return;
@@ -235,15 +249,36 @@ function auditDocument(schema: unknown, label: string): void {
   }
   for (const key of Object.keys(schema)) {
     if (key.startsWith("x-") || ANNOTATION_KEYWORDS.has(key) || IMPLEMENTED_KEYWORDS.has(key)) continue;
+    // B3: unknown keywords are refused loudly — never silently ignored.
+    // Supported-but-unimplemented 2020-12 keywords name the missing work;
+    // anything else names the typo or the foreign vocabulary.
     if (UNSUPPORTED_STANDARD_KEYWORDS.has(key)) {
       throw new Error(
         `the ${label} uses "${key}", outside the browser structure interpreter's keyword set (§6.4): extend src/structure/interpreter.ts and its oracle test`,
       );
     }
+    throw new Error(
+      `the ${label} uses unknown keyword "${key}": extend src/structure/interpreter.ts and its oracle test, or allowlist it as an annotation`,
+    );
   }
   const items = schema.items;
   if (Array.isArray(items)) {
     throw new Error(`the ${label} uses "items" in its legacy tuple form, which the browser structure interpreter does not implement`);
+  }
+  if (items !== undefined && !isPlainObject(items) && typeof items !== "boolean") {
+    throw new Error(`the ${label} uses "items" in a non-schema form, which the browser structure interpreter does not implement`);
+  }
+  for (const container of ["additionalProperties", "unevaluatedProperties", "not"] as const) {
+    const value = schema[container];
+    if (value !== undefined && !isPlainObject(value) && typeof value !== "boolean") {
+      throw new Error(`the ${label} uses "${container}" in a non-schema form, which the browser structure interpreter does not implement`);
+    }
+  }
+  for (const container of ["allOf", "anyOf", "oneOf"] as const) {
+    const members = schema[container];
+    if (members !== undefined && !Array.isArray(members)) {
+      throw new Error(`the ${label} uses "${container}" in a non-array form, which the browser structure interpreter does not implement`);
+    }
   }
   const subschemas: Array<[string, unknown]> = [];
   for (const container of ["$defs", "properties", "components"]) {
@@ -252,7 +287,7 @@ function auditDocument(schema: unknown, label: string): void {
       for (const value of Object.values(map)) subschemas.push([`${container} entry`, value]);
     }
   }
-  if (typeof items === "object" || typeof items === "boolean") subschemas.push(["items", items]);
+  if (items !== undefined) subschemas.push(["items", items]);
   for (const container of ["additionalProperties", "unevaluatedProperties", "not"]) {
     const value = schema[container];
     if (isPlainObject(value) || typeof value === "boolean") subschemas.push([container, value]);
@@ -300,18 +335,18 @@ function validateNode(
     issues.push(issue);
   };
 
-  // $ref is transparent (2020-12): the referenced schema applies, and the
-  // keywords beside it apply too (the committed documents only pair $ref
-  // with annotations). Its evaluated names merge unconditionally, like
-  // allOf — annotations follow application, not the branch's outcome.
+  // $ref is transparent (2020-12): the referenced schema applies in its
+  // own base, and the keywords beside it apply too (the committed documents
+  // only pair $ref with annotations). Its evaluated names merge
+  // unconditionally, like allOf. The base change NEVER leaks to sibling
+  // keywords (B6): they resolve against the referencing node's own base.
   const ref = schema.$ref;
-  let activeBaseId = baseId;
+  const activeBaseId = baseId;
   if (typeof ref === "string") {
     const resolved = registry.resolve(ref, baseId);
     const result = validateNode(resolved.schema, data, pointer, resolved.baseId, registry, issues);
     for (const name of result.evaluated) evaluated.add(name);
     if (!result.ok) ok = false;
-    activeBaseId = resolved.baseId;
   }
 
   // type, enum, const, pattern — applicable to any value.
@@ -339,7 +374,9 @@ function validateNode(
     fail({ pointer, message: "must be equal to constant", keyword: "const" });
   }
   const pattern = schema.pattern;
-  if (typeof pattern === "string" && typeof data === "string" && !new RegExp(pattern).test(data)) {
+  // B5: ajv compiles patterns with the `u` flag (unicodeRegExp: true), so
+  // astral code points and \p{...} escapes behave identically here.
+  if (typeof pattern === "string" && typeof data === "string" && !new RegExp(pattern, "u").test(data)) {
     fail({ pointer, message: `must match pattern "${pattern}"`, keyword: "pattern" });
   }
 
@@ -381,9 +418,15 @@ function validateNode(
 
     const additional = schema.additionalProperties;
     const declared = new Set(Object.keys(properties));
+    // B4: every additional property is EVALUATED when `additionalProperties`
+    // is present — `true`, `false` or a schema all mark it evaluated for
+    // `unevaluatedProperties` (2020-12 §10.3.2.3; ajv sets `it.props = true`
+    // unconditionally). A failing schema still evaluates its key, so no
+    // `unevaluatedProperties` row duplicates the failure.
     if (additional === false) {
       for (const name of keys) {
         if (declared.has(name)) continue;
+        evaluated.add(name);
         fail({
           pointer,
           message: "must NOT have additional properties",
@@ -392,12 +435,11 @@ function validateNode(
         });
       }
     } else if (isPlainObject(additional) || additional === true) {
-      // `true` allows without evaluating; a schema validates AND evaluates.
       const schemaForm = isPlainObject(additional);
       for (const name of keys) {
         if (declared.has(name)) continue;
-        if (!schemaForm) continue;
         evaluated.add(name);
+        if (!schemaForm) continue;
         const result = validateNode(
           additional,
           data[name],
@@ -484,9 +526,13 @@ function validateNode(
       issues.push({ pointer, message: "must match exactly one schema in oneOf", keyword: "oneOf" });
     }
   }
+  // B2: `not` evaluates its subschema against a scratch issue list — inner
+  // failures must never leak into the caller's issues when `not` succeeds
+  // (ajv runs with createErrors: false here).
   const not = schema.not;
   if (not !== undefined) {
-    const result = validateNode(not, data, pointer, activeBaseId, registry, issues);
+    const scratch: StructureIssue[] = [];
+    const result = validateNode(not, data, pointer, activeBaseId, registry, scratch);
     if (result.ok) {
       issues.push({ pointer, message: "must NOT be valid", keyword: "not" });
       ok = false;
