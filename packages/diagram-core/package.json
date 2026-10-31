@@ -23,8 +23,5 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.check.json",
     "test": "vitest run"
-  },
-  "devDependencies": {
-    "ajv": "8.20.0"
   }
 }
