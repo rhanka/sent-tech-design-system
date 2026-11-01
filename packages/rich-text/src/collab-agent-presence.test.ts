@@ -96,6 +96,7 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
     it("publishes opaque strings in and stores JSON objects, refusing flat strings untouched", async () => {
       await withDriver(kind, [BODY, NOTES], async (driver) => {
         seedField(driver, BODY, paragraphDoc("p:1", "abcdef"));
+        seedField(driver, NOTES, paragraphDoc("n:1", "xy"));
         const setup = bridgeFor(driver);
         const clientA = setup.bridge.admitAgentActor({ actorId: AGENT_A, displayLabel: "Agent A", color: "#112233" });
         const read = setup.bridge.readState({
@@ -147,6 +148,50 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         expect(foreignRefusal).toBeInstanceOf(AgentBridgeReadRefusal);
         expect((foreignRefusal as AgentBridgeReadRefusal).reason).toBe("scope-denied");
         expect(wireCursorOf(driver, clientA)).toBe(stored);
+        // An anchor minted on another admitted field refuses under this
+        // binding with no state touched (R-ANCH-5 tname check).
+        const notesRead = setup.bridge.readState({
+          binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: NOTES },
+        });
+        const notesParagraph = notesRead.fields[0]?.paragraphs[0];
+        if (notesParagraph === undefined) throw new Error("presence witness: no notes paragraph read");
+        let crossFieldRefusal: unknown = null;
+        try {
+          setup.bridge.publishAgentCursor({
+            binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: BODY },
+            actorId: AGENT_A,
+            selection: { anchor: notesParagraph.startAnchor, head: notesParagraph.startAnchor },
+          });
+        } catch (error) {
+          crossFieldRefusal = error;
+        }
+        expect(crossFieldRefusal).toBeInstanceOf(AgentBridgeReadRefusal);
+        expect((crossFieldRefusal as AgentBridgeReadRefusal).reason).toBe("target-gone");
+        expect(wireCursorOf(driver, clientA)).toBe(stored);
+        // An unregistered actorId refuses with no awareness field touched.
+        const statesCountBefore = driver.source.resolveBinding({
+          documentId: DOCUMENT_ID,
+          sessionId: SESSION_ID,
+          fieldKey: BODY,
+        }).awareness.getStates().size;
+        let unregisteredRefusal: unknown = null;
+        try {
+          setup.bridge.publishAgentCursor({
+            binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: BODY },
+            actorId: "actor:unregistered",
+            selection: { anchor: paragraph.startAnchor, head: paragraph.startAnchor },
+          });
+        } catch (error) {
+          unregisteredRefusal = error;
+        }
+        expect(unregisteredRefusal).toBeInstanceOf(AgentBridgeReadRefusal);
+        expect((unregisteredRefusal as AgentBridgeReadRefusal).reason).toBe("scope-denied");
+        expect(wireCursorOf(driver, clientA)).toBe(stored);
+        expect(
+          driver.source.resolveBinding({ documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: BODY }).awareness
+            .getStates().size,
+          "unregistered publish touches no awareness field",
+        ).toBe(statesCountBefore);
       });
     });
 
