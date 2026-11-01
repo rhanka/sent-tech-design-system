@@ -120,9 +120,18 @@ export function createLiveParagraphIdentityPlugin(
         only.textContent === "" &&
         onlyId === ""
       ) {
+        // Review 1 B-4: only a textblock identity (paragraph, heading or
+        // codeBlock) is reused here — never an HR or preserved id.
+        // Deleting the sole HR leaves a Fitter filler empty paragraph
+        // behind; that filler must receive a fresh paragraph id (R-FULL-HR-1
+        // sole-block supply), not inherit the atom's id.
         const before: string[] = [];
         oldState.doc.descendants((node) => {
-          if (nodeTypes.has(node.type.name)) {
+          if (
+            node.type.name === "paragraph" ||
+            node.type.name === "heading" ||
+            node.type.name === "codeBlock"
+          ) {
             const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
             if (typeof id === "string" && id !== "") before.push(id);
           }

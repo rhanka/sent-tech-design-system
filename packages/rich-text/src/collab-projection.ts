@@ -41,7 +41,11 @@ import {
   isPreservedValue,
   isSeparatorValue,
 } from "./collab-codec.js";
-import { canonicalPlainMetadata, isPlainMetadata } from "./editor-full-markdown.js";
+import {
+  canonicalHrDefaults,
+  canonicalPlainMetadata,
+  isPlainMetadata,
+} from "./editor-full-markdown.js";
 import { fullDocumentToProseMirror, fullProseMirrorToDocument } from "./editor-full-document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import type { SelectionMap, SelectionMapBlock } from "./collab-selection.js";
@@ -533,6 +537,15 @@ function runMetaSet(run: ProjectionRun, key: string, value: unknown): void {
   run.fieldMeta.set(key, structuredClone(value));
 }
 
+/** Delete a metadata record inside the journaled run (review 1 B-1: an HR
+    whose derived wrapper metadata falls back to the canonical defaults
+    carries no record — absent materializes the defaults on capture). */
+function runMetaDelete(run: ProjectionRun, key: string): void {
+  const before = run.fieldMeta.get(key);
+  run.journal.push({ op: "metaDelete", key, before: structuredClone(before) });
+  run.fieldMeta.delete(key);
+}
+
 /** Replay a captured delta slice at a linear index (inversion only: raw
     writes, never journaled). */
 function insertDeltaAt(run: ProjectionRun, index: number, captured: DeltaOpRecord[]): void {
@@ -788,6 +801,38 @@ function insertSplitSeparator(
   runMetaSet(run, tailId, tail);
 }
 
+/** Repair the working document when the sole block was deleted with an
+    empty slice (review 1 B-4): the ProseMirror result is childless while
+    the shared state carries the supplied fresh empty paragraph, so append
+    that paragraph under its supplied identity for verification. The
+    projection never invents content — the paragraph is empty. */
+function repairEmptyDocWithParagraph(pmDoc: ProseMirrorNode, freshId: string): ProseMirrorNode {
+  if (pmDoc.childCount > 0) return pmDoc;
+  const paragraphType = pmDoc.type.schema.nodes["paragraph"];
+  if (paragraphType === undefined) return pmDoc;
+  const paragraph = paragraphType.create({ [PARAGRAPH_ID_ATTRIBUTE]: freshId });
+  return pmDoc.type.create(null, [paragraph]);
+}
+
+/** True when a slice carries block-level nodes (a block insert, not a text
+    continuation): pasted wrappers count through their descendants. */
+function sliceInsertsBlocks(slice: { content: ProseMirrorNode["content"] }): boolean {
+  let found = false;
+  slice.content.descendants((node) => {
+    if (
+      node.type.name === "paragraph" ||
+      node.type.name === "heading" ||
+      node.type.name === "codeBlock" ||
+      node.type.name === "horizontalRule"
+    ) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
+}
+
 /** Block id containing a linear index (split head lookup). */
 function linearToBlock(map: SelectionMap, index: number): string | null {
   for (const block of map.blocks) {
@@ -845,6 +890,25 @@ function insertSliceContent(
         runInsertEmbed(run, cursor.index, { horizontalRule: { paragraphId: freshId } });
         cursor.index += 1;
         run.inserted.push({ paragraphId: freshId, kind: "horizontalRule" });
+        // Wrapper metadata at insert time (review 1 B-1, R-FULL-HR-1): the
+        // surrounding sync pass reconciles the complete derived record
+        // (including list item/run ids) from the post-step document right
+        // after, so a partial context write here never survives alone.
+        if (run.format === "ds.markdown.full@1") {
+          const wrapped =
+            context.listKind !== "none" ||
+            context.listDepth !== 0 ||
+            context.blockquoteDepth !== 0 ||
+            context.containerOrder.length > 0;
+          if (wrapped) {
+            runMetaSet(run, freshId, {
+              listKind: context.listKind,
+              listDepth: context.listDepth,
+              blockquoteDepth: context.blockquoteDepth,
+              containerOrder: [...context.containerOrder],
+            });
+          }
+        }
         first = false;
         return;
       }
@@ -1042,6 +1106,71 @@ export function projectPmTransactionToYText(
   pmDocBefore: ProseMirrorNode,
   tr: Transaction,
 ): string[] {
+  if (binding.ytext.doc === null) {
+    throw new Error("rich-text.collab-no-doc: field Y.Text is not attached to a Y.Doc");
+  }
+  // Review 1 TF-3: validate every step (preserved clearance, HR crossing,
+  // ranges) before the first mutating write to the live shared state.
+  // Phase 1 projects onto a scratch clone that is discarded afterwards, so
+  // a refusal at any step leaves the live state vector byte-equal. Phase 2
+  // executes the identical projection onto the live state while replaying
+  // the recorded allocator outputs, keeping identities stable across both
+  // phases (one allocation sequence per transaction, as before).
+  const scratch = cloneFieldDoc(binding);
+  const recorded: string[] = [];
+  projectIntoRun(
+    {
+      ...binding,
+      ytext: scratch.ytext,
+      fieldMeta: scratch.fieldMeta,
+      allocateId: () => {
+        const id = binding.allocateId();
+        recorded.push(id);
+        return id;
+      },
+    },
+    pmDocBefore,
+    tr,
+  );
+  let replay = 0;
+  return projectIntoRun(
+    {
+      ...binding,
+      allocateId: () =>
+        replay < recorded.length ? (recorded[replay++] as string) : binding.allocateId(),
+    },
+    pmDocBefore,
+    tr,
+  );
+}
+
+/** Clone one field's shared state into a scratch document (review 1 TF-3
+    validation phase): the clone carries the same text, metadata map and
+    field names, observes nothing, and is never synced anywhere. */
+function cloneFieldDoc(binding: ProjectionBinding): {
+  ydoc: Y.Doc;
+  ytext: Y.Text;
+  fieldMeta: Y.Map<unknown>;
+} {
+  const ydoc = binding.ytext.doc;
+  if (ydoc === null) {
+    throw new Error("rich-text.collab-no-doc: field Y.Text is not attached to a Y.Doc");
+  }
+  const scratch = new Y.Doc();
+  Y.applyUpdate(scratch, Y.encodeStateAsUpdate(ydoc));
+  return {
+    ydoc: scratch,
+    ytext: scratch.getText(fieldTextName(binding.fieldKey)),
+    fieldMeta: scratch.getMap(fieldMetaName(binding.fieldKey)) as Y.Map<unknown>,
+  };
+}
+
+/** Project one ProseMirror transaction onto its run's shared state. */
+function projectIntoRun(
+  binding: ProjectionBinding,
+  pmDocBefore: ProseMirrorNode,
+  tr: Transaction,
+): string[] {
   const { ytext, fieldMeta } = binding;
   const ydoc = ytext.doc;
   if (ydoc === null) {
@@ -1108,20 +1237,69 @@ export function projectPmTransactionToYText(
           if (atom === "preserved") {
             throw new Error("rich-text.collab-preserved-denied: the binding refuses any step touching preserved content");
           }
+          // R-FULL-CODE-1: bare text inserts split on LF only inside a
+          // codeBlock. Resolve the insertion point against the pre-step
+          // document (a pure insert shifts nothing before it).
+          let insertCodeMode = false;
+          try {
+            const $from = workingDoc.resolve(from);
+            for (let depth = $from.depth; depth >= 0; depth -= 1) {
+              const ancestor = $from.node(depth);
+              const name = ancestor.type.name;
+              if (name === "paragraph" || name === "heading" || name === "codeBlock") {
+                insertCodeMode = name === "codeBlock";
+                break;
+              }
+            }
+          } catch {
+            insertCodeMode = false;
+          }
           if (atom === "horizontalRule") {
             // An exact-pair deletion removes the atom (R-FULL-HR-1): the
             // separator+atom pair vanishes and the HR metadata record is
             // left orphaned like a merge-consumed block (R-STR-5), so undo
             // restores the pair with its record intact. Anything else
             // touching the pair refuses whole.
-            if ((slice.content.size ?? 0) === 0) {
-              const pairStart = exactHrPairStart(ytext, linearFrom, linearTo);
-              if (pairStart !== null) {
-                runDelete(run, pairStart, 2);
+            //
+            // Sole-block supply (review 1 B-4, R-FULL-HR-1 §4.3.2): deleting
+            // or replacing the only block also supplies a fresh
+            // empty-paragraph id so the first-separator invariant holds —
+            // the field is never left empty.
+            const pairStart = exactHrPairStart(ytext, linearFrom, linearTo);
+            const soleBlock = pairStart === 0 && ytext.length === 2;
+            if (pairStart !== null && ((slice.content.size ?? 0) === 0 || soleBlock)) {
+              runDelete(run, pairStart, 2);
+              if (soleBlock) {
+                if ((slice.content.size ?? 0) > 0) {
+                  insertSliceContent(run, 0, slice, {
+                    listKind: "none",
+                    listDepth: 0,
+                    blockquoteDepth: 0,
+                    containerOrder: [],
+                    codeMode: insertCodeMode,
+                  });
+                  workingDoc = postDoc;
+                } else {
+                  const freshId = popFreshId(run, "paragraph") ?? runAllocate(run);
+                  runInsertEmbed(run, 0, { separator: { paragraphId: freshId, kind: "paragraph" } });
+                  // The verification record carries the canonical plain
+                  // metadata the capture materializes for a record-less
+                  // paragraph (no shared write: absent is the canonical
+                  // encoding of plain).
+                  run.inserted.push({
+                    paragraphId: freshId,
+                    kind: "paragraph",
+                    text: "",
+                    metadata: canonicalPlainMetadata(),
+                  });
+                  workingDoc = repairEmptyDocWithParagraph(postDoc, freshId);
+                }
+              } else {
                 workingDoc = postDoc;
-                map = buildSelectionMap(workingDoc, ytext);
-                continue;
               }
+              syncMetadataFromPmDoc(run, workingDoc, binding.pmTransactionDoc);
+              map = buildSelectionMap(workingDoc, ytext);
+              continue;
             }
             throw new Error("rich-text.collab-structural-conflict: range operations cannot cross an HR atom");
           }
@@ -1137,7 +1315,7 @@ export function projectPmTransactionToYText(
             const tailId = popFreshId(run, tailKind) ?? runAllocate(run);
             insertSplitSeparator(run, map, linearFrom, tailId, slice.openStart >= 2);
             workingDoc = repairSplitTailIdentity(postDoc, headId, tailId);
-            syncMetadataFromPmDoc(run, workingDoc);
+            syncMetadataFromPmDoc(run, workingDoc, binding.pmTransactionDoc);
             map = buildSelectionMap(workingDoc, ytext);
             continue;
           }
@@ -1149,7 +1327,7 @@ export function projectPmTransactionToYText(
             // recorded so the local view can reveal the hidden formats.
             collectCodeReveals(run, workingDoc, postDoc);
             workingDoc = postDoc;
-            syncMetadataFromPmDoc(run, workingDoc);
+            syncMetadataFromPmDoc(run, workingDoc, binding.pmTransactionDoc);
             map = buildSelectionMap(workingDoc, ytext);
             continue;
           }
@@ -1157,24 +1335,19 @@ export function projectPmTransactionToYText(
             runDelete(run, linearFrom, linearTo - linearFrom);
           }
           if ((slice.content.size ?? 0) > 0) {
-            // R-FULL-CODE-1: bare text inserts split on LF only inside a
-            // codeBlock. Resolve the insertion point against the
-            // pre-step document (a pure insert shifts nothing before it).
-            let insertCodeMode = false;
-            try {
-              const $from = workingDoc.resolve(from);
-              for (let depth = $from.depth; depth >= 0; depth -= 1) {
-                const ancestor = $from.node(depth);
-                const name = ancestor.type.name;
-                if (name === "paragraph" || name === "heading" || name === "codeBlock") {
-                  insertCodeMode = name === "codeBlock";
-                  break;
-                }
-              }
-            } catch {
-              insertCodeMode = false;
+            // A pure block insert at the start of the first block (document
+            // start or wrapper start) addresses the separator opening it:
+            // inserting after that separator would strand the block's text
+            // inside a new HR segment (review 1 B-1). Middle boundaries
+            // already resolve to the separator through the previous block.
+            let insertAt = linearFrom;
+            if (from === to && sliceInsertsBlocks(slice)) {
+              const host = map.blocks.find(
+                (block) => block.pmInlineStart === from + 1 && insertAt === block.contentStart,
+              );
+              if (host !== undefined) insertAt = host.separatorIndex;
             }
-            insertSliceContent(run, linearFrom, slice, {
+            insertSliceContent(run, insertAt, slice, {
               listKind: "none",
               listDepth: 0,
               blockquoteDepth: 0,
@@ -1183,7 +1356,7 @@ export function projectPmTransactionToYText(
             });
           }
           workingDoc = postDoc;
-          syncMetadataFromPmDoc(run, workingDoc);
+          syncMetadataFromPmDoc(run, workingDoc, binding.pmTransactionDoc);
           map = buildSelectionMap(workingDoc, ytext);
           continue;
         } else if (step instanceof AddMarkStep || step instanceof RemoveMarkStep) {
@@ -1222,7 +1395,7 @@ export function projectPmTransactionToYText(
         collectCodeReveals(run, preStepDoc, workingDoc);
         // Metadata fallback: wrapper/type/attribute changes write complete
         // metadata records; text items are never moved or replaced.
-        syncMetadataFromPmDoc(run, workingDoc);
+        syncMetadataFromPmDoc(run, workingDoc, binding.pmTransactionDoc);
         map = buildSelectionMap(workingDoc, ytext);
       }
       // Fail closed when the projected sequence diverges from the
@@ -1316,8 +1489,19 @@ export function stableMetadataJson(value: unknown): string {
   return JSON.stringify(value) ?? "null";
 }
 
-/** Write metadata records derived from a post-step PM document. */
-function syncMetadataFromPmDoc(run: ProjectionRun, pmDoc: ProseMirrorNode): void {
+/** Write metadata records derived from a post-step PM document.
+    `repairedDoc` (when supplied) is the transaction-final document after the
+    identity plugin's repairs: the step-local `pmDoc` still carries empty
+    identities for blocks this very transaction inserted (readers skip those),
+    so HR wrapper records — which have no insert-time write carrying the
+    complete derivation — are read from the repaired document instead
+    (review 1 B-1). Paragraphs keep the step-local read (their insert-time
+    write already carries the queue-adopted identity). */
+function syncMetadataFromPmDoc(
+  run: ProjectionRun,
+  pmDoc: ProseMirrorNode,
+  repairedDoc?: ProseMirrorNode,
+): void {
   if (run.format !== "ds.markdown.full@1") return;
   const read = fullProseMirrorToDocument(pmDoc, undefined);
   const paragraphBlocks = read.document.blocks.filter((block) => block.kind === "paragraph");
@@ -1385,6 +1569,33 @@ function syncMetadataFromPmDoc(run: ProjectionRun, pmDoc: ProseMirrorNode): void
       continue;
     }
     runMetaSet(run, block.paragraphId, derived);
+  }
+  // Horizontal-rule wrapper metadata (review 1 B-1, R-FULL-HR-1): an HR
+  // inserted or moved inside a blockquote or list carries exactly its
+  // wrapper/grouping record; a top-level HR carries no record (absent
+  // materializes the canonical defaults on capture). Read from the repaired
+  // document: the step-local read skips this transaction's own insertions
+  // (empty identities), while the repaired read carries their final ids.
+  const defaultHrJson = stableMetadataJson(canonicalHrDefaults());
+  const hrRead = repairedDoc !== undefined ? fullProseMirrorToDocument(repairedDoc, undefined) : read;
+  for (const block of hrRead.document.blocks) {
+    if (block.kind !== "horizontalRule") continue;
+    const hr = block as { paragraphId: string; hrMetadata?: FullBlockMetadata };
+    const derived = hr.hrMetadata ?? canonicalHrDefaults();
+    const derivedJson = stableMetadataJson(derived);
+    const current = run.fieldMeta.get(hr.paragraphId) as FullBlockMetadata | undefined;
+    if (current === undefined) {
+      if (derivedJson !== defaultHrJson) {
+        runMetaSet(run, hr.paragraphId, derived);
+      }
+      continue;
+    }
+    if (stableMetadataJson(current) === derivedJson) continue;
+    if (derivedJson === defaultHrJson) {
+      runMetaDelete(run, hr.paragraphId);
+    } else {
+      runMetaSet(run, hr.paragraphId, derived);
+    }
   }
 }
 
@@ -1585,6 +1796,18 @@ function verifyFullAgreement(
           throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
         }
         continue;
+      }
+      if (cap.kind === "horizontalRule") {
+        // Wrapper metadata agreement (review 1 B-1, R-FULL-HR-1): the
+        // stored record (or the canonical defaults when absent) must match
+        // the ProseMirror read, order-insensitively like the sync path.
+        const expMeta =
+          (exp as unknown as { hrMetadata?: FullBlockMetadata }).hrMetadata ?? canonicalHrDefaults();
+        const capMeta =
+          (cap as unknown as { hrMetadata?: FullBlockMetadata }).hrMetadata ?? canonicalHrDefaults();
+        if (stableMetadataJson(expMeta) !== stableMetadataJson(capMeta)) {
+          throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
+        }
       }
       if (cap.kind === "paragraph") {
         const expMeta = correctExpectedMeta(
