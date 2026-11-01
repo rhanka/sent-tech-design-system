@@ -79,9 +79,14 @@ interface FieldSet {
       awareness: Awareness;
     };
     releaseBinding: (identity: FieldBindingIdentity) => void;
-    registerActor: (actor: { actorId: string; displayLabel: string; color: string }) => void;
+    registerActor: (
+      actor: { actorId: string; displayLabel: string; color: string },
+      awarenessClientId?: number,
+    ) => void;
     revokeActor: (actorId: string) => void;
-    admittedActorOf: (actorId: string) => { displayLabel: string; color: string } | null;
+    admittedActorOf: (
+      actorId: string,
+    ) => { displayLabel: string; color: string; awarenessClientId?: number } | null;
   };
 }
 
@@ -98,7 +103,7 @@ async function twoFields(): Promise<FieldSet> {
   const textOf = (fieldKey: string): Y.Text => doc.getText(fieldTextName(fieldKey));
   const metaOf = (fieldKey: string): Y.Map<unknown> =>
     doc.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>;
-  const actors = new Map<string, { displayLabel: string; color: string }>();
+  const actors = new Map<string, { displayLabel: string; color: string; awarenessClientId?: number }>();
   return {
     doc,
     awareness,
@@ -112,8 +117,12 @@ async function twoFields(): Promise<FieldSet> {
         awareness,
       }),
       releaseBinding: (): void => {},
-      registerActor: (actor): void => {
-        actors.set(actor.actorId, { displayLabel: actor.displayLabel, color: actor.color });
+      registerActor: (actor, awarenessClientId?): void => {
+        actors.set(actor.actorId, {
+          displayLabel: actor.displayLabel,
+          color: actor.color,
+          ...(awarenessClientId === undefined ? {} : { awarenessClientId }),
+        });
       },
       revokeActor: (actorId: string): void => {
         actors.delete(actorId);
@@ -367,5 +376,52 @@ describe("CL-3b2-12 publisher publishes the local selection without numeric offs
       (fields.awareness.getLocalState() as { cursor?: unknown } | null)?.cursor,
       "blur clears the cursor",
     ).toBeNull();
+  });
+});
+
+describe("CL-3b2 review 1 F2: renderer verifies the full (awarenessClientId, actorId) pair", () => {
+  it("a client claiming another actor's id renders no caret", async () => {
+    const fields = await twoFields();
+    fields.source.registerActor({ actorId: "r1", displayLabel: "R One", color: "#112233" }, 1001);
+    const edBody = await mountField(fields, BODY);
+    await mountField(fields, NOTES);
+
+    // The registered client renders under its own identity.
+    injectRemote(fields.awareness, 1001, {
+      actorId: "r1",
+      user: { name: "R One", color: "#112233" },
+      cursor: remoteCursor(edBody.ed, fields.bodyText, BODY, 2, 2),
+    });
+    expect(caretsOf(edBody, "r1"), "registered pair renders").toHaveLength(1);
+
+    // Another client claiming r1's actorId renders no caret anywhere.
+    injectRemote(fields.awareness, 9999, {
+      actorId: "r1",
+      user: { name: "R One", color: "#112233" },
+      cursor: remoteCursor(edBody.ed, fields.bodyText, BODY, 1, 1),
+    });
+    const total = [...edBody.element.querySelectorAll("[data-remote-caret]")].filter(
+      (node) => node.getAttribute("data-remote-caret") === "r1",
+    );
+    expect(total, "impersonating client renders no caret under the victim identity").toHaveLength(1);
+  });
+
+  it("a wire user.color that fails validation renders transparent", async () => {
+    const fields = await twoFields();
+    fields.source.registerActor({ actorId: "r5", displayLabel: "R Five", color: "#112233" });
+    const edBody = await mountField(fields, BODY);
+    await mountField(fields, NOTES);
+
+    injectRemote(fields.awareness, 1005, {
+      actorId: "r5",
+      user: { name: "R Five", color: "not-a-color" },
+      cursor: remoteCursor(edBody.ed, fields.bodyText, BODY, 1, 1),
+    });
+    const carets = caretsOf(edBody, "r5");
+    expect(carets, "spoofed colour still renders a caret").toHaveLength(1);
+    expect(
+      carets[0]?.querySelector("[data-remote-caret-bar]")?.getAttribute("style"),
+      "wire colour failing validation renders transparent",
+    ).toContain("transparent");
   });
 });

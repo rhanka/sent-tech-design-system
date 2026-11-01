@@ -76,7 +76,7 @@ import type {
 } from "./model.js";
 import type { RichTextMessages } from "./messages.js";
 import type { CollaborationActor, FieldBindingIdentity } from "./collaboration.js";
-import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
+import { decodeHrefToken, isAllowedHref, pmMarksToSharedAttributes } from "./collaboration.js";
 import {
   copyRichTextDocument,
   createCaptureTracker,
@@ -88,7 +88,7 @@ import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
 import type { BoundUndoManager, LiveSessionBindingSource } from "./editor-collaboration.js";
-import type { BoundCompositionDriver } from "./collab-composition.js";
+import type { BoundCompositionDriver, StagedCompositionRun } from "./collab-composition.js";
 import type { AnyExtension } from "@tiptap/core";
 import { FULL_PROFILE_ID } from "./profile.js";
 import type { RichTextProfile } from "./profile.js";
@@ -384,6 +384,7 @@ export interface BoundImpl {
     projectPmTransactionToYText: (binding: never, before: never, tr: never) => string[];
     stableMetadataJson: (value: unknown) => string;
     applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
+    sharesComposingWrapper: (options: never) => boolean;
     yTextToPmDoc: (ytext: never, fieldMeta: never, format: never, schema: never) => never;
     linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
     affectedBlocksFromDelta: (
@@ -492,7 +493,7 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   /** Publish the local selection (suspended while a session stages the
       composing selection; Task 1/Task 4). Publishing never breaks editing. */
   const publishLocalCursor = (): void => {
-    if (cursorSurface === null || tracker.destroyed) return;
+    if (cursorSurface === null || tracker.destroyed || !isActive()) return;
     if (isStagingOpen()) return;
     try {
       cursorSurface.publishSelection(
@@ -1085,6 +1086,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       // its repaint waits for the commit or the cancel. The shared `Y.Text`
       // already carries the remote update; only the display defers it.
       let visibleAffected = [...affected];
+      // Disjoint incremental updates paint live; the composing selection is
+      // then preserved through the transaction mapping (no clamp-prone
+      // round-trip through the staged length).
+      let keepMappedSelection = false;
       if (isStagingOpen()) {
         const deferred = new Set<string>(composingAffected);
         const startId = compositionDriver?.startParagraphId() ?? null;
@@ -1094,6 +1099,49 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
           return;
         }
+        // CL-3b2 review 1 (BLOCKING-3): a remote structural or wrapper edit
+        // that the incremental application cannot keep disjoint from the
+        // composing range must not rebuild it mid-composition — neither a
+        // full-document replace, nor a selection clamp, nor a shared
+        // wrapper rebuild. Defer the view update to the commit/cancel sync
+        // instead (the shared `Y.Text` already carries the update).
+        //
+        // The incremental application falls back to a full replacement
+        // whenever no affected id is covered on either side (an inserted
+        // block absent from the display, a deleted block absent from the
+        // shared post-state) or when the heal path arms it: all of those
+        // rebuild the staged range, so all of them defer.
+        const postIds = new Set(
+          (
+            boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as Array<{
+              paragraphId: string;
+            }>
+          ).map((block) => block.paragraphId),
+        );
+        const viewIds = new Set<string>();
+        editor.view.state.doc.descendants((node) => {
+          const id = (node.attrs as Record<string, unknown> | undefined)?.[PARAGRAPH_ID_ATTRIBUTE];
+          if (typeof id === "string" && id !== "") viewIds.add(id);
+          return true;
+        });
+        const oldCovered = visibleAffected.some((id) => viewIds.has(id));
+        const freshCovered = visibleAffected.some((id) => postIds.has(id));
+        if (
+          forceFullRebuild ||
+          !oldCovered ||
+          !freshCovered ||
+          boundImpl.projection.sharesComposingWrapper({
+            ytext: boundImpl.ytext,
+            fieldMeta: boundImpl.fieldMeta,
+            format: documentFormat,
+            deferredParagraphIds: [...deferred],
+            affectedParagraphIds: visibleAffected,
+          } as never)
+        ) {
+          lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+          return;
+        }
+        keepMappedSelection = true;
       }
       try {
         boundImpl.projection.applyRemoteUpdateIncrementally({
@@ -1103,6 +1151,7 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           format: documentFormat,
           fieldKey: binding?.fieldKey ?? "",
           affectedParagraphIds: visibleAffected,
+          ...(keepMappedSelection ? { keepMappedSelection: true } : {}),
           ...(forceFullRebuild ? { fullReplace: true } : {}),
           ...(preBlocks !== null && preBlocks.length > 0 ? { preBlocks: preBlocks as never } : {}),
           ...(delta !== null ? { delta: delta as never } : {}),
@@ -2525,22 +2574,43 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   } | null = null;
   let compositionRevoked = false;
   /**
-   * Staged paragraph texts of the live display (`paragraphId` → inline
-   * text, hard breaks as LF like the shared encoding). Text parents only:
-   * atom blocks carry no staged text and never enter a commit diff.
+   * Staged paragraph runs of the live display (`paragraphId` → inline
+   * runs). CL-3b2 review 1 (run-aware commit): text runs carry their
+   * staged mark attributes and hard breaks stay distinct segments, so the
+   * commit inserts embeds and marked runs instead of unformatted text.
+   * Text parents only: atom blocks carry no staged runs and never enter a
+   * commit diff.
    */
-  const stagedParagraphTexts = (): Map<string, string> => {
-    const staged = new Map<string, string>();
+  const stagedParagraphRuns = (): Map<string, StagedCompositionRun[]> => {
+    const staged = new Map<string, StagedCompositionRun[]>();
     editor.state.doc.descendants((node) => {
       if (isTextParentName(node.type.name)) {
         const id = node.attrs[PARAGRAPH_ID_ATTRIBUTE];
         if (typeof id === "string" && id !== "") {
-          let inline = "";
+          const runs: StagedCompositionRun[] = [];
           node.forEach((child) => {
-            if (child.isText) inline += child.text ?? "";
-            else if (child.type.name === "hardBreak") inline += "\n";
+            if (child.isText) {
+              const text = child.text ?? "";
+              if (text === "") return;
+              const marks = (child.marks as unknown as Array<{ type: { name: string }; attrs: Record<string, unknown> }>).map(
+                (mark) => ({ type: mark.type.name, attrs: mark.attrs }),
+              );
+              const last = runs[runs.length - 1];
+              const attributes = pmMarksToSharedAttributes(marks);
+              if (
+                last !== undefined &&
+                last.type === "text" &&
+                JSON.stringify(last.attributes) === JSON.stringify(attributes)
+              ) {
+                last.text += text;
+              } else {
+                runs.push({ type: "text", text, attributes });
+              }
+            } else if (child.type.name === "hardBreak") {
+              runs.push({ type: "hardBreak" });
+            }
           });
-          staged.set(id, inline);
+          staged.set(id, runs);
         }
       }
       return true;
@@ -2587,8 +2657,16 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
    * a pre-composition snapshot over remote work), the caret restores through
    * the start anchors, pending captures reject once, and nothing is emitted.
    */
-  const discardBoundStaging = (anchors: { anchor: string; head: string } | null): void => {
-    if (boundImpl === undefined || compositionDriver === null) return;
+  /**
+   * Re-render the display from the shared `Y.Text` (CL-3b2 review 1,
+   * BLOCKING-1): remote updates that arrived and were deferred while
+   * staging was open paint here at commit, at cancel and on revocation —
+   * never a pre-composition snapshot over remote work (R-IME-4). Suppressed
+   * and history-free; reseeds the conversion caches and refreshes the
+   * linear baseline for the next delta.
+   */
+  const syncViewFromSharedState = (): void => {
+    if (boundImpl === undefined) return;
     suppressEmit = true;
     try {
       const sharedDoc = boundImpl.projection.yTextToPmDoc(
@@ -2617,6 +2695,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       // A reseed failure keeps the previous records; the shared state
       // stays authoritative for the next application.
     }
+    lastLinearBlocks = boundImpl.projection.linearBlocksOf(boundImpl.ytext as never) as never;
+  };
+  const discardBoundStaging = (anchors: { anchor: string; head: string } | null): void => {
+    if (boundImpl === undefined || compositionDriver === null) return;
+    syncViewFromSharedState();
     if (anchors !== null) {
       const anchor = compositionDriver.resolveAnchor(anchors.anchor);
       const head = compositionDriver.resolveAnchor(anchors.head);
@@ -2804,10 +2887,16 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       compositionBaseDoc = null;
       compositionBaseSeeds = null;
       const result = compositionDriver.commitSession({
-        stagedParagraphs: stagedParagraphTexts(),
+        stagedRuns: stagedParagraphRuns(),
       });
       if (result.applied) {
-        // R-IME-5: the caret restores through the post-commit anchor.
+        // BLOCKING-1: deferred remote updates parked in shared state while
+        // staging was open paint here, before the caret restores and the
+        // single coalesced change emits — the view equals the shared
+        // projection after the commit, not only the shared `Y.Text`.
+        syncViewFromSharedState();
+        // R-IME-5: the caret restores to the insertion point plus the
+        // inserted units (after the committed text at field end).
         if (result.caretLinear !== null) {
           restoreCaretFromLinear(result.caretLinear, result.caretLinear);
         }
@@ -2830,8 +2919,29 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         return;
       }
       // No staged difference (e.g. typed-then-deleted): quiet close, no
-      // transaction, no event; pending captures resolve with the current
-      // shared revision.
+      // transaction, no event — but deferred remote updates parked while
+      // staging was open still repaint (BLOCKING-1). The caret keeps its
+      // position through the sync, mapped from the staged selection.
+      try {
+        const preMap = boundImpl.projection.buildSelectionMap(
+          editor.state.doc as never,
+          boundImpl.ytext as never,
+        );
+        const anchorLinear = boundImpl.projection.pmPositionToLinear(
+          preMap as never,
+          editor.view.state.selection.anchor,
+        );
+        const headLinear = boundImpl.projection.pmPositionToLinear(
+          preMap as never,
+          editor.view.state.selection.head,
+        );
+        syncViewFromSharedState();
+        restoreCaretFromLinear(anchorLinear, headLinear);
+      } catch {
+        // A restore failure keeps the observer-mapped selection; the view
+        // itself already equals the shared projection.
+        syncViewFromSharedState();
+      }
       void changed;
       settleDeferredExternal();
       tracker.setComposing(false, currentCaptureResult);
@@ -2919,8 +3029,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     suppressEmit = false;
   }
   // Bound mounts publish the initial selection through the §5.1.1 publisher
-  // (deduped; a no-op for controlled mounts).
-  publishLocalCursor();
+  // (deduped; a no-op for controlled mounts). A read-only or disabled mount
+  // publishes no cursor: presence stays null until the surface activates,
+  // and revocation clears — so both postures agree (BLOCKING-4).
+  if (isActive()) publishLocalCursor();
+  else clearLocalCursor();
 
   const richEditor: RichTextEditor = {
     get view(): EditorView {
@@ -3309,6 +3422,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       if (tracker.destroyed) return;
       // Unmount clears the published cursor (presence entry stays null).
       clearLocalCursor();
+      // TO-FIX-2: destroying mid-composition discards the open session —
+      // nothing staged ever reached shared state, so there is no shared
+      // write to undo, only the open driver to close.
+      compositionDriver?.discardSession();
       for (const { type, handler } of domListeners) {
         element.removeEventListener(type, handler);
       }

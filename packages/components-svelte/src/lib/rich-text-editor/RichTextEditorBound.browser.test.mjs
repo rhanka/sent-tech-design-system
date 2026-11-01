@@ -311,6 +311,11 @@ window.__bound = {
     const awareness = world.awareness.shared ?? Object.values(world.awareness)[0];
     return awareness.getLocalState();
   },
+  cursorOf(tag) {
+    const awareness = world.awareness[tag] ?? world.awareness.shared;
+    const state = awareness.getLocalState();
+    return state?.cursor ?? null;
+  },
   clearRemote(clientId) {
     const awareness = world.awareness.shared ?? Object.values(world.awareness)[0];
     const states = awareness.getStates();
@@ -575,6 +580,15 @@ async function scenarioBoundImeCommit(browser, base) {
     assert(shared.includes("Y"), label, `${tag} lost Y across the commit`);
     assert(shared.includes("Y2"), label, `${tag} lost Y2 across the commit`);
   }
+  // Review 1 BLOCKING-1: deferred remote text paints into the local view on
+  // commit — the rendered document equals the shared projection, not only
+  // the shared Y.Text.
+  for (const tag of ["A", "B", "C"]) {
+    const display = await bpmt(page, tag);
+    for (const needle of ["X", "Y", "Y2"]) {
+      assert(display.includes(needle), label, `${tag} display lacks ${needle} after commit: ${JSON.stringify(display)}`);
+    }
+  }
   assert((await page.evaluate(() => window.__bound.errors("A"))).length === 0, label, "binding errors surfaced");
   // A following edit plus disconnect/reconnect converges everywhere.
   await page.keyboard.type("Z");
@@ -658,9 +672,12 @@ async function scenarioBoundReadonly(browser, base) {
       { tag: "writer", actorId: "actor-w", label: "W", color: "#445566", editable: true },
     ],
   }));
+  // Review 1 BLOCKING-4: a read-only mount publishes cursor null.
+  assert(await page.evaluate(() => window.__bound.cursorOf("viewer")) === null, label, "read-only mount publishes a cursor");
   await page.evaluate(() => window.__bound.typeText("writer", "p:1", "XY"));
   await sleep(500);
   assert((await bpmt(page, "viewer")).includes("XY"), label, "read-only mount did not render the remote text");
+  assert(await page.evaluate(() => window.__bound.cursorOf("viewer")) === null, label, "remote render publishes a cursor on the viewer");
   const vectorBefore = JSON.stringify(await bvectors(page));
   await page.evaluate(() => window.__bound.typeText("viewer", "p:1", "LOCAL"));
   await page.click('[data-testid="bound-viewer"] .ProseMirror p');
@@ -669,6 +686,7 @@ async function scenarioBoundReadonly(browser, base) {
   assert(JSON.stringify(await bvectors(page)) === vectorBefore, label, "read-only surface moved the shared state vector");
   assert((await bchanges(page, "viewer")).length === 0, label, "read-only surface emitted a change");
   assert(!(await btext(page, "viewer")).includes("LOCAL") && !(await btext(page, "viewer")).includes("Q"), label, "read-only typing leaked into shared state");
+  assert(await page.evaluate(() => window.__bound.cursorOf("viewer")) === null, label, "read-only selection moves publish a cursor");
   // Toggling the same mount enables editing.
   await page.evaluate(() => window.__bound.setEditable("viewer", true));
   await page.evaluate(() => window.__bound.typeText("viewer", "p:1", "NOW"));
@@ -682,6 +700,7 @@ async function scenarioBoundReadonly(browser, base) {
   await sleep(400);
   await page.evaluate(() => window.__bound.setEditable("viewer", false));
   await sleep(200);
+  assert(await page.evaluate(() => window.__bound.cursorOf("viewer")) === null, label, "toggled read-only publishes a cursor");
   await page.evaluate(() => {
     document.querySelector('[data-testid="bound-viewer"] .ProseMirror').dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
   });

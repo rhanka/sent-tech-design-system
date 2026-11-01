@@ -4,11 +4,19 @@
  * Private staging for IME composition in bound mode: while a session is
  * open, composition-owned ProseMirror changes mutate only the local display
  * — no transaction is applied to the field's shared `Y.Text`, no shared item
- * is created and the shared state vector does not move (R-IME-1/R-IME-3).
+ * is created and the shared document's state vector does not move (R-IME-1/R-IME-3).
  * At commit the staged result is diffed against the shared projection at the
  * start anchor and applied as exactly one Yjs transaction under the local
  * actor origin (R-IME-2). On cancel/revocation the staging is discarded
  * whole and the display re-renders from the shared `Y.Text` (R-IME-4).
+ *
+ * CL-3b2 review 1 (run-aware commit): the commit carries staged runs, not a
+ * plain string. Hard breaks become `{ hardBreak: true }` embeds (never a raw
+ * U+000A in a string, R-LIN-1/R-LIN-7) and text runs keep their staged mark
+ * attributes; paragraphs other than the composing one are never rewritten.
+ * The deleted slice is the affix diff, not the selection range, and only
+ * surviving baseline characters are removed — a concurrent insert landing
+ * inside the replaced range survives the commit (R-IME-2, §13 F6).
  *
  * This module lives in the collaboration graph: it is created by the bound
  * entry (`editor-bound.ts`) and reaches the editor core only through the
@@ -40,13 +48,23 @@ export interface CompositionOpenInput {
   headLinear: number;
 }
 
+/**
+ * One staged run of a paragraph display: a text run with its shared mark
+ * attributes, or a hard break (stored as a `{ hardBreak: true }` embed,
+ * never as U+000A inside a string, R-LIN-1).
+ */
+export type StagedCompositionRun =
+  | { type: "text"; text: string; attributes: Record<string, unknown> }
+  | { type: "hardBreak" };
+
 export interface CompositionCommitInput {
   /**
-   * Staged paragraph texts (`paragraphId` → inline text) read from the local
-   * ProseMirror display, including the composing paragraph (which carries
-   * the uncommitted composition) and every other text block.
+   * Staged runs per paragraph (`paragraphId` → inline runs) read from the
+   * local ProseMirror display, including the composing paragraph (which
+   * carries the uncommitted composition). Text parents only: atom blocks
+   * carry no staged runs and never enter a commit diff.
    */
-  stagedParagraphs: ReadonlyMap<string, string>;
+  stagedRuns: ReadonlyMap<string, readonly StagedCompositionRun[]>;
 }
 
 export interface CompositionCommitResult {
@@ -60,9 +78,10 @@ export interface CompositionCommitResult {
   failed: boolean;
   affectedParagraphIds: string[];
   /**
-   * Post-commit caret as a linear index (resolved after the transaction, so
-   * concurrent and own inserts already shifted it), or null when the caret
-   * should keep the observer-restored position.
+   * Post-commit caret as a linear index (the insertion point plus the
+   * inserted units, so composing at field end lands after the committed
+   * text), or null when the caret should keep the observer-restored
+   * position.
    */
   caretLinear: number | null;
 }
@@ -98,7 +117,7 @@ function readSharedParagraphText(ytext: Y.Text, paragraphId: string): string | n
 function stripSharedAffix(
   start: string,
   staged: string,
-): { prefix: number; middle: string; startMiddle: string } {
+): { prefix: number; suffix: number; middle: string; startMiddle: string } {
   let prefix = 0;
   while (
     prefix < start.length &&
@@ -117,9 +136,76 @@ function stripSharedAffix(
   }
   return {
     prefix,
+    suffix,
     middle: staged.slice(prefix, staged.length - suffix),
     startMiddle: start.slice(prefix, start.length - suffix),
   };
+}
+
+/** Linear text of staged runs (`\n` per hard break, for affix comparison). */
+function runsToLinearText(runs: readonly StagedCompositionRun[]): string {
+  let out = "";
+  for (const run of runs) {
+    if (run.type === "hardBreak") out += "\n";
+    else out += run.text;
+  }
+  return out;
+}
+
+/**
+ * Slice staged runs to the linear interval `[from, to)` (hard breaks count
+ * one unit, mirroring the shared linear coordinates). Text runs split at
+ * the boundaries keep their mark attributes.
+ */
+function sliceRuns(
+  runs: readonly StagedCompositionRun[],
+  from: number,
+  to: number,
+): StagedCompositionRun[] {
+  const out: StagedCompositionRun[] = [];
+  let cursor = 0;
+  for (const run of runs) {
+    if (run.type === "hardBreak") {
+      if (cursor >= from && cursor < to) out.push({ type: "hardBreak" });
+      cursor += 1;
+      continue;
+    }
+    const start = cursor;
+    const end = cursor + run.text.length;
+    const overlapStart = Math.max(start, from);
+    const overlapEnd = Math.min(end, to);
+    if (overlapEnd > overlapStart) {
+      out.push({
+        type: "text",
+        text: run.text.slice(overlapStart - start, overlapEnd - start),
+        attributes: { ...run.attributes },
+      });
+    }
+    cursor = end;
+  }
+  return out;
+}
+
+/**
+ * Defensive expansion of middle runs before a shared write: a `\r` or `\n`
+ * inside a text run (never produced by ProseMirror nodes, which split them)
+ * becomes a hard-break embed, so no raw U+000A is ever transacted (R-LIN-1).
+ */
+function expandRunsForCommit(runs: readonly StagedCompositionRun[]): StagedCompositionRun[] {
+  const out: StagedCompositionRun[] = [];
+  for (const run of runs) {
+    if (run.type === "hardBreak") {
+      out.push(run);
+      continue;
+    }
+    const parts = run.text.split(/[\r\n]/);
+    for (let index = 0; index < parts.length; index += 1) {
+      if (index > 0) out.push({ type: "hardBreak" });
+      const piece = parts[index] as string;
+      if (piece !== "") out.push({ type: "text", text: piece, attributes: { ...run.attributes } });
+    }
+  }
+  return out;
 }
 
 /**
@@ -134,6 +220,14 @@ export class BoundCompositionDriver {
     headAnchor: string;
     paragraphId: string | null;
     startText: string | null;
+    /**
+     * Relative anchors for every shared offset of the composing paragraph
+     * at open (`contentStart + i` for `i` in `0..startText.length`): the
+     * commit deletes exactly the surviving baseline characters, so a
+     * concurrent insert landing inside the replaced range is never removed
+     * (§13 F6, R-IME-2).
+     */
+    charAnchors: string[];
   } | null = null;
   private nextId = 0;
 
@@ -153,10 +247,14 @@ export class BoundCompositionDriver {
     return this.session?.paragraphId ?? null;
   }
 
-  private mintAnchor(linear: number): string {
-    const assoc = linear >= this.ytext.length ? -1 : 0;
+  private mintAnchorAt(linear: number, assoc: number): string {
     const rpos = createRelativePositionFromTypeIndex(this.ytext, linear, assoc);
     return JSON.stringify(relativePositionToJSON(rpos));
+  }
+
+  private mintAnchor(linear: number): string {
+    const assoc = linear >= this.ytext.length ? -1 : 0;
+    return this.mintAnchorAt(linear, assoc);
   }
 
   openSession(input: CompositionOpenInput): void {
@@ -165,13 +263,31 @@ export class BoundCompositionDriver {
     this.session = null;
     this.nextId += 1;
     let paragraphId: string | null = null;
+    let contentStart = 0;
+    let startText: string | null = null;
     for (const block of linearBlocksOf(this.ytext)) {
       if (input.caretLinear === block.separatorIndex) {
         paragraphId = block.paragraphId;
+        contentStart = block.contentStart;
         break;
       }
       if (input.caretLinear >= block.contentStart && input.caretLinear <= block.contentEnd) {
         paragraphId = block.paragraphId;
+        contentStart = block.contentStart;
+      }
+    }
+    if (paragraphId !== null) {
+      startText = readSharedParagraphText(this.ytext, paragraphId);
+    }
+    // Per-character relative anchors over the composing paragraph: the
+    // commit deletes the affix slice of the baseline text (not the live
+    // selection range), so a shared prefix/suffix kept by the IME is never
+    // lost through a selection-range delete, and only surviving baseline
+    // characters are removed.
+    let charAnchors: string[] = [];
+    if (paragraphId !== null && startText !== null) {
+      for (let offset = 0; offset <= startText.length; offset += 1) {
+        charAnchors.push(this.mintAnchorAt(contentStart + offset, 0));
       }
     }
     this.session = {
@@ -179,7 +295,8 @@ export class BoundCompositionDriver {
       caretAnchor: this.mintAnchor(input.caretLinear),
       headAnchor: this.mintAnchor(input.headLinear),
       paragraphId,
-      startText: paragraphId === null ? null : readSharedParagraphText(this.ytext, paragraphId),
+      startText,
+      charAnchors,
     };
   }
 
@@ -202,12 +319,15 @@ export class BoundCompositionDriver {
   /**
    * Commit the staged display as exactly one shared transaction under the
    * local actor origin (R-IME-2). The composing paragraph applies its net
-   * local middle at the resolved start anchor (concurrent remote text in
-   * the same paragraph survives); other staged paragraphs apply their
-   * current shared-segment difference in the same transaction. The session
-   * closes before transacting so the commit's own observers repaint the
-   * composing range. Returns the affected paragraph ids for the single
-   * coalesced `composition-commit` change.
+   * local runs at the resolved start anchor: only surviving baseline
+   * characters of the affix slice are removed, so concurrent remote text in
+   * the same paragraph — including inserts inside a replaced selection —
+   * survives. Text runs carry their staged mark attributes and hard breaks
+   * transact as embeds, never as raw U+000A. Nothing outside the composing
+   * paragraph is written: remote updates there are already in the shared
+   * `Y.Text`. The session closes before transacting so the commit's own
+   * observers repaint the composing range. Returns the affected paragraph
+   * id for the single coalesced `composition-commit` change.
    */
   commitSession(input: CompositionCommitInput): CompositionCommitResult {
     const session = this.session;
@@ -217,63 +337,92 @@ export class BoundCompositionDriver {
       this.session = null;
       return { applied: false, failed: true, affectedParagraphIds: [], caretLinear: null };
     }
+    if (session.paragraphId === null || session.startText === null) {
+      this.session = null;
+      return { applied: false, failed: false, affectedParagraphIds: [], caretLinear: null };
+    }
+    const staged = input.stagedRuns.get(session.paragraphId);
+    const stagedText = staged === undefined ? session.startText : runsToLinearText(staged);
+    if (staged === undefined || stagedText === session.startText) {
+      // The staged display already equals the shared projection: quiet
+      // close, no transaction, no event.
+      this.session = null;
+      return { applied: false, failed: false, affectedParagraphIds: [], caretLinear: null };
+    }
     // Resolve every anchor before closing: a gone target fails the whole
     // commit closed (R-ANCH-5) instead of half-applying.
-    const caretIndex = this.resolveAnchor(session.caretAnchor);
-    const headIndex = this.resolveAnchor(session.headAnchor);
-    const affected: string[] = [];
-    type Edit = { paragraphId: string; kind: "anchor"; at: number; end: number; text: string }
-      | { paragraphId: string; kind: "segment"; at: number; end: number; text: string };
-    const edits: Edit[] = [];
-    if (session.paragraphId !== null && session.startText !== null) {
-      const staged = input.stagedParagraphs.get(session.paragraphId);
-      if (staged !== undefined && staged !== session.startText) {
-        if (caretIndex === null || headIndex === null) {
-          this.session = null;
-          return { applied: false, failed: true, affectedParagraphIds: [], caretLinear: null };
-        }
-        const { middle } = stripSharedAffix(session.startText, staged);
-        const at = Math.min(caretIndex, headIndex);
-        const end = Math.max(caretIndex, headIndex);
-        edits.push({ paragraphId: session.paragraphId, kind: "anchor", at, end, text: middle });
-        affected.push(session.paragraphId);
+    const startText = session.startText;
+    const { prefix, suffix } = stripSharedAffix(startText, stagedText);
+    const delFrom = prefix;
+    const delTo = startText.length - suffix;
+    const blocks = linearBlocksOf(this.ytext);
+    const block = blocks.find((entry) => entry.paragraphId === session.paragraphId);
+    if (block === undefined) {
+      this.session = null;
+      return { applied: false, failed: true, affectedParagraphIds: [], caretLinear: null };
+    }
+    const at = this.resolveAnchor(session.charAnchors[delFrom] as string);
+    const sliceEnd = this.resolveAnchor(session.charAnchors[delTo] as string);
+    if (at === null || sliceEnd === null) {
+      this.session = null;
+      return { applied: false, failed: true, affectedParagraphIds: [], caretLinear: null };
+    }
+    const currentText = readSharedParagraphText(this.ytext, session.paragraphId) ?? "";
+    const deletes: number[] = [];
+    for (let offset = delFrom; offset < delTo; offset += 1) {
+      const anchorIndex = this.resolveAnchor(session.charAnchors[offset] as string);
+      const nextIndex = this.resolveAnchor(session.charAnchors[offset + 1] as string);
+      if (anchorIndex === null || nextIndex === null) {
+        this.session = null;
+        return { applied: false, failed: true, affectedParagraphIds: [], caretLinear: null };
       }
+      if (nextIndex <= anchorIndex) continue;
+      // The baseline character is already gone remotely: nothing to remove.
+      const local = anchorIndex - block.contentStart;
+      if (local < 0 || local >= currentText.length) continue;
+      // A concurrent insert or replacement at this position is kept (§13
+      // F6): only a surviving baseline character is removed.
+      if (currentText[local] !== startText[offset]) continue;
+      deletes.push(anchorIndex);
     }
-    // Non-composing paragraphs: the staged display already carries the
-    // applied remote updates, so replacing the current shared segment with
-    // the staged text keeps both (no anchor tracking needed outside the
-    // composing range).
-    for (const [paragraphId, staged] of input.stagedParagraphs) {
-      if (paragraphId === session.paragraphId) continue;
-      const blocks = linearBlocksOf(this.ytext);
-      const block = blocks.find((entry) => entry.paragraphId === paragraphId);
-      if (block === undefined) continue;
-      const current = readSharedParagraphText(this.ytext, paragraphId);
-      if (current === null || current === staged) continue;
-      edits.push({ paragraphId, kind: "segment", at: block.contentStart, end: block.contentEnd, text: staged });
-      affected.push(paragraphId);
+    const middleRuns = expandRunsForCommit(
+      sliceRuns(staged, prefix, stagedText.length - suffix),
+    );
+    let insertedUnits = 0;
+    for (const run of middleRuns) {
+      insertedUnits += run.type === "hardBreak" ? 1 : run.text.length;
     }
-    const caretAnchor = session.caretAnchor;
-    const hasComposingEdit =
-      session.paragraphId !== null && affected.includes(session.paragraphId);
     this.session = null;
-    if (edits.length === 0) return { applied: false, failed: false, affectedParagraphIds: [], caretLinear: null };
     const origin = this.localOrigin;
     // Descending positions: earlier indices stay valid while later edits land.
-    const ordered = [...edits].sort((left, right) => right.at - left.at);
+    const orderedDeletes = [...deletes].sort((left, right) => right - left);
     ydoc.transact(() => {
-      for (const edit of ordered) {
-        if (edit.end > edit.at) this.ytext.delete(edit.at, edit.end - edit.at);
-        if (edit.text !== "") this.ytext.insert(edit.at, edit.text);
+      for (const index of orderedDeletes) this.ytext.delete(index, 1);
+      let cursor = at;
+      for (const run of middleRuns) {
+        if (run.type === "hardBreak") {
+          this.ytext.insertEmbed(cursor, { hardBreak: true });
+          cursor += 1;
+          continue;
+        }
+        if (run.text !== "") {
+          this.ytext.insert(cursor, run.text, { ...run.attributes });
+          cursor += run.text.length;
+        }
       }
     }, origin);
     // F-1: the commit is its own undo step — adjacent typing within the
     // capture window never merges into it.
     this.undoManager.stopCapturing();
-    // R-IME-5: the caret is restored through the start anchor resolved after
-    // the transaction, so own and concurrent inserts already shifted it.
-    const caretLinear = hasComposingEdit ? this.resolveAnchor(caretAnchor) : null;
-    return { applied: true, failed: false, affectedParagraphIds: affected, caretLinear };
+    // R-IME-5: the post-commit caret is the insertion point plus the
+    // inserted units, so composing at the end of a field lands after the
+    // committed text (resolving the start anchor would land before it).
+    return {
+      applied: true,
+      failed: false,
+      affectedParagraphIds: [session.paragraphId],
+      caretLinear: at + insertedUnits,
+    };
   }
 
   /**

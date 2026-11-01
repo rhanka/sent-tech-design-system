@@ -244,7 +244,7 @@ describe("CL-3b2-10 branch (b) preserved-draft migration plus explicit acknowled
     expect(draftReread, "draft byte-identical across the refusal").toBe(draftBefore);
 
     // The host seam migrates C's preserved draft only.
-    const migratedDraft = provider.hostMigratePreservedDraft(DOC, draftCapture.document);
+    const migratedDraft = provider.hostMigratePreservedDraft(DOC, "actor-c", draftCapture.document);
     expect(migratedDraft.profileId).toBe(P0);
     expect(migratedDraft.schemaEpoch).toBe("2");
     expect(
@@ -272,7 +272,7 @@ describe("CL-3b2-10 branch (b) preserved-draft migration plus explicit acknowled
 
     // B... C explicitly acknowledges N+1 through the recorded
     // acknowledgement — only then admitted.
-    provider.hostRecordAcknowledgement({ actorId: "actor-c", profileId: P0, schemaEpoch: "2" });
+    provider.hostRecordAcknowledgement({ documentId: DOC, actorId: "actor-c", profileId: P0, schemaEpoch: "2" });
     const withAck = provider.openSessionAdmitted({
       documentId: DOC,
       sessionId: "session:c",
@@ -299,5 +299,89 @@ describe("CL-3b2-10 branch (b) preserved-draft migration plus explicit acknowled
         .filter((event) => event.kind === "acknowledgement")
         .map((event) => [event.actorId, event.toEpoch]),
     ).toEqual([["actor-c", "2"]]);
+  });
+});
+
+describe("CL-3b2 review 1 TO-FIX-1: draft migration is per actor at the current epoch", () => {
+  it("migrated C does not gate an upgraded B; C without acknowledgement is refused", () => {
+    const provider = createAdmissionCapableTestDoubleProvider();
+    provider.seedAuthority(DOC, FIELD, paragraphDoc("p:1", "ab"), P0, "1");
+    const vectorAfterMigration = (() => {
+      provider.hostMintMigration(DOC);
+      return provider.authorityVectorHex(DOC);
+    })();
+
+    // C works offline on epoch 1 with a queued edit.
+    const offlineC = new Y.Doc();
+    seedFieldFromDocument(
+      offlineC.getText(fieldTextName(FIELD)),
+      offlineC.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+      FIELD,
+      paragraphDoc("p:1", "ab"),
+    );
+    offlineC.transact(() => {
+      offlineC.getText(fieldTextName(FIELD)).insert(1, "QC");
+    });
+    const draftC = captureDocumentFromField(
+      offlineC.getText(fieldTextName(FIELD)),
+      offlineC.getMap(fieldMetaName(FIELD)) as Y.Map<unknown>,
+      P0,
+    ).document;
+
+    // The host seam migrates C's preserved draft only.
+    const migrated = provider.hostMigratePreservedDraft(DOC, "actor-c", draftC);
+    expect(migrated.schemaEpoch).toBe("2");
+    expect(provider.authorityVectorHex(DOC), "authority not migrated a second time").toBe(
+      vectorAfterMigration,
+    );
+
+    // Branch (a): B upgrades to N+1 with no acknowledgement and is admitted —
+    // the draft migration recorded for C never gates another actor.
+    const upgradedB = provider.openSessionAdmitted({
+      documentId: DOC,
+      sessionId: "session:b2",
+      fieldKeys: [FIELD],
+      actorId: "actor-b",
+      client: { clientProfileId: P0, clientSchemaEpoch: "2" },
+    });
+    expect(upgradedB.admitted, "upgraded B admitted without C's acknowledgement").toBe(true);
+
+    // Branch (b): C at N+1 without the acknowledgement is refused again.
+    const withoutAck = provider.openSessionAdmitted({
+      documentId: DOC,
+      sessionId: "session:c2",
+      fieldKeys: [FIELD],
+      actorId: "actor-c",
+      client: { clientProfileId: P0, clientSchemaEpoch: "2" },
+    });
+    expect(withoutAck.admitted, "C without acknowledgement refused").toBe(false);
+
+    // C acknowledges N+1 through the recorded acknowledgement — only then
+    // admitted, scoped by document.
+    provider.hostRecordAcknowledgement({
+      documentId: DOC,
+      actorId: "actor-c",
+      profileId: P0,
+      schemaEpoch: "2",
+    });
+    const withAck = provider.openSessionAdmitted({
+      documentId: DOC,
+      sessionId: "session:c2",
+      fieldKeys: [FIELD],
+      actorId: "actor-c",
+      client: { clientProfileId: P0, clientSchemaEpoch: "2" },
+    });
+    expect(withAck.admitted, "acknowledged C admitted").toBe(true);
+    const journal = provider.journal();
+    expect(
+      journal
+        .filter((event) => event.kind === "draft-migration")
+        .map((event) => [event.actorId, event.toEpoch]),
+      "draft migration recorded per actor with the epoch",
+    ).toEqual([["actor-c", "2"]]);
+    expect(
+      journal.filter((event) => event.kind === "application"),
+      "no partial application recorded",
+    ).toHaveLength(0);
   });
 });
