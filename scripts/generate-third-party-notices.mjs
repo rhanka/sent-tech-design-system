@@ -40,6 +40,14 @@
 //      into our tarballs. They are recorded so a consumer can see, in one
 //      place, every licence family that lands in their node_modules because of
 //      us, and so an incompatible licence appearing transitively is visible.
+//   3. Bundled content — third-party binaries and data the build embeds into
+//      a package's published dist/ (sources.bundled in
+//      scripts/third-party-sources.json). Same duty as regime 1 (a copy ships,
+//      the notice travels with it), but neither measured by a source scanner
+//      (it is not source copied into our files) nor covered by regime 2 (it
+//      is not fetched from the registry). The licence TEXT is re-read from
+//      the installed upstream, never retyped; presence is declared, and the
+//      published-tarball guard verifies it.
 //
 // OUT OF SCOPE, ON PURPOSE
 // - peerDependencies: provided by the consumer, not installed by us.
@@ -506,7 +514,7 @@ function renderInstalled(rootDir, closure) {
   return out;
 }
 
-export function renderNotices({ rootDir = root, lock, sources, scanners, upstreamVersions, dir, manifest }) {
+export function renderNotices({ rootDir = root, lock, sources, scanners, upstreamVersions, bundled = [], dir, manifest }) {
   const closure = runtimeClosure(lock, dir);
   const vendored = scanners
     .map(({ scanner, fingerprints }) => scanVendored(rootDir, dir, scanner, fingerprints))
@@ -538,6 +546,7 @@ export function renderNotices({ rootDir = root, lock, sources, scanners, upstrea
       scanners: scanners.map(({ scanner }) => scanner),
       hasNote: note !== null,
     }),
+    ...renderBundled(rootDir, bundled, manifest.name),
   );
   out.push(...renderInstalled(rootDir, closure));
 
@@ -557,6 +566,86 @@ export function renderNotices({ rootDir = root, lock, sources, scanners, upstrea
   return `${out.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd()}\n`;
 }
 
+/**
+ * Bundled third-party content declared in sources.bundled: binaries and data
+ * the build embeds into a package's published dist/ (not source copied into
+ * our files, so the path-data scanners cannot measure it, and not a registry
+ * dependency either). The declaration is per publishable package (`for`); the
+ * license texts are re-read from the installed upstream on every run, and the
+ * upstream version is pinned by package-lock.json — a bumped upstream or a
+ * reworded upstream notice changes the generated file, and the licensing
+ * gate refuses the drift. Presence in dist/ is NOT probed here (generation
+ * also runs on unbuilt trees); the published-tarball guard verifies it.
+ */
+export function loadBundled(rootDir, sources, lock) {
+  return (sources.bundled ?? []).map((entry) => {
+    const licenseFiles = Array.isArray(entry.licenseFrom) ? entry.licenseFrom : [entry.licenseFrom];
+    for (const file of licenseFiles) {
+      try {
+        statSync(join(rootDir, file));
+      } catch {
+        throw new Error(
+          `Bundled entry "${entry.id}": ${file} is missing. Run npm ci before generating notices.`,
+        );
+      }
+    }
+    return {
+      entry,
+      licenseFiles,
+      upstreamVersion: lock.packages[`node_modules/${entry.package}`]?.version ?? "unresolved version",
+    };
+  });
+}
+
+function renderBundled(rootDir, bundled, manifestName) {
+  const out = [];
+  const applicable = bundled.filter(({ entry }) => (entry.for ?? []).includes(manifestName));
+  if (applicable.length === 0) return out;
+  out.push(
+    "Le contenu ci-dessous n'est pas une dépendance : il est **groupé dans le",
+    "`dist/` publié** (binaires et données embarqués par le build navigateur).",
+    "Nous en distribuons donc une copie, et les notices qui l'accompagnent",
+    "doivent voyager avec elle. La présence est déclarée dans",
+    "`scripts/third-party-sources.json` (ce générateur tourne aussi sur arbre",
+    "non construit) ; la garde du tarball publié vérifie que chaque famille",
+    "présente dans `dist/browser` est nommée ici.",
+    "",
+  );
+  for (const { entry, licenseFiles, upstreamVersion } of applicable) {
+    out.push(`### ${entry.upstream} — groupé depuis \`${entry.package}\` ${upstreamVersion} — ${entry.spdx}`);
+    out.push("");
+    out.push(`**Ce qui est groupé.** ${entry.what}`);
+    out.push("");
+    out.push(
+      `**Présence déclarée.** Préfixes \`dist/browser/\` couverts : ${entry.assets.map((prefix) => `\`${prefix}\``).join(", ")}.`,
+    );
+    out.push("");
+    out.push(`**Pourquoi c'est une redistribution.** ${entry.why}`);
+    out.push("");
+    out.push(`**Obligation.** ${entry.obligation}`);
+    out.push("");
+    out.push(`**Titulaires.** ${entry.holders.join(" ; ")}.`);
+    if (entry.homepage) out.push(`**Amont.** ${entry.homepage}`);
+    out.push("");
+    const label =
+      licenseFiles.length === 1
+        ? "**Notice intégrale**, telle que publiée par l'amont"
+        : "**Notices intégrales**, telles que publiées par l'amont";
+    out.push(`${label} ${licenseFiles.map((file) => `dans \`${file}\``).join(" et ")} :`);
+    out.push("");
+    for (const file of licenseFiles) {
+      const text = readFileSync(join(rootDir, file), "utf8").replace(/\s+$/, "");
+      if (licenseFiles.length > 1) {
+        out.push(`#### ${file}`);
+        out.push("");
+      }
+      out.push(indentBlock(text));
+      out.push("");
+    }
+  }
+  return out;
+}
+
 export function generateAll(rootDir = root) {
   const lock = readJson(join(rootDir, "package-lock.json"));
   const sources = readJson(join(rootDir, "scripts", "third-party-sources.json"));
@@ -572,11 +661,12 @@ export function generateAll(rootDir = root) {
       lock.packages[`node_modules/${scanner.package}`]?.version,
     ]),
   );
+  const bundled = loadBundled(rootDir, sources, lock);
   return publishableWorkspaces(rootDir).map(({ dir, manifest }) => ({
     dir,
     name: manifest.name,
     path: join(dir, NOTICES_FILENAME),
-    content: renderNotices({ rootDir, lock, sources, scanners, upstreamVersions, dir, manifest }),
+    content: renderNotices({ rootDir, lock, sources, scanners, upstreamVersions, bundled, dir, manifest }),
   }));
 }
 

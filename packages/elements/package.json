@@ -18,7 +18,8 @@
     "catalog.json",
     "envelope.json",
     "schemas",
-    "!dist/**/*.map"
+    "!dist/**/*.map",
+    "!dist/.srchash"
   ],
   "exports": {
     ".": {
