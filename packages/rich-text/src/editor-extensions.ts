@@ -185,8 +185,8 @@ export function createHistoryExtension(): AnyExtension {
 
 /** The single history replacement point (spec §4.5, CL-3a): when bound, the
     extension composition drops the `UndoRedo` entry returned above. The Yjs
-    `UndoManager` itself lands in CL-3b; until then bound undo/redo fail
-    closed through the placeholder and never double-record. */
+    `UndoManager` landed in CL-3b1 (bound undo/redo through the field
+    manager, mark-only transactions untracked) and never double-records. */
 export function removeHistoryExtension(extensions: AnyExtension[]): AnyExtension[] {
   return extensions.filter((extension) => extension.name !== "undoRedo");
 }

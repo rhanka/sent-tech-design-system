@@ -731,6 +731,32 @@ describe("CL-3b1-9i split inside multiline code racing a text insert (R-FULL-COD
   });
 });
 
+/** Insert an HR atom after a block (still inside its wrapper); returns the
+    minted paragraph id. An HR first inside a list item is schema-invalid
+    (the listItem content expression requires a leading paragraph), so list
+    adjacency always inserts after the item paragraph. */
+function insertHrAfter(ed: RichTextEditor, afterId: string): string {
+  let end = -1;
+  ed.view.state.doc.descendants((node, pos) => {
+    if (node.attrs?.["paragraphId"] === afterId) {
+      end = pos + node.nodeSize;
+      return false;
+    }
+    return true;
+  });
+  expect(end).toBeGreaterThanOrEqual(0);
+  ed.view.dispatch(
+    ed.view.state.tr.insert(end, ed.view.state.schema.nodes.horizontalRule.create()),
+  );
+  let id = "";
+  ed.view.state.doc.descendants((node) => {
+    if (node.type.name === "horizontalRule") id = (node.attrs["paragraphId"] as string) ?? "";
+    return true;
+  });
+  expect(id).not.toBe("");
+  return id;
+}
+
 /** Insert an HR atom before a block; returns the minted paragraph id. */
 function insertHr(ed: RichTextEditor, beforeId: string): string {
   const pos = blockTopPos(ed, beforeId);
@@ -1003,6 +1029,262 @@ describe("CL-3b1-R-STR-4 no fallback or withdrawal outcome", () => {
         // at their sequence positions — no degraded outcome recorded.
         expect(textsOf(replica, P0)).toEqual(["abcXYZdef!"]);
       }
+    }
+  });
+});
+
+describe("CL-3b1 review-1 B-2 leaf-atom end mapping (pmPositionToLinear, §4.4/§4.10)", () => {
+  it("deleting an HR directly before a preserved block succeeds with raw byte-identical", async () => {
+    const RAW = "<keep>  raw  </keep>";
+    for (const order of ["ab", "ba"] as const) {
+      const s = await twoSessions({
+        format: FULL,
+        blocks: [
+          fullPara("paragraph:1", "aa"),
+          { paragraphId: "hr:x", kind: "horizontalRule" },
+          { paragraphId: "k:1", kind: "preserved", raw: RAW, preservedKind: "html" },
+          fullPara("paragraph:2", "bb"),
+        ],
+      } as unknown as RichTextDocument);
+      // The HR atom sits immediately before the preserved segment: only the
+      // pair may go, the preserved bytes must survive byte-identical.
+      deleteHr(s.edA, "hr:x");
+      expect(s.errorsA, `b2-preserved-${order} A errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toEqual([
+        "paragraph:1",
+        "k:1",
+        "paragraph:2",
+      ]);
+      const capA = captureDocumentFromField(s.textA, s.metaA, FULL).document;
+      expect((capA.blocks.find((block) => block.paragraphId === "k:1") as { raw?: string }).raw).toBe(RAW);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      const c = fork(s.docB);
+      c.text.insert(c.text.length, "!");
+      Y.applyUpdate(c.doc, Y.encodeStateAsUpdate(s.docA));
+      Y.applyUpdate(s.docA, Y.encodeStateAsUpdate(c.doc));
+      Y.applyUpdate(s.docB, Y.encodeStateAsUpdate(c.doc));
+      const a: Replica = { doc: s.docA, text: s.textA, meta: s.metaA };
+      const b: Replica = { doc: s.docB, text: s.textB, meta: s.metaB };
+      assertQuiescent(`b2-preserved-${order}`, FULL, [a, b, c]);
+      for (const replica of [a, b, c]) {
+        expect(idsOf(replica, FULL)).toEqual(["paragraph:1", "k:1", "paragraph:2"]);
+        const cap = captureDocumentFromField(replica.text, replica.meta, FULL).document;
+        expect((cap.blocks.find((block) => block.paragraphId === "k:1") as { raw?: string }).raw).toBe(RAW);
+      }
+    }
+  });
+
+  it("deleting an HR directly before another HR is pair-atomic and undo restores both ids", async () => {
+    for (const order of ["ab", "ba"] as const) {
+      const s = await twoSessions({
+        format: FULL,
+        blocks: [
+          fullPara("paragraph:1", "aa"),
+          { paragraphId: "hr:a", kind: "horizontalRule" },
+          { paragraphId: "hr:b", kind: "horizontalRule" },
+          fullPara("paragraph:2", "bb"),
+        ],
+      } as unknown as RichTextDocument);
+      deleteHr(s.edA, "hr:a");
+      expect(s.errorsA, `b2-pair-${order} A errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toEqual([
+        "paragraph:1",
+        "hr:b",
+        "paragraph:2",
+      ]);
+      assertHrPair({ doc: s.docA, text: s.textA, meta: s.metaA }, "hr:b");
+      // Undo restores the deleted pair with its original id, order intact.
+      s.edA.stopCapturing();
+      s.edA.undo();
+      expect(s.errorsA, `b2-pair-${order} A undo errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toEqual([
+        "paragraph:1",
+        "hr:a",
+        "hr:b",
+        "paragraph:2",
+      ]);
+      assertHrPair({ doc: s.docA, text: s.textA, meta: s.metaA }, "hr:a");
+      assertHrPair({ doc: s.docA, text: s.textA, meta: s.metaA }, "hr:b");
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      const c = fork(s.docB);
+      c.text.insert(c.text.length, "!");
+      Y.applyUpdate(c.doc, Y.encodeStateAsUpdate(s.docA));
+      Y.applyUpdate(s.docA, Y.encodeStateAsUpdate(c.doc));
+      Y.applyUpdate(s.docB, Y.encodeStateAsUpdate(c.doc));
+      assertQuiescent(`b2-pair-${order}`, FULL, [
+        { doc: s.docA, text: s.textA, meta: s.metaA },
+        { doc: s.docB, text: s.textB, meta: s.metaB },
+        c,
+      ]);
+    }
+  });
+});
+
+describe("CL-3b1 review-1 TF-1 HR adjacent to lists and code (extends 9j, §4.10)", () => {
+  it("insertion, deletion and undo adjacent to a bullet list item on two replicas", async () => {
+    for (const order of ["ab", "ba"] as const) {
+      const s = await twoSessions(fullListDoc());
+      // A inserts the HR inside the "item two" list item (after its
+      // paragraph); B concurrently prepends to the intro paragraph.
+      const hrId = insertHrAfter(s.edA, "p:2");
+      insertBlockStartText(s.edB, "p:0", "ZZ");
+      expect(s.errorsA, `tf1-bullet-${order} A errors`).toEqual([]);
+      expect(s.errorsB, `tf1-bullet-${order} B errors`).toEqual([]);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      // Offline fork edits inside the intro paragraph (index 6): the HR
+      // pair closes the field, so a field-end append would strand text
+      // inside the HR segment (same-index CRDT hazard, as in 9j-text).
+      const c = fork(s.docB);
+      c.text.insert(6, "!");
+      Y.applyUpdate(c.doc, Y.encodeStateAsUpdate(s.docA));
+      Y.applyUpdate(s.docA, Y.encodeStateAsUpdate(c.doc));
+      Y.applyUpdate(s.docB, Y.encodeStateAsUpdate(c.doc));
+      const a: Replica = { doc: s.docA, text: s.textA, meta: s.metaA };
+      const b: Replica = { doc: s.docB, text: s.textB, meta: s.metaB };
+      assertQuiescent(`tf1-bullet-${order}`, FULL, [a, b, c]);
+      for (const replica of [a, b, c]) {
+        expect(idsOf(replica, FULL)).toContain(hrId);
+        assertHrPair(replica, hrId);
+        const cap = captureDocumentFromField(replica.text, replica.meta, FULL).document;
+        const hr = cap.blocks.find((block) => block.paragraphId === hrId) as unknown as {
+          hrMetadata?: Record<string, unknown>;
+        };
+        expect(hr?.hrMetadata?.["listKind"]).toBe("bullet");
+        expect(hr?.hrMetadata?.["containerOrder"]).toEqual(["list"]);
+        expect(hr?.hrMetadata?.["listItemId"]).toBe("p:2");
+      }
+      // Atomic delete then undo: the pair vanishes and returns with the
+      // same id and the same wrapper metadata.
+      const hrBefore = JSON.stringify(
+        captureDocumentFromField(s.textA, s.metaA, FULL).document.blocks.find(
+          (block) => block.paragraphId === hrId,
+        ),
+      );
+      s.edA.stopCapturing();
+      s.errorsA.length = 0;
+      deleteHr(s.edA, hrId);
+      expect(s.errorsA, `tf1-bullet-${order} A delete errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).not.toContain(hrId);
+      s.edA.undo();
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toContain(hrId);
+      expect(
+        JSON.stringify(
+          captureDocumentFromField(s.textA, s.metaA, FULL).document.blocks.find(
+            (block) => block.paragraphId === hrId,
+          ),
+        ),
+      ).toBe(hrBefore);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      const d = fork(s.docA);
+      syncSessions({ doc: s.docA }, { doc: d.doc }, "ab");
+      assertQuiescent(`tf1-bullet-undo-${order}`, FULL, [
+        { doc: s.docA, text: s.textA, meta: s.metaA },
+        { doc: s.docB, text: s.textB, meta: s.metaB },
+        d,
+      ]);
+    }
+  });
+
+  it("insertion, deletion and undo adjacent to an ordered list item on two replicas", async () => {
+    for (const order of ["ab", "ba"] as const) {
+      const s = await twoSessions(fullListDoc());
+      // Toggle the run to ordered first (a conformant kind write), then
+      // insert the HR inside the "item two" item (after its paragraph).
+      toggleListKind(s.edA);
+      expect(s.errorsA, `tf1-ordered-${order} A toggle errors`).toEqual([]);
+      const hrId = insertHrAfter(s.edA, "p:2");
+      insertBlockStartText(s.edB, "p:0", "ZZ");
+      expect(s.errorsA, `tf1-ordered-${order} A errors`).toEqual([]);
+      expect(s.errorsB, `tf1-ordered-${order} B errors`).toEqual([]);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      const a: Replica = { doc: s.docA, text: s.textA, meta: s.metaA };
+      const b: Replica = { doc: s.docB, text: s.textB, meta: s.metaB };
+      assertQuiescent(`tf1-ordered-${order}`, FULL, [a, b]);
+      for (const replica of [a, b]) {
+        expect(idsOf(replica, FULL)).toContain(hrId);
+        assertHrPair(replica, hrId);
+        const cap = captureDocumentFromField(replica.text, replica.meta, FULL).document;
+        const hr = cap.blocks.find((block) => block.paragraphId === hrId) as unknown as {
+          hrMetadata?: Record<string, unknown>;
+        };
+        expect(hr?.hrMetadata?.["listKind"]).toBe("ordered");
+        expect(hr?.hrMetadata?.["containerOrder"]).toEqual(["list"]);
+      }
+      s.edA.stopCapturing();
+      s.errorsA.length = 0;
+      deleteHr(s.edA, hrId);
+      expect(s.errorsA, `tf1-ordered-${order} A delete errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).not.toContain(hrId);
+      s.edA.undo();
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toContain(hrId);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      assertQuiescent(`tf1-ordered-undo-${order}`, FULL, [
+        { doc: s.docA, text: s.textA, meta: s.metaA },
+        { doc: s.docB, text: s.textB, meta: s.metaB },
+      ]);
+    }
+  });
+
+  it("insertion, deletion and undo adjacent to a code block on two replicas", async () => {
+    for (const order of ["ab", "ba"] as const) {
+      const s = await twoSessions(fullCodeDoc());
+      // The HR lands between the code block and its tail paragraph. B's
+      // concurrent edit targets the start of the tail paragraph (a distinct
+      // anchor one unit after the pair position, as in 9j-text: same-index
+      // text/HR-pair interleaving is a separate CRDT hazard).
+      const hrId = insertHr(s.edA, "p:after");
+      insertBlockStartText(s.edB, "p:after", "ZZ");
+      expect(s.errorsA, `tf1-code-${order} A errors`).toEqual([]);
+      expect(s.errorsB, `tf1-code-${order} B errors`).toEqual([]);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      const c = fork(s.docB);
+      c.text.insert(c.text.length, "!");
+      Y.applyUpdate(c.doc, Y.encodeStateAsUpdate(s.docA));
+      Y.applyUpdate(s.docA, Y.encodeStateAsUpdate(c.doc));
+      Y.applyUpdate(s.docB, Y.encodeStateAsUpdate(c.doc));
+      const a: Replica = { doc: s.docA, text: s.textA, meta: s.metaA };
+      const b: Replica = { doc: s.docB, text: s.textB, meta: s.metaB };
+      assertQuiescent(`tf1-code-${order}`, FULL, [a, b, c]);
+      for (const replica of [a, b, c]) {
+        expect(idsOf(replica, FULL)).toContain(hrId);
+        assertHrPair(replica, hrId);
+        const cap = captureDocumentFromField(replica.text, replica.meta, FULL).document;
+        const blocks = cap.blocks.map((block) => block.paragraphId);
+        expect(blocks.indexOf(hrId)).toBeGreaterThan(0);
+        expect(blocks[blocks.indexOf(hrId) - 1]).not.toBe("p:after");
+        const hr = cap.blocks.find((block) => block.paragraphId === hrId) as unknown as {
+          hrMetadata?: Record<string, unknown>;
+        };
+        expect(hr?.hrMetadata?.["listKind"]).toBe("none");
+        expect(hr?.hrMetadata?.["containerOrder"]).toEqual([]);
+        // The code lines and the concurrent tail edit both survived.
+        const code = cap.blocks.find((block) => block.paragraphId === "p:code") as unknown as {
+          segments?: Array<{ type?: string; text?: string }>;
+        };
+        const codeText = (code?.segments ?? [])
+          .map((segment) => (segment.type === "hardBreak" ? "\n" : (segment.text ?? "")))
+          .join("");
+        expect(codeText).toBe("line1\nline2");
+        const tail = cap.blocks.find((block) => block.paragraphId === "p:after") as unknown as {
+          segments?: Array<{ type?: string; text?: string }>;
+        };
+        const tailText = (tail?.segments ?? [])
+          .map((segment) => (segment.type === "hardBreak" ? "\n" : (segment.text ?? "")))
+          .join("");
+        expect(tailText.startsWith("ZZ")).toBe(true);
+      }
+      s.edA.stopCapturing();
+      s.errorsA.length = 0;
+      deleteHr(s.edA, hrId);
+      expect(s.errorsA, `tf1-code-${order} A delete errors`).toEqual([]);
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).not.toContain(hrId);
+      s.edA.undo();
+      expect(idsOf({ doc: s.docA, text: s.textA, meta: s.metaA }, FULL)).toContain(hrId);
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      assertQuiescent(`tf1-code-undo-${order}`, FULL, [
+        { doc: s.docA, text: s.textA, meta: s.metaA },
+        { doc: s.docB, text: s.textB, meta: s.metaB },
+      ]);
     }
   });
 });

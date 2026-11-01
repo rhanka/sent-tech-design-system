@@ -226,3 +226,111 @@ describe("CL-3b1 FU-1: selection pre-image carries the pre-update length", () =>
     expect(ed.view.state.doc.textBetween(0, ed.view.state.doc.content.size, "\n\n", "\n")).toContain("gamma");
   });
 });
+
+describe("CL-3b1 review-1 TF-2 rollback from the pre-transaction document", () => {
+  it("a failing transaction that changes text before the caret restores the caret exactly", async () => {
+    const errors: RichTextBindingErrorEvent[] = [];
+    const { ed, ytext, meta } = await boundEditor({
+      document: fullDoc([
+        para("p:1", "alphabetic"),
+        { paragraphId: "p:hr", kind: "horizontalRule" },
+        para("p:2", "omega"),
+      ]),
+      onBindingError: (event) => errors.push(event),
+    });
+    // Caret inside p:2 (after "ome"), in the surviving region after the
+    // refused span.
+    const caretPos = textPos(ed.view.state.doc, "omega", 3);
+    ed.view.dispatch(
+      ed.view.state.tr.setSelection(TextSelection.create(ed.view.state.doc, caretPos)),
+    );
+    expect(ed.view.state.selection.anchor).toBe(caretPos);
+    // One transaction: insert text at the start of p:1 (before the caret's
+    // block, shifting every later PM position), then delete from inside p:1
+    // across the HR atom (refused whole). A pre-map built from the
+    // post-transaction document linearizes the caret two units early.
+    const tr = ed.view.state.tr;
+    tr.insertText("QQ", textPos(ed.view.state.doc, "alphabetic", 0));
+    let hrPos = -1;
+    tr.doc.descendants((node: ProseMirrorNode, pos: number) => {
+      if (node.type.name === "horizontalRule") hrPos = pos;
+      return true;
+    });
+    expect(hrPos).toBeGreaterThan(-1);
+    tr.delete(textPos(tr.doc, "omega", 1), hrPos + 1);
+    ed.view.dispatch(tr);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toContain("rich-text.collab-step-failed");
+    expect(ed.view.state.doc.eq(yTextToPmDoc(ytext, meta, FULL, ed.view.state.schema))).toBe(true);
+    const afterCaret = textPos(ed.view.state.doc, "omega", 3);
+    expect(ed.view.state.selection.anchor).toBe(afterCaret);
+    expect(ed.view.state.selection.head).toBe(afterCaret);
+  });
+
+  it("a failing transaction under a node selection restores a valid caret without crashing", async () => {
+    const errors: RichTextBindingErrorEvent[] = [];
+    const { ed, ytext, meta } = await boundEditor({
+      document: fullDoc([
+        para("p:1", "alphabetic"),
+        { paragraphId: "p:hr", kind: "horizontalRule" },
+        para("p:2", "omega"),
+      ]),
+      onBindingError: (event) => errors.push(event),
+    });
+    let hrPos = -1;
+    ed.view.state.doc.descendants((node: ProseMirrorNode, pos: number) => {
+      if (node.type.name === "horizontalRule") hrPos = pos;
+      return true;
+    });
+    expect(hrPos).toBeGreaterThan(-1);
+    const { NodeSelection } = await import("@tiptap/pm/state");
+    ed.view.dispatch(ed.view.state.tr.setSelection(NodeSelection.create(ed.view.state.doc, hrPos)));
+    expect(ed.view.state.selection).toBeInstanceOf(NodeSelection);
+    const from = textPos(ed.view.state.doc, "alphabetic", 6);
+    ed.view.dispatch(ed.view.state.tr.delete(from, hrPos + 1));
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toContain("rich-text.collab-step-failed");
+    expect(ed.view.state.doc.eq(yTextToPmDoc(ytext, meta, FULL, ed.view.state.schema))).toBe(true);
+    // Handled fail-safe: a valid text caret at the surviving atom rather
+    // than the old `new selection.constructor` corruption.
+    const restored = ed.view.state.selection;
+    expect(restored.anchor).toBeGreaterThanOrEqual(0);
+    expect(restored.head).toBeLessThanOrEqual(ed.view.state.doc.content.size);
+    expect(() => ed.view.state.doc.resolve(restored.anchor)).not.toThrow();
+    expect(() => ed.view.state.doc.resolve(restored.head)).not.toThrow();
+  });
+});
+
+describe("CL-3b1 review-1 FU-1 production path: observer-driven remote append keeps the caret", () => {
+  it("a length-changing remote append through the observer path restores the caret with no manual pre-image", async () => {
+    const { ed, ydoc, ytext, meta } = await boundEditor({
+      document: fullDoc([para("p:1", "alpha"), para("p:2", "beta")]),
+    });
+    const caretPos = textPos(ed.view.state.doc, "alpha", 5);
+    ed.view.dispatch(
+      ed.view.state.tr.setSelection(TextSelection.create(ed.view.state.doc, caretPos)),
+    );
+    expect(ed.view.state.selection.anchor).toBe(caretPos);
+    // A peer appends a block and its text; only the peer diff reaches the
+    // local doc, so the observers accumulate the pre-update layout and the
+    // delta themselves (no caller-supplied preBlocks).
+    const peer = new Y.Doc();
+    Y.applyUpdate(peer, Y.encodeStateAsUpdate(ydoc));
+    const peerText = peer.getText("field:body");
+    const beforeLength = peerText.length;
+    peer.transact(() => {
+      peerText.insert(peerText.length, "!");
+      peerText.insertEmbed(peerText.length, {
+        separator: { paragraphId: "paragraph:3", kind: "paragraph" },
+      } as never);
+      peerText.insert(peerText.length, "gamma");
+    });
+    expect(peerText.length).toBeGreaterThan(beforeLength);
+    Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(peer, Y.encodeStateVector(ydoc)));
+    expect(ed.view.state.selection.anchor).toBe(caretPos);
+    expect(ed.view.state.selection.head).toBe(caretPos);
+    expect(ed.view.state.doc.textBetween(0, ed.view.state.doc.content.size, "\n\n", "\n")).toContain("gamma");
+    expect(ytext.length).toBe(peerText.length);
+    void meta;
+  });
+});
