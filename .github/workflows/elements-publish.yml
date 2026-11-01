@@ -1,0 +1,154 @@
+name: Elements Publish
+
+# Publication du catalogue d'éléments (@sentropic/design-system-elements),
+# sur sa propre ligne de version. Déclenchée par un tag `elements-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
+# jeton temporaire pour la PREMIÈRE publication, comme rich-text-publish.yml.
+#
+# Pourquoi un amorçage : @sentropic/design-system-elements n'existe pas au
+# registre (mesuré le 2026-11-01 : `npm view` rend E404), et npm ne permet de
+# déclarer un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
+# « The first publication used a temporary bootstrap token because npm Trusted
+# Publishing can only be configured after each package exists. »
+#
+# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
+#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
+#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
+#   3. poser le tag `elements-v<version>` — l'étape d'amorçage du job `publish`
+#      s'active seule quand le secret est présent et reste inerte quand il est
+#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
+#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
+#      elements-publish.yml) sur le paquet désormais créé ;
+#   5. supprimer le secret, révoquer le jeton, puis retirer l'étape d'amorçage ici
+#      et son entrée dans scripts/verify-workflow-invariants.test.mjs.
+#
+# Côté consommateur (contexte seul, aucun changement h2a dans ce lot) : le
+# module de rendu h2a chargera les gros chunks depuis les coordonnées CDN
+# versionnées publiées ici, avec son module inline comme repli hors-ligne.
+
+on:
+  push:
+    tags: ["elements-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Verify elements package
+        run: |
+          npm --workspace @sentropic/design-system-elements run build:browser
+          npm --workspace @sentropic/design-system-elements run check
+          npm --workspace @sentropic/design-system-elements test
+      # The tarball guard, against THIS runner's bytes: the `verify` job is
+      # the only one that runs on `workflow_dispatch`, so without this step a
+      # bad tarball would pass that path unchecked (the `publish` job runs the
+      # same guard right before `npm publish`).
+      - name: Verify elements tarball guard
+        run: node --test scripts/elements-publish-tarball.test.mjs
+      - name: Verify publishable licensing
+        run: npm run licensing:check
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/elements-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify elements version matches tag
+        run: |
+          EXPECTED="${TAG#elements-v}"
+          ACTUAL=$(node -p "require('./packages/elements/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/elements is ${ACTUAL}."
+            exit 1
+          fi
+          echo "elements version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/elements-v')
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/design-system-elements run build
+          npm --workspace @sentropic/design-system-elements run build:browser
+          # The tarball guard, against THIS runner's bytes, right before publish:
+          # jsDelivr serves tarball bytes, so the SRI pin must hold on them.
+          node --test scripts/elements-publish-tarball.test.mjs
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
+      - name: Publish elements package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Skipped when the version is already on npm; never republished.
+          VERSION="${TAG#elements-v}"
+          if npm view "@sentropic/design-system-elements@${VERSION}" version --silent > /dev/null 2>&1; then
+            echo "@sentropic/design-system-elements@${VERSION} is already on npm: skipped."
+          else
+            npm publish --workspace @sentropic/design-system-elements --access public
+          fi
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/elements-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#elements-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-elements@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-elements@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
