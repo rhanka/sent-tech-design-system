@@ -171,20 +171,32 @@ describe("CL-3-07 packaging isolation", () => {
     const projection = readFileSync(join(SRC_DIR, "collab-projection.ts"), "utf8");
     const selection = readFileSync(join(SRC_DIR, "collab-selection.ts"), "utf8");
     const binding = readFileSync(join(SRC_DIR, "editor-collaboration.ts"), "utf8");
+    // CL-3b2: the composition session and the cursor plugin live in the
+    // collaboration graph behind "./editor/collaboration" (witness 7).
+    const composition = readFileSync(join(SRC_DIR, "collab-composition.ts"), "utf8");
+    const cursor = readFileSync(join(SRC_DIR, "collab-cursor.ts"), "utf8");
     for (const [name, text] of [
       ["collab-codec.ts", codec],
       ["collab-projection.ts", projection],
       ["collab-selection.ts", selection],
       ["editor-collaboration.ts", binding],
+      ["collab-composition.ts", composition],
+      ["collab-cursor.ts", cursor],
     ] as const) {
       expect(text.includes("Y.XmlFragment"), `${name} must not use Y.XmlFragment`).toBe(false);
       expect(text.includes("Y.XmlElement"), `${name} must not use Y.XmlElement`).toBe(false);
       expect(text.includes("Y.XmlText"), `${name} must not use Y.XmlText`).toBe(false);
       expect(text.includes("y-prosemirror"), `${name} must not use y-prosemirror`).toBe(false);
+      expect(text.includes("yCursorPlugin"), `${name} must not use yCursorPlugin (§5.1)`).toBe(false);
       expect(text.includes("extension-collaboration"), `${name} must not use a Tiptap collaboration extension`).toBe(false);
+      expect(text.includes("extension-collaboration-caret"), `${name} must not use a Tiptap caret extension`).toBe(false);
     }
     expect(codec.includes("yjs")).toBe(true);
     expect(binding.includes("y-protocols/awareness")).toBe(true);
+    // The DS writes its own decoration plugin (§5.1): plain ProseMirror
+    // only, mounted through a plain Tiptap extension wrapper.
+    expect(cursor.includes("y-prosemirror")).toBe(false);
+    expect(cursor.includes("wrapCursorPlugin")).toBe(true);
   });
 
   it("a controlled mount keeps UndoRedo and loads no collaboration graph", () => {
