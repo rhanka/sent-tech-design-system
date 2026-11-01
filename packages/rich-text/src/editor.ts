@@ -75,7 +75,7 @@ import type {
   RichTextUnsupportedPasteEvent,
 } from "./model.js";
 import type { RichTextMessages } from "./messages.js";
-import type { FieldBindingIdentity } from "./collaboration.js";
+import type { CollaborationActor, FieldBindingIdentity } from "./collaboration.js";
 import { decodeHrefToken, isAllowedHref } from "./collaboration.js";
 import {
   copyRichTextDocument,
@@ -87,7 +87,7 @@ import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
-import type { LiveSessionBindingSource } from "./editor-collaboration.js";
+import type { BoundUndoManager, LiveSessionBindingSource } from "./editor-collaboration.js";
 import type { AnyExtension } from "@tiptap/core";
 import { FULL_PROFILE_ID } from "./profile.js";
 import type { RichTextProfile } from "./profile.js";
@@ -229,6 +229,13 @@ export interface RichTextEditorOptions extends RichTextEditorCallbacks {
       `collaborationSource`; binding plus source without the runtime fail
       closed instead of routing to a hidden import. */
   collaborationRuntime?: RichTextCollaborationRuntime | null;
+  /** CL-3b1 local actor (register entry AMB-1, type-only): when supplied,
+      the bound `UndoManager` scopes to `actor:<actorId>`; otherwise the
+      binding mints the binding-scoped origin
+      `actor:binding:<sessionId>:<fieldKey>`, so undo works before a host
+      names actors. Mirrors the §6.2 `actor` prop; consumed only by the
+      injected bound runtime. */
+  collaborationActor?: CollaborationActor | null;
 }
 
 export interface RichTextEditor extends RichTextEditorHandle {
@@ -255,6 +262,14 @@ export interface RichTextEditor extends RichTextEditorHandle {
   deleteBlocks(paragraphIds: readonly string[]): void;
   undo(): void;
   redo(): void;
+  /** End the current undo capture group (CL-3b1 §4.5, register entry AMB-8):
+      the next local transaction starts a new undo step instead of joining
+      the previous one within the capture window. Bound only: delegates to
+      the field `UndoManager`; a controlled editor ignores the call. The
+      deterministic-step discipline for witnesses — and the CL-3b2 IME
+      commit boundary (one commit, one undoable transaction) — builds on
+      this primitive. */
+  stopCapturing(): void;
   copyToPayload(paragraphIds: readonly string[]): PastePayload;
   paste(payload: PastePayload): void;
   applyExternalUpdate(next: RichTextDocument): void;
@@ -363,7 +378,10 @@ export interface BoundImpl {
   projection: {
     BINDING_ORIGIN_META: string;
     buildSelectionMap: (doc: never, ytext: never) => never;
+    pmPositionToLinear: (map: never, pmPos: number) => number;
+    linearToPmPosition: (map: never, index: number) => number;
     projectPmTransactionToYText: (binding: never, before: never, tr: never) => string[];
+    stableMetadataJson: (value: unknown) => string;
     applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
     yTextToPmDoc: (ytext: never, fieldMeta: never, format: never, schema: never) => never;
     linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
@@ -373,6 +391,14 @@ export interface BoundImpl {
       delta: never,
     ) => string[];
   };
+  /** Local actor origin scoping the field `UndoManager` (register entry
+      AMB-1), minted by the injected bound runtime. */
+  localOrigin: string;
+  /** Mark origin for mark-only transactions (§4.5 boundary): never tracked. */
+  markOrigin: string;
+  /** The field `UndoManager` handle (spec §4.5, CL-3b1): type-erased, no `Y`
+      type crosses this seam. */
+  undoManager: BoundUndoManager;
   initialDocument: RichTextDocument;
 }
 
@@ -428,9 +454,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   // no collaboration module.
   const binding: FieldBindingIdentity | null = options.collaborationBinding ?? null;
   const bindingSource: LiveSessionBindingSource | null = options.collaborationSource ?? null;
-  // CL-3a bound mode (§4.5): exactly one history mechanism exists in either
-  // mode. The Yjs UndoManager itself lands in CL-3b; until then bound
-  // undo/redo fail closed through the placeholder below.
+  // CL-3b1 bound mode (§4.5): exactly one history mechanism exists in either
+  // mode. When bound, ProseMirror history is removed (single replacement
+  // point above) and the field `UndoManager` arrives through `boundImpl`;
+  // `boundImpl` is present iff the injected collaboration runtime mounted
+  // this editor, so `boundCollaboration` alone never routes to history.
   const boundCollaboration = binding !== null && bindingSource !== null;
   let isProjecting = false;
   let lastLinearBlocks: Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }> | null = null;
@@ -527,7 +555,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
     : createP0EditorExtensions(extensionOptions);
   // The single history replacement point (§4.5, CL-3a): when bound, UndoRedo
-  // is removed here and only here; the UndoManager itself is the CL-3b seam.
+  // is removed here and only here; the field UndoManager landed in CL-3b1
+  // (scoped to the local origin over Y.Text plus fieldmeta).
   const composedExtensions = boundCollaboration ? removeHistoryExtension(baseExtensions) : baseExtensions;
   const editor = new Editor({
     element,
@@ -801,6 +830,24 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       // at emission/capture, never repaired.
       handleKeyDown: (view: EditorView, event: KeyboardEvent): boolean => {
         if (tracker.destroyed || !isActive()) return false;
+        // CL-3b1 §4.5: bound history keys. The field `UndoManager` owns
+        // undo/redo in bound mode — ProseMirror history is absent, so these
+        // keys are answered here, never by re-adding a history extension.
+        // Controlled mode keeps its history extension bindings untouched.
+        if (boundCollaboration && (event.metaKey || event.ctrlKey) && !event.altKey) {
+          if (view.composing || tracker.composing) return false;
+          const key = event.key.toLowerCase();
+          if (key === "z" && !event.shiftKey) {
+            event.preventDefault();
+            runBoundHistory("undo");
+            return true;
+          }
+          if ((key === "z" && event.shiftKey) || key === "y") {
+            event.preventDefault();
+            runBoundHistory("redo");
+            return true;
+          }
+        }
         if (event.key !== "Enter" || !event.shiftKey) return false;
         if (documentFormat !== "focus.markdown.p0@1") return false;
         const { $from } = view.state.selection;
@@ -1229,6 +1276,66 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     return ordered;
   };
 
+  /** Block ids whose captured record changed between two captures, in the
+      after-document order (CL-3b1 §4.5: a bound undo/redo gesture names
+      exactly the blocks whose content actually changed). Identity-only and
+      order-only moves report no change; removed blocks count as changed
+      (review 1 B-3: undoing an HR insertion, undoing an end-of-paragraph
+      split, or redoing a block deletion names the removed id). */
+  const diffBlockIds = (before: RichTextDocument, after: RichTextDocument): string[] => {
+    // Order-insensitive like the projection (review 1 follow-up): the
+    // stored records keep their key order on semantic no-ops.
+    const stable =
+      boundImpl?.projection.stableMetadataJson ?? ((value: unknown) => JSON.stringify(value));
+    const beforeById = new Map<string, unknown>();
+    for (const block of before.blocks as unknown as Array<Record<string, unknown>>) {
+      if (typeof block["paragraphId"] === "string") {
+        beforeById.set(block["paragraphId"] as string, block);
+      }
+    }
+    const afterIds = new Set<string>();
+    const changed: string[] = [];
+    for (const block of after.blocks as unknown as Array<Record<string, unknown>>) {
+      if (typeof block["paragraphId"] !== "string") continue;
+      const id = block["paragraphId"] as string;
+      afterIds.add(id);
+      const previous = beforeById.get(id);
+      if (previous === undefined || stable(previous) !== stable(block)) {
+        changed.push(id);
+      }
+    }
+    for (const id of beforeById.keys()) {
+      if (!afterIds.has(id)) changed.push(id);
+    }
+    return changed;
+  };
+
+  /** Bound undo/redo through the field `UndoManager` (CL-3b1 §4.5): a
+      no-op (no throw, no event) when the editor is inactive or the stack is
+      empty. Otherwise the manager applies, the change flows through the same
+      observers as a remote update — the view repaints, the selection
+      restores through relative positions, and no echo reaches `Y.Text`
+      (the repaint dispatches with the binding origin, which the local
+      projection path skips) — and exactly one `undo`/`redo` gesture names
+      the blocks whose content actually changed. Mark undo never passes
+      through here: mark-only transactions are untracked by construction
+      (§4.5 boundary), so the stacks hold no mark step to consume. */
+  const runBoundHistory = (direction: "undo" | "redo"): void => {
+    if (tracker.destroyed || !isActive()) return;
+    if (boundImpl === undefined) return;
+    // Review 1 follow-up: the composing guard precedes the manager, so a
+    // programmatic undo/redo mid-composition consumes no step (keyboard
+    // already guards this path).
+    if (tracker.composing || editor.view.composing) return;
+    const manager = boundImpl.undoManager;
+    if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
+    const before = displayedCaptureResult();
+    const applied = direction === "undo" ? manager.undo() : manager.redo();
+    if (applied === null || applied === undefined) return;
+    const after = displayedCaptureResult();
+    emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
+  };
+
   /** Provenance of one native (unsuppressed) transaction, from ProseMirror
       commands and meta: paste meta first, history transactions next
       (imperative flag, else the undo/redo stack depths), then the structural
@@ -1426,6 +1533,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
             // minted split-tail and inserted-block identities instead of
             // allocating a second, divergent one.
             pmTransactionDoc: editor.state.doc,
+            // CL-3b1 §4.5: one origin per transaction — the local origin
+            // normally, the mark origin for mark-only transactions (the
+            // projection classifies; the manager tracks only the former).
+            localOrigin: boundImpl.localOrigin,
+            markOrigin: boundImpl.markOrigin,
           } as never,
           transaction.before as never,
           transaction as never,
@@ -1469,6 +1581,36 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           `rich-text.collab-step-failed: the local transaction was rolled back on both sides (${cause})`,
           "local-projection",
         );
+        // CL-3b1 FU-2 (§4.3.1 item 4, §5.2), review 1 TF-2: capture the
+        // pre-transaction selection as linear offsets through the
+        // pre-transaction selection map before dispatching the rollback
+        // replacement. The map pairs `transaction.before` (the document the
+        // still-agreed shared state projects to) with that shared state by
+        // paragraph identity, so a caret in a surviving region converts to
+        // the linear offset that region still owns — even when the failed
+        // transaction changed text before the caret. A caret inside the
+        // refused span has no surviving offset and restores to the nearest
+        // valid inline position below. A capture failure falls back to the
+        // plain rollback, never to a second refusal.
+        let rollbackAnchor: number | null = null;
+        let rollbackHead: number | null = null;
+        try {
+          const preMap = boundImpl.projection.buildSelectionMap(
+            transaction.before as never,
+            boundImpl.ytext as never,
+          );
+          // Map the post-transaction selection back through the inverted
+          // step mapping: the pre-transaction positions, even when the
+          // failed transaction changed text before the caret.
+          const inverted = transaction.mapping.invert();
+          const preAnchor = inverted.map(editor.view.state.selection.anchor, -1);
+          const preHead = inverted.map(editor.view.state.selection.head, 1);
+          rollbackAnchor = boundImpl.projection.pmPositionToLinear(preMap, preAnchor);
+          rollbackHead = boundImpl.projection.pmPositionToLinear(preMap, preHead);
+        } catch {
+          rollbackAnchor = null;
+          rollbackHead = null;
+        }
         try {
           const sharedDoc = boundImpl.projection.yTextToPmDoc(
             boundImpl.ytext as never,
@@ -1480,6 +1622,35 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           rollback.setMeta(boundImpl.projection.BINDING_ORIGIN_META, true);
           rollback.setMeta("addToHistory", false);
           rollback.replaceWith(0, editor.view.state.doc.content.size, sharedDoc.content as never);
+          // Restore the caret from the pre-transaction linear offsets
+          // against the rebuilt document, clamped to the nearest valid
+          // inline position; a restore failure keeps the default
+          // post-replacement selection. `TextSelection.between` also
+          // covers a pre-transaction node selection (restored as a text
+          // caret at the atom, never a corrupt node selection — the old
+          // `new selection.constructor` path) — review 1 TF-2.
+          if (rollbackAnchor !== null && rollbackHead !== null) {
+            try {
+              const afterMap = boundImpl.projection.buildSelectionMap(
+                rollback.doc as never,
+                boundImpl.ytext as never,
+              );
+              const size = rollback.doc.content.size;
+              const anchorPm = Math.max(
+                0,
+                Math.min(boundImpl.projection.linearToPmPosition(afterMap, rollbackAnchor), size),
+              );
+              const headPm = Math.max(
+                0,
+                Math.min(boundImpl.projection.linearToPmPosition(afterMap, rollbackHead), size),
+              );
+              const $anchor = rollback.doc.resolve(anchorPm);
+              const $head = rollback.doc.resolve(headPm);
+              rollback.setSelection(TextSelection.between($anchor, $head));
+            } catch {
+              // Clamp failure keeps the default post-replacement selection.
+            }
+          }
           editor.view.dispatch(rollback as never);
         } catch {
           // The shared state itself no longer projects: the surfaced error
@@ -2640,12 +2811,12 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     },
 
     undo(): void {
-      // CL-3a bound seam (§4.5): no ProseMirror history exists when bound
-      // (UndoRedo removed above) and the UndoManager lands in CL-3b. Fail
-      // closed — the same message as the collaboration placeholder — and
-      // never double-record.
+      // CL-3b1 bound history (§4.5): no ProseMirror history exists when
+      // bound (UndoRedo removed in exactly one place above); the field
+      // `UndoManager` owns undo/redo instead, so nothing double-records.
       if (boundCollaboration) {
-        throw new Error("rich-text.bound-undo-unavailable");
+        runBoundHistory("undo");
+        return;
       }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
@@ -2669,7 +2840,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
 
     redo(): void {
       if (boundCollaboration) {
-        throw new Error("rich-text.bound-undo-unavailable");
+        runBoundHistory("redo");
+        return;
       }
       if (tracker.destroyed || !isActive()) return;
       lastDispatchChanged = false;
@@ -2686,6 +2858,15 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       if (!lastDispatchChanged) return;
       const after = displayedCaptureResult();
       emitChange("redo", orderIdsByDocument([...suppressedAffected]), undefined, after);
+    },
+
+    stopCapturing(): void {
+      // AMB-8: the field manager's default capture window (500 ms)
+      // coalesces rapid local transactions; breaking it is how witnesses —
+      // and later the CL-3b2 IME commit — delimit deterministic undo steps.
+      // Controlled mode keeps its ProseMirror history untouched: no-op there.
+      if (boundImpl === undefined) return;
+      boundImpl.undoManager.stopCapturing();
     },
 
     copyToPayload(paragraphIds: readonly string[]): PastePayload {
@@ -2834,6 +3015,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         yTextHandler = null;
         fieldMetaHandler = null;
         afterTransactionHandler = null;
+        try {
+          boundImpl.undoManager.destroy();
+        } catch {
+          // Manager teardown never blocks the editor teardown.
+        }
         try {
           if (binding !== null && bindingSource !== null) {
             bindingSource.releaseBinding(binding);
