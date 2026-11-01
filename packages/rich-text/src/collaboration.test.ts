@@ -37,6 +37,7 @@ import {
 } from "./collaboration.js";
 import type {
   AgentEditOperation,
+  AgentParagraphState,
   AgentPatch,
   AgentPatchKey,
   CollaborationActor,
@@ -444,6 +445,57 @@ describe("read-request bounds validator (R-READ-1)", () => {
         fieldKey: "field:notes",
       }),
     ).toMatchObject({ ok: false, reason: "scope-denied" });
+  });
+
+  it("refuses malformed anchor-request entries as incompatible-schema (CL-4b Task 1 audit gap)", () => {
+    expect(
+      validateAgentReadRequest({
+        binding: BINDING,
+        anchorRequests: [{ paragraphId: "", paragraphOffset: 0 }],
+      }),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+    expect(
+      validateAgentReadRequest({
+        binding: BINDING,
+        anchorRequests: [{ paragraphId: "paragraph:1", paragraphOffset: -1 }],
+      }),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+    expect(
+      validateAgentReadRequest({
+        binding: BINDING,
+        anchorRequests: [{ paragraphId: "paragraph:1", paragraphOffset: 1.5 }],
+      }),
+    ).toMatchObject({ ok: false, reason: "incompatible-schema" });
+  });
+});
+
+describe("preserved chunk fields on AgentParagraphState (CL-4b Task 2, AMB-D7)", () => {
+  it("a paginated preserved entry carries one contiguous chunk with its offset and completion flag", () => {
+    const chunk: AgentParagraphState = {
+      paragraphId: "p:raw",
+      kind: "preserved",
+      preservedKind: "example/preserved",
+      raw: "second-chunk-bytes",
+      rawOffset: 1024,
+      rawComplete: false,
+      startAnchor: anchor(0),
+      endAnchor: anchor(1),
+    };
+    expect(chunk.rawOffset).toBe(1024);
+    expect(chunk.rawComplete).toBe(false);
+  });
+
+  it("an in-cap preserved entry carries neither chunk field (existing fixtures stay byte-stable)", () => {
+    const whole: AgentParagraphState = {
+      paragraphId: "p:raw",
+      kind: "preserved",
+      preservedKind: "example/preserved",
+      raw: "whole-verbatim-raw",
+      startAnchor: anchor(0),
+      endAnchor: anchor(1),
+    };
+    expect("rawOffset" in whole).toBe(false);
+    expect("rawComplete" in whole).toBe(false);
   });
 });
 
