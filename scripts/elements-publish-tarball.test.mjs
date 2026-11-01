@@ -212,11 +212,11 @@ function spawnOrThrow(command, args, label) {
  * `build:browser` writer in the same outDir breaks the first: observed
  * 2026-11-01 as `ENOENT ... dist/browser/assets/*.woff2` inside the L2
  * guard's own build while this guard rebuilt beside it (vite's `emptyOutDir`
- * wipes the tree the other writer is reading). The sibling
- * elements-browser-artifacts guard now rebuilds only when the tree is
- * missing or stale, so a fresh tree is never wiped under this reader. One
- * builder only — the workflow's, or that sibling guard's on a missing/stale
- * tree — and every other guard reads.
+ * wipes the tree the other writer is reading). Neither this guard nor its
+ * sibling elements-browser-artifacts guard builds anymore — both are
+ * read-only. One builder only — the workflow's `npm run build` (whose
+ * elements script produces dist/ and dist/browser/ together) — and every
+ * guard reads.
  */
 export function unbuiltReason() {
   if (!existsSync(join(elementsDir, "dist", "index.js"))) {
