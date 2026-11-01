@@ -44,14 +44,20 @@ export interface LiveSessionBindingSource {
   releaseBinding(identity: FieldBindingIdentity): void;
   /**
    * Admitted-actor registry (spec §5.1, register entry AMB-5): the host
-   * maintains `actorId` ↔ awareness-participant admission; the DS cursor
-   * renderer consumes it through the binding source and renders a caret
-   * only for an admitted actor. Optional so test sources without a
+   * maintains the `actorId` ↔ awareness-client pair established at
+   * admission; the DS cursor renderer consumes it through the binding
+   * source and renders a caret only for an admitted actor on its own
+   * registered client (§13 F2). Optional so test sources without a
    * registry keep failing closed (unregistered ⇒ no caret).
    */
-  registerActor?(actor: { actorId: string; displayLabel: string; color: string }): void;
+  registerActor?(
+    actor: { actorId: string; displayLabel: string; color: string },
+    awarenessClientId?: number,
+  ): void;
   revokeActor?(actorId: string): void;
-  admittedActorOf?(actorId: string): { displayLabel: string; color: string } | null;
+  admittedActorOf?(
+    actorId: string,
+  ): { displayLabel: string; color: string; awarenessClientId?: number } | null;
 }
 
 /**
@@ -140,8 +146,9 @@ interface SessionRecord {
   awareness: Awareness;
   fields: Set<string>;
   holders: Map<string, number>;
-  /** Admitted actors of this session (§5.1 registry, AMB-5). */
-  actors: Map<string, { displayLabel: string; color: string }>;
+  /** Admitted actors of this session (§5.1 registry, AMB-5): the
+      `actorId` ↔ awareness-client pair, established at admission. */
+  actors: Map<string, { displayLabel: string; color: string; awarenessClientId?: number }>;
 }
 
 function checkActorShape(actor: { actorId: string; displayLabel: string; color: string }): void {
@@ -230,15 +237,24 @@ export function createInMemoryTestDoubleProvider(): {
           live.fields.delete(identity.fieldKey);
           if (live.fields.size === 0) sessions.delete(key);
         },
-        registerActor(actor: { actorId: string; displayLabel: string; color: string }): void {
+        registerActor(
+          actor: { actorId: string; displayLabel: string; color: string },
+          awarenessClientId?: number,
+        ): void {
           checkActorShape(actor);
-          live.actors.set(actor.actorId, { displayLabel: actor.displayLabel, color: actor.color });
+          live.actors.set(actor.actorId, {
+            displayLabel: actor.displayLabel,
+            color: actor.color,
+            ...(awarenessClientId === undefined ? {} : { awarenessClientId }),
+          });
         },
         revokeActor(actorId: string): void {
           requireCoordinate(actorId, "actorId");
           live.actors.delete(actorId);
         },
-        admittedActorOf(actorId: string): { displayLabel: string; color: string } | null {
+        admittedActorOf(
+          actorId: string,
+        ): { displayLabel: string; color: string; awarenessClientId?: number } | null {
           return live.actors.get(actorId) ?? null;
         },
       };
@@ -291,10 +307,11 @@ export interface AdmissionJournalEvent {
  * resolving any binding: equal profile+epoch admits (forking a session doc
  * off the authority); any mismatch refuses the typed
  * `incompatible-schema` value with no binding and no client update applied.
- * Once a draft migration was journaled for the document, admission at the
- * new epoch additionally requires a recorded acknowledgement for that
- * actor — branch (b) — while a client upgrade with no draft migration in
- * history admits without one — branch (a).
+ * Once a draft migration was journaled for that same actor at the
+ * current epoch, admission at the new epoch additionally requires a
+ * recorded acknowledgement for that actor — branch (b) — while a client
+ * upgrade with no draft migration for that actor in history admits
+ * without one — branch (a).
  */
 export function createAdmissionCapableTestDoubleProvider(): {
   seedAuthority(
@@ -310,10 +327,13 @@ export function createAdmissionCapableTestDoubleProvider(): {
   /** HOST SEAM: migrate the client's preserved draft only (stand-in for
       the host's defined epoch-step migration; the content transform is
       host-owned, CL-5). The authoritative doc is never touched here —
-      asserted by its state vector and the journal. Never reachable from a
-      binding. */
+      asserted by its state vector and the journal. The migrated actor is
+      recorded on the journal event with the target epoch, so the
+      acknowledgement gate is per actor, never per document. Never reachable
+      from a binding. */
   hostMigratePreservedDraft(
     documentId: string,
+    actorId: string,
     draft: RichTextDocument,
   ): { draft: RichTextDocument; profileId: string; schemaEpoch: string };
   /** HOST SEAM: record the client's explicit acknowledgement of the
@@ -396,17 +416,23 @@ export function createAdmissionCapableTestDoubleProvider(): {
       return { profileId: authority.profileId, schemaEpoch: next };
     },
 
-    hostMigratePreservedDraft(documentId, draft): { draft: RichTextDocument; profileId: string; schemaEpoch: string } {
+    hostMigratePreservedDraft(
+      documentId: string,
+      actorId: string,
+      draft: RichTextDocument,
+    ): { draft: RichTextDocument; profileId: string; schemaEpoch: string } {
       const authority = authorities.get(documentId);
       if (authority === undefined) {
         throw new Error("rich-text.admission-migration: unknown document fails closed");
       }
+      requireCoordinate(actorId, "actorId");
       record({
         kind: "draft-migration",
         documentId,
         target: "draft",
         profileId: authority.profileId,
         toEpoch: authority.schemaEpoch,
+        actorId,
       });
       return {
         draft: structuredClone(draft) as RichTextDocument,
@@ -416,20 +442,21 @@ export function createAdmissionCapableTestDoubleProvider(): {
     },
 
     hostRecordAcknowledgement(acknowledgement): void {
+      requireCoordinate(acknowledgement.documentId, "documentId");
       requireCoordinate(acknowledgement.actorId, "actorId");
       requireCoordinate(acknowledgement.profileId, "profileId");
       requireCoordinate(acknowledgement.schemaEpoch, "schemaEpoch");
-      const authority = [...authorities.values()].find(
-        (entry) =>
-          entry.profileId === acknowledgement.profileId &&
-          entry.schemaEpoch === acknowledgement.schemaEpoch,
-      );
-      if (authority === undefined) {
-        throw new Error("rich-text.admission-acknowledgement: unknown profile/epoch fails closed");
+      const authority = authorities.get(acknowledgement.documentId);
+      if (
+        authority === undefined ||
+        authority.profileId !== acknowledgement.profileId ||
+        authority.schemaEpoch !== acknowledgement.schemaEpoch
+      ) {
+        throw new Error("rich-text.admission-acknowledgement: unknown document/profile/epoch fails closed");
       }
       record({
         kind: "acknowledgement",
-        documentId: [...authorities.entries()].find(([, value]) => value === authority)?.[0] ?? "",
+        documentId: acknowledgement.documentId,
         target: "authoritative",
         profileId: acknowledgement.profileId,
         toEpoch: acknowledgement.schemaEpoch,
@@ -465,7 +492,11 @@ export function createAdmissionCapableTestDoubleProvider(): {
         return { admitted: false as const, refusal: decision };
       }
       const draftMigrated = journal.some(
-        (event) => event.documentId === input.documentId && event.kind === "draft-migration",
+        (event) =>
+          event.documentId === input.documentId &&
+          event.kind === "draft-migration" &&
+          event.actorId === input.actorId &&
+          event.toEpoch === authority.schemaEpoch,
       );
       const acknowledged = journal.some(
         (event) =>
@@ -552,15 +583,24 @@ export function createAdmissionCapableTestDoubleProvider(): {
             }
             live.holders.delete(identity.fieldKey);
           },
-          registerActor(actor: { actorId: string; displayLabel: string; color: string }): void {
+          registerActor(
+            actor: { actorId: string; displayLabel: string; color: string },
+            awarenessClientId?: number,
+          ): void {
             checkActorShape(actor);
-            live.actors.set(actor.actorId, { displayLabel: actor.displayLabel, color: actor.color });
+            live.actors.set(actor.actorId, {
+              displayLabel: actor.displayLabel,
+              color: actor.color,
+              ...(awarenessClientId === undefined ? {} : { awarenessClientId }),
+            });
           },
           revokeActor(actorId: string): void {
             requireCoordinate(actorId, "actorId");
             live.actors.delete(actorId);
           },
-          admittedActorOf(actorId: string): { displayLabel: string; color: string } | null {
+          admittedActorOf(
+            actorId: string,
+          ): { displayLabel: string; color: string; awarenessClientId?: number } | null {
             return live.actors.get(actorId) ?? null;
           },
         },
