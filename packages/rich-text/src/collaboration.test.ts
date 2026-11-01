@@ -225,6 +225,117 @@ describe("patch shape/size/bounds validator (§5.3.1)", () => {
   });
 });
 
+describe("CL-4a validator audit (P0 families, §5.3.1)", () => {
+  function p0Patch(operation: AgentEditOperation): AgentPatch {
+    return basePatch([operation]);
+  }
+
+  it("admits a P0 insert shape", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "insert",
+          fieldKey: BINDING.fieldKey,
+          paragraphId: "paragraph:1",
+          at: anchor(1),
+          text: "hello",
+        }),
+        "p0",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("admits a P0 hard-break insert shape", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "insertHardBreak",
+          fieldKey: BINDING.fieldKey,
+          paragraphId: "paragraph:1",
+          at: anchor(1),
+        }),
+        "p0",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("admits a P0 delete shape", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "delete",
+          fieldKey: BINDING.fieldKey,
+          paragraphId: "paragraph:1",
+          range: { start: anchor(1), end: anchor(2) },
+        }),
+        "p0",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("admits each P0 boolean mark shape", () => {
+    for (const mark of ["bold", "italic", "code"] as const) {
+      for (const applied of [true, false] as const) {
+        expect(
+          validateAgentPatch(
+            p0Patch({
+              type: "mark",
+              fieldKey: BINDING.fieldKey,
+              paragraphId: "paragraph:1",
+              range: { start: anchor(1), end: anchor(2) },
+              mark,
+              applied,
+            }),
+            "p0",
+          ),
+        ).toEqual({ ok: true });
+      }
+    }
+  });
+
+  it("admits a P0 split shape", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "splitParagraph",
+          fieldKey: BINDING.fieldKey,
+          paragraphId: "paragraph:1",
+          at: anchor(1),
+          newParagraphId: "paragraph:2",
+        }),
+        "p0",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("admits a P0 merge shape", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "mergeWithPrevious",
+          fieldKey: BINDING.fieldKey,
+          paragraphId: "paragraph:2",
+        }),
+        "p0",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("refuses a P0 delete addressed outside the patch binding field", () => {
+    expect(
+      validateAgentPatch(
+        p0Patch({
+          type: "delete",
+          fieldKey: "field:notes",
+          paragraphId: "paragraph:1",
+          range: { start: anchor(1), end: anchor(2) },
+        }),
+        "p0",
+      ),
+    ).toMatchObject({ ok: false, reason: "scope-denied", operationIndex: 0 });
+  });
+});
+
 describe("link href allowlist (R-FULL-URL-1)", () => {
   function linkOperation(href: string | null): AgentEditOperation {
     return {
