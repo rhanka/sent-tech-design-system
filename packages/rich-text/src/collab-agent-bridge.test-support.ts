@@ -112,10 +112,12 @@ export interface AgentAffectedOperation {
   /** Exact Yjs items created by this operation (text characters, embeds,
       separator; format markers included for mark operations). */
   insertedItems: readonly AgentItemId[];
-  /** Base items deleted by this operation with their deleted content slice. */
+  /** Base items deleted by this operation with their deleted content slice
+      (slice-exact length plus the offset into the host item, for CL-4c). */
   deletedItems: readonly {
     client: number;
     clock: number;
+    offset: number;
     length: number;
     text: string;
     isHardBreak: boolean;
@@ -341,17 +343,21 @@ function scanParagraphs(items: readonly WalkItem[], fieldLength: number): Scanne
   return paragraphs;
 }
 
-/** Containing paragraph of a linear position (separators open their block). */
+/** Containing paragraph of a linear position (a separator belongs to the
+    preceding paragraph, so an endAnchor resolves to its own paragraph;
+    index 0 stays on the first paragraph; R-ANCH-2, R-ANCH-3, §5.7). */
 function containingParagraph(
   paragraphs: readonly ScannedParagraph[],
   index: number,
 ): ScannedParagraph | null {
-  let found: ScannedParagraph | null = null;
+  if (paragraphs.length === 0) return null;
+  if (index <= 0) return paragraphs[0] ?? null;
   for (const paragraph of paragraphs) {
-    if (paragraph.separatorIndex <= index) found = paragraph;
-    else break;
+    if (index >= paragraph.contentStart && index <= paragraph.contentEnd) {
+      return paragraph;
+    }
   }
-  return found;
+  return null;
 }
 
 /** An item existed at the base revision iff the base state vector covers its
@@ -736,10 +742,16 @@ function applyOneOperation(
       if (overlap !== null) {
         throw new BridgeRefusal("structural-conflict", `operation ${operationIndex} delete: range covers a ${overlap} embed (R-ANCH-4)`, operationIndex);
       }
+      // A resolved position inside a preserved segment is not text-editable
+      // (R-ANCH-3); after the overlap check only the zero-width case reaches
+      // here, and it still refuses `scope-denied`.
+      if (containingParagraph(paragraphs, low)?.kind === "preserved") {
+        throw new BridgeRefusal("scope-denied", `operation ${operationIndex} delete: preserved content is not text-editable (R-ANCH-3)`, operationIndex);
+      }
       // Item-set delete (R-ANCH-4): exactly the base-revision items between the
       // resolved anchors; concurrent interior items survive.
       const spans: Array<{ start: number; end: number }> = [];
-      const deleted: Array<{ client: number; clock: number; length: number; text: string; isHardBreak: boolean }> = [];
+      const deleted: Array<{ client: number; clock: number; offset: number; length: number; text: string; isHardBreak: boolean }> = [];
       for (const item of items) {
         if (item.kind !== "text" && item.kind !== "hardBreak") continue;
         if (item.start >= high || item.end <= low) continue;
@@ -751,7 +763,8 @@ function applyOneOperation(
         deleted.push({
           client: item.client,
           clock: item.clock,
-          length: item.length,
+          offset: sliceStart - item.start,
+          length: sliceEnd - sliceStart,
           text: item.kind === "text" ? item.text.slice(sliceStart - item.start, sliceEnd - item.start) : "",
           isHardBreak: item.kind === "hardBreak",
         });
@@ -795,6 +808,12 @@ function applyOneOperation(
       const overlap = structuralOverlap(items, low, high);
       if (overlap !== null) {
         throw new BridgeRefusal("structural-conflict", `operation ${operationIndex} mark: range covers a ${overlap} embed (R-ANCH-4)`, operationIndex);
+      }
+      // A resolved position inside a preserved segment is not text-editable
+      // (R-ANCH-3); after the overlap check only the zero-width case reaches
+      // here, and it still refuses `scope-denied`.
+      if (containingParagraph(paragraphs, low)?.kind === "preserved") {
+        throw new BridgeRefusal("scope-denied", `operation ${operationIndex} mark: preserved content is not text-editable (R-ANCH-3)`, operationIndex);
       }
       if (
         operation.mark !== "bold" &&
