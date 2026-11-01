@@ -11,9 +11,21 @@
 
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
-import type { FieldBindingIdentity } from "./collaboration.js";
+import type {
+  FieldBindingIdentity,
+  LiveSessionAdmissionRequest,
+  LiveSessionOpenRefusal,
+  SchemaEpochAcknowledgement,
+} from "./collaboration.js";
+import { decideLiveSessionAdmission } from "./collaboration.js";
 import type { RichTextFormat } from "./model.js";
-import { captureDocumentFromField, fieldMetaName, fieldTextName } from "./collab-codec.js";
+import type { RichTextDocument } from "./model.js";
+import {
+  captureDocumentFromField,
+  fieldMetaName,
+  fieldTextName,
+  seedFieldFromDocument,
+} from "./collab-codec.js";
 
 /** One field binding: the field's linear text plus its metadata map. */
 export interface LiveSessionBinding {
@@ -30,6 +42,16 @@ export interface LiveSessionBinding {
 export interface LiveSessionBindingSource {
   resolveBinding(identity: FieldBindingIdentity): LiveSessionBinding;
   releaseBinding(identity: FieldBindingIdentity): void;
+  /**
+   * Admitted-actor registry (spec §5.1, register entry AMB-5): the host
+   * maintains `actorId` ↔ awareness-participant admission; the DS cursor
+   * renderer consumes it through the binding source and renders a caret
+   * only for an admitted actor. Optional so test sources without a
+   * registry keep failing closed (unregistered ⇒ no caret).
+   */
+  registerActor?(actor: { actorId: string; displayLabel: string; color: string }): void;
+  revokeActor?(actorId: string): void;
+  admittedActorOf?(actorId: string): { displayLabel: string; color: string } | null;
 }
 
 /**
@@ -118,6 +140,16 @@ interface SessionRecord {
   awareness: Awareness;
   fields: Set<string>;
   holders: Map<string, number>;
+  /** Admitted actors of this session (§5.1 registry, AMB-5). */
+  actors: Map<string, { displayLabel: string; color: string }>;
+}
+
+function checkActorShape(actor: { actorId: string; displayLabel: string; color: string }): void {
+  requireCoordinate(actor.actorId, "actorId");
+  requireCoordinate(actor.displayLabel, "displayLabel");
+  if (typeof actor.color !== "string") {
+    throw new Error("rich-text.actor-registry: color must be a string (validated at render)");
+  }
 }
 
 function requireCoordinate(value: string, name: string): void {
@@ -158,7 +190,7 @@ export function createInMemoryTestDoubleProvider(): {
       let record = sessions.get(key);
       if (record === undefined) {
         const ydoc = new Y.Doc();
-        record = { ydoc, awareness: new Awareness(ydoc), fields: new Set(fieldKeys), holders: new Map() };
+        record = { ydoc, awareness: new Awareness(ydoc), fields: new Set(fieldKeys), holders: new Map(), actors: new Map() };
         sessions.set(key, record);
       } else {
         for (const fieldKey of fieldKeys) record.fields.add(fieldKey);
@@ -198,6 +230,17 @@ export function createInMemoryTestDoubleProvider(): {
           live.fields.delete(identity.fieldKey);
           if (live.fields.size === 0) sessions.delete(key);
         },
+        registerActor(actor: { actorId: string; displayLabel: string; color: string }): void {
+          checkActorShape(actor);
+          live.actors.set(actor.actorId, { displayLabel: actor.displayLabel, color: actor.color });
+        },
+        revokeActor(actorId: string): void {
+          requireCoordinate(actorId, "actorId");
+          live.actors.delete(actorId);
+        },
+        admittedActorOf(actorId: string): { displayLabel: string; color: string } | null {
+          return live.actors.get(actorId) ?? null;
+        },
       };
     },
   };
@@ -209,4 +252,353 @@ export function captureBoundDocument(
   format: RichTextFormat,
 ): ReturnType<typeof captureDocumentFromField> {
   return captureDocumentFromField(binding.text, binding.fieldMeta, format);
+}
+
+/**
+ * Admission journal event of the admission-capable test double (spec
+ * §4.8.1 witness inspection). `application` entries appear only when a
+ * client update is applied through `applyClientUpdate` after admission —
+ * a refusal never records one and never touches the authoritative doc.
+ */
+export interface AdmissionJournalEvent {
+  seq: number;
+  kind:
+    | "migration"
+    | "draft-migration"
+    | "acknowledgement"
+    | "admission"
+    | "refusal"
+    | "application";
+  documentId: string;
+  target: "authoritative" | "draft" | "session";
+  profileId?: string;
+  fromEpoch?: string;
+  toEpoch?: string;
+  actorId?: string;
+  sessionId?: string;
+}
+
+/**
+ * Admission-capable in-memory test double (spec §4.8.1, register entry
+ * AMB-3). The DS half of the witness: the admission authority, the `meta`
+ * writer and the migration itself are host-side (R-MAP-5) and are
+ * represented here by explicitly host-origin seams (`host*`), labelled as
+ * such and never reachable from a binding (`resolveBinding` /
+ * `releaseBinding` expose no migration, no acknowledgement, no journal).
+ *
+ * One authoritative `Y.Doc` per document carries the host-minted
+ * `{ profileId, schemaEpoch }`. `openSessionAdmitted` compares before
+ * resolving any binding: equal profile+epoch admits (forking a session doc
+ * off the authority); any mismatch refuses the typed
+ * `incompatible-schema` value with no binding and no client update applied.
+ * Once a draft migration was journaled for the document, admission at the
+ * new epoch additionally requires a recorded acknowledgement for that
+ * actor — branch (b) — while a client upgrade with no draft migration in
+ * history admits without one — branch (a).
+ */
+export function createAdmissionCapableTestDoubleProvider(): {
+  seedAuthority(
+    documentId: string,
+    fieldKey: string,
+    document: RichTextDocument,
+    profileId: string,
+    schemaEpoch: string,
+  ): void;
+  /** HOST SEAM: mint a host migration — the authoritative epoch moves by
+      exactly one, journaled. Never reachable from a binding. */
+  hostMintMigration(documentId: string): { profileId: string; schemaEpoch: string };
+  /** HOST SEAM: migrate the client's preserved draft only (stand-in for
+      the host's defined epoch-step migration; the content transform is
+      host-owned, CL-5). The authoritative doc is never touched here —
+      asserted by its state vector and the journal. Never reachable from a
+      binding. */
+  hostMigratePreservedDraft(
+    documentId: string,
+    draft: RichTextDocument,
+  ): { draft: RichTextDocument; profileId: string; schemaEpoch: string };
+  /** HOST SEAM: record the client's explicit acknowledgement of the
+      current profile/epoch. Never reachable from a binding. */
+  hostRecordAcknowledgement(acknowledgement: SchemaEpochAcknowledgement): void;
+  openSessionAdmitted(input: {
+    documentId: string;
+    sessionId: string;
+    fieldKeys: readonly string[];
+    actorId: string;
+    client: LiveSessionAdmissionRequest;
+  }): { admitted: true; source: LiveSessionBindingSource } | { admitted: false; refusal: LiveSessionOpenRefusal };
+  applyClientUpdate(documentId: string, sessionId: string, update: Uint8Array): void;
+  authorityVectorHex(documentId: string): string;
+  authorityCapture(
+    documentId: string,
+    fieldKey: string,
+    format: RichTextFormat,
+  ): ReturnType<typeof captureDocumentFromField>;
+  journal(): readonly AdmissionJournalEvent[];
+} {
+  interface Authority {
+    ydoc: Y.Doc;
+    fieldKeys: Set<string>;
+    profileId: string;
+    schemaEpoch: string;
+  }
+  const authorities = new Map<string, Authority>();
+  const sessions = new Map<string, SessionRecord>();
+  const journal: AdmissionJournalEvent[] = [];
+  let seq = 0;
+  const record = (event: Omit<AdmissionJournalEvent, "seq">): void => {
+    seq += 1;
+    journal.push({ ...event, seq });
+  };
+
+  return {
+    seedAuthority(documentId, fieldKey, document, profileId, schemaEpoch): void {
+      requireCoordinate(documentId, "documentId");
+      requireCoordinate(fieldKey, "fieldKey");
+      requireCoordinate(profileId, "profileId");
+      requireCoordinate(schemaEpoch, "schemaEpoch");
+      if (authorities.has(documentId)) {
+        throw new Error("rich-text.admission-seed: authority already seeded");
+      }
+      const ydoc = new Y.Doc();
+      seedFieldFromDocument(
+        ydoc.getText(fieldTextName(fieldKey)),
+        ydoc.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>,
+        fieldKey,
+        document,
+      );
+      authorities.set(documentId, {
+        ydoc,
+        fieldKeys: new Set([fieldKey]),
+        profileId,
+        schemaEpoch,
+      });
+    },
+
+    hostMintMigration(documentId): { profileId: string; schemaEpoch: string } {
+      const authority = authorities.get(documentId);
+      if (authority === undefined) {
+        throw new Error("rich-text.admission-migration: unknown document fails closed");
+      }
+      const current = Number.parseInt(authority.schemaEpoch, 10);
+      if (!Number.isInteger(current)) {
+        throw new Error("rich-text.admission-migration: non-numeric epoch has no +1 step");
+      }
+      const next = String(current + 1);
+      record({
+        kind: "migration",
+        documentId,
+        target: "authoritative",
+        profileId: authority.profileId,
+        fromEpoch: authority.schemaEpoch,
+        toEpoch: next,
+      });
+      authority.schemaEpoch = next;
+      return { profileId: authority.profileId, schemaEpoch: next };
+    },
+
+    hostMigratePreservedDraft(documentId, draft): { draft: RichTextDocument; profileId: string; schemaEpoch: string } {
+      const authority = authorities.get(documentId);
+      if (authority === undefined) {
+        throw new Error("rich-text.admission-migration: unknown document fails closed");
+      }
+      record({
+        kind: "draft-migration",
+        documentId,
+        target: "draft",
+        profileId: authority.profileId,
+        toEpoch: authority.schemaEpoch,
+      });
+      return {
+        draft: structuredClone(draft) as RichTextDocument,
+        profileId: authority.profileId,
+        schemaEpoch: authority.schemaEpoch,
+      };
+    },
+
+    hostRecordAcknowledgement(acknowledgement): void {
+      requireCoordinate(acknowledgement.actorId, "actorId");
+      requireCoordinate(acknowledgement.profileId, "profileId");
+      requireCoordinate(acknowledgement.schemaEpoch, "schemaEpoch");
+      const authority = [...authorities.values()].find(
+        (entry) =>
+          entry.profileId === acknowledgement.profileId &&
+          entry.schemaEpoch === acknowledgement.schemaEpoch,
+      );
+      if (authority === undefined) {
+        throw new Error("rich-text.admission-acknowledgement: unknown profile/epoch fails closed");
+      }
+      record({
+        kind: "acknowledgement",
+        documentId: [...authorities.entries()].find(([, value]) => value === authority)?.[0] ?? "",
+        target: "authoritative",
+        profileId: acknowledgement.profileId,
+        toEpoch: acknowledgement.schemaEpoch,
+        actorId: acknowledgement.actorId,
+      });
+    },
+
+    openSessionAdmitted(input): { admitted: true; source: LiveSessionBindingSource } | { admitted: false; refusal: LiveSessionOpenRefusal } {
+      requireCoordinate(input.documentId, "documentId");
+      requireCoordinate(input.sessionId, "sessionId");
+      requireCoordinate(input.actorId, "actorId");
+      if (input.fieldKeys.length === 0) {
+        throw new Error("rich-text.binding-identity: admitted field set is empty");
+      }
+      const authority = authorities.get(input.documentId);
+      if (authority === undefined) {
+        throw new Error("rich-text.binding-identity: unknown document fails closed");
+      }
+      const decision = decideLiveSessionAdmission({
+        client: input.client,
+        document: { profileId: authority.profileId, schemaEpoch: authority.schemaEpoch },
+      });
+      if (!decision.admitted) {
+        record({
+          kind: "refusal",
+          documentId: input.documentId,
+          target: "authoritative",
+          profileId: authority.profileId,
+          toEpoch: authority.schemaEpoch,
+          actorId: input.actorId,
+          sessionId: input.sessionId,
+        });
+        return { admitted: false as const, refusal: decision };
+      }
+      const draftMigrated = journal.some(
+        (event) => event.documentId === input.documentId && event.kind === "draft-migration",
+      );
+      const acknowledged = journal.some(
+        (event) =>
+          event.documentId === input.documentId &&
+          event.kind === "acknowledgement" &&
+          event.actorId === input.actorId &&
+          event.profileId === authority.profileId &&
+          event.toEpoch === authority.schemaEpoch,
+      );
+      if (draftMigrated && !acknowledged) {
+        record({
+          kind: "refusal",
+          documentId: input.documentId,
+          target: "authoritative",
+          profileId: authority.profileId,
+          toEpoch: authority.schemaEpoch,
+          actorId: input.actorId,
+          sessionId: input.sessionId,
+        });
+        return {
+          admitted: false as const,
+          refusal: {
+            admitted: false,
+            reason: "incompatible-schema",
+            profileId: authority.profileId,
+            schemaEpoch: authority.schemaEpoch,
+          },
+        };
+      }
+      const key = sessionKey(input.documentId, input.sessionId);
+      let recordEntry = sessions.get(key);
+      if (recordEntry === undefined) {
+        const ydoc = new Y.Doc();
+        Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(authority.ydoc));
+        recordEntry = {
+          ydoc,
+          awareness: new Awareness(ydoc),
+          fields: new Set(input.fieldKeys),
+          holders: new Map(),
+          actors: new Map(),
+        };
+        sessions.set(key, recordEntry);
+      } else {
+        for (const fieldKey of input.fieldKeys) recordEntry.fields.add(fieldKey);
+      }
+      const live: SessionRecord = recordEntry;
+      record({
+        kind: "admission",
+        documentId: input.documentId,
+        target: "session",
+        profileId: authority.profileId,
+        toEpoch: authority.schemaEpoch,
+        actorId: input.actorId,
+        sessionId: input.sessionId,
+      });
+      return {
+        admitted: true as const,
+        source: {
+          resolveBinding(identity: FieldBindingIdentity): LiveSessionBinding {
+            checkIdentity(identity);
+            if (identity.documentId !== input.documentId || identity.sessionId !== input.sessionId) {
+              throw new Error("rich-text.binding-identity: different document/session fails closed (R-BIND-1)");
+            }
+            if (!live.fields.has(identity.fieldKey)) {
+              throw new Error("rich-text.binding-identity: different field fails closed (R-BIND-1)");
+            }
+            live.holders.set(identity.fieldKey, (live.holders.get(identity.fieldKey) ?? 0) + 1);
+            return {
+              identity: { ...identity },
+              text: live.ydoc.getText(fieldTextName(identity.fieldKey)),
+              fieldMeta: live.ydoc.getMap(fieldMetaName(identity.fieldKey)) as Y.Map<unknown>,
+              awareness: live.awareness,
+            };
+          },
+          releaseBinding(identity: FieldBindingIdentity): void {
+            checkIdentity(identity);
+            if (identity.documentId !== input.documentId || identity.sessionId !== input.sessionId) {
+              throw new Error("rich-text.binding-identity: different document/session fails closed (R-BIND-1)");
+            }
+            const holders = live.holders.get(identity.fieldKey) ?? 0;
+            if (holders > 1) {
+              live.holders.set(identity.fieldKey, holders - 1);
+              return;
+            }
+            live.holders.delete(identity.fieldKey);
+          },
+          registerActor(actor: { actorId: string; displayLabel: string; color: string }): void {
+            checkActorShape(actor);
+            live.actors.set(actor.actorId, { displayLabel: actor.displayLabel, color: actor.color });
+          },
+          revokeActor(actorId: string): void {
+            requireCoordinate(actorId, "actorId");
+            live.actors.delete(actorId);
+          },
+          admittedActorOf(actorId: string): { displayLabel: string; color: string } | null {
+            return live.actors.get(actorId) ?? null;
+          },
+        },
+      };
+    },
+
+    applyClientUpdate(documentId, sessionId, update): void {
+      const live = sessions.get(sessionKey(documentId, sessionId));
+      if (live === undefined) {
+        throw new Error("rich-text.admission-application: unknown session fails closed");
+      }
+      Y.applyUpdate(live.ydoc, update);
+      record({ kind: "application", documentId, target: "session", sessionId });
+    },
+
+    authorityVectorHex(documentId): string {
+      const authority = authorities.get(documentId);
+      if (authority === undefined) {
+        throw new Error("rich-text.admission-inspect: unknown document fails closed");
+      }
+      return Buffer.from(Y.encodeStateVector(authority.ydoc)).toString("hex");
+    },
+
+    authorityCapture(documentId, fieldKey, format): ReturnType<typeof captureDocumentFromField> {
+      const authority = authorities.get(documentId);
+      if (authority === undefined) {
+        throw new Error("rich-text.admission-inspect: unknown document fails closed");
+      }
+      requireCoordinate(fieldKey, "fieldKey");
+      return captureDocumentFromField(
+        authority.ydoc.getText(fieldTextName(fieldKey)),
+        authority.ydoc.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>,
+        format,
+      );
+    },
+
+    journal(): readonly AdmissionJournalEvent[] {
+      return [...journal];
+    },
+  };
 }

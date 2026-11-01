@@ -1003,6 +1003,13 @@ function linearRangeTouchesAtom(
   for (const op of delta) {
     const length = typeof op.insert === "string" ? (op.insert as string).length : 1;
     const end = linear + length;
+    // CL-3b2 F-2: the separator opens its segment, so the current kind is
+    // updated from the separator before the range test. Testing the stale
+    // kind first misclassified a range over the separator+atom pair of an
+    // HR placed immediately after a preserved block as preserved content.
+    if (typeof op.insert === "object" && op.insert !== null && isSeparatorValue(op.insert)) {
+      currentKind = (op.insert.separator as { kind: string }).kind;
+    }
     const overlaps = linear < to && end > from;
     if (overlaps && typeof op.insert === "object" && op.insert !== null) {
       if (isPreservedValue(op.insert) || currentKind === "preserved") return "preserved";
@@ -1012,9 +1019,6 @@ function linearRangeTouchesAtom(
         if (kind === "preserved") return "preserved";
         if (kind === "horizontalRule") return "horizontalRule";
       }
-    }
-    if (typeof op.insert === "object" && op.insert !== null && isSeparatorValue(op.insert)) {
-      currentKind = (op.insert.separator as { kind: string }).kind;
     }
     linear = end;
   }
@@ -1933,7 +1937,12 @@ function mapLinearIndexThroughDelta(
     }
     postPosition += length;
   }
-  return postPosition;
+  // CL-3b2 witness 5 (retained r1 caret stability): a Yjs delta ends at its
+  // last change — a trailing retain is omitted — so an index past the final
+  // op still carries the accumulated shift. Falling through to the bare
+  // `postPosition` froze every caret at or past the insert point instead of
+  // tracking its content.
+  return postPosition + (preIndex - prePosition);
 }
 
 /** Top-level PM range covering a leaf range: replacement boundaries always

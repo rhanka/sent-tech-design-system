@@ -59,6 +59,71 @@ export interface LiveSessionHandle {
   dispose(): Promise<void>;
 }
 
+/**
+ * Live-session admission by profile and schema epoch (spec §4.8.1, CL-3b2
+ * Task 3 DS half). The admission authority, the `meta` writer and the
+ * migration itself are host-side (R-MAP-5: the DS never writes `meta`); this
+ * is the DS contract surface only — pure types plus the comparison helper —
+ * proven against an admission-capable test double (register entry AMB-3).
+ *
+ * A refused open is a value, not an untyped throw, at the port boundary: the
+ * refusal reuses the `incompatible-schema` literal of the `AgentPatchResult`
+ * family. Any mismatch — older client epoch, newer client epoch, or wrong
+ * profile — refuses `incompatible-schema` with no binding resolved and no
+ * client update applied. The only paths from a refused epoch mismatch to
+ * admission are the two explicitly acknowledged branches: (a) client
+ * upgrade, or (b) host migration of the client's preserved draft plus an
+ * explicit client acknowledgement of the current profile/epoch, recorded by
+ * the host before any binding resolves.
+ */
+export interface LiveSessionAdmissionRequest {
+  clientProfileId: string;
+  clientSchemaEpoch: string;
+}
+export interface LiveSessionOpenRefusal {
+  admitted: false;
+  /** Session-open error of the `AgentPatchResult` family (§4.8.1). */
+  reason: "incompatible-schema";
+  /** The document's current profile/epoch the client must move to. */
+  profileId: string;
+  schemaEpoch: string;
+}
+export interface LiveSessionOpenAdmission {
+  admitted: true;
+}
+export type LiveSessionAdmissionDecision =
+  | LiveSessionOpenAdmission
+  | LiveSessionOpenRefusal;
+/** Explicit client acknowledgement of the current profile/epoch (§4.8.1
+    branch (b)): recorded by the host and required before any binding
+    resolves. Silence or a re-presented draft without it never admits. */
+export interface SchemaEpochAcknowledgement {
+  actorId: string;
+  profileId: string;
+  schemaEpoch: string;
+}
+/**
+ * Pure admission comparison (§4.8.1): equal profile and epoch admit; any
+ * mismatch refuses `incompatible-schema` as a value.
+ */
+export function decideLiveSessionAdmission(input: {
+  client: LiveSessionAdmissionRequest;
+  document: { profileId: string; schemaEpoch: string };
+}): LiveSessionAdmissionDecision {
+  if (
+    input.client.clientProfileId === input.document.profileId &&
+    input.client.clientSchemaEpoch === input.document.schemaEpoch
+  ) {
+    return { admitted: true };
+  }
+  return {
+    admitted: false,
+    reason: "incompatible-schema",
+    profileId: input.document.profileId,
+    schemaEpoch: input.document.schemaEpoch,
+  };
+}
+
 /** Opaque relative anchor. The pure DS contract never parses it.
     Host/editor encoding (the only places that parse it, §5.1.1): the
     JSON serialisation of a Yjs RelativePosition (yjs
