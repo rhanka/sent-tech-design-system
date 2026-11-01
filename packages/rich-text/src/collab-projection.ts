@@ -2340,8 +2340,22 @@ export function affectedBlocksFromDelta(
       postIndex += 1;
       continue;
     }
-    const head = idAtPre(preIndex) ?? idAtPost(postIndex);
-    if (head !== null) touched.add(head);
+    // A non-separator insert landing exactly on a separator index sits
+    // before that separator, extending the preceding block's tail — never
+    // the separator's own block (CL-3c witness 4(a): an append at the end
+    // of a non-last paragraph repainted the following block instead of the
+    // edited one, leaving the remote view stale with no error). Index 0
+    // still opens the first block.
+    let head: string | null = null;
+    for (let index = 0; index < preBlocks.length; index += 1) {
+      const block = preBlocks[index] as LinearBlockLayout;
+      if (preIndex === block.separatorIndex) {
+        head = (index === 0 ? block : (preBlocks[index - 1] as LinearBlockLayout)).paragraphId;
+        break;
+      }
+    }
+    const resolvedHead: string | null = head ?? idAtPre(preIndex) ?? idAtPost(postIndex);
+    if (resolvedHead !== null) touched.add(resolvedHead);
     if (typeof insert === "string") postIndex += (insert as string).length;
     else postIndex += 1;
   }
