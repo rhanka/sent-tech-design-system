@@ -56,7 +56,7 @@ describe("CL-3a-B5 divergence guard", () => {
       const emptyTr = ed.view.state.tr;
       expect(() =>
         projectPmTransactionToYText(
-          { ytext, fieldMeta: meta, fieldKey: FIELD, allocateId: () => "test:div:2", format: "focus.markdown.p0@1" },
+          { ytext, fieldMeta: meta, fieldKey: FIELD, allocateId: () => "test:div:2", format: "focus.markdown.p0@1", localOrigin: "test:div:local", markOrigin: "test:div:local:mark" },
           ed.view.state.doc,
           emptyTr,
         ),

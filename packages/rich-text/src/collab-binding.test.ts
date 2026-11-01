@@ -7,10 +7,10 @@ import * as Y from "yjs";
 import { createRichTextEditor, type RichTextEditor } from "./editor.js";
 import { createBoundRichTextEditor } from "./editor-bound.js";
 import {
-  createBoundHistoryPlaceholder,
+  boundLocalOriginFor,
+  boundMarkOriginFor,
   createBoundUndoManager,
   createInMemoryTestDoubleProvider,
-  BOUND_HISTORY_UNAVAILABLE_MESSAGE,
 } from "./editor-collaboration.js";
 import {
   captureDocumentFromField,
@@ -48,7 +48,7 @@ function p0Doc(): RichTextDocument {
   };
 }
 
-describe("CL-3a bound history seam", () => {
+describe("CL-3b1 bound history (one history, real manager)", () => {
   it("bound composition removes UndoRedo in exactly one place", async () => {
     const provider = createInMemoryTestDoubleProvider();
     const source = provider.openSession("canvas:h1", "session:h1", ["body"]);
@@ -57,6 +57,7 @@ describe("CL-3a bound history seam", () => {
     // an unseeded field refuses the bound mount instead of auto-seeding.
     const seeded = source.resolveBinding(identity);
     seedFieldFromDocument(seeded.text, seeded.fieldMeta, "body", p0Doc());
+    const gestures: unknown[] = [];
     const bound = await createBoundRichTextEditor({
       document: p0Doc(),
       messages: { ...MESSAGES },
@@ -64,14 +65,18 @@ describe("CL-3a bound history seam", () => {
       collaborationBinding: identity,
       collaborationSource: source,
       element: globalThis.document.createElement("div"),
+      onChange: (event) => gestures.push(event.gesture),
     });
     mounted.push(bound);
     const names = bound.view.state.plugins.map((plugin) => (plugin as { key?: { key?: string } }).key?.key ?? "");
     void names;
-    // The Tiptap undoRedo extension registers no history plugin when bound:
-    // a bound undo fails closed instead of reaching ProseMirror history.
-    expect(() => bound.undo()).toThrow(BOUND_HISTORY_UNAVAILABLE_MESSAGE);
-    expect(() => bound.redo()).toThrow(BOUND_HISTORY_UNAVAILABLE_MESSAGE);
+    // Exactly one history: the Tiptap undoRedo extension registers no
+    // history plugin when bound, and the bound undo/redo route to the field
+    // UndoManager. A fresh mount has an empty stack: both are silent no-ops
+    // (no throw, no gesture), never a reach into ProseMirror history.
+    expect(() => bound.undo()).not.toThrow();
+    expect(() => bound.redo()).not.toThrow();
+    expect(gestures).toHaveLength(0);
 
     const controlled = createRichTextEditor({
       document: p0Doc(),
@@ -84,16 +89,30 @@ describe("CL-3a bound history seam", () => {
     expect(() => controlled.redo()).not.toThrow();
   });
 
-  it("the placeholder never double-records and the UndoManager seam throws", () => {
-    const placeholder = createBoundHistoryPlaceholder();
-    expect(placeholder.available).toBe(false);
-    expect(() => placeholder.undo()).toThrow(BOUND_HISTORY_UNAVAILABLE_MESSAGE);
-    expect(() => placeholder.redo()).toThrow(BOUND_HISTORY_UNAVAILABLE_MESSAGE);
+  it("the manager is scoped to the local origin and carries text plus metadata", () => {
+    const first = new Y.Doc();
+    const second = new Y.Doc();
+    const identity = { documentId: "canvas:hist", sessionId: "session:hist", fieldKey: "body" };
+    const localOrigin = boundLocalOriginFor(identity, null);
+    expect(localOrigin).toBe("actor:binding:session:hist:body");
+    expect(boundMarkOriginFor(localOrigin)).toBe(`${localOrigin}:mark`);
+    expect(boundLocalOriginFor(identity, "editor:1")).toBe("actor:editor:1");
+    const manager = createBoundUndoManager({
+      text: first.getText("field:body"),
+      fieldMeta: first.getMap("fieldmeta:body") as Y.Map<unknown>,
+      trackedOrigin: localOrigin,
+    });
+    expect(manager.available).toBe(true);
+    expect(manager.canUndo()).toBe(false);
+    expect(manager.canRedo()).toBe(false);
+    // A manager over a detached text fails closed instead of tracking
+    // nothing.
     expect(() => createBoundUndoManager({
-      text: new Y.Doc().getText("field:x"),
-      fieldMeta: new Y.Doc().getMap("fieldmeta:x") as Y.Map<unknown>,
-      trackedOrigin: "local",
+      text: second.getText("field:x"),
+      fieldMeta: second.getMap("fieldmeta:x") as Y.Map<unknown>,
+      trackedOrigin: "",
     })).toThrow("rich-text.bound-undo-unavailable");
+    manager.destroy();
   });
 
   it("binding without source keeps controlled history (CL-2 seam intact)", () => {

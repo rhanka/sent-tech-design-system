@@ -123,6 +123,17 @@ export function pmPositionToLinear(map: SelectionMap, pmPos: number): number {
   for (const block of map.blocks) {
     if (pmPos <= block.pmInlineStart) return block.contentStart;
     if (pmPos >= block.pmInlineEnd) {
+      // A leaf atom (horizontalRule, preservedBlock) occupies one PM
+      // position with an empty inline range: its end boundary (`pos + 1`)
+      // is the atom's own content end even when another leaf atom starts
+      // immediately after it (spec §4.3.1 item 3, review 1 B-2).
+      if (
+        block.pmInlineStart === block.pmInlineEnd &&
+        block.contentEnd === block.contentStart + 1 &&
+        pmPos === block.pmInlineStart + 1
+      ) {
+        return block.contentEnd;
+      }
       const next = map.blocks[map.blocks.indexOf(block) + 1];
       if (next !== undefined && pmPos < next.pmInlineStart) return block.contentEnd;
       if (next === undefined) return block.contentEnd;
