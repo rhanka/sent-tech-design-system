@@ -3,9 +3,14 @@
 // §6.6, §15 AC-L2).
 //
 // WHAT IT ASSERTS
-//   1. `npm run build:browser -w @sentropic/design-system-elements` exits 0
-//      (it builds the dependency's dist first when it is missing, the way CI's
-//      "Build packages" step would have).
+//   1. The browser build is present and fresh: `npm run build` (whose script
+//      produces `dist/index.js` and `dist/browser/` together, the way every
+//      CI "Build packages" step runs it) has run before this guard. This
+//      guard never builds — it has no writer, so it cannot wipe
+//      `dist/browser/` under the parallel tarball guard. An unbuilt tree
+//      reports NOT RUN (the repository's unbuilt-precondition pattern); a
+//      missing or stale `dist/browser/` on a built tree fails and names the
+//      rebuild command.
 //   2. `dist/browser/sri.json` exists and is FRESH: every file it lists still
 //      exists, and its raw bytes, gzip size, brotli size and sha384 integrity
 //      match the bytes recomputed here. A rebuilt bundle without regenerating
@@ -139,13 +144,46 @@ function spawnOrThrow(command, args, cwd, label) {
   return run;
 }
 
-test("AC-L2: the elements browser build is produced and sri.json is fresh, complete, eval-free and on budget", () => {
-  // The browser bundle compiles components imported from the Svelte package,
-  // so that package's dist must exist the way CI's build step leaves it.
-  if (!existsSync(join(repoRoot, "packages", "components-svelte", "dist", "index.js"))) {
-    spawnOrThrow("npm", ["run", "build", "-w", "@sentropic/design-system-svelte"], repoRoot, "components-svelte build");
+/**
+ * True when dist/browser/ is already the fresh build of the current
+ * manifest: sri.json exists, stamps the manifest version, and recomputes
+ * clean. `node --test` runs guard files in parallel processes, and a
+ * `build:browser` (vite `emptyOutDir: true`) inside this guard would wipe
+ * dist/browser/ while the sibling elements-publish-tarball guard reads and
+ * packs it — so this guard never builds. The tests below require the prior
+ * build instead: skip when the tree was never built, fail when it is stale.
+ */
+export function browserBuildFresh() {
+  if (!existsSync(sriPath)) return false;
+  let sri;
+  try {
+    sri = JSON.parse(readFileSync(sriPath, "utf8"));
+  } catch {
+    return false;
   }
-  spawnOrThrow("npm", ["run", "build:browser", "-w", "@sentropic/design-system-elements"], repoRoot, "elements build:browser");
+  const manifest = JSON.parse(readFileSync(join(elementsDir, "package.json"), "utf8"));
+  if (sri.version !== manifest.version) return false;
+  return sriDrift(browserDir, sri).length === 0;
+}
+
+test("AC-L2: the elements browser build is produced and sri.json is fresh, complete, eval-free and on budget", (t) => {
+  // Read-only: the build is the workflows' (or the developer's `npm run
+  // build`, whose script produces dist/ and dist/browser/ together). Skip
+  // when nothing was ever built; fail — naming the rebuild — when the tree
+  // is built but its browser output is missing or stale.
+  if (!existsSync(join(elementsDir, "dist", "index.js"))) {
+    t.skip(
+      "packages/elements/dist is missing — nothing to check in this job " +
+        "(CI's unbuilt `licensing` job, or a fresh checkout); build first with " +
+        "`npm run build`, the way the publish workflow builds it — AC-L2 browser assertions NOT run in this job",
+    );
+    return;
+  }
+  assert.ok(
+    browserBuildFresh(),
+    "packages/elements/dist/browser is missing or stale — rebuild it with " +
+      "`npm --workspace @sentropic/design-system-elements run build` (or `run build:browser`), the way the publish workflow does",
+  );
 
   const sri = JSON.parse(readFileSync(sriPath, "utf8"));
 
@@ -177,9 +215,20 @@ test("AC-L2: the elements browser build is produced and sri.json is fresh, compl
   );
 });
 
-test("AC-L2: every file sri.json pins is inside npm pack's file list", () => {
+test("AC-L2: every file sri.json pins is inside npm pack's file list", (t) => {
+  if (!existsSync(join(elementsDir, "dist", "index.js"))) {
+    t.skip(
+      "packages/elements/dist is missing — nothing to check in this job " +
+        "(CI's unbuilt `licensing` job, or a fresh checkout); build first with " +
+        "`npm run build` — AC-L2 pack-membership assertion NOT run in this job",
+    );
+    return;
+  }
   if (!existsSync(sriPath)) {
-    assert.fail("sri.json does not exist — run the elements browser build first (the previous test builds it)");
+    assert.fail(
+      "sri.json does not exist on a built tree — rebuild dist/browser with " +
+        "`npm --workspace @sentropic/design-system-elements run build:browser` first",
+    );
   }
   const pack = spawnOrThrow(
     "npm",
