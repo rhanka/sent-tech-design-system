@@ -9,6 +9,8 @@
 | Lane gate | This lane starts after diagram-core M1-b (owner decision in the DS session, 2026-10-28). Canvas-norm contract lots that are independent of the L2 binding may proceed in parallel with M1-b follow-on once ratified; L2 lots do not start before that gate. |
 | Stack rule | Node/TypeScript and native tooling already present only. No Python is used anywhere in the lots this specification defines. No network is used by this study. |
 
+*Amendment 2026-11-01 (AMB-D7 / §13 F4): owner ratification recorded in `scratchpad/requests/2026-11-01-owner-amb-d7-f4.md`; design source `cl4-decisions.md` §2. This amendment adds `rawOffset?` / `rawComplete?` to `AgentParagraphState` (§5.6), appends the preserved-continuation sentence to R-READ-1, and deletes the metadata-only parenthetical in §13 F4.*
+
 ## 0. How to read this specification
 
 ### 0.1 Source tags
@@ -815,6 +817,29 @@ export interface AgentParagraphState {
   segments?: readonly AgentInlineSegment[];
   preservedKind?: string;              // kind "preserved" only
   raw?: string;                        // kind "preserved" only, verbatim
+  /**
+   * F4 preserved pagination (amendment 2026-11-01, AMB-D7): UTF-16
+   * code-unit offset of this entry's `raw` chunk within the block's full
+   * raw string (the unit of R-ANCH-1 paragraph offsets). Present only when
+   * a preserved block is paginated under R-READ-1; `raw` then carries one
+   * contiguous chunk of the full raw string, not the whole string.
+   * Chunks for one `paragraphId` are contiguous in page order with no
+   * boundary inside a surrogate pair. Absent means `raw` is the block's
+   * whole raw (the pre-amendment behaviour for every in-cap block).
+   */
+  rawOffset?: number;
+  /**
+   * F4 preserved pagination (amendment 2026-11-01, AMB-D7): present only
+   * when `raw` is one chunk of a paginated preserved block. `false` on
+   * every chunk except the last for that `paragraphId`; `true` only on
+   * the final chunk. Concatenating the `raw` values of successive entries
+   * with the same `paragraphId`, in page order, reassembles the full
+   * `raw` exactly; absence of both fields means `raw` is whole.
+   * `AgentFieldState.nextPageToken` is present whenever a
+   * `rawComplete: false` chunk has been returned and the read continues,
+   * exactly as for segment continuations.
+   */
+  rawComplete?: boolean;
   // HR has only identity, optional wrapper metadata and boundary anchors;
   // no text/segments and no generic text insert/mark/delete target.
   /** Paragraph boundary anchors (R-ANCH-2): an insert at startAnchor
@@ -848,7 +873,7 @@ export interface AgentDocumentState {
 
 Read rules (blocking):
 
-- R-READ-1 (bounds). Per response, the host enforces all of: at most **100 paragraphs**, at most **20 000 paragraph-offset units** of returned text, at most **512 anchors** in total (segment, boundary, and requested anchors combined), and at most **256 KiB** serialised response size. Caller-supplied `maxParagraphs` may only lower the paragraph cap. Anchors are minted only as typed above (boundaries, segment ends, and explicit `anchorRequests`), never one per offset for a field. A request that demands more than a cap in a single response (an over-cap `maxParagraphs`, more than 256 `anchorRequests`, or an anchor request for every offset of a large field) is refused whole as `too-large` with no page and no anchors returned; a selection that merely extends beyond one page is not refused — it returns the first page with `nextPageToken`. A single paragraph whose segments alone exceed a response bound is split across pages at a segment (or, for one over-long text run, character) boundary: the continuation page resumes the same `paragraphId` with the remaining segments, and the two partial entries concatenate to the paragraph's full segment list with marks intact.
+- R-READ-1 (bounds). Per response, the host enforces all of: at most **100 paragraphs**, at most **20 000 paragraph-offset units** of returned text, at most **512 anchors** in total (segment, boundary, and requested anchors combined), and at most **256 KiB** serialised response size. Caller-supplied `maxParagraphs` may only lower the paragraph cap. Anchors are minted only as typed above (boundaries, segment ends, and explicit `anchorRequests`), never one per offset for a field. A request that demands more than a cap in a single response (an over-cap `maxParagraphs`, more than 256 `anchorRequests`, or an anchor request for every offset of a large field) is refused whole as `too-large` with no page and no anchors returned; a selection that merely extends beyond one page is not refused — it returns the first page with `nextPageToken`. A single paragraph whose segments alone exceed a response bound is split across pages at a segment (or, for one over-long text run, character) boundary: the continuation page resumes the same `paragraphId` with the remaining segments, and the two partial entries concatenate to the paragraph's full segment list with marks intact. A preserved block whose `raw` alone exceeds the remaining response bound is split across pages by the same continuation discipline applied to `raw` chunks in place of segments; an explicit metadata-only entry is not a completed read of that block.
 - R-READ-2 (retained revision). A first-page request without `readToken` causes the host to retain the read revision (the state vector plus a restorable form of the field states at that vector, host-side, bounded to at most 8 retained reads per (document, actor) and at least 5 minutes). Every returned anchor, including anchors on later pages fetched with `pageToken`, is minted against that retained state, so pagination cannot skip or duplicate content when the live doc moves between pages. The returned `revision` is the patch's `baseRevision` (§5.2); patch anchors still resolve against the current doc at apply time (R-ANCH-3). Presenting an evicted or expired `readToken` refuses `target-gone` for the read (the agent re-reads); it never silently re-mints against current state. Retained reads are host memory/disk only; no DS package retains them.
 - R-READ-3 (inline fidelity, N1). Seeding, reading, and capture use the same segment decomposition as the projection (§4.3.1): marks are returned per maximal run exactly as stored, a hard break is returned as its own segment with anchors on both sides (an agent inserts after a hard break by addressing `anchorAfter`, and that insert lands after the break in the same paragraph on every replica), an initially empty paragraph is returned with `text: ""` and zero segments (typing into it through its `startAnchor` creates its first run without creating a paragraph), and a preserved paragraph returns `raw` verbatim with no segments. Capture/remount equality across these shapes is witnessed in CL-3 (§4.3.1).
 
@@ -1562,7 +1587,7 @@ Items removed from §9 in r2 (M2 correction). None of them blocks any lot in §8
 Non-blocking items from Sol's pass-3 review, deferred at the r4 correction cap. Each item below reproduces the pass-3 finding (problem, owner, witness) and assigns it to exactly one lot of §8 as an **acceptance witness of that lot**: the lot's gate (§8) is not met while its assigned witness is unwritten or failing, and no other lot may absorb or silently drop it. Items F1 and F3 of the same pass are not listed here: they are closed by correction inside r4 (§5.1.1, §5.2 R-ANCH-2, §4.3.1 item 2, CL-3 witnesses 14–15).
 
 - **F2 — Complete cursor registry delivery — assigned to CL-3 (acceptance witness).** *Problem (Sol pass 3):* « Complete cursor registry delivery, L518, L528, L874–883. Specify how the binding obtains registry updates. Verify the complete `(awarenessClientId, actorId)` pair and resolved `absolutePosition.type === binding.text`. » *Owner:* DS/host. *Witness:* the binding's registry-update delivery is specified and exercised end to end; impersonation using an admitted actor ID and a cross-field anchor renders no caret in the wrong field and no caret under the impersonated identity, asserted through the DS decoration plugin against the full `(awarenessClientId, actorId)` pair and the resolved type identity. Until this witness exists, CL-3 witness 12 covers the encoding and field-filtering halves only.
-- **F4 — Page oversized preserved content — assigned to CL-4 (acceptance witness).** *Problem (Sol pass 3):* « Page oversized preserved content, L665–666, L694–699. A preserved block has `raw`, without inline segments; the segment-continuation rule cannot paginate it. » *Owner:* host bridge / CL-4. *Witness:* raw-chunk continuations (or an explicit metadata-only response) are defined for preserved blocks, and one preserved block exceeding 256 KiB is read end to end under the R-READ-1 bounds with its `raw` bytes reassembling exactly, inside the §5.6 read contract.
+- **F4 — Page oversized preserved content — assigned to CL-4 (acceptance witness).** *Problem (Sol pass 3):* « Page oversized preserved content, L665–666, L694–699. A preserved block has `raw`, without inline segments; the segment-continuation rule cannot paginate it. » *Owner:* host bridge / CL-4. *Witness:* raw-chunk continuations are defined for preserved blocks, and one preserved block exceeding 256 KiB is read end to end under the R-READ-1 bounds with its `raw` bytes reassembling exactly, inside the §5.6 read contract.
 - **F5 — Make deferred ingress fail-closed behaviour explicit — assigned to CL-5 (acceptance witness).** *Problem (Sol pass 3):* « Make deferred ingress fail-closed behavior explicit, L498–503. Yjs retains unresolved structs and delete sets and can integrate them during a later update. » *Owner:* host / CL-5. *Witness:* unresolved input is quarantined outside authoritative state with its submitting actor retained, and is revalidated before any later integration; delayed-dependency witnesses run across actors and across fields, each asserting that no deferred struct or delete set reaches the authoritative doc without passing §4.11 steps 2–5 at integration time.
 - **F6 — Extend IME coverage to replacement — assigned to CL-3 (acceptance witness).** *Problem (Sol pass 3):* « Extend IME coverage to replacement, L369, L400–406. Define composition replacement against the captured baseline item set and anchors. » *Owner:* DS / CL-3. *Witness:* composition over a selected range, while another actor inserts or deletes inside that range, is defined against the captured baseline item set and anchors and is witnessed through commit, cancellation, and reconnect, with the concurrent actor's items surviving every outcome and no composition-owned item leaking into shared state (§4.6.1 discipline extended to replacement).
 
