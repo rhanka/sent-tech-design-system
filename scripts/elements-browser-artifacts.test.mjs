@@ -4,8 +4,10 @@
 //
 // WHAT IT ASSERTS
 //   1. `npm run build:browser -w @sentropic/design-system-elements` exits 0
-//      (it builds the dependency's dist first when it is missing, the way CI's
-//      "Build packages" step would have).
+//      when dist/browser/ is missing or stale (it builds the dependency's
+//      dist first when that is missing, the way CI's "Build packages" step
+//      would have); a fresh tree is read as-is, never rebuilt, so this
+//      writer cannot wipe the tree under the parallel tarball guard.
 //   2. `dist/browser/sri.json` exists and is FRESH: every file it lists still
 //      exists, and its raw bytes, gzip size, brotli size and sha384 integrity
 //      match the bytes recomputed here. A rebuilt bundle without regenerating
@@ -139,13 +141,39 @@ function spawnOrThrow(command, args, cwd, label) {
   return run;
 }
 
+/**
+ * True when dist/browser/ is already the fresh build of the current
+ * manifest: sri.json exists, stamps the manifest version, and recomputes
+ * clean. Only then may this guard skip the rebuild — `node --test` runs
+ * guard files in parallel processes, and an unconditional `build:browser`
+ * (vite `emptyOutDir: true`) wipes dist/browser/ while the sibling
+ * elements-publish-tarball guard reads and packs it. A missing or stale
+ * tree is still rebuilt below, exactly once, by this guard alone.
+ */
+export function browserBuildFresh() {
+  if (!existsSync(sriPath)) return false;
+  let sri;
+  try {
+    sri = JSON.parse(readFileSync(sriPath, "utf8"));
+  } catch {
+    return false;
+  }
+  const manifest = JSON.parse(readFileSync(join(elementsDir, "package.json"), "utf8"));
+  if (sri.version !== manifest.version) return false;
+  return sriDrift(browserDir, sri).length === 0;
+}
+
 test("AC-L2: the elements browser build is produced and sri.json is fresh, complete, eval-free and on budget", () => {
   // The browser bundle compiles components imported from the Svelte package,
   // so that package's dist must exist the way CI's build step leaves it.
   if (!existsSync(join(repoRoot, "packages", "components-svelte", "dist", "index.js"))) {
     spawnOrThrow("npm", ["run", "build", "-w", "@sentropic/design-system-svelte"], repoRoot, "components-svelte build");
   }
-  spawnOrThrow("npm", ["run", "build:browser", "-w", "@sentropic/design-system-elements"], repoRoot, "elements build:browser");
+  // Rebuild only when missing or stale: a fresh tree is read as-is so this
+  // writer never wipes dist/browser/ under a parallel reader.
+  if (!browserBuildFresh()) {
+    spawnOrThrow("npm", ["run", "build:browser", "-w", "@sentropic/design-system-elements"], repoRoot, "elements build:browser");
+  }
 
   const sri = JSON.parse(readFileSync(sriPath, "utf8"));
 

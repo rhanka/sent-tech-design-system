@@ -105,6 +105,9 @@ jobs:
           npm ci
           npm --workspace @sentropic/design-system-elements run build
           npm --workspace @sentropic/design-system-elements run build:browser
+          # The tarball guard, against THIS runner's bytes, right before publish:
+          # jsDelivr serves tarball bytes, so the SRI pin must hold on them.
+          node --test scripts/elements-publish-tarball.test.mjs
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
