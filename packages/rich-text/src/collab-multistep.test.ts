@@ -64,7 +64,7 @@ describe("CL-3-15 multi-step transaction projection", () => {
     const expectedText = expectedPmDoc.textBetween(0, expectedPmDoc.content.size, "\n\n", "\n");
 
     projectPmTransactionToYText(
-      { ytext, fieldMeta, fieldKey: "body", allocateId: () => "test:multi:tail", format: "focus.markdown.p0@1" },
+      { ytext, fieldMeta, fieldKey: "body", allocateId: () => "test:multi:tail", format: "focus.markdown.p0@1", localOrigin: "test:multi:local", markOrigin: "test:multi:local:mark" },
       startDoc,
       tr,
     );
@@ -87,5 +87,68 @@ describe("CL-3-15 multi-step transaction projection", () => {
     const replicaMeta = replica.getMap("fieldmeta:body");
     const replicaCaptured = captureDocumentFromField(replicaText, replicaMeta, "focus.markdown.p0@1");
     expect(replicaCaptured.document).toEqual(captured.document);
+  });
+});
+
+describe("CL-3b1 review-1 TF-3 refused multi-step transaction leaves the state vector unchanged", () => {
+  it("step 0 insert plus step 1 crossing a preserved block refuses whole with a byte-equal state vector", async () => {
+    const seed: RichTextDocument = {
+      format: "focus.markdown.p0@1",
+      blocks: [
+        { paragraphId: "paragraph:1", kind: "paragraph", text: "abcdef" },
+        { paragraphId: "k:1", kind: "preserved", raw: "RAW", preservedKind: "html" },
+        { paragraphId: "paragraph:2", kind: "paragraph", text: "gh" },
+      ],
+    };
+    const editor = createRichTextEditor({
+      document: seed,
+      messages: { ...MESSAGES },
+      allocateId: (() => {
+        let n = 0;
+        return () => `test:tf3:${(n += 1)}`;
+      })(),
+      element: globalThis.document.createElement("div"),
+    });
+    mounted.push(editor);
+
+    const ydoc = new Y.Doc();
+    const ytext = ydoc.getText("field:body");
+    const fieldMeta = ydoc.getMap("fieldmeta:body");
+    seedFieldFromDocument(ytext, fieldMeta, "body", seed);
+    const captureBefore = JSON.stringify(captureDocumentFromField(ytext, fieldMeta, "focus.markdown.p0@1").document);
+    const vectorBefore = Buffer.from(Y.encodeStateVector(ydoc)).toString("hex");
+
+    // One transaction, two steps: an innocent insert inside paragraph:1,
+    // then a delete from inside paragraph:1 across the preserved segment
+    // (post-insert coordinates).
+    const view = editor.view;
+    const startDoc = view.state.doc;
+    const tr = view.state.tr;
+    tr.insertText("X", 2);
+    let preservedPos = -1;
+    let preservedSize = 0;
+    tr.doc.descendants((node, pos) => {
+      if (node.type.name === "preservedBlock") {
+        preservedPos = pos;
+        preservedSize = node.nodeSize;
+      }
+      return true;
+    });
+    expect(preservedPos).toBeGreaterThan(-1);
+    tr.delete(4, preservedPos + preservedSize);
+    expect(tr.steps).toHaveLength(2);
+
+    expect(() =>
+      projectPmTransactionToYText(
+        { ytext, fieldMeta, fieldKey: "body", allocateId: () => "test:tf3:tail", format: "focus.markdown.p0@1", localOrigin: "test:tf3:local", markOrigin: "test:tf3:local:mark" },
+        startDoc,
+        tr,
+      ),
+    ).toThrow(/collab-preserved-denied/);
+    // The refusal left no tombstone behind: same vector, same capture.
+    expect(Buffer.from(Y.encodeStateVector(ydoc)).toString("hex")).toBe(vectorBefore);
+    expect(JSON.stringify(captureDocumentFromField(ytext, fieldMeta, "focus.markdown.p0@1").document)).toBe(
+      captureBefore,
+    );
   });
 });
