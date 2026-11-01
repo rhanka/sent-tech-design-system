@@ -1,10 +1,12 @@
 {
   "name": "@sentropic/design-system-elements",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
-  "description": "Sentropic design system custom elements and A2UI v0.9.1 catalogue (JSON render standard). Private until L7a.",
+  "description": "Sentropic design system custom elements for the JSON render catalogue (BarChart, BpmnCanvas, DecisionDossier): envelope validator plus CDN browser bundle.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
@@ -15,7 +17,8 @@
     "dist",
     "catalog.json",
     "envelope.json",
-    "schemas"
+    "schemas",
+    "!dist/**/*.map"
   ],
   "exports": {
     ".": {
@@ -36,13 +39,16 @@
     "catalog:generate": "node dist/generator/main.js",
     "catalog:check": "node dist/generator/main.js --check"
   },
-  "devDependencies": {
-    "@a2ui/web_core": "0.14.0",
-    "@json-render/svelte": "0.21.3",
+  "dependencies": {
     "@sentropic/bpmn-canvas": "0.3.0",
     "@sentropic/focus": "0.5.0",
     "ajv": "8.20.0",
     "dompurify": "3.4.17",
+    "svelte": "5.55.7"
+  },
+  "devDependencies": {
+    "@a2ui/web_core": "0.14.0",
+    "@json-render/svelte": "0.21.3",
     "ts-json-schema-generator": "2.9.0"
   }
 }
