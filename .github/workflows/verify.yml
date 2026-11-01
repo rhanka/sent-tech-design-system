@@ -197,6 +197,21 @@ jobs:
       # the `test` task so the build happens once per shard, not again under
       # `check`/`pack-smoke`.
       #
+      # AC-L7a tarball guard (elements): the sibling `licensing` job runs the
+      # guards unbuilt, where this guard reports NOT RUN by design. A gate that
+      # never measures anywhere is the defect the guards step existed to
+      # remove, so it runs here, in the shard that already selected
+      # `@sentropic/design-system-elements`, where `ensure-theme-dists` above
+      # has built it (its `build` script produces `dist/index.js` and
+      # `dist/browser/sri.json` together). `contains()` on the
+      # comma-separated list is unambiguous — `@sentropic/design-system-elements`
+      # is the only workspace name holding that substring (measured). Guarded
+      # on the `test` task so the guard runs once per shard, not again under
+      # `check`/`pack-smoke`.
+      - name: Elements tarball guard (over the built package)
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-elements')
+        run: node --test scripts/elements-publish-tarball.test.mjs
+
       # `npm run docs:build` runs apps/docs' `prebuild` (ensure-theme-dists),
       # which needs every theme dist because the docs app imports them all; the
       # `Restore built dists` cache above is what keeps that affordable.

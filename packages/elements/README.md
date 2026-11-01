@@ -98,14 +98,44 @@ the wrappers define no font of their own (the content inherits the page's).
 
 ## Build, sizes, integrity
 
-`npm run build:browser` writes `dist/browser/` and `dist/browser/sri.json`
-(every file with raw / gzip / brotli sizes and a sha384 integrity hash;
-`sri.json` never lists itself). The §6.6 core budget — the entry closure
-that renders `<st-bar-chart>` — is 53,435 B gzip of the 153,600 B budget.
+`npm run build` runs the Node build and then the browser bundle, so
+`dist/browser/` and `dist/browser/sri.json` are produced together
+(`npm run build:browser` re-runs the bundle step alone). `sri.json` lists
+every file with raw / gzip / brotli sizes and a sha384 integrity hash
+(`sri.json` never lists itself). The §6.6 core budget — the entry closure
+that renders `<st-bar-chart>` — is 53,916 B gzip of the 153,600 B budget
+(re-measured at 0.1.0; 23 files pinned by `sri.json`).
 The bundle is eval-free (§6.4: no `eval`, no `new Function` in any chunk —
 enforced by `scripts/elements-browser-artifacts.test.mjs`), works mounted
 under any subpath (no document-anchored preload hints), and needs no
 per-chunk CSS assets.
+
+## CDN (§7)
+
+The published tarball is served from the CDN base with the exact version
+pinned — never a range, never `latest` (the version segment is bumped with
+each release):
+
+```
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.1.0/dist/browser/
+```
+
+Load the entry with its integrity hash (the sha384 from
+`dist/browser/sri.json`) and `crossorigin="anonymous"`:
+
+```html
+<script type="module"
+  src="https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.1.0/dist/browser/elements.js"
+  integrity="sha384-<hash from dist/browser/sri.json>"
+  crossorigin="anonymous"></script>
+```
+
+Lazy chunks resolve module-relative to that base, so the whole
+`dist/browser/` tree must be served, not the entry alone. SRI limit: the
+entry hash above is browser-enforced; the chunk hashes in `sri.json` are the
+audit pin a host or reviewer recomputes — `scripts/elements-publish-tarball.test.mjs`
+is that recomputation against the tarball bytes. For the h2a consumer the
+CDN is an optimisation; the inlined module remains the fallback.
 
 Further reading:
 

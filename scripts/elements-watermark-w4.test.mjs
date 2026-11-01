@@ -42,7 +42,7 @@ export const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 export const W4_PLACEHOLDERS = ["<your license reference>"];
 
 /** A license value that names the channel, not the value: an env name or interpolation. */
-function namesChannelOnly(value) {
+export function namesChannelOnly(value) {
   if (value.includes("process.env") || value.includes("${")) return true;
   return /^[A-Z][A-Z0-9_]*$/.test(value);
 }
@@ -79,14 +79,20 @@ export function trackedFiles() {
   return run.stdout.split("\n").filter((line) => line.length > 0);
 }
 
+// Every guard file in this list carries the detector's negative fixtures
+// (synthetic values, e.g. "SENTROPIC-PROD-12345", that exist only to prove
+// the detector fires); scanning any of them would be self-referential noise.
+// One explicit list: a new fixture-bearing guard is added here, never worked
+// around by weakening watermarkFindings.
+export const W4_FIXTURE_FILES = [
+  "scripts/elements-watermark-w4.test.mjs",
+  "scripts/elements-publish-tarball.test.mjs",
+];
+
 test("AC-L2 (W4): no tracked file commits a watermark license or reference value", () => {
-  // This guard file itself carries the detector's negative fixtures
-  // (synthetic values, e.g. "SENTROPIC-PROD-12345", that exist only to prove
-  // the detector fires); scanning it would be self-referential noise.
-  const selfPath = "scripts/elements-watermark-w4.test.mjs";
   const findings = [];
   for (const file of trackedFiles()) {
-    if (file === selfPath) continue;
+    if (W4_FIXTURE_FILES.includes(file)) continue;
     let text;
     try {
       const raw = readFileSync(join(repoRoot, file));
