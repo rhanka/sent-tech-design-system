@@ -64,6 +64,16 @@ export interface ProjectionBinding {
       a standalone projection (raw transaction without the editor) omits it
       and keeps the allocator fallback for every fresh identity. */
   pmTransactionDoc?: ProseMirrorNode;
+  /** Local actor origin (CL-3b1 §4.5): every shared-state write of a
+      non-mark-only ProseMirror transaction happens in one `ydoc.transact`
+      under this origin, so the field `UndoManager` (scoped to it) tracks
+      exactly the local actor's content and structural steps. */
+  localOrigin: string;
+  /** Mark origin (CL-3b1 §4.5 boundary): a mark-only transaction transacts
+      under this origin, which no field `UndoManager` tracks, so formatting
+      never enters the undo stacks (mark undo is the §5.6 provenance log,
+      CL-4). Must differ from `localOrigin`. */
+  markOrigin: string;
 }
 
 /** Transaction flag marking binding-origin dispatches (echo suppression). */
@@ -329,7 +339,7 @@ export function buildSelectionMap(pmDoc: ProseMirrorNode, ytext: Y.Text): Select
 }
 
 /** Build the map from an explicit linear layout (pre- or post-update). */
-function buildSelectionMapFromBlocks(
+export function buildSelectionMapFromBlocks(
   pmDoc: ProseMirrorNode,
   linearBlocks: LinearBlock[],
   linearLength: number,
@@ -669,6 +679,10 @@ interface SliceInsertContext {
   listDepth: number;
   blockquoteDepth: number;
   containerOrder: Array<"quote" | "list">;
+  /** True when the insertion point sits inside a codeBlock (R-FULL-CODE-1):
+      bare text then splits on LF into hard-break embeds, mirroring the
+      capture reader. Block nodes in the slice keep their own per-node mode. */
+  codeMode: boolean;
 }
 
 /** Insert one slice textblock. The identity comes from the minted queue
@@ -796,9 +810,11 @@ function insertSliceContent(
   const walk = (fragment: ProseMirrorNode["content"], ctx: SliceInsertContext): void => {
     fragment.forEach((node) => {
       // Bare inline content (typing steps carry a raw text node, not a
-      // paragraph): insert it into the current block as-is.
+      // paragraph): insert it into the current block as-is, splitting on
+      // LF when the insertion point is inside a codeBlock (R-FULL-CODE-1:
+      // Enter inside code is a hard break, never a raw U+000A insert).
       if (node.isText) {
-        insertInlineNode(run, cursor, node, false);
+        insertInlineNode(run, cursor, node, ctx.codeMode);
         first = false;
         return;
       }
@@ -843,6 +859,7 @@ function insertSliceContent(
           containerOrder: ctx.containerOrder.includes("list")
             ? [...ctx.containerOrder]
             : [...ctx.containerOrder, "list"],
+          codeMode: ctx.codeMode,
         };
         walk(node.content, nested);
         return;
@@ -866,6 +883,48 @@ function insertSliceContent(
   };
   walk(slice.content, context);
   return cursor.index - linearIndex;
+}
+
+/**
+ * Exact HR-pair start (R-FULL-HR-1, CL-3b1 §4.10): separators are invisible
+ * to ProseMirror ranges, so a PM-side deletion of an HR node covers the atom
+ * alone (`[S+1, S+2)`); a block-level cut may also cover the whole pair
+ * (`[S, S+2)`). Either exact coverage resolves to the pair start `S`, so the
+ * separator+atom pair is removed atomically. Anything else — including a
+ * range merely crossing the pair — returns null and refuses whole
+ * (`collab-structural-conflict`).
+ */
+function exactHrPairStart(ytext: Y.Text, from: number, to: number): number | null {
+  const span = to - from;
+  if (span !== 1 && span !== 2) return null;
+  const pairStart = span === 2 ? from : from - 1;
+  const ops = ytext.toDelta() as Array<{ insert?: unknown }>;
+  let linear = 0;
+  for (let index = 0; index < ops.length; index += 1) {
+    const op = ops[index] as { insert?: unknown };
+    const length = typeof op.insert === "string" ? (op.insert as string).length : 1;
+    if (linear === pairStart) {
+      if (typeof op.insert !== "object" || op.insert === null) return null;
+      const payload = op.insert as Record<string, unknown>;
+      if (!("separator" in payload)) return null;
+      const separator = payload["separator"] as { paragraphId?: unknown; kind?: unknown };
+      if (separator.kind !== "horizontalRule" || typeof separator.paragraphId !== "string") {
+        return null;
+      }
+      const next = ops[index + 1] as { insert?: unknown } | undefined;
+      if (next === undefined || typeof next.insert !== "object" || next.insert === null) {
+        return null;
+      }
+      const atomPayload = next.insert as Record<string, unknown>;
+      if (!("horizontalRule" in atomPayload)) return null;
+      const atom = atomPayload["horizontalRule"] as { paragraphId?: unknown };
+      if (atom.paragraphId !== separator.paragraphId) return null;
+      if (pairStart + 2 !== (span === 2 ? to : from + 1)) return null;
+      return pairStart;
+    }
+    linear += length;
+  }
+  return null;
 }
 
 function linearRangeTouchesAtom(
@@ -1013,7 +1072,10 @@ export function projectPmTransactionToYText(
   // Every shared-state write is journaled and verified inside one Yjs
   // transaction (review 2 B-NEW-6): a refused or diverging projection
   // inverts the journal before the transaction commits, so observers on
-  // either side never see a half-applied state.
+  // either side never see a half-applied state. The transaction runs under
+  // one origin (CL-3b1 §4.5): the local origin normally, the mark origin for
+  // a mark-only transaction (never tracked by the field UndoManager).
+  const origin = isMarkOnlyTransaction(tr) ? binding.markOrigin : binding.localOrigin;
   ydoc.transact(() => {
     try {
       for (const step of tr.steps) {
@@ -1047,6 +1109,20 @@ export function projectPmTransactionToYText(
             throw new Error("rich-text.collab-preserved-denied: the binding refuses any step touching preserved content");
           }
           if (atom === "horizontalRule") {
+            // An exact-pair deletion removes the atom (R-FULL-HR-1): the
+            // separator+atom pair vanishes and the HR metadata record is
+            // left orphaned like a merge-consumed block (R-STR-5), so undo
+            // restores the pair with its record intact. Anything else
+            // touching the pair refuses whole.
+            if ((slice.content.size ?? 0) === 0) {
+              const pairStart = exactHrPairStart(ytext, linearFrom, linearTo);
+              if (pairStart !== null) {
+                runDelete(run, pairStart, 2);
+                workingDoc = postDoc;
+                map = buildSelectionMap(workingDoc, ytext);
+                continue;
+              }
+            }
             throw new Error("rich-text.collab-structural-conflict: range operations cannot cross an HR atom");
           }
           // A pure insert growing the textblock count through an open slice is
@@ -1081,11 +1157,29 @@ export function projectPmTransactionToYText(
             runDelete(run, linearFrom, linearTo - linearFrom);
           }
           if ((slice.content.size ?? 0) > 0) {
+            // R-FULL-CODE-1: bare text inserts split on LF only inside a
+            // codeBlock. Resolve the insertion point against the
+            // pre-step document (a pure insert shifts nothing before it).
+            let insertCodeMode = false;
+            try {
+              const $from = workingDoc.resolve(from);
+              for (let depth = $from.depth; depth >= 0; depth -= 1) {
+                const ancestor = $from.node(depth);
+                const name = ancestor.type.name;
+                if (name === "paragraph" || name === "heading" || name === "codeBlock") {
+                  insertCodeMode = name === "codeBlock";
+                  break;
+                }
+              }
+            } catch {
+              insertCodeMode = false;
+            }
             insertSliceContent(run, linearFrom, slice, {
               listKind: "none",
               listDepth: 0,
               blockquoteDepth: 0,
               containerOrder: [],
+              codeMode: insertCodeMode,
             });
           }
           workingDoc = postDoc;
@@ -1146,7 +1240,7 @@ export function projectPmTransactionToYText(
       failure = error;
       invertJournal(run);
     }
-  });
+  }, origin);
   if (failed) {
     throw failure;
   }
@@ -1201,6 +1295,27 @@ function repairSplitTailIdentity(
   return new Transform(postDoc).setNodeAttribute(last, PARAGRAPH_ID_ATTRIBUTE, tailId).doc;
 }
 
+/**
+ * Order-insensitive record comparison (R-STR-5): object keys sort, arrays
+ * keep their order, and explicit `undefined` values are dropped exactly the
+ * way `JSON.stringify` drops them (the derivation emits `undefined` for
+ * absent run ids while stored records omit the keys). A derived record
+ * identical to the stored one must not mint a new Yjs item: that would
+ * manufacture a false last-writer-wins tie that randomly kills a real
+ * concurrent write. No-op writes must not create items.
+ */
+export function stableMetadataJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map((entry) => stableMetadataJson(entry)).join(",")}]`;
+  if (typeof value === "object" && value !== null) {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${stableMetadataJson(entry)}`);
+    return `{${entries.join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "null";
+}
+
 /** Write metadata records derived from a post-step PM document. */
 function syncMetadataFromPmDoc(run: ProjectionRun, pmDoc: ProseMirrorNode): void {
   if (run.format !== "ds.markdown.full@1") return;
@@ -1225,7 +1340,7 @@ function syncMetadataFromPmDoc(run: ProjectionRun, pmDoc: ProseMirrorNode): void
       }
       continue;
     }
-    if (JSON.stringify(current) === JSON.stringify(derived)) continue;
+    if (stableMetadataJson(current) === stableMetadataJson(derived)) continue;
     // Depth-only changes never re-derive listRunId from PM list-node
     // attributes (R-FULL-META-1/2): a nested list created by sink carries an
     // empty wrapper run id, so the derived run id falls back to the block's
@@ -1264,7 +1379,7 @@ function syncMetadataFromPmDoc(run: ProjectionRun, pmDoc: ProseMirrorNode): void
         delete (merged as { orderedType?: unknown }).orderedType;
         delete (merged as { listTight?: unknown }).listTight;
       }
-      if (JSON.stringify(current) !== JSON.stringify(merged)) {
+      if (stableMetadataJson(current) !== stableMetadataJson(merged)) {
         runMetaSet(run, block.paragraphId, merged);
       }
       continue;
@@ -1479,7 +1594,10 @@ function verifyFullAgreement(
           neighborRuns,
         );
         const capMeta = cap.metadata as FullBlockMetadata | undefined;
-        if (JSON.stringify(expMeta ?? null) !== JSON.stringify(capMeta ?? null)) {
+        // Order-insensitive like the sync path (R-STR-5): the stored record
+        // keeps its key order when the write is a semantic no-op, and the
+        // derivation's explicit `undefined` run ids match omitted keys.
+        if (stableMetadataJson(expMeta ?? null) !== stableMetadataJson(capMeta ?? null)) {
           throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
         }
         const codeInvolved =
@@ -1501,7 +1619,7 @@ function verifyFullAgreement(
     }
     if (cap.kind === "paragraph") {
       const capMeta = cap.metadata as FullBlockMetadata | undefined;
-      if (JSON.stringify(record.metadata ?? null) !== JSON.stringify(capMeta ?? null)) {
+      if (stableMetadataJson(record.metadata ?? null) !== stableMetadataJson(capMeta ?? null)) {
         throw new Error("rich-text.collab-step-failed: projected blocks diverge from the transaction");
       }
       const recordCodeInvolved =
@@ -1738,7 +1856,13 @@ export function applyRemoteUpdateIncrementally(options: {
 
   const preBlocks = options.preBlocks ?? linearBlocksOf(ytext);
   // Selection pre-image: PM positions paired with the pre-update layout.
-  const beforeMap = buildSelectionMapFromBlocks(view.state.doc, preBlocks as LinearBlock[], ytext.length);
+  // FU-1: the pre-image map carries the pre-update linear length derived
+  // from the pre-update blocks, never the already-mutated `ytext.length`.
+  const beforeMap = buildSelectionMapFromBlocks(
+    view.state.doc,
+    preBlocks as LinearBlock[],
+    preUpdateLinearLength(preBlocks),
+  );
   const selection = view.state.selection;
   const anchorPre = pmPositionToLinear(beforeMap, selection.anchor);
   const headPre = pmPositionToLinear(beforeMap, selection.head);
@@ -1833,6 +1957,30 @@ export interface LinearBlockLayout {
 /** Linear block layout of a field (exported for pre/post affected computation). */
 export function linearBlocksOf(ytext: Y.Text): LinearBlockLayout[] {
   return walkLinearBlocks(ytext) as LinearBlockLayout[];
+}
+
+/** Pre-update linear length of a field layout (CL-3b1 FU-1): the last
+    pre-update block's `contentEnd`, or 0 for an empty layout. A pre-update
+    selection map must carry this length, never the already-mutated
+    `ytext.length`. */
+export function preUpdateLinearLength(preBlocks: LinearBlockLayout[]): number {
+  if (preBlocks.length === 0) return 0;
+  return (preBlocks[preBlocks.length - 1] as LinearBlockLayout).contentEnd;
+}
+
+/** Mark-only transaction test (CL-3b1 §4.5 boundary): true when the
+    transaction carries at least one step and every step is an add/remove-mark
+    step. Such transactions transact under the mark origin and never enter the
+    field `UndoManager` stacks; a mixed text+marks gesture transacts under the
+    local origin (its characters are undoable, its marks ride the items). */
+export function isMarkOnlyTransaction(tr: Transaction): boolean {
+  if (tr.steps.length === 0) return false;
+  for (const step of tr.steps) {
+    if (!(step instanceof AddMarkStep) && !(step instanceof RemoveMarkStep)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /** Derive the affected block range from a Y.Text change delta.

@@ -2,13 +2,12 @@
 // §6.3 seam 3). The only Yjs-reachable entry besides its codec, projection
 // and selection siblings: framework adapters never receive the `Y.Doc`.
 //
-// History seam (spec §4.5, CL-3b): when bound, the extension composition
+// Bound history (spec §4.5, CL-3b1): when bound, the extension composition
 // swaps history in exactly one place (UndoRedo removed; see
 // `editor-extensions.ts` `removeHistoryExtension` and the factory `bound`
-// branch in `editor.ts`). The Yjs `UndoManager` itself is CL-3b: this module
-// leaves the seam (`createBoundUndoManager` throws until CL-3b lands) and a
-// failing-closed placeholder (`createBoundHistoryPlaceholder`) that never
-// double-records.
+// branch in `editor.ts`). This module owns the Yjs `UndoManager` handle
+// (`createBoundUndoManager`, scoped to the local actor origin), so exactly
+// one history exists and nothing double-records.
 
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
@@ -33,41 +32,85 @@ export interface LiveSessionBindingSource {
   releaseBinding(identity: FieldBindingIdentity): void;
 }
 
-/** Failing-closed bound history placeholder (CL-3b seam, §4.5). */
-export interface BoundHistoryPlaceholder {
-  readonly kind: "bound-history-placeholder";
-  readonly available: false;
-  undo(): never;
-  redo(): never;
-}
-
-export const BOUND_HISTORY_UNAVAILABLE_MESSAGE = "rich-text.bound-undo-unavailable" as const;
-
-/** Bound undo/redo before CL-3b: fail closed, never double-record. */
-export function createBoundHistoryPlaceholder(): BoundHistoryPlaceholder {
-  const unavailable = (): never => {
-    throw new Error(BOUND_HISTORY_UNAVAILABLE_MESSAGE);
-  };
-  return {
-    kind: "bound-history-placeholder",
-    available: false,
-    undo: unavailable,
-    redo: unavailable,
-  };
+/**
+ * Bound history handle (CL-3b1, spec §4.5): the Yjs `UndoManager` over the
+ * field `Y.Text` and its `fieldmeta:<fieldKey>` map, scoped by
+ * `trackedOrigins` to the local actor origin. Exactly one history exists in
+ * bound mode (ProseMirror history is removed); mark-only transactions never
+ * enter these stacks (§4.5 boundary). The handle carries no `Y` type beyond
+ * construction: `undo()`/`redo()` report whether a step applied.
+ */
+export interface BoundUndoManager {
+  readonly available: true;
+  /** Undo the local actor's latest tracked step; null when nothing applied. */
+  undo(): unknown;
+  /** Redo the local actor's latest undone step; null when nothing applied. */
+  redo(): unknown;
+  canUndo(): boolean;
+  canRedo(): boolean;
+  /** Close the current capture interval so the next gesture is a new step
+      (spec leaves coalescing unpinned; the production default stays 500 ms,
+      register entry AMB-8; witnesses call this between gestures). */
+  stopCapturing(): void;
+  destroy(): void;
 }
 
 /**
- * CL-3b seam: the Yjs `UndoManager` over the field text plus its metadata
- * map, scoped to the local actor origin (§4.5). Throws until CL-3b lands so
- * no caller can mistake the placeholder for history.
+ * Local actor origin for the field binding (register entry AMB-1): the
+ * browser actor form `actor:<actorId>` when the host supplied an actor,
+ * else the binding-scoped origin
+ * `actor:binding:<sessionId>:<fieldKey>` minted by the binding source, so
+ * undo works before a host names actors. The bridge form `agent:<actorId>`
+ * is host-minted and never produced here (§5.1).
  */
-export function createBoundUndoManager(_options: {
+export function boundLocalOriginFor(
+  identity: FieldBindingIdentity,
+  actorId: string | null | undefined,
+): string {
+  if (typeof actorId === "string" && actorId !== "") {
+    return `actor:${actorId}`;
+  }
+  return `actor:binding:${identity.sessionId}:${identity.fieldKey}`;
+}
+
+/**
+ * Mark origin derived from the local origin (CL-3b1 §4.5 boundary): never a
+ * member of the field manager's `trackedOrigins`, so mark-only transactions
+ * transact without entering the undo stacks.
+ */
+export function boundMarkOriginFor(localOrigin: string): string {
+  return `${localOrigin}:mark`;
+}
+
+/** Create the bound `UndoManager` handle (spec §4.5, §4.3.1 item 6). */
+export function createBoundUndoManager(options: {
   text: Y.Text;
   fieldMeta: Y.Map<unknown>;
   trackedOrigin: string;
-}): never {
-  void _options;
-  throw new Error("rich-text.bound-undo-unavailable: UndoManager wiring lands in CL-3b");
+}): BoundUndoManager {
+  const { text, fieldMeta, trackedOrigin } = options;
+  if (typeof trackedOrigin !== "string" || trackedOrigin === "") {
+    throw new Error("rich-text.bound-undo-unavailable: a local actor origin is required");
+  }
+  const ydoc = text.doc;
+  if (ydoc === null || ydoc === undefined) {
+    throw new Error("rich-text.bound-undo-unavailable: field Y.Text is not attached to a Y.Doc");
+  }
+  if (fieldMeta.doc !== ydoc) {
+    throw new Error("rich-text.bound-undo-unavailable: field text and metadata share one Y.Doc");
+  }
+  const manager = new Y.UndoManager([text, fieldMeta], {
+    trackedOrigins: new Set([trackedOrigin]),
+  });
+  return {
+    available: true,
+    undo: () => manager.undo(),
+    redo: () => manager.redo(),
+    canUndo: () => manager.canUndo(),
+    canRedo: () => manager.canRedo(),
+    stopCapturing: () => manager.stopCapturing(),
+    destroy: () => manager.destroy(),
+  };
 }
 
 interface SessionRecord {
