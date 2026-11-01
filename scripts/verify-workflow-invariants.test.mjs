@@ -259,6 +259,12 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured 404 (never published) on 2026-10-30.
     removeWhen: "@sentropic/design-system-rich-text has had a first successful npm publish",
   },
+  "elements-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/design-system-elements has a first
+    // successful `npm publish`. Measured 404 (never published) on 2026-11-01.
+    removeWhen: "@sentropic/design-system-elements has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
@@ -432,4 +438,40 @@ test("every file a guard reads can trigger the workflow that runs the guards", (
     `file(s) read by a repository guard that cannot trigger verify.yml on a pull request — ` +
       `a change to them would land with no guard running:\n  ${uncovered.join("\n  ")}`,
   );
+});
+
+// --- 6. the AC-L7a tarball guard runs where elements is built ----------------
+// Measured 2026-11-01 (Argon B2-1): the guard only ran in the unbuilt
+// `licensing` job (where it reports NOT RUN) and in the tag-only `publish`
+// job, so a bad tarball passed every PR and push to `main` unchecked. It must
+// stay wired into a built job: the `verify` shards of verify.yml (where the
+// workspace is built above the step) and the `verify` job of
+// elements-publish.yml (the only job that also runs on workflow_dispatch).
+// The pack-smoke shards must select the packages smoke-pack actually covers:
+// ci-affected-workspaces.mjs omitted `@sentropic/design-system-elements` (and
+// `@sentropic/design-system-rich-text`, packed since L7a's smoke-pack wiring
+// but never shard-selected), so their shards ran no pack-smoke task at all.
+test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cover elements and rich-text", () => {
+  const { strippedText: verifyText } = scanWorkflow(readWorkflow("verify.yml"));
+  assert.ok(
+    /node --test scripts\/elements-publish-tarball\.test\.mjs/.test(verifyText),
+    "verify.yml must run scripts/elements-publish-tarball.test.mjs in a built shard job — otherwise the AC-L7a guard only ever reports NOT RUN on PR/main CI",
+  );
+  assert.ok(
+    /contains\(matrix\.workspaces,\s*'@sentropic\/design-system-elements'\)/.test(verifyText),
+    "verify.yml must condition the tarball guard on the shard selecting @sentropic/design-system-elements (the dataviz lot gate pattern) — the licensing job runs it unbuilt",
+  );
+  const { strippedText: elementsText } = scanWorkflow(readWorkflow("elements-publish.yml"));
+  const runs = elementsText.match(/node --test scripts\/elements-publish-tarball\.test\.mjs/g) ?? [];
+  assert.ok(
+    runs.length >= 2,
+    `elements-publish.yml must run the tarball guard in both verify and publish jobs (found ${runs.length}) — the verify job is the only one that runs on workflow_dispatch`,
+  );
+  const planner = readFileSync(join(scriptsDir, "ci-affected-workspaces.mjs"), "utf8");
+  for (const name of ["@sentropic/design-system-elements", "@sentropic/design-system-rich-text"]) {
+    assert.ok(
+      planner.includes(`"${name}"`),
+      `scripts/ci-affected-workspaces.mjs must list ${name} in smokePackWorkspaces — otherwise its shards never run a pack-smoke task`,
+    );
+  }
 });
