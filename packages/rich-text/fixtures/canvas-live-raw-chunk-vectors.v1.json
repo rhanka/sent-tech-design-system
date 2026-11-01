@@ -1,0 +1,289 @@
+{
+  "id": "sentropic.rich-text.canvas-live-raw-chunk-vectors",
+  "version": 1,
+  "budgetReferenceBytes": 262144,
+  "estimator": "utf8-byte-length of JSON.stringify(value); chunk budget counts JSON.stringify(chunkRaw) including quotes and escaping",
+  "cases": [
+    {
+      "id": "ascii-whole",
+      "description": "In-cap ASCII raw returns whole: rawOffset/rawComplete absent at page level.",
+      "paragraphId": "p:ascii-whole",
+      "preservedKind": "example/ascii-whole",
+      "raw": "plain ascii preserved payload",
+      "rawUtf16Length": 29,
+      "rawSha256": "72f1c87c5c613aff7cc6fb7ffdf5562a28c7c3441cce135cdfb6260189142625",
+      "slicing": {
+        "chunkBudgetBytes": 262144,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 29,
+            "rawSha256": "72f1c87c5c613aff7cc6fb7ffdf5562a28c7c3441cce135cdfb6260189142625",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ascii-greedy",
+      "description": "ASCII raw several budgets long, small chunk budget: greedy fill, contiguous offsets, completion only on the last chunk.",
+      "paragraphId": "p:ascii-greedy",
+      "preservedKind": "example/ascii-greedy",
+      "raw": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij",
+      "rawUtf16Length": 200,
+      "rawSha256": "5d21f71a6600f3754431bf20ce4c69e7ff23f66d3140b8a8346e5e26eab201dc",
+      "slicing": {
+        "chunkBudgetBytes": 64,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 62,
+            "rawSha256": "2256dd18911786394ee8d63be2b9a700cb597f042170102749d2cf4173f16a62",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 62,
+            "rawLengthUtf16": 62,
+            "rawSha256": "d5513fde64e5a9a9325717e4b3f807d2da3d170dce35a7be7b8f3cf2dede6227",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 124,
+            "rawLengthUtf16": 62,
+            "rawSha256": "2deb4fe90d19d6b81fd6497ea1d092f4083eb3ec00fd0407a3f65f0fe9001b6d",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 186,
+            "rawLengthUtf16": 14,
+            "rawSha256": "97a62826530bd3207534482f7ba2302c7bd6f663f23b83328d888aff2c1b268b",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "bmp-boundary",
+      "description": "BMP text mixing 1-byte, 2-byte and 3-byte UTF-8 characters at the budget edge: offsets count UTF-16 units while the budget counts escaped UTF-8 bytes.",
+      "paragraphId": "p:bmp-boundary",
+      "preservedKind": "example/bmp-boundary",
+      "raw": "aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢aé漢",
+      "rawUtf16Length": 90,
+      "rawSha256": "45758553f2800862d6487b877da2d59d8ad7ef80d79fbfd8149ea98bd2f246fc",
+      "slicing": {
+        "chunkBudgetBytes": 64,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 31,
+            "rawSha256": "77bd1b5af2c40e5234d1ba60b73911a889ca54d20ad984e997022420bf586162",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 31,
+            "rawLengthUtf16": 31,
+            "rawSha256": "ae65e3a8750b4db9f5a00a13a5455cd4b46f9bb9e9771780254d9a247a5cde29",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 62,
+            "rawLengthUtf16": 28,
+            "rawSha256": "679c52d2d9dd6a44fcf8c028282c9ca5d5d9c1018432fd02d0e420d5c288176d",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "surrogate-boundary",
+      "description": "Astral character placed so the greedy cut lands at its edge: no chunk starts or ends with a lone surrogate, offsets stay contiguous.",
+      "paragraphId": "p:surrogate-boundary",
+      "preservedKind": "example/surrogate-boundary",
+      "raw": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx😀yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+      "rawUtf16Length": 122,
+      "rawSha256": "5d8bb9ba379679813e1cc016788de055fbf36af5670485f8d8ce0087efa5b007",
+      "slicing": {
+        "chunkBudgetBytes": 64,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 60,
+            "rawSha256": "42f2d97335669f86846b721a8aa58551a46564eaf6977e3b4836d4645e3e3ed2",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 60,
+            "rawLengthUtf16": 60,
+            "rawSha256": "02dcc122ed96527c63ec0b5f15b5e0dbdddb9570ba28e05c42a4e7b9d452e459",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 120,
+            "rawLengthUtf16": 2,
+            "rawSha256": "ef90d9c1ec76b1edc9edfaf2c0c05359c10ccc49ae8ecf7b7fd25ce9c02e86a4",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "escaping-heavy",
+      "description": "Raw dense in `\"`, `\\` and U+0001: the budget is measured on the escaped form, so a chunk holds fewer code units than the unescaped byte count suggests.",
+      "paragraphId": "p:escaping-heavy",
+      "preservedKind": "example/escaping-heavy",
+      "raw": "\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001\"\\\u0001",
+      "rawUtf16Length": 120,
+      "rawSha256": "54a2f8f133d8c73703ee4923fa45e8e2438c48fa79f386eabeba92fbfcb39700",
+      "slicing": {
+        "chunkBudgetBytes": 100,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 29,
+            "rawSha256": "9d08a7423164a8c33a29d39e416a1befb4652021c9c56dc1419ac0f4eb9fd5b7",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 29,
+            "rawLengthUtf16": 29,
+            "rawSha256": "8fe9caa792ef836d03e49b0d72b7f38a23ae566b685279e41019bb25f00df62c",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 58,
+            "rawLengthUtf16": 29,
+            "rawSha256": "f522916f14e6d6fc6d7823b67d418c22b08e42d6ec000ef87809e7374ccc5895",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 87,
+            "rawLengthUtf16": 29,
+            "rawSha256": "9d08a7423164a8c33a29d39e416a1befb4652021c9c56dc1419ac0f4eb9fd5b7",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 116,
+            "rawLengthUtf16": 4,
+            "rawSha256": "45c4bfd4a4151917b231cf09b32d5111cc2b3199903e80a5b37f456916277572",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "exact-multiple",
+      "description": "Two full chunks with no trailing empty chunk on an exact multiple.",
+      "paragraphId": "p:exact-multiple",
+      "preservedKind": "example/exact-multiple",
+      "raw": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+      "rawUtf16Length": 128,
+      "rawSha256": "652713bcb795a6978fa84aa8d071d13e9ee581a8e716e8ab18daa49d1e920360",
+      "slicing": {
+        "chunkBudgetBytes": 66,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 64,
+            "rawSha256": "ee8e658590c9a5e119400a774415a01db104de1ee6e2c29ec69aa73ef46544d2",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 64,
+            "rawLengthUtf16": 64,
+            "rawSha256": "ee8e658590c9a5e119400a774415a01db104de1ee6e2c29ec69aa73ef46544d2",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "retained-slicing",
+      "description": "Retained raw sliced while the live raw differs: expected chunks slice the retained string; the live digest must never appear.",
+      "paragraphId": "p:retained-slicing",
+      "preservedKind": "example/retained-slicing",
+      "raw": "retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-retained-neighbour-bytes-",
+      "rawUtf16Length": 800,
+      "rawSha256": "1928bcac69b6ae1e836b65e21a33ec8a6a00c2e1031cc99306a1fe9f808fe86d",
+      "liveRaw": "live-diverged-bytes-0042",
+      "liveRawSha256": "c57a644183f2018e8e0ad693995aefda0641efda6cafd4b3333937f332fa76e2",
+      "slicing": {
+        "chunkBudgetBytes": 128,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 126,
+            "rawSha256": "5a27f5cf9b086503b3744dc25b512aa8746d826f8726b6d965b17a1cb1952b11",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 126,
+            "rawLengthUtf16": 126,
+            "rawSha256": "c40f12abc6cedfe624f1908cb3e802bf136832ff3e25c7baaecae7da970664d1",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 252,
+            "rawLengthUtf16": 126,
+            "rawSha256": "2c4d833fe461d65f856672dabffb2cde0900cd12cd525d97c7be38eb43d6650a",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 378,
+            "rawLengthUtf16": 126,
+            "rawSha256": "214beb886a8f9a8d9b36b0029fd5db65794fa22fb212fb08ee8f6d23a4eb61ad",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 504,
+            "rawLengthUtf16": 126,
+            "rawSha256": "e3b23a7ff5fbf822ca4ab363d9670473ddb752fa18f083e4f6891e782a9f0f98",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 630,
+            "rawLengthUtf16": 126,
+            "rawSha256": "ecbecf6dce5a6efd2832f5e4d1c5baeb228cb99a3608a3df22678151170f6873",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 756,
+            "rawLengthUtf16": 44,
+            "rawSha256": "a460dffd6421b40a710a77229a74bd532cc1eb64387fd35f756a1db53285c8fd",
+            "rawComplete": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "f4-scale",
+      "description": "F4-scale raw over the 256 KiB budget by construction: at least two chunks at the real budget, reassembled digest equals the seeded digest.",
+      "paragraphId": "p:f4-scale",
+      "preservedKind": "example/f4-scale",
+      "rawConstruction": {
+        "pattern": "0123456789abcdef",
+        "repeat": 20000,
+        "prefix": "F4-SCALE-LEAD:",
+        "suffix": ":F4-SCALE-TAIL"
+      },
+      "rawUtf16Length": 320028,
+      "rawSha256": "a500255d4e8244c412d2120a92ae07d3f4b4fe65523d88c03c5296cabcae43e1",
+      "slicing": {
+        "chunkBudgetBytes": 262144,
+        "expectedChunks": [
+          {
+            "rawOffset": 0,
+            "rawLengthUtf16": 262142,
+            "rawSha256": "4b435739f158bbf18ee084521b945b795499d476cdab196588503f10efec2eb9",
+            "rawComplete": false
+          },
+          {
+            "rawOffset": 262142,
+            "rawLengthUtf16": 57886,
+            "rawSha256": "80bd9c117ea0f560c02eeb91c9f8c62d8079c0226468cb4c571b06a9b58e4071",
+            "rawComplete": true
+          }
+        ]
+      }
+    }
+  ]
+}

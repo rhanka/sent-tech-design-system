@@ -7,7 +7,8 @@
  * not exist, so the isolation half fails at import time.
  */
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRichTextEditor } from "./editor.js";
@@ -352,5 +353,88 @@ describe("CL-3c-07 Hocuspocus dev-only and test-support isolation (witness 7 reg
     expect(agentWitness.includes("@hocuspocus")).toBe(false);
     const hocuspocus = readFileSync(join(SRC_DIR, "collab-hocuspocus-source.test-support.ts"), "utf8");
     expect(hocuspocus.includes("@hocuspocus/server")).toBe(true);
+  });
+});
+
+describe("CL-4b-07 fixture publication and test-support isolation", () => {
+  const FIXTURE_EXPORT = "./fixtures/canvas-live-raw-chunk-vectors.v1.json";
+  const FIXTURE_ID = "sentropic.rich-text.canvas-live-raw-chunk-vectors";
+
+  function manifest(): {
+    exports?: Record<string, string>;
+    files?: string[];
+    dependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  } {
+    return JSON.parse(readFileSync(join(SRC_DIR, "..", "package.json"), "utf8"));
+  }
+
+  it("exports the chunk-vector fixture beside dist with no other shipped-shape change", () => {
+    const pkg = manifest();
+    // RED on the CL-4a base: the fixture file and its export are absent.
+    expect(pkg.exports?.[FIXTURE_EXPORT], "fixture export").toBe(FIXTURE_EXPORT);
+    expect(pkg.files, "fixture in files").toContain("fixtures/canvas-live-raw-chunk-vectors.v1.json");
+    const fixturePath = join(SRC_DIR, "..", FIXTURE_EXPORT.replace(/^\.\//, ""));
+    expect(existsSync(fixturePath), "fixture file on disk").toBe(true);
+    const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as {
+      id: string;
+      version: number;
+      budgetReferenceBytes: number;
+      cases: Array<{ id: string }>;
+    };
+    expect(fixture.id).toBe(FIXTURE_ID);
+    expect(fixture.version).toBe(1);
+    expect(fixture.budgetReferenceBytes).toBe(262144);
+    expect(fixture.cases.map((entry) => entry.id).sort()).toEqual(
+      [
+        "ascii-whole",
+        "ascii-greedy",
+        "bmp-boundary",
+        "surrogate-boundary",
+        "escaping-heavy",
+        "exact-multiple",
+        "retained-slicing",
+        "f4-scale",
+      ].sort(),
+    );
+    for (const [path, target] of Object.entries(pkg.exports ?? {})) {
+      const targets = typeof target === "string" ? [target] : Object.values(target as Record<string, unknown>);
+      for (const entry of targets) {
+        expect(String(entry), `export ${path} ships no test support`).not.toMatch(/test-support/);
+      }
+    }
+    for (const file of pkg.files ?? []) {
+      expect(file, `files entry ships no test support: ${file}`).not.toMatch(/test-support/);
+    }
+    expect(pkg.dependencies?.["@hocuspocus/server"]).toBeUndefined();
+    expect(pkg.peerDependencies?.["@hocuspocus/server"]).toBeUndefined();
+  });
+
+  it("the packed tarball carries the fixture and no test support", () => {
+    const raw = execFileSync("npm", ["pack", "--dry-run", "--json"], {
+      cwd: join(SRC_DIR, ".."),
+      encoding: "utf8",
+    });
+    const packed = JSON.parse(raw) as Array<{ files?: Array<{ path?: string }> }>;
+    const paths = (packed[0]?.files ?? []).map((entry) => entry.path ?? "");
+    expect(paths.some((path) => path === "fixtures/canvas-live-raw-chunk-vectors.v1.json")).toBe(true);
+    for (const path of paths) {
+      expect(path, `tarball ships no test support: ${path}`).not.toMatch(/test-support/);
+    }
+  });
+
+  it("the chunk fields stay type-only: the pure entry runtime graph reaches no Yjs", () => {
+    // The "." entry only: the bound entry is Yjs-reachable by design
+    // (existing CL-3a/CL-3c witnesses pin that split).
+    for (const entry of ["index.ts"] as const) {
+      const graph = runtimeGraphFrom(entry);
+      for (const specifier of graph.flatMap((file) => runtimeSpecifiersOf(file))) {
+        expect(specifier.startsWith("yjs"), `${entry}: shipped code imports "${specifier}"`).toBe(false);
+      }
+    }
+    const pure = readFileSync(join(SRC_DIR, "collaboration.ts"), "utf8");
+    expect(pure.includes("rawOffset?: number")).toBe(true);
+    expect(pure.includes("rawComplete?: boolean")).toBe(true);
   });
 });
