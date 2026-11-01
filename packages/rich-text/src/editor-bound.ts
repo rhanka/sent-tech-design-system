@@ -8,8 +8,18 @@
  * no bundler can emit the Yjs runtime as a chunk of a controlled artefact
  * (spec §4.9, §6.3, CL-3 witness 7; observed as the browser harness
  * provider-free failure on eb36556c, CL-3a fix 3).
+ *
+ * CL-3b1 (§4.5): this entry also mints the local actor origin (register
+ * entry AMB-1), creates the field `UndoManager` scoped to it, and passes
+ * both through `BoundImpl`. The `"./editor"` entry only ever sees the
+ * type-erased handle.
  */
 import type { FieldBindingIdentity } from "./collaboration.js";
+import {
+  boundLocalOriginFor,
+  boundMarkOriginFor,
+  createBoundUndoManager,
+} from "./editor-collaboration.js";
 import type { LiveSessionBindingSource } from "./editor-collaboration.js";
 import type { RichTextEditor, RichTextEditorOptions } from "./editor.js";
 import type { RichTextProfile } from "./profile.js";
@@ -29,9 +39,10 @@ export async function createBoundRichTextEditor(
     throw new Error("rich-text.bound-entry: bound mounts require a binding and a source");
   }
   const resolved = bindingSource.resolveBinding(bindingIdentity);
-  const [codec, projection] = await Promise.all([
+  const [codec, projection, selection] = await Promise.all([
     import("./collab-codec.js"),
     import("./collab-projection.js"),
+    import("./collab-selection.js"),
   ]);
   // R-MAP-3: seeding is a host operation performed once at field open; the
   // binding never reseeds. An empty field Y.Text means the host has not
@@ -46,12 +57,31 @@ export async function createBoundRichTextEditor(
     resolved.fieldMeta as never,
     options.document.format,
   );
+  // AMB-1: the local origin is `actor:<actorId>` when the host supplied an
+  // actor, else the binding-scoped origin minted here. The mark origin is
+  // derived and never tracked. The manager covers the field text plus its
+  // metadata map (R-LIN-8) under exactly the local origin.
+  const actorId = options.collaborationActor?.actorId ?? null;
+  const localOrigin = boundLocalOriginFor(bindingIdentity, actorId);
+  const markOrigin = boundMarkOriginFor(localOrigin);
+  const undoManager = createBoundUndoManager({
+    text: resolved.text,
+    fieldMeta: resolved.fieldMeta,
+    trackedOrigin: localOrigin,
+  });
   return buildEditor(options, {
     ytext: resolved.text as never,
     fieldMeta: resolved.fieldMeta as never,
     binding: resolved as never,
     codec: codec as never,
-    projection: projection as never,
+    projection: {
+      ...(projection as unknown as Record<string, unknown>),
+      linearToPmPosition: selection.linearToPmPosition,
+      pmPositionToLinear: selection.pmPositionToLinear,
+    } as never,
+    localOrigin,
+    markOrigin,
+    undoManager: undoManager as never,
     initialDocument: initial.document,
   });
 }

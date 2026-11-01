@@ -64,7 +64,7 @@ describe("CL-3-15 multi-step transaction projection", () => {
     const expectedText = expectedPmDoc.textBetween(0, expectedPmDoc.content.size, "\n\n", "\n");
 
     projectPmTransactionToYText(
-      { ytext, fieldMeta, fieldKey: "body", allocateId: () => "test:multi:tail", format: "focus.markdown.p0@1" },
+      { ytext, fieldMeta, fieldKey: "body", allocateId: () => "test:multi:tail", format: "focus.markdown.p0@1", localOrigin: "test:multi:local", markOrigin: "test:multi:local:mark" },
       startDoc,
       tr,
     );

@@ -852,7 +852,7 @@ describe("CL-3a fix 2 — B-NEW-7 divergence guard", () => {
     const before = captureJson(ytext, meta, P0);
     expect(() =>
       projectPmTransactionToYText(
-        { ytext, fieldMeta: meta, fieldKey: FIELD, allocateId: () => "fresh:attrstep:2", format: P0 },
+        { ytext, fieldMeta: meta, fieldKey: FIELD, allocateId: () => "fresh:attrstep:2", format: P0, localOrigin: "test:rev2:local", markOrigin: "test:rev2:local:mark" },
         schemaEd.view.state.doc,
         tr,
       ),

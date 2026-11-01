@@ -98,7 +98,7 @@ describe("CL-3a-B3 nested split and sink", () => {
     const splitTr = ed.view.state.tr;
     splitTr.split(splitPos, 1);
     projectPmTransactionToYText(
-      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:tail", format: "ds.markdown.full@1" },
+      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:tail", format: "ds.markdown.full@1", localOrigin: "test:struct:local", markOrigin: "test:struct:local:mark" },
       ed.view.state.doc,
       splitTr,
     );
@@ -144,7 +144,7 @@ describe("CL-3a-B3 nested split and sink", () => {
     const splitTr = ed.view.state.tr;
     splitTr.split(tr.selection.from, 2);
     projectPmTransactionToYText(
-      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:item", format: "ds.markdown.full@1" },
+      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:item", format: "ds.markdown.full@1", localOrigin: "test:struct:local", markOrigin: "test:struct:local:mark" },
       ed.view.state.doc,
       splitTr,
     );
@@ -199,7 +199,7 @@ describe("CL-3a-B3 nested split and sink", () => {
       expect(ok).toBe(true);
       const tr = trs[0] as unknown as Parameters<typeof projectPmTransactionToYText>[2];
       projectPmTransactionToYText(
-        { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:sink", format: "ds.markdown.full@1" },
+        { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:sink", format: "ds.markdown.full@1", localOrigin: "test:struct:local", markOrigin: "test:struct:local:mark" },
         ed.view.state.doc,
         tr,
       );
@@ -234,7 +234,7 @@ describe("CL-3a-B3 nested split and sink", () => {
       }) as never, ed.view);
       expect(ok).toBe(true);
       projectPmTransactionToYText(
-        { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:lift", format: "ds.markdown.full@1" },
+        { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:lift", format: "ds.markdown.full@1", localOrigin: "test:struct:local", markOrigin: "test:struct:local:mark" },
         ed.view.state.doc,
         trs[0] as never,
       );
@@ -265,7 +265,7 @@ describe("CL-3a-B3 nested split and sink", () => {
     });
     tr.setSelection(TextSelection.create(tr.doc, 1));
     projectPmTransactionToYText(
-      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:toggle", format: "ds.markdown.full@1" },
+      { ytext, fieldMeta: meta, fieldKey: "body", allocateId: () => "fresh:toggle", format: "ds.markdown.full@1", localOrigin: "test:struct:local", markOrigin: "test:struct:local:mark" },
       ed.view.state.doc,
       tr,
     );
