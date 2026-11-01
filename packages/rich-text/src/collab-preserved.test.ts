@@ -486,3 +486,45 @@ describe("CL-3b1-3 refusals touching preserved content", () => {
     expect(textsOf(a, FULL)[0], "liveness text").toBe("aaQ");
   });
 });
+
+describe("CL-3b2-F-2 HR deletion immediately after a preserved block", () => {
+  it("deleting the HR pair after a preserved segment applies atomically with raw intact, on two replicas, undo restores ids", async () => {
+    const field: RichTextDocument = {
+      format: FULL,
+      blocks: [
+        fullPara("p:1", "aa"),
+        { paragraphId: "k:table", kind: "preserved", raw: RAW_TABLE, preservedKind: "table" },
+        { paragraphId: "h:1", kind: "horizontalRule" },
+        fullPara("p:2", "bb"),
+      ],
+    } as unknown as RichTextDocument;
+    const s = await twoSessions(field);
+    const a: Replica = { doc: s.docA, text: s.textA, meta: s.metaA };
+    const b: Replica = { doc: s.docB, text: s.textB, meta: s.metaB };
+    expect(idsOf(a, FULL)).toEqual(["p:1", "k:table", "h:1", "p:2"]);
+    // Delete the HR node: the exact separator+atom pair vanishes, the
+    // preserved raw stays byte-identical, no refusal is surfaced.
+    s.edA.stopCapturing();
+    deleteNodeById(s.edA, "h:1");
+    expect(s.errorsA, "HR-after-preserved errors").toEqual([]);
+    expect(idsOf(a, FULL)).toEqual(["p:1", "k:table", "p:2"]);
+    expect(rawOf(a, "k:table")).toBe(RAW_TABLE);
+    expect(textsOf(a, FULL)).toEqual(["aa", "", "bb"]);
+    // Both replicas converge with no lost edit and agreeing vectors.
+    for (const order of ["ab", "ba"] as const) {
+      syncSessions({ doc: s.docA }, { doc: s.docB }, order);
+      assertQuiescent(`f2-hr-after-preserved-${order}`, FULL, [a, b]);
+    }
+    expect(rawOf(b, "k:table")).toBe(RAW_TABLE);
+    // Undo restores the HR pair with its id; redo removes it again.
+    s.edA.stopCapturing();
+    s.edA.undo();
+    expect(idsOf(a, FULL)).toEqual(["p:1", "k:table", "h:1", "p:2"]);
+    expect(rawOf(a, "k:table")).toBe(RAW_TABLE);
+    s.edA.redo();
+    expect(idsOf(a, FULL)).toEqual(["p:1", "k:table", "p:2"]);
+    expect(rawOf(a, "k:table")).toBe(RAW_TABLE);
+    syncSessions({ doc: s.docA }, { doc: s.docB }, "ab");
+    assertQuiescent("f2-hr-after-preserved-undo", FULL, [a, b]);
+  });
+});

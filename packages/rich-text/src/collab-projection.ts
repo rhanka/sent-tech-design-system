@@ -1003,6 +1003,13 @@ function linearRangeTouchesAtom(
   for (const op of delta) {
     const length = typeof op.insert === "string" ? (op.insert as string).length : 1;
     const end = linear + length;
+    // CL-3b2 F-2: the separator opens its segment, so the current kind is
+    // updated from the separator before the range test. Testing the stale
+    // kind first misclassified a range over the separator+atom pair of an
+    // HR placed immediately after a preserved block as preserved content.
+    if (typeof op.insert === "object" && op.insert !== null && isSeparatorValue(op.insert)) {
+      currentKind = (op.insert.separator as { kind: string }).kind;
+    }
     const overlaps = linear < to && end > from;
     if (overlaps && typeof op.insert === "object" && op.insert !== null) {
       if (isPreservedValue(op.insert) || currentKind === "preserved") return "preserved";
@@ -1012,9 +1019,6 @@ function linearRangeTouchesAtom(
         if (kind === "preserved") return "preserved";
         if (kind === "horizontalRule") return "horizontalRule";
       }
-    }
-    if (typeof op.insert === "object" && op.insert !== null && isSeparatorValue(op.insert)) {
-      currentKind = (op.insert.separator as { kind: string }).kind;
     }
     linear = end;
   }
@@ -1933,7 +1937,12 @@ function mapLinearIndexThroughDelta(
     }
     postPosition += length;
   }
-  return postPosition;
+  // CL-3b2 witness 5 (retained r1 caret stability): a Yjs delta ends at its
+  // last change — a trailing retain is omitted — so an index past the final
+  // op still carries the accumulated shift. Falling through to the bare
+  // `postPosition` froze every caret at or past the insert point instead of
+  // tracking its content.
+  return postPosition + (preIndex - prePosition);
 }
 
 /** Top-level PM range covering a leaf range: replacement boundaries always
@@ -2072,6 +2081,11 @@ export function applyRemoteUpdateIncrementally(options: {
   /** Replace the whole document instead of the affected range (heal path
       after a failed application, review 2 B-NEW-6). */
   fullReplace?: boolean;
+  /** Keep the ProseMirror-mapped selection (CL-3b2 review 1, BLOCKING-3):
+      while a composition session stages the composing range, a disjoint
+      incremental update must not round-trip the composing selection
+      through the staged/shared length mismatch. */
+  keepMappedSelection?: boolean;
 }): RemoteApplyResult {
   const { view, ytext, fieldMeta, format, fieldKey, affectedParagraphIds } = options;
   const affected = new Set(affectedParagraphIds);
@@ -2129,7 +2143,7 @@ export function applyRemoteUpdateIncrementally(options: {
   // round-trip (review 2 B-NEW-4).
   const afterMap = buildSelectionMapFromBlocks(tr.doc, walkLinearBlocks(ytext), ytext.length);
   const restored = cursorJsonToSelection(ytext, afterMap, cursor);
-  if (restored !== null) {
+  if (options.keepMappedSelection !== true && restored !== null) {
     try {
       const size = tr.doc.content.size;
       const $anchor = tr.doc.resolve(Math.max(0, Math.min(restored.anchor, size)));
@@ -2144,6 +2158,46 @@ export function applyRemoteUpdateIncrementally(options: {
   }
   view.dispatch(tr);
   return { rebuiltParagraphIds: [...affected] };
+}
+
+/**
+ * Whether a remote update must defer while a composition session is open
+ * (CL-3b2 review 1, BLOCKING-3): when the composing range or an affected
+ * paragraph carries wrapper metadata (list or quote), the incremental
+ * application expands to the enclosing top-level wrapper and would rebuild
+ * the staged composing range. P0/text fields never wrap (paragraphs are
+ * top-level), so disjoint updates there always stay live. The check is
+ * deliberately conservative — a composition session lasts seconds, and a
+ * paint delayed until the commit/cancel sync is always preferable to a
+ * wiped staging.
+ */
+export function sharesComposingWrapper(options: {
+  fieldMeta: Y.Map<unknown>;
+  format: RichTextFormat;
+  deferredParagraphIds: readonly string[];
+  affectedParagraphIds: readonly string[];
+}): boolean {
+  if (options.format !== "ds.markdown.full@1") return false;
+  if (options.deferredParagraphIds.length === 0 || options.affectedParagraphIds.length === 0) {
+    return false;
+  }
+  const hasWrapper = (paragraphId: string): boolean => {
+    const record = options.fieldMeta.get(paragraphId) as {
+      listKind?: unknown;
+      listRunId?: unknown;
+      blockquoteDepth?: unknown;
+      containerOrder?: unknown;
+    } | undefined;
+    if (record === undefined || record === null) return false;
+    if (record.listKind !== undefined && record.listKind !== "none") return true;
+    if (typeof record.listRunId === "string" && record.listRunId !== "") return true;
+    if (typeof record.blockquoteDepth === "number" && record.blockquoteDepth > 0) return true;
+    if (Array.isArray(record.containerOrder) && record.containerOrder.length > 0) return true;
+    return false;
+  };
+  return (
+    options.deferredParagraphIds.some(hasWrapper) || options.affectedParagraphIds.some(hasWrapper)
+  );
 }
 
 /** Outer PM ranges of the affected blocks (textblocks plus HR/preserved atoms). */
