@@ -397,6 +397,39 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         expect(text).toBe(run);
       });
     }, 120000);
+
+    it("emits the anchor-fitting prefix of a many-segment paragraph instead of refusing too-large", async () => {
+      await withDriver(kind, [FIELD], async (driver) => {
+        // 300 single-char runs with alternating bold marks: 300 segments in
+        // one paragraph (300 units, small bytes), so the 512-anchor cap —
+        // not the unit or byte cap — binds mid-paragraph.
+        seedField(driver, FIELD, p0Doc([p0Para("p:1", "**a**b".repeat(150))]));
+        const setup = bridgeFor(driver, [FIELD]);
+        const first = setup.bridge.readState({
+          binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: FIELD },
+        });
+        expectCaps(first);
+        const firstEntry = (first.fields[0] as AgentFieldState).paragraphs[0] as AgentParagraphState;
+        expect(firstEntry.segments, "anchor-fitting prefix fills the page").toHaveLength(255);
+        const pages = await readAllPages(setup, first);
+        expect(pages.length, "many-segment paragraph paginates").toBeGreaterThan(1);
+        let text = "";
+        let segments = 0;
+        for (const page of pages) {
+          const entries = (page.fields[0] as AgentFieldState).paragraphs;
+          expect(entries.map((entry) => entry.paragraphId)).toEqual(["p:1"]);
+          for (const entry of entries) {
+            for (const segment of entry.segments ?? []) {
+              expect(segment.type).toBe("text");
+              if (segment.type === "text") text += segment.text;
+            }
+            segments += entry.segments?.length ?? 0;
+          }
+        }
+        expect(segments, "no segment lost across pages").toBe(300);
+        expect(text, "anchor-split pages reassemble").toBe("ab".repeat(150));
+      });
+    }, 120000);
   },
 );
 
