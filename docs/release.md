@@ -102,9 +102,9 @@ It runs in three places, so no release path skips it:
 - the head of `npm run pack:smoke`, over all publishable packages whatever `--workspaces` selects;
 - `npm run verify`.
 
-The second of those is the one that covers a release, and it covers a release only if **every** publish workflow runs it. Measured on the eleven `*-publish.yml` workflows: each has a `verify` job whose last step is `npm run pack:smoke`, and each `publish` job reaches that job through `needs: release-guard` → `needs: verify`.
+The second of those is the one that covers a release, and it covers a release only if **every** publish workflow runs it. Measured on the fourteen `*-publish.yml` workflows: each has a `verify` job whose last step is `npm run pack:smoke`, and each `publish` job reaches that job through `needs: release-guard` → `needs: verify`.
 
-That was not true before: `skills-publish.yml` and `themes-publish.yml` ran neither `pack:smoke`, nor `licensing:check`, nor `npm run verify` — they built and tested their own workspace and nothing else. Being tag-triggered, they do not run the `licensing` job in `verify.yml` either. So `@sentropic/design-system-skills` (45 packages in its transitive closure, 8 licence families) and `@sentropic/design-system-theme-dsfr` (a transcription of a state design system, whose shipped notices must carry its upstream attribution) were the two packages that could reach npm with no licensing gate at all. Both workflows now run the same `npm run build` + `npm run pack:smoke` pair as the other nine.
+That was not true before: `skills-publish.yml` and `themes-publish.yml` ran neither `pack:smoke`, nor `licensing:check`, nor `npm run verify` — they built and tested their own workspace and nothing else. Being tag-triggered, they do not run the `licensing` job in `verify.yml` either. So `@sentropic/design-system-skills` (45 packages in its transitive closure, 8 licence families) and `@sentropic/design-system-theme-dsfr` (a transcription of a state design system, whose shipped notices must carry its upstream attribution) were the two packages that could reach npm with no licensing gate at all. Both workflows now run the same `npm run build` + `npm run pack:smoke` pair as the other twelve.
 
 Adding a publishable package, adding or bumping a runtime dependency, or changing the inlined icon path data all change what must be disclosed. Run `npm run notices:generate` in the same change; the gate fails on stale notices. Policy, open questions, and everything the generator cannot derive live in `THIRD-PARTY-NOTICES.md` at the repository root — that file is documentation only and ships in nothing, by design.
 
@@ -142,7 +142,7 @@ For normal releases, Trusted Publishing handles `npm publish` through OIDC. The 
 
 ### Names that have never been published
 
-Measured on 2026-09-25 against the registry (`npm view <name> version` for each of the 18 publishable workspaces):
+Measured on 2026-09-25 against the registry (`npm view <name> version` for each of the 20 publishable workspaces):
 
 | Package | Repository version | Registry | Path to the first publish |
 |---|---|---|---|
@@ -152,7 +152,7 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
 | `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 
-For these three, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
+For these five, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 ### The eight whose version number is already taken
 
@@ -169,7 +169,7 @@ The remaining eight workspaces carry a version that npm already holds, so the ta
 | `design-system-vue` | 0.37.0 | 2026-08-16 | 5 | same set as react |
 | `design-system-codemirror` | 0.1.0 | 2026-06-05 | 3 | licensing notices, dev-dependency bumps |
 
-Measured consequence: **no publishable workspace currently matches its published counterpart** — three names do not exist, seven are behind, eight have a number that is taken.
+Measured consequence: **no publishable workspace currently matches its published counterpart** — five names do not exist, seven are behind, eight have a number that is taken.
 
 ### Why this state is not fixed by bumping all eight at once
 
