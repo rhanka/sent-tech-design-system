@@ -307,6 +307,29 @@ export interface AgentParagraphState {
   segments?: readonly AgentInlineSegment[];
   preservedKind?: string;              // kind "preserved" only
   raw?: string;                        // kind "preserved" only, verbatim
+  /**
+   * F4 preserved pagination (§5.6 amendment 2026-11-01, AMB-D7): UTF-16
+   * code-unit offset of this entry's `raw` chunk within the block's full
+   * raw string (the unit of R-ANCH-1 paragraph offsets). Present only when
+   * a preserved block is paginated under R-READ-1; `raw` then carries one
+   * contiguous chunk of the full raw string, not the whole string. Chunks
+   * for one `paragraphId` are contiguous in page order with no boundary
+   * inside a surrogate pair. Absent means `raw` is the block's whole raw
+   * (the pre-amendment behaviour for every in-cap block).
+   */
+  rawOffset?: number;
+  /**
+   * F4 preserved pagination (§5.6 amendment 2026-11-01, AMB-D7): present
+   * only when `raw` is one chunk of a paginated preserved block. `false`
+   * on every chunk except the last for that `paragraphId`; `true` only on
+   * the final chunk. Concatenating the `raw` values of successive entries
+   * with the same `paragraphId`, in page order, reassembles the full
+   * `raw` exactly; absence of both fields means `raw` is whole.
+   * `AgentFieldState.nextPageToken` is present whenever a
+   * `rawComplete: false` chunk has been returned and the read continues,
+   * exactly as for segment continuations.
+   */
+  rawComplete?: boolean;
   // HR has only identity, optional wrapper metadata and boundary anchors;
   // no text/segments and no generic text insert/mark/delete target.
   /** Paragraph boundary anchors (R-ANCH-2): an insert at startAnchor

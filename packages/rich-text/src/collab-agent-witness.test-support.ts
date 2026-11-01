@@ -140,6 +140,7 @@ export function setupAgentBridge(
   sessionId: string,
   fieldKeys: readonly string[],
   families?: readonly AgentEditOperation["type"][],
+  clock?: { now?: () => number; retentionTtlMs?: number },
 ): AgentBridgeSetup {
   const store = createAgentBridgeReceiptStore();
   const bridge = createAgentBridgeDouble({
@@ -156,6 +157,8 @@ export function setupAgentBridge(
       "mergeWithPrevious",
     ],
     store,
+    ...(clock?.now !== undefined ? { now: clock.now } : {}),
+    ...(clock?.retentionTtlMs !== undefined ? { retentionTtlMs: clock.retentionTtlMs } : {}),
   });
   return { bridge, store };
 }
