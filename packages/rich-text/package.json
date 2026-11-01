@@ -26,10 +26,12 @@
     "./editor/collaboration": {
       "types": "./dist/editor-bound.d.ts",
       "import": "./dist/editor-bound.js"
-    }
+    },
+    "./fixtures/canvas-live-raw-chunk-vectors.v1.json": "./fixtures/canvas-live-raw-chunk-vectors.v1.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "fixtures/canvas-live-raw-chunk-vectors.v1.json"
   ],
   "peerDependencies": {
     "@tiptap/core": "^3.0.0",
