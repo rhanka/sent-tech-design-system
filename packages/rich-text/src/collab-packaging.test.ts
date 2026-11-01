@@ -273,3 +273,73 @@ describe("CL-3-07 packaging isolation", () => {
     editor.destroy();
   });
 });
+
+describe("CL-3c-07 Hocuspocus dev-only and test-support isolation (witness 7 regression)", () => {
+  it("the shipped runtime graphs reach no Hocuspocus or test-support module", () => {
+    for (const entry of ["index.ts", "editor.ts"] as const) {
+      const graph = runtimeGraphFrom(entry);
+      for (const file of graph) {
+        expect(
+          file,
+          `${entry}: the shipped runtime graph reaches test-support "${file}"`,
+        ).not.toMatch(/test-support/);
+        expect(
+          file.startsWith("collab-hocuspocus"),
+          `${entry}: the shipped runtime graph reaches "${file}"`,
+        ).toBe(false);
+        expect(
+          file.startsWith("collab-freeze-authority"),
+          `${entry}: the shipped runtime graph reaches "${file}"`,
+        ).toBe(false);
+      }
+      for (const specifier of graph.flatMap((file) => runtimeSpecifiersOf(file))) {
+        expect(
+          specifier.startsWith("@hocuspocus"),
+          `${entry}: shipped code imports "${specifier}"`,
+        ).toBe(false);
+      }
+    }
+  });
+
+  it("the Hocuspocus pin is an exact dev-only dependency", () => {
+    const manifest = JSON.parse(
+      readFileSync(join(SRC_DIR, "..", "package.json"), "utf8"),
+    ) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+      peerDependencies?: Record<string, string>;
+    };
+    expect(manifest.devDependencies?.["@hocuspocus/server"]).toBe("4.7.1");
+    expect(manifest.dependencies?.["@hocuspocus/server"]).toBeUndefined();
+    expect(manifest.peerDependencies?.["@hocuspocus/server"]).toBeUndefined();
+    expect(manifest.dependencies?.["@hocuspocus/provider"]).toBeUndefined();
+    expect(manifest.peerDependencies?.["@hocuspocus/provider"]).toBeUndefined();
+    expect(manifest.devDependencies?.["@hocuspocus/provider"]).toBeUndefined();
+  });
+
+  it("the test-support sources use no banned collaboration module", () => {
+    const banned = [
+      "y-prosemirror",
+      "Y.XmlFragment",
+      "Y.XmlElement",
+      "Y.XmlText",
+      "extension-collaboration",
+      "extension-collaboration-caret",
+    ];
+    for (const file of [
+      "collab-hocuspocus-source.test-support.ts",
+      "collab-freeze-authority.test-support.ts",
+    ] as const) {
+      const text = readFileSync(join(SRC_DIR, file), "utf8");
+      for (const marker of banned) {
+        expect(text.includes(marker), `${file} must not use ${marker}`).toBe(false);
+      }
+    }
+    // The Hocuspocus import lives only in the Hocuspocus-backed source;
+    // the freeze authority is provider-independent.
+    const freeze = readFileSync(join(SRC_DIR, "collab-freeze-authority.test-support.ts"), "utf8");
+    expect(freeze.includes("@hocuspocus")).toBe(false);
+    const hocuspocus = readFileSync(join(SRC_DIR, "collab-hocuspocus-source.test-support.ts"), "utf8");
+    expect(hocuspocus.includes("@hocuspocus/server")).toBe(true);
+  });
+});
