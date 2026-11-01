@@ -276,7 +276,11 @@ describe("CL-3-07 packaging isolation", () => {
 
 describe("CL-3c-07 Hocuspocus dev-only and test-support isolation (witness 7 regression)", () => {
   it("the shipped runtime graphs reach no Hocuspocus or test-support module", () => {
-    for (const entry of ["index.ts", "editor.ts"] as const) {
+    // `"./editor/collaboration"` resolves to `editor-bound.ts`: like the other
+    // shipped entries it must reach no test-support module and no Hocuspocus
+    // import (it legitimately reaches the `collab-*` collaboration graph,
+    // which this witness does not restrict).
+    for (const entry of ["index.ts", "editor.ts", "editor-bound.ts"] as const) {
       const graph = runtimeGraphFrom(entry);
       for (const file of graph) {
         expect(
@@ -329,6 +333,8 @@ describe("CL-3c-07 Hocuspocus dev-only and test-support isolation (witness 7 reg
     for (const file of [
       "collab-hocuspocus-source.test-support.ts",
       "collab-freeze-authority.test-support.ts",
+      "collab-agent-bridge.test-support.ts",
+      "collab-agent-witness.test-support.ts",
     ] as const) {
       const text = readFileSync(join(SRC_DIR, file), "utf8");
       for (const marker of banned) {
@@ -336,9 +342,14 @@ describe("CL-3c-07 Hocuspocus dev-only and test-support isolation (witness 7 reg
       }
     }
     // The Hocuspocus import lives only in the Hocuspocus-backed source;
-    // the freeze authority is provider-independent.
+    // the freeze authority and the CL-4a agent-bridge doubles are
+    // provider-independent.
     const freeze = readFileSync(join(SRC_DIR, "collab-freeze-authority.test-support.ts"), "utf8");
     expect(freeze.includes("@hocuspocus")).toBe(false);
+    const agentBridge = readFileSync(join(SRC_DIR, "collab-agent-bridge.test-support.ts"), "utf8");
+    expect(agentBridge.includes("@hocuspocus")).toBe(false);
+    const agentWitness = readFileSync(join(SRC_DIR, "collab-agent-witness.test-support.ts"), "utf8");
+    expect(agentWitness.includes("@hocuspocus")).toBe(false);
     const hocuspocus = readFileSync(join(SRC_DIR, "collab-hocuspocus-source.test-support.ts"), "utf8");
     expect(hocuspocus.includes("@hocuspocus/server")).toBe(true);
   });
