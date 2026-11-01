@@ -1,6 +1,6 @@
 # Release
 
-Sent Tech Design System publishes seventeen public npm packages from this private workspace root:
+Sent Tech Design System publishes twenty public npm packages from this private workspace root:
 
 - `@sentropic/design-system-tokens`
 - `@sentropic/design-system-themes`
@@ -12,9 +12,12 @@ Sent Tech Design System publishes seventeen public npm packages from this privat
 - `@sentropic/design-system-theme-canada`
 - `@sentropic/design-system-theme-dsfr`
 - `@sentropic/design-system-theme-quebec`
+- `@sentropic/design-system-theme-latex`
 - `@sentropic/design-system-codemirror`
 - `@sentropic/graph` (tag `graph-v<version>`)
 - `@sentropic/dataviz-core`, `@sentropic/dataviz-svelte`, `@sentropic/dataviz-react`, `@sentropic/dataviz-vue`, `@sentropic/dataviz-angular` (tag `dataviz-v<version>`, lockstep)
+- `@sentropic/design-system-rich-text` (tag `rich-text-v<version>`)
+- `@sentropic/design-system-elements` (tag `elements-v<version>`)
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -46,6 +49,13 @@ Plus, for the graph/dataviz families:
 - Workflow: `.github/workflows/dataviz-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
+Plus, for the elements package:
+
+- Package: `@sentropic/design-system-elements`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/elements-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
 The packages are scoped and public. Keep `publishConfig.access = "public"` in each publishable workspace.
 
 Before the first release, confirm the npm `@sentropic` scope is owned by the publishing account or organization.
@@ -74,7 +84,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies thirteen package tarballs (the seven design-system ports, `graph` and the five `dataviz-*`) and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies fifteen package tarballs (the design-system ports including `rich-text` and `elements`, `graph` and the five `dataviz-*`) and installs them together in a clean temporary project.
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
 ## Licensing Gate
@@ -140,6 +150,7 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
 | `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
 | `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
+| `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 
 For these three, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
@@ -213,6 +224,24 @@ npm publish --workspace @sentropic/dataviz-react --access public
 npm publish --workspace @sentropic/dataviz-vue --access public
 npm publish --workspace @sentropic/dataviz-angular --access public
 ```
+
+Publish the elements package by pushing the `elements-v<version>` tag:
+
+```bash
+git push origin main
+git tag elements-v0.1.0
+git push origin elements-v0.1.0
+```
+
+The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
+
+```
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.1.0/dist/browser/
+```
+
+Once jsDelivr visibly serves the pinned version, compare its bytes with the tarball's `sri.json` (fetch each `dist/browser/` file at the pinned version, recompute the sha384, compare). A mismatch is reported and never fixed by republishing the same version — npm versions are immutable, so the correction is a new patch version.
+
+Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `elements-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry, delete the `NPM_TOKEN` secret and revoke the temporary token, then tag `elements-v0.1.1`, published through OIDC to validate the publisher.
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
 

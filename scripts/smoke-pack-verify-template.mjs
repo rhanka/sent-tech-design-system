@@ -8,7 +8,7 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 13 packages
+//                                 this run (a subset of the 15 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
@@ -22,7 +22,7 @@
 //                                 added.
 import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const targets = new Set(__SMOKE_TARGETS_JSON__);
 const minExportCounts = __SMOKE_MIN_EXPORT_COUNTS_JSON__;
@@ -396,6 +396,66 @@ async function verifyRichText() {
   console.log("OK @sentropic/design-system-rich-text/editor: createRichTextEditor import verified");
 }
 
+// Actually `import()`s the installed @sentropic/design-system-elements
+// tarball (its `dependencies` resolved from the registry in the throwaway
+// project — no monorepo, no workspace symlinks) and drives the real
+// envelope validator: the catalogue order, the catalogue URI, one clean
+// BarChart envelope built from the package's own committed example, and one
+// structurally mutated envelope that must be refused with a diagnostic.
+// This is the consumer contract: with `ajv` left in devDependencies, the
+// import below would die resolving `ajv/dist/2020.js`.
+async function verifyElements() {
+  const mod = await import("@sentropic/design-system-elements");
+  const names = mod.contracts.map((contract) => contract.component);
+  const expected = ["BarChart", "BpmnCanvas", "DecisionDossier"];
+  if (JSON.stringify(names) !== JSON.stringify(expected)) {
+    fail(
+      "@sentropic/design-system-elements",
+      "contracts name " + JSON.stringify(names) + ", expected catalogue order " + JSON.stringify(expected),
+    );
+    return;
+  }
+  if (mod.CATALOG_ID !== "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json") {
+    fail("@sentropic/design-system-elements", "CATALOG_ID is " + JSON.stringify(mod.CATALOG_ID));
+    return;
+  }
+  console.log("OK @sentropic/design-system-elements: contracts + CATALOG_ID verified");
+
+  const entryPath = fileURLToPath(await import.meta.resolve("@sentropic/design-system-elements"));
+  const packageDir = entryPath.slice(0, entryPath.length - "dist/index.js".length);
+  const catalog = JSON.parse(readFileSync(join(packageDir, "catalog.json"), "utf8"));
+  const envelopeSchema = JSON.parse(readFileSync(join(packageDir, "envelope.json"), "utf8"));
+  const generated = await import(pathToFileURL(join(packageDir, "dist", "generated", "a2ui-common-types.js")).href);
+  const validator = mod.createEnvelopeValidator({
+    catalog,
+    envelopeSchema,
+    commonTypes: generated.a2uiCommonTypes,
+  });
+
+  const example = JSON.parse(JSON.stringify(mod.contracts[0].example));
+  const good = { catalogId: mod.CATALOG_ID, contract: "1.0", mode: "snapshot", root: example };
+  const goodDiagnostics = validator.validate(good);
+  if (goodDiagnostics.length !== 0) {
+    fail(
+      "@sentropic/design-system-elements",
+      "the committed BarChart example envelope was refused: " + JSON.stringify(goodDiagnostics[0]),
+    );
+    return;
+  }
+  const bad = { catalogId: mod.CATALOG_ID, contract: "1.0", mode: "snapshot", root: { ...example, data: "not-an-array" } };
+  const badDiagnostics = validator.validate(bad);
+  if (badDiagnostics.length === 0) {
+    fail("@sentropic/design-system-elements", "a structurally mutated BarChart envelope was accepted without a diagnostic");
+    return;
+  }
+  const [first] = badDiagnostics;
+  if (typeof first.code !== "string" || typeof first.path !== "string" || typeof first.message !== "string") {
+    fail("@sentropic/design-system-elements", "the refusal diagnostic has no code/path/message shape");
+    return;
+  }
+  console.log("OK @sentropic/design-system-elements: BarChart envelope validates, mutated envelope refused with a diagnostic");
+}
+
 async function verifyDatavizCore() {
   const mod = await import("@sentropic/dataviz-core");
   if (typeof mod.validateModel !== "function") {
@@ -487,6 +547,7 @@ const verifiers = {
   "@sentropic/design-system-angular": verifyAngular,
   "@sentropic/graph": verifyGraph,
   "@sentropic/design-system-rich-text": verifyRichText,
+  "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,
   "@sentropic/dataviz-svelte": verifyDatavizSvelte,
   "@sentropic/dataviz-react": verifyDatavizReact,
