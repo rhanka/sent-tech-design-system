@@ -21,6 +21,7 @@ import {
   fieldTextName,
   seedFieldFromDocument,
 } from "./collab-codec.js";
+import { yTextToPmDoc } from "./collab-projection.js";
 import type { FieldBindingIdentity } from "./collaboration.js";
 import type { RichTextDocument } from "./model.js";
 
@@ -192,10 +193,14 @@ describe("CL-3b1-2a interleaved split undo (spec §4.5 (a), R-STR-6)", () => {
     expect(idsOf(ytext, meta, P0)).toEqual(["paragraph:1"]);
     expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("abcdefXYZ");
     expect(separatorIds(ytext)).toEqual(["paragraph:1"]);
-    // Exactly one undo gesture naming the changed block.
+    // Exactly one undo gesture naming the changed blocks: the rejoined
+    // head and the removed tail (review 1 B-3: removed blocks count).
     expect(gesturesA).toHaveLength(1);
     expect(gesturesA[0]?.gesture.kind).toBe("undo");
-    expect([...(gesturesA[0]?.gesture.affectedParagraphIds ?? [])]).toEqual(["paragraph:1"]);
+    expect([...(gesturesA[0]?.gesture.affectedParagraphIds ?? [])]).toEqual([
+      "paragraph:1",
+      tailId,
+    ]);
     // Quiescence on the authoritative doc and two replicas.
     syncDocs([ydoc, replicaA.doc, replicaB.doc]);
     assertQuiescent("2a", P0, [
@@ -629,5 +634,294 @@ describe("CL-3b1-2i bound history keys (Mod-z / Mod-Shift-z / Mod-y)", () => {
     expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("base");
     press("Z", true, true, false);
     expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("baseQ");
+  });
+});
+
+describe("CL-3b1 review-1 B-1 HR wrapper metadata (R-FULL-HR-1, §4.3.2/§4.5/§4.10)", () => {
+  it("an HR inside a blockquote and inside a list item carries wrapper metadata on every replica, removed by undo, restored by redo", async () => {
+    const pair = await mountPair({
+      format: FULL,
+      blocks: [
+        {
+          paragraphId: "q:1",
+          kind: "paragraph",
+          metadata: {
+            blockKind: "paragraph",
+            listKind: "none",
+            listDepth: 0,
+            blockquoteDepth: 1,
+            containerOrder: ["quote"],
+          },
+          segments: [{ type: "text", text: "quoted", marks: {} }],
+        },
+        {
+          paragraphId: "l:1",
+          kind: "paragraph",
+          metadata: {
+            blockKind: "paragraph",
+            listKind: "bullet",
+            listDepth: 0,
+            listItemId: "l:1",
+            listRunId: "l:1",
+            listTight: true,
+            blockquoteDepth: 0,
+            containerOrder: ["list"],
+          },
+          segments: [{ type: "text", text: "item one", marks: {} }],
+        },
+        {
+          paragraphId: "p:9",
+          kind: "paragraph",
+          segments: [{ type: "text", text: "tail", marks: {} }],
+        },
+      ],
+    } as unknown as RichTextDocument);
+    const { edA, ydoc, ytext, meta } = pair;
+    // Insert one HR at `pos`: the caller names a schema-valid position (an
+    // HR first inside a list item is schema-invalid — the listItem content
+    // expression requires a leading paragraph — so the list HR goes after
+    // the item paragraph, still inside the item).
+    const insertHrAt = (pos: number): string => {
+      const before = new Set(
+        captureDocumentFromField(ytext, meta, FULL).document.blocks.map((block) => block.paragraphId),
+      );
+      edA.view.dispatch(
+        edA.view.state.tr.insert(pos, edA.view.state.schema.nodes.horizontalRule.create()),
+      );
+      const fresh = captureDocumentFromField(ytext, meta, FULL).document.blocks
+        .map((block) => block.paragraphId)
+        .filter((blockId) => !before.has(blockId));
+      expect(fresh).toHaveLength(1);
+      return fresh[0] as string;
+    };
+    const blockEnd = (id: string): number => {
+      let end = -1;
+      edA.view.state.doc.descendants((node, pos) => {
+        if (node.attrs?.["paragraphId"] === id) {
+          end = pos + node.nodeSize;
+          return false;
+        }
+        return true;
+      });
+      expect(end).toBeGreaterThanOrEqual(0);
+      return end;
+    };
+    // One HR inside the blockquote (before q:1), one inside the list item
+    // (after the l:1 paragraph, still inside the item): separate undo steps.
+    edA.stopCapturing();
+    const hrQuote = insertHrAt(blockPos(edA, "q:1"));
+    edA.stopCapturing();
+    const hrList = insertHrAt(blockEnd("l:1"));
+    // The local projection wrote the wrapper metadata to fieldmeta.
+    const quoteMeta = meta.get(hrQuote) as Record<string, unknown> | undefined;
+    expect(quoteMeta, "HR in blockquote carries quote wrapper metadata").toBeDefined();
+    expect(quoteMeta?.["blockquoteDepth"]).toBe(1);
+    expect(quoteMeta?.["containerOrder"]).toEqual(["quote"]);
+    expect(quoteMeta?.["listKind"]).toBe("none");
+    const listMeta = meta.get(hrList) as Record<string, unknown> | undefined;
+    expect(listMeta, "HR in list item carries list wrapper metadata").toBeDefined();
+    expect(listMeta?.["listKind"]).toBe("bullet");
+    expect(listMeta?.["containerOrder"]).toEqual(["list"]);
+    expect(listMeta?.["listItemId"]).toBe("l:1");
+    expect(listMeta?.["blockquoteDepth"]).toBe(0);
+    // The local view and the shared state render the same document.
+    expect(edA.view.state.doc.eq(yTextToPmDoc(ytext, meta, FULL, edA.view.state.schema) as never)).toBe(true);
+    expect(JSON.stringify((await edA.captureDocument()).document)).toBe(
+      JSON.stringify(captureDocumentFromField(ytext, meta, FULL).document),
+    );
+    const replicaA = forkReplica(ydoc);
+    const replicaB = forkReplica(ydoc);
+    syncDocs([ydoc, replicaA.doc, replicaB.doc]);
+    assertQuiescent("b1-wrappers", FULL, [
+      { ydoc, ytext, meta },
+      { ydoc: replicaA.doc, ytext: replicaA.text, meta: replicaA.meta },
+      { ydoc: replicaB.doc, ytext: replicaB.text, meta: replicaB.meta },
+    ]);
+    for (const replica of [replicaA, replicaB]) {
+      expect(replica.meta.get(hrQuote)).toEqual(quoteMeta);
+      expect(replica.meta.get(hrList)).toEqual(listMeta);
+    }
+    // Undo removes the list HR metadata, then the quote HR metadata; redo
+    // restores both records byte-identical — never a text snapshot.
+    const quoteBefore = JSON.stringify(quoteMeta);
+    const listBefore = JSON.stringify(listMeta);
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, FULL)).not.toContain(hrList);
+    expect(meta.get(hrList)).toBeUndefined();
+    expect(idsOf(ytext, meta, FULL)).toContain(hrQuote);
+    edA.undo();
+    expect(idsOf(ytext, meta, FULL)).not.toContain(hrQuote);
+    expect(meta.get(hrQuote)).toBeUndefined();
+    edA.redo();
+    expect(idsOf(ytext, meta, FULL)).toContain(hrQuote);
+    expect(JSON.stringify(meta.get(hrQuote))).toBe(quoteBefore);
+    edA.redo();
+    expect(idsOf(ytext, meta, FULL)).toContain(hrList);
+    expect(JSON.stringify(meta.get(hrList))).toBe(listBefore);
+    syncDocs([ydoc, replicaA.doc, replicaB.doc]);
+    assertQuiescent("b1-wrappers-undo-redo", FULL, [
+      { ydoc, ytext, meta },
+      { ydoc: replicaA.doc, ytext: replicaA.text, meta: replicaA.meta },
+      { ydoc: replicaB.doc, ytext: replicaB.text, meta: replicaB.meta },
+    ]);
+  });
+});
+
+describe("CL-3b1 review-1 B-3 affectedParagraphIds on bound undo/redo (§5.4/§4.5)", () => {
+  it("undo of an HR insertion names the removed HR id", async () => {
+    const pair = await mountPair(fullDoc([{ paragraphId: "paragraph:1", text: "alpha" }]));
+    const { edA, ytext, meta, gesturesA } = pair;
+    edA.stopCapturing();
+    edA.view.dispatch(
+      edA.view.state.tr.insert(blockPos(edA, "paragraph:1"), edA.view.state.schema.nodes.horizontalRule.create()),
+    );
+    const hrId = idsOf(ytext, meta, FULL).find((id) => id !== "paragraph:1");
+    expect(hrId).toBeDefined();
+    gesturesA.length = 0;
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, FULL)).toEqual(["paragraph:1"]);
+    expect(gesturesA).toHaveLength(1);
+    expect(gesturesA[0]?.gesture.kind).toBe("undo");
+    expect([...(gesturesA[0]?.gesture.affectedParagraphIds ?? [])]).toEqual([hrId]);
+  });
+
+  it("undo of an end-of-paragraph split names the removed tail id", async () => {
+    const pair = await mountPair(p0Doc([{ paragraphId: "paragraph:1", text: "alpha" }]));
+    const { edA, ytext, meta, gesturesA } = pair;
+    edA.splitParagraph("paragraph:1", 5);
+    const tailId = idsOf(ytext, meta, P0).find((id) => id !== "paragraph:1");
+    expect(tailId).toBeDefined();
+    expect(textOf(ytext, meta, P0, tailId as string)).toBe("");
+    gesturesA.length = 0;
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, P0)).toEqual(["paragraph:1"]);
+    expect(gesturesA).toHaveLength(1);
+    expect([...(gesturesA[0]?.gesture.affectedParagraphIds ?? [])]).toEqual([tailId]);
+  });
+
+  it("redo of a block deletion names the re-removed id", async () => {
+    const pair = await mountPair(
+      p0Doc([
+        { paragraphId: "paragraph:1", text: "alpha" },
+        { paragraphId: "paragraph:2", text: "beta" },
+      ]),
+    );
+    const { edA, ytext, meta, gesturesA } = pair;
+    edA.deleteBlocks(["paragraph:2"]);
+    expect(idsOf(ytext, meta, P0)).toEqual(["paragraph:1"]);
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, P0)).toEqual(["paragraph:1", "paragraph:2"]);
+    gesturesA.length = 0;
+    edA.redo();
+    expect(idsOf(ytext, meta, P0)).toEqual(["paragraph:1"]);
+    expect(gesturesA).toHaveLength(1);
+    expect(gesturesA[0]?.gesture.kind).toBe("redo");
+    expect([...(gesturesA[0]?.gesture.affectedParagraphIds ?? [])]).toEqual(["paragraph:2"]);
+  });
+});
+
+describe("CL-3b1 review-1 B-4 sole HR deletion supplies a fresh empty paragraph (R-FULL-HR-1)", () => {
+  it("deleting the sole HR deletes the pair and supplies a fresh empty-paragraph id, on two replicas, undo restores the HR id", async () => {
+    const pair = await mountPair({
+      format: FULL,
+      blocks: [{ paragraphId: "hr:1", kind: "horizontalRule" }],
+    } as unknown as RichTextDocument);
+    const { edA, ydoc, ytext, meta } = pair;
+    expect(idsOf(ytext, meta, FULL)).toEqual(["hr:1"]);
+    let hrPos = -1;
+    edA.view.state.doc.descendants((node, pos) => {
+      if (node.type.name === "horizontalRule") hrPos = pos;
+      return true;
+    });
+    expect(hrPos).toBeGreaterThanOrEqual(0);
+    edA.stopCapturing();
+    edA.view.dispatch(edA.view.state.tr.delete(hrPos, hrPos + 1));
+    // The pair is gone and exactly one fresh empty paragraph holds the
+    // first-separator invariant — the field is never empty.
+    const after = idsOf(ytext, meta, FULL);
+    expect(after).toHaveLength(1);
+    const freshId = after[0] as string;
+    expect(freshId).not.toBe("hr:1");
+    expect(ytext.length).toBeGreaterThan(0);
+    expect(textOf(ytext, meta, FULL, freshId)).toBe("");
+    expect(edA.view.state.doc.eq(yTextToPmDoc(ytext, meta, FULL, edA.view.state.schema) as never)).toBe(true);
+    const replicaA = forkReplica(ydoc);
+    const replicaB = forkReplica(ydoc);
+    syncDocs([ydoc, replicaA.doc, replicaB.doc]);
+    assertQuiescent("b4-sole-delete", FULL, [
+      { ydoc, ytext, meta },
+      { ydoc: replicaA.doc, ytext: replicaA.text, meta: replicaA.meta },
+      { ydoc: replicaB.doc, ytext: replicaB.text, meta: replicaB.meta },
+    ]);
+    // Undo restores the HR pair with its id; redo re-supplies the same
+    // fresh paragraph id.
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, FULL)).toEqual(["hr:1"]);
+    edA.redo();
+    expect(idsOf(ytext, meta, FULL)).toEqual([freshId]);
+    syncDocs([ydoc, replicaA.doc, replicaB.doc]);
+    assertQuiescent("b4-sole-delete-redo", FULL, [
+      { ydoc, ytext, meta },
+      { ydoc: replicaA.doc, ytext: replicaA.text, meta: replicaA.meta },
+      { ydoc: replicaB.doc, ytext: replicaB.text, meta: replicaB.meta },
+    ]);
+  });
+
+  it("replacing the sole HR with an empty paragraph keeps one fresh paragraph with no structural conflict", async () => {
+    const pair = await mountPair({
+      format: FULL,
+      blocks: [{ paragraphId: "hr:1", kind: "horizontalRule" }],
+    } as unknown as RichTextDocument);
+    const { edA, ydoc, ytext, meta } = pair;
+    let hrPos = -1;
+    edA.view.state.doc.descendants((node, pos) => {
+      if (node.type.name === "horizontalRule") hrPos = pos;
+      return true;
+    });
+    expect(hrPos).toBeGreaterThanOrEqual(0);
+    edA.stopCapturing();
+    edA.view.dispatch(
+      edA.view.state.tr.replaceWith(hrPos, hrPos + 1, edA.view.state.schema.nodes.paragraph.create()),
+    );
+    const after = idsOf(ytext, meta, FULL);
+    expect(after).toHaveLength(1);
+    expect(after[0]).not.toBe("hr:1");
+    expect(textOf(ytext, meta, FULL, after[0] as string)).toBe("");
+    expect(edA.view.state.doc.eq(yTextToPmDoc(ytext, meta, FULL, edA.view.state.schema) as never)).toBe(true);
+    const replica = forkReplica(ydoc);
+    syncDocs([ydoc, replica.doc]);
+    assertQuiescent("b4-sole-replace", FULL, [
+      { ydoc, ytext, meta },
+      { ydoc: replica.doc, ytext: replica.text, meta: replica.meta },
+    ]);
+    edA.stopCapturing();
+    edA.undo();
+    expect(idsOf(ytext, meta, FULL)).toEqual(["hr:1"]);
+  });
+});
+
+describe("CL-3b1 review-1 composing guard precedes the UndoManager (editor.ts runBoundHistory)", () => {
+  it("bound undo during composition consumes no manager step and emits no gesture", async () => {
+    const pair = await mountPair(p0Doc([{ paragraphId: "paragraph:1", text: "base" }]));
+    const { edA, ytext, meta, gesturesA } = pair;
+    edA.typeText("paragraph:1", "hello");
+    expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("basehello");
+    Object.defineProperty(edA.view, "composing", { value: true, configurable: true });
+    try {
+      gesturesA.length = 0;
+      edA.undo();
+      expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("basehello");
+      expect(gesturesA).toHaveLength(0);
+    } finally {
+      Object.defineProperty(edA.view, "composing", { value: false, configurable: true });
+    }
+    edA.undo();
+    expect(textOf(ytext, meta, P0, "paragraph:1")).toBe("base");
+    expect(gesturesA).toHaveLength(1);
   });
 });
