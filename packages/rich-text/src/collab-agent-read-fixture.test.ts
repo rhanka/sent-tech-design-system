@@ -168,3 +168,17 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
     });
   },
 );
+
+describe("CL-4b slicer — surrogate-pair-aware greedy cut", () => {
+  it("cuts just after a surrogate pair when the lone-high escape overflows the budget", () => {
+    // "A" + U+1F600: fitted(1) = 3, fitted(2) = 9 (lone high surrogate
+    // escapes as 6 bytes), fitted(3) = 7. A pair-unaware binary search
+    // probes the mid-pair cut, rejects the upper half and returns "A".
+    const raw = "A😀";
+    const budget = Buffer.byteLength(JSON.stringify(raw), "utf8");
+    expect(budget).toBe(7);
+    expect(slicePreservedRawForTest(raw, budget)).toEqual([
+      { rawOffset: 0, chunk: raw, rawComplete: true },
+    ]);
+  });
+});

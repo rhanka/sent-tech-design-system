@@ -198,7 +198,17 @@ export function slicePreservedRawForTest(raw: string, chunkBudgetBytes: number):
     const rest = raw.length - offset;
     const fitted = (length: number): number =>
       Buffer.byteLength(JSON.stringify(raw.slice(offset, offset + length)), "utf8");
-    // Binary search on the monotone byte measure: largest length that fits.
+    // Binary search for the largest length that fits. The escaped-byte
+    // measure is not monotone at a surrogate-pair boundary (a lone high
+    // surrogate escapes as 6 bytes, the full pair as 4), so never probe a
+    // cut between a high and a low surrogate: probe the cut after the pair
+    // instead, keeping the result greedy-maximal.
+    const isPairCut = (length: number): boolean =>
+      length < rest &&
+      raw.charCodeAt(offset + length - 1) >= 0xd800 &&
+      raw.charCodeAt(offset + length - 1) <= 0xdbff &&
+      raw.charCodeAt(offset + length) >= 0xdc00 &&
+      raw.charCodeAt(offset + length) <= 0xdfff;
     let low = 1;
     let high = rest;
     if (fitted(1) > chunkBudgetBytes) {
@@ -207,7 +217,8 @@ export function slicePreservedRawForTest(raw: string, chunkBudgetBytes: number):
     } else {
       while (low < high) {
         const mid = Math.floor((low + high + 1) / 2);
-        if (fitted(mid) <= chunkBudgetBytes) low = mid;
+        const probe = isPairCut(mid) ? mid + 1 : mid;
+        if (fitted(probe) <= chunkBudgetBytes) low = probe;
         else high = mid - 1;
       }
     }
@@ -765,11 +776,21 @@ function splitTextRunForPage(
   if (candidateBytes(maxByUnits) <= budgetLeft) {
     best = maxByUnits;
   } else {
+    // Pair-aware probe (same escaped-measure non-monotonicity as the
+    // isolated slicer): never probe a cut between a high and a low
+    // surrogate; probe the cut after the pair instead.
     let low = 0;
     let high = maxByUnits;
     while (low < high) {
       const mid = Math.floor((low + high + 1) / 2);
-      if (candidateBytes(mid) <= budgetLeft) low = mid;
+      const pairCut =
+        mid < maxByUnits &&
+        runText.charCodeAt(mid - 1) >= 0xd800 &&
+        runText.charCodeAt(mid - 1) <= 0xdbff &&
+        runText.charCodeAt(mid) >= 0xdc00 &&
+        runText.charCodeAt(mid) <= 0xdfff;
+      const probe = pairCut ? mid + 1 : mid;
+      if (candidateBytes(probe) <= budgetLeft) low = probe;
       else high = mid - 1;
     }
     best = low;
@@ -946,7 +967,11 @@ function buildReadPage(options: {
     }
     let count = low;
     let partial: BuiltSegment | null = null;
-    if (count < view.length) {
+    // A partial text run is one more segment: attempt the character split
+    // only when its 2 anchors still fit the anchor cap; otherwise emit the
+    // whole-segment prefix that already fits (candidateFits(count)).
+    const anchorsForPartial = 2 + 2 * (count + 1);
+    if (count < view.length && anchorCount + anchorsForPartial <= MAX_READ_ANCHORS) {
       const next = view[count] as BuiltSegment;
       if (next.segment.type === "text") {
         const runText = next.segment.text;
