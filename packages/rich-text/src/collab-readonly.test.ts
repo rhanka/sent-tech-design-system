@@ -25,6 +25,7 @@
  */
 import { describe, expect, it, afterEach } from "vitest";
 import * as Y from "yjs";
+import { TextSelection } from "@tiptap/pm/state";
 import type { RichTextEditor } from "./editor.js";
 import type { RichTextChangeEvent, RichTextExternalConflictEvent } from "./editor.js";
 import { createBoundRichTextEditor } from "./editor-bound.js";
@@ -101,6 +102,7 @@ interface Mounted {
   gestures: RichTextChangeEvent[];
   conflicts: RichTextExternalConflictEvent[];
   errors: unknown[];
+  awareness: import("y-protocols/awareness").Awareness;
 }
 
 async function mountOn(
@@ -148,7 +150,7 @@ async function mountOn(
     onBindingError: (event) => errors.push(event),
   });
   mounted.push(ed);
-  return { ed, gestures, conflicts, errors };
+  return { ed, gestures, conflicts, errors, awareness };
 }
 
 function vectorHex(doc: Y.Doc): string {
@@ -322,5 +324,59 @@ describe("CL-3b2-6 B8 admitted editors stay editable together under a foreign L0
     expect(vectorHex(forkA.doc)).toBe(vectorHex(forkB.doc));
     expect(a.errors).toEqual([]);
     expect(b.errors).toEqual([]);
+  });
+});
+
+describe("CL-3b2 review 1 BLOCKING-4: read-only mounts publish no cursor", () => {
+  it("initial read-only and toggled read-only agree on cursor null with no shared write", async () => {
+    const authority = seedAuthority(paragraphDoc("p:1", "ab"));
+    const forkViewer = fork(authority.doc);
+    const forkWriter = fork(authority.doc);
+    const viewer = await mountOn(forkViewer, "viewer", "ro-silence", { editable: false });
+    const writer = await mountOn(forkWriter, "writer", "ro-silence-w", { editable: true });
+
+    const localCursor = (): unknown =>
+      (viewer.awareness.getLocalState() as { cursor?: unknown } | null)?.cursor ?? null;
+    // A read-only mount publishes cursor null (presence actorId/user may stay).
+    expect(localCursor(), "read-only mount publishes cursor null").toBeNull();
+
+    // Moving the selection to copy text publishes nothing and writes nothing.
+    const vectorBefore = vectorHex(forkViewer.doc);
+    const captureBefore = captureJson(forkViewer);
+    viewer.ed.view.dispatch(
+      viewer.ed.view.state.tr.setSelection(TextSelection.create(viewer.ed.view.state.doc, 1, 3)),
+    );
+    expect(localCursor(), "selection moves publish no cursor when read-only").toBeNull();
+    expect(vectorHex(forkViewer.doc), "selection moves write no shared update").toBe(vectorBefore);
+    expect(captureJson(forkViewer), "selection moves change no shared content").toBe(captureBefore);
+
+    // Remote updates still render while the cursor stays null.
+    writer.ed.typeText("p:1", "XY");
+    writer.ed.stopCapturing();
+    Y.applyUpdate(forkViewer.doc, Y.encodeStateAsUpdate(forkWriter.doc));
+    expect(pmText(viewer.ed)).toContain("XY");
+    expect(localCursor(), "remote render publishes no cursor").toBeNull();
+
+    // Toggling to editable publishes on the next selection move; toggling
+    // back clears again and agrees with the initial mount.
+    viewer.ed.setEditable(true);
+    viewer.ed.view.dispatch(
+      viewer.ed.view.state.tr.setSelection(TextSelection.create(viewer.ed.view.state.doc, 1, 2)),
+    );
+    expect(localCursor(), "editable selection publishes a cursor").not.toBeNull();
+    viewer.ed.setEditable(false);
+    expect(localCursor(), "toggled read-only clears the cursor again").toBeNull();
+    // Reference after the legitimate edit above: only the read-only
+    // selection moves below must write nothing.
+    const vectorAfterToggle = vectorHex(forkViewer.doc);
+    viewer.ed.view.dispatch(
+      viewer.ed.view.state.tr.setSelection(TextSelection.create(viewer.ed.view.state.doc, 2, 3)),
+    );
+    expect(localCursor(), "toggled read-only stays silent on selection moves").toBeNull();
+    expect(vectorHex(forkViewer.doc), "toggled read-only writes no shared update").toBe(
+      vectorAfterToggle,
+    );
+    expect(viewer.gestures, "no change event from the read-only surface").toEqual([]);
+    expect(viewer.errors).toEqual([]);
   });
 });

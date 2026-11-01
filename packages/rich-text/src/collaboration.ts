@@ -96,8 +96,11 @@ export type LiveSessionAdmissionDecision =
   | LiveSessionOpenRefusal;
 /** Explicit client acknowledgement of the current profile/epoch (§4.8.1
     branch (b)): recorded by the host and required before any binding
-    resolves. Silence or a re-presented draft without it never admits. */
+    resolves. The acknowledgement is scoped by document: a migrated draft
+    for one document never admits the same actor on another document.
+    Silence or a re-presented draft without it never admits. */
 export interface SchemaEpochAcknowledgement {
+  documentId: string;
   actorId: string;
   profileId: string;
   schemaEpoch: string;
@@ -450,6 +453,44 @@ export function validateCollaborationColor(color: string): string {
   return COLLABORATION_COLOR_PATTERN.test(color)
     ? color
     : COLLABORATION_FALLBACK_COLOR;
+}
+
+/**
+ * Convert ProseMirror mark facts to shared text attributes (CL-3b2 review
+ * 1: the run-aware composition commit carries the staged marks instead of
+ * inserting unformatted text). Structural input only — no ProseMirror
+ * import, so the pure entry keeps its packaging posture. The admitted table
+ * mirrors the projection converter: boolean marks `bold`, `italic`, `code`,
+ * `strike`, `underline`, plus full-profile `link`/`linkTitle` with the same
+ * href validator. Unknown marks fail closed.
+ */
+export function pmMarksToSharedAttributes(
+  marks: ReadonlyArray<{ type: string; attrs?: Record<string, unknown> }>,
+): Record<string, unknown> {
+  const attributes: Record<string, unknown> = {};
+  for (const mark of marks) {
+    if (mark.type === "link") {
+      const href = mark.attrs?.["href"];
+      if (typeof href !== "string" || !isAllowedHref(href)) {
+        throw new Error("rich-text.forbidden-href: staged link carries a href the R-FULL-URL-1 validator refuses");
+      }
+      attributes["link"] = href;
+      if (typeof mark.attrs?.["title"] === "string") attributes["linkTitle"] = mark.attrs["title"];
+      continue;
+    }
+    if (
+      mark.type === "bold" ||
+      mark.type === "italic" ||
+      mark.type === "code" ||
+      mark.type === "strike" ||
+      mark.type === "underline"
+    ) {
+      attributes[mark.type] = true;
+      continue;
+    }
+    throw new Error(`rich-text.collab-invalid-mark: mark "${mark.type}" is outside the admitted table`);
+  }
+  return attributes;
 }
 
 const ALLOWED_HREF_SCHEMES: ReadonlySet<string> = new Set([

@@ -48,10 +48,14 @@ export interface CursorPublisherActor {
   color?: string;
 }
 
-/** Admitted-actor registry lookup supplied by the binding source (AMB-5). */
+/** Admitted-actor registry lookup supplied by the binding source (AMB-5):
+    the `actorId` ↔ awareness-client pair established at admission (§13 F2).
+    An undefined client id keeps older sources rendering (fail-open only for
+    sources that never recorded the pair). */
 export type RemoteCursorResolver = (actorId: string) => {
   displayLabel: string;
   color: string;
+  awarenessClientId?: number;
 } | null;
 
 /**
@@ -156,10 +160,15 @@ export function createRemoteCursorPlugin(options: {
         cursor?: unknown;
       };
       // (1) Registry verification: an unregistered or revoked actor renders
-      // no caret, whatever `cursor` says.
+      // no caret, whatever `cursor` says. A client claiming another actor's
+      // id renders nothing either: the full (awarenessClientId, actorId)
+      // pair must match the registry entry (§13 F2).
       if (typeof record.actorId !== "string" || record.actorId === "") continue;
       const resolved = resolveActor(record.actorId);
       if (resolved === null) continue;
+      if (resolved.awarenessClientId !== undefined && resolved.awarenessClientId !== clientId) {
+        continue;
+      }
       // (2) Null cursors and foreign fields render nothing here.
       if (record.cursor === null || record.cursor === undefined) continue;
       const wire = record.cursor as {
@@ -176,7 +185,22 @@ export function createRemoteCursorPlugin(options: {
       } as unknown as PublishedCursor);
       if (selection === null) continue;
       const label = resolved.displayLabel;
-      const color = validateCollaborationColor(resolved.color);
+      // The wire colour re-validates: a `user.color` failing validation
+      // renders transparent, as does a wire colour disagreeing with the
+      // admitted registry colour (a conforming publisher sets exactly the
+      // validated registry colour, so a mismatch is a spoofed state).
+      const wireColor = (record as { user?: { color?: unknown } }).user?.color;
+      const registryColor = validateCollaborationColor(resolved.color);
+      let color = registryColor;
+      if (typeof wireColor === "string") {
+        const validatedWire = validateCollaborationColor(wireColor);
+        color =
+          validatedWire !== "transparent" &&
+          registryColor !== "transparent" &&
+          validatedWire.toLowerCase() === registryColor.toLowerCase()
+            ? validatedWire
+            : "transparent";
+      }
       const from = Math.min(selection.anchor, selection.head);
       const to = Math.max(selection.anchor, selection.head);
       if (from === to) {
