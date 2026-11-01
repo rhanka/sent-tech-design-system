@@ -11,6 +11,20 @@
     "`licenseFrom`. Un glyphe ajouté ou retiré change donc le fichier généré, et",
     "`npm run licensing:check` refuse la dérive.",
     "",
+    "`bundled` : du contenu tiers GROUPÉ dans le `dist/` publié par le build",
+    "(binaires et données embarquées, pas du code source recopié). Chaque entrée",
+    "déclare : l'amont (`upstream`), le paquet installé qui le porte (`package`,",
+    "version épinglée par `package-lock.json`), les paquets publiables concernés",
+    "(`for`, par nom de manifeste), les préfixes `dist/browser/` couverts",
+    "(`assets`, sans le hash vite), le ou les textes de notice relus à chaque",
+    "génération depuis l'amont installé (`licenseFrom`, tableau accepté), et les",
+    "aiguilles (`needles`, sous-chaînes exactes) que la garde du tarball exige",
+    "dans les notices embarquées. Le générateur ne mesure pas la présence dans",
+    "`dist/` (il tourne aussi sur arbre non construit) : la présence est",
+    "déclarée ici, et `scripts/elements-publish-tarball.test.mjs` vérifie que",
+    "chaque famille présente est nommée et que chaque asset non-JS appartient",
+    "à une famille déclarée.",
+    "",
     "`notes` : avertissements propres à un paquet, rendus tels quels sous la",
     "section « Points ouverts » de son fichier de notices. Une note est une",
     "chaîne Markdown, ou un tableau de lignes Markdown jointes par des sauts de",
@@ -32,6 +46,43 @@
       "what": "Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.",
       "why": "Le jeu d'icônes du design system est lucide : `packages/components-angular/src/Icon.ts` le dit explicitement (« the same lucide (stroke-24) path data the other frameworks wrap — the single visual source of truth »). Inliner les données plutôt que dépendre du paquet ne supprime pas l'obligation : cela la déplace du `node_modules` du consommateur vers notre propre tarball. Le port Angular ne déclare aucune dépendance lucide et n'embarque que des copies ; les ports React, Vue et Svelte dépendent du paquet lucide ET en recopient une partie.",
       "obligation": "ISC comme MIT exigent que la notice de copyright et la notice de permission figurent dans toute copie. Elles sont reproduites intégralement ci-dessous. Un identifiant SPDX seul ne satisfait ni l'une ni l'autre."
+    }
+  ],
+  "bundled": [
+    {
+      "id": "bpmn-font",
+      "upstream": "bpmn-font",
+      "package": "@sentropic/bpmn-canvas",
+      "for": ["@sentropic/design-system-elements"],
+      "assets": ["assets/bpmn-"],
+      "spdx": "OFL-1.1",
+      "licenseFrom": ["node_modules/@sentropic/bpmn-canvas/licenses/bpmn-font.OFL-1.1.txt"],
+      "needles": ["bpmn-font", "SIL OPEN FONT LICENSE", "Camunda Services GmbH"],
+      "holders": ["Copyright (c) 2014-present, Camunda Services GmbH"],
+      "what": "Les binaires de la fonte d'icônes bpmn (ttf/woff/woff2) et le css qui les déclare, copiés octet pour octet depuis `dist/assets/bpmn-font/` de `@sentropic/bpmn-canvas` et réémis par le build navigateur sous `dist/browser/assets/bpmn-*` (sommes md5 mesurées identiques le 2026-11-01).",
+      "why": "Le chunk moteur bpmn-canvas embarque le css généré qui référence cette fonte ; vite la réémet comme asset du bundle. Servir le tarball, c'est servir ces octets, et jsDelivr sert le tarball.",
+      "obligation": "La SIL OFL 1.1 exige que la notice de copyright et le texte de licence voyagent avec la fonte. Ils sont reproduits intégralement ci-dessous, relus depuis `licenses/bpmn-font.OFL-1.1.txt` du paquet amont installé, jamais recopiés à la main."
+    },
+    {
+      "id": "helvetica-metrics",
+      "upstream": "Adobe Helvetica AFM metrics",
+      "package": "@sentropic/bpmn-canvas",
+      "for": ["@sentropic/design-system-elements"],
+      "assets": ["chunks/textMetrics-"],
+      "spdx": "Adobe AFM — paragraphe de permission + notices de copyright et de marque (pas MIT)",
+      "licenseFrom": [
+        "node_modules/@sentropic/bpmn-canvas/licenses/Adobe-AFM-readme.txt",
+        "node_modules/@sentropic/bpmn-canvas/licenses/Adobe-AFM-copyright.txt"
+      ],
+      "needles": ["Adobe Systems Incorporated", "Helvetica", "Linotype-Hell"],
+      "holders": [
+        "Copyright (c) 1985, 1987, 1989, 1990, 1997 Adobe Systems Incorporated (Comment et Notice)",
+        "Helvetica, marque de Linotype-Hell AG et/ou de ses filiales"
+      ],
+      "homepage": "http://partners.adobe.com/public/developer/font/index.html",
+      "what": "La table des chasses Helvetica et Helvetica-Bold (95 entrées ASCII par graisse) embarquée dans `chunks/textMetrics-*.js` : extraction modifiée des métriques AFM PostScript d'Adobe, héritée du module textMetrics interne de `@sentropic/bpmn-canvas` (lui-même extrait du répertoire `pdfcorefonts` de Matplotlib v3.10.7, apostrophe et accent grave rabattus sur `quotesingle` et `grave`).",
+      "why": "Le layout réserve la taille du texte avec cette table au lieu de `canvas measureText`, pour un résultat indépendant des fontes installées ; le bundler l'incline dans le chunk. C'est une redistribution de données, pas une dépendance.",
+      "obligation": "Les termes Adobe exigent que le paragraphe de permission et les notices de copyright et de marque voyagent avec les données, que les fichiers AFM ne voyagent pas sans lui, et que toute modification soit signalée : la source amont marque l'extraction comme modifiée, mention reprise telle quelle ci-dessous. Textes relus depuis `licenses/Adobe-AFM-readme.txt` et `licenses/Adobe-AFM-copyright.txt` du paquet amont installé."
     }
   ],
   "notes": {
