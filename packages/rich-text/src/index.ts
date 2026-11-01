@@ -120,7 +120,11 @@ export type {
   FullBlockMetadata,
   FullContainerMetadata,
   InlineMarkKey,
+  LiveSessionAdmissionDecision,
+  LiveSessionAdmissionRequest,
   LiveSessionHandle,
+  LiveSessionOpenAdmission,
+  LiveSessionOpenRefusal,
   LockSnapshot,
   LockUnitRef,
   MarkProvenanceConflict,
@@ -132,6 +136,7 @@ export type {
   ReadRequestValidationResult,
   RelativeAnchor,
   RichTextInlineMarks,
+  SchemaEpochAcknowledgement,
 } from "./collaboration.js";
 export {
   COLLABORATION_FALLBACK_COLOR,
@@ -152,6 +157,7 @@ export {
   MAX_TITLE_UNITS,
   computeEffectiveEditable,
   createPresenceSnapshot,
+  decideLiveSessionAdmission,
   derivePresenceBadgeState,
   isAllowedHref,
   isLockExpired,
