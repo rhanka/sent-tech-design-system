@@ -49,6 +49,12 @@ jobs:
           npm --workspace @sentropic/design-system-elements run build:browser
           npm --workspace @sentropic/design-system-elements run check
           npm --workspace @sentropic/design-system-elements test
+      # The tarball guard, against THIS runner's bytes: the `verify` job is
+      # the only one that runs on `workflow_dispatch`, so without this step a
+      # bad tarball would pass that path unchecked (the `publish` job runs the
+      # same guard right before `npm publish`).
+      - name: Verify elements tarball guard
+        run: node --test scripts/elements-publish-tarball.test.mjs
       - name: Verify publishable licensing
         run: npm run licensing:check
       - name: Smoke packed packages

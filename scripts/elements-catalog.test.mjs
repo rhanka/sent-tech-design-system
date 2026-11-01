@@ -39,7 +39,14 @@ const catalogPath = join(elementsDir, "catalog.json");
 const generatorMain = join(elementsDir, "dist", "generator", "main.js");
 
 test("AC-L1: the elements package builds and its generator --check exits 0", () => {
-  const build = spawnSync("npm", ["run", "build", "-w", "@sentropic/design-system-elements"], {
+  // Node build only (`build:node`, tsc with no clean step): this guard runs
+  // in parallel with the browser-artifacts and tarball guards under
+  // `node --test`, and the full `build` script also runs vite
+  // `build:browser` (`emptyOutDir: true`), which wipes `dist/browser/` while
+  // those siblings read and pack it. This guard only needs the compiled
+  // generator, so it builds just that — the browser bundle is the `build`
+  // script's (and CI's) business, asserted read-only by its own guard.
+  const build = spawnSync("npm", ["run", "build:node", "-w", "@sentropic/design-system-elements"], {
     cwd: repoRoot,
     encoding: "utf8",
   });

@@ -98,9 +98,11 @@ the wrappers define no font of their own (the content inherits the page's).
 
 ## Build, sizes, integrity
 
-`npm run build:browser` writes `dist/browser/` and `dist/browser/sri.json`
-(every file with raw / gzip / brotli sizes and a sha384 integrity hash;
-`sri.json` never lists itself). The §6.6 core budget — the entry closure
+`npm run build` runs the Node build and then the browser bundle, so
+`dist/browser/` and `dist/browser/sri.json` are produced together
+(`npm run build:browser` re-runs the bundle step alone). `sri.json` lists
+every file with raw / gzip / brotli sizes and a sha384 integrity hash
+(`sri.json` never lists itself). The §6.6 core budget — the entry closure
 that renders `<st-bar-chart>` — is 53,916 B gzip of the 153,600 B budget
 (re-measured at 0.1.0; 23 files pinned by `sri.json`).
 The bundle is eval-free (§6.4: no `eval`, no `new Function` in any chunk —
