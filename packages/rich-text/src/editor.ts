@@ -381,6 +381,7 @@ export interface BoundImpl {
     pmPositionToLinear: (map: never, pmPos: number) => number;
     linearToPmPosition: (map: never, index: number) => number;
     projectPmTransactionToYText: (binding: never, before: never, tr: never) => string[];
+    stableMetadataJson: (value: unknown) => string;
     applyRemoteUpdateIncrementally: (options: never) => { rebuiltParagraphIds: string[] };
     yTextToPmDoc: (ytext: never, fieldMeta: never, format: never, schema: never) => never;
     linearBlocksOf: (ytext: never) => Array<{ paragraphId: string; separatorIndex: number; contentStart: number; contentEnd: number }>;
@@ -554,7 +555,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     ? (fullFactory as FullEditorExtensionFactory)(extensionOptions)
     : createP0EditorExtensions(extensionOptions);
   // The single history replacement point (§4.5, CL-3a): when bound, UndoRedo
-  // is removed here and only here; the UndoManager itself is the CL-3b seam.
+  // is removed here and only here; the field UndoManager landed in CL-3b1
+  // (scoped to the local origin over Y.Text plus fieldmeta).
   const composedExtensions = boundCollaboration ? removeHistoryExtension(baseExtensions) : baseExtensions;
   const editor = new Editor({
     element,
@@ -1277,21 +1279,33 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   /** Block ids whose captured record changed between two captures, in the
       after-document order (CL-3b1 §4.5: a bound undo/redo gesture names
       exactly the blocks whose content actually changed). Identity-only and
-      order-only moves report no change. */
+      order-only moves report no change; removed blocks count as changed
+      (review 1 B-3: undoing an HR insertion, undoing an end-of-paragraph
+      split, or redoing a block deletion names the removed id). */
   const diffBlockIds = (before: RichTextDocument, after: RichTextDocument): string[] => {
+    // Order-insensitive like the projection (review 1 follow-up): the
+    // stored records keep their key order on semantic no-ops.
+    const stable =
+      boundImpl?.projection.stableMetadataJson ?? ((value: unknown) => JSON.stringify(value));
     const beforeById = new Map<string, unknown>();
     for (const block of before.blocks as unknown as Array<Record<string, unknown>>) {
       if (typeof block["paragraphId"] === "string") {
         beforeById.set(block["paragraphId"] as string, block);
       }
     }
+    const afterIds = new Set<string>();
     const changed: string[] = [];
     for (const block of after.blocks as unknown as Array<Record<string, unknown>>) {
       if (typeof block["paragraphId"] !== "string") continue;
-      const previous = beforeById.get(block["paragraphId"] as string);
-      if (previous === undefined || JSON.stringify(previous) !== JSON.stringify(block)) {
-        changed.push(block["paragraphId"] as string);
+      const id = block["paragraphId"] as string;
+      afterIds.add(id);
+      const previous = beforeById.get(id);
+      if (previous === undefined || stable(previous) !== stable(block)) {
+        changed.push(id);
       }
+    }
+    for (const id of beforeById.keys()) {
+      if (!afterIds.has(id)) changed.push(id);
     }
     return changed;
   };
@@ -1309,12 +1323,15 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   const runBoundHistory = (direction: "undo" | "redo"): void => {
     if (tracker.destroyed || !isActive()) return;
     if (boundImpl === undefined) return;
+    // Review 1 follow-up: the composing guard precedes the manager, so a
+    // programmatic undo/redo mid-composition consumes no step (keyboard
+    // already guards this path).
+    if (tracker.composing || editor.view.composing) return;
     const manager = boundImpl.undoManager;
     if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
     const before = displayedCaptureResult();
     const applied = direction === "undo" ? manager.undo() : manager.redo();
     if (applied === null || applied === undefined) return;
-    if (tracker.composing || editor.view.composing) return;
     const after = displayedCaptureResult();
     emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
   };
@@ -1564,12 +1581,14 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           `rich-text.collab-step-failed: the local transaction was rolled back on both sides (${cause})`,
           "local-projection",
         );
-        // CL-3b1 FU-2 (§4.3.1 item 4, §5.2): capture the current selection
-        // as linear offsets through the pre-rollback selection map before
-        // dispatching the rollback replacement. The pre-rollback map pairs
-        // the current (post-failure) document with the agreed shared state
-        // by paragraph identity, so a caret in a surviving region converts
-        // to the linear offset that region still owns. A caret inside the
+        // CL-3b1 FU-2 (§4.3.1 item 4, §5.2), review 1 TF-2: capture the
+        // pre-transaction selection as linear offsets through the
+        // pre-transaction selection map before dispatching the rollback
+        // replacement. The map pairs `transaction.before` (the document the
+        // still-agreed shared state projects to) with that shared state by
+        // paragraph identity, so a caret in a surviving region converts to
+        // the linear offset that region still owns — even when the failed
+        // transaction changed text before the caret. A caret inside the
         // refused span has no surviving offset and restores to the nearest
         // valid inline position below. A capture failure falls back to the
         // plain rollback, never to a second refusal.
@@ -1577,17 +1596,17 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         let rollbackHead: number | null = null;
         try {
           const preMap = boundImpl.projection.buildSelectionMap(
-            editor.view.state.doc as never,
+            transaction.before as never,
             boundImpl.ytext as never,
           );
-          rollbackAnchor = boundImpl.projection.pmPositionToLinear(
-            preMap,
-            editor.view.state.selection.anchor,
-          );
-          rollbackHead = boundImpl.projection.pmPositionToLinear(
-            preMap,
-            editor.view.state.selection.head,
-          );
+          // Map the post-transaction selection back through the inverted
+          // step mapping: the pre-transaction positions, even when the
+          // failed transaction changed text before the caret.
+          const inverted = transaction.mapping.invert();
+          const preAnchor = inverted.map(editor.view.state.selection.anchor, -1);
+          const preHead = inverted.map(editor.view.state.selection.head, 1);
+          rollbackAnchor = boundImpl.projection.pmPositionToLinear(preMap, preAnchor);
+          rollbackHead = boundImpl.projection.pmPositionToLinear(preMap, preHead);
         } catch {
           rollbackAnchor = null;
           rollbackHead = null;
@@ -1603,10 +1622,13 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           rollback.setMeta(boundImpl.projection.BINDING_ORIGIN_META, true);
           rollback.setMeta("addToHistory", false);
           rollback.replaceWith(0, editor.view.state.doc.content.size, sharedDoc.content as never);
-          // Restore the caret from the pre-rollback linear offsets against
-          // the rebuilt document, clamped to the nearest valid inline
-          // position; a restore failure keeps the default post-replacement
-          // selection rather than an invalid one.
+          // Restore the caret from the pre-transaction linear offsets
+          // against the rebuilt document, clamped to the nearest valid
+          // inline position; a restore failure keeps the default
+          // post-replacement selection. `TextSelection.between` also
+          // covers a pre-transaction node selection (restored as a text
+          // caret at the atom, never a corrupt node selection — the old
+          // `new selection.constructor` path) — review 1 TF-2.
           if (rollbackAnchor !== null && rollbackHead !== null) {
             try {
               const afterMap = boundImpl.projection.buildSelectionMap(
@@ -1624,12 +1646,7 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
               );
               const $anchor = rollback.doc.resolve(anchorPm);
               const $head = rollback.doc.resolve(headPm);
-              rollback.setSelection(
-                new (editor.view.state.selection.constructor as new (...args: never[]) => never)(
-                  $anchor as never,
-                  $head as never,
-                ) as never,
-              );
+              rollback.setSelection(TextSelection.between($anchor, $head));
             } catch {
               // Clamp failure keeps the default post-replacement selection.
             }
