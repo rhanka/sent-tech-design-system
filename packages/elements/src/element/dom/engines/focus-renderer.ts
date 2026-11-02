@@ -1,12 +1,13 @@
 /**
  * The `focus` ENGINE CHUNK (§6.6): everything `<st-decision-dossier>` needs
- * beyond the core — the §4.3 focus semantic port and the MINIMAL lazy
- * renderer L2 uses until lot L6 lands the imposed Focus renderer defaults
- * (F-R0–F-R7). What L6 must replace here: the Markdown subset (this file's
- * `renderMarkdown` call), the content parity with the owner's `renderHtml`,
- * the readability gate, and the interactions gating — L2 gates an option
- * card only on an `interactions` entry `{ name: "choose-option", targetRef:
- * <option id>, enabled: false }`, which renders the card inert.
+ * beyond the core — the §4.3 focus semantic port plus the imposed Focus
+ * renderer defaults F-R0–F-R7 (lot L6): whole-card selection control (F-R1),
+ * 1 px token strokes (F-R2, see `dossier-styles.ts`), light local selection
+ * (F-R3), folded long arguments (F-R4), renderer-chosen list-or-grid layout
+ * (F-R5), annotation as display state only (F-R6) and a discreet
+ * recommendation badge that never preselects (F-R7). F-R0 stays a validation
+ * property: any author layout hint is refused with `schema-violation`
+ * before this renderer ever runs (§4.5 panel, never a partial dossier).
  *
  * U-14 sanitizer choice: the only string that ever enters the DOM as MARKUP
  * is the prose the minimal Markdown renderer produces; it passes through
@@ -20,6 +21,7 @@ import { validateDecisionDossierDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
 import type { SemanticPort } from "../../../ports/types.js";
+import { adoptDossierSheet, FOLD_THRESHOLD_CHARS } from "./dossier-styles.js";
 
 /** The §4.3 semantic port: the pinned focus validator is the authority. */
 export const port: SemanticPort = createFocusPort(validateDecisionDossierDocument);
@@ -27,9 +29,40 @@ export const port: SemanticPort = createFocusPort(validateDecisionDossierDocumen
 /** The intent dispatch the renderer receives (core's `dispatchIntent`). */
 export type DossierDispatch = (optionId: string) => void;
 
+/** The renderer-chosen layout of one option set (AMB-L6-3, one function). */
+export type OptionSetLayout = "list" | "grid";
+
+/**
+ * The layout decision table (AMB-L6-3, §11.2 F-R5): any long (folded)
+ * option forces the list at any count; otherwise one or two options render
+ * as a list and three or more short options as a grid capped at two
+ * columns — never four tall side-by-side columns of long cards.
+ */
+export function decideOptionSetLayout(optionCount: number, hasLongOption: boolean): OptionSetLayout {
+  if (hasLongOption) return "list";
+  if (optionCount <= 2) return "list";
+  return "grid";
+}
+
 /** Narrow read of one known document field (the schema already validated it). */
 function field(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+/**
+ * The fold rule (AMB-L6-2, F-R4): fold when the rendered argument exceeds
+ * 300 characters — the option `body` when one exists, else the
+ * label-plus-consequence text rendered in its place.
+ */
+export function argumentText(option: Record<string, unknown>): string {
+  const body = field(option.body);
+  if (body !== undefined) return body;
+  return [field(option.label) ?? "", field(option.consequence) ?? ""].filter((part) => part.length > 0).join("\n");
+}
+
+/** True when the option's rendered argument folds (over the threshold). */
+export function isLongOption(option: Record<string, unknown>): boolean {
+  return argumentText(option).length > FOLD_THRESHOLD_CHARS;
 }
 
 /**
@@ -74,7 +107,7 @@ function text(tag: string, className: string, text: string): HTMLElement {
   return node;
 }
 
-/** True when the interactions array disables choosing this option (L2 gate). */
+/** True when the interactions disable choosing this option (L2 gate). */
 function optionDisabled(interactions: readonly unknown[], optionId: string): boolean {
   return interactions.some(
     (entry) =>
@@ -86,35 +119,146 @@ function optionDisabled(interactions: readonly unknown[], optionId: string): boo
   );
 }
 
-/** One option card: a real button while the interactions allow choosing it. */
-function optionCard(option: Record<string, unknown>, disabled: boolean): HTMLElement {
+/** The ids of every option in the document (recommendation matching). */
+function optionIdsOf(sections: readonly unknown[]): Set<string> {
+  const ids = new Set<string>();
+  for (const section of sections) {
+    if (typeof section !== "object" || section === null) continue;
+    const record = section as Record<string, unknown>;
+    if (record.kind !== "optionSet" || !Array.isArray(record.options)) continue;
+    for (const option of record.options) {
+      if (typeof option !== "object" || option === null) continue;
+      const id = field((option as Record<string, unknown>).id);
+      if (id !== undefined) ids.add(id);
+    }
+  }
+  return ids;
+}
+
+/** The recommended option id per question id (F-R7 badge source). */
+function recommendedByQuestion(sections: readonly unknown[]): Map<string, string> {
+  const recommended = new Map<string, string>();
+  for (const section of sections) {
+    if (typeof section !== "object" || section === null) continue;
+    const record = section as Record<string, unknown>;
+    if (record.kind !== "question") continue;
+    const questionId = field(record.id);
+    const recommendedId = field(record.recommendedOptionId);
+    if (questionId !== undefined && recommendedId !== undefined) recommended.set(questionId, recommendedId);
+  }
+  return recommended;
+}
+
+/** One annotation marker: display state only, never a control (F-R6). */
+function annotationNode(option: Record<string, unknown>): HTMLElement | undefined {
+  const annotation = field(option.annotation);
+  if (annotation === undefined || annotation === "none") return undefined;
+  const marker = text("span", "st-dossier__optionAnnotation", annotation);
+  marker.setAttribute("data-annotation", annotation);
+  return marker;
+}
+
+/** One header row: label plus the discreet badge on one line (F-R7). */
+function optionHead(label: string, recommended: boolean): HTMLElement {
+  const head = document.createElement("div");
+  head.className = "st-dossier__optionHead";
+  head.append(text("span", "st-dossier__optionLabel", label));
+  if (recommended) head.append(text("span", "st-dossier__badge", "Recommended"));
+  return head;
+}
+
+/** One option card. The select and the fold are siblings (F-R1, F-R4). */
+function optionCard(
+  option: Record<string, unknown>,
+  face: { readonly disabled: boolean; readonly recommended: boolean; readonly selected: boolean; readonly expanded: boolean },
+): HTMLElement {
   const id = field(option.id) ?? "";
   const label = field(option.label) ?? "";
-  if (disabled) {
-    const card = text("div", "st-dossier__option st-dossier__option--disabled", label);
+  const consequence = field(option.consequence);
+  const annotationComment = field(option.annotationComment);
+  const bodyText = field(option.body);
+  const long = isLongOption(option);
+  if (face.disabled) {
+    const card = document.createElement("div");
+    card.className = "st-dossier__optionCard st-dossier__optionCard--disabled";
     card.setAttribute("data-option-disabled", id);
+    card.setAttribute("aria-disabled", "true");
+    card.append(optionHead(label, face.recommended));
+    if (long) {
+      if (bodyText !== undefined) {
+        if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+        const folded = text("span", "st-dossier__optionBody", bodyText);
+        folded.id = `st-dossier-body-${id}`;
+        folded.setAttribute("hidden", "");
+        card.append(folded);
+      } else {
+        const folded = text("span", "st-dossier__optionBody", consequence ?? argumentText(option));
+        folded.id = `st-dossier-body-${id}`;
+        folded.setAttribute("hidden", "");
+        card.append(folded);
+      }
+    } else {
+      if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+      if (bodyText !== undefined) card.append(text("span", "st-dossier__optionBody", bodyText));
+    }
+    const marker = annotationNode(option);
+    if (marker !== undefined) card.append(marker);
+    if (annotationComment !== undefined) card.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
     return card;
   }
-  const card = document.createElement("button");
-  card.type = "button";
-  card.className = "st-dossier__option";
-  card.setAttribute("data-option-id", id);
-  card.append(text("span", "st-dossier__optionLabel", label));
-  const body = field(option.body);
-  if (body !== undefined) card.append(text("span", "st-dossier__optionBody", body));
-  const annotation = field(option.annotation);
-  if (annotation !== undefined && annotation !== "none") {
-    card.append(text("span", "st-dossier__optionAnnotation", annotation));
+  const card = document.createElement("div");
+  card.className = "st-dossier__optionCard";
+  card.setAttribute("data-option-card", id);
+  card.setAttribute("role", "group");
+  const select = document.createElement("button");
+  select.type = "button";
+  select.className = "st-dossier__optionSelect";
+  select.setAttribute("data-option-id", id);
+  select.setAttribute("aria-pressed", face.selected ? "true" : "false");
+  if (face.selected) select.setAttribute("data-st-selected", "true");
+  select.append(optionHead(label, face.recommended));
+  if (!(long && bodyText === undefined) && consequence !== undefined) {
+    select.append(text("span", "st-dossier__optionConsequence", consequence));
+  }
+  const marker = annotationNode(option);
+  if (marker !== undefined) select.append(marker);
+  if (annotationComment !== undefined) select.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
+  if (!long && bodyText !== undefined) {
+    select.append(text("span", "st-dossier__optionBody", bodyText));
+  }
+  card.append(select);
+  if (long) {
+    const fold = document.createElement("button");
+    fold.type = "button";
+    fold.className = "st-dossier__optionFold";
+    fold.setAttribute("data-option-fold", id);
+    fold.setAttribute("aria-expanded", face.expanded ? "true" : "false");
+    fold.setAttribute("aria-controls", `st-dossier-body-${id}`);
+    fold.textContent = face.expanded ? "Hide details" : "Show details";
+    card.append(fold);
+    const foldedText = bodyText ?? consequence ?? argumentText(option);
+    const body = text("span", "st-dossier__optionBody", foldedText);
+    body.id = `st-dossier-body-${id}`;
+    if (!face.expanded) body.setAttribute("hidden", "");
+    card.append(body);
   }
   return card;
 }
 
 /** One section of the dossier, by its validated `kind`. */
-function sectionNode(section: Record<string, unknown>, interactions: readonly unknown[]): HTMLElement {
+function sectionNode(
+  section: Record<string, unknown>,
+  face: {
+    readonly interactions: readonly unknown[];
+    readonly recommended: Map<string, string>;
+    readonly knownOptions: Set<string>;
+    readonly selected: Map<string, string>;
+    readonly expanded: Set<string>;
+  },
+): HTMLElement {
   const kind = field(section.kind) ?? "";
   if (kind === "prose") {
-    const markdown = field(section.markdown) ?? "";
-    return markdownBlock(markdown);
+    return markdownBlock(field(section.markdown) ?? "");
   }
   if (kind === "question") {
     const wrap = document.createElement("div");
@@ -129,20 +273,40 @@ function sectionNode(section: Record<string, unknown>, interactions: readonly un
       chip.setAttribute("data-st-question-state", state);
       wrap.append(chip);
     }
+    const context = field(section.context);
+    if (context !== undefined) wrap.append(text("p", "st-dossier__questionContext", context));
+    const readingTime = section.readingTimeMinutes;
+    if (typeof readingTime === "number") wrap.append(text("p", "st-dossier__readingTime", `Reading time: ${readingTime} min`));
+    const answer = field(section.answer);
+    if (answer !== undefined) wrap.append(text("p", "st-dossier__questionAnswer", answer));
+    const recommendedAnswer = field(section.recommendedAnswer);
+    if (recommendedAnswer !== undefined) {
+      wrap.append(text("p", "st-dossier__questionReco", recommendedAnswer));
+    }
     return wrap;
   }
   if (kind === "optionSet") {
     const wrap = document.createElement("div");
     wrap.className = "st-dossier__options";
     wrap.setAttribute("data-st-option-set", field(section.id) ?? "");
+    const options = Array.isArray(section.options) ? section.options : [];
+    const records = options.filter((option): option is Record<string, unknown> => typeof option === "object" && option !== null);
+    wrap.setAttribute("data-st-layout", decideOptionSetLayout(records.length, records.some(isLongOption)));
     const title = field(section.title);
     if (title !== undefined) wrap.append(text("h4", "st-dossier__optionsTitle", title));
-    const options = Array.isArray(section.options) ? section.options : [];
-    for (const option of options) {
-      if (typeof option === "object" && option !== null) {
-        const record = option as Record<string, unknown>;
-        wrap.append(optionCard(record, optionDisabled(interactions, field(record.id) ?? "")));
-      }
+    const setId = field(section.id) ?? "";
+    const recommendedKey = field(section.questionId) ?? field(section.targetRef);
+    const recommendedId = recommendedKey !== undefined ? face.recommended.get(recommendedKey) : undefined;
+    for (const record of records) {
+      const optionId = field(record.id) ?? "";
+      wrap.append(
+        optionCard(record, {
+          disabled: optionDisabled(face.interactions, optionId),
+          recommended: recommendedId !== undefined && recommendedId === optionId,
+          selected: face.selected.get(setId) === optionId,
+          expanded: face.expanded.has(optionId),
+        }),
+      );
     }
     return wrap;
   }
@@ -192,7 +356,9 @@ function sectionNode(section: Record<string, unknown>, interactions: readonly un
 /**
  * Render one validated dossier document into `node`. The single interaction
  * — choosing an option — is delegated at the container and dispatched as
- * the §4.6 `choose-option` intent through `dispatch`.
+ * the §4.6 `choose-option` intent through `dispatch`. Selection is local
+ * renderer state only (F-R3): it never writes back into the envelope or the
+ * document. The fold control toggles the long argument and never selects.
  */
 export function renderDossier(
   node: HTMLElement,
@@ -202,6 +368,13 @@ export function renderDossier(
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
   const interactions = Array.isArray(doc.interactions) ? doc.interactions : [];
+  const recommended = recommendedByQuestion(sections);
+  const knownOptions = optionIdsOf(sections);
+  const selected = new Map<string, string>();
+  const expanded = new Set<string>();
+
+  const root = node.getRootNode();
+  adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
 
   const article = document.createElement("article");
   article.className = "st-dossier";
@@ -215,9 +388,13 @@ export function renderDossier(
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
 
+  const face = { interactions, recommended, knownOptions, selected, expanded };
+  const setWraps: HTMLElement[] = [];
   for (const section of sections) {
     if (typeof section === "object" && section !== null) {
-      article.append(sectionNode(section as Record<string, unknown>, interactions));
+      const rendered = sectionNode(section as Record<string, unknown>, face);
+      if ((section as Record<string, unknown>).kind === "optionSet") setWraps.push(rendered);
+      article.append(rendered);
     }
   }
 
@@ -245,19 +422,84 @@ export function renderDossier(
     article.append(note);
   }
 
+  /** Apply one selection move inside its option set (F-R3 single rule). */
+  const applySelection = (select: Element): void => {
+    const optionId = select.getAttribute("data-option-id");
+    if (optionId === null) return;
+    const set = select.closest("[data-st-option-set]");
+    const setId = set?.getAttribute("data-st-option-set") ?? "";
+    if (selected.get(setId) === optionId) {
+      selected.delete(setId);
+      select.removeAttribute("data-st-selected");
+      select.setAttribute("aria-pressed", "false");
+      return;
+    }
+    const previous = set?.querySelector('[data-st-selected="true"]');
+    previous?.removeAttribute("data-st-selected");
+    previous?.setAttribute("aria-pressed", "false");
+    selected.set(setId, optionId);
+    select.setAttribute("data-st-selected", "true");
+    select.setAttribute("aria-pressed", "true");
+    dispatch(optionId);
+  };
+
   const onClick = (event: Event): void => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    const card = target.closest("[data-option-id]");
-    if (card !== null && node.contains(card)) {
-      dispatch(card.getAttribute("data-option-id") ?? "");
+    if (target.closest("[data-option-fold]") !== null) return;
+    const select = target.closest("[data-option-id]");
+    if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
+      applySelection(select);
+      return;
+    }
+    const card = target.closest("[data-option-card]");
+    if (card !== null && node.contains(card) && card.closest("[data-option-disabled]") === null) {
+      const ownSelect = card.querySelector("[data-option-id]");
+      if (ownSelect !== null) applySelection(ownSelect);
+    }
+  };
+  const onKeyDown = (event: Event): void => {
+    if (!(event instanceof KeyboardEvent)) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest("[data-option-fold]") !== null) return;
+    const select = target.closest("[data-option-id]");
+    if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
+      event.preventDefault();
+      applySelection(select);
+    }
+  };
+  const onFold = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const control = target.closest("[data-option-fold]");
+    if (control === null || !node.contains(control)) return;
+    event.stopPropagation();
+    const optionId = control.getAttribute("data-option-fold") ?? "";
+    const card = control.closest("[data-option-card]");
+    const body = card?.querySelector(".st-dossier__optionBody") ?? undefined;
+    if (expanded.has(optionId)) {
+      expanded.delete(optionId);
+      control.setAttribute("aria-expanded", "false");
+      control.textContent = "Show details";
+      body?.setAttribute("hidden", "");
+    } else {
+      expanded.add(optionId);
+      control.setAttribute("aria-expanded", "true");
+      control.textContent = "Hide details";
+      body?.removeAttribute("hidden");
     }
   };
   node.addEventListener("click", onClick);
+  node.addEventListener("keydown", onKeyDown);
+  node.addEventListener("click", onFold);
   node.replaceChildren(article);
 
   return () => {
     node.removeEventListener("click", onClick);
+    node.removeEventListener("keydown", onKeyDown);
+    node.removeEventListener("click", onFold);
     node.replaceChildren();
   };
 }
