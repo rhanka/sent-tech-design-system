@@ -2254,6 +2254,333 @@ export function validateAgentReadRequest(
 }
 
 
+export type IntentDraftValidationResult =
+  | { ok: true }
+  | { ok: false; reason: "incompatible-schema" | "too-large"; detail: string };
+
+/** Structural validation of one FormattingIntentDraft as untrusted JSON.
+    Pure: no clock, no Yjs, no live-state check. A pass means the value has
+    the closed draft shape and coherent mark/value pairing only; admission,
+    range resolution and item coverage remain host live checks. */
+export function validateFormattingIntentDraft(value: unknown): IntentDraftValidationResult {
+  const refuse = (
+    reason: "incompatible-schema" | "too-large",
+    detail: string,
+  ): IntentDraftValidationResult => ({ ok: false, reason, detail });
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return refuse("incompatible-schema", "draft must be a non-null object");
+  }
+  const record = value as Record<string, unknown>;
+  const closedKeys = ["intentId", "actorId", "source", "fieldKey", "mark", "value", "range", "items"];
+  for (const key of Object.keys(record)) {
+    if (!closedKeys.includes(key)) {
+      return refuse("incompatible-schema", `draft carries an extra key: ${key}`);
+    }
+  }
+  for (const key of closedKeys) {
+    if (!(key in record)) {
+      return refuse("incompatible-schema", `draft is missing key: ${key}`);
+    }
+  }
+  for (const key of ["intentId", "actorId", "fieldKey"] as const) {
+    const entry = record[key];
+    if (typeof entry !== "string" || entry.length === 0) {
+      return refuse("incompatible-schema", `draft ${key} must be a non-empty string`);
+    }
+    if (entry.length > MAX_ID_UNITS) {
+      return refuse("too-large", `draft ${key} exceeds ${MAX_ID_UNITS} units`);
+    }
+  }
+  const source = record["source"];
+  if (typeof source !== "object" || source === null || Array.isArray(source)) {
+    return refuse("incompatible-schema", "draft source must be an object");
+  }
+  const sourceRecord = source as Record<string, unknown>;
+  const kind = sourceRecord["kind"];
+  if (kind === "human-transaction") {
+    const keys = Object.keys(sourceRecord);
+    if (keys.length !== 2 || !keys.includes("kind") || !keys.includes("transactionId")) {
+      return refuse("incompatible-schema", "human-transaction source has a closed shape");
+    }
+    if (!isNonEmptyString(sourceRecord["transactionId"])) {
+      return refuse("incompatible-schema", "human-transaction transactionId must be non-empty");
+    }
+  } else if (kind === "agent-patch") {
+    const keys = Object.keys(sourceRecord);
+    if (
+      keys.length !== 3 ||
+      !keys.includes("kind") ||
+      !keys.includes("key") ||
+      !keys.includes("operationIndex")
+    ) {
+      return refuse("incompatible-schema", "agent-patch source has a closed shape");
+    }
+    const keyValue = sourceRecord["key"];
+    if (typeof keyValue !== "object" || keyValue === null || Array.isArray(keyValue)) {
+      return refuse("incompatible-schema", "agent-patch key must be a complete AgentPatchKey");
+    }
+    const keyRecord = keyValue as Record<string, unknown>;
+    const keyKeys = Object.keys(keyRecord);
+    const expected = ["documentId", "actorId", "sessionEpoch", "patchId"];
+    if (keyKeys.length !== 4 || !expected.every((entry) => keyKeys.includes(entry))) {
+      return refuse("incompatible-schema", "agent-patch key must carry all four components");
+    }
+    for (const entry of expected) {
+      if (!isNonEmptyString(keyRecord[entry])) {
+        return refuse("incompatible-schema", `agent-patch key ${entry} must be non-empty`);
+      }
+    }
+    const operationIndex = sourceRecord["operationIndex"];
+    if (typeof operationIndex !== "number" || !Number.isSafeInteger(operationIndex) || operationIndex < 0) {
+      return refuse("incompatible-schema", "agent-patch operationIndex must be a non-negative safe integer");
+    }
+  } else {
+    return refuse("incompatible-schema", "draft source kind is unknown");
+  }
+  const mark = record["mark"];
+  const admittedMarks: readonly string[] = ["bold", "italic", "code", "strike", "underline", "link", "linkTitle"];
+  if (typeof mark !== "string" || !admittedMarks.includes(mark)) {
+    return refuse("incompatible-schema", "draft mark is not an admitted InlineMarkKey");
+  }
+  const markValue = record["value"];
+  if (mark === "bold" || mark === "italic" || mark === "code" || mark === "strike" || mark === "underline") {
+    if (markValue !== true && markValue !== null) {
+      return refuse("incompatible-schema", `boolean mark ${mark} carries true or null only`);
+    }
+  } else if (mark === "link") {
+    if (markValue !== null) {
+      if (typeof markValue !== "string") {
+        return refuse("incompatible-schema", "link value is a validated href string or null");
+      }
+      if (markValue.length > MAX_HREF_UNITS) {
+        return refuse("too-large", `link href exceeds ${MAX_HREF_UNITS} units`);
+      }
+      if (!isAllowedHref(markValue)) {
+        return refuse("incompatible-schema", "link href is refused by R-FULL-URL-1");
+      }
+    }
+  } else if (mark === "linkTitle") {
+    if (markValue !== null) {
+      if (typeof markValue !== "string") {
+        return refuse("incompatible-schema", "linkTitle value is a plain string or null");
+      }
+      if (markValue.length > MAX_TITLE_UNITS) {
+        return refuse("too-large", `linkTitle exceeds ${MAX_TITLE_UNITS} units`);
+      }
+    }
+  }
+  const range = record["range"];
+  if (typeof range !== "object" || range === null || Array.isArray(range)) {
+    return refuse("incompatible-schema", "draft range must be an object");
+  }
+  const rangeRecord = range as Record<string, unknown>;
+  if (Object.keys(rangeRecord).length !== 2 || !("start" in rangeRecord) || !("end" in rangeRecord)) {
+    return refuse("incompatible-schema", "draft range has a closed { start, end } shape");
+  }
+  if (!isNonEmptyString(rangeRecord["start"]) || !isNonEmptyString(rangeRecord["end"])) {
+    return refuse("incompatible-schema", "draft range anchors must be non-empty strings");
+  }
+  const items = record["items"];
+  if (!Array.isArray(items)) {
+    return refuse("incompatible-schema", "draft items must be an array");
+  }
+  const seen = new Set<string>();
+  for (const entry of items) {
+    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
+      return refuse("incompatible-schema", "draft item must be an object");
+    }
+    const itemRecord = entry as Record<string, unknown>;
+    const itemKeys = Object.keys(itemRecord);
+    if (itemKeys.length !== 2 || !itemKeys.includes("client") || !itemKeys.includes("clock")) {
+      return refuse("incompatible-schema", "draft item has a closed { client, clock } shape");
+    }
+    const client = itemRecord["client"];
+    const clock = itemRecord["clock"];
+    if (
+      typeof client !== "number" ||
+      !Number.isSafeInteger(client) ||
+      client < 0 ||
+      typeof clock !== "number" ||
+      !Number.isSafeInteger(clock) ||
+      clock < 0
+    ) {
+      return refuse("incompatible-schema", "draft item coordinates must be non-negative safe integers");
+    }
+    const pair = `${client}:${clock}`;
+    if (seen.has(pair)) {
+      return refuse("incompatible-schema", "draft items carry a duplicated (client, clock) pair");
+    }
+    seen.add(pair);
+  }
+  return { ok: true };
+}
+
+/** One item identity for the provenance computation (Yjs client/clock). */
+export interface ProvenanceItemId {
+  client: number;
+  clock: number;
+}
+
+export type LatestEffectiveIntentResult =
+  | { ok: true; found: true; intent: FormattingIntent }
+  | { ok: true; found: false }
+  | { ok: false; detail: string };
+
+/** Latest effective intent for one (item, mark) pair (R-REV-4 first sentence).
+    Pure: ordering input is `seq`, never array position or wall clock.
+    Returns the covering intent with the greatest `seq`, a not-found outcome
+    when no recorded intent covers the item, or an undeterminable outcome when
+    two covering intents share the maximal `seq` with different values. */
+export function latestEffectiveIntent(
+  intents: readonly FormattingIntent[],
+  item: ProvenanceItemId,
+  mark: InlineMarkKey,
+): LatestEffectiveIntentResult {
+  let best: FormattingIntent | null = null;
+  let bestCount = 0;
+  let bestValues = new Set<string>();
+  for (const intent of intents) {
+    if (intent.mark !== mark) continue;
+    let covers = false;
+    for (const covered of intent.items) {
+      if (covered.client === item.client && covered.clock === item.clock) {
+        covers = true;
+        break;
+      }
+    }
+    if (!covers) continue;
+    if (best === null || intent.seq > best.seq) {
+      best = intent;
+      bestCount = 1;
+      bestValues = new Set([JSON.stringify(intent.value)]);
+    } else if (intent.seq === best.seq) {
+      bestCount += 1;
+      bestValues.add(JSON.stringify(intent.value));
+    }
+  }
+  if (best === null) return { ok: true, found: false };
+  if (bestCount > 1 && bestValues.size > 1) {
+    return { ok: false, detail: "duplicate maximal seq with different values" };
+  }
+  if (bestCount > 1) return { ok: true, found: true, intent: best };
+  return { ok: true, found: true, intent: best };
+}
+
+/** Input to the whole-plan mark revert computation (R-REV-4). */
+export interface PlanMarkRevertInput {
+  key: AgentPatchKey;
+  fieldKey: string;
+  mark: InlineMarkKey;
+  /** The patch's recorded intent ids for this (fieldKey, mark). */
+  intentIds: readonly string[];
+  /** Items still live at revert time (deleted items are satisfied). */
+  liveItems: readonly ProvenanceItemId[];
+}
+
+export type PlanMarkRevertDecision =
+  | { item: ProvenanceItemId; action: "restore"; value: true | string | null }
+  | { item: ProvenanceItemId; action: "kept-later" }
+  | { item: ProvenanceItemId; action: "satisfied" };
+
+export type PlanMarkRevertResult =
+  | { ok: true; decisions: readonly PlanMarkRevertDecision[] }
+  | { ok: false; conflict: MarkProvenanceConflict };
+
+/** Whole-plan mark revert computation (R-REV-4, first half of the revert).
+    Pure: consumes the ordered `FormattingIntent` list, never live state.
+    Per item covered by the patch intents for that mark: the latest effective
+    intent decides. A patch-owned latest restores the preceding effective
+    value (or null); a later intent keeps the item; a non-live item is
+    satisfied; an undeterminable item refuses the whole plan with
+    `mark-provenance-conflict`, with no per-item fallback. */
+export function planMarkRevert(
+  intents: readonly FormattingIntent[],
+  input: PlanMarkRevertInput,
+): PlanMarkRevertResult {
+  const patchIntents = intents.filter(
+    (intent) =>
+      intent.fieldKey === input.fieldKey &&
+      intent.mark === input.mark &&
+      input.intentIds.includes(intent.intentId),
+  );
+  const covered = new Map<string, ProvenanceItemId>();
+  for (const intent of patchIntents) {
+    for (const item of intent.items) {
+      covered.set(`${item.client}:${item.clock}`, { client: item.client, clock: item.clock });
+    }
+  }
+  if (patchIntents.length === 0 || covered.size === 0) {
+    return {
+      ok: false,
+      conflict: {
+        kind: "mark-provenance-conflict",
+        key: input.key,
+        fieldKey: input.fieldKey,
+        mark: input.mark,
+        items: [],
+        detail: "the patch has no recorded covering intent in the log",
+      },
+    };
+  }
+  const live = new Set<string>();
+  for (const item of input.liveItems) live.add(`${item.client}:${item.clock}`);
+  const undeterminable: ProvenanceItemId[] = [];
+  const decisions: PlanMarkRevertDecision[] = [];
+  for (const item of covered.values()) {
+    const pair = `${item.client}:${item.clock}`;
+    if (!live.has(pair)) {
+      decisions.push({ item, action: "satisfied" });
+      continue;
+    }
+    const latest = latestEffectiveIntent(intents, item, input.mark);
+    if (latest.ok === false) {
+      undeterminable.push(item);
+      continue;
+    }
+    if (latest.ok === true && latest.found === false) {
+      undeterminable.push(item);
+      continue;
+    }
+    if (latest.ok === true && latest.found === true) {
+      const owns = input.intentIds.includes(latest.intent.intentId);
+      if (owns) {
+        let preceding: FormattingIntent | null = null;
+        for (const intent of intents) {
+          if (intent.fieldKey !== input.fieldKey || intent.mark !== input.mark) continue;
+          if (input.intentIds.includes(intent.intentId)) continue;
+          let covers = false;
+          for (const entry of intent.items) {
+            if (entry.client === item.client && entry.clock === item.clock) {
+              covers = true;
+              break;
+            }
+          }
+          if (!covers) continue;
+          if (intent.seq >= latest.intent.seq) continue;
+          if (preceding === null || intent.seq > preceding.seq) preceding = intent;
+        }
+        decisions.push({ item, action: "restore", value: preceding === null ? null : preceding.value });
+      } else {
+        decisions.push({ item, action: "kept-later" });
+      }
+    }
+  }
+  if (undeterminable.length > 0) {
+    return {
+      ok: false,
+      conflict: {
+        kind: "mark-provenance-conflict",
+        key: input.key,
+        fieldKey: input.fieldKey,
+        mark: input.mark,
+        items: undeterminable,
+        detail: "latest effective intent cannot be determined for covered items (R-REV-4)",
+      },
+    };
+  }
+  return { ok: true, decisions };
+}
+
 /** R-API-2 effective-editable input (spec §6.2). The host computes exactly
     one editing fact per surface mode and the DS enforces it locally:
     `effectiveEditable = binding ? (admittedEditable && !disabled) :

@@ -30,7 +30,7 @@ import type { Node as ProseMirrorNode, Schema } from "@tiptap/pm/model";
 import type { Transaction } from "@tiptap/pm/state";
 import type { EditorView } from "@tiptap/pm/view";
 import { isAllowedHref } from "./collaboration.js";
-import type { FullBlockMetadata, RichTextInlineMarks } from "./collaboration.js";
+import type { FullBlockMetadata, InlineMarkKey, RichTextInlineMarks } from "./collaboration.js";
 import type { RichTextDocument, RichTextFormat } from "./model.js";
 import {
   captureDocumentFromField,
@@ -50,8 +50,11 @@ import { fullDocumentToProseMirror, fullProseMirrorToDocument } from "./editor-f
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import type { SelectionMap, SelectionMapBlock } from "./collab-selection.js";
 import {
+  coveredItemIdentities,
   cursorJsonToSelection,
   linearToPmPosition,
+  mintAnchorAt,
+  mintEndOfFieldAnchor,
   pmPositionToLinear,
   selectionToCursorJson,
 } from "./collab-selection.js";
@@ -78,6 +81,15 @@ export interface ProjectionBinding {
       never enters the undo stacks (mark undo is the §5.6 provenance log,
       CL-4). Must differ from `localOrigin`. */
   markOrigin: string;
+  /** Provenance sink for human intents (R-REV-3, CL-4c): type-erased, called
+      once per (transaction, mark) on the live phase only. Absent means
+      computed and dropped (decisions §1.6). */
+  provenanceSink?: { recordFormattingIntent(intent: unknown): void } | null;
+  /** Local actor id for provenance drafts (collaborationActor or fallback). */
+  provenanceActorId?: string;
+  /** Per-transaction id minted by the outer call, never reused. Present only
+      on the live phase binding; the scratch phase strips it. */
+  provenanceTransactionId?: string;
 }
 
 /** Transaction flag marking binding-origin dispatches (echo suppression). */
@@ -462,6 +474,45 @@ interface ProjectionRun {
       must rebuild them from the shared state so formats hidden while the
       block was code are revealed (R-FULL-CODE-1). */
   revealedIds: string[];
+  /** Provenance collection (R-REV-3, CL-4c): present only on the live phase
+      when the binding carries a sink, actor and transaction id. Entries are
+      (mark, value, index, length) observations; drafts are minted after the
+      transaction commits, once per (transaction, mark). */
+  provenance?: {
+    sink: { recordFormattingIntent(intent: unknown): void };
+    actorId: string;
+    fieldKey: string;
+    transactionId: string;
+    collected: Array<{ mark: InlineMarkKey; value: true | string | null; index: number; length: number }>;
+  };
+}
+
+/** Admitted mark keys for provenance collection (R-FULL-MARK-1). */
+const PROVENANCE_MARKS: readonly string[] = ["bold", "italic", "code", "strike", "underline", "link", "linkTitle"];
+
+function collectProvenanceAttributes(
+  run: ProjectionRun,
+  index: number,
+  length: number,
+  attributes: Record<string, unknown>,
+): void {
+  const provenance = run.provenance;
+  if (provenance === undefined || length <= 0) return;
+  for (const key of Object.keys(attributes)) {
+    if (!PROVENANCE_MARKS.includes(key)) continue;
+    const raw = attributes[key];
+    let value: true | string | null | undefined;
+    if (key === "link" || key === "linkTitle") {
+      if (raw === null) value = null;
+      else if (typeof raw === "string") value = raw;
+      else continue;
+    } else {
+      if (raw === true) value = true;
+      else if (raw === null) value = null;
+      else continue;
+    }
+    provenance.collected.push({ mark: key as InlineMarkKey, value, index, length });
+  }
 }
 
 function runInsert(
@@ -473,6 +524,7 @@ function runInsert(
   run.journal.push({ op: "insert", index, text, attributes });
   if (attributes !== undefined && Object.keys(attributes).length > 0) {
     run.ytext.insert(index, text, attributes);
+    collectProvenanceAttributes(run, index, text.length, attributes);
   } else {
     // Explicit empty attributes: a bare Yjs insert inherits the left
     // neighbour's marks, so a plain insertion right after a marked run
@@ -529,6 +581,7 @@ function runFormat(
   const captured = captureRange(run, index, length);
   run.journal.push({ op: "format", index, length, captured });
   run.ytext.format(index, length, attributes);
+  collectProvenanceAttributes(run, index, length, attributes);
 }
 
 function runMetaSet(run: ProjectionRun, key: string, value: unknown): void {
@@ -1105,6 +1158,14 @@ function collectCodeReveals(
   });
 }
 
+let provenanceTransactionCounter = 0;
+
+/** Mint one human transaction id per outer projection call, never reused. */
+function mintProvenanceTransactionId(): string {
+  provenanceTransactionCounter += 1;
+  return `txn:${provenanceTransactionCounter}`;
+}
+
 export function projectPmTransactionToYText(
   binding: ProjectionBinding,
   pmDocBefore: ProseMirrorNode,
@@ -1119,7 +1180,16 @@ export function projectPmTransactionToYText(
   // a refusal at any step leaves the live state vector byte-equal. Phase 2
   // executes the identical projection onto the live state while replaying
   // the recorded allocator outputs, keeping identities stable across both
-  // phases (one allocation sequence per transaction, as before).
+  // phases (one allocation sequence per transaction, as before). R-REV-3:
+  // provenance records once per committed transaction on the live phase
+  // only; the scratch phase strips the provenance context so it never
+  // double-records.
+  const provenanceTransactionId =
+    binding.provenanceSink !== undefined &&
+    binding.provenanceSink !== null &&
+    binding.provenanceActorId !== undefined
+      ? mintProvenanceTransactionId()
+      : undefined;
   const scratch = cloneFieldDoc(binding);
   const recorded: string[] = [];
   projectIntoRun(
@@ -1127,6 +1197,9 @@ export function projectPmTransactionToYText(
       ...binding,
       ytext: scratch.ytext,
       fieldMeta: scratch.fieldMeta,
+      provenanceSink: undefined,
+      provenanceActorId: undefined,
+      provenanceTransactionId: undefined,
       allocateId: () => {
         const id = binding.allocateId();
         recorded.push(id);
@@ -1140,6 +1213,7 @@ export function projectPmTransactionToYText(
   return projectIntoRun(
     {
       ...binding,
+      ...(provenanceTransactionId === undefined ? {} : { provenanceTransactionId }),
       allocateId: () =>
         replay < recorded.length ? (recorded[replay++] as string) : binding.allocateId(),
     },
@@ -1193,6 +1267,20 @@ function projectIntoRun(
     freshQueue: [],
     inserted: [],
     revealedIds: [],
+    ...(binding.provenanceSink !== undefined &&
+    binding.provenanceSink !== null &&
+    binding.provenanceActorId !== undefined &&
+    binding.provenanceTransactionId !== undefined
+      ? {
+          provenance: {
+            sink: binding.provenanceSink,
+            actorId: binding.provenanceActorId,
+            fieldKey: binding.fieldKey,
+            transactionId: binding.provenanceTransactionId,
+            collected: [],
+          },
+        }
+      : {}),
   };
   if (binding.pmTransactionDoc !== undefined) {
     run.freshQueue = freshIdQueue(pmDocBefore, binding.pmTransactionDoc);
@@ -1421,7 +1509,47 @@ function projectIntoRun(
   if (failed) {
     throw failure;
   }
+  recordProvenanceIntents(run);
   return run.revealedIds;
+}
+
+/** Mint one draft per (transaction, mark) after a committed live phase
+    (R-REV-3): same-value reassertions record identically; mixed gestures
+    record their mark parts; an absent sink computes and drops. */
+function recordProvenanceIntents(run: ProjectionRun): void {
+  const provenance = run.provenance;
+  if (provenance === undefined || provenance.collected.length === 0) return;
+  const groups = new Map<string, { mark: InlineMarkKey; value: true | string | null; ranges: Array<{ index: number; length: number }> }>();
+  for (const entry of provenance.collected) {
+    const groupKey = `${entry.mark}:${JSON.stringify(entry.value)}`;
+    let group = groups.get(groupKey);
+    if (group === undefined) {
+      group = { mark: entry.mark, value: entry.value, ranges: [] };
+      groups.set(groupKey, group);
+    }
+    group.ranges.push({ index: entry.index, length: entry.length });
+  }
+  let suffix = 0;
+  for (const group of groups.values()) {
+    const low = Math.min(...group.ranges.map((range) => range.index));
+    const high = Math.max(...group.ranges.map((range) => range.index + range.length));
+    const start = low >= run.ytext.length ? mintEndOfFieldAnchor(run.ytext, run.ytext.length) : mintAnchorAt(run.ytext, low, 0);
+    const end = high >= run.ytext.length ? mintEndOfFieldAnchor(run.ytext, run.ytext.length) : mintAnchorAt(run.ytext, high, 0);
+    const intentId = groups.size === 1 ? `${provenance.transactionId}:${group.mark}` : `${provenance.transactionId}:${group.mark}:${suffix}`;
+    suffix += 1;
+    const draft = {
+      intentId,
+      actorId: provenance.actorId,
+      source: { kind: "human-transaction", transactionId: provenance.transactionId },
+      fieldKey: provenance.fieldKey,
+      mark: group.mark,
+      value: group.value,
+      range: { start, end },
+      items: coveredItemIdentities(run.ytext, low, high),
+    };
+    if (provenance.sink === undefined || provenance.sink === null) continue;
+    provenance.sink.recordFormattingIntent(draft);
+  }
 }
 
 /** Node type of the duplicated split tail: the last textblock occurrence
