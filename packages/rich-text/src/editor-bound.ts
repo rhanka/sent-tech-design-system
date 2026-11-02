@@ -50,11 +50,21 @@ interface BoundGesture {
   kind: "char" | "mark" | "mixed";
   transactionId: string | null;
   charUndone: boolean;
+  /** The gesture's stack item was consumed without effect (CL-4f): its
+      character half can never apply again, so redo must not select it
+      for a character half. The mark half stays independently addressable. */
+  charRedoVoid: boolean;
+  /** Undo-completion order (CL-4f): the counter value when this gesture's
+      undo completed (character half, or mark outcome for mark-bearing
+      halves). Redo selects the largest value first. Zero means never. */
+  undoCompletedSeq: number;
 }
 
 interface BoundMarkHistory {
   steps: BoundMarkStep[];
   gestures: BoundGesture[];
+  /** Monotonic undo-completion counter (CL-4f) stamping `undoCompletedSeq`. */
+  undoCompletionCounter: number;
   pending:
     | {
         readonly requestId: string;
@@ -134,6 +144,7 @@ export async function createBoundRichTextEditor(
           pending: null,
           sessionId: bindingIdentity.sessionId,
           fieldKey: bindingIdentity.fieldKey,
+          undoCompletionCounter: 0,
         };
   const recordingSink: SessionProvenanceSink | null =
     provenanceSink === null && markUndo === null

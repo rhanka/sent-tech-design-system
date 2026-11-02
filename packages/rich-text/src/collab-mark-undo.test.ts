@@ -14,6 +14,7 @@
  */
 import { describe, expect, it, afterEach } from "vitest";
 import * as Y from "yjs";
+import { TextSelection } from "@tiptap/pm/state";
 import { createBoundRichTextEditor } from "./editor-bound.js";
 import {
   boundLocalOriginFor,
@@ -1713,5 +1714,380 @@ describe("CL-4e pass-2 fixes (pending char scan, truncation while pending, stric
         destroyMounted();
       });
     }
+  });
+});
+
+describe("CL-4f composition commit isolation (jsdom/in-memory, editor level)", () => {
+  // An independent observing manager mirrors the field manager's capture —
+  // including its production breaks. The compositionstart/end breaks fire
+  // inside the dispatched handlers on the field manager only, so the
+  // helpers re-issue the same break on the observer afterwards: instrument
+  // alignment, not a test-side gap (no `stop()` appears in the test body
+  // between the gesture and the commit).
+  function beginComposition(editor: RichTextEditor, observer: { manager: Y.UndoManager }): void {
+    const dom = (editor as unknown as { view: { dom: HTMLElement } }).view.dom;
+    dom.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    observer.manager.stopCapturing();
+  }
+
+  function endComposition(editor: RichTextEditor, observer: { manager: Y.UndoManager }): void {
+    const dom = (editor as unknown as { view: { dom: HTMLElement } }).view.dom;
+    dom.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+    observer.manager.stopCapturing();
+  }
+
+  function collapseToEnd(editor: RichTextEditor, needle: string, offset: number): void {
+    const view = (editor as unknown as { view: { state: { doc: unknown; tr: unknown }; dispatch(tr: unknown): void } }).view as {
+      state: { doc: { nodeSize: number }; tr: { setSelection(sel: unknown): unknown } };
+      dispatch(tr: unknown): void;
+    };
+    const pos = pmTextPos(editor, needle, offset);
+    view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc as never, pos)));
+  }
+
+  function insertMarkedAtEnd(editor: RichTextEditor, needle: string, offset: number, text: string): void {
+    const view = (editor as unknown as { view: { state: { tr: unknown; schema: unknown }; dispatch(tr: unknown): void } }).view as {
+      state: {
+        tr: { insertText(text: string, from: number): { addMark(from: number, to: number, mark: unknown): unknown } };
+        schema: { marks: { bold: { create(): unknown } } };
+      };
+      dispatch(tr: unknown): void;
+    };
+    const pos = pmTextPos(editor, needle, offset);
+    view.dispatch(
+      view.state.tr.insertText(text, pos).addMark(pos, pos + text.length, view.state.schema.marks.bold.create()),
+    );
+  }
+
+  it("a marked commit after a mixed gesture is its own undo step with no test-side break", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stop(editor);
+    // Preceding mixed gesture: typed characters plus bold, one transact.
+    mixedTypeBold(editor, "XYZ");
+    stop(editor);
+    await tick();
+    const mixedTxn = humanTxnOf(store, "bold").transactionId;
+    const undoBefore = observer.undoLength();
+    // No test-side capture break between the gesture and the commit: only
+    // the production breaks delimit the steps.
+    collapseToEnd(editor, "abcdefXYZ", 9);
+    beginComposition(editor, observer);
+    insertMarkedAtEnd(editor, "abcdefXYZ", 9, "Q");
+    endComposition(editor, observer);
+    await tick();
+    // The commit grew the observing stack by exactly one step.
+    expect(observer.undoLength()).toBe(undoBefore + 1);
+    expect(docText(editor)).toBe("abcdefXYZQ");
+    expect(yMarksAt(resolved.text, 9)).toBe(true);
+    const commitTxn = humanTxnOf(store, "bold", 1).transactionId;
+    expect(commitTxn).not.toBe(mixedTxn);
+    // One undo removes only the composition text and issues exactly one
+    // performer request naming the composition transaction; the preceding
+    // gesture's marks are byte-unchanged.
+    undo(editor);
+    expect(docText(editor)).toBe("abcdefXYZ");
+    expect(counter.seen).toHaveLength(1);
+    expect(counter.seen[0]).toMatchObject({ transactionId: commitTxn, direction: "undo" });
+    expect(yMarksAt(resolved.text, 6)).toBe(true);
+    await tick(10);
+    // A second undo addresses the preceding mixed gesture.
+    undo(editor);
+    expect(docText(editor)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(2);
+    expect(counter.seen[1]).toMatchObject({ transactionId: mixedTxn, direction: "undo" });
+    await tick(10);
+    expect(yMarksAt(resolved.text, 6)).toBe(null);
+  });
+});
+
+describe("CL-4f remote-delete and pending order (jsdom/in-memory)", () => {
+  // Deterministic-step discipline for both managers: the test's own
+  // `stop()` breaks the field manager only, so the aligned helper re-issues
+  // the same break on the independent observer afterwards. The observer is
+  // frozen across undo/redo presses (manager undo/redo transacts carry the
+  // manager instance as origin, untracked by design): its length proves the
+  // pre-press stack shape, consumption is read from text.
+  function stepBoth(editor: RichTextEditor, observer: { manager: Y.UndoManager }): void {
+    stop(editor);
+    observer.manager.stopCapturing();
+  }
+
+  function sharedOf(resolved: { text: Y.Text }): string {
+    return resolved.text.toString();
+  }
+
+  // Shared `Y.Text` index of a needle: the wire carries separator embeds
+  // `toString()` skips, so linear offsets never index the sequence.
+  function sharedIndexOf(ytext: Y.Text, needle: string): number {
+    const delta = ytext.toDelta() as Array<{ insert?: unknown }>;
+    let yIndex = 0;
+    let linear = "";
+    const spans: Array<{ start: number; text: string }> = [];
+    for (const op of delta) {
+      if (typeof op.insert === "string") {
+        spans.push({ start: yIndex, text: op.insert });
+        yIndex += op.insert.length;
+        linear += op.insert;
+      } else if (op.insert !== undefined) {
+        yIndex += 1;
+      }
+    }
+    const at = linear.indexOf(needle);
+    if (at < 0) throw new Error("witness: needle missing in shared text");
+    let acc = 0;
+    for (const span of spans) {
+      if (at >= acc && at < acc + span.text.length) return span.start + (at - acc);
+      acc += span.text.length;
+    }
+    throw new Error("witness: shared offset outside runs");
+  }
+
+  // Mixed gesture at the true paragraph end (the file's `mixedTypeBold`
+  // hardcodes the pristine `abcdef` end, which a preceding gesture moves).
+  function mixedTypeBoldAtEnd(editor: RichTextEditor): void {
+    const full = docText(editor);
+    const view = (editor as unknown as { view: { state: { tr: unknown; schema: unknown }; dispatch(tr: unknown): void } }).view as {
+      state: {
+        tr: { insertText(text: string, from: number): { addMark(from: number, to: number, mark: unknown): unknown } };
+        schema: { marks: { bold: { create(): unknown } } };
+      };
+      dispatch(tr: unknown): void;
+    };
+    const pos = pmTextPos(editor, full, full.length);
+    view.dispatch(
+      view.state.tr.insertText("XYZ", pos).addMark(pos, pos + 3, view.state.schema.marks.bold.create()),
+    );
+  }
+
+  // A remote peer edit: transact under a non-local origin, captured by
+  // neither the field manager nor the observer.
+  function remoteDelete(resolved: { text: Y.Text }, index: number, length: number): void {
+    const ydoc = resolved.text.doc;
+    if (ydoc === null) throw new Error("witness: detached text");
+    ydoc.transact(() => {
+      resolved.text.delete(index, length);
+    }, "actor:remote-peer");
+  }
+
+  it("(a) newest character gesture deleted remotely: one press consumes the empty gesture only", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    await tick();
+    expect(sharedOf(resolved)).toBe("abcdefAB");
+    // Setup shape guard: two separate stack items on both managers.
+    expect(observer.undoLength()).toBe(2);
+    // The remote peer deletes every character of the newest gesture B.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "B"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefA");
+    // One press consumes B's now-empty item and stops: A stays intact.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefA");
+    expect(docText(editor)).toBe("abcdefA");
+    expect(counter.seen).toHaveLength(0);
+    expect(observer.undoLength()).toBe(2);
+    // The next press addresses A.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+  });
+
+  it("(b) older character gesture deleted remotely: presses address B then the empty A", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    await tick();
+    expect(observer.undoLength()).toBe(2);
+    // The remote peer deletes every character of the older gesture A.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "A"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefB");
+    // Newest-first: B undoes, then the empty A item is consumed alone.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    // A's empty press leaves no redo item (the manager pushes none for an
+    // all-empty pop), so redo selects the only redoable gesture, B, and a
+    // further redo is inert: A stays consumed-void with no half to apply.
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefB");
+    expect(counter.seen).toHaveLength(0);
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefB");
+    expect(counter.seen).toHaveLength(0);
+  });
+
+  it("(c) mixed gesture with its characters deleted remotely: one press keeps the older gesture", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    mixedTypeBoldAtEnd(editor);
+    stepBoth(editor, observer);
+    await tick();
+    const mixedTxn = humanTxnOf(store, "bold").transactionId;
+    expect(sharedOf(resolved)).toBe("abcdefZXYZ");
+    expect(observer.undoLength()).toBe(2);
+    // The remote peer deletes every character of the mixed gesture.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "XYZ"), 3);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    // One press: at most one performer request naming the mixed
+    // transaction, and the older gesture's characters stay.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(docText(editor)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    expect(counter.seen[0]).toMatchObject({ transactionId: mixedTxn, direction: "undo" });
+    // The next press addresses the older character gesture alone.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+  });
+
+  it("(d1) pending out-of-order undo: redo follows reverse undo-completion order", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stepBoth(editor, observer);
+    await tick();
+    const markTxn = humanTxnOf(store, "bold").transactionId;
+    inner.holdOutcomes();
+    // The newer mark gesture goes pending; its echo applies, no outcome.
+    undo(editor);
+    await tick(3);
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+    // An older character half still undoes through the pending path.
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    // The pending outcome resolves last: undo completion order is the
+    // character gesture first, the mark gesture second.
+    inner.releaseOutcomes();
+    await tick(10);
+    expect(counter.seen).toHaveLength(1);
+    // Redo follows reverse undo-completion order: the mark gesture (last
+    // undone) redoes first, the character gesture second.
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(2);
+    expect(counter.seen[1]).toMatchObject({ transactionId: markTxn, direction: "redo" });
+    expect(yMarksAt(resolved.text, 2)).toBe(true);
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(2);
+    expect(yMarksAt(resolved.text, 2)).toBe(true);
+  });
+
+  it("(d2) pending excursion over a remotely deleted older gesture: same redo order", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stepBoth(editor, observer);
+    await tick();
+    const markTxn = humanTxnOf(store, "bold").transactionId;
+    inner.holdOutcomes();
+    undo(editor);
+    await tick(3);
+    expect(counter.seen).toHaveLength(1);
+    // The older gesture's characters are deleted remotely in full before
+    // the pending-path press reaches them.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "Z"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    // The press consumes only the older gesture's empty character half:
+    // no new performer request, no text motion.
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    inner.releaseOutcomes();
+    await tick(10);
+    expect(counter.seen).toHaveLength(1);
+    // Same redo order as (d1): the mark gesture first. The character half
+    // has no redo item (its press consumed the item without effect), so
+    // the second redo is void-inert: text unchanged, no new request.
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(2);
+    expect(counter.seen[1]).toMatchObject({ transactionId: markTxn, direction: "redo" });
+    expect(yMarksAt(resolved.text, 2)).toBe(true);
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(2);
+  });
+
+  it("(e) redo-side empty item: a vacuous remote transact leaves redo effective", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    await tick();
+    expect(observer.undoLength()).toBe(1);
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    // The redone text is absent; a remote peer transacts vacuously around
+    // the gap (insert plus delete under a non-local origin). No conforming
+    // construction empties the redo item: the reinsert always lands.
+    const ydoc = resolved.text.doc;
+    if (ydoc === null) throw new Error("witness: detached text");
+    const at = resolved.text.length;
+    ydoc.transact(() => {
+      resolved.text.insert(at, "R");
+    }, "actor:remote-peer");
+    ydoc.transact(() => {
+      resolved.text.delete(at, 1);
+    }, "actor:remote-peer");
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(0);
   });
 });
