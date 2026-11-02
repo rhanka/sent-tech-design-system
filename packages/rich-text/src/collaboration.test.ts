@@ -49,6 +49,8 @@ import type {
   FormattingIntent,
   InlineMarkKey,
   LockSnapshot,
+  MarkProvenanceConflict,
+  PlanMarkRevertInput,
   PresenceSnapshot,
   RelativeAnchor,
 } from "./collaboration.js";
@@ -1639,5 +1641,82 @@ describe("latestEffectiveIntent and planMarkRevert (CL-4c Task 5, R-REV-4)", () 
       "bold",
     );
     expect(dup.ok).toBe(false);
+  });
+});
+
+describe("mark-undo keyless human conflict (CL-4e Task 2, R-REV-5 key? amendment)", () => {
+  const AGENT_KEY: AgentPatchKey = {
+    documentId: "canvas:doc-1",
+    actorId: "actor:agent-1",
+    sessionEpoch: "epoch:1",
+    patchId: "patch:1",
+  };
+  function hint(
+    seq: number,
+    intentId: string,
+    actorId: string,
+    mark: InlineMarkKey,
+    value: true | string | null,
+    items: Array<{ client: number; clock: number }>,
+  ): FormattingIntent {
+    return {
+      seq,
+      intentId,
+      actorId,
+      source: { kind: "human-transaction", transactionId: `txn:${seq}` },
+      fieldKey: "description",
+      mark,
+      value,
+      range: { start: "anchor:a" as RelativeAnchor, end: "anchor:b" as RelativeAnchor },
+      items,
+    };
+  }
+  it("keyless human invocation returns a conflict with key absent and every other R-REV-5 fact present", () => {
+    const patchIntent = hint(1, "intent:patch", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const input: PlanMarkRevertInput = {
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:unknown"],
+      liveItems: [{ client: 1, clock: 0 }],
+    };
+    const result = planMarkRevert([patchIntent], input);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.conflict.kind).toBe("mark-provenance-conflict");
+      expect(result.conflict.fieldKey).toBe("description");
+      expect(result.conflict.mark).toBe("bold");
+      expect(result.conflict.items).toEqual([]);
+      expect(typeof result.conflict.detail).toBe("string");
+      expect(result.conflict.detail.length).toBeGreaterThan(0);
+      expect((result.conflict as MarkProvenanceConflict).key).toBeUndefined();
+      expect(Object.prototype.hasOwnProperty.call(result.conflict, "key")).toBe(false);
+    }
+  });
+  it("same undeterminable shape with a real agent key returns identical facts with that key present", () => {
+    const patchIntent = hint(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const keylessInput: PlanMarkRevertInput = {
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:unknown"],
+      liveItems: [{ client: 1, clock: 0 }],
+    };
+    const keyedInput: PlanMarkRevertInput = {
+      key: AGENT_KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:unknown"],
+      liveItems: [{ client: 1, clock: 0 }],
+    };
+    const keyless = planMarkRevert([patchIntent], keylessInput);
+    const keyed = planMarkRevert([patchIntent], keyedInput);
+    expect(keyless.ok).toBe(false);
+    expect(keyed.ok).toBe(false);
+    if (!keyless.ok && !keyed.ok) {
+      expect(keyed.conflict.key).toEqual(AGENT_KEY);
+      expect(keyless.conflict.kind).toBe(keyed.conflict.kind);
+      expect(keyless.conflict.fieldKey).toBe(keyed.conflict.fieldKey);
+      expect(keyless.conflict.mark).toBe(keyed.conflict.mark);
+      expect(keyless.conflict.items).toEqual(keyed.conflict.items);
+    }
   });
 });
