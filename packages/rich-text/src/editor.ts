@@ -1759,17 +1759,26 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
   /** Gesture needing redo whose undo completed last (CL-4f: reverse
       undo-completion order), excluding the in-flight pending gesture.
       Completion ties keep ledger order, which preserves the previous
-      earliest-first scan for sequentially completed undos. */
+      earliest-first scan for sequentially completed undos. Character halves
+      sit on the manager redo stack in earliest-first ledger order, so a
+      character-redoable gesture behind an earlier character-redoable one
+      can never own the stack top and is never selected (CL-4f fix 1). */
   const findRedoGesture = (
     history: LocalMarkHistory,
     pendingTxn: string | null,
   ): LocalGesture | null => {
     let best: LocalGesture | null = null;
+    let seenCharRedo = false;
     for (const gesture of history.gestures) {
-      if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
-      if (!gestureCharNeeds(gesture, "redo") && !gestureMarkNeeds(history, gesture, "redo")) {
+      const charNeeds = gestureCharNeeds(gesture, "redo");
+      if (pendingTxn !== null && gesture.transactionId === pendingTxn) {
+        if (charNeeds) seenCharRedo = true;
         continue;
       }
+      const markNeeds = gestureMarkNeeds(history, gesture, "redo");
+      if (!charNeeds && !markNeeds) continue;
+      if (charNeeds && seenCharRedo) continue;
+      if (charNeeds) seenCharRedo = true;
       if (best === null || gesture.undoCompletedSeq > best.undoCompletedSeq) {
         best = gesture;
       }
@@ -1788,7 +1797,13 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     const pendingTxn = history.pending?.stepTransactionId ?? null;
     if (direction === "redo") {
       for (const gesture of history.gestures) {
-        if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
+        if (pendingTxn !== null && gesture.transactionId === pendingTxn) {
+          // The pending gesture owns the stack top when its character half
+          // still needs redo: nothing behind it may run instead (CL-4f
+          // fix 1).
+          if (gestureCharNeeds(gesture, "redo")) return null;
+          continue;
+        }
         if (gestureCharNeeds(gesture, "redo")) return gesture;
       }
       return null;
@@ -1826,62 +1841,91 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       return;
     }
     /** One character half through the field manager with pop-through
-        reconciliation (CL-4f): a Yjs `undo()` call pops through empty
-        stack items inside the call, so the consumed count — measured
+        reconciliation (CL-4f, fix 1): a Yjs `undo()` call pops through
+        empty stack items inside the call, so the consumed count — measured
         through the shipped `undoStackLength()` seam — can exceed the
         selected gesture's item. The ledger is reconciled with the items
         actually consumed: the selected gesture's own item is always
-        consumed (void when it applied nothing); older items popped
-        beside it are marked void except the one effective item, which a
-        single counter-press restores so the press leaves exactly the
-        selected gesture consumed. Redo needs no repair: a redo call
-        applies at most one inverse, and empty redo items are skipped by
-        the call itself (sub-case (e) stays unreachable). */
+        consumed (void when it applied nothing); older items popped beside
+        it are marked void-pending (`charRedoVoid` with `charUndone` still
+        false: their empty item is already gone, but their own press is
+        still owed) except the one effective item, which a single
+        counter-press restores. A press whose only visible effect comes
+        from the gesture below emits nothing; a press with no visible
+        effect at all emits nothing either. Redo needs no repair: a redo
+        call applies at most one inverse, and empty redo items are skipped
+        by the call itself (sub-case (e) stays unreachable). */
     const runCharHalf = (gesture: LocalGesture): void => {
+      if (direction === "undo" && gesture.charRedoVoid) {
+        // Void-pending: an earlier press's pop-through already popped this
+        // gesture's empty item. This press is the gesture's own: consume it
+        // silently without touching the manager.
+        gesture.charUndone = true;
+        return;
+      }
       const before = displayedCaptureResult();
       const stackBefore = manager.undoStackLength();
       const applied = direction === "undo" ? manager.undo() : manager.redo();
       if (applied === null || applied === undefined) {
         // All-empty press: the selected gesture's item popped without
-        // effect and nothing else could perform below it. The item is
-        // gone, so the gesture is marked consumed-void: a later press
-        // must neither re-target it nor select it for a character redo
-        // it can never apply. Nothing visible changed, so nothing emits.
-        gesture.charUndone = direction === "undo";
+        // effect and nothing else could perform below it. The popped items
+        // are all empties, so the selected gesture is consumed-void and
+        // every older character-bearing gesture popped beside it turns
+        // void-pending: a later press must neither re-target a consumed
+        // gesture nor select a void one for a character redo it can never
+        // apply. Nothing visible changed, so nothing emits.
+        if (direction === "undo") {
+          const consumed = stackBefore - manager.undoStackLength();
+          const at = history.gestures.indexOf(gesture);
+          let voids = consumed - 1;
+          for (let index = at - 1; index >= 0 && voids > 0; index -= 1) {
+            const older = history.gestures[index] as LocalGesture;
+            if (older.kind !== "char" && older.kind !== "mixed") continue;
+            if (older.charUndone || older.charRedoVoid) continue;
+            older.charRedoVoid = true;
+            voids -= 1;
+          }
+          gesture.charUndone = true;
+        } else {
+          gesture.charUndone = false;
+        }
         gesture.charRedoVoid = true;
         return;
       }
       if (direction === "undo") {
-        history.undoCompletionCounter += 1;
-        gesture.undoCompletedSeq = history.undoCompletionCounter;
         const consumed = stackBefore - manager.undoStackLength();
         if (consumed > 1) {
-          // Pop-through consumed older items beside the selected
-          // gesture's own item, which this count proves empty (an
-          // effective own item would have stopped the pop at one). The
-          // redo stack holds exactly the performed inverse, so one
-          // counter-press restores the over-consumed effective item;
-          // the empties between stay consumed-void. The walk below
-          // assumes the popped items belong to the nearest older
-          // character-bearing gestures in ledger order — the same LIFO
-          // correspondence the recording linkage relies on; truncation
-          // drift past that correspondence is not covered.
+          // Pop-through consumed older items beside the selected gesture's
+          // own item, which this count proves empty (an effective own item
+          // would have stopped the pop at one). The redo stack holds
+          // exactly the performed inverse, so one counter-press restores
+          // the over-consumed effective item; the empties between stay
+          // void-pending for their own later presses. The press itself is
+          // net-inert — the selected character half is void — so nothing
+          // emits and no completion stamp is taken (a void half can never
+          // be redone). The walk below assumes the popped items belong to
+          // the nearest older character-bearing gestures in ledger order —
+          // the same LIFO correspondence the recording linkage relies on.
+          // Truncation drift past that correspondence is not covered: a
+          // pop-through after redo truncation while a mark outcome is
+          // pending has no witness and stays out of scope.
           manager.redo();
           const at = history.gestures.indexOf(gesture);
           let voids = consumed - 2;
           for (let index = at - 1; index >= 0 && voids > 0; index -= 1) {
             const older = history.gestures[index] as LocalGesture;
             if (older.kind !== "char" && older.kind !== "mixed") continue;
-            if (older.charUndone) continue;
-            older.charUndone = true;
+            if (older.charUndone || older.charRedoVoid) continue;
             older.charRedoVoid = true;
             voids -= 1;
           }
           gesture.charUndone = true;
           gesture.charRedoVoid = true;
-        } else {
-          gesture.charUndone = true;
+          return;
         }
+        history.undoCompletionCounter += 1;
+        gesture.undoCompletedSeq = history.undoCompletionCounter;
+        gesture.charUndone = true;
         const after = displayedCaptureResult();
         emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
         return;
@@ -1896,7 +1940,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     if (history.pending !== null) {
       const older = findPendingCharGesture(history, direction);
       if (older === null) return;
-      if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
+      // A void-pending gesture owns no stack item anymore: its own press
+      // consumes it silently without the manager (CL-4f fix 1).
+      if (direction === "undo" ? (!manager.canUndo() && !older.charRedoVoid) : !manager.canRedo()) {
+        return;
+      }
       // The finder already selected a character half needing the pressed
       // direction; run it exactly once for that direction.
       runCharHalf(older);
@@ -1907,8 +1955,15 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       direction === "undo" ? findUndoGesture(history, pendingTxn) : findRedoGesture(history, pendingTxn);
     if (target === null) return;
     if (gestureCharNeeds(target, direction)) {
-      if (direction === "undo" ? manager.canUndo() : manager.canRedo()) {
+      // A void-pending gesture owns no stack item anymore: its own press
+      // still runs (silently). A non-void gesture with an empty stack has
+      // lost its item outside the ledger and is consumed-void rather than
+      // left to deadlock later presses (CL-4f fix 1).
+      if (direction === "undo" ? (manager.canUndo() || target.charRedoVoid) : manager.canRedo()) {
         runCharHalf(target);
+      } else if (direction === "undo") {
+        target.charUndone = true;
+        target.charRedoVoid = true;
       }
     }
     if (!gestureMarkNeeds(history, target, direction)) return;
@@ -1978,14 +2033,18 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
             resolved.transitionId = outcome.transitionId;
             resolved.undone = current.direction === "undo";
             if (current.direction === "undo") {
-              // The gesture's mark half completes here (its character
-              // half, if any, already stamped at press time): re-stamp
-              // with the later completion for reverse-order redo.
-              history.undoCompletionCounter += 1;
+              // The gesture's mark half completes here. Re-stamp only when
+              // the gesture owns no live character half on the redo stack:
+              // a mixed gesture's character position is fixed at character
+              // undo time (the stack is strict LIFO), so re-stamping it
+              // would desynchronize redo selection from the stack top
+              // (CL-4f fix 1). Mark-only and void-character gestures keep
+              // the later completion for reverse-order redo.
               const undoneGesture = history.gestures.find(
                 (entry) => entry.transactionId === current.stepTransactionId,
               );
-              if (undoneGesture !== undefined) {
+              if (undoneGesture !== undefined && !gestureCharNeeds(undoneGesture, "redo")) {
+                history.undoCompletionCounter += 1;
                 undoneGesture.undoCompletedSeq = history.undoCompletionCounter;
               }
             }
