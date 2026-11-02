@@ -12,11 +12,14 @@ import { describe, expect, it, afterEach } from "vitest";
 import * as Y from "yjs";
 import { createBoundRichTextEditor } from "./editor-bound.js";
 import {
+  createBoundUndoManager,
   createInMemoryTestDoubleProvider,
+  type BoundUndoManager,
   type LiveSessionBindingSource,
   type SessionProvenanceSink,
   type FormattingIntentDraft,
 } from "./editor-collaboration.js";
+import { linearBlocksOf } from "./collab-projection.js";
 import {
   captureDocumentFromField,
   fieldMetaName,
@@ -868,5 +871,87 @@ describe("CL-4d1 Task 8 MarkType removal (jsdom, in-memory source)", () => {
     expect(draft.value).toBe(null);
     // Full user-addressed coverage: 9 items, not the 5 of the changed subset.
     expect(draft.items).toHaveLength(9);
+  });
+});
+
+describe("CL-4f composition commit capture break (driver level, capture-window isolation)", () => {
+  const ORIGIN = "origin:cl4f-driver";
+  const ACTOR = "actor:human-cl4f";
+
+  /** Seed "ab", land one tracked preceding gesture, open a session at the
+      new end. Returns the driver with a real tracked field manager. */
+  async function setupDriverField(markedPreceding: boolean): Promise<{
+    ydoc: Y.Doc;
+    ytext: Y.Text;
+    meta: Y.Map<unknown>;
+    manager: BoundUndoManager;
+    commitMarked: (stagedTail: string) => { applied: boolean };
+  }> {
+    const { BoundCompositionDriver } = await import("./collab-composition.js");
+    const ydoc = new Y.Doc();
+    const ytext = ydoc.getText("field:body");
+    const meta = ydoc.getMap("fieldmeta:body");
+    seedFieldFromDocument(ytext, meta, FIELD_A, p0Doc([{ paragraphId: "paragraph:1", text: "ab" }]));
+    const manager = createBoundUndoManager({ text: ytext, fieldMeta: meta, trackedOrigin: ORIGIN });
+    const sink: SessionProvenanceSink = { recordFormattingIntent: () => {} };
+    const driver = new BoundCompositionDriver(ytext, FIELD_A, ORIGIN, manager, sink as never, ACTOR);
+    // A preceding tracked gesture as its own transact under the local
+    // origin, with no test-side capture break after it: the production
+    // path under witness never breaks between the gesture and the commit
+    // transact itself.
+    const at = linearBlocksOf(ytext).find((block) => block.paragraphId === "paragraph:1")?.contentEnd ?? ytext.length;
+    ydoc.transact(() => {
+      if (markedPreceding) ytext.insert(at, "Q", { bold: true });
+      else ytext.insert(at, "Q");
+    }, ORIGIN);
+    const end = linearBlocksOf(ytext).find((block) => block.paragraphId === "paragraph:1")?.contentEnd ?? ytext.length;
+    driver.openSession({ bindingKey: "test-cl4f", caretLinear: end, headLinear: end });
+    const commitMarked = (stagedTail: string): { applied: boolean } => {
+      const shared = textOf(ytext, meta, "paragraph:1") ?? "";
+      const result = driver.commitSession({
+        stagedRuns: new Map([["paragraph:1", [{ type: "text", text: `${shared}${stagedTail}`, attributes: { bold: true } }]]]),
+      });
+      return { applied: result.applied };
+    };
+    return { ydoc, ytext, meta, manager, commitMarked };
+  }
+
+  it("a marked commit after a plain insert is its own undo step", async () => {
+    const { ytext, meta, manager, commitMarked } = await setupDriverField(false);
+    try {
+      // Setup guard: the preceding insert recorded exactly one step.
+      expect(manager.undoStackLength()).toBe(1);
+      const { applied } = commitMarked("X");
+      expect(applied).toBe(true);
+      // The commit transact is its own stack item, never merged into the
+      // preceding gesture through the capture window.
+      expect(manager.undoStackLength()).toBe(2);
+      // One manager undo removes only the composition text; the preceding
+      // gesture stays intact.
+      manager.undo();
+      expect(textOf(ytext, meta, "paragraph:1")).toBe("abQ");
+    } finally {
+      manager.destroy();
+    }
+  });
+
+  it("a marked commit after a mark-carrying insert is its own undo step", async () => {
+    const { ytext, meta, manager, commitMarked } = await setupDriverField(true);
+    try {
+      // Setup guard: the mark-carrying preceding insert recorded exactly
+      // one step.
+      expect(manager.undoStackLength()).toBe(1);
+      const { applied } = commitMarked("X");
+      expect(applied).toBe(true);
+      // The commit transact is its own stack item, never merged into the
+      // preceding mark-carrying gesture through the capture window.
+      expect(manager.undoStackLength()).toBe(2);
+      // One manager undo removes only the composition text; the preceding
+      // gesture stays intact (p0 serializes its bold Q as `**Q**`).
+      manager.undo();
+      expect(textOf(ytext, meta, "paragraph:1")).toBe("ab**Q**");
+    } finally {
+      manager.destroy();
+    }
   });
 });
