@@ -11,7 +11,12 @@
 
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
-import type { FieldBindingIdentity, FormattingIntent } from "./collaboration.js";
+import type {
+  FieldBindingIdentity,
+  FormattingIntent,
+  InlineMarkKey,
+  MarkProvenanceConflict,
+} from "./collaboration.js";
 import type {
   LiveSessionAdmissionRequest,
   LiveSessionOpenRefusal,
@@ -64,6 +69,140 @@ export interface LiveSessionBindingSource {
    * Absent means human intents are computed and dropped; the binding never buffers them in shipped code.
    */
   readonly provenanceSink?: SessionProvenanceSink;
+  /**
+   * Optional host-performed mark undo (§5.6 R-REV-4 last sentence).
+   * Supplied per (document, session) like the sink, before bound-editor
+   * construction; captured once. Absent means the editor has no
+   * mark-undo path: the mark half of undo/redo is a silent no-op and
+   * character undo is unaffected.
+   */
+  readonly provenanceUndo?: SessionMarkUndoPerformer;
+}
+
+/** One mark group of an original human history transaction: the mark key
+    and the intent ids the binding minted for that (transaction, mark).
+    The editor sends every group recorded for the transaction; the host
+    verifies exact correspondence to its recorded transaction and never
+    accepts a client-chosen subset as the step. */
+export interface SessionMarkUndoMarkGroup {
+  readonly mark: InlineMarkKey;
+  readonly intentIds: readonly string[];
+}
+
+/** Terminal or not-dispatched outcome of one mark undo/redo invocation.
+    A dispatched invocation whose outcome is unknown has no outcome yet:
+    its promise stays pending (see SessionMarkUndoPerformer). HTTP codes,
+    watermarks and payload hashes are host-private and never appear here. */
+export type SessionMarkUndoOutcome =
+  | {
+      status: "applied";
+      requestId: string;
+      /** True when this resolution replays a durable outcome already
+          recorded for requestId; the editor advances history once. */
+      duplicate: boolean;
+      /** Durable transition this step now occupies. */
+      transitionId: string;
+      /** False for a fully kept-later or already-satisfied step: the
+          transition is recorded, no format intent was appended. */
+      changed: boolean;
+      detail: string;
+    }
+  | {
+      status: "refused";
+      requestId: string;
+      duplicate: boolean;
+      /** Current durable transition of the step, unchanged by the refusal
+          (null when the step never transitioned). The editor adopts it as
+          its expectedTransitionId without advancing the step. */
+      transitionId: string | null;
+      reason:
+        | "mark-provenance-conflict"
+        | "target-gone"
+        | "scope-denied"
+        | "step-out-of-date"
+        | "idempotency-key-reuse";
+      detail: string;
+      /** Present iff reason is "mark-provenance-conflict". After the
+          §3.1 ratification, key is absent for a human-transaction target
+          and present with its real full key for an agent-patch target. */
+      conflict?: MarkProvenanceConflict;
+    }
+  | {
+      status: "unavailable";
+      /** The invocation that was not dispatched. Its requestId and
+          commandTransactionId are discarded; the next deliberate press
+          mints fresh ones. No request was sent and none is queued. */
+      requestId: string;
+      detail: string;
+    };
+
+export interface SessionMarkUndoPerformer {
+  /**
+   * Ask the host to undo or redo one local mark step server-side.
+   * The closure routes by its captured (tenant, document, session); the
+   * caller is resolved server-side from authenticated admission. The
+   * input carries no binding, actor, seq, value, item coverage or update.
+   *
+   * Identities: transactionId and marks name the original human history
+   * step on every invocation of that step. requestId and
+   * commandTransactionId are minted by the binding per intentional
+   * invocation, collision-free and never reused; a retry of the same
+   * invocation retains both and the identical payload, a new invocation
+   * (including a deliberate retry after a terminal refusal) mints fresh
+   * ones. expectedTransitionId is the transition the editor last
+   * observed for this step (null before its first transition).
+   *
+   * The promise resolves only with a terminal outcome or with
+   * "unavailable" (known offline before dispatch; nothing sent, nothing
+   * queued). It stays pending while the original transaction's committed
+   * disposition is unknown and while a dispatched invocation's outcome
+   * is unknown; recovery resolves it from the durable outcome under the
+   * same requestId. Implementations do not throw for valid use and never
+   * report a transport failure as "scope-denied".
+   */
+  requestMarkUndo(input: {
+    fieldKey: string;
+    transactionId: string;
+    requestId: string;
+    commandTransactionId: string;
+    expectedTransitionId: string | null;
+    direction: "undo" | "redo";
+    marks: readonly SessionMarkUndoMarkGroup[];
+  }): Promise<SessionMarkUndoOutcome>;
+}
+
+/**
+ * One local mark step (CL-4e §3.3): one mark-bearing human transaction in
+ * transaction order, with its complete mark groups and its last observed
+ * durable transition. Lives in the erased wiring beside the performer;
+ * built from the transaction ids and intent ids the binding already mints
+ * when it records through the sink. No sink change and no new recording
+ * path.
+ */
+export interface BoundMarkUndoStep {
+  readonly transactionId: string;
+  readonly fieldKey: string;
+  readonly marks: SessionMarkUndoMarkGroup[];
+  transitionId: string | null;
+  undone: boolean;
+}
+
+/** Per-field mark-step history plus at most one pending invocation. */
+export interface BoundMarkUndoState {
+  readonly steps: BoundMarkUndoStep[];
+  pending:
+    | {
+        readonly requestId: string;
+        readonly commandTransactionId: string;
+        readonly expectedTransitionId: string | null;
+        readonly stepTransactionId: string;
+        readonly direction: "undo" | "redo";
+        readonly fieldKey: string;
+      }
+    | null;
+  requestCounter: number;
+  readonly sessionId: string;
+  readonly fieldKey: string;
 }
 
 /**
