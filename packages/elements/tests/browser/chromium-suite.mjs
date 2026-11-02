@@ -1176,33 +1176,58 @@ async function shadowSvg(page, elementSelector) {
     }
   });
 
-  // F-R1: the card is the single control — on three fixtures the
-  // interactive element's box equals the card's box, and a padding click
-  // (corner, outside the label) emits choose-option with the option id.
+  // F-R7: nothing preselected anywhere (reco included) and no emission
+  // before any click. Runs before any click on the page so the later
+  // selection moves cannot pollute it (state isolation).
+  const preselected = await page.evaluate(() => {
+    const out = [];
+    for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
+      out.push(document.getElementById(id).shadowRoot.querySelectorAll('[data-st-selected="true"]').length);
+    }
+    return { counts: out, intents: window.__stL6.length };
+  });
+  assert(preselected.counts.every((count) => count === 0), `${label}: F-R7 nothing preselected`, JSON.stringify(preselected.counts));
+  assert(preselected.intents === 0, `${label}: F-R7 zero initial intents`, JSON.stringify(preselected.intents));
+
+  // F-R1: the select and the fold are siblings inside the card group — on
+  // three short fixtures every card box equals its select box within 1 px,
+  // and a padding click (corner, outside the label) emits choose-option.
   const boxes = await page.evaluate(() => {
     const out = {};
-    for (const [id, optionId] of [["l6-short2", "opt-a"], ["l6-short4", "opt-1"], ["l6-reco", "opt-r1"]]) {
+    for (const id of ["l6-short2", "l6-short4", "l6-reco"]) {
       const root = document.getElementById(id).shadowRoot;
-      const byCard = root.querySelector(`[data-option-card="${optionId}"]`);
-      const byOption = root.querySelector(`[data-option-id="${optionId}"]`);
-      const rect = byCard.getBoundingClientRect();
-      out[id] = {
-        sameNode: byCard === byOption,
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height,
-      };
+      const cards = Array.from(root.querySelectorAll("[data-option-card]"));
+      out[id] = cards.map((card) => {
+        const select = card.querySelector("[data-option-id]");
+        const cardRect = card.getBoundingClientRect();
+        const selectRect = select.getBoundingClientRect();
+        return {
+          cardId: card.getAttribute("data-option-card"),
+          dx: Math.abs(cardRect.x - selectRect.x),
+          dy: Math.abs(cardRect.y - selectRect.y),
+          dw: Math.abs(cardRect.width - selectRect.width),
+          dh: Math.abs(cardRect.height - selectRect.height),
+          width: cardRect.width,
+          height: cardRect.height,
+        };
+      });
     }
     return out;
   });
-  for (const [id, box] of Object.entries(boxes)) {
-    assert(box.sameNode, `${label}: F-R1 ${id}`, "interactive element and card are not the same node");
-    assert(box.width > 0 && box.height > 0, `${label}: F-R1 ${id}`, "card has a zero box — layout did not apply");
+  for (const [id, rows] of Object.entries(boxes)) {
+    assert(rows.length > 0, `${label}: F-R1 ${id} cards`, "no option cards found");
+    for (const row of rows) {
+      assert(row.width > 0 && row.height > 0, `${label}: F-R1 ${id} ${row.cardId}`, "card has a zero box — layout did not apply");
+      assert(
+        row.dx <= 1 && row.dy <= 1 && row.dw <= 1 && row.dh <= 1,
+        `${label}: F-R1 ${id} ${row.cardId} box delta`,
+        `card vs select delta x=${row.dx} y=${row.dy} w=${row.dw} h=${row.dh} exceeds 1 px`,
+      );
+    }
   }
   const padClick = await page.evaluate(() => {
     const root = document.getElementById("l6-short2").shadowRoot;
-    const card = root.querySelector('[data-option-id="opt-a"]');
+    const card = root.querySelector('[data-option-card="opt-a"]');
     const rect = card.getBoundingClientRect();
     return { x: rect.x + rect.width - 4, y: rect.y + rect.height - 4 };
   });
@@ -1214,10 +1239,16 @@ async function shadowSvg(page, elementSelector) {
     `${label}: F-R1 padding click`,
     `expected one choose-option for "opt-a", saw ${JSON.stringify(padIntents)}`,
   );
-  ok(`${label}: F-R1 whole card clickable — box equals card box on three fixtures, padding click emits`);
+  await page.evaluate(() => {
+    const root = document.getElementById("l6-short2").shadowRoot;
+    root.querySelector('[data-option-id="opt-a"]').click();
+    window.__stL6.length = 0;
+  });
+  await sleep(200);
+  ok(`${label}: F-R1 whole card clickable — card vs select within 1 px on every short card, padding click emits`);
 
   // F-R2 / criterion 8: no computed border-width above 1 px anywhere in the
-  // dossier subtrees (cards, fold controls, badges, chips, diagram frame).
+  // dossier subtrees (selects, fold controls, badges, chips, diagram frame).
   const strokes = await page.evaluate(() => {
     const over = [];
     for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
@@ -1236,17 +1267,71 @@ async function shadowSvg(page, elementSelector) {
   record("dossier-l6 computed border scan", "no border-width above 1 px over six dossier mounts");
   ok(`${label}: F-R2 1 px strokes — computed scan clean over six mounts`);
 
-  // F-R3 + F-R7: nothing preselected anywhere (reco included), no emission
-  // before any click; selecting marks the card with a light state and equal
-  // boxes; reselecting clears; keyboard Enter selects.
-  const preselected = await page.evaluate(() => {
-    const out = [];
-    for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
-      out.push(document.getElementById(id).shadowRoot.querySelectorAll('[data-st-selected="true"]').length);
+  // Criterion 3 computed half: every colour-bearing computed style on card,
+  // badge, fold and selection resolves through an adopted --st-* token. The
+  // probe lives inside [data-st-theme] so oklch/color-mix/hex normalize to
+  // the browser computed form before comparison.
+  const colours = await page.evaluate(() => {
+    const ids = ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"];
+    const tokenNames = new Set();
+    for (const id of ids) {
+      const root = document.getElementById(id).shadowRoot;
+      for (const sheet of root.adoptedStyleSheets) {
+        let rules = [];
+        try {
+          rules = Array.from(sheet.cssRules);
+        } catch {
+          continue;
+        }
+        for (const rule of rules) {
+          const text = rule.cssText || "";
+          if (!text.includes("st-dossier")) continue;
+          for (const match of text.matchAll(/--st-[a-z0-9-]+/gi)) tokenNames.add(match[0].toLowerCase());
+        }
+      }
     }
-    return out;
+    const themed = document.getElementById("l6-short2").shadowRoot.querySelector("[data-st-theme]") || document.getElementById("l6-short2").shadowRoot;
+    const probe = document.createElement("div");
+    themed.append(probe);
+    const tokenValues = new Set();
+    for (const token of tokenNames) {
+      probe.style.color = `var(${token})`;
+      const resolved = getComputedStyle(probe).color;
+      if (resolved && resolved !== "") tokenValues.add(resolved.trim());
+      probe.style.color = "";
+      probe.style.backgroundColor = `var(${token})`;
+      const resolvedBg = getComputedStyle(probe).backgroundColor;
+      if (resolvedBg && resolvedBg !== "") tokenValues.add(resolvedBg.trim());
+      probe.style.backgroundColor = "";
+      probe.style.borderTopColor = `var(${token})`;
+      const resolvedBorder = getComputedStyle(probe).borderTopColor;
+      if (resolvedBorder && resolvedBorder !== "") tokenValues.add(resolvedBorder.trim());
+      probe.style.borderTopColor = "";
+    }
+    probe.remove();
+    const unresolved = [];
+    for (const id of ids) {
+      const root = document.getElementById(id).shadowRoot;
+      for (const node of root.querySelectorAll(".st-dossier__optionCard, .st-dossier__optionSelect, .st-dossier__badge, .st-dossier__optionFold, .st-dossier__optionBody")) {
+        const style = getComputedStyle(node);
+        for (const prop of ["color", "backgroundColor", "borderTopColor"]) {
+          const value = style[prop];
+          if (!value || value === "" || value === "rgba(0, 0, 0, 0)" || value === "transparent") continue;
+          if (!tokenValues.has(value.trim())) unresolved.push(`${id} ${node.className} ${prop}=${value}`);
+        }
+      }
+    }
+    return { tokenCount: tokenValues.size, unresolved: unresolved.slice(0, 10), unresolvedCount: unresolved.length };
   });
-  assert(preselected.every((count) => count === 0), `${label}: F-R7 nothing preselected`, JSON.stringify(preselected));
+  assert(colours.tokenCount > 0, `${label}: criterion 3 token set resolved`, JSON.stringify(colours.tokenCount));
+  assert(colours.unresolvedCount === 0, `${label}: criterion 3 computed colours resolve via --st-*`, colours.unresolved.join(" | "));
+  record("dossier-l6 computed colour scan", `${colours.tokenCount} token value(s) resolved, ${colours.unresolvedCount} unresolved`);
+  ok(`${label}: criterion 3 computed colours — card, badge, fold and selection resolve via --st-* tokens`);
+
+  // F-R3: selecting marks the select with a light state and equal boxes;
+  // reselecting clears; keyboard Enter selects. Each move starts from a
+  // clean mount so a later click never toggles off an already-selected
+  // option (state isolation).
   const lightSelect = await page.evaluate(() => {
     const root = document.getElementById("l6-short4").shadowRoot;
     const card = root.querySelector('[data-option-id="opt-2"]');
@@ -1291,7 +1376,12 @@ async function shadowSvg(page, elementSelector) {
     `${label}: keyboard Enter selects`,
     JSON.stringify(keyboardIntent),
   );
-  ok(`${label}: F-R3/F-R7 light selection, no shift, nothing preselected, keyboard selects`);
+  await page.keyboard.press("Enter");
+  await sleep(200);
+  await page.evaluate(() => {
+    window.__stL6.length = 0;
+  });
+  ok(`${label}: F-R3/F-R7 light selection, no shift, keyboard selects then clears for isolation`);
 
   // F-R4: long arguments render collapsed with an expand control; expanding
   // reveals the full text with no intent; the near-fold island renders fully.
@@ -1311,11 +1401,12 @@ async function shadowSvg(page, elementSelector) {
     const firstControl = root.querySelector('[data-option-fold="opt-long-1"]');
     firstControl.click();
     const afterExpand = {
-      hidden: root.querySelector('[data-option-id="opt-long-1"] .st-dossier__optionBody').hasAttribute("hidden"),
+      hidden: root.querySelector('[data-option-card="opt-long-1"] .st-dossier__optionBody').hasAttribute("hidden"),
       expanded: firstControl.getAttribute("aria-expanded"),
       intents: window.__stL6.length - before,
-      bodyChars: root.querySelector('[data-option-id="opt-long-1"] .st-dossier__optionBody').textContent.length,
+      bodyChars: root.querySelector('[data-option-card="opt-long-1"] .st-dossier__optionBody').textContent.length,
     };
+    firstControl.click();
     return { states, afterExpand };
   });
   assert(fold.states.length === 4, `${label}: F-R4 four long cards`, `saw ${fold.states.length}`);
@@ -1329,7 +1420,7 @@ async function shadowSvg(page, elementSelector) {
   assert(fold.afterExpand.bodyChars > 300, `${label}: F-R4 full argument over threshold`, `${fold.afterExpand.bodyChars} chars`);
   const nearFold = await page.evaluate(() => {
     const root = document.getElementById("l6-nearfold").shadowRoot;
-    const card = root.querySelector('[data-option-id="opt-a"]');
+    const card = root.querySelector('[data-option-card="opt-a"]');
     return {
       foldControls: card.querySelectorAll("[data-option-fold]").length,
       hidden: card.querySelector(".st-dossier__optionBody").hasAttribute("hidden"),
@@ -1367,35 +1458,78 @@ async function shadowSvg(page, elementSelector) {
   );
   ok(`${label}: F-R5 renderer-chosen layout — list/grid table holds with computed columns`);
 
-  // F-R6: no per-option control besides the card (fold controls only on
-  // long cards); at most one annotation control per decision. F-R7: one
-  // discreet badge on the recommended option only.
+  // F-R6: the select and the fold are siblings in the card group — no
+  // button inside a role=button, one select per short card, fold only on
+  // long cards; at most one annotation control per decision. F-R7: one
+  // discreet badge on the recommended option head only.
   const annotations = await page.evaluate(() => {
     const annotated = document.getElementById("l6-annotated").shadowRoot;
-    const perOptionControls = [];
-    for (const card of annotated.querySelectorAll("[data-option-id]")) {
-      perOptionControls.push(card.querySelectorAll("button, a, input, select, textarea").length);
+    const cards = Array.from(annotated.querySelectorAll("[data-option-card]"));
+    const perOptionSelects = cards.map((card) => card.querySelectorAll(":scope > [data-option-id]").length);
+    const nestedInSelect = [];
+    for (const select of annotated.querySelectorAll("[data-option-id]")) {
+      nestedInSelect.push(select.querySelectorAll("button, a, input, select, textarea").length);
     }
+    const roleButtonNested = Array.from(annotated.querySelectorAll('[role="button"]')).map(
+      (holder) => holder.querySelectorAll("button, a, input, select, textarea, [tabindex]").length,
+    );
     const reco = document.getElementById("l6-reco").shadowRoot;
     return {
-      perOptionControls,
+      perOptionSelects,
+      nestedInSelect,
+      roleButtonNested,
+      foldInAnnotated: annotated.querySelectorAll("[data-option-fold]").length,
       dossierAnnotationControls: annotated.querySelectorAll("[data-annotation-control]").length,
       badges: Array.from(reco.querySelectorAll(".st-dossier__badge")).map((badge) => badge.closest("[data-option-id]").getAttribute("data-option-id")),
       otherBadges: ["l6-short2", "l6-short4", "l6-long", "l6-annotated", "l6-diagram"].map(
         (id) => document.getElementById(id).shadowRoot.querySelectorAll(".st-dossier__badge").length,
       ),
       badgeTag: reco.querySelector(".st-dossier__badge") ? reco.querySelector(".st-dossier__badge").tagName : null,
+      badgeHead: Boolean(reco.querySelector(".st-dossier__badge")?.closest(".st-dossier__optionHead")),
+      badgeInFold: Boolean(reco.querySelector(".st-dossier__badge")?.closest("[data-option-fold]")),
     };
   });
   assert(
-    annotations.perOptionControls.every((count) => count === 0),
-    `${label}: F-R6 no per-option control`,
-    JSON.stringify(annotations.perOptionControls),
+    annotations.perOptionSelects.every((count) => count === 1),
+    `${label}: F-R6 one select per card`,
+    JSON.stringify(annotations.perOptionSelects),
   );
+  assert(
+    annotations.nestedInSelect.every((count) => count === 0),
+    `${label}: F-R6 no control nested in the select`,
+    JSON.stringify(annotations.nestedInSelect),
+  );
+  assert(
+    annotations.roleButtonNested.every((count) => count === 0),
+    `${label}: F-R6 no interactive nested in role=button`,
+    JSON.stringify(annotations.roleButtonNested),
+  );
+  assert(annotations.foldInAnnotated === 0, `${label}: F-R6 no fold on short cards`, `${annotations.foldInAnnotated}`);
   assert(annotations.dossierAnnotationControls <= 1, `${label}: F-R6 single annotation at most`, `${annotations.dossierAnnotationControls}`);
   assert(annotations.badges.length === 1 && annotations.badges[0] === "opt-r1", `${label}: F-R7 discreet badge`, JSON.stringify(annotations.badges));
   assert(annotations.otherBadges.every((count) => count === 0), `${label}: F-R7 badge nowhere else`, JSON.stringify(annotations.otherBadges));
   assert(["SPAN", "P", "EM", "STRONG"].includes(annotations.badgeTag), `${label}: F-R7 badge is display state`, String(annotations.badgeTag));
+  assert(annotations.badgeHead, `${label}: F-R7 badge shares the header row`, "badge not inside .st-dossier__optionHead");
+  assert(!annotations.badgeInFold, `${label}: F-R7 badge outside the fold`, "badge inside the fold control");
+  const badgeLayout = await page.evaluate(() => {
+    const root = document.getElementById("l6-reco").shadowRoot;
+    const card = root.querySelector('[data-option-card="opt-r1"]');
+    const before = card.getBoundingClientRect();
+    const badge = card.querySelector(".st-dossier__badge");
+    badge.remove();
+    const after = card.getBoundingClientRect();
+    return {
+      dh: Math.abs(before.height - after.height),
+      dw: Math.abs(before.width - after.width),
+      before: { width: before.width, height: before.height },
+      after: { width: after.width, height: after.height },
+    };
+  });
+  assert(
+    badgeLayout.dh <= 1 && badgeLayout.dw <= 1,
+    `${label}: F-R7 badge changes neither layout`,
+    `card box moved ${JSON.stringify(badgeLayout.before)} -> ${JSON.stringify(badgeLayout.after)}`,
+  );
   const disabled = await page.evaluate(() => {
     const root = document.getElementById("l6-disabled").shadowRoot;
     const inert = root.querySelector('[data-option-disabled="opt-b"]');
@@ -1409,16 +1543,18 @@ async function shadowSvg(page, elementSelector) {
   ok(`${label}: F-R6/F-R7 single annotation, discreet badge, disabled card inert`);
 
   // Criterion 4 element half: the click emits the exact §4.6 detail.
+  // Uses an untouched, unselected option so the click always emits (state
+  // isolation); the optional chain guards the detail read.
   await page.evaluate(() => {
     window.__stL6.length = 0;
     const root = document.getElementById("l6-short2").shadowRoot;
-    root.querySelector('[data-option-id="opt-b"]').click();
+    root.querySelector('[data-option-id="opt-a"]').click();
   });
   await sleep(200);
   const detail = await page.evaluate(() => window.__stL6);
   assert(detail.length === 1, `${label}: criterion 4 one intent`, JSON.stringify(detail));
   assert(
-    detail[0].event === "intent" && detail[0].name === "choose-option" && detail[0].target === "opt-b" && typeof detail[0].context === "object",
+    detail[0]?.event === "intent" && detail[0]?.name === "choose-option" && detail[0]?.target === "opt-a" && typeof detail[0]?.context === "object",
     `${label}: criterion 4 §4.6 detail`,
     JSON.stringify(detail[0]),
   );
@@ -1431,7 +1567,7 @@ async function shadowSvg(page, elementSelector) {
   if (TRACK_L6_PRESENT) {
     await waitFor(
       page,
-      "() => { const el = document.getElementById('l6-track'); return el && el.shadowRoot && el.shadowRoot.textContent.includes('decision') ? true : false; }",
+      "() => { const el = document.getElementById('l6-track'); return el && el.shadowRoot && el.shadowRoot.querySelector('[data-st-dossier]') ? true : false; }",
       20000,
       "l6-track renders",
     );
