@@ -1375,6 +1375,78 @@ describe("validateFormattingIntentDraft (CL-4c Task 2, C-D5-6)", () => {
       validateFormattingIntentDraft(humanDraft({ items: [{ client: 1, clock: 0 }, { client: 1, clock: 0 }] })).ok,
     ).toBe(false);
   });
+  it("refuses prototype-carried fields with own-key presence", () => {
+    const proto = {
+      intentId: "intent:proto",
+      actorId: "actor:human-1",
+      source: { kind: "human-transaction", transactionId: "txn:1" },
+      fieldKey: "description",
+      mark: "bold",
+      value: true,
+      range: { start: "anchor:a", end: "anchor:b" },
+      items: [{ client: 1, clock: 0 }],
+    };
+    const draft = Object.create(proto);
+    const result = validateFormattingIntentDraft(draft);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("incompatible-schema");
+    const protoSource = Object.create({ kind: "human-transaction", transactionId: "txn:1" });
+    const withProtoSource = humanDraft({ source: protoSource });
+    expect(validateFormattingIntentDraft(withProtoSource).ok).toBe(false);
+  });
+  it("never throws on throwing getters, proxies and cycles", () => {
+    const throwing = humanDraft();
+    Object.defineProperty(throwing, "intentId", {
+      enumerable: true,
+      get() {
+        throw new Error("boom");
+      },
+    });
+    const throwingResult = validateFormattingIntentDraft(throwing);
+    expect(throwingResult.ok).toBe(false);
+    if (!throwingResult.ok) expect(throwingResult.reason).toBe("incompatible-schema");
+    const target = humanDraft();
+    const proxy = new Proxy(target, {
+      get() {
+        throw new Error("boom");
+      },
+    });
+    expect(validateFormattingIntentDraft(proxy).ok).toBe(false);
+    const cyclic = humanDraft() as Record<string, unknown>;
+    (cyclic as Record<string, unknown>)["self"] = cyclic;
+    expect(validateFormattingIntentDraft(cyclic).ok).toBe(false);
+    expect(validateFormattingIntentDraft(new Date()).ok).toBe(false);
+    expect(validateFormattingIntentDraft(Object.create(null, {})).ok).toBe(false);
+  });
+  it("refuses huge arrays, long strings and non-plain objects as too-large or schema", () => {
+    const hugeItems = Array.from({ length: 20001 }, (_, index) => ({ client: 1, clock: index }));
+    const huge = validateFormattingIntentDraft(humanDraft({ items: hugeItems }));
+    expect(huge.ok).toBe(false);
+    if (!huge.ok) expect(huge.reason).toBe("too-large");
+    const longTxn = validateFormattingIntentDraft(
+      humanDraft({ source: { kind: "human-transaction", transactionId: "x".repeat(257) } }),
+    );
+    expect(longTxn.ok).toBe(false);
+    if (!longTxn.ok) expect(longTxn.reason).toBe("too-large");
+    const longKey = validateFormattingIntentDraft(
+      agentDraft({
+        source: {
+          kind: "agent-patch",
+          key: { ...KEY, documentId: "d".repeat(257) },
+          operationIndex: 0,
+        },
+      }),
+    );
+    expect(longKey.ok).toBe(false);
+    if (!longKey.ok) expect(longKey.reason).toBe("too-large");
+    const longAnchor = validateFormattingIntentDraft(
+      humanDraft({ range: { start: "a".repeat(2049), end: "anchor:b" } }),
+    );
+    expect(longAnchor.ok).toBe(false);
+    if (!longAnchor.ok) expect(longAnchor.reason).toBe("too-large");
+    expect(validateFormattingIntentDraft(new Map() as unknown).ok).toBe(false);
+    expect(validateFormattingIntentDraft(/bold/ as unknown).ok).toBe(false);
+  });
 });
 
 describe("latestEffectiveIntent and planMarkRevert (CL-4c Task 5, R-REV-4)", () => {
@@ -1521,6 +1593,33 @@ describe("latestEffectiveIntent and planMarkRevert (CL-4c Task 5, R-REV-4)", () 
       liveItems: [{ client: 1, clock: 0 }],
     });
     expect(forward).toEqual(backward);
+  });
+  it("filters intents by fieldKey and detects ambiguous preceding intents", () => {
+    const otherField = { ...intent(2, "intent:other", "actor:human-1", "bold", null, [{ client: 1, clock: 0 }]), fieldKey: "notes" };
+    const patchIntent = intent(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const filtered = planMarkRevert([patchIntent, otherField], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(filtered.ok).toBe(true);
+    if (filtered.ok) {
+      expect(filtered.decisions).toEqual([{ item: { client: 1, clock: 0 }, action: "restore", value: null }]);
+    }
+    const precedingA = intent(1, "intent:pre-a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const precedingB = intent(1, "intent:pre-b", "actor:human-2", "bold", null, [{ client: 1, clock: 0 }]);
+    const patchLater = intent(2, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const ambiguous = planMarkRevert([precedingA, precedingB, patchLater], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(ambiguous.ok).toBe(false);
+    if (!ambiguous.ok) expect(ambiguous.conflict.kind).toBe("mark-provenance-conflict");
   });
   it("latestEffectiveIntent reports not-found and duplicate-maximal outcomes", () => {
     const found = latestEffectiveIntent(
