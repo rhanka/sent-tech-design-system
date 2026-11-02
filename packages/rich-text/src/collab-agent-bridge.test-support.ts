@@ -71,16 +71,22 @@ import type {
   AgentParagraphState,
   AgentPatch,
   AgentPatchKey,
+  AgentPatchProfile,
   AgentPatchReceipt,
   AgentReadRequest,
   AwarenessCursor,
   CollaborationActor,
   FieldBindingIdentity,
   FormattingIntent,
+  FullBlockMetadata,
   InlineMarkKey,
   PresenceSnapshot,
   RelativeAnchor,
 } from "./collaboration.js";
+import {
+  canonicalHrDefaults,
+  canonicalPlainMetadata,
+} from "./editor-full-markdown.js";
 import type { FormattingIntentDraft } from "./editor-collaboration.js";
 import {
   attributesToMarks,
@@ -104,6 +110,8 @@ import type {
 import type { RichTextFormat } from "./model.js";
 
 const P0_FORMAT: RichTextFormat = "focus.markdown.p0@1";
+/** Full-profile format of the double's full seam (R-FULL-OP-1 reads/writes). */
+const FULL_PROFILE_FORMAT: RichTextFormat = "ds.markdown.full@1";
 /** Host-minted agent origin form (§5.1); the double mints it the same way. */
 const agentOriginFor = (actorId: string): string => `agent:${actorId}`;
 
@@ -254,6 +262,27 @@ export interface AgentAffectedOperation {
   /** Mark name/value for mark operations (needed when the log is missing). */
   mark?: InlineMarkKey;
   markValue?: true | string | null;
+  /** Full only (R-FULL-OP-1/R-FULL-OP-2): per asserted key, the mark/value
+      plus the intent ids recorded for it. A `link` operation carries two
+      groups (`link` and `linkTitle`); every boolean key carries one. */
+  markIntents: ReadonlyArray<{
+    mark: InlineMarkKey;
+    value: true | string | null;
+    intentIds: readonly string[];
+  }> | null;
+  /** Full only (R-FULL-OP-2): metadata prior/after facts for
+      `setBlockMetadata` (prior null when no entry preceded). */
+  metadataChange: {
+    paragraphId: string;
+    prior: FullBlockMetadata | null;
+    after: FullBlockMetadata;
+  } | null;
+  /** Full only (R-R2/R-FULL-OP-2): HR atom identity paired with `separator`
+      for HR insert/delete inverses (payloads rebuild from the paragraphId). */
+  hrAtom: { client: number; clock: number; paragraphId: string } | null;
+  /** Full only (R-FULL-OP-2): replacement paragraph created by a sole-block
+      HR deletion (null otherwise). */
+  replacementParagraphId: string | null;
   /** Split: the inserted separator identity and payload; merge: the deleted
       separator identity, payload and junction anchors. */
   separator: {
@@ -871,6 +900,7 @@ function buildTextSegments(
   paragraph: ScannedParagraph,
   runs: readonly DeltaRun[],
   items: readonly WalkItem[],
+  format: RichTextFormat,
 ): { text: string; segments: BuiltSegment[] } {
   const ordered: BuiltSegment[] = [];
   let text = "";
@@ -889,7 +919,7 @@ function buildTextSegments(
       segment: {
         type: "text",
         text: slice,
-        marks: attributesToMarks(run.marks, P0_FORMAT),
+        marks: attributesToMarks(run.marks, format),
         startAnchor: mintAt(ytext, sliceStart),
         endAnchor: mintAt(ytext, sliceStart + slice.length),
       },
@@ -962,7 +992,10 @@ interface PageFill {
 /** Build one page against the retained snapshot from the resume point.
     Greedy fill in field order; the first entry that would exceed any cap
     closes the page with `nextPageToken`, splitting inside a paragraph or
-    a preserved block when the page is still empty. */
+    a preserved block when the page is still empty. Full profile additionally
+    returns per-paragraph metadata and the referenced run-source records of
+    the selection window (`runMetadata`), both counted in the serialised
+    estimator exactly like every other byte (R-READ-1, R-READ-3 full half). */
 function buildReadPage(options: {
   ytext: Y.Text;
   documentId: string;
@@ -978,6 +1011,10 @@ function buildReadPage(options: {
   endIdx: number;
   resume: { para: number; seg: number; char: number };
   maxEntries: number;
+  /** Segment/mark conversion profile (P0 byte-stable without metadata). */
+  format: RichTextFormat;
+  /** Retained block-metadata map of the same snapshot revision. */
+  fieldMeta: Y.Map<unknown>;
 }): PageFill {
   const {
     ytext,
@@ -993,8 +1030,34 @@ function buildReadPage(options: {
     startIdx,
     endIdx,
     maxEntries,
+    format,
+    fieldMeta,
   } = options;
   const pageBudget = MAX_READ_SERIALIZED_BYTES - NEXT_PAGE_TOKEN_RESERVE;
+  // Referenced run-source records of the selection window (R-FULL-META-2):
+  // run ids referenced by a selected paragraph but not live in the field,
+  // including a still-referenced deleted opener. Computed upfront so the
+  // skeleton measures them toward the R-READ-1 byte cap.
+  const runMetadata: Record<string, FullBlockMetadata> = {};
+  if (format === FULL_PROFILE_FORMAT) {
+    const liveIds = new Set(paragraphs.map((entry) => entry.paragraphId));
+    const referenced = new Set<string>();
+    for (const paragraph of paragraphs) {
+      if (paragraph.contentEnd <= startIdx || paragraph.contentStart >= endIdx) continue;
+      if (paragraph.kind !== "paragraph") continue;
+      const stored = fieldMeta.get(paragraph.paragraphId) as FullBlockMetadata | undefined;
+      const runId = stored?.listRunId;
+      if (typeof runId === "string" && runId !== "" && !liveIds.has(runId)) {
+        referenced.add(runId);
+      }
+    }
+    for (const runId of referenced) {
+      const record = fieldMeta.get(runId) as FullBlockMetadata | undefined;
+      if (record !== undefined) {
+        runMetadata[runId] = structuredClone(record) as FullBlockMetadata;
+      }
+    }
+  }
   const skeleton = {
     revision: { documentId, stateVector: retainedVector, schemaEpoch },
     readToken,
@@ -1002,6 +1065,7 @@ function buildReadPage(options: {
       {
         fieldKey,
         paragraphs: [] as AgentParagraphState[],
+        ...(Object.keys(runMetadata).length > 0 ? { runMetadata } : {}),
         ...(requestedAnchors.length > 0 ? { requestedAnchors: [...requestedAnchors] } : {}),
       },
     ],
@@ -1046,8 +1110,18 @@ function buildReadPage(options: {
     closePage: (next: { para: number; seg: number; char: number }) => void,
     paragraphIndex: number,
   ): void => {
-    const { segments: fullSegments } = buildTextSegments(ytext, paragraph, runs, items);
+    const { segments: fullSegments } = buildTextSegments(ytext, paragraph, runs, items, format);
     const kind = paragraph.kind === "horizontalRule" ? "horizontalRule" : "paragraph";
+    // Full read-back (R-READ-3 full half): the complete metadata record per
+    // text-like paragraph and the admitted wrapper record per atom; absent
+    // entries materialise the canonical defaults, never a guessed repair.
+    const fullMetadata: FullBlockMetadata | undefined =
+      format === FULL_PROFILE_FORMAT
+        ? ((fieldMeta.get(paragraph.paragraphId) as FullBlockMetadata | undefined) ??
+          ((kind === "paragraph"
+            ? (structuredClone(canonicalPlainMetadata()) as FullBlockMetadata)
+            : (structuredClone(canonicalHrDefaults()) as FullBlockMetadata))))
+        : undefined;
     // Normalised remaining view: the first segment starts at charFrom.
     const view = fullSegments.slice(segFrom).map((built, viewIndex) => {
       if (viewIndex > 0 || charFrom === 0 || built.segment.type !== "text") return built;
@@ -1072,6 +1146,7 @@ function buildReadPage(options: {
         kind,
         ...(kind === "paragraph" ? { text } : {}),
         ...(kind === "paragraph" ? { segments: candidates.map((built) => built.segment) } : {}),
+        ...(fullMetadata !== undefined ? { metadata: fullMetadata } : {}),
         startAnchor,
         endAnchor,
       };
@@ -1204,6 +1279,7 @@ function buildReadPage(options: {
           {
             fieldKey,
             paragraphs: paragraphsOut,
+            ...(Object.keys(runMetadata).length > 0 ? { runMetadata } : {}),
             ...(requestedAnchors.length > 0 ? { requestedAnchors: [...requestedAnchors] } : {}),
           } satisfies AgentFieldState,
         ],
@@ -1328,6 +1404,7 @@ function buildReadPage(options: {
         {
           fieldKey,
           paragraphs: paragraphsOut,
+          ...(Object.keys(runMetadata).length > 0 ? { runMetadata } : {}),
           ...(requestedAnchors.length > 0 ? { requestedAnchors } : {}),
           ...(nextPageToken !== undefined ? { nextPageToken } : {}),
         } satisfies AgentFieldState,
@@ -1384,6 +1461,10 @@ interface ApplierTarget {
   ytext: Y.Text;
   ydoc: Y.Doc;
   fieldKey: string;
+  /** The field's block-metadata map (scratch clone or authoritative). */
+  fieldMeta: Y.Map<unknown>;
+  /** Segment/mark conversion profile (P0 stable; full admits the added keys). */
+  format: RichTextFormat;
   baseSV: Map<number, number>;
   collect: boolean;
 }
@@ -1414,6 +1495,44 @@ function snapshotVector(ydoc: Y.Doc): Map<number, number> {
   return Y.decodeStateVector(Y.encodeStateVector(ydoc));
 }
 
+/** A metadata write to a retired id is admitted only as a run-value-only
+    write to a still-referenced deleted source (R-FULL-META-2, R-STR-5): the
+    record carries run values for its own listRunId, the stored source record
+    is still referenced by a live member, and every non-run attribute is
+    unchanged. Anything else on a retired id refuses `target-gone`. */
+function isRunValueOnlyWrite(
+  target: ApplierTarget,
+  paragraphId: string,
+  next: FullBlockMetadata,
+): boolean {
+  if (
+    next.orderedStart === undefined &&
+    next.orderedType === undefined &&
+    next.listTight === undefined
+  ) {
+    return false;
+  }
+  if (next.listRunId !== paragraphId) return false;
+  const stored = target.fieldMeta.get(paragraphId) as FullBlockMetadata | undefined;
+  if (stored === undefined || stored.listRunId !== paragraphId) return false;
+  const live = scanParagraphs(walkVisibleItems(target.ytext), target.ytext.length);
+  const referenced = live.some((para) => {
+    if (para.paragraphId === paragraphId) return false;
+    const meta = target.fieldMeta.get(para.paragraphId) as FullBlockMetadata | undefined;
+    return meta?.listRunId === paragraphId;
+  });
+  if (!referenced) return false;
+  const stripRunValues = (record: FullBlockMetadata): Record<string, unknown> => {
+    const out: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(record)) {
+      if (key === "orderedStart" || key === "orderedType" || key === "listTight") continue;
+      out[key] = value;
+    }
+    return out;
+  };
+  return canonicalizeJson(stripRunValues(stored)) === canonicalizeJson(stripRunValues(next));
+}
+
 /** Any separator, preserved or HR embed overlapped by a range refuses the range
     operation as `structural-conflict` (R-ANCH-4). Returns the overlap kind. */
 function structuralOverlap(
@@ -1426,6 +1545,31 @@ function structuralOverlap(
       continue;
     }
     if (item.start < high && item.end > low) return item.kind;
+  }
+  return null;
+}
+
+/** Provenance (mark, value) pairs one mark operation asserts (R-FULL-MARK-1):
+    one pair per boolean key; two pairs for `link` (`link` href-or-null and
+    `linkTitle` title-or-null). Null when the operation is not a mark. */
+function markIntentPairs(
+  operation: AgentEditOperation,
+): ReadonlyArray<{ mark: InlineMarkKey; value: true | string | null }> | null {
+  if (operation.type !== "mark") return null;
+  if (
+    operation.mark === "bold" ||
+    operation.mark === "italic" ||
+    operation.mark === "code" ||
+    operation.mark === "strike" ||
+    operation.mark === "underline"
+  ) {
+    return [{ mark: operation.mark, value: operation.applied ? true : null }];
+  }
+  if (operation.mark === "link") {
+    return [
+      { mark: "link", value: operation.href },
+      { mark: "linkTitle", value: operation.title ?? null },
+    ];
   }
   return null;
 }
@@ -1446,6 +1590,10 @@ function emptyRecord(
     flanking: null,
     coveredItems: [],
     markIntentIds: [],
+    markIntents: null,
+    metadataChange: null,
+    hrAtom: null,
+    replacementParagraphId: null,
   };
 }
 
@@ -1584,15 +1732,38 @@ function applyOneOperation(
       if (containingParagraph(paragraphs, low)?.kind === "preserved") {
         throw new BridgeRefusal("scope-denied", `operation ${operationIndex} mark: preserved content is not text-editable (R-ANCH-3)`, operationIndex);
       }
-      if (
-        operation.mark !== "bold" &&
-        operation.mark !== "italic" &&
-        operation.mark !== "code"
+      // Full keys past the P0 guard (R-FULL-MARK-1): strike/underline are
+      // boolean; link formats { link: href, linkTitle: title } with an
+      // omitted title clearing the title and a null href removing the link
+      // (and any projected title). Other keys stay unadmitted.
+      let formatValue: Record<string, unknown>;
+      if (operation.mark === "strike" || operation.mark === "underline") {
+        if (target.format !== FULL_PROFILE_FORMAT) {
+          throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: key is not admitted in P0 (§4.11)`, operationIndex);
+        }
+        if (typeof operation.applied !== "boolean") {
+          throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: boolean mark needs applied (§5.7)`, operationIndex);
+        }
+        formatValue = { [operation.mark]: operation.applied ? true : null };
+      } else if (operation.mark === "link") {
+        if (target.format !== FULL_PROFILE_FORMAT) {
+          throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: key is not admitted in P0 (§4.11)`, operationIndex);
+        }
+        formatValue =
+          operation.href === null
+            ? { link: null, linkTitle: null }
+            : { link: operation.href, linkTitle: operation.title ?? null };
+      } else if (
+        operation.mark === "bold" ||
+        operation.mark === "italic" ||
+        operation.mark === "code"
       ) {
-        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: key is not admitted in P0 (§4.11)`, operationIndex);
-      }
-      if (typeof operation.applied !== "boolean") {
-        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: boolean mark needs applied (§5.7)`, operationIndex);
+        if (typeof operation.applied !== "boolean") {
+          throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: boolean mark needs applied (§5.7)`, operationIndex);
+        }
+        formatValue = { [operation.mark]: operation.applied ? true : null };
+      } else {
+        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: key is not admitted (§4.11)`, operationIndex);
       }
       // Span inheritance (R-ANCH-4): one format operation over the resolved
       // interval, so concurrent interior text takes the mark. Covered items
@@ -1608,7 +1779,7 @@ function applyOneOperation(
         }
       }
       if (high > low) {
-        ytext.format(low, high - low, { [operation.mark]: operation.applied ? true : null });
+        ytext.format(low, high - low, formatValue);
       }
       const record = collect ? emptyRecord(fieldKey, operationIndex, operation.type) : null;
       if (record !== null && before !== null) {
@@ -1624,6 +1795,153 @@ function applyOneOperation(
         result: { operationIndex, kind: operation.type, resultParagraphIds: [container.paragraphId] },
         insertedChars: [],
         structuredIds: [],
+        record,
+      };
+    }
+    case "setBlockMetadata": {
+      // Live-state preflight past the pure validator (bridge-owned checks):
+      // the target exists (R-ANCH-5, with the R-FULL-META-2 run-value-only
+      // exception for a still-referenced deleted source) and member-carried
+      // run values are refused for their target (AMB-E4). An HR or preserved
+      // target is not refused here: wrapper-only records pass the
+      // resulting-state check below, Task 6 shapes refuse there (AMB-E3).
+      const live = paragraphs.find((entry) => entry.paragraphId === operation.paragraphId);
+      if (live === undefined) {
+        if (!isRunValueOnlyWrite(target, operation.paragraphId, operation.metadata)) {
+          throw new BridgeRefusal("target-gone", `operation ${operationIndex} setBlockMetadata: paragraph no longer exists (R-ANCH-5)`, operationIndex);
+        }
+      } else if (
+        (operation.metadata.orderedStart !== undefined ||
+          operation.metadata.orderedType !== undefined ||
+          operation.metadata.listTight !== undefined) &&
+        operation.paragraphId !== operation.metadata.listRunId
+      ) {
+        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} setBlockMetadata: run values live only on their source opener (R-FULL-META-2)`, operationIndex);
+      }
+      const prior = (target.fieldMeta.get(operation.paragraphId) as FullBlockMetadata | undefined) ?? null;
+      target.fieldMeta.set(operation.paragraphId, structuredClone(operation.metadata) as unknown);
+      const record = collect ? emptyRecord(fieldKey, operationIndex, operation.type) : null;
+      if (record !== null) {
+        record.metadataChange = {
+          paragraphId: operation.paragraphId,
+          prior: prior === null ? null : (structuredClone(prior) as FullBlockMetadata),
+          after: structuredClone(operation.metadata) as FullBlockMetadata,
+        };
+      }
+      return {
+        result: { operationIndex, kind: operation.type, resultParagraphIds: [operation.paragraphId] },
+        insertedChars: [],
+        structuredIds: [],
+        record,
+      };
+    }
+    case "insertHorizontalRule": {
+      const at = resolveAnchorOrRefuse(ytext, fieldKey, operation.at, `operation ${operationIndex} insertHorizontalRule`);
+      const container = containingParagraph(scanParagraphs(walkVisibleItems(ytext), ytext.length), at);
+      if (container === null) {
+        throw new BridgeRefusal("target-gone", `operation ${operationIndex} insertHorizontalRule: no containing paragraph (R-ANCH-5)`, operationIndex);
+      }
+      if (container.kind === "preserved") {
+        throw new BridgeRefusal("scope-denied", `operation ${operationIndex} insertHorizontalRule: preserved content is not text-editable (R-ANCH-3)`, operationIndex);
+      }
+      // Block-boundary discipline (R-FULL-HR-1): a separator index or the
+      // field end only. Interior paragraph text needs ordinary splits first;
+      // an HR atom interior cannot split.
+      const boundaries = new Set(paragraphs.map((entry) => entry.separatorIndex));
+      boundaries.add(ytext.length);
+      if (!boundaries.has(at)) {
+        throw new BridgeRefusal("structural-conflict", `operation ${operationIndex} insertHorizontalRule: insertion point is inside paragraph text or an atom, split first (R-FULL-HR-1)`, operationIndex);
+      }
+      ytext.insertEmbed(at, {
+        separator: { paragraphId: operation.newParagraphId, kind: "horizontalRule" },
+      });
+      ytext.insertEmbed(at + 1, { horizontalRule: { paragraphId: operation.newParagraphId } });
+      const record = collect ? emptyRecord(fieldKey, operationIndex, operation.type) : null;
+      if (record !== null && before !== null) {
+        const created = newItemsSince(target.ydoc, before);
+        record.insertedItems = created;
+        const createdKeys = new Set(created.map((entry) => `${entry.client}:${entry.clock}`));
+        for (const item of walkVisibleItems(ytext)) {
+          if (!createdKeys.has(`${item.client}:${item.clock}`)) continue;
+          if (item.kind === "separator") {
+            record.separator = {
+              client: item.client,
+              clock: item.clock,
+              paragraphId: operation.newParagraphId,
+              kind: "horizontalRule",
+            };
+          } else if (item.kind === "horizontalRule") {
+            record.hrAtom = {
+              client: item.client,
+              clock: item.clock,
+              paragraphId: operation.newParagraphId,
+            };
+          }
+        }
+      }
+      return {
+        result: { operationIndex, kind: operation.type, resultParagraphIds: [operation.newParagraphId] },
+        insertedChars: [],
+        structuredIds: [operation.newParagraphId],
+        record,
+      };
+    }
+    case "deleteHorizontalRule": {
+      const separators = items.filter(
+        (item) => item.kind === "separator" && item.separator !== null,
+      );
+      const position = separators.findIndex(
+        (item) => item.separator?.paragraphId === operation.paragraphId,
+      );
+      if (position === -1) {
+        throw new BridgeRefusal("target-gone", `operation ${operationIndex} deleteHorizontalRule: paragraph no longer exists (R-ANCH-5)`, operationIndex);
+      }
+      const named = separators[position] as WalkItem;
+      if (named.separator?.kind !== "horizontalRule") {
+        throw new BridgeRefusal("target-gone", `operation ${operationIndex} deleteHorizontalRule: paragraph is not a horizontal rule (R-ANCH-5)`, operationIndex);
+      }
+      // The atom follows its separator immediately (R-FULL-HR-1 pair);
+      // anything else fails closed instead of deleting half a pair.
+      const atom = walkVisibleItems(ytext).find((item) => item.start === named.start + 1);
+      if (atom?.kind !== "horizontalRule") {
+        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} deleteHorizontalRule: HR pair is half an atom (R-FULL-HR-1)`, operationIndex);
+      }
+      const sole = paragraphs.length === 1;
+      if (sole && operation.replacementParagraphId === undefined) {
+        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} deleteHorizontalRule: deleting the sole block needs replacementParagraphId (R-FULL-HR-1)`, operationIndex);
+      }
+      const record = collect ? emptyRecord(fieldKey, operationIndex, operation.type) : null;
+      if (record !== null) {
+        record.separator = {
+          client: named.client,
+          clock: named.clock,
+          paragraphId: operation.paragraphId,
+          kind: "horizontalRule",
+        };
+        record.hrAtom = {
+          client: atom.client,
+          clock: atom.clock,
+          paragraphId: operation.paragraphId,
+        };
+        record.flanking = { before: mintAt(ytext, named.start), after: mintAt(ytext, named.start + 2) };
+        record.replacementParagraphId = operation.replacementParagraphId ?? null;
+      }
+      ytext.delete(named.start, 2);
+      // A supplied replacement on a non-sole deletion is inert (shape-valid
+      // per the validator; the pair is simply removed).
+      if (sole) {
+        ytext.insertEmbed(named.start, {
+          separator: { paragraphId: operation.replacementParagraphId as string, kind: "paragraph" },
+        });
+      }
+      return {
+        result: {
+          operationIndex,
+          kind: operation.type,
+          resultParagraphIds: sole ? [operation.replacementParagraphId as string] : [],
+        },
+        insertedChars: [],
+        structuredIds: sole ? [operation.replacementParagraphId as string] : [],
         record,
       };
     }
@@ -1746,10 +2064,14 @@ export interface RevertInverseStats {
   satisfiedItems: number;
 }
 
-/** Durable inverse construction (R-REV-6): preflighted whole on a scratch
-    clone and applied as one transaction under revert:<requestedBy>. */
+/** Durable inverse construction (R-REV-6, extended R-FULL-OP-2): preflighted
+    whole on a scratch clone and applied as one transaction under
+    revert:<requestedBy>. Metadata restores only while the patch write is
+    still effective (a later map winner is kept); HR inverses act only on the
+    recorded pair; mark plans run per asserted key through the log. */
 function applyRevertInverse(
   ytext: Y.Text,
+  fieldMeta: Y.Map<unknown>,
   record: AgentAffectedItemsRecord,
   log: readonly FormattingIntent[],
   key: AgentPatchKey,
@@ -1766,7 +2088,124 @@ function applyRevertInverse(
   const pendingDrafts: FormattingIntentDraft[] = [];
   const operations = [...record.operations].sort((a, b) => b.operationIndex - a.operationIndex);
   for (const operation of operations) {
-    if (operation.kind === "insert" || operation.kind === "insertHardBreak") {
+    if (operation.kind === "setBlockMetadata") {
+      const change = operation.metadataChange;
+      if (change === null) {
+        throw new BridgeRefusal("target-gone", `revert of metadata ${operation.operationIndex}: missing metadata facts (R-REV-2)`, operation.operationIndex);
+      }
+      // Effectiveness (AMB-E2): the live entry decides. Equal to the
+      // recorded after record means the patch write is still effective
+      // (restore the prior); different means a later winner is kept.
+      const liveEntry = fieldMeta.get(change.paragraphId) as FullBlockMetadata | undefined;
+      if (liveEntry === undefined) {
+        if (change.prior === null) {
+          stats.satisfiedOps += 1;
+          continue;
+        }
+        throw new BridgeRefusal("target-gone", `revert of metadata ${operation.operationIndex}: map entry is gone while a prior record exists (R-ANCH-5)`, operation.operationIndex);
+      }
+      if (canonicalizeJson(liveEntry) === canonicalizeJson(change.after)) {
+        if (change.prior === null) {
+          fieldMeta.delete(change.paragraphId);
+        } else {
+          fieldMeta.set(change.paragraphId, structuredClone(change.prior) as unknown);
+        }
+        stats.restoredOps += 1;
+        continue;
+      }
+      stats.restoredOps += 1;
+      stats.keptLaterItems += 1;
+      continue;
+    } else if (operation.kind === "insertHorizontalRule") {
+      const separator = operation.separator;
+      const atom = operation.hrAtom;
+      if (separator === null || atom === null) {
+        throw new BridgeRefusal("target-gone", `revert of HR insert ${operation.operationIndex}: missing pair facts (R-REV-2)`, operation.operationIndex);
+      }
+      const live = walkVisibleItems(ytext);
+      const foundSeparator = live.find(
+        (item) => item.kind === "separator" && item.client === separator.client && item.clock === separator.clock,
+      );
+      const foundAtom = live.find(
+        (item) => item.kind === "horizontalRule" && item.client === atom.client && item.clock === atom.clock,
+      );
+      if (foundSeparator === undefined && foundAtom === undefined) {
+        // An already-deleted pair is satisfied.
+        stats.satisfiedOps += 1;
+        continue;
+      }
+      if (foundSeparator === undefined || foundAtom === undefined) {
+        throw new BridgeRefusal("target-gone", `revert of HR insert ${operation.operationIndex}: half a pair refuses fail-closed (R-FULL-HR-1)`, operation.operationIndex);
+      }
+      // A later actor's atom or text is untouched: only the recorded pair
+      // deletes, higher index first.
+      const higher = Math.max(foundSeparator.start, foundAtom.start);
+      const lower = Math.min(foundSeparator.start, foundAtom.start);
+      ytext.delete(higher, 1);
+      ytext.delete(lower, 1);
+      stats.restoredOps += 1;
+      continue;
+    } else if (operation.kind === "deleteHorizontalRule") {
+      const separator = operation.separator;
+      const atom = operation.hrAtom;
+      if (separator === null || atom === null || operation.flanking === null) {
+        throw new BridgeRefusal("target-gone", `revert of HR delete ${operation.operationIndex}: missing pair or junction facts (R-REV-2)`, operation.operationIndex);
+      }
+      if (operation.replacementParagraphId !== null) {
+        const live = walkVisibleItems(ytext);
+        const replacement = live.find(
+          (item) =>
+            item.kind === "separator" &&
+            item.separator?.paragraphId === operation.replacementParagraphId,
+        );
+        if (replacement !== undefined) {
+          const paragraphs = scanParagraphs(live, ytext.length);
+          const replacementPara = paragraphs.find(
+            (entry) => entry.paragraphId === operation.replacementParagraphId,
+          );
+          if (replacementPara !== undefined && replacementPara.contentStart === replacementPara.contentEnd) {
+            // Still empty: remove the replacement and restore the pair.
+            ytext.delete(replacement.start, 1);
+            ytext.insertEmbed(replacement.start, {
+              separator: { paragraphId: separator.paragraphId, kind: "horizontalRule" },
+            });
+            ytext.insertEmbed(replacement.start + 1, {
+              horizontalRule: { paragraphId: separator.paragraphId },
+            });
+            stats.restoredOps += 1;
+            continue;
+          }
+          if (replacementPara !== undefined) {
+            // A later human typed there: retain that paragraph and its id,
+            // restore the HR as a separate adjacent block (never human text
+            // inside the HR segment, R-FULL-OP-2).
+            ytext.insertEmbed(replacement.start, {
+              separator: { paragraphId: separator.paragraphId, kind: "horizontalRule" },
+            });
+            ytext.insertEmbed(replacement.start + 1, {
+              horizontalRule: { paragraphId: separator.paragraphId },
+            });
+            stats.restoredOps += 1;
+            continue;
+          }
+          // The replacement separator itself is gone: fall through to the
+          // flanking junction below.
+        }
+      }
+      const before = tryResolveAnchorToLinear(ytext, operation.flanking.before);
+      const after = tryResolveAnchorToLinear(ytext, operation.flanking.after);
+      if (before === null || after === null) {
+        throw new BridgeRefusal("target-gone", `revert of HR delete ${operation.operationIndex}: junction unresolvable (R-ANCH-5)`, operation.operationIndex);
+      }
+      ytext.insertEmbed(before, {
+        separator: { paragraphId: separator.paragraphId, kind: "horizontalRule" },
+      });
+      ytext.insertEmbed(before + 1, {
+        horizontalRule: { paragraphId: separator.paragraphId },
+      });
+      stats.restoredOps += 1;
+      continue;
+    } else if (operation.kind === "insert" || operation.kind === "insertHardBreak") {
       const wanted = new Set<string>();
       for (const item of operation.insertedItems) {
         for (let offset = 0; offset < item.length; offset += 1) {
@@ -1865,19 +2304,33 @@ function applyRevertInverse(
       ytext.insertEmbed(before, { separator: payload });
       stats.restoredOps += 1;
     } else if (operation.kind === "mark") {
-      const mark = operation.mark ?? null;
-      if (mark === null) {
-        const inferred = log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark ?? null;
-        if (inferred === null) {
-          throw new BridgeRefusal(
-            "mark-provenance-conflict",
-            `revert of mark ${operation.operationIndex}: covering intent absent (R-REV-5)`,
-            operation.operationIndex,
-            { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: "bold", items: [], detail: "patch intent missing from log (R-REV-5)" },
-          );
-        }
+      // Per-key planning (R-FULL-OP-2): one (mark, intentIds) group per
+      // asserted key — a `link` operation plans `link` and `linkTitle`
+      // inside the one revert transaction, and a conflict in either refuses
+      // the whole revert. Legacy records (no markIntents) plan one group.
+      const groups: Array<{ mark: InlineMarkKey; intentIds: string[] }> =
+        operation.markIntents !== null && operation.markIntents.length > 0
+          ? operation.markIntents.map((entry) => ({ mark: entry.mark, intentIds: [...entry.intentIds] }))
+          : [
+              {
+                mark: (operation.mark ??
+                  log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark ??
+                  "bold") as InlineMarkKey,
+                intentIds: [...operation.markIntentIds],
+              },
+            ];
+      if (
+        operation.markIntents === null &&
+        operation.mark === null &&
+        log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark === undefined
+      ) {
+        throw new BridgeRefusal(
+          "mark-provenance-conflict",
+          `revert of mark ${operation.operationIndex}: covering intent absent (R-REV-5)`,
+          operation.operationIndex,
+          { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: "bold", items: [], detail: "patch intent missing from log (R-REV-5)" },
+        );
       }
-      const markKey = (mark ?? log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark ?? "bold") as InlineMarkKey;
       const live = new Set<string>();
       const liveList: Array<{ client: number; clock: number }> = [];
       for (const item of walkVisibleItems(ytext)) {
@@ -1890,95 +2343,107 @@ function applyRevertInverse(
           }
         }
       }
-      const plan = planMarkRevert(log, {
-        key,
-        fieldKey: operation.fieldKey,
-        mark: markKey,
-        intentIds: [...operation.markIntentIds],
-        liveItems: liveList,
-      });
-      if (plan.ok === false) {
-        throw new BridgeRefusal("mark-provenance-conflict", plan.conflict.detail, operation.operationIndex, plan.conflict);
-      }
-      const diverged: Array<{ client: number; clock: number }> = [];
-      for (const decision of plan.decisions) {
-        if (decision.action === "satisfied") continue;
-        const at = linearIndexOfUnitIn(ytext, decision.item.client, decision.item.clock);
-        if (at === null) continue;
-        const current = (marksAtDelta(ytext, at)[markKey] as true | string | undefined) ?? null;
-        const latest = latestEffectiveIntent(log.filter((entry) => entry.fieldKey === operation.fieldKey), decision.item, markKey);
-        if (latest.ok === false || (latest.ok === true && latest.found === false)) {
-          diverged.push(decision.item);
-          continue;
+      // Phase 1: plan every group. A conflict in any group refuses the whole
+      // revert with no partial application (no ytext write happens here).
+      const planned: Array<{
+        mark: InlineMarkKey;
+        plan: Extract<ReturnType<typeof planMarkRevert>, { ok: true }>;
+      }> = [];
+      for (const group of groups) {
+        const plan = planMarkRevert(log, {
+          key,
+          fieldKey: operation.fieldKey,
+          mark: group.mark,
+          intentIds: group.intentIds,
+          liveItems: liveList,
+        });
+        if (plan.ok === false) {
+          throw new BridgeRefusal("mark-provenance-conflict", plan.conflict.detail, operation.operationIndex, plan.conflict);
         }
-        if (latest.ok === true && latest.found === true) {
-          const expected = (latest.intent.value as true | string | null | undefined) ?? null;
-          const same = JSON.stringify(current) === JSON.stringify(expected);
-          if (same === false) diverged.push(decision.item);
-        }
-      }
-      if (diverged.length > 0) {
-        throw new BridgeRefusal(
-          "mark-provenance-conflict",
-          `revert of mark ${operation.operationIndex}: live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)`,
-          operation.operationIndex,
-          { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: markKey, items: diverged, detail: "live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)" },
-        );
-      }
-      const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
-      for (const decision of plan.decisions) {
-        if (decision.action === "restore") {
-          stats.restoredItems += 1;
-          const valueKey = JSON.stringify(decision.value);
-          let group = byValue.get(valueKey);
-          if (group === undefined) {
-            group = { value: decision.value, units: [] };
-            byValue.set(valueKey, group);
+        const diverged: Array<{ client: number; clock: number }> = [];
+        for (const decision of plan.decisions) {
+          if (decision.action === "satisfied") continue;
+          const at = linearIndexOfUnitIn(ytext, decision.item.client, decision.item.clock);
+          if (at === null) continue;
+          const current = (marksAtDelta(ytext, at)[group.mark] as true | string | undefined) ?? null;
+          const latest = latestEffectiveIntent(log.filter((entry) => entry.fieldKey === operation.fieldKey), decision.item, group.mark);
+          if (latest.ok === false || (latest.ok === true && latest.found === false)) {
+            diverged.push(decision.item);
+            continue;
           }
-          group.units.push(decision.item);
-        } else if (decision.action === "kept-later") {
-          stats.keptLaterItems += 1;
-        } else {
-          stats.satisfiedItems += 1;
+          if (latest.ok === true && latest.found === true) {
+            const expected = (latest.intent.value as true | string | null | undefined) ?? null;
+            const same = JSON.stringify(current) === JSON.stringify(expected);
+            if (same === false) diverged.push(decision.item);
+          }
         }
+        if (diverged.length > 0) {
+          throw new BridgeRefusal(
+            "mark-provenance-conflict",
+            `revert of mark ${operation.operationIndex}: live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)`,
+            operation.operationIndex,
+            { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: group.mark, items: diverged, detail: "live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)" },
+          );
+        }
+        planned.push({ mark: group.mark, plan });
       }
+      // Phase 2: apply the restores of every group in linear runs.
       let groupIndex = 0;
-      for (const group of byValue.values()) {
-        const indexes: number[] = [];
-        for (const unit of group.units) {
-          const at = linearIndexOfUnitIn(ytext, unit.client, unit.clock);
-          if (at !== null) indexes.push(at);
-        }
-        indexes.sort((a, b) => a - b);
-        let runStart: number | null = null;
-        let runLength = 0;
-        const runs: Array<{ start: number; length: number }> = [];
-        for (const at of indexes) {
-          if (runStart === null || at !== runStart + runLength) {
-            if (runStart !== null) runs.push({ start: runStart, length: runLength });
-            runStart = at;
-            runLength = 1;
+      for (const { mark: markKey, plan } of planned) {
+        const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
+        for (const decision of plan.decisions) {
+          if (decision.action === "restore") {
+            stats.restoredItems += 1;
+            const valueKey = JSON.stringify(decision.value);
+            let valueGroup = byValue.get(valueKey);
+            if (valueGroup === undefined) {
+              valueGroup = { value: decision.value, units: [] };
+              byValue.set(valueKey, valueGroup);
+            }
+            valueGroup.units.push(decision.item);
+          } else if (decision.action === "kept-later") {
+            stats.keptLaterItems += 1;
           } else {
-            runLength += 1;
+            stats.satisfiedItems += 1;
           }
         }
-        if (runStart !== null) runs.push({ start: runStart, length: runLength });
-        for (const run of runs) {
-          ytext.format(run.start, run.length, { [markKey]: group.value });
+        for (const valueGroup of byValue.values()) {
+          const indexes: number[] = [];
+          for (const unit of valueGroup.units) {
+            const at = linearIndexOfUnitIn(ytext, unit.client, unit.clock);
+            if (at !== null) indexes.push(at);
+          }
+          indexes.sort((a, b) => a - b);
+          let runStart: number | null = null;
+          let runLength = 0;
+          const runs: Array<{ start: number; length: number }> = [];
+          for (const at of indexes) {
+            if (runStart === null || at !== runStart + runLength) {
+              if (runStart !== null) runs.push({ start: runStart, length: runLength });
+              runStart = at;
+              runLength = 1;
+            } else {
+              runLength += 1;
+            }
+          }
+          if (runStart !== null) runs.push({ start: runStart, length: runLength });
+          for (const run of runs) {
+            ytext.format(run.start, run.length, { [markKey]: valueGroup.value });
+          }
+          if (appendIntent !== undefined && valueGroup.units.length > 0) {
+            pendingDrafts.push({
+              intentId: `revert:${requestedBy}:${key.patchId}:${operation.operationIndex}:${groupIndex}`,
+              actorId: requestedBy,
+              source: { kind: "agent-patch", key, operationIndex: operation.operationIndex },
+              fieldKey: operation.fieldKey,
+              mark: markKey,
+              value: valueGroup.value,
+              range: operation.range ?? { start: "" as never, end: "" as never },
+              items: valueGroup.units,
+            });
+          }
+          groupIndex += 1;
         }
-        if (appendIntent !== undefined && group.units.length > 0) {
-          pendingDrafts.push({
-            intentId: `revert:${requestedBy}:${key.patchId}:${operation.operationIndex}:${groupIndex}`,
-            actorId: requestedBy,
-            source: { kind: "agent-patch", key, operationIndex: operation.operationIndex },
-            fieldKey: operation.fieldKey,
-            mark: markKey,
-            value: group.value,
-            range: operation.range ?? { start: "" as never, end: "" as never },
-            items: group.units,
-          });
-        }
-        groupIndex += 1;
       }
       stats.restoredOps += 1;
     }
@@ -2013,6 +2478,10 @@ export interface AgentBridgeDoubleOptions {
   fieldKeys: readonly string[];
   /** Admitted operation families of the double's scope (P0 subset, B-BRIDGE-3). */
   families: readonly AgentEditOperation["type"][];
+  /** Validation/read profile of the double (test-only witness seam, AMB-E1):
+      `"p0"` behaves byte-identically to the merged double; `"full"` admits
+      the full families through the same scratch/commit pipeline. */
+  profile?: AgentPatchProfile;
   /** Injected receipt store (survives bridge restart; durability stays CL-4c). */
   store: AgentBridgeReceiptStore;
   schemaEpoch?: string;
@@ -2153,6 +2622,8 @@ function emitAwarenessChange(awareness: SessionAwareness, clientId: number, adde
 
 export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): AgentBridgeDouble {
   const schemaEpoch = options.schemaEpoch ?? "test:schema-epoch:1";
+  const profile: AgentPatchProfile = options.profile ?? "p0";
+  const activeFormat: RichTextFormat = profile === "full" ? FULL_PROFILE_FORMAT : P0_FORMAT;
   const admittedFields = new Set(options.fieldKeys);
   const admittedFamilies = new Set<string>(options.families);
   const held = new Map<string, HeldField>();
@@ -2551,6 +3022,8 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         endIdx: cursor.endIdx,
         resume: { para: cursor.para, seg: cursor.seg, char: cursor.char },
         maxEntries,
+        format: activeFormat,
+        fieldMeta: cursor.retained.doc.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>,
       }).state;
     },
 
@@ -2687,8 +3160,8 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
           detail: "full key already holds a terminal receipt for another payload (section 5.4.1)",
         };
       }
-      // (2) Shape/size check (section 5.3.1; P0 profile for this sub-lot).
-      const shaped = validateAgentPatch(patch, "p0");
+      // (2) Shape/size check (section 5.3.1; double profile, AMB-E1).
+      const shaped = validateAgentPatch(patch, profile);
       if (!shaped.ok) {
         const detail =
           shaped.operationIndex === undefined
@@ -2753,6 +3226,8 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         ytext: scratchText,
         ydoc: scratchDoc,
         fieldKey: patch.binding.fieldKey,
+        fieldMeta: scratchMeta,
+        format: activeFormat,
         baseSV,
         collect: false,
       };
@@ -2798,9 +3273,10 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
           );
         }
       }
-      // (v) Resulting-state validation (§5.3.1, §4.11 P0 admitted table).
+      // (v) Resulting-state validation (§5.3.1, §4.11 admitted table of the
+      // double profile — decides the HR-target metadata refusal, AMB-E3).
       try {
-        validateFieldState(scratchText, scratchMeta, P0_FORMAT);
+        validateFieldState(scratchText, scratchMeta, activeFormat);
       } catch (error) {
         const detail = error instanceof Error ? error.message : String(error);
         return refuseReceipt(patch, "incompatible-schema", `preflight resulting-schema: ${detail} (§4.11)`);
@@ -2817,6 +3293,8 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         ytext: heldBinding.text,
         ydoc: authDoc,
         fieldKey: patch.binding.fieldKey,
+        fieldMeta: heldBinding.fieldMeta,
+        format: activeFormat,
         baseSV,
         collect: true,
       };
@@ -2836,13 +3314,12 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         if (operation.type !== "mark") continue;
         const record = affected.find((entry) => entry.operationIndex === index);
         if (record === undefined) continue;
-        const intentId = agentIntentId(patch, index);
-        const markValue: true | string | null =
-          operation.mark === "bold" || operation.mark === "italic" || operation.mark === "code"
-            ? operation.applied
-              ? true
-              : null
-            : null;
+        // One draft per asserted key (R-FULL-MARK-1 linkage): a boolean key
+        // records one intent; a `link` operation records two (`link` with the
+        // href-or-null value, `linkTitle` with the title-or-null value — an
+        // omitted title clears the title, a null href clears both).
+        const pairs = markIntentPairs(operation);
+        if (pairs === null) continue;
         const units = expandedCoveredUnits(
           heldBinding.text,
           Math.min(
@@ -2854,19 +3331,30 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
             resolveAnchorOrRefuse(heldBinding.text, patch.binding.fieldKey, operation.range.end, "intent"),
           ),
         );
-        appendProvenanceDraft(options.store, {
-          intentId,
-          actorId: patch.actorId,
-          source: { kind: "agent-patch", key, operationIndex: index },
-          fieldKey: patch.binding.fieldKey,
-          mark: operation.mark as InlineMarkKey,
-          value: markValue,
-          range: { start: operation.range.start, end: operation.range.end },
-          items: units,
-        });
-        record.markIntentIds = [intentId];
+        const intentIds: string[] = [];
+        for (const pair of pairs) {
+          const intentId =
+            pairs.length === 1 ? agentIntentId(patch, index) : `${agentIntentId(patch, index)}:${pair.mark}`;
+          appendProvenanceDraft(options.store, {
+            intentId,
+            actorId: patch.actorId,
+            source: { kind: "agent-patch", key, operationIndex: index },
+            fieldKey: patch.binding.fieldKey,
+            mark: pair.mark,
+            value: pair.value,
+            range: { start: operation.range.start, end: operation.range.end },
+            items: units,
+          });
+          intentIds.push(intentId);
+        }
+        record.markIntentIds = intentIds;
+        record.markIntents = pairs.map((pair, pairIndex) => ({
+          mark: pair.mark,
+          value: pair.value,
+          intentIds: [intentIds[pairIndex] as string],
+        }));
         record.mark = operation.mark as InlineMarkKey;
-        record.markValue = markValue;
+        record.markValue = pairs[0]?.value ?? null;
       }
       const receipt: AgentPatchReceipt = {
         key,
@@ -2938,8 +3426,9 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
       const scratchDoc = new Y.Doc();
       Y.applyUpdate(scratchDoc, Y.encodeStateAsUpdate(fieldDoc));
       const scratchText = scratchDoc.getText(fieldTextName(fieldKey));
+      const scratchMeta = scratchDoc.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>;
       try {
-        applyRevertInverse(scratchText, record, options.store.provenanceLog, key, input.requestedBy);
+        applyRevertInverse(scratchText, scratchMeta, record, options.store.provenanceLog, key, input.requestedBy);
       } catch (error) {
         if (error instanceof BridgeRefusal) {
           const receipt: AgentPatchReceipt = {
@@ -2959,7 +3448,7 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
       const revertOrigin = `revert:${input.requestedBy}`;
       let stats: RevertInverseStats | null = null;
       fieldDoc.transact(() => {
-        stats = applyRevertInverse(ytext, record, options.store.provenanceLog, key, input.requestedBy, (draft) =>
+        stats = applyRevertInverse(ytext, entry.fieldMeta, record, options.store.provenanceLog, key, input.requestedBy, (draft) =>
           appendProvenanceDraft(options.store, draft),
         );
       }, revertOrigin);
