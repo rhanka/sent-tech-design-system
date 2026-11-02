@@ -1589,8 +1589,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       arrives as an ordinary remote update under a non-local
       `revert:<actor>` origin; history for the step advances once, when the
       outcome resolves, keyed by the pending `requestId` and the outcome's
-      `transitionId` — an outcome whose `requestId` mismatches the pending
-      identity is ignored. Every resolved refusal and every `unavailable`
+      `transitionId` — an outcome whose `requestId` is absent or mismatches
+      the pending identity is ignored. Every resolved refusal and every `unavailable`
       maps to a silent no-op for the mark half. Absent performer leaves
       recording and character undo working with mark undo a silent no-op. */
   const readMarkHistory = (): LocalMarkHistory | null => {
@@ -1609,9 +1609,13 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       manager clearing its redo stack on the same transact — then a new
       entry plus a new step is a mixed gesture, a new step alone is
       mark-only, a new entry alone is character-only, and neither means the
-      transaction coalesced into the previous gesture (no new entry). The
-      in-flight pending gesture is never truncated: its outcome still
-      resolves against its step. */
+      transaction coalesced into the previous gesture (no new entry). A new
+      transact while an undo is in flight also truncates the pending
+      gesture: the manager cleared its redo stack on this transact, so the
+      pending redo can never apply. The pending step is retained, so the
+      resolving outcome still advances the record without exposing any
+      redo. A redo in flight keeps its gesture: it resolves into an
+      undoable (non-redo) state. */
   const noteSharedTransact = (undoBefore: number, stepsBefore: number): void => {
     const history = readMarkHistory();
     if (history === null || boundImpl === undefined) return;
@@ -1622,22 +1626,54 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         ? (history.steps[history.steps.length - 1] as LocalMarkStep)
         : null;
     const pendingTxn = history.pending?.stepTransactionId ?? null;
+    const pendingDirection = history.pending?.direction ?? null;
     const redoAvailable = (gesture: LocalGesture): boolean => {
-      if (pendingTxn !== null && gesture.transactionId === pendingTxn) return false;
+      // A redo in flight resolves into an undoable (non-redo) state, so
+      // the pending gesture keeps its exemption while its direction is redo.
+      if (
+        pendingDirection === "redo" &&
+        pendingTxn !== null &&
+        gesture.transactionId === pendingTxn
+      ) {
+        return false;
+      }
       // The `charUndone` flag is inert for mark-only gestures (they own no
       // character half): only character-bearing gestures read it here.
       if ((gesture.kind === "char" || gesture.kind === "mixed") && gesture.charUndone) return true;
       if (gesture.transactionId === null) return false;
       return stepOf(history, gesture.transactionId)?.undone === true;
     };
-    if (history.gestures.some(redoAvailable)) {
-      const kept = history.gestures.filter((gesture) => !redoAvailable(gesture));
+    // A new local transact while an undo is in flight truncates the pending
+    // gesture too: the manager cleared its redo stack on this transact, so
+    // the pending character half can never be redone, and the pending mark
+    // half must not become redoable when its outcome resolves. The gesture
+    // leaves the list now (even when its mark half is not yet redoable, as
+    // for a mark-only undo); its step is retained below so the outcome
+    // still advances the record without exposing any redo.
+    const pendingUndoTruncated =
+      pendingDirection === "undo" &&
+      pendingTxn !== null &&
+      history.gestures.some((gesture) => gesture.transactionId === pendingTxn);
+    if (history.gestures.some(redoAvailable) || pendingUndoTruncated) {
+      const kept = history.gestures.filter((gesture) => {
+        if (
+          pendingDirection === "undo" &&
+          pendingTxn !== null &&
+          gesture.transactionId === pendingTxn
+        ) {
+          return false;
+        }
+        return !redoAvailable(gesture);
+      });
       const keptTxn = new Set<string>();
       for (const gesture of kept) {
         if (gesture.transactionId !== null) keptTxn.add(gesture.transactionId);
       }
-      // The just-recorded step belongs to no gesture yet: retain it.
+      // The just-recorded step belongs to no gesture yet: retain it. The
+      // in-flight pending step is retained too, so its outcome still finds
+      // its record after the truncation.
       if (freshStep !== null) keptTxn.add(freshStep.transactionId);
+      if (pendingTxn !== null) keptTxn.add(pendingTxn);
       history.gestures.length = 0;
       for (const gesture of kept) history.gestures.push(gesture);
       history.steps = history.steps.filter((step) => keptTxn.has(step.transactionId));
@@ -1712,16 +1748,27 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     }
     return null;
   };
-  /** Latest gesture with an un-undone character half (D-C4b pending path),
-      excluding the in-flight pending gesture. */
-  const findPendingCharGesture = (history: LocalMarkHistory): LocalGesture | null => {
+  /** Nearest gesture with a character half needing `direction` (D-C4b
+      pending path), excluding the in-flight pending gesture. Undo scans
+      from the most recent gesture down; redo scans from the earliest
+      gesture up (chronological redo order). A gesture whose character
+      half does not need the direction never stops the scan. */
+  const findPendingCharGesture = (
+    history: LocalMarkHistory,
+    direction: "undo" | "redo",
+  ): LocalGesture | null => {
     const pendingTxn = history.pending?.stepTransactionId ?? null;
+    if (direction === "redo") {
+      for (const gesture of history.gestures) {
+        if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
+        if (gestureCharNeeds(gesture, "redo")) return gesture;
+      }
+      return null;
+    }
     for (let index = history.gestures.length - 1; index >= 0; index -= 1) {
       const gesture = history.gestures[index] as LocalGesture;
       if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
-      if (gestureCharNeeds(gesture, "undo") || gestureCharNeeds(gesture, "redo")) {
-        return gesture;
-      }
+      if (gestureCharNeeds(gesture, "undo")) return gesture;
     }
     return null;
   };
@@ -1762,13 +1809,11 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     // transition is issued. Only an older gesture's character half may
     // still run; the pending step is untouched until its outcome resolves.
     if (history.pending !== null) {
-      const older = findPendingCharGesture(history);
+      const older = findPendingCharGesture(history, direction);
       if (older === null) return;
       if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
-      // Run the older gesture's character half for the pressed direction.
-      const needsForDirection =
-        direction === "undo" ? older.charUndone === false : older.charUndone === true;
-      if (!needsForDirection) return;
+      // The finder already selected a character half needing the pressed
+      // direction; run it exactly once for that direction.
       runCharHalf(older);
       return;
     }
@@ -1825,9 +1870,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         }
         const outcome = raw as LocalMarkOutcome;
         // Outcome correlation (D-C5): advance only when the outcome's
-        // `requestId` equals the pending identity; a mismatching outcome
-        // is ignored and the invocation stays pending.
-        if (typeof outcome.requestId === "string" && outcome.requestId !== current.requestId) {
+        // `requestId` equals the pending identity; any other outcome —
+        // including one without a `requestId` — is ignored and the
+        // invocation stays pending.
+        if (outcome.requestId !== current.requestId) {
           return;
         }
         if (outcome.status === "unavailable") {
