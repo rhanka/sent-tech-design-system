@@ -149,6 +149,50 @@ function recommendedByQuestion(sections: readonly unknown[]): Map<string, string
   return recommended;
 }
 
+/** The option sets linked to one question, in relative document order. */
+function optionSetsForQuestion(sections: readonly unknown[], questionId: string): Record<string, unknown>[] {
+  const linked: Record<string, unknown>[] = [];
+  for (const section of sections) {
+    if (typeof section !== "object" || section === null) continue;
+    const record = section as Record<string, unknown>;
+    if (record.kind !== "optionSet") continue;
+    if (field(record.questionId) === questionId) linked.push(record);
+  }
+  return linked;
+}
+
+/**
+ * The display text of one question's recommended answer (owner parity).
+ * Mirrors `preparePresentation` in `@sentropic/focus/dist/render/presentation.js`:
+ * when the trimmed answer does not already start with the trimmed label of
+ * the recommended option (case-insensitive, followed by end of string or a
+ * boundary character), the label is prefixed with an em dash. The badge stays
+ * the selection marker; this text is display parity only (F-R7 unchanged).
+ * Unlike the owner, a question without a resolvable recommended label keeps
+ * its trimmed answer verbatim instead of throwing, so any valid document
+ * still renders.
+ */
+function displayRecommendedAnswer(question: Record<string, unknown>, sections: readonly unknown[]): string | undefined {
+  const raw = field(question.recommendedAnswer);
+  if (raw === undefined) return undefined;
+  const answer = raw.trim();
+  const questionId = field(question.id);
+  const recommendedId = field(question.recommendedOptionId);
+  if (questionId === undefined || recommendedId === undefined) return answer;
+  const labelRaw = optionSetsForQuestion(sections, questionId)
+    .flatMap((set) => (Array.isArray(set.options) ? set.options : []))
+    .find(
+      (option): option is Record<string, unknown> =>
+        typeof option === "object" && option !== null && field((option as Record<string, unknown>).id) === recommendedId,
+    );
+  const labelField = labelRaw === undefined ? undefined : field(labelRaw.label);
+  if (labelField === undefined) return answer;
+  const label = labelField.trim();
+  const alreadyNamed =
+    answer.toLowerCase().startsWith(label.toLowerCase()) && /^(?:$|[\s,:;.!?—–-])/.test(answer.slice(label.length));
+  return alreadyNamed ? answer : `${label} — ${answer}`;
+}
+
 /** One annotation marker: display state only, never a control (F-R6). */
 function annotationNode(option: Record<string, unknown>): HTMLElement | undefined {
   const annotation = field(option.annotation);
@@ -254,6 +298,7 @@ function sectionNode(
     readonly knownOptions: Set<string>;
     readonly selected: Map<string, string>;
     readonly expanded: Set<string>;
+    readonly sections: readonly unknown[];
   },
 ): HTMLElement {
   const kind = field(section.kind) ?? "";
@@ -281,7 +326,7 @@ function sectionNode(
     if (answer !== undefined) wrap.append(text("p", "st-dossier__questionAnswer", answer));
     const recommendedAnswer = field(section.recommendedAnswer);
     if (recommendedAnswer !== undefined) {
-      wrap.append(text("p", "st-dossier__questionReco", recommendedAnswer));
+      wrap.append(text("p", "st-dossier__questionReco", displayRecommendedAnswer(section, face.sections) ?? recommendedAnswer));
     }
     return wrap;
   }
@@ -388,13 +433,40 @@ export function renderDossier(
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
 
-  const face = { interactions, recommended, knownOptions, selected, expanded };
-  const setWraps: HTMLElement[] = [];
+  const face = { interactions, recommended, knownOptions, selected, expanded, sections };
+  const questionIds = new Set<string>();
   for (const section of sections) {
-    if (typeof section === "object" && section !== null) {
-      const rendered = sectionNode(section as Record<string, unknown>, face);
-      if ((section as Record<string, unknown>).kind === "optionSet") setWraps.push(rendered);
+    if (typeof section !== "object" || section === null) continue;
+    const record = section as Record<string, unknown>;
+    if (record.kind !== "question") continue;
+    const questionId = field(record.id);
+    if (questionId !== undefined) questionIds.add(questionId);
+  }
+  const setWraps: HTMLElement[] = [];
+  const emittedSets = new Set<Record<string, unknown>>();
+  for (const section of sections) {
+    if (typeof section !== "object" || section === null) continue;
+    const record = section as Record<string, unknown>;
+    if (record.kind === "optionSet") {
+      // Deferred when linked to a question; an orphan renders at its position.
+      const linkId = field(record.questionId);
+      if (linkId !== undefined && questionIds.has(linkId)) continue;
+      const rendered = sectionNode(record, face);
+      setWraps.push(rendered);
       article.append(rendered);
+      continue;
+    }
+    article.append(sectionNode(record, face));
+    if (record.kind === "question") {
+      const questionId = field(record.id);
+      if (questionId === undefined) continue;
+      for (const linked of optionSetsForQuestion(sections, questionId)) {
+        if (emittedSets.has(linked)) continue;
+        emittedSets.add(linked);
+        const rendered = sectionNode(linked, face);
+        setWraps.push(rendered);
+        article.append(rendered);
+      }
     }
   }
 
