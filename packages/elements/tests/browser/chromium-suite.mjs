@@ -21,6 +21,21 @@
  *                  jsDelivr asset degradation) and zero CSP violations.
  *   no-bpmn.html — only st-bar-chart: the bpmn-canvas and focus engine chunks
  *                  are never requested (§6.6 lazy boundary witness).
+ *   dossier-l6.html — the L6 imposed renderer defaults (F-R0–F-R7, §11.2):
+ *                  one mount per L6 fixture (short2, short4, long, reco,
+ *                  annotated, diagram), a near-fold mutated island
+ *                  (280–300 chars, no fold control), a disabled-option
+ *                  mutated island (L2 gate restyled as a card), and the
+ *                  track-focus fixture when it exists
+ *                  (`dossier-track.json`, Task 7 — otherwise the track row
+ *                  records blocked instead of failing). Offline, pilot CSP.
+ *                  F-R1 box equality and padding click, F-R2 computed
+ *                  border scan, F-R3 light selection with equal boxes,
+ *                  F-R4 fold/expand with no intent, F-R5 layout and
+ *                  columns, F-R6 no per-option control, F-R7 badge and
+ *                  nothing preselected, criterion 4 intent detail, and the
+ *                  standalone offline render (criterion 1 third). The two
+ *                  hosts of criterion 1 stay not covered (no host here).
  *   invalid-engines.html — st-decision-dossier AND st-bpmn-canvas fed
  *                  STRUCTURALLY INVALID envelopes, plus a st-decision-dossier
  *                  fed a valid BarChart envelope (B7 mismatch): all three
@@ -297,8 +312,53 @@ function pilotBody() {
   `;
 }
 
+/**
+ * The L6 dossier page (§11.2 F-R0–F-R7, Task 7): every committed L6 fixture
+ * mounted through the data island, plus a near-fold mutated island (a body
+ * just under the 300 fold threshold renders fully with no fold control) and
+ * a disabled-option mutated island (the L2 interactions gate restyled as an
+ * inert card, never a button). The track-focus fixture mounts only when
+ * Task 7 produced it; otherwise the track row records blocked.
+ */
+const TRACK_L6_PRESENT = existsSync(join(FIXTURES, "dossier-track.json"));
+
+function dossierL6Body() {
+  const mounts = [
+    ["l6-short2", "dossier-short2.json"],
+    ["l6-short4", "dossier-short4.json"],
+    ["l6-long", "dossier-long.json"],
+    ["l6-reco", "dossier-reco.json"],
+    ["l6-annotated", "dossier-annotated.json"],
+    ["l6-diagram", "dossier-diagram.json"],
+  ]
+    .map(([id, fixture]) => elementWithIsland("st-decision-dossier", id, fixture))
+    .join("\n        ");
+  const nearFold = mutatedIsland("st-decision-dossier", "l6-nearfold", "dossier-short2.json", (envelope) => {
+    const set = envelope.root.document.sections.find((section) => section.kind === "optionSet");
+    set.options[0].body = "detail ".repeat(41).trim();
+  });
+  const disabled = mutatedIsland("st-decision-dossier", "l6-disabled", "dossier-short2.json", (envelope) => {
+    envelope.root.document.interactions = [{ name: "choose-option", targetRef: "opt-b", label: "Choose", enabled: false }];
+  });
+  const trackMount = TRACK_L6_PRESENT ? elementWithIsland("st-decision-dossier", "l6-track", "dossier-track.json") : "";
+  return `
+    ${islandScript(JSON.stringify(HOST_CONFIG_DEFAULT)).replace("<script", '<script id="st-host-config"')}
+    <main>
+      <h1>L6 dossier defaults</h1>
+      <section id="l6-mounts">
+        ${mounts}
+        ${nearFold}
+        ${disabled}
+        ${trackMount}
+      </section>
+    </main>
+    <script type="module" src="/bundle/elements.js"></script>
+  `;
+}
+
 const PAGES = {
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
+  "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
   "/no-bpmn.html": pageHtml(
     PILOT_CSP,
     `
@@ -344,6 +404,7 @@ const PAGES = {
     `
     ${islandScript(JSON.stringify(HOST_CONFIG_DEFAULT)).replace("<script", '<script id="st-host-config"')}
     ${elementWithIsland("st-bar-chart", "chart-strict", "bar-chart-pdata-1.json")}
+    ${elementWithIsland("st-decision-dossier", "dossier-strict", "dossier-short2.json")}
     <div id="ref-strict" data-st-theme="sent-tech"></div>
     <script type="module" src="/ref/ref-main.js"></script>
     <script type="module" src="/bundle/elements.js"></script>
@@ -1033,6 +1094,381 @@ async function shadowSvg(page, elementSelector) {
     `injected <style> refused (${violations.filter((v) => v.directive.startsWith("style")).length} violation(s)); wrapper re-applies component + theme styles through constructable stylesheets (${strict.adoptedSheets} adopted sheet(s)); rendered output styled`,
   );
   ok(`${label}: strict-CSP row measured (constructable-stylesheet fallback asserted)`);
+  // L6 strict row: the dossier chunk adopts its constructable sheet (no
+  // <style> for dossier CSS), the dossier renders, and no script violation
+  // appears (F-R2, criterion 8 strict leg).
+  await waitFor(
+    page,
+    "() => document.getElementById('dossier-strict') && document.getElementById('dossier-strict').shadowRoot && document.getElementById('dossier-strict').shadowRoot.querySelector('[data-st-dossier]')",
+    20000,
+    "dossier-strict renders",
+  );
+  const dossierStrict = await page.evaluate(() => {
+    const element = document.getElementById("dossier-strict");
+    const root = element.shadowRoot;
+    const adopted = Array.from(root.adoptedStyleSheets);
+    let dossierRules = 0;
+    for (const sheet of adopted) {
+      try {
+        for (const rule of sheet.cssRules) {
+          if (rule.cssText.includes("st-dossier")) dossierRules += 1;
+        }
+      } catch {
+        /* unreadable sheet: not ours */
+      }
+    }
+    const card = root.querySelector('[data-option-id="opt-a"]');
+    return {
+      rendered: Boolean(root.querySelector("[data-st-dossier]")),
+      styleElements: root.querySelectorAll("style").length,
+      dossierRules,
+      borderTopWidth: card ? getComputedStyle(card).borderTopWidth : null,
+    };
+  });
+  assert(dossierStrict.rendered, `${label}: dossier renders under strict CSP`, "no dossier article in the shadow root");
+  assert(
+    dossierStrict.styleElements === 0,
+    `${label}: no dossier <style> under strict CSP`,
+    `${dossierStrict.styleElements} <style> element(s) left in the dossier shadow root`,
+  );
+  assert(
+    dossierStrict.dossierRules > 0,
+    `${label}: dossier constructable sheet adopted`,
+    "no st-dossier rule found in any adopted stylesheet",
+  );
+  assert(
+    dossierStrict.borderTopWidth === "1px",
+    `${label}: dossier card outline is 1 px under strict CSP`,
+    `border-top-width is ${dossierStrict.borderTopWidth}`,
+  );
+  ok(`${label}: dossier strict row — constructable dossier sheet, no <style>, 1 px outline`);
+  await observed.close();
+}
+
+// ---------------------------------------------------------------------------
+// dossier-l6 page: the L6 imposed renderer defaults (F-R0–F-R7, §11.2),
+// the criterion 4 element intent detail, and the standalone offline render
+// (criterion 1, standalone third). The two hosts of criterion 1 stay
+// not covered: no Claude Desktop or VS Code host runs here.
+// ---------------------------------------------------------------------------
+
+{
+  const observed = await openPage("/dossier-l6.html");
+  const page = observed.page;
+  const label = "dossier-l6";
+  const mountIds = ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram", "l6-nearfold", "l6-disabled"];
+  for (const id of mountIds) {
+    await waitFor(
+      page,
+      `() => { const el = document.getElementById('${id}'); return el && el.shadowRoot && el.shadowRoot.querySelector('[data-st-dossier]') ? true : false; }`,
+      20000,
+      `${id} renders`,
+    );
+  }
+  ok(`${label}: all six L6 fixtures plus near-fold and disabled islands render offline from the local bundle`);
+
+  await page.evaluate(() => {
+    window.__stL6 = [];
+    for (const element of document.querySelectorAll("st-decision-dossier")) {
+      element.addEventListener("st-intent", (event) => {
+        window.__stL6.push(JSON.parse(JSON.stringify(event.detail)));
+      });
+    }
+  });
+
+  // F-R1: the card is the single control — on three fixtures the
+  // interactive element's box equals the card's box, and a padding click
+  // (corner, outside the label) emits choose-option with the option id.
+  const boxes = await page.evaluate(() => {
+    const out = {};
+    for (const [id, optionId] of [["l6-short2", "opt-a"], ["l6-short4", "opt-1"], ["l6-reco", "opt-r1"]]) {
+      const root = document.getElementById(id).shadowRoot;
+      const byCard = root.querySelector(`[data-option-card="${optionId}"]`);
+      const byOption = root.querySelector(`[data-option-id="${optionId}"]`);
+      const rect = byCard.getBoundingClientRect();
+      out[id] = {
+        sameNode: byCard === byOption,
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+      };
+    }
+    return out;
+  });
+  for (const [id, box] of Object.entries(boxes)) {
+    assert(box.sameNode, `${label}: F-R1 ${id}`, "interactive element and card are not the same node");
+    assert(box.width > 0 && box.height > 0, `${label}: F-R1 ${id}`, "card has a zero box — layout did not apply");
+  }
+  const padClick = await page.evaluate(() => {
+    const root = document.getElementById("l6-short2").shadowRoot;
+    const card = root.querySelector('[data-option-id="opt-a"]');
+    const rect = card.getBoundingClientRect();
+    return { x: rect.x + rect.width - 4, y: rect.y + rect.height - 4 };
+  });
+  await page.mouse.click(padClick.x, padClick.y);
+  await sleep(200);
+  const padIntents = await page.evaluate(() => window.__stL6);
+  assert(
+    padIntents.length === 1 && padIntents[0].name === "choose-option" && padIntents[0].target === "opt-a",
+    `${label}: F-R1 padding click`,
+    `expected one choose-option for "opt-a", saw ${JSON.stringify(padIntents)}`,
+  );
+  ok(`${label}: F-R1 whole card clickable — box equals card box on three fixtures, padding click emits`);
+
+  // F-R2 / criterion 8: no computed border-width above 1 px anywhere in the
+  // dossier subtrees (cards, fold controls, badges, chips, diagram frame).
+  const strokes = await page.evaluate(() => {
+    const over = [];
+    for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
+      const root = document.getElementById(id).shadowRoot;
+      for (const node of root.querySelectorAll("*")) {
+        const style = getComputedStyle(node);
+        for (const prop of ["borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth", "outlineWidth"]) {
+          const value = Number.parseFloat(style[prop]);
+          if (Number.isFinite(value) && value > 1) over.push(`${id} ${node.className} ${prop}=${style[prop]}`);
+        }
+      }
+    }
+    return over;
+  });
+  assert(strokes.length === 0, `${label}: F-R2 no stroke above 1 px`, strokes.slice(0, 5).join(" | "));
+  record("dossier-l6 computed border scan", "no border-width above 1 px over six dossier mounts");
+  ok(`${label}: F-R2 1 px strokes — computed scan clean over six mounts`);
+
+  // F-R3 + F-R7: nothing preselected anywhere (reco included), no emission
+  // before any click; selecting marks the card with a light state and equal
+  // boxes; reselecting clears; keyboard Enter selects.
+  const preselected = await page.evaluate(() => {
+    const out = [];
+    for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
+      out.push(document.getElementById(id).shadowRoot.querySelectorAll('[data-st-selected="true"]').length);
+    }
+    return out;
+  });
+  assert(preselected.every((count) => count === 0), `${label}: F-R7 nothing preselected`, JSON.stringify(preselected));
+  const lightSelect = await page.evaluate(() => {
+    const root = document.getElementById("l6-short4").shadowRoot;
+    const card = root.querySelector('[data-option-id="opt-2"]');
+    const before = card.getBoundingClientRect();
+    card.click();
+    const after = card.getBoundingClientRect();
+    const style = getComputedStyle(card);
+    const selected = card.getAttribute("data-st-selected") === "true" && card.getAttribute("aria-pressed") === "true";
+    card.click();
+    const cleared = !card.hasAttribute("data-st-selected");
+    return {
+      before: { x: before.x, y: before.y, width: before.width, height: before.height },
+      after: { x: after.x, y: after.y, width: after.width, height: after.height },
+      selected,
+      cleared,
+      outlineWidth: style.outlineWidth,
+      borderTopWidth: style.borderTopWidth,
+    };
+  });
+  assert(lightSelect.selected, `${label}: F-R3 light selection`, "card not marked selected after click");
+  assert(
+    JSON.stringify(lightSelect.before) === JSON.stringify(lightSelect.after),
+    `${label}: F-R3 no layout shift`,
+    `box moved ${JSON.stringify(lightSelect.before)} -> ${JSON.stringify(lightSelect.after)}`,
+  );
+  assert(lightSelect.cleared, `${label}: F-R3 reselect clears`, "reselect did not clear the selection");
+  assert(
+    Number.parseFloat(lightSelect.borderTopWidth) <= 1,
+    `${label}: F-R3 selected outline stays 1 px`,
+    `selected border-top-width is ${lightSelect.borderTopWidth}`,
+  );
+  await page.evaluate(() => {
+    window.__stL6.length = 0;
+    const root = document.getElementById("l6-short2").shadowRoot;
+    root.querySelector('[data-option-id="opt-b"]').focus();
+  });
+  await page.keyboard.press("Enter");
+  await sleep(200);
+  const keyboardIntent = await page.evaluate(() => window.__stL6);
+  assert(
+    keyboardIntent.length === 1 && keyboardIntent[0].target === "opt-b",
+    `${label}: keyboard Enter selects`,
+    JSON.stringify(keyboardIntent),
+  );
+  ok(`${label}: F-R3/F-R7 light selection, no shift, nothing preselected, keyboard selects`);
+
+  // F-R4: long arguments render collapsed with an expand control; expanding
+  // reveals the full text with no intent; the near-fold island renders fully.
+  const fold = await page.evaluate(() => {
+    const root = document.getElementById("l6-long").shadowRoot;
+    const cards = Array.from(root.querySelectorAll("[data-option-card]"));
+    const states = cards.map((card) => {
+      const control = card.querySelector("[data-option-fold]");
+      const body = card.querySelector(".st-dossier__optionBody");
+      return {
+        collapsed: body && body.hasAttribute("hidden"),
+        control: control ? control.getAttribute("aria-expanded") : null,
+        label: card.querySelector(".st-dossier__optionLabel") ? card.querySelector(".st-dossier__optionLabel").textContent : "",
+      };
+    });
+    const before = window.__stL6.length;
+    const firstControl = root.querySelector('[data-option-fold="opt-long-1"]');
+    firstControl.click();
+    const afterExpand = {
+      hidden: root.querySelector('[data-option-id="opt-long-1"] .st-dossier__optionBody').hasAttribute("hidden"),
+      expanded: firstControl.getAttribute("aria-expanded"),
+      intents: window.__stL6.length - before,
+      bodyChars: root.querySelector('[data-option-id="opt-long-1"] .st-dossier__optionBody').textContent.length,
+    };
+    return { states, afterExpand };
+  });
+  assert(fold.states.length === 4, `${label}: F-R4 four long cards`, `saw ${fold.states.length}`);
+  assert(
+    fold.states.every((state) => state.collapsed && state.control === "false"),
+    `${label}: F-R4 collapsed by default`,
+    JSON.stringify(fold.states.map((state) => state.control)),
+  );
+  assert(!fold.afterExpand.hidden && fold.afterExpand.expanded === "true", `${label}: F-R4 expand reveals`, JSON.stringify(fold.afterExpand));
+  assert(fold.afterExpand.intents === 0, `${label}: F-R4 expand emits nothing`, `${fold.afterExpand.intents} intent(s)`);
+  assert(fold.afterExpand.bodyChars > 300, `${label}: F-R4 full argument over threshold`, `${fold.afterExpand.bodyChars} chars`);
+  const nearFold = await page.evaluate(() => {
+    const root = document.getElementById("l6-nearfold").shadowRoot;
+    const card = root.querySelector('[data-option-id="opt-a"]');
+    return {
+      foldControls: card.querySelectorAll("[data-option-fold]").length,
+      hidden: card.querySelector(".st-dossier__optionBody").hasAttribute("hidden"),
+    };
+  });
+  assert(nearFold.foldControls === 0 && !nearFold.hidden, `${label}: F-R4 near-fold control`, JSON.stringify(nearFold));
+  ok(`${label}: F-R4 long arguments folded, expand reveals with no intent, near-fold renders fully`);
+
+  // F-R5: renderer-chosen layout — short2 list, short4 grid, long list at
+  // any count; the grid resolves two computed columns; list cards share one
+  // column (no four tall side-by-side columns of long cards).
+  const layouts = await page.evaluate(() => {
+    const layoutOf = (id) => document.getElementById(id).shadowRoot.querySelector("[data-st-option-set]").getAttribute("data-st-layout");
+    const gridTracks = getComputedStyle(
+      document.getElementById("l6-short4").shadowRoot.querySelector("[data-st-option-set]"),
+    ).gridTemplateColumns.split(" ").filter(Boolean).length;
+    const longCards = Array.from(document.getElementById("l6-long").shadowRoot.querySelectorAll("[data-option-card]")).map((card) => {
+      const rect = card.getBoundingClientRect();
+      return { x: rect.x, width: rect.width };
+    });
+    return {
+      short2: layoutOf("l6-short2"),
+      short4: layoutOf("l6-short4"),
+      long: layoutOf("l6-long"),
+      gridTracks,
+      longCards,
+    };
+  });
+  assert(layouts.short2 === "list" && layouts.long === "list" && layouts.short4 === "grid", `${label}: F-R5 layout table`, JSON.stringify(layouts));
+  assert(layouts.gridTracks === 2, `${label}: F-R5 grid capped at two columns`, `${layouts.gridTracks} track(s)`);
+  assert(
+    layouts.longCards.every((card) => card.x === layouts.longCards[0].x && card.width === layouts.longCards[0].width),
+    `${label}: F-R5 long cards in one column`,
+    JSON.stringify(layouts.longCards),
+  );
+  ok(`${label}: F-R5 renderer-chosen layout — list/grid table holds with computed columns`);
+
+  // F-R6: no per-option control besides the card (fold controls only on
+  // long cards); at most one annotation control per decision. F-R7: one
+  // discreet badge on the recommended option only.
+  const annotations = await page.evaluate(() => {
+    const annotated = document.getElementById("l6-annotated").shadowRoot;
+    const perOptionControls = [];
+    for (const card of annotated.querySelectorAll("[data-option-id]")) {
+      perOptionControls.push(card.querySelectorAll("button, a, input, select, textarea").length);
+    }
+    const reco = document.getElementById("l6-reco").shadowRoot;
+    return {
+      perOptionControls,
+      dossierAnnotationControls: annotated.querySelectorAll("[data-annotation-control]").length,
+      badges: Array.from(reco.querySelectorAll(".st-dossier__badge")).map((badge) => badge.closest("[data-option-id]").getAttribute("data-option-id")),
+      otherBadges: ["l6-short2", "l6-short4", "l6-long", "l6-annotated", "l6-diagram"].map(
+        (id) => document.getElementById(id).shadowRoot.querySelectorAll(".st-dossier__badge").length,
+      ),
+      badgeTag: reco.querySelector(".st-dossier__badge") ? reco.querySelector(".st-dossier__badge").tagName : null,
+    };
+  });
+  assert(
+    annotations.perOptionControls.every((count) => count === 0),
+    `${label}: F-R6 no per-option control`,
+    JSON.stringify(annotations.perOptionControls),
+  );
+  assert(annotations.dossierAnnotationControls <= 1, `${label}: F-R6 single annotation at most`, `${annotations.dossierAnnotationControls}`);
+  assert(annotations.badges.length === 1 && annotations.badges[0] === "opt-r1", `${label}: F-R7 discreet badge`, JSON.stringify(annotations.badges));
+  assert(annotations.otherBadges.every((count) => count === 0), `${label}: F-R7 badge nowhere else`, JSON.stringify(annotations.otherBadges));
+  assert(["SPAN", "P", "EM", "STRONG"].includes(annotations.badgeTag), `${label}: F-R7 badge is display state`, String(annotations.badgeTag));
+  const disabled = await page.evaluate(() => {
+    const root = document.getElementById("l6-disabled").shadowRoot;
+    const inert = root.querySelector('[data-option-disabled="opt-b"]');
+    return {
+      present: Boolean(inert),
+      controls: inert ? inert.querySelectorAll("button, a, [role='button'], [tabindex]").length : -1,
+      selectable: root.querySelector('[data-option-id="opt-b"]') !== null,
+    };
+  });
+  assert(disabled.present && disabled.controls === 0 && !disabled.selectable, `${label}: disabled option inert`, JSON.stringify(disabled));
+  ok(`${label}: F-R6/F-R7 single annotation, discreet badge, disabled card inert`);
+
+  // Criterion 4 element half: the click emits the exact §4.6 detail.
+  await page.evaluate(() => {
+    window.__stL6.length = 0;
+    const root = document.getElementById("l6-short2").shadowRoot;
+    root.querySelector('[data-option-id="opt-b"]').click();
+  });
+  await sleep(200);
+  const detail = await page.evaluate(() => window.__stL6);
+  assert(detail.length === 1, `${label}: criterion 4 one intent`, JSON.stringify(detail));
+  assert(
+    detail[0].event === "intent" && detail[0].name === "choose-option" && detail[0].target === "opt-b" && typeof detail[0].context === "object",
+    `${label}: criterion 4 §4.6 detail`,
+    JSON.stringify(detail[0]),
+  );
+  record("dossier-l6 intent detail", JSON.stringify(detail[0]));
+  ok(`${label}: criterion 4 element half — exact §4.6 choose-option detail at the boundary`);
+
+  // Criterion 1 standalone third (Task 7 input when present, else blocked):
+  // the page renders offline from the local bundle — title, options, one
+  // click observed. Claude Desktop and VS Code stay not covered (no host).
+  if (TRACK_L6_PRESENT) {
+    await waitFor(
+      page,
+      "() => { const el = document.getElementById('l6-track'); return el && el.shadowRoot && el.shadowRoot.textContent.includes('decision') ? true : false; }",
+      20000,
+      "l6-track renders",
+    );
+    const trackRender = await page.evaluate(() => {
+      const root = document.getElementById("l6-track").shadowRoot;
+      const before = window.__stL6.length;
+      const first = root.querySelector("[data-option-id]");
+      if (first) first.click();
+      return {
+        title: root.querySelector("[data-st-dossier-title]") ? root.querySelector("[data-st-dossier-title]").textContent : "",
+        options: root.querySelectorAll("[data-option-id]").length,
+        intents: window.__stL6.length - before,
+      };
+    });
+    assert(trackRender.options > 0, `${label}: track fixture options`, JSON.stringify(trackRender));
+    assert(trackRender.intents === 1, `${label}: track fixture click`, JSON.stringify(trackRender));
+    record("dossier-l6 track fixture", `renders offline: title + ${trackRender.options} option(s), one choose-option click observed`);
+    ok(`${label}: criterion 1 standalone third — track fixture renders offline with one click observed`);
+  } else {
+    record(
+      "dossier-l6 track fixture",
+      "blocked: no dossier-track.json — both store decisions refuse the readability gate (Task 7 STOP, exit 1); the standalone offline render is witnessed on the six committed fixtures instead",
+    );
+    const offline = await page.evaluate(() => ({
+      title: document.getElementById("l6-reco").shadowRoot.querySelector("[data-st-dossier-title]").textContent,
+      options: document.getElementById("l6-reco").shadowRoot.querySelectorAll("[data-option-id]").length,
+    }));
+    assert(offline.options === 2, `${label}: offline render`, JSON.stringify(offline));
+    ok(`${label}: criterion 1 standalone third — committed fixtures render offline, track input blocked`);
+  }
+  assert(observed.consoleErrors.length === 0, `${label}: zero console errors`, observed.consoleErrors.slice(0, 3).join(" | "));
+  assert(
+    (await observed.violations()).length === 0,
+    `${label}: zero CSP violations`,
+    JSON.stringify(await observed.violations()).slice(0, 400),
+  );
+  ok(`${label}: zero console errors, zero CSP violations on the dossier page`);
   await observed.close();
 }
 

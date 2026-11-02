@@ -20,6 +20,6 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/element/dom", "src/types", "tests/element-runtime.test.ts", "tests/element-sanitizer.test.ts"],
+  "include": ["src/element/dom", "src/types", "tests/element-runtime.test.ts", "tests/element-sanitizer.test.ts", "tests/focus-renderer-l6.test.ts"],
   "exclude": ["node_modules"]
 }
