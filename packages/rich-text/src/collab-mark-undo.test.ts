@@ -1469,6 +1469,214 @@ describe("CL-4e double mark undo (both sources, headless evaluation)", () => {
     }
   });
 
+describe("CL-4e pass-2 fixes (pending char scan, truncation while pending, strict correlation)", () => {
+  it("pending undo still reaches the oldest character gesture (char, char, mark)", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    stop(editor);
+    typeEnd(editor, "A");
+    stop(editor);
+    typeEnd(editor, "B");
+    stop(editor);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stop(editor);
+    await tick();
+    expect(docText(editor)).toBe("abcdefAB");
+    inner.holdOutcomes();
+    undo(editor);
+    await tick(3);
+    // The latest gesture is the bold: its mark half is now in flight.
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+    undo(editor);
+    await tick(3);
+    expect(docText(editor)).toBe("abcdefA");
+    expect(counter.seen).toHaveLength(1);
+    // While the mark step is still pending, the oldest character gesture
+    // must stay reachable: skipping it here blocks "A" forever.
+    undo(editor);
+    await tick(3);
+    expect(docText(editor)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+  });
+
+  it("pending undo reaches across an already-undone character gesture (char, mark, char)", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    stop(editor);
+    typeEnd(editor, "A");
+    stop(editor);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stop(editor);
+    typeEnd(editor, "B");
+    stop(editor);
+    await tick();
+    expect(docText(editor)).toBe("abcdefAB");
+    inner.holdOutcomes();
+    undo(editor);
+    await tick(3);
+    // Latest gesture first: only the characters go, with no mark request.
+    expect(counter.seen).toHaveLength(0);
+    expect(docText(editor)).toBe("abcdefA");
+    undo(editor);
+    await tick(3);
+    // The middle gesture is the bold: its mark half is now in flight.
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+    // The top gesture is already undone, so the scan must keep going down
+    // to "A" instead of stopping on it.
+    undo(editor);
+    await tick(3);
+    expect(docText(editor)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+  });
+
+  it("redo while pending restores the earliest undone characters first", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    stop(editor);
+    typeEnd(editor, "A");
+    stop(editor);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stop(editor);
+    typeEnd(editor, "B");
+    stop(editor);
+    await tick();
+    inner.holdOutcomes();
+    undo(editor);
+    await tick(3);
+    undo(editor);
+    await tick(3);
+    undo(editor);
+    await tick(3);
+    // Both character gestures are undone while the bold stays in flight.
+    expect(docText(editor)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    // Redo order is chronological: "A" (index 0) before "B", with no new
+    // mark transition while the undo is pending.
+    redo(editor);
+    await tick(3);
+    expect(docText(editor)).toBe("abcdefA");
+    expect(counter.seen).toHaveLength(1);
+    redo(editor);
+    await tick(3);
+    expect(docText(editor)).toBe("abcdefAB");
+    expect(counter.seen).toHaveLength(1);
+  });
+
+  it("new local work while a mixed mark undo is pending truncates the pending redo", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    stop(editor);
+    mixedTypeBold(editor, "B");
+    stop(editor);
+    await tick();
+    const mixedTxn = humanTxnOf(store, "bold").transactionId;
+    expect(docText(editor)).toBe("abcdefB");
+    inner.holdOutcomes();
+    undo(editor);
+    // The character half applies synchronously; the mark half is in flight.
+    expect(docText(editor)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    expect(counter.seen[0]).toMatchObject({ transactionId: mixedTxn, direction: "undo" });
+    // New local work while the mark outcome is withheld: the manager drops
+    // its redo stack, and the history must drop the pending redo with it.
+    stop(editor);
+    typeEnd(editor, "Z");
+    stop(editor);
+    await tick();
+    expect(docText(editor)).toBe("abcdefZ");
+    inner.releaseOutcomes();
+    await tick(10);
+    // The pending step still records its outcome, but issues nothing new.
+    expect(counter.seen).toHaveLength(1);
+    undo(editor);
+    await tick(5);
+    expect(docText(editor)).toBe("abcdef");
+    // Redo restores only "Z": the character half of one gesture is never
+    // combined with the mark half of another.
+    redo(editor);
+    await tick(10);
+    expect(docText(editor)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+  });
+
+  it("new local work while a mark-only undo is pending truncates the pending redo", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    stop(editor);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stop(editor);
+    await tick();
+    inner.holdOutcomes();
+    undo(editor);
+    await tick(3);
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+    stop(editor);
+    typeEnd(editor, "Z");
+    stop(editor);
+    await tick();
+    expect(docText(editor)).toBe("abcdefZ");
+    inner.releaseOutcomes();
+    await tick(10);
+    expect(counter.seen).toHaveLength(1);
+    undo(editor);
+    await tick(5);
+    expect(docText(editor)).toBe("abcdef");
+    // Redo restores only "Z": the pending mark redo was truncated by the
+    // new local work, so no mark transition may follow.
+    redo(editor);
+    await tick(10);
+    expect(docText(editor)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+  });
+
+  it("an applied outcome without requestId never advances the pending step", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const manual = manualPerformer();
+    const editor = await mountWithUndo(source, doc, HUMAN, store, manual.performer);
+    stop(editor);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stop(editor);
+    await tick();
+    undo(editor);
+    await tick(3);
+    expect(manual.inputs).toHaveLength(1);
+    // A conforming outcome always carries the pending identity: one without
+    // it is ignored and the invocation stays pending.
+    manual.resolvers[0]({
+      status: "applied",
+      duplicate: false,
+      transitionId: "markundo:trans:bogus:0",
+      changed: true,
+      detail: "missing identity",
+    });
+    await tick(10);
+    expect(yMarksAt(resolved.text, 2)).toBe(true);
+    // Still pending in both directions: neither press issues a new mark
+    // transition for the never-advanced step.
+    redo(editor);
+    await tick(5);
+    expect(manual.inputs).toHaveLength(1);
+    undo(editor);
+    await tick(5);
+    expect(manual.inputs).toHaveLength(1);
+  });
+});
+
   it("D-C4c through the stand-in: an uncommitted original stays pending until release, then applies", async () => {
     for (const kind of ["in-memory-double", "hocuspocus"] as const) {
       await withDriver(kind, async (driver) => {
