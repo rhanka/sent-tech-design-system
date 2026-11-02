@@ -22,11 +22,52 @@ import {
   createBoundUndoManager,
 } from "./editor-collaboration.js";
 import type {
-  BoundMarkUndoState,
   LiveSessionBindingSource,
   SessionMarkUndoPerformer,
   SessionProvenanceSink,
 } from "./editor-collaboration.js";
+
+/** Per-field mark history beside the field `UndoManager` (CL-4e §3.3).
+    Private to the bound runtime: never exported, passed type-erased through
+    `BoundImpl` (the `"./editor"` graph only ever sees the erased handle).
+    `steps` holds one entry per mark-bearing human transaction; `gestures`
+    links every local gesture (character-only, mark-only or mixed) to its
+    `UndoManager` entry and, for mark-bearing gestures, to its step. */
+interface BoundMarkGroup {
+  mark: string;
+  intentIds: string[];
+}
+
+interface BoundMarkStep {
+  transactionId: string;
+  fieldKey: string;
+  marks: BoundMarkGroup[];
+  transitionId: string | null;
+  undone: boolean;
+}
+
+interface BoundGesture {
+  kind: "char" | "mark" | "mixed";
+  transactionId: string | null;
+  charUndone: boolean;
+}
+
+interface BoundMarkHistory {
+  steps: BoundMarkStep[];
+  gestures: BoundGesture[];
+  pending:
+    | {
+        readonly requestId: string;
+        readonly commandTransactionId: string;
+        readonly expectedTransitionId: string | null;
+        readonly stepTransactionId: string;
+        readonly direction: "undo" | "redo";
+        readonly fieldKey: string;
+      }
+    | null;
+  readonly sessionId: string;
+  readonly fieldKey: string;
+}
 import type { RichTextEditor, RichTextEditorOptions } from "./editor.js";
 import type { RichTextProfile } from "./profile.js";
 import { buildEditor } from "./editor.js";
@@ -80,47 +121,54 @@ export async function createBoundRichTextEditor(
   const provenanceSink: SessionProvenanceSink | null = bindingSource.provenanceSink ?? null;
   const provenanceUndo: SessionMarkUndoPerformer | null = bindingSource.provenanceUndo ?? null;
   const localActorId = actorId ?? `binding:${bindingIdentity.sessionId}:${bindingIdentity.fieldKey}`;
-  const markUndo: BoundMarkUndoState | null =
+  // CL-4e fix 1: the history exists whenever the performer does, even
+  // without a sink (a host capturing intents out-of-band still gets local
+  // mark steps); the recording wrapper exists whenever either is present
+  // and forwards to the sink only when one was supplied.
+  const markUndo: BoundMarkHistory | null =
     provenanceUndo === null
       ? null
       : {
           steps: [],
+          gestures: [],
           pending: null,
-          requestCounter: 0,
           sessionId: bindingIdentity.sessionId,
           fieldKey: bindingIdentity.fieldKey,
         };
   const recordingSink: SessionProvenanceSink | null =
-    provenanceSink === null || markUndo === null
-      ? provenanceSink
+    provenanceSink === null && markUndo === null
+      ? null
       : {
           recordFormattingIntent(intent: FormattingIntentDraft): void {
-            const source = intent.source as { kind: string; transactionId?: unknown };
-            const transactionId =
-              source.kind === "human-transaction" && typeof source.transactionId === "string"
-                ? source.transactionId
-                : null;
-            if (transactionId !== null && intent.fieldKey === markUndo.fieldKey) {
-              let step = markUndo.steps.find((entry) => entry.transactionId === transactionId);
-              if (step === undefined) {
-                step = {
-                  transactionId,
-                  fieldKey: intent.fieldKey,
-                  marks: [],
-                  transitionId: null,
-                  undone: false,
-                };
-                markUndo.steps.push(step);
-              }
-              const groups = step.marks as Array<{ mark: string; intentIds: string[] }>;
-              const existing = groups.find((group) => group.mark === intent.mark);
-              if (existing === undefined) {
-                groups.push({ mark: intent.mark as string, intentIds: [intent.intentId] });
-              } else if (!existing.intentIds.includes(intent.intentId)) {
-                existing.intentIds.push(intent.intentId);
+            if (markUndo !== null) {
+              const source = intent.source as { kind: string; transactionId?: unknown };
+              const transactionId =
+                source.kind === "human-transaction" && typeof source.transactionId === "string"
+                  ? source.transactionId
+                  : null;
+              if (transactionId !== null && intent.fieldKey === markUndo.fieldKey) {
+                let step = markUndo.steps.find((entry) => entry.transactionId === transactionId);
+                if (step === undefined) {
+                  step = {
+                    transactionId,
+                    fieldKey: intent.fieldKey,
+                    marks: [],
+                    transitionId: null,
+                    undone: false,
+                  };
+                  markUndo.steps.push(step);
+                }
+                const existing = step.marks.find((group) => group.mark === intent.mark);
+                if (existing === undefined) {
+                  step.marks.push({ mark: intent.mark as string, intentIds: [intent.intentId] });
+                } else if (!existing.intentIds.includes(intent.intentId)) {
+                  existing.intentIds.push(intent.intentId);
+                }
               }
             }
-            provenanceSink.recordFormattingIntent(intent);
+            if (provenanceSink !== null) {
+              provenanceSink.recordFormattingIntent(intent);
+            }
           },
         };
   // CL-3b2 (§4.6.1): the private composition staging driver over this

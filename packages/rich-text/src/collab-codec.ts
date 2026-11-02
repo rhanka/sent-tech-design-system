@@ -855,14 +855,6 @@ export function validateFieldState(
         throw new Error("rich-text.collab-invalid-meta: HR admits wrapper keys only");
       }
     }
-    if (openerKind === "preserved") {
-      throw new Error("rich-text.collab-invalid-meta: preserved blocks carry no metadata");
-    }
-    if (openerKind === "paragraph") {
-      if ((record as { blockKind?: unknown }).blockKind === undefined) {
-        throw new Error("rich-text.collab-invalid-meta: text paragraph requires blockKind");
-      }
-    }
   }
 }
 
