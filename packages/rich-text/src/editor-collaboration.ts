@@ -11,8 +11,8 @@
 
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
+import type { FieldBindingIdentity, FormattingIntent } from "./collaboration.js";
 import type {
-  FieldBindingIdentity,
   LiveSessionAdmissionRequest,
   LiveSessionOpenRefusal,
   SchemaEpochAcknowledgement,
@@ -58,6 +58,33 @@ export interface LiveSessionBindingSource {
   admittedActorOf?(
     actorId: string,
   ): { displayLabel: string; color: string; awarenessClientId?: number } | null;
+  /**
+   * Optional session provenance sink (spec section 5.6 R-REV-3). Supplied by the host
+   * adapter (or the bridge double store) with the binding source.
+   * Absent means human intents are computed and dropped; the binding never buffers them in shipped code.
+   */
+  readonly provenanceSink?: SessionProvenanceSink;
+}
+
+/**
+ * One semantic formatting intent as the DS binding computes it, before the
+ * host journal assigns its total order. `seq` is host-minted (spec section 5.6
+ * R-REV-3: "Host journal sequence; the log's total order for this
+ * document"); shipped DS code never supplies it, never sorts by wall clock,
+ * and never reuses an `intentId`.
+ */
+export type FormattingIntentDraft = Omit<FormattingIntent, "seq">;
+
+export interface SessionProvenanceSink {
+  /**
+   * Append one human intent to the session provenance log. Called once per
+   * (transaction, mark) application, before or with the shared Yjs
+   * transaction it belongs to. Synchronous by contract: the host assigns
+   * `seq` in call order at this point. Implementations for valid
+   * drafts do not throw; durability and restart behaviour are host
+   * obligations.
+   */
+  recordFormattingIntent(intent: FormattingIntentDraft): void;
 }
 
 /**

@@ -20,7 +20,7 @@ import {
   boundMarkOriginFor,
   createBoundUndoManager,
 } from "./editor-collaboration.js";
-import type { LiveSessionBindingSource } from "./editor-collaboration.js";
+import type { LiveSessionBindingSource, SessionProvenanceSink } from "./editor-collaboration.js";
 import type { RichTextEditor, RichTextEditorOptions } from "./editor.js";
 import type { RichTextProfile } from "./profile.js";
 import { buildEditor } from "./editor.js";
@@ -87,6 +87,7 @@ export async function createBoundRichTextEditor(
   // (AMB-1/AMB-5), falling back to the binding-scoped identity when the
   // host names no actor (renders nowhere until admitted, like a revoked
   // actor). The `"./editor"` entry only ever sees the handle.
+  const provenanceSink: SessionProvenanceSink | null = bindingSource.provenanceSink ?? null;
   const localActorId = actorId ?? `binding:${bindingIdentity.sessionId}:${bindingIdentity.fieldKey}`;
   const cursorPublisher = cursor.createCursorPublisher({
     ytext: resolved.text,
@@ -118,6 +119,7 @@ export async function createBoundRichTextEditor(
     localOrigin,
     markOrigin,
     undoManager: undoManager as never,
+    provenanceSink: provenanceSink as never,
     composition: compositionDriver as never,
     cursors: {
       extension: cursor.wrapCursorPlugin(cursorPlugin),

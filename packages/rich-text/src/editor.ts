@@ -401,6 +401,9 @@ export interface BoundImpl {
   /** The field `UndoManager` handle (spec §4.5, CL-3b1): type-erased, no `Y`
       type crosses this seam. */
   undoManager: BoundUndoManager;
+  /** Erased provenance sink (CL-4c R-REV-3): captured once at bound
+      construction. Null when the source carries no sink. */
+  provenanceSink: { recordFormattingIntent(intent: unknown): void } | null;
   /** Private composition staging driver (CL-3b2 §4.6.1): type-erased, no `Y`
       type crosses this seam. Present on every bound mount. */
   composition: BoundCompositionDriver;
@@ -1665,6 +1668,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       let projectionFailure: unknown = null;
       isProjecting = true;
       try {
+        const provenanceActorId =
+          options.collaborationActor?.actorId ?? (binding ? `binding:${binding.sessionId}:${binding.fieldKey}` : "");
         const revealedIds = (boundImpl.projection.projectPmTransactionToYText(
           {
             ytext: boundImpl.ytext,
@@ -1672,6 +1677,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
             fieldKey: binding?.fieldKey ?? "",
             allocateId: allocateFresh,
             format: documentFormat,
+            provenanceSink: boundImpl.provenanceSink as never,
+            provenanceActorId,
             // The live document after the identity plugin's repairs for
             // this transaction (review 2 B-NEW-2): the projection adopts the
             // minted split-tail and inserted-block identities instead of

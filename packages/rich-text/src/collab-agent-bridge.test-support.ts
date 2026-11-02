@@ -45,6 +45,7 @@
  * provenance log itself is CL-4c.
  */
 import * as Y from "yjs";
+import { createHash } from "node:crypto";
 import {
   createRelativePositionFromJSON,
   relativePositionToJSON,
@@ -54,9 +55,11 @@ import {
   MAX_READ_PARAGRAPHS,
   MAX_READ_SERIALIZED_BYTES,
   MAX_READ_TEXT_UNITS,
+  planMarkRevert,
   validateAgentPatch,
   validateAgentReadRequest,
   validateCollaborationColor,
+  validateFormattingIntentDraft,
 } from "./collaboration.js";
 import type {
   AgentDocumentState,
@@ -72,9 +75,12 @@ import type {
   AwarenessCursor,
   CollaborationActor,
   FieldBindingIdentity,
+  FormattingIntent,
+  InlineMarkKey,
   PresenceSnapshot,
   RelativeAnchor,
 } from "./collaboration.js";
+import type { FormattingIntentDraft } from "./editor-collaboration.js";
 import {
   attributesToMarks,
   fieldMetaName,
@@ -104,16 +110,115 @@ const agentOriginFor = (actorId: string): string => `agent:${actorId}`;
     restart the bridge over the same store; durable semantics stay CL-4c). */
 export interface AgentBridgeReceiptStore {
   receipts: Record<string, AgentPatchReceipt>;
-  /** Patch JSON per full key (minimal retry record; RFC 8785 canonical payload
-      hashing and `idempotency-key-reuse` semantics stay CL-4c, AMB-A6). */
+  /** Patch JSON per full key (kept for witness readability; retry identity
+      is by canonical payload hash, section 5.4.1). */
   payloads: Record<string, string>;
   /** R-REV-2 affected-items record per full key (applied patches only; the
-      record the CL-4c revert will consume). */
+      record the CL-4c revert consumes). */
   records: Record<string, AgentAffectedItemsRecord>;
+  /** Canonical payload hash per full key (section 5.4.1 payload binding). */
+  payloadHashes: Record<string, string>;
+  /** Ordered provenance log (store-assigned sequence, journal stand-in). */
+  provenanceLog: FormattingIntent[];
+  /** Next provenance sequence to assign. */
+  provenanceNextSeq: number;
+  /** Revert receipts per original full key (R-REV-7). */
+  revertReceipts: Record<string, AgentPatchReceipt>;
+  /** Session epoch presented at admission per full key (readability). */
+  patchEpochs: Record<string, string>;
 }
 
 export function createAgentBridgeReceiptStore(): AgentBridgeReceiptStore {
-  return { receipts: {}, payloads: {}, records: {} };
+  return {
+    receipts: {},
+    payloads: {},
+    records: {},
+    payloadHashes: {},
+    provenanceLog: [],
+    provenanceNextSeq: 1,
+    revertReceipts: {},
+    patchEpochs: {},
+  };
+}
+
+/** RFC 8785 canonical JSON for the patch value classes a patch can carry
+    (objects with sorted keys, arrays, strings, finite numbers, booleans,
+    null). Patch bodies carry only these classes; no other class reaches the
+    hash input. */
+export function canonicalizeJson(value: unknown): string {
+  if (value === null) return "null";
+  if (value === true) return "true";
+  if (value === false) return "false";
+  if (typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) {
+      throw new Error("rich-text.canonical-hash: non-finite number is not hashable");
+    }
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((entry) => canonicalizeJson(entry)).join(",")}]`;
+  }
+  if (typeof value === "object") {
+    const keys = Object.keys(value as Record<string, unknown>).sort();
+    const parts: string[] = [];
+    for (const key of keys) {
+      parts.push(`${JSON.stringify(key)}:${canonicalizeJson((value as Record<string, unknown>)[key])}`);
+    }
+    return `{${parts.join(",")}}`;
+  }
+  throw new Error("rich-text.canonical-hash: unhashable value class");
+}
+
+/** Canonical payload body for section 5.4.1 (register AMB-C1): the hashed
+    body is `{ binding, baseRevision, operations }` (operations, anchors,
+    base revision and binding identity; everything except transport
+    metadata). Key components (`patchId`, `actorId`, `sessionEpoch`) bind
+    through the full key and are not double-counted inside the hash. */
+export function canonicalPatchBody(patch: AgentPatch): unknown {
+  return {
+    baseRevision: patch.baseRevision,
+    binding: patch.binding,
+    operations: patch.operations,
+  };
+}
+
+/** SHA-256 lower-hex over the RFC 8785 canonical JSON of the patch body. */
+export function computePayloadHash(patch: AgentPatch): string {
+  const canonical = canonicalizeJson(canonicalPatchBody(patch));
+  return createHash("sha256").update(canonical, "utf8").digest("hex");
+}
+
+/** Append one validated draft to the store log with the next sequence.
+    Throws a typed test error on an invalid draft or a conflicting replay. */
+export function appendProvenanceDraft(
+  store: AgentBridgeReceiptStore,
+  draft: FormattingIntentDraft,
+): FormattingIntent {
+  const checked = validateFormattingIntentDraft(draft);
+  if (!checked.ok) {
+    throw new Error(`rich-text.provenance-append: invalid draft is a test failure: ${checked.detail}`);
+  }
+  const existing = store.provenanceLog.find((entry) => entry.intentId === draft.intentId);
+  if (existing !== undefined) {
+    const withoutSeq = (value: unknown): unknown => {
+      if (typeof value !== "object" || value === null || Array.isArray(value)) return value;
+      const out: Record<string, unknown> = {};
+      for (const key of Object.keys(value as Record<string, unknown>)) {
+        if (key === "seq") continue;
+        out[key] = (value as Record<string, unknown>)[key];
+      }
+      return out;
+    };
+    if (canonicalizeJson(withoutSeq(existing)) === canonicalizeJson(withoutSeq(draft))) return existing;
+    throw new Error(
+      "rich-text.provenance-append: same intentId with a different payload refuses (dedupe discipline)",
+    );
+  }
+  const record: FormattingIntent = { ...(draft as object), seq: store.provenanceNextSeq } as FormattingIntent;
+  store.provenanceNextSeq += 1;
+  store.provenanceLog.push(record);
+  return record;
 }
 
 /** Item identity in Yjs `(client, clock, length)` coordinates. */
@@ -132,7 +237,8 @@ export interface AgentAffectedOperation {
       separator; format markers included for mark operations). */
   insertedItems: readonly AgentItemId[];
   /** Base items deleted by this operation with their deleted content slice
-      (slice-exact length plus the offset into the host item, for CL-4c). */
+      (slice-exact length plus the offset into the host item, with the
+      recorded marks at delete time for R-REV-6 restore). */
   deletedItems: readonly {
     client: number;
     clock: number;
@@ -140,7 +246,13 @@ export interface AgentAffectedOperation {
     length: number;
     text: string;
     isHardBreak: boolean;
+    marks: Record<string, unknown>;
   }[];
+  /** R-REV-2 linkage: intent ids the operation recorded (mark operations). */
+  markIntentIds: readonly string[];
+  /** Mark name/value for mark operations (needed when the log is missing). */
+  mark?: InlineMarkKey;
+  markValue?: true | string | null;
   /** Split: the inserted separator identity and payload; merge: the deleted
       separator identity, payload and junction anchors. */
   separator: {
@@ -506,16 +618,23 @@ function resolveAnchorOrRefuse(
 class BridgeRefusal extends Error {
   readonly reason: AgentPatchReceipt["reason"];
   readonly operationIndex: number | null;
+  readonly conflict?: import("./collaboration.js").MarkProvenanceConflict;
   constructor(
     reason: NonNullable<AgentPatchReceipt["reason"]>,
     detail: string,
     operationIndex: number | null = null,
+    conflict?: import("./collaboration.js").MarkProvenanceConflict,
   ) {
     super(detail);
     this.name = "BridgeRefusal";
     this.reason = reason;
     this.operationIndex = operationIndex;
+    if (conflict !== undefined) this.conflict = conflict;
   }
+}
+
+function isNonEmptyKeyPart(value: unknown): boolean {
+  return typeof value === "string" && value.length > 0;
 }
 
 // ── Bounded read helper (R-READ-1 seam; full pagination stays CL-4b) ──
@@ -525,6 +644,29 @@ function mintAt(ytext: Y.Text, index: number): RelativeAnchor {
   return index >= ytext.length
     ? mintEndOfFieldAnchor(ytext, ytext.length)
     : mintAnchorAt(ytext, index, 0);
+}
+
+/** Marks at one linear index from the field delta at delete time (R-REV-6).
+    Reads the `toDelta` attributes covering the index; hard-break positions
+    and out-of-range indexes carry no marks. */
+function marksAtDelta(ytext: Y.Text, index: number): Record<string, unknown> {
+  const delta = ytext.toDelta() as Array<{
+    insert?: unknown;
+    attributes?: Record<string, unknown>;
+  }>;
+  let cursor = 0;
+  for (const op of delta) {
+    if (typeof op.insert === "string") {
+      const text = op.insert as string;
+      if (index >= cursor && index < cursor + text.length) {
+        return { ...(op.attributes ?? {}) };
+      }
+      cursor += text.length;
+    } else if (op.insert !== undefined) {
+      cursor += 1;
+    }
+  }
+  return {};
 }
 
 interface DeltaOp {
@@ -592,6 +734,7 @@ interface PageTokenPayload {
   p: number;
   g: number;
   h: number;
+  f: string;
 }
 
 /** Opaque page token: the double-internal encoding of the retained token
@@ -606,6 +749,7 @@ function decodePageToken(pageToken: string): PageTokenPayload | null {
       Buffer.from(pageToken, "base64url").toString("utf8"),
     ) as Partial<PageTokenPayload>;
     if (payload.v !== 1 || typeof payload.t !== "string" || payload.t === "") return null;
+    if (typeof payload.f !== "string" || payload.f === "") return null;
     for (const key of ["s", "e", "p", "g", "h"] as const) {
       if (!Number.isInteger(payload[key]) || (payload[key] as number) < 0) return null;
     }
@@ -1164,7 +1308,7 @@ function buildReadPage(options: {
   }
 
   const nextPageToken = hasMore
-    ? encodePageToken({ v: 1, t: readToken, s: startIdx, e: endIdx, p: resume.para, g: resume.seg, h: resume.char })
+    ? encodePageToken({ v: 1, t: readToken, s: startIdx, e: endIdx, p: resume.para, g: resume.seg, h: resume.char, f: fieldKey })
     : undefined;
   return {
     state: {
@@ -1295,6 +1439,7 @@ function emptyRecord(
     range: null,
     flanking: null,
     coveredItems: [],
+    markIntentIds: [],
   };
 }
 
@@ -1368,7 +1513,7 @@ function applyOneOperation(
       // Item-set delete (R-ANCH-4): exactly the base-revision items between the
       // resolved anchors; concurrent interior items survive.
       const spans: Array<{ start: number; end: number }> = [];
-      const deleted: Array<{ client: number; clock: number; offset: number; length: number; text: string; isHardBreak: boolean }> = [];
+      const deleted: Array<{ client: number; clock: number; offset: number; length: number; text: string; isHardBreak: boolean; marks: Record<string, unknown> }> = [];
       for (const item of items) {
         if (item.kind !== "text" && item.kind !== "hardBreak") continue;
         if (item.start >= high || item.end <= low) continue;
@@ -1384,6 +1529,7 @@ function applyOneOperation(
           length: sliceEnd - sliceStart,
           text: item.kind === "text" ? item.text.slice(sliceStart - item.start, sliceEnd - item.start) : "",
           isHardBreak: item.kind === "hardBreak",
+          marks: item.kind === "text" ? marksAtDelta(ytext, sliceStart) : {},
         });
       }
       spans.sort((left, right) => left.start - right.start);
@@ -1443,12 +1589,17 @@ function applyOneOperation(
         throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} mark: boolean mark needs applied (§5.7)`, operationIndex);
       }
       // Span inheritance (R-ANCH-4): one format operation over the resolved
-      // interval, so concurrent interior text takes the mark.
+      // interval, so concurrent interior text takes the mark. Covered items
+      // expand to per-unit identities clipped to the range (R-REV-4 exact).
       const covered: AgentItemId[] = [];
       for (const item of items) {
         if (item.kind !== "text") continue;
         if (item.start >= high || item.end <= low) continue;
-        covered.push({ client: item.client, clock: item.clock, length: item.length });
+        const sliceStart = Math.max(item.start, low);
+        const sliceEnd = Math.min(item.end, high);
+        for (let pos = sliceStart; pos < sliceEnd; pos += 1) {
+          covered.push({ client: item.client, clock: item.clock + (pos - item.start), length: 1 });
+        }
       }
       if (high > low) {
         ytext.format(low, high - low, { [operation.mark]: operation.applied ? true : null });
@@ -1577,8 +1728,241 @@ function baseTextByParagraph(ytext: Y.Text, baseSV: Map<number, number>): Map<st
 }
 
 /** Surviving base-revision text volume per paragraph on the scratch result. */
-function survivingBaseText(ytext: Y.Text, baseSV: Map<number, number>): Map<string, number> {
+function survivingBaseText(ytext: Y.Text, baseSV: Map<string, number>): Map<string, number> {
   return baseTextByParagraph(ytext, baseSV);
+}
+
+export interface RevertInverseStats {
+  restoredOps: number;
+  satisfiedOps: number;
+  restoredItems: number;
+  keptLaterItems: number;
+  satisfiedItems: number;
+}
+
+/** Durable inverse construction (R-REV-6): preflighted whole on a scratch
+    clone and applied as one transaction under revert:<requestedBy>. */
+function applyRevertInverse(
+  ytext: Y.Text,
+  record: AgentAffectedItemsRecord,
+  log: readonly FormattingIntent[],
+  key: AgentPatchKey,
+  requestedBy: string,
+  appendIntent?: (draft: FormattingIntentDraft) => void,
+): RevertInverseStats {
+  const stats: RevertInverseStats = {
+    restoredOps: 0,
+    satisfiedOps: 0,
+    restoredItems: 0,
+    keptLaterItems: 0,
+    satisfiedItems: 0,
+  };
+  const pendingDrafts: FormattingIntentDraft[] = [];
+  const operations = [...record.operations].sort((a, b) => b.operationIndex - a.operationIndex);
+  for (const operation of operations) {
+    if (operation.kind === "insert" || operation.kind === "insertHardBreak") {
+      const wanted = new Set<string>();
+      for (const item of operation.insertedItems) {
+        for (let offset = 0; offset < item.length; offset += 1) {
+          wanted.add(`${item.client}:${item.clock + offset}`);
+        }
+      }
+      const indexes: number[] = [];
+      for (const item of walkVisibleItems(ytext)) {
+        if (item.kind !== "text" && item.kind !== "hardBreak" && item.kind !== "separator") continue;
+        if (item.kind === "text") {
+          for (let offset = 0; offset < item.length; offset += 1) {
+            if (wanted.has(`${item.client}:${item.clock + offset}`)) {
+              indexes.push(item.start + offset);
+            }
+          }
+        } else {
+          if (wanted.has(`${item.client}:${item.clock}`)) indexes.push(item.start);
+        }
+      }
+      if (indexes.length === 0) {
+        stats.satisfiedOps += 1;
+        continue;
+      }
+      indexes.sort((a, b) => b - a);
+      let runStart: number | null = null;
+      let runEnd: number | null = null;
+      const runs: Array<{ start: number; end: number }> = [];
+      for (const index of indexes) {
+        if (runStart === null || runEnd === null || index !== runEnd - 1) {
+          if (runStart !== null && runEnd !== null) runs.push({ start: runStart, end: runEnd });
+          runStart = index;
+          runEnd = index + 1;
+        } else {
+          runStart = index;
+        }
+      }
+      if (runStart !== null && runEnd !== null) runs.push({ start: runStart, end: runEnd });
+      for (const run of runs) ytext.delete(run.start, run.end - run.start);
+      stats.restoredOps += 1;
+    } else if (operation.kind === "delete") {
+      if (operation.flanking === null) {
+        throw new BridgeRefusal("target-gone", `revert of delete ${operation.operationIndex}: missing flanking anchors (R-ANCH-5)`, operation.operationIndex);
+      }
+      const before = tryResolveAnchorToLinear(ytext, operation.flanking.before);
+      const after = tryResolveAnchorToLinear(ytext, operation.flanking.after);
+      if (before === null || after === null) {
+        throw new BridgeRefusal("target-gone", `revert of delete ${operation.operationIndex}: flanking anchor unresolvable (R-ANCH-5)`, operation.operationIndex);
+      }
+      let cursor = before;
+      for (const slice of operation.deletedItems) {
+        if (slice.isHardBreak) {
+          ytext.insertEmbed(cursor, { hardBreak: true });
+          cursor += 1;
+        } else {
+          ytext.insert(cursor, slice.text, { ...(slice.marks ?? {}) });
+          cursor += slice.text.length;
+        }
+      }
+      stats.restoredOps += 1;
+    } else if (operation.kind === "splitParagraph") {
+      const separator = operation.separator;
+      if (separator === null) {
+        throw new BridgeRefusal("target-gone", `revert of split ${operation.operationIndex}: missing separator record`, operation.operationIndex);
+      }
+      const found = walkVisibleItems(ytext).find(
+        (item) => item.kind === "separator" && item.client === separator.client && item.clock === separator.clock,
+      );
+      if (found === undefined) {
+        stats.satisfiedOps += 1;
+        continue;
+      }
+      ytext.delete(found.start, 1);
+      stats.restoredOps += 1;
+    } else if (operation.kind === "mergeWithPrevious") {
+      const separator = operation.separator;
+      if (separator === null || operation.flanking === null) {
+        throw new BridgeRefusal("target-gone", `revert of merge ${operation.operationIndex}: missing separator or flanking`, operation.operationIndex);
+      }
+      const before = tryResolveAnchorToLinear(ytext, operation.flanking.before);
+      const after = tryResolveAnchorToLinear(ytext, operation.flanking.after);
+      if (before === null || after === null) {
+        throw new BridgeRefusal("target-gone", `revert of merge ${operation.operationIndex}: junction unresolvable (R-ANCH-5)`, operation.operationIndex);
+      }
+      const payload: { paragraphId: string; kind: string; preservedKind?: string } = {
+        paragraphId: separator.paragraphId,
+        kind: separator.kind,
+      };
+      if (separator.preservedKind !== undefined) payload.preservedKind = separator.preservedKind;
+      ytext.insertEmbed(before, { separator: payload });
+      stats.restoredOps += 1;
+    } else if (operation.kind === "mark") {
+      const mark = operation.mark ?? null;
+      if (mark === null) {
+        const inferred = log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark ?? null;
+        if (inferred === null) {
+          throw new BridgeRefusal(
+            "mark-provenance-conflict",
+            `revert of mark ${operation.operationIndex}: covering intent absent (R-REV-5)`,
+            operation.operationIndex,
+            { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: "bold", items: [], detail: "patch intent missing from log (R-REV-5)" },
+          );
+        }
+      }
+      const markKey = (mark ?? log.find((entry) => operation.markIntentIds.includes(entry.intentId))?.mark ?? "bold") as InlineMarkKey;
+      const live = new Set<string>();
+      const liveList: Array<{ client: number; clock: number }> = [];
+      for (const item of walkVisibleItems(ytext)) {
+        if (item.kind !== "text") continue;
+        for (let offset = 0; offset < item.length; offset += 1) {
+          const pair = `${item.client}:${item.clock + offset}`;
+          if (!live.has(pair)) {
+            live.add(pair);
+            liveList.push({ client: item.client, clock: item.clock + offset });
+          }
+        }
+      }
+      const plan = planMarkRevert(log, {
+        key,
+        fieldKey: operation.fieldKey,
+        mark: markKey,
+        intentIds: [...operation.markIntentIds],
+        liveItems: liveList,
+      });
+      if (plan.ok === false) {
+        throw new BridgeRefusal("mark-provenance-conflict", plan.conflict.detail, operation.operationIndex, plan.conflict);
+      }
+      const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
+      for (const decision of plan.decisions) {
+        if (decision.action === "restore") {
+          stats.restoredItems += 1;
+          const valueKey = JSON.stringify(decision.value);
+          let group = byValue.get(valueKey);
+          if (group === undefined) {
+            group = { value: decision.value, units: [] };
+            byValue.set(valueKey, group);
+          }
+          group.units.push(decision.item);
+        } else if (decision.action === "kept-later") {
+          stats.keptLaterItems += 1;
+        } else {
+          stats.satisfiedItems += 1;
+        }
+      }
+      let groupIndex = 0;
+      for (const group of byValue.values()) {
+        const indexes: number[] = [];
+        for (const unit of group.units) {
+          const at = linearIndexOfUnitIn(ytext, unit.client, unit.clock);
+          if (at !== null) indexes.push(at);
+        }
+        indexes.sort((a, b) => a - b);
+        let runStart: number | null = null;
+        let runLength = 0;
+        const runs: Array<{ start: number; length: number }> = [];
+        for (const at of indexes) {
+          if (runStart === null || at !== runStart + runLength) {
+            if (runStart !== null) runs.push({ start: runStart, length: runLength });
+            runStart = at;
+            runLength = 1;
+          } else {
+            runLength += 1;
+          }
+        }
+        if (runStart !== null) runs.push({ start: runStart, length: runLength });
+        for (const run of runs) {
+          ytext.format(run.start, run.length, { [markKey]: group.value });
+        }
+        if (appendIntent !== undefined && group.units.length > 0) {
+          pendingDrafts.push({
+            intentId: `revert:${requestedBy}:${key.patchId}:${operation.operationIndex}:${groupIndex}`,
+            actorId: requestedBy,
+            source: { kind: "agent-patch", key, operationIndex: operation.operationIndex },
+            fieldKey: operation.fieldKey,
+            mark: markKey,
+            value: group.value,
+            range: operation.range ?? { start: "" as never, end: "" as never },
+            items: group.units,
+          });
+        }
+        groupIndex += 1;
+      }
+      stats.restoredOps += 1;
+    }
+  }
+  if (appendIntent !== undefined) {
+    for (const draft of pendingDrafts) {
+      if (draft.range.start === "" || draft.range.end === "") continue;
+      appendIntent(draft);
+    }
+  }
+  return stats;
+}
+
+function linearIndexOfUnitIn(ytext: Y.Text, client: number, clock: number): number | null {
+  for (const item of walkVisibleItems(ytext)) {
+    if (item.kind !== "text") continue;
+    if (item.client !== client) continue;
+    const offset = clock - item.clock;
+    if (offset < 0 || offset >= item.length) continue;
+    return item.start + offset;
+  }
+  return null;
 }
 
 // ── The headless bridge double ──
@@ -1609,6 +1993,13 @@ export interface AgentBridgeDouble {
   applyPatch(patch: AgentPatch): Promise<AgentPatchReceipt>;
   /** Receipt lookup by the complete patch key only (R-REV-1). */
   getReceipt(key: AgentPatchKey): AgentPatchReceipt | null;
+  /** Revert by the complete patch key only (R-REV-1). */
+  revertPatch(input: { key: AgentPatchKey; requestedBy: string; reason?: string }): Promise<AgentPatchReceipt>;
+  /** Store-backed provenance sink for human drafts (journal stand-in). */
+  sink: {
+    recordFormattingIntent(intent: FormattingIntentDraft): void;
+    getOrderedLog(): readonly FormattingIntent[];
+  };
   /**
    * Admit one agent actor through the bridge (§5.1): registers on the
    * source registry, allocates one awareness client id (stable for the
@@ -1852,13 +2243,113 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
     detail: string,
   ): AgentPatchReceipt {
     const key = fullKeyOf(patch);
+    const keyString = fullKeyString(key);
     const receipt: AgentPatchReceipt = { key, status: "refused", reason, detail };
-    options.store.receipts[fullKeyString(key)] = receipt;
-    options.store.payloads[fullKeyString(key)] = JSON.stringify(patch);
+    options.store.receipts[keyString] = receipt;
+    options.store.payloads[keyString] = JSON.stringify(patch);
+    options.store.payloadHashes[keyString] = computePayloadHash(patch);
+    options.store.patchEpochs[keyString] = patch.sessionEpoch;
     return receipt;
   }
 
+  function isRevoked(actorId: string): boolean {
+    if (!actorClients.has(actorId) && !registeredIds.has(actorId)) return false;
+    return options.source.admittedActorOf?.(actorId) == null;
+  }
+
+  const buckets = new Map<string, { tokens: number; lastMs: number }>();
+  const BUCKET_CAPACITY = 50;
+  const BUCKET_REFILL_PER_MS = 20 / 1000;
+
+  function bucketRefuse(actorId: string, cost: number): { refused: true; retryAfterMs: number } | { refused: false } {
+    const nowMs = clockNow();
+    let entry = buckets.get(actorId);
+    if (entry === undefined) {
+      entry = { tokens: BUCKET_CAPACITY, lastMs: nowMs };
+      buckets.set(actorId, entry);
+    }
+    const elapsed = Math.max(0, nowMs - entry.lastMs);
+    entry.tokens = Math.min(BUCKET_CAPACITY, entry.tokens + elapsed * BUCKET_REFILL_PER_MS);
+    entry.lastMs = nowMs;
+    if (entry.tokens >= cost) return { refused: false };
+    const retryAfterMs = Math.max(1, Math.ceil((cost - entry.tokens) / BUCKET_REFILL_PER_MS));
+    return { refused: true, retryAfterMs };
+  }
+
+  function bucketDebit(actorId: string, cost: number): void {
+    const nowMs = clockNow();
+    let entry = buckets.get(actorId);
+    if (entry === undefined) {
+      entry = { tokens: BUCKET_CAPACITY, lastMs: nowMs };
+      buckets.set(actorId, entry);
+    }
+    const elapsed = Math.max(0, nowMs - entry.lastMs);
+    entry.tokens = Math.min(BUCKET_CAPACITY, entry.tokens + elapsed * BUCKET_REFILL_PER_MS);
+    entry.lastMs = nowMs;
+    entry.tokens -= cost;
+  }
+
+  function agentIntentId(patch: AgentPatch, operationIndex: number): string {
+    return `${patch.actorId}:${patch.sessionEpoch}:${patch.patchId}:${operationIndex}`;
+  }
+
+  function expandedCoveredUnits(
+    ytext: Y.Text,
+    low: number,
+    high: number,
+  ): Array<{ client: number; clock: number }> {
+    const out: Array<{ client: number; clock: number }> = [];
+    for (const item of walkVisibleItems(ytext)) {
+      if (item.kind !== "text") continue;
+      if (item.start >= high || item.end <= low) continue;
+      const sliceStart = Math.max(item.start, low);
+      const sliceEnd = Math.min(item.end, high);
+      for (let pos = sliceStart; pos < sliceEnd; pos += 1) {
+        out.push({ client: item.client, clock: item.clock + (pos - item.start) });
+      }
+    }
+    return out;
+  }
+
+  function liveUnitSet(ytext: Y.Text): Set<string> {
+    const live = new Set<string>();
+    for (const item of walkVisibleItems(ytext)) {
+      if (item.kind !== "text") continue;
+      for (let offset = 0; offset < item.length; offset += 1) {
+        live.add(`${item.client}:${item.clock + offset}`);
+      }
+    }
+    return live;
+  }
+
+  function linearIndexOfUnit(ytext: Y.Text, client: number, clock: number): number | null {
+    for (const item of walkVisibleItems(ytext)) {
+      if (item.kind !== "text") continue;
+      if (item.client !== client) continue;
+      const offset = clock - item.clock;
+      if (offset < 0 || offset >= item.length) continue;
+      return item.start + offset;
+    }
+    return null;
+  }
+
+  if (options.store.payloadHashes === undefined) options.store.payloadHashes = {};
+  if (options.store.provenanceLog === undefined) options.store.provenanceLog = [];
+  if (options.store.provenanceNextSeq === undefined) options.store.provenanceNextSeq = 1;
+  if (options.store.revertReceipts === undefined) options.store.revertReceipts = {};
+  if (options.store.patchEpochs === undefined) options.store.patchEpochs = {};
+
+  const bridgeSink = {
+    recordFormattingIntent(intent: FormattingIntentDraft): void {
+      appendProvenanceDraft(options.store, intent);
+    },
+    getOrderedLog(): readonly FormattingIntent[] {
+      return options.store.provenanceLog;
+    },
+  };
+
   return {
+    sink: bridgeSink,
     readState(request: AgentReadRequest): AgentDocumentState {
       // (i) Request caps and binding/field scope (R-READ-1): a request that
       // itself demands more than a cap is refused whole as `too-large`
@@ -1903,6 +2394,9 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         const payload = decodePageToken(request.pageToken);
         if (payload === null) {
           throw new AgentBridgeReadRefusal("target-gone", "page token does not decode (R-READ-2)");
+        }
+        if (payload.f !== fieldKey) {
+          throw new AgentBridgeReadRefusal("target-gone", "page token names another field (R-READ-2)");
         }
         if (request.readToken !== undefined && request.readToken !== payload.t) {
           throw new AgentBridgeReadRefusal("target-gone", "page token and read token disagree (R-READ-2)");
@@ -2138,22 +2632,24 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
     async applyPatch(patch: AgentPatch): Promise<AgentPatchReceipt> {
       const key = fullKeyOf(patch);
       const keyString = fullKeyString(key);
-      // Idempotent retry (CL-4a slice, AMB-A6): the same full key with the
-      // identical payload returns the original receipt with `duplicate: true`
-      // and applies nothing. Canonical hashing stays CL-4c.
+      // (0) Full key and canonical payload hash (section 5.4.1, AMB-C1).
+      const payloadHash = computePayloadHash(patch);
+      // (1) Durable lookup (section 5.4.1): same hash replays the original
+      // receipt verbatim with duplicate:true and applies nothing; a different
+      // hash refuses terminal idempotency-key-reuse without overwriting.
       const stored = options.store.receipts[keyString];
       if (stored !== undefined) {
-        if (options.store.payloads[keyString] === JSON.stringify(patch)) {
+        if (options.store.payloadHashes[keyString] === payloadHash) {
           return { ...stored, key: { ...stored.key }, duplicate: true };
         }
         return {
           key,
           status: "refused",
           reason: "idempotency-key-reuse",
-          detail: "full key already holds a terminal receipt for another payload (CL-4c owns canonical hashing)",
+          detail: "full key already holds a terminal receipt for another payload (section 5.4.1)",
         };
       }
-      // (i) Shape/size check (§5.3.1; P0 profile for this sub-lot).
+      // (2) Shape/size check (section 5.3.1; P0 profile for this sub-lot).
       const shaped = validateAgentPatch(patch, "p0");
       if (!shaped.ok) {
         const detail =
@@ -2162,7 +2658,7 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
             : `shape/size check at operation ${shaped.operationIndex}: ${shaped.detail}`;
         return refuseReceipt(patch, shaped.reason, detail);
       }
-      // (ii) Scope check (B-BRIDGE-3): binding and every operation's
+      // (3) Scope check (B-BRIDGE-3): binding and every operation's
       // field/family inside the admitted set.
       if (
         patch.binding.documentId !== options.documentId ||
@@ -2182,6 +2678,25 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
             `operation ${index}: family "${operation.type}" is outside the admitted set (B-BRIDGE-3)`,
           );
         }
+      }
+      // (4) Revocation seam (section 5.5, B-BRIDGE-5): an actor revoked
+      // through the source registry refuses terminal revoked with no debit.
+      if (isRevoked(patch.actorId)) {
+        return refuseReceipt(patch, "revoked", `actor is revoked in this session: ${patch.actorId} (B-BRIDGE-5)`);
+      }
+      // (5) Token bucket (section 5.3.1, AMB-C2/AMB-D4): transient only,
+      // stored nowhere, binds no hash, records no intent.
+      const cost = patch.operations.length;
+      const bucket = bucketRefuse(patch.actorId, cost);
+      if (bucket.refused === true) {
+        return {
+          key,
+          status: "refused",
+          reason: "rate-limited",
+          transient: true,
+          retryAfterMs: bucket.retryAfterMs,
+          detail: `token bucket has no capacity for cost ${cost} (section 5.3.1)`,
+        };
       }
       const heldBinding = heldField(patch.binding.fieldKey);
       let baseSV: Map<number, number>;
@@ -2252,8 +2767,11 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
         const detail = error instanceof Error ? error.message : String(error);
         return refuseReceipt(patch, "incompatible-schema", `preflight resulting-schema: ${detail} (§4.11)`);
       }
-      // (vi) Commit: the same operations on the authoritative field in one
-      // transaction under origin `agent:<actorId>` (B-BRIDGE-1).
+      // (6) Scratch preflight and resulting-schema validation (section 5.3.1).
+      // (7) Commit in one transaction under origin agent:<actorId>, then store
+      // receipt, hash, affected-items record and agent intents together in the
+      // store object (the double stand-in for the host transaction boundary).
+      bucketDebit(patch.actorId, cost);
       const stateVectorBefore = toBase64Url(Y.encodeStateVector(authDoc));
       const operationResults: AgentOperationResult[] = [];
       const affected: AgentAffectedOperation[] = [];
@@ -2275,6 +2793,43 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
           if (outcome.record !== null) affected.push(outcome.record);
         }
       }, agentOriginFor(patch.actorId));
+      for (let index = 0; index < patch.operations.length; index += 1) {
+        const operation = patch.operations[index] as AgentEditOperation;
+        if (operation.type !== "mark") continue;
+        const record = affected.find((entry) => entry.operationIndex === index);
+        if (record === undefined) continue;
+        const intentId = agentIntentId(patch, index);
+        const markValue: true | string | null =
+          operation.mark === "bold" || operation.mark === "italic" || operation.mark === "code"
+            ? operation.applied
+              ? true
+              : null
+            : null;
+        const units = expandedCoveredUnits(
+          heldBinding.text,
+          Math.min(
+            resolveAnchorOrRefuse(heldBinding.text, patch.binding.fieldKey, operation.range.start, "intent"),
+            resolveAnchorOrRefuse(heldBinding.text, patch.binding.fieldKey, operation.range.end, "intent"),
+          ),
+          Math.max(
+            resolveAnchorOrRefuse(heldBinding.text, patch.binding.fieldKey, operation.range.start, "intent"),
+            resolveAnchorOrRefuse(heldBinding.text, patch.binding.fieldKey, operation.range.end, "intent"),
+          ),
+        );
+        appendProvenanceDraft(options.store, {
+          intentId,
+          actorId: patch.actorId,
+          source: { kind: "agent-patch", key, operationIndex: index },
+          fieldKey: patch.binding.fieldKey,
+          mark: operation.mark as InlineMarkKey,
+          value: markValue,
+          range: { start: operation.range.start, end: operation.range.end },
+          items: units,
+        });
+        record.markIntentIds = [intentId];
+        record.mark = operation.mark as InlineMarkKey;
+        record.markValue = markValue;
+      }
       const receipt: AgentPatchReceipt = {
         key,
         status: "applied",
@@ -2283,6 +2838,8 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
       };
       options.store.receipts[keyString] = receipt;
       options.store.payloads[keyString] = JSON.stringify(patch);
+      options.store.payloadHashes[keyString] = payloadHash;
+      options.store.patchEpochs[keyString] = patch.sessionEpoch;
       options.store.records[keyString] = {
         key,
         stateVectorBefore,
@@ -2294,6 +2851,88 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
 
     getReceipt(key: AgentPatchKey): AgentPatchReceipt | null {
       return options.store.receipts[fullKeyString(key)] ?? null;
+    },
+
+    async revertPatch(input: { key: AgentPatchKey; requestedBy: string; reason?: string }): Promise<AgentPatchReceipt> {
+      const key = input.key as AgentPatchKey;
+      if (
+        typeof key !== "object" ||
+        key === null ||
+        !isNonEmptyKeyPart(key.documentId) ||
+        !isNonEmptyKeyPart(key.actorId) ||
+        !isNonEmptyKeyPart(key.sessionEpoch) ||
+        !isNonEmptyKeyPart(key.patchId)
+      ) {
+        return {
+          key: { documentId: "", actorId: "", sessionEpoch: "", patchId: "" },
+          status: "refused",
+          reason: "target-gone",
+          detail: "revert key is incomplete (R-REV-1: full key only)",
+        };
+      }
+      const keyString = fullKeyString(key);
+      const stored = options.store.receipts[keyString];
+      if (stored === undefined) {
+        return { key, status: "refused", reason: "target-gone", detail: "unknown patch key (R-REV-1)" };
+      }
+      const existingRevert = options.store.revertReceipts[keyString];
+      if (existingRevert !== undefined) {
+        return { ...existingRevert, key: { ...existingRevert.key }, duplicate: true };
+      }
+      const record = options.store.records[keyString];
+      if (record === undefined) {
+        return { key, status: "refused", reason: "target-gone", detail: "no durable affected-items record (R-REV-2)" };
+      }
+      if (key.documentId !== options.documentId || key.actorId === undefined) {
+        return { key, status: "refused", reason: "target-gone", detail: "revert key resolves outside this session" };
+      }
+      const targetField = record.operations[0]?.fieldKey ?? null;
+      if (targetField === null || !held.has(targetField)) {
+        return { key, status: "refused", reason: "target-gone", detail: "revert field is outside the admitted set" };
+      }
+      const fieldKey = targetField as string;
+      const entry = held.get(fieldKey);
+      if (entry === undefined) {
+        return { key, status: "refused", reason: "target-gone", detail: "revert field is outside the admitted set" };
+      }
+      const ytext = entry.text;
+      const fieldDoc = ytext.doc as Y.Doc;
+      const scratchDoc = new Y.Doc();
+      Y.applyUpdate(scratchDoc, Y.encodeStateAsUpdate(fieldDoc));
+      const scratchText = scratchDoc.getText(fieldTextName(fieldKey));
+      try {
+        applyRevertInverse(scratchText, record, options.store.provenanceLog, key, input.requestedBy);
+      } catch (error) {
+        if (error instanceof BridgeRefusal) {
+          const receipt: AgentPatchReceipt = {
+            key,
+            status: "refused",
+            reason: error.reason ?? "target-gone",
+            detail: error.message,
+            ...(error.reason === "mark-provenance-conflict" && error.conflict !== undefined
+              ? { conflict: error.conflict }
+              : {}),
+          };
+          return receipt;
+        }
+        throw error;
+      }
+      const revertOrigin = `revert:${input.requestedBy}`;
+      let stats: RevertInverseStats | null = null;
+      fieldDoc.transact(() => {
+        stats = applyRevertInverse(ytext, record, options.store.provenanceLog, key, input.requestedBy, (draft) =>
+          appendProvenanceDraft(options.store, draft),
+        );
+      }, revertOrigin);
+      const done = stats as unknown as RevertInverseStats;
+      const receipt: AgentPatchReceipt = {
+        key,
+        status: "applied",
+        stateVectorAfter: toBase64Url(Y.encodeStateVector(fieldDoc)),
+        detail: `revert applied: restored ops ${done.restoredOps}, satisfied ops ${done.satisfiedOps}, restored items ${done.restoredItems}, kept-later ${done.keptLaterItems}, satisfied items ${done.satisfiedItems} (R-REV-7)`,
+      };
+      options.store.revertReceipts[keyString] = receipt;
+      return receipt;
     },
   };
 }
