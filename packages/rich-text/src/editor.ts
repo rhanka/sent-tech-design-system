@@ -87,13 +87,10 @@ import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
+import { AddMarkStep, RemoveMarkStep } from "@tiptap/pm/transform";
 import type {
-  BoundMarkUndoState,
   BoundUndoManager,
   LiveSessionBindingSource,
-  SessionMarkUndoMarkGroup,
-  SessionMarkUndoOutcome,
-  SessionMarkUndoPerformer,
 } from "./editor-collaboration.js";
 import type { BoundCompositionDriver, StagedCompositionRun } from "./collab-composition.js";
 import type { AnyExtension } from "@tiptap/core";
@@ -372,6 +369,116 @@ export function createRichTextEditor(
   })();
 }
 
+/** Whether a ProseMirror transaction is mark-bearing (CL-4e §3.3 rule
+    1): it carries mark steps or inserts text already carrying marks
+    (typing with stored marks, marked paste). Such transactions record
+    provenance intents, so the capture window breaks around them.
+    Over-inclusive is safe (an extra undo step); missing one would let a
+    mixed gesture coalesce with its neighbours. */
+function isMarkBearingTransaction(transaction: Transaction): boolean {
+  for (const step of transaction.steps) {
+    if (step instanceof AddMarkStep || step instanceof RemoveMarkStep) return true;
+    const slice = (step as unknown as { slice?: unknown }).slice as {
+      content?: {
+        descendants?: (cb: (node: unknown) => boolean | void) => void;
+      };
+    } | null | undefined;
+    if (slice === null || slice === undefined || typeof slice !== "object") continue;
+    const content = slice.content;
+    if (content === null || content === undefined || typeof content !== "object") continue;
+    if (typeof content.descendants !== "function") continue;
+    let marked = false;
+    try {
+      content.descendants((node: unknown) => {
+        if (marked) return false;
+        if (
+          node !== null &&
+          typeof node === "object" &&
+          (node as { isText?: unknown }).isText === true &&
+          Array.isArray((node as { marks?: unknown }).marks) &&
+          ((node as { marks: unknown[] }).marks.length > 0)
+        ) {
+          marked = true;
+          return false;
+        }
+        return true;
+      });
+    } catch {
+      continue;
+    }
+    if (marked) return true;
+  }
+  return false;
+}
+
+/** Process-unique mark-undo invocation counter (CL-4e fix 1, AMB-F3):
+    every bound editor in this process mints `requestId` and
+    `commandTransactionId` from this single sequence under its
+    binding-scoped prefix, so two editors on the same session/field never
+    mint the same identity. Never derived from wall clock, `seq`, item
+    identity or payload content; never reused across invocations. */
+let boundMarkUndoRequestSeq = 0;
+
+/** Local structural view of one mark group (CL-4e §3.2 shape, unnamed
+    here: the `"./editor"` graph never imports the collaboration-graph
+    mark-group type). */
+interface LocalMarkGroup {
+  mark: string;
+  intentIds: string[];
+}
+
+/** Local structural view of one mark-bearing human transaction: its
+    complete groups plus its last observed durable transition. */
+interface LocalMarkStep {
+  transactionId: string;
+  fieldKey: string;
+  marks: LocalMarkGroup[];
+  transitionId: string | null;
+  undone: boolean;
+}
+
+/** One local gesture (CL-4e §3.3 rule 1): a character-only gesture owns
+    only an `UndoManager` entry; a mark-only gesture owns only a mark
+    step; a mixed gesture owns one of each, linked by `transactionId`. */
+interface LocalGesture {
+  kind: "char" | "mark" | "mixed";
+  transactionId: string | null;
+  charUndone: boolean;
+}
+
+/** Local structural view of the opaque per-field mark history minted in
+    `editor-bound.ts`: the mark steps plus the gesture list linking them
+    to the `UndoManager` entries, plus at most one pending invocation. */
+interface LocalMarkHistory {
+  steps: LocalMarkStep[];
+  gestures: LocalGesture[];
+  pending: {
+    readonly requestId: string;
+    readonly commandTransactionId: string;
+    readonly expectedTransitionId: string | null;
+    readonly stepTransactionId: string;
+    readonly direction: "undo" | "redo";
+    readonly fieldKey: string;
+  } | null;
+  readonly sessionId: string;
+  readonly fieldKey: string;
+}
+
+/** Local structural view of a terminal or not-dispatched performer
+    outcome (CL-4e §3.2 shape, unnamed here). History advances once, keyed
+    by the pending `requestId` and the outcome's `transitionId`; an outcome
+    whose `requestId` does not equal the pending identity is ignored. */
+interface LocalMarkOutcome {
+  status: string;
+  requestId?: unknown;
+  duplicate?: unknown;
+  transitionId?: unknown;
+  changed?: unknown;
+  reason?: unknown;
+  detail?: unknown;
+  conflict?: unknown;
+}
+
 export interface BoundImpl {
   ytext: { length: number; doc?: { on: (name: string, fn: (transaction: never) => void) => void; off: (name: string, fn: (transaction: never) => void) => void } };
   fieldMeta: { size?: number };
@@ -415,11 +522,12 @@ export interface BoundImpl {
       construction beside the sink. Null when the source carries no
       performer: the mark half of undo/redo is a silent no-op. */
   provenanceUndo: { requestMarkUndo(input: unknown): Promise<unknown> } | null;
-  /** Per-field mark-step history plus at most one pending invocation
-      (CL-4e §3.3): built from the transaction ids and intent ids the
-      binding already mints when it records through the sink. Null when
+  /** Per-field mark history plus at most one pending invocation (CL-4e
+      §3.3): an opaque private structure minted only in `editor-bound.ts`
+      beside the erased performer handle. The `"./editor"` graph never
+      names its type: `unknown` here, structural access below. Null when
       the source carries no performer. */
-  markUndo: BoundMarkUndoState | null;
+  markUndo: unknown;
   /** Private composition staging driver (CL-3b2 §4.6.1): type-erased, no `Y`
       type crosses this seam. Present on every bound mount. */
   composition: BoundCompositionDriver;
@@ -1460,23 +1568,163 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     return changed;
   };
 
-  /** Bound undo/redo with the local mark-step history beside the field
-      `UndoManager` (CL-3b1 §4.5, CL-4e §3.3): one editor command, two
-      mechanisms, no atomicity across them. The character half, when present,
+  /** Bound undo/redo with the per-field gesture history beside the field
+      `UndoManager` (CL-3b1 §4.5, CL-4e §3.3 fix 1): one press undoes or
+      redoes exactly one gesture. A character-only gesture owns only an
+      `UndoManager` entry; a mark-only gesture owns only a mark step; a
+      mixed gesture owns one of each, linked by `transactionId`. One editor
+      command attempts both halves of the selected gesture once: the
+      character half, when the gesture owns one on the matching side,
       applies synchronously through the `UndoManager` at press time, exactly
-      once, with selection restoration through relative positions. The mark
-      half, when a retained step names the gesture, issues at most one
-      performer call for that gesture's mark step — including when the
-      gesture is mark-only and the manager holds no step for it. Retrying or
-      recovering the mark half never re-runs the character half. The marks
-      stay exactly as they are while the mark half is pending: no speculative
-      local revert, no local inverse on outcome arrival. The committed echo
+      once, with selection restoration through relative positions; the mark
+      half issues at most one performer call for that gesture's step —
+      including when the gesture is mark-only and the manager holds no step
+      for it. Retrying or recovering the mark half never re-runs the
+      character half. While a mark half is pending (D-C4b) a further press
+      issues no second mark transition and may only run an older gesture's
+      character half; when the pending outcome resolves it advances only the
+      pending step and never re-applies characters. The marks stay exactly
+      as they are while the mark half is pending: no speculative local
+      revert, no local inverse on outcome arrival. The committed echo
       arrives as an ordinary remote update under a non-local
       `revert:<actor>` origin; history for the step advances once, when the
-      outcome resolves, keyed by `requestId`/`transitionId`. Every resolved
-      refusal and every `unavailable` maps to a silent no-op for the mark
-      half. Absent performer leaves recording and character undo working with
-      mark undo a silent no-op. */
+      outcome resolves, keyed by the pending `requestId` and the outcome's
+      `transitionId` — an outcome whose `requestId` mismatches the pending
+      identity is ignored. Every resolved refusal and every `unavailable`
+      maps to a silent no-op for the mark half. Absent performer leaves
+      recording and character undo working with mark undo a silent no-op. */
+  const readMarkHistory = (): LocalMarkHistory | null => {
+    if (boundImpl === undefined) return null;
+    const raw: unknown = boundImpl.markUndo;
+    if (raw === null || typeof raw !== "object") return null;
+    return raw as LocalMarkHistory;
+  };
+  const stepOf = (history: LocalMarkHistory, transactionId: string): LocalMarkStep | undefined =>
+    history.steps.find((entry) => entry.transactionId === transactionId);
+  /** Link the just-committed shared transaction to its gesture (CL-4e §3.3
+      rule 1): pairs each new `UndoManager` entry with the transaction's
+      mark step (if any) at recording time. Call sites guarantee a tracked
+      shared transact committed (projection success, applied composition
+      commit), so redo-available gestures truncate first — matching the
+      manager clearing its redo stack on the same transact — then a new
+      entry plus a new step is a mixed gesture, a new step alone is
+      mark-only, a new entry alone is character-only, and neither means the
+      transaction coalesced into the previous gesture (no new entry). The
+      in-flight pending gesture is never truncated: its outcome still
+      resolves against its step. */
+  const noteSharedTransact = (undoBefore: number, stepsBefore: number): void => {
+    const history = readMarkHistory();
+    if (history === null || boundImpl === undefined) return;
+    const undoAfter = boundImpl.undoManager.undoStackLength();
+    const grew = undoAfter > undoBefore;
+    const freshStep =
+      history.steps.length > stepsBefore
+        ? (history.steps[history.steps.length - 1] as LocalMarkStep)
+        : null;
+    const pendingTxn = history.pending?.stepTransactionId ?? null;
+    const redoAvailable = (gesture: LocalGesture): boolean => {
+      if (pendingTxn !== null && gesture.transactionId === pendingTxn) return false;
+      // The `charUndone` flag is inert for mark-only gestures (they own no
+      // character half): only character-bearing gestures read it here.
+      if ((gesture.kind === "char" || gesture.kind === "mixed") && gesture.charUndone) return true;
+      if (gesture.transactionId === null) return false;
+      return stepOf(history, gesture.transactionId)?.undone === true;
+    };
+    if (history.gestures.some(redoAvailable)) {
+      const kept = history.gestures.filter((gesture) => !redoAvailable(gesture));
+      const keptTxn = new Set<string>();
+      for (const gesture of kept) {
+        if (gesture.transactionId !== null) keptTxn.add(gesture.transactionId);
+      }
+      // The just-recorded step belongs to no gesture yet: retain it.
+      if (freshStep !== null) keptTxn.add(freshStep.transactionId);
+      history.gestures.length = 0;
+      for (const gesture of kept) history.gestures.push(gesture);
+      history.steps = history.steps.filter((step) => keptTxn.has(step.transactionId));
+    }
+    if (freshStep !== null) {
+      if (history.gestures.some((gesture) => gesture.transactionId === freshStep.transactionId)) {
+        return;
+      }
+      if (grew) {
+        history.gestures.push({
+          kind: "mixed",
+          transactionId: freshStep.transactionId,
+          charUndone: false,
+        });
+      } else {
+        history.gestures.push({
+          kind: "mark",
+          transactionId: freshStep.transactionId,
+          charUndone: true,
+        });
+      }
+      return;
+    }
+    if (!grew) return;
+    history.gestures.push({ kind: "char", transactionId: null, charUndone: false });
+  };
+  /** Whether the gesture owns a character half sitting on the matching
+      side of the manager stacks for `direction`. */
+  const gestureCharNeeds = (gesture: LocalGesture, direction: "undo" | "redo"): boolean => {
+    if (gesture.kind !== "char" && gesture.kind !== "mixed") return false;
+    return direction === "undo" ? gesture.charUndone === false : gesture.charUndone === true;
+  };
+  /** Whether the gesture owns a mark half sitting on the matching side
+      for `direction`. */
+  const gestureMarkNeeds = (
+    history: LocalMarkHistory,
+    gesture: LocalGesture,
+    direction: "undo" | "redo",
+  ): boolean => {
+    if (gesture.kind !== "mark" && gesture.kind !== "mixed") return false;
+    if (gesture.transactionId === null) return false;
+    const step = stepOf(history, gesture.transactionId);
+    if (step === undefined) return false;
+    return direction === "undo" ? step.undone === false : step.undone === true;
+  };
+  /** Latest gesture (LIFO) with any half needing `direction`, excluding
+      the in-flight pending gesture. */
+  const findUndoGesture = (
+    history: LocalMarkHistory,
+    pendingTxn: string | null,
+  ): LocalGesture | null => {
+    for (let index = history.gestures.length - 1; index >= 0; index -= 1) {
+      const gesture = history.gestures[index] as LocalGesture;
+      if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
+      if (gestureCharNeeds(gesture, "undo") || gestureMarkNeeds(history, gesture, "undo")) {
+        return gesture;
+      }
+    }
+    return null;
+  };
+  /** Earliest gesture with any half needing redo (the most recently undone
+      first), excluding the in-flight pending gesture. */
+  const findRedoGesture = (
+    history: LocalMarkHistory,
+    pendingTxn: string | null,
+  ): LocalGesture | null => {
+    for (const gesture of history.gestures) {
+      if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
+      if (gestureCharNeeds(gesture, "redo") || gestureMarkNeeds(history, gesture, "redo")) {
+        return gesture;
+      }
+    }
+    return null;
+  };
+  /** Latest gesture with an un-undone character half (D-C4b pending path),
+      excluding the in-flight pending gesture. */
+  const findPendingCharGesture = (history: LocalMarkHistory): LocalGesture | null => {
+    const pendingTxn = history.pending?.stepTransactionId ?? null;
+    for (let index = history.gestures.length - 1; index >= 0; index -= 1) {
+      const gesture = history.gestures[index] as LocalGesture;
+      if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
+      if (gestureCharNeeds(gesture, "undo") || gestureCharNeeds(gesture, "redo")) {
+        return gesture;
+      }
+    }
+    return null;
+  };
   const runBoundHistory = (direction: "undo" | "redo"): void => {
     if (tracker.destroyed || !isActive()) return;
     if (boundImpl === undefined) return;
@@ -1486,121 +1734,135 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     // composing even before the first staged transaction lands.
     if (tracker.composing || editor.view.composing || isStagingOpen()) return;
     const manager = boundImpl.undoManager;
-    const markState: BoundMarkUndoState | null = boundImpl.markUndo ?? null;
-    const performer = boundImpl.provenanceUndo as unknown as SessionMarkUndoPerformer | null;
-    const canChar = direction === "undo" ? manager.canUndo() : manager.canRedo();
-    const findUndoTarget = (): number => {
-      if (markState === null) return -1;
-      for (let index = markState.steps.length - 1; index >= 0; index -= 1) {
-        if (markState.steps[index]?.undone === false) return index;
-      }
-      return -1;
+    const history = readMarkHistory();
+    const performer =
+      boundImpl.provenanceUndo as unknown as {
+        requestMarkUndo(input: unknown): Promise<unknown>;
+      } | null;
+    const runCharHalf = (gesture: LocalGesture): void => {
+      const before = displayedCaptureResult();
+      const applied = direction === "undo" ? manager.undo() : manager.redo();
+      if (applied === null || applied === undefined) return;
+      gesture.charUndone = direction === "undo";
+      const after = displayedCaptureResult();
+      emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
     };
-    const findRedoTarget = (): number => {
-      if (markState === null) return -1;
-      for (let index = 0; index < markState.steps.length; index += 1) {
-        if (markState.steps[index]?.undone === true) return index;
-      }
-      return -1;
-    };
-    const applyCharHalf = (): void => {
-      if (!canChar) return;
+    // Absent performer: character undo is unaffected, mark undo is a
+    // silent no-op (no gestures exist, the manager owns every step).
+    if (history === null) {
+      if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
       const before = displayedCaptureResult();
       const applied = direction === "undo" ? manager.undo() : manager.redo();
       if (applied === null || applied === undefined) return;
       const after = displayedCaptureResult();
       emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
-    };
-    if (markState !== null && markState.pending !== null) {
-      applyCharHalf();
       return;
     }
-    const targetIndex = direction === "undo" ? findUndoTarget() : findRedoTarget();
-    const hasMarkTarget = targetIndex >= 0 && performer !== null && markState !== null;
-    if (!canChar && !hasMarkTarget) return;
-    applyCharHalf();
-    if (!hasMarkTarget || markState === null || performer === null) return;
-    const target = markState.steps[targetIndex] as {
-      transactionId: string;
-      fieldKey: string;
-      marks: SessionMarkUndoMarkGroup[];
-      transitionId: string | null;
-      undone: boolean;
-    };
-    markState.requestCounter += 1;
-    const counter = markState.requestCounter;
-    const requestId = `markundo:req:${markState.sessionId}:${markState.fieldKey}:${counter}`;
-    const commandTransactionId = `markundo:cmd:${markState.sessionId}:${markState.fieldKey}:${counter}`;
-    const expectedTransitionId = target.transitionId;
-    markState.pending = {
+    // D-C4b: while a mark invocation is unresolved, no new mark
+    // transition is issued. Only an older gesture's character half may
+    // still run; the pending step is untouched until its outcome resolves.
+    if (history.pending !== null) {
+      const older = findPendingCharGesture(history);
+      if (older === null) return;
+      if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
+      // Run the older gesture's character half for the pressed direction.
+      const needsForDirection =
+        direction === "undo" ? older.charUndone === false : older.charUndone === true;
+      if (!needsForDirection) return;
+      runCharHalf(older);
+      return;
+    }
+    const pendingTxn: string | null = null;
+    const target =
+      direction === "undo" ? findUndoGesture(history, pendingTxn) : findRedoGesture(history, pendingTxn);
+    if (target === null) return;
+    if (gestureCharNeeds(target, direction)) {
+      if (direction === "undo" ? manager.canUndo() : manager.canRedo()) {
+        runCharHalf(target);
+      }
+    }
+    if (!gestureMarkNeeds(history, target, direction)) return;
+    if (performer === null || target.transactionId === null) return;
+    const step = stepOf(history, target.transactionId);
+    if (step === undefined) return;
+    boundMarkUndoRequestSeq += 1;
+    const counter = boundMarkUndoRequestSeq;
+    const requestId = `markundo:req:${history.sessionId}:${history.fieldKey}:${counter}`;
+    const commandTransactionId = `markundo:cmd:${history.sessionId}:${history.fieldKey}:${counter}`;
+    const expectedTransitionId = step.transitionId;
+    history.pending = {
       requestId,
       commandTransactionId,
       expectedTransitionId,
-      stepTransactionId: target.transactionId,
+      stepTransactionId: step.transactionId,
       direction,
-      fieldKey: target.fieldKey,
+      fieldKey: step.fieldKey,
     };
     const input = {
-      fieldKey: target.fieldKey,
-      transactionId: target.transactionId,
+      fieldKey: step.fieldKey,
+      transactionId: step.transactionId,
       requestId,
       commandTransactionId,
       expectedTransitionId,
       direction,
-      marks: target.marks,
+      marks: step.marks.map((group) => ({ mark: group.mark, intentIds: [...group.intentIds] })),
     };
     let promised: Promise<unknown>;
     try {
-      const erased = performer as unknown as {
-        requestMarkUndo(input: unknown): Promise<unknown>;
-      };
-      promised = erased.requestMarkUndo(input);
+      promised = performer.requestMarkUndo(input);
     } catch {
-      markState.pending = null;
+      history.pending = null;
       return;
     }
     promised.then(
       (raw) => {
         if (tracker.destroyed) return;
-        const current = markState.pending;
+        const current = history.pending;
         if (current === null || current.requestId !== requestId) return;
-        const outcome = raw as SessionMarkUndoOutcome;
-        if (outcome === null || typeof outcome !== "object" || !("status" in outcome)) {
-          markState.pending = null;
+        if (raw === null || typeof raw !== "object" || !("status" in raw)) {
+          history.pending = null;
           return;
         }
-        const stepIndex = markState.steps.findIndex(
+        const outcome = raw as LocalMarkOutcome;
+        // Outcome correlation (D-C5): advance only when the outcome's
+        // `requestId` equals the pending identity; a mismatching outcome
+        // is ignored and the invocation stays pending.
+        if (typeof outcome.requestId === "string" && outcome.requestId !== current.requestId) {
+          return;
+        }
+        if (outcome.status === "unavailable") {
+          history.pending = null;
+          return;
+        }
+        const stepIndex = history.steps.findIndex(
           (entry) => entry.transactionId === current.stepTransactionId,
         );
-        if (outcome.status === "unavailable") {
-          markState.pending = null;
-          return;
-        }
         if (stepIndex < 0) {
-          markState.pending = null;
+          history.pending = null;
           return;
         }
-        const step = markState.steps[stepIndex] as {
-          transitionId: string | null;
-          undone: boolean;
-        };
+        const resolved = history.steps[stepIndex] as LocalMarkStep;
         if (outcome.status === "applied") {
-          step.transitionId = outcome.transitionId;
-          step.undone = current.direction === "undo";
-          markState.pending = null;
+          if (typeof outcome.transitionId === "string") {
+            resolved.transitionId = outcome.transitionId;
+            resolved.undone = current.direction === "undo";
+          }
+          history.pending = null;
           return;
         }
         if (outcome.status === "refused") {
-          step.transitionId = outcome.transitionId;
-          markState.pending = null;
+          if (typeof outcome.transitionId === "string" || outcome.transitionId === null) {
+            resolved.transitionId = outcome.transitionId;
+          }
+          history.pending = null;
           return;
         }
-        markState.pending = null;
+        history.pending = null;
       },
       () => {
         if (tracker.destroyed) return;
-        if (markState.pending !== null && markState.pending.requestId === requestId) {
-          markState.pending = null;
+        if (history.pending !== null && history.pending.requestId === requestId) {
+          history.pending = null;
         }
       },
     );
@@ -1800,6 +2062,22 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       transaction.getMeta(PRESERVED_REPLACE_META) !== true &&
       !stagingDefersProjection
     ) {
+      // CL-4e fix 1 (§3.3 rule 1): gesture baselines plus a capture break
+      // at character↔mark-bearing boundaries, so a mixed transaction never
+      // coalesces with its neighbours within the capture window. The stop
+      // changes no stack depth, so the baselines stay valid.
+      const gestureHistory = readMarkHistory();
+      const undoStackBefore = boundImpl.undoManager.undoStackLength();
+      const markStepsBefore = gestureHistory?.steps.length ?? 0;
+      if (gestureHistory !== null) {
+        const lastGesture = gestureHistory.gestures[gestureHistory.gestures.length - 1];
+        if (
+          isMarkBearingTransaction(transaction) ||
+          (lastGesture !== undefined && lastGesture.kind !== "char")
+        ) {
+          boundImpl.undoManager.stopCapturing();
+        }
+      }
       let projectionFailure: unknown = null;
       isProjecting = true;
       try {
@@ -1947,6 +2225,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
         prevRedoDepth = redoDepth(editor.state);
         return;
       }
+      // CL-4e fix 1: the live transact committed — link it to its gesture.
+      // (A refusal returns above: scratch-first validation means no shared
+      // transact ran, so no gesture and no truncation follow.)
+      noteSharedTransact(undoStackBefore, markStepsBefore);
     }
     if (suppressEmit) {
       markTouchedFromTransaction(
@@ -3028,10 +3310,18 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       composingChanged = false;
       compositionBaseDoc = null;
       compositionBaseSeeds = null;
+      // CL-4e fix 1: gesture baselines around the commit transact.
+      const commitHistory = readMarkHistory();
+      const commitUndoBefore = boundImpl.undoManager.undoStackLength();
+      const commitStepsBefore = commitHistory?.steps.length ?? 0;
       const result = compositionDriver.commitSession({
         stagedRuns: stagedParagraphRuns(),
       });
+      // An applied commit transacted exactly once under the local origin:
+      // link it to its gesture. A quiet close or a failed commit ran no
+      // transact, so no gesture follows.
       if (result.applied) {
+        noteSharedTransact(commitUndoBefore, commitStepsBefore);
         // BLOCKING-1: deferred remote updates parked in shared state while
         // staging was open paint here, before the caret restores and the
         // single coalesced change emits — the view equals the shared

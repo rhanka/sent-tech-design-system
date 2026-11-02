@@ -1673,12 +1673,12 @@ describe("mark-undo keyless human conflict (CL-4e Task 2, R-REV-5 key? amendment
   }
   it("keyless human invocation returns a conflict with key absent and every other R-REV-5 fact present", () => {
     const patchIntent = hint(1, "intent:patch", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
-    const input = {
+    const input: PlanMarkRevertInput = {
       fieldKey: "description",
       mark: "bold",
       intentIds: ["intent:unknown"],
       liveItems: [{ client: 1, clock: 0 }],
-    } as unknown as PlanMarkRevertInput;
+    };
     const result = planMarkRevert([patchIntent], input);
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -1694,12 +1694,12 @@ describe("mark-undo keyless human conflict (CL-4e Task 2, R-REV-5 key? amendment
   });
   it("same undeterminable shape with a real agent key returns identical facts with that key present", () => {
     const patchIntent = hint(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
-    const keylessInput = {
+    const keylessInput: PlanMarkRevertInput = {
       fieldKey: "description",
       mark: "bold",
       intentIds: ["intent:unknown"],
       liveItems: [{ client: 1, clock: 0 }],
-    } as unknown as PlanMarkRevertInput;
+    };
     const keyedInput: PlanMarkRevertInput = {
       key: AGENT_KEY,
       fieldKey: "description",
