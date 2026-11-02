@@ -2336,6 +2336,12 @@ function applyRevertInverse(
         } else {
           const recorded = { ...(slice.marks ?? {}) } as Record<string, unknown>;
           const active = cursor > 0 ? marksAtDelta(ytext, cursor - 1) : {};
+          // Defence in depth (CL-4c rev3): the recorded marks alone decide
+          // the restored formatting; the explicit negations below keep that
+          // true even if insertion inheritance semantics change. Yjs
+          // insertion already prevents the inheritance, so the junction
+          // witness is a guard only — non-discriminating under mutation,
+          // with no RED claimed for this site.
           for (const key of Object.keys(active)) {
             if (!Object.prototype.hasOwnProperty.call(recorded, key) && active[key] !== null && active[key] !== undefined) {
               recorded[key] = null;

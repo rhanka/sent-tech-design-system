@@ -444,6 +444,12 @@ interface LocalGesture {
   kind: "char" | "mark" | "mixed";
   transactionId: string | null;
   charUndone: boolean;
+  /** Mirrors `BoundGesture.charRedoVoid` (CL-4f): a void gesture is never
+      selected for a character redo; its mark half stays addressable. */
+  charRedoVoid: boolean;
+  /** Mirrors `BoundGesture.undoCompletedSeq` (CL-4f): redo selects the
+      largest value first (reverse undo-completion order). */
+  undoCompletedSeq: number;
 }
 
 /** Local structural view of the opaque per-field mark history minted in
@@ -462,6 +468,8 @@ interface LocalMarkHistory {
   } | null;
   readonly sessionId: string;
   readonly fieldKey: string;
+  /** Mirrors `BoundMarkHistory.undoCompletionCounter` (CL-4f). */
+  undoCompletionCounter: number;
 }
 
 /** Local structural view of a terminal or not-dispatched performer
@@ -1687,23 +1695,37 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           kind: "mixed",
           transactionId: freshStep.transactionId,
           charUndone: false,
+          charRedoVoid: false,
+          undoCompletedSeq: 0,
         });
       } else {
         history.gestures.push({
           kind: "mark",
           transactionId: freshStep.transactionId,
           charUndone: true,
+          charRedoVoid: false,
+          undoCompletedSeq: 0,
         });
       }
       return;
     }
     if (!grew) return;
-    history.gestures.push({ kind: "char", transactionId: null, charUndone: false });
+    history.gestures.push({
+      kind: "char",
+      transactionId: null,
+      charUndone: false,
+      charRedoVoid: false,
+      undoCompletedSeq: 0,
+    });
   };
   /** Whether the gesture owns a character half sitting on the matching
       side of the manager stacks for `direction`. */
   const gestureCharNeeds = (gesture: LocalGesture, direction: "undo" | "redo"): boolean => {
     if (gesture.kind !== "char" && gesture.kind !== "mixed") return false;
+    // A void gesture's character half can never apply again (CL-4f): it
+    // is never a redo candidate, while its mark half stays addressable
+    // through `gestureMarkNeeds`.
+    if (direction === "redo" && gesture.charRedoVoid === true) return false;
     return direction === "undo" ? gesture.charUndone === false : gesture.charUndone === true;
   };
   /** Whether the gesture owns a mark half sitting on the matching side
@@ -1734,19 +1756,25 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     }
     return null;
   };
-  /** Earliest gesture with any half needing redo (the most recently undone
-      first), excluding the in-flight pending gesture. */
+  /** Gesture needing redo whose undo completed last (CL-4f: reverse
+      undo-completion order), excluding the in-flight pending gesture.
+      Completion ties keep ledger order, which preserves the previous
+      earliest-first scan for sequentially completed undos. */
   const findRedoGesture = (
     history: LocalMarkHistory,
     pendingTxn: string | null,
   ): LocalGesture | null => {
+    let best: LocalGesture | null = null;
     for (const gesture of history.gestures) {
       if (pendingTxn !== null && gesture.transactionId === pendingTxn) continue;
-      if (gestureCharNeeds(gesture, "redo") || gestureMarkNeeds(history, gesture, "redo")) {
-        return gesture;
+      if (!gestureCharNeeds(gesture, "redo") && !gestureMarkNeeds(history, gesture, "redo")) {
+        continue;
+      }
+      if (best === null || gesture.undoCompletedSeq > best.undoCompletedSeq) {
+        best = gesture;
       }
     }
-    return null;
+    return best;
   };
   /** Nearest gesture with a character half needing `direction` (D-C4b
       pending path), excluding the in-flight pending gesture. Undo scans
@@ -1786,14 +1814,6 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       boundImpl.provenanceUndo as unknown as {
         requestMarkUndo(input: unknown): Promise<unknown>;
       } | null;
-    const runCharHalf = (gesture: LocalGesture): void => {
-      const before = displayedCaptureResult();
-      const applied = direction === "undo" ? manager.undo() : manager.redo();
-      if (applied === null || applied === undefined) return;
-      gesture.charUndone = direction === "undo";
-      const after = displayedCaptureResult();
-      emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
-    };
     // Absent performer: character undo is unaffected, mark undo is a
     // silent no-op (no gestures exist, the manager owns every step).
     if (history === null) {
@@ -1805,6 +1825,71 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
       return;
     }
+    /** One character half through the field manager with pop-through
+        reconciliation (CL-4f): a Yjs `undo()` call pops through empty
+        stack items inside the call, so the consumed count — measured
+        through the shipped `undoStackLength()` seam — can exceed the
+        selected gesture's item. The ledger is reconciled with the items
+        actually consumed: the selected gesture's own item is always
+        consumed (void when it applied nothing); older items popped
+        beside it are marked void except the one effective item, which a
+        single counter-press restores so the press leaves exactly the
+        selected gesture consumed. Redo needs no repair: a redo call
+        applies at most one inverse, and empty redo items are skipped by
+        the call itself (sub-case (e) stays unreachable). */
+    const runCharHalf = (gesture: LocalGesture): void => {
+      const before = displayedCaptureResult();
+      const stackBefore = manager.undoStackLength();
+      const applied = direction === "undo" ? manager.undo() : manager.redo();
+      if (applied === null || applied === undefined) {
+        // All-empty press: the selected gesture's item popped without
+        // effect and nothing else could perform below it. The item is
+        // gone, so the gesture is marked consumed-void: a later press
+        // must neither re-target it nor select it for a character redo
+        // it can never apply. Nothing visible changed, so nothing emits.
+        gesture.charUndone = direction === "undo";
+        gesture.charRedoVoid = true;
+        return;
+      }
+      if (direction === "undo") {
+        history.undoCompletionCounter += 1;
+        gesture.undoCompletedSeq = history.undoCompletionCounter;
+        const consumed = stackBefore - manager.undoStackLength();
+        if (consumed > 1) {
+          // Pop-through consumed older items beside the selected
+          // gesture's own item, which this count proves empty (an
+          // effective own item would have stopped the pop at one). The
+          // redo stack holds exactly the performed inverse, so one
+          // counter-press restores the over-consumed effective item;
+          // the empties between stay consumed-void. The walk below
+          // assumes the popped items belong to the nearest older
+          // character-bearing gestures in ledger order — the same LIFO
+          // correspondence the recording linkage relies on; truncation
+          // drift past that correspondence is not covered.
+          manager.redo();
+          const at = history.gestures.indexOf(gesture);
+          let voids = consumed - 2;
+          for (let index = at - 1; index >= 0 && voids > 0; index -= 1) {
+            const older = history.gestures[index] as LocalGesture;
+            if (older.kind !== "char" && older.kind !== "mixed") continue;
+            if (older.charUndone) continue;
+            older.charUndone = true;
+            older.charRedoVoid = true;
+            voids -= 1;
+          }
+          gesture.charUndone = true;
+          gesture.charRedoVoid = true;
+        } else {
+          gesture.charUndone = true;
+        }
+        const after = displayedCaptureResult();
+        emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
+        return;
+      }
+      gesture.charUndone = false;
+      const after = displayedCaptureResult();
+      emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
+    };
     // D-C4b: while a mark invocation is unresolved, no new mark
     // transition is issued. Only an older gesture's character half may
     // still run; the pending step is untouched until its outcome resolves.
@@ -1892,6 +1977,18 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
           if (typeof outcome.transitionId === "string") {
             resolved.transitionId = outcome.transitionId;
             resolved.undone = current.direction === "undo";
+            if (current.direction === "undo") {
+              // The gesture's mark half completes here (its character
+              // half, if any, already stamped at press time): re-stamp
+              // with the later completion for reverse-order redo.
+              history.undoCompletionCounter += 1;
+              const undoneGesture = history.gestures.find(
+                (entry) => entry.transactionId === current.stepTransactionId,
+              );
+              if (undoneGesture !== undefined) {
+                undoneGesture.undoCompletedSeq = history.undoCompletionCounter;
+              }
+            }
           }
           history.pending = null;
           return;
