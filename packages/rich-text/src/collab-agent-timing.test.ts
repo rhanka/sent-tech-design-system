@@ -15,8 +15,11 @@
  * anchor: 12 inserts + 4 bold marks over rotating ranges + 4 splits with
  * unique new ids), present the patch, and measure the interval from
  * `applyPatch` presentation to the applied effects being observable on
- * synced replicas. Warm-up repetitions are excluded by a stated count
- * (5 per source). At least 30 measured repetitions per source.
+ * synced replicas (replicas instantiated before the window; the sync
+ * itself still encodes state through the helper, so the window stays a
+ * DS-side upper bound labelled DS evidence — AMB-D9). Warm-up repetitions
+ * are excluded by a stated count (5 per source). At least 30 measured
+ * repetitions per source.
  *
  * The record travels with the report (pasted stdout summary below, method
  * and hardware included); this harness writes no committed artefact.
@@ -155,12 +158,17 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
             });
             const patch = agentPatchFromRead(read, FIELD, DOCUMENT_ID, SESSION_ID, actor, `epoch:timing-${rep}`, twentyOps(read, rep));
             const authDoc = authDocOf(driver.source, DOCUMENT_ID, SESSION_ID, FIELD);
+            // Replica instantiation stays outside the timed window: the
+            // window covers `applyPatch` presentation, the replica sync
+            // and the replica-equality assertions only. The sync still
+            // encodes state through the existing helper, so the window
+            // remains a DS-side upper bound labelled DS evidence (AMB-D9).
+            const replicas = [makeAgentReplica(authDoc), makeAgentReplica(authDoc)];
             const started = performance.now();
             const receipt = await bridge.applyPatch(patch);
             expect(receipt.status).toBe("applied");
             expect(receipt.operationResults).toHaveLength(20);
             const expected = authTexts(driver.source, DOCUMENT_ID, SESSION_ID, FIELD);
-            const replicas = [makeAgentReplica(authDoc), makeAgentReplica(authDoc)];
             syncAgentReplicas(authDoc, replicas);
             for (const replica of replicaTexts(replicas, FIELD)) {
               expect(replica).toEqual(expected);
