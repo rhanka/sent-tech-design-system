@@ -1018,7 +1018,7 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         ]);
         const receiptPreserved = await bridge.applyPatch(patchPreserved);
         expect(receiptPreserved.status).toBe("refused");
-        expect(receiptPreserved.reason).toBe("incompatible-schema");
+        expect(receiptPreserved.reason).toBe("scope-denied");
         expect(receiptPreserved.detail ?? "").toContain("preserved blocks carry no metadata");
         expect(bridge.getReceipt({
           documentId: DOCUMENT_ID,

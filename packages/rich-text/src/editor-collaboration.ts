@@ -172,40 +172,6 @@ export interface SessionMarkUndoPerformer {
 }
 
 /**
- * One local mark step (CL-4e §3.3): one mark-bearing human transaction in
- * transaction order, with its complete mark groups and its last observed
- * durable transition. Lives in the erased wiring beside the performer;
- * built from the transaction ids and intent ids the binding already mints
- * when it records through the sink. No sink change and no new recording
- * path.
- */
-export interface BoundMarkUndoStep {
-  readonly transactionId: string;
-  readonly fieldKey: string;
-  readonly marks: SessionMarkUndoMarkGroup[];
-  transitionId: string | null;
-  undone: boolean;
-}
-
-/** Per-field mark-step history plus at most one pending invocation. */
-export interface BoundMarkUndoState {
-  readonly steps: BoundMarkUndoStep[];
-  pending:
-    | {
-        readonly requestId: string;
-        readonly commandTransactionId: string;
-        readonly expectedTransitionId: string | null;
-        readonly stepTransactionId: string;
-        readonly direction: "undo" | "redo";
-        readonly fieldKey: string;
-      }
-    | null;
-  requestCounter: number;
-  readonly sessionId: string;
-  readonly fieldKey: string;
-}
-
-/**
  * One semantic formatting intent as the DS binding computes it, before the
  * host journal assigns its total order. `seq` is host-minted (spec section 5.6
  * R-REV-3: "Host journal sequence; the log's total order for this
@@ -242,6 +208,10 @@ export interface BoundUndoManager {
   redo(): unknown;
   canUndo(): boolean;
   canRedo(): boolean;
+  /** Number of entries on the undo stack (CL-4e fix 1 gesture linkage: the
+      editor pairs each new entry with its gesture's transaction id at
+      recording time; a count, never the entries, so no `Y` type crosses). */
+  undoStackLength(): number;
   /** Close the current capture interval so the next gesture is a new step
       (spec leaves coalescing unpinned; the production default stays 500 ms,
       register entry AMB-8; witnesses call this between gestures). */
@@ -302,6 +272,7 @@ export function createBoundUndoManager(options: {
     redo: () => manager.redo(),
     canUndo: () => manager.canUndo(),
     canRedo: () => manager.canRedo(),
+    undoStackLength: () => manager.undoStack.length,
     stopCapturing: () => manager.stopCapturing(),
     destroy: () => manager.destroy(),
   };
