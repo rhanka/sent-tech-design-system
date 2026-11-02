@@ -100,13 +100,19 @@ export function coveredItemIdentities(
   high: number,
 ): Array<{ client: number; clock: number }> {
   const chain = (ytext as unknown as { _start?: unknown })._start as
-    | { id: { client: number; clock: number }; length: number; right: unknown; content: { constructor: { name: string }; str?: unknown } | null }
+    | { id: { client: number; clock: number }; length: number; right: unknown; deleted?: boolean; content: { constructor: { name: string }; str?: unknown } | null }
     | null
     | undefined;
   const out: Array<{ client: number; clock: number }> = [];
   let position = 0;
   let current = chain ?? null;
   while (current !== null) {
+    if ((current as { deleted?: boolean }).deleted === true) {
+      const nextDeleted = (current as { right?: unknown }).right;
+      current = (nextDeleted ?? null) as typeof current;
+      if (current === undefined) break;
+      continue;
+    }
     const name = (current.content?.constructor?.name ?? "") as string;
     if (name === "ContentString") {
       const text = current.content?.str;

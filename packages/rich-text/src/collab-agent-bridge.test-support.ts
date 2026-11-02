@@ -51,6 +51,7 @@ import {
   relativePositionToJSON,
 } from "yjs";
 import {
+  latestEffectiveIntent,
   MAX_READ_ANCHORS,
   MAX_READ_PARAGRAPHS,
   MAX_READ_SERIALIZED_BYTES,
@@ -411,6 +412,7 @@ interface WalkChain {
   id: { client: number; clock: number };
   length: number;
   right: WalkChain | null;
+  deleted?: boolean;
   content: { constructor: { name: string }; str?: unknown; embed?: unknown };
 }
 
@@ -427,6 +429,10 @@ function walkVisibleItems(ytext: Y.Text): WalkItem[] {
   let position = 0;
   let chain = chainStart(ytext);
   while (chain !== null) {
+    if (chain.deleted === true) {
+      chain = chain.right;
+      continue;
+    }
     const name = chain.content?.constructor?.name;
     if (name === "ContentString") {
       const text = chain.content.str;
@@ -1815,7 +1821,14 @@ function applyRevertInverse(
           ytext.insertEmbed(cursor, { hardBreak: true });
           cursor += 1;
         } else {
-          ytext.insert(cursor, slice.text, { ...(slice.marks ?? {}) });
+          const recorded = { ...(slice.marks ?? {}) } as Record<string, unknown>;
+          const active = cursor > 0 ? marksAtDelta(ytext, cursor - 1) : {};
+          for (const key of Object.keys(active)) {
+            if (!Object.prototype.hasOwnProperty.call(recorded, key) && active[key] !== null && active[key] !== undefined) {
+              recorded[key] = null;
+            }
+          }
+          ytext.insert(cursor, slice.text, recorded);
           cursor += slice.text.length;
         }
       }
@@ -1886,6 +1899,31 @@ function applyRevertInverse(
       });
       if (plan.ok === false) {
         throw new BridgeRefusal("mark-provenance-conflict", plan.conflict.detail, operation.operationIndex, plan.conflict);
+      }
+      const diverged: Array<{ client: number; clock: number }> = [];
+      for (const decision of plan.decisions) {
+        if (decision.action === "satisfied") continue;
+        const at = linearIndexOfUnitIn(ytext, decision.item.client, decision.item.clock);
+        if (at === null) continue;
+        const current = (marksAtDelta(ytext, at)[markKey] as true | string | undefined) ?? null;
+        const latest = latestEffectiveIntent(log.filter((entry) => entry.fieldKey === operation.fieldKey), decision.item, markKey);
+        if (latest.ok === false || (latest.ok === true && latest.found === false)) {
+          diverged.push(decision.item);
+          continue;
+        }
+        if (latest.ok === true && latest.found === true) {
+          const expected = (latest.intent.value as true | string | null | undefined) ?? null;
+          const same = JSON.stringify(current) === JSON.stringify(expected);
+          if (same === false) diverged.push(decision.item);
+        }
+      }
+      if (diverged.length > 0) {
+        throw new BridgeRefusal(
+          "mark-provenance-conflict",
+          `revert of mark ${operation.operationIndex}: live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)`,
+          operation.operationIndex,
+          { kind: "mark-provenance-conflict", key, fieldKey: operation.fieldKey, mark: markKey, items: diverged, detail: "live marks diverge from the logged latest intent (unlogged formatting without a sink, R-REV-5)" },
+        );
       }
       const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
       for (const decision of plan.decisions) {
@@ -2913,6 +2951,7 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
               ? { conflict: error.conflict }
               : {}),
           };
+          options.store.revertReceipts[keyString] = receipt;
           return receipt;
         }
         throw error;

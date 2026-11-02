@@ -59,29 +59,35 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 6 durabl
       const read = bridge.readState({ binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" } });
       const range = read.fields[0]?.paragraphs[0];
       if (range === undefined) throw new Error("idempotency witness: no paragraph");
-      const startAnchor = range.startAnchor;
       const all = await bridge.readState({
         binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
-        anchorRequests: [{ paragraphId: P1, paragraphOffset: 2 }, { paragraphId: P1, paragraphOffset: 4 }],
+        anchorRequests: [
+          { paragraphId: P1, paragraphOffset: 0 },
+          { paragraphId: P1, paragraphOffset: 2 },
+          { paragraphId: P1, paragraphOffset: 4 },
+        ],
       });
       const requested = all.fields[0]?.requestedAnchors as RelativeAnchor[];
-      if (requested === undefined || requested.length < 2) throw new Error("idempotency witness: no requested anchors");
-      void startAnchor;
+      if (requested === undefined || requested.length < 3) throw new Error("idempotency witness: no requested anchors");
+      const endAnchor = read.fields[0]?.paragraphs[0]?.endAnchor as RelativeAnchor;
       const patch = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
-        { type: "delete", fieldKey: "description", paragraphId: P1, range: { start: requested[0] as RelativeAnchor, end: requested[1] as RelativeAnchor } },
+        { type: "insert", fieldKey: "description", paragraphId: P1, at: endAnchor, text: "X" },
+        { type: "delete", fieldKey: "description", paragraphId: P1, range: { start: requested[1] as RelativeAnchor, end: requested[2] as RelativeAnchor } },
+        { type: "mark", fieldKey: "description", paragraphId: P1, range: { start: requested[0] as RelativeAnchor, end: requested[1] as RelativeAnchor }, mark: "bold", applied: true },
       ]);
       const first = await bridge.applyPatch(patch);
       expect(first.status).toBe("applied");
       const afterFirst = authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description");
-      expect(afterFirst).toEqual(["abef"]);
+      expect(afterFirst).toEqual(["**ab**efX"]);
+      expect(store.provenanceLog).toHaveLength(1);
       const markCountBefore = store.provenanceLog.length;
-      void markCountBefore;
       const retry = await bridge.applyPatch(patch);
       expect(retry.duplicate).toBe(true);
       expect(retry.status).toBe("applied");
       expect(retry.stateVectorAfter).toBe(first.stateVectorAfter);
       expect(retry.operationResults).toEqual(first.operationResults);
-      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["abef"]);
+      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["**ab**efX"]);
+      expect(store.provenanceLog).toHaveLength(markCountBefore);
     });
   });
 

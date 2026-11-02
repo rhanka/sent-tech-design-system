@@ -2258,16 +2258,43 @@ export type IntentDraftValidationResult =
   | { ok: true }
   | { ok: false; reason: "incompatible-schema" | "too-large"; detail: string };
 
+/** Draft item bound (explicit CL-4c constant): a hostile items array never
+    passes structural validation beyond this length. */
+export const MAX_DRAFT_ITEMS = 20000;
+/** Anchor string bound (explicit CL-4c constant): range anchors are opaque
+    relative-position JSON and stay within the href budget. */
+export const MAX_ANCHOR_UNITS = 2048;
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  try {
+    const proto = Object.getPrototypeOf(value);
+    return proto === Object.prototype || proto === null;
+  } catch {
+    return false;
+  }
+}
+
+function hasOwn(record: Record<string, unknown>, key: string): boolean {
+  try {
+    return Object.prototype.hasOwnProperty.call(record, key);
+  } catch {
+    return false;
+  }
+}
+
 /** Structural validation of one FormattingIntentDraft as untrusted JSON.
     Pure: no clock, no Yjs, no live-state check. A pass means the value has
     the closed draft shape and coherent mark/value pairing only; admission,
-    range resolution and item coverage remain host live checks. */
+    range resolution and item coverage remain host live checks. Never throws:
+    accessor and proxy traps refuse as incompatible-schema. */
 export function validateFormattingIntentDraft(value: unknown): IntentDraftValidationResult {
   const refuse = (
     reason: "incompatible-schema" | "too-large",
     detail: string,
   ): IntentDraftValidationResult => ({ ok: false, reason, detail });
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  try {
+  if (!isPlainRecord(value)) {
     return refuse("incompatible-schema", "draft must be a non-null object");
   }
   const record = value as Record<string, unknown>;
@@ -2278,7 +2305,7 @@ export function validateFormattingIntentDraft(value: unknown): IntentDraftValida
     }
   }
   for (const key of closedKeys) {
-    if (!(key in record)) {
+    if (!hasOwn(record, key)) {
       return refuse("incompatible-schema", `draft is missing key: ${key}`);
     }
   }
@@ -2292,42 +2319,50 @@ export function validateFormattingIntentDraft(value: unknown): IntentDraftValida
     }
   }
   const source = record["source"];
-  if (typeof source !== "object" || source === null || Array.isArray(source)) {
+  if (!isPlainRecord(source)) {
     return refuse("incompatible-schema", "draft source must be an object");
   }
   const sourceRecord = source as Record<string, unknown>;
   const kind = sourceRecord["kind"];
   if (kind === "human-transaction") {
     const keys = Object.keys(sourceRecord);
-    if (keys.length !== 2 || !keys.includes("kind") || !keys.includes("transactionId")) {
+    if (keys.length !== 2 || !hasOwn(sourceRecord, "kind") || !hasOwn(sourceRecord, "transactionId")) {
       return refuse("incompatible-schema", "human-transaction source has a closed shape");
     }
-    if (!isNonEmptyString(sourceRecord["transactionId"])) {
+    const transactionId = sourceRecord["transactionId"];
+    if (typeof transactionId !== "string" || transactionId.length === 0) {
       return refuse("incompatible-schema", "human-transaction transactionId must be non-empty");
+    }
+    if (transactionId.length > MAX_ID_UNITS) {
+      return refuse("too-large", `human-transaction transactionId exceeds ${MAX_ID_UNITS} units`);
     }
   } else if (kind === "agent-patch") {
     const keys = Object.keys(sourceRecord);
     if (
       keys.length !== 3 ||
-      !keys.includes("kind") ||
-      !keys.includes("key") ||
-      !keys.includes("operationIndex")
+      !hasOwn(sourceRecord, "kind") ||
+      !hasOwn(sourceRecord, "key") ||
+      !hasOwn(sourceRecord, "operationIndex")
     ) {
       return refuse("incompatible-schema", "agent-patch source has a closed shape");
     }
     const keyValue = sourceRecord["key"];
-    if (typeof keyValue !== "object" || keyValue === null || Array.isArray(keyValue)) {
+    if (!isPlainRecord(keyValue)) {
       return refuse("incompatible-schema", "agent-patch key must be a complete AgentPatchKey");
     }
     const keyRecord = keyValue as Record<string, unknown>;
     const keyKeys = Object.keys(keyRecord);
     const expected = ["documentId", "actorId", "sessionEpoch", "patchId"];
-    if (keyKeys.length !== 4 || !expected.every((entry) => keyKeys.includes(entry))) {
+    if (keyKeys.length !== 4 || !expected.every((entry) => hasOwn(keyRecord, entry))) {
       return refuse("incompatible-schema", "agent-patch key must carry all four components");
     }
     for (const entry of expected) {
-      if (!isNonEmptyString(keyRecord[entry])) {
+      const part = keyRecord[entry];
+      if (typeof part !== "string" || part.length === 0) {
         return refuse("incompatible-schema", `agent-patch key ${entry} must be non-empty`);
+      }
+      if (part.length > MAX_ID_UNITS) {
+        return refuse("too-large", `agent-patch key ${entry} exceeds ${MAX_ID_UNITS} units`);
       }
     }
     const operationIndex = sourceRecord["operationIndex"];
@@ -2370,28 +2405,37 @@ export function validateFormattingIntentDraft(value: unknown): IntentDraftValida
     }
   }
   const range = record["range"];
-  if (typeof range !== "object" || range === null || Array.isArray(range)) {
+  if (!isPlainRecord(range)) {
     return refuse("incompatible-schema", "draft range must be an object");
   }
   const rangeRecord = range as Record<string, unknown>;
-  if (Object.keys(rangeRecord).length !== 2 || !("start" in rangeRecord) || !("end" in rangeRecord)) {
+  if (Object.keys(rangeRecord).length !== 2 || !hasOwn(rangeRecord, "start") || !hasOwn(rangeRecord, "end")) {
     return refuse("incompatible-schema", "draft range has a closed { start, end } shape");
   }
-  if (!isNonEmptyString(rangeRecord["start"]) || !isNonEmptyString(rangeRecord["end"])) {
-    return refuse("incompatible-schema", "draft range anchors must be non-empty strings");
+  for (const anchorKey of ["start", "end"] as const) {
+    const anchor = rangeRecord[anchorKey];
+    if (typeof anchor !== "string" || anchor.length === 0) {
+      return refuse("incompatible-schema", "draft range anchors must be non-empty strings");
+    }
+    if (anchor.length > MAX_ANCHOR_UNITS) {
+      return refuse("too-large", `draft range ${anchorKey} exceeds ${MAX_ANCHOR_UNITS} units`);
+    }
   }
   const items = record["items"];
   if (!Array.isArray(items)) {
     return refuse("incompatible-schema", "draft items must be an array");
   }
+  if (items.length > MAX_DRAFT_ITEMS) {
+    return refuse("too-large", `draft items exceed ${MAX_DRAFT_ITEMS} entries`);
+  }
   const seen = new Set<string>();
   for (const entry of items) {
-    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
+    if (!isPlainRecord(entry)) {
       return refuse("incompatible-schema", "draft item must be an object");
     }
     const itemRecord = entry as Record<string, unknown>;
     const itemKeys = Object.keys(itemRecord);
-    if (itemKeys.length !== 2 || !itemKeys.includes("client") || !itemKeys.includes("clock")) {
+    if (itemKeys.length !== 2 || !hasOwn(itemRecord, "client") || !hasOwn(itemRecord, "clock")) {
       return refuse("incompatible-schema", "draft item has a closed { client, clock } shape");
     }
     const client = itemRecord["client"];
@@ -2413,6 +2457,9 @@ export function validateFormattingIntentDraft(value: unknown): IntentDraftValida
     seen.add(pair);
   }
   return { ok: true };
+  } catch {
+    return refuse("incompatible-schema", "draft carries an unreadable field (accessor or proxy trap)");
+  }
 }
 
 /** One item identity for the provenance computation (Yjs client/clock). */
@@ -2524,6 +2571,9 @@ export function planMarkRevert(
   }
   const live = new Set<string>();
   for (const item of input.liveItems) live.add(`${item.client}:${item.clock}`);
+  const fieldIntents = intents.filter(
+    (intent) => intent.fieldKey === input.fieldKey && intent.mark === input.mark,
+  );
   const undeterminable: ProvenanceItemId[] = [];
   const decisions: PlanMarkRevertDecision[] = [];
   for (const item of covered.values()) {
@@ -2532,7 +2582,7 @@ export function planMarkRevert(
       decisions.push({ item, action: "satisfied" });
       continue;
     }
-    const latest = latestEffectiveIntent(intents, item, input.mark);
+    const latest = latestEffectiveIntent(fieldIntents, item, input.mark);
     if (latest.ok === false) {
       undeterminable.push(item);
       continue;
@@ -2544,21 +2594,15 @@ export function planMarkRevert(
     if (latest.ok === true && latest.found === true) {
       const owns = input.intentIds.includes(latest.intent.intentId);
       if (owns) {
-        let preceding: FormattingIntent | null = null;
-        for (const intent of intents) {
-          if (intent.fieldKey !== input.fieldKey || intent.mark !== input.mark) continue;
-          if (input.intentIds.includes(intent.intentId)) continue;
-          let covers = false;
-          for (const entry of intent.items) {
-            if (entry.client === item.client && entry.clock === item.clock) {
-              covers = true;
-              break;
-            }
-          }
-          if (!covers) continue;
-          if (intent.seq >= latest.intent.seq) continue;
-          if (preceding === null || intent.seq > preceding.seq) preceding = intent;
+        const precedingCandidates = fieldIntents.filter(
+          (intent) => !input.intentIds.includes(intent.intentId) && intent.seq < latest.intent.seq,
+        );
+        const precedingResult = latestEffectiveIntent(precedingCandidates, item, input.mark);
+        if (precedingResult.ok === false) {
+          undeterminable.push(item);
+          continue;
         }
+        const preceding = precedingResult.ok === true && precedingResult.found === true ? precedingResult.intent : null;
         decisions.push({ item, action: "restore", value: preceding === null ? null : preceding.value });
       } else {
         decisions.push({ item, action: "kept-later" });
