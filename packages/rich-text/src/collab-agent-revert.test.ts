@@ -442,6 +442,71 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 7 double
     });
   });
 
+  it("mark (a) live revert leaves the covered subset marked", async () => {
+    await withDriver(kind, async (driver) => {
+      seedAb(driver, "abcd");
+      const { bridge } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"]);
+      const read = await bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: [{ paragraphId: P1, paragraphOffset: 0 }, { paragraphId: P1, paragraphOffset: 2 }],
+      });
+      const requested = read.fields[0]?.requestedAnchors as RelativeAnchor[];
+      const agentPatch = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
+        { type: "mark", fieldKey: "description", paragraphId: P1, range: { start: requested[0] as RelativeAnchor, end: requested[1] as RelativeAnchor }, mark: "bold", applied: true },
+      ]);
+      expect((await bridge.applyPatch(agentPatch)).status).toBe("applied");
+      markRange(driver, bridge.sink, HUMAN, "txn:human-1live", "bold", true, 0, 4);
+      const before = deltaMarks(driver);
+      expect(before).toContain("bold");
+      const revert = await bridge.revertPatch({ key: { documentId: DOCUMENT_ID, actorId: ACTOR_A, sessionEpoch: EPOCH, patchId: agentPatch.patchId }, requestedBy: HUMAN });
+      expect(revert.status).toBe("applied");
+      expect(deltaMarks(driver)).toBe(before);
+      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["**abcd**"]);
+      expect(revert.detail).toContain("kept-later 2");
+    });
+  });
+
+  it("B9 reinserted text after a bold junction keeps the recorded plain mark", async () => {
+    await withDriver(kind, async (driver) => {
+      seedAb(driver, "abcd");
+      const { bridge } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"]);
+      const read = await bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: [
+          { paragraphId: P1, paragraphOffset: 0 },
+          { paragraphId: P1, paragraphOffset: 3 },
+        ],
+      });
+      const requested = read.fields[0]?.requestedAnchors as RelativeAnchor[];
+      const boldPatch = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
+        { type: "mark", fieldKey: "description", paragraphId: P1, range: { start: requested[0] as RelativeAnchor, end: requested[1] as RelativeAnchor }, mark: "bold", applied: true },
+      ]);
+      expect((await bridge.applyPatch(boldPatch)).status).toBe("applied");
+      const read2 = await bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: [
+          { paragraphId: P1, paragraphOffset: 2 },
+          { paragraphId: P1, paragraphOffset: 4 },
+        ],
+      });
+      const requested2 = read2.fields[0]?.requestedAnchors as RelativeAnchor[];
+      const deletePatch = agentPatchFromRead(read2, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
+        { type: "delete", fieldKey: "description", paragraphId: P1, range: { start: requested2[0] as RelativeAnchor, end: requested2[1] as RelativeAnchor } },
+      ]);
+      expect((await bridge.applyPatch(deletePatch)).status).toBe("applied");
+      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["**ab**"]);
+      // The reinserted "d" is plain in the recorded slice but lands right
+      // after the reinserted bold "c": without the left-neighbour negation it
+      // would inherit bold across the junction ("**abcd**").
+      const revert = await bridge.revertPatch({
+        key: { documentId: DOCUMENT_ID, actorId: ACTOR_A, sessionEpoch: EPOCH, patchId: deletePatch.patchId },
+        requestedBy: HUMAN,
+      });
+      expect(revert.status).toBe("applied");
+      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["**abc**d"]);
+    });
+  });
+
   it("mark (b) with restart leaves the removed subset unmarked", async () => {
     await withDriver(kind, async (driver) => {
       seedAb(driver, "ab");
@@ -468,7 +533,10 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 7 double
       expect(revert.status).toBe("applied");
       expect(revert.detail).toContain("kept-later 1");
       expect(revert.detail).toContain("restored items 1");
-      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")[0]).toContain("ab");
+      // Reverting the agent apply restores the pre-patch value (unmarked)
+      // where no later intent covers, while the human-removed subset stays
+      // removed: the whole field reads plain.
+      expect(authTexts(driver.source, DOCUMENT_ID, SESSION_ID, "description")).toEqual(["ab"]);
     });
   });
 

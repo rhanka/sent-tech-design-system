@@ -24,6 +24,7 @@ import {
   seedFieldFromDocument,
 } from "./collab-codec.js";
 import type { FieldBindingIdentity, RelativeAnchor } from "./collaboration.js";
+import { mintEndOfFieldAnchor, tryResolveAnchorToLinear } from "./collab-selection.js";
 import type { RichTextDocument, RichTextEditor } from "./model.js";
 import type { RichTextChangeEvent } from "./editor.js";
 import { canonicalPlainMetadata } from "./editor-full-markdown.js";
@@ -334,6 +335,99 @@ describe("Task 4 human-intent recording (jsdom, in-memory source)", () => {
     }
   });
 
+  it("records all items for a mixed insert plus same-value reassertion", async () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const documentId = `prov:doc:mixedreassert`;
+    const sessionId = `prov:session:mixedreassert`;
+    const received: FormattingIntentDraft[] = [];
+    const source = provider.openSession(documentId, sessionId, [FIELD_A]) as LiveSessionBindingSource;
+    (source as unknown as { provenanceSink?: SessionProvenanceSink }).provenanceSink = {
+      recordFormattingIntent: (intent) => { received.push(intent); },
+    };
+    const doc = p0Doc([{ paragraphId: "paragraph:1", text: "alphaBeta" }]);
+    const resolved = source.resolveBinding({ documentId, sessionId, fieldKey: FIELD_A });
+    seedFieldFromDocument(resolved.text, resolved.fieldMeta, FIELD_A, doc);
+    const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "alpha", 0), pmTextPos(mountedA.editor, "alpha", 5));
+    expect(received).toHaveLength(1);
+    const view = (mountedA.editor as unknown as { view: { state: { tr: any; schema: any }; dispatch(tr: unknown): void } }).view;
+    const start = pmTextPos(mountedA.editor, "alpha", 0);
+    const end = pmTextPos(mountedA.editor, "Beta", 4);
+    // One dispatch: a plain insert outside the marked span plus a reassertion
+    // over the whole word while its head is already bold. The user range must
+    // resolve after the insert applied, not against the pre-transaction map.
+    view.dispatch(view.state.tr.insertText("X", end).addMark(start, start + 9, view.state.schema.marks.bold.create()));
+    expect(received).toHaveLength(2);
+    expect(received[0]?.intentId).not.toBe(received[1]?.intentId);
+    const draft = received[1] as FormattingIntentDraft;
+    expect(draft.mark).toBe("bold");
+    // All 9 word items, not the 4 of the narrowed step subset.
+    expect(draft.items).toHaveLength(9);
+    const firstIds = new Set((received[0]?.items ?? []).map((item) => `${item.client}:${item.clock}`));
+    const secondIds = new Set(draft.items.map((item) => `${item.client}:${item.clock}`));
+    for (const id of firstIds) {
+      expect(secondIds.has(id)).toBe(true);
+    }
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.start as RelativeAnchor)).toBe(1);
+    // The marked word spans linear 1..10; the appended "X" sits at 10..11.
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.end as RelativeAnchor)).toBe(10);
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**alphaBeta**X");
+  });
+
+  it("keeps the full user range when the already-marked subset is the suffix", async () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const documentId = `prov:doc:suffixreassert`;
+    const sessionId = `prov:session:suffixreassert`;
+    const received: FormattingIntentDraft[] = [];
+    const source = provider.openSession(documentId, sessionId, [FIELD_A]) as LiveSessionBindingSource;
+    (source as unknown as { provenanceSink?: SessionProvenanceSink }).provenanceSink = {
+      recordFormattingIntent: (intent) => { received.push(intent); },
+    };
+    const doc = p0Doc([{ paragraphId: "paragraph:1", text: "alphaBeta" }]);
+    const resolved = source.resolveBinding({ documentId, sessionId, fieldKey: FIELD_A });
+    seedFieldFromDocument(resolved.text, resolved.fieldMeta, FIELD_A, doc);
+    const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "Beta", 0), pmTextPos(mountedA.editor, "Beta", 4));
+    expect(received).toHaveLength(1);
+    // Reassert over the whole word: the narrowed step covers only "alpha",
+    // but the draft range must still span all 9 items (group bounds widen
+    // only, never narrow to the later step entry).
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "alpha", 0), pmTextPos(mountedA.editor, "Beta", 4));
+    expect(received).toHaveLength(2);
+    const draft = received[1] as FormattingIntentDraft;
+    expect(draft.items).toHaveLength(9);
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.start as RelativeAnchor)).toBe(1);
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.end as RelativeAnchor)).toBe(mountedA.ytext.length);
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**alphaBeta**");
+  });
+
+  it("keeps the full user range when the already-marked subset is the prefix", async () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const documentId = `prov:doc:prefixreassert`;
+    const sessionId = `prov:session:prefixreassert`;
+    const received: FormattingIntentDraft[] = [];
+    const source = provider.openSession(documentId, sessionId, [FIELD_A]) as LiveSessionBindingSource;
+    (source as unknown as { provenanceSink?: SessionProvenanceSink }).provenanceSink = {
+      recordFormattingIntent: (intent) => { received.push(intent); },
+    };
+    const doc = p0Doc([{ paragraphId: "paragraph:1", text: "alphaBeta" }]);
+    const resolved = source.resolveBinding({ documentId, sessionId, fieldKey: FIELD_A });
+    seedFieldFromDocument(resolved.text, resolved.fieldMeta, FIELD_A, doc);
+    const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "alpha", 0), pmTextPos(mountedA.editor, "alpha", 5));
+    expect(received).toHaveLength(1);
+    // Reassert over the whole word: the narrowed step covers only "Beta",
+    // but the draft range must still start at the word head (group bounds
+    // widen only, never narrow to the later step entry).
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "alpha", 0), pmTextPos(mountedA.editor, "Beta", 4));
+    expect(received).toHaveLength(2);
+    const draft = received[1] as FormattingIntentDraft;
+    expect(draft.items).toHaveLength(9);
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.start as RelativeAnchor)).toBe(1);
+    expect(tryResolveAnchorToLinear(mountedA.ytext, draft.range.end as RelativeAnchor)).toBe(mountedA.ytext.length);
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**alphaBeta**");
+  });
+
   it("computes and drops with an absent sink while the mark still applies", async () => {
     const provider = createInMemoryTestDoubleProvider();
     const documentId = `prov:doc:rec3`;
@@ -432,7 +526,7 @@ describe("Task 4 human-intent recording (jsdom, in-memory source)", () => {
 });
 
 describe("Review fixes B1 deleted items, B4 disjoint ranges, B3 composition (jsdom, in-memory source)", () => {
-  it("B1 skips deleted items after a prior delete with an UndoManager", async () => {
+  it("B1 formats the post-tombstone range with live item identities", async () => {
     const provider = createInMemoryTestDoubleProvider();
     const documentId = `prov:doc:b1prior`;
     const sessionId = `prov:session:b1prior`;
@@ -449,9 +543,17 @@ describe("Review fixes B1 deleted items, B4 disjoint ranges, B3 composition (jsd
     const delFrom = pmTextPos(mountedA.editor, "cd", 0);
     view.dispatch(view.state.tr.delete(delFrom, delFrom + 2));
     expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("abef");
-    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "ab", 0), pmTextPos(mountedA.editor, "ef", 2));
+    // Format "ef" past the tombstoned "cd": the seeded chain is the separator
+    // embed (clock 0) plus "abcdef" (clocks 1..6), so live "ef" is clocks
+    // 5..6 while tombstoned "cd" keeps clocks 3..4.
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "ef", 0), pmTextPos(mountedA.editor, "ef", 2));
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("ab**ef**");
     const draft = received[received.length - 1] as FormattingIntentDraft;
-    expect(draft.items).toHaveLength(4);
+    expect(draft.mark).toBe("bold");
+    expect(draft.items).toHaveLength(2);
+    const client = draft.items[0]?.client;
+    expect(draft.items.every((item) => item.client === client)).toBe(true);
+    expect(draft.items.map((item) => item.clock)).toEqual([5, 6]);
   });
 
   it("B1 records live items only for a same-transaction delete plus format", async () => {
@@ -469,12 +571,16 @@ describe("Review fixes B1 deleted items, B4 disjoint ranges, B3 composition (jsd
     const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
     const view = (mountedA.editor as unknown as { view: { state: { tr: any; schema: any }; dispatch(tr: unknown): void } }).view;
     const delFrom = pmTextPos(mountedA.editor, "cd", 0);
-    const boldFrom = pmTextPos(mountedA.editor, "ab", 0);
-    view.dispatch(view.state.tr.delete(delFrom, delFrom + 2).addMark(boldFrom, boldFrom + 2, view.state.schema.marks.bold.create()));
-    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**ab**ef");
+    // The addMark addresses the post-delete document ("ef" now sits where
+    // "cd" was): same layout as the prior-delete case, clocks 5..6.
+    view.dispatch(view.state.tr.delete(delFrom, delFrom + 2).addMark(delFrom, delFrom + 2, view.state.schema.marks.bold.create()));
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("ab**ef**");
     const draft = received[received.length - 1] as FormattingIntentDraft;
     expect(draft.mark).toBe("bold");
     expect(draft.items).toHaveLength(2);
+    const client = draft.items[0]?.client;
+    expect(draft.items.every((item) => item.client === client)).toBe(true);
+    expect(draft.items.map((item) => item.clock)).toEqual([5, 6]);
   });
 
   it("B4 keeps disjoint same-mark ranges exact without spanning the gap", async () => {
@@ -525,6 +631,31 @@ describe("Review fixes B1 deleted items, B4 disjoint ranges, B3 composition (jsd
     expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**Xab**");
   });
 
+  it("B4 resolves step-time indices when a format precedes an insert", async () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const documentId = `prov:doc:b4driftdisc`;
+    const sessionId = `prov:session:b4driftdisc`;
+    const received: FormattingIntentDraft[] = [];
+    const source = provider.openSession(documentId, sessionId, [FIELD_A]) as LiveSessionBindingSource;
+    (source as unknown as { provenanceSink?: SessionProvenanceSink }).provenanceSink = {
+      recordFormattingIntent: (intent) => { received.push(intent); },
+    };
+    const doc = p0Doc([{ paragraphId: "paragraph:1", text: "ab" }]);
+    const resolved = source.resolveBinding({ documentId, sessionId, fieldKey: FIELD_A });
+    seedFieldFromDocument(resolved.text, resolved.fieldMeta, FIELD_A, doc);
+    const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
+    const view = (mountedA.editor as unknown as { view: { state: { tr: any; schema: any }; dispatch(tr: unknown): void } }).view;
+    const start = pmTextPos(mountedA.editor, "ab", 0);
+    // Discriminating order: the format runs before the insert shifts the
+    // indices, so resolving the mark range after the transaction would cover
+    // only the shifted window (2 items) instead of the addressed span (3).
+    view.dispatch(view.state.tr.addMark(start, start + 3, view.state.schema.marks.bold.create()).insertText("X", start));
+    const draft = received[received.length - 1] as FormattingIntentDraft;
+    expect(draft.mark).toBe("bold");
+    expect(draft.items).toHaveLength(3);
+    expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1")).toBe("**Xab**");
+  });
+
   it("B3 records composition-committed marks at commit inside the transaction", async () => {
     const { BoundCompositionDriver } = await import("./collab-composition.js");
     const ydoc = new Y.Doc();
@@ -545,6 +676,52 @@ describe("Review fixes B1 deleted items, B4 disjoint ranges, B3 composition (jsd
     expect(draft.value).toBe(true);
     expect(draft.fieldKey).toBe(FIELD_A);
     expect(draft.items.length).toBeGreaterThan(0);
+  });
+
+  it("B3 composition intent ids are never reused across remounts", async () => {
+    const { BoundCompositionDriver } = await import("./collab-composition.js");
+    const ydoc = new Y.Doc();
+    const ytext = ydoc.getText("field:body");
+    const meta = ydoc.getMap("fieldmeta:body");
+    seedFieldFromDocument(ytext, meta, FIELD_A, p0Doc([{ paragraphId: "paragraph:1", text: "ab" }]));
+    const received: FormattingIntentDraft[] = [];
+    const sink: SessionProvenanceSink = { recordFormattingIntent: (intent) => { received.push(intent); } };
+    const first = new BoundCompositionDriver(ytext, FIELD_A, "origin:test", { stopCapturing: () => {} } as never, sink as never, "actor:human-a");
+    first.openSession({ bindingKey: "test", caretLinear: 3, headLinear: 3 });
+    first.commitSession({
+      stagedRuns: new Map([["paragraph:1", [{ type: "text", text: "abX", attributes: { bold: true } }]]]),
+    });
+    expect(received).toHaveLength(1);
+    // A remounted driver (fresh per-driver counter) commits a different
+    // payload: the process-global counter discipline still mints a fresh id.
+    const second = new BoundCompositionDriver(ytext, FIELD_A, "origin:test", { stopCapturing: () => {} } as never, sink as never, "actor:human-a");
+    second.openSession({ bindingKey: "test", caretLinear: 4, headLinear: 4 });
+    second.commitSession({
+      stagedRuns: new Map([["paragraph:1", [{ type: "text", text: "abXY", attributes: { bold: true } }]]]),
+    });
+    expect(received).toHaveLength(2);
+    expect(received[0]?.intentId).not.toBe(received[1]?.intentId);
+    expect(new Set(received.map((entry) => entry.intentId)).size).toBe(2);
+  });
+
+  it("B3 composition commit at end of field uses end-of-field anchors", async () => {
+    const { BoundCompositionDriver } = await import("./collab-composition.js");
+    const ydoc = new Y.Doc();
+    const ytext = ydoc.getText("field:body");
+    const meta = ydoc.getMap("fieldmeta:body");
+    seedFieldFromDocument(ytext, meta, FIELD_A, p0Doc([{ paragraphId: "paragraph:1", text: "ab" }]));
+    const received: FormattingIntentDraft[] = [];
+    const sink: SessionProvenanceSink = { recordFormattingIntent: (intent) => { received.push(intent); } };
+    const driver = new BoundCompositionDriver(ytext, FIELD_A, "origin:test", { stopCapturing: () => {} } as never, sink as never, "actor:human-a");
+    driver.openSession({ bindingKey: "test", caretLinear: 3, headLinear: 3 });
+    driver.commitSession({
+      stagedRuns: new Map([["paragraph:1", [{ type: "text", text: "abX", attributes: { bold: true } }]]]),
+    });
+    const draft = received[received.length - 1] as FormattingIntentDraft;
+    // The committed run ends at the end of the field, so the end anchor binds
+    // with assoc -1 exactly like the projection's step-time capture (the run
+    // starts mid-field, before the inserted character).
+    expect(draft.range.end).toBe(mintEndOfFieldAnchor(ytext, ytext.length));
   });
 
   it("B2 bound-editor 7(a): agent bolds ab, human bolds abcd, revert keeps ab bold", async () => {
