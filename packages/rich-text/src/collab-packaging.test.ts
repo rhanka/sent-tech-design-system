@@ -463,6 +463,60 @@ describe("CL-4b-07 fixture publication and test-support isolation", () => {
     expect(editorOnly).not.toContain("collab-hocuspocus-source.test-support.ts");
   });
 
+  it("CL-4e mark-undo surface stays in its graphs (key? in ., performer in editor/collaboration)", () => {
+    const pure = readFileSync(join(SRC_DIR, "collaboration.ts"), "utf8");
+    expect(pure.includes("key?: AgentPatchKey")).toBe(true);
+    const collabGraph = readFileSync(join(SRC_DIR, "editor-collaboration.ts"), "utf8");
+    expect(collabGraph.includes("provenanceUndo?: SessionMarkUndoPerformer")).toBe(true);
+    expect(collabGraph.includes("SessionMarkUndoMarkGroup")).toBe(true);
+    expect(collabGraph.includes("SessionMarkUndoOutcome")).toBe(true);
+    expect(collabGraph.includes("SessionMarkUndoPerformer")).toBe(true);
+    expect(collabGraph.includes("BoundMarkUndoState")).toBe(false);
+    expect(collabGraph.includes("BoundMarkUndoStep")).toBe(false);
+    const boundEntry = readFileSync(join(SRC_DIR, "editor-bound.ts"), "utf8");
+    expect(boundEntry.includes("provenanceUndo")).toBe(true);
+    const editorOnly = runtimeGraphFrom("editor.ts");
+    expect(editorOnly).not.toContain("collab-agent-bridge.test-support.ts");
+    expect(editorOnly).not.toContain("collab-mark-undo.test.ts");
+    expect(editorOnly).not.toContain("collab-hocuspocus-source.test-support.ts");
+    for (const specifier of editorOnly.flatMap((file) => runtimeSpecifiersOf(file))) {
+      expect(specifier.includes("@hocuspocus/server"), `editor graph reaches hocuspocus: ${specifier}`).toBe(false);
+    }
+    const dotGraph = runtimeGraphFrom("index.ts");
+    expect(dotGraph).not.toContain("editor-collaboration.ts");
+    expect(dotGraph).not.toContain("editor-bound.ts");
+    expect(dotGraph).not.toContain("collab-agent-bridge.test-support.ts");
+    expect(dotGraph).not.toContain("collab-mark-undo.test.ts");
+    const dotEntry = readFileSync(join(SRC_DIR, "index.ts"), "utf8");
+    expect(dotEntry.includes("SessionMarkUndo")).toBe(false);
+    expect(dotEntry.includes("provenanceUndo")).toBe(false);
+    // CL-4e fix 1 (erased handle): the `"./editor"` graph names no
+    // performer type, outcome type, mark-group type or mark-undo state
+    // type — neither in source nor in the built declarations.
+    const editorSource = readFileSync(join(SRC_DIR, "editor.ts"), "utf8");
+    for (const banned of [
+      "SessionMarkUndoPerformer",
+      "SessionMarkUndoOutcome",
+      "SessionMarkUndoMarkGroup",
+      "BoundMarkUndoState",
+    ]) {
+      expect(editorSource.includes(banned), `editor.ts names ${banned}`).toBe(false);
+    }
+    const editorDts = join(SRC_DIR, "..", "dist", "editor.d.ts");
+    if (!existsSync(editorDts)) {
+      throw new Error("witness: rich-text dist/editor.d.ts is missing (run the rich-text build first)");
+    }
+    const editorDtsSource = readFileSync(editorDts, "utf8");
+    for (const banned of [
+      "SessionMarkUndoPerformer",
+      "SessionMarkUndoOutcome",
+      "SessionMarkUndoMarkGroup",
+      "BoundMarkUndoState",
+    ]) {
+      expect(editorDtsSource.includes(banned), `dist/editor.d.ts names ${banned}`).toBe(false);
+    }
+  });
+
   it("the packed tarball carries the new pure exports and no test support", () => {
     const raw = execFileSync("npm", ["pack", "--dry-run", "--json"], {
       cwd: join(SRC_DIR, ".."),
