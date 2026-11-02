@@ -41,7 +41,7 @@ import {
   dsHex,
   type AgentWitnessDriver,
 } from "./collab-agent-witness.test-support.js";
-import type { RichTextDocument, RichTextEditor } from "./model.js";
+import type { RichTextChangeEvent, RichTextDocument, RichTextEditor } from "./model.js";
 
 const DOCUMENT_ID = "markundo:doc:1";
 const SESSION_ID = "markundo:session:1";
@@ -88,6 +88,7 @@ async function mountWithUndo(
   actorId: string,
   store: ReturnType<typeof createAgentBridgeReceiptStore>,
   performer: unknown,
+  onChange?: (event: RichTextChangeEvent) => void,
 ): Promise<RichTextEditor> {
   void store;
   (source as unknown as { provenanceUndo?: unknown }).provenanceUndo = performer;
@@ -103,10 +104,26 @@ async function mountWithUndo(
     collaborationSource: source,
     collaborationActor: { actorId, kind: "human", displayLabel: actorId, color: "#112233" },
     element: globalThis.document.createElement("div"),
-    onChange: () => {},
+    onChange: onChange ?? (() => {}),
   })) as unknown as RichTextEditor;
   mounted.push(editor);
   return editor;
+}
+
+/** Recorded gesture summaries (`kind` plus touched-block count) for
+    emission-shape witnesses: a void press must record nothing, an effective
+    press exactly one entry with at least one touched block. */
+function recordGestures(): {
+  seen: Array<{ kind: string; affected: number }>;
+  onChange: (event: RichTextChangeEvent) => void;
+} {
+  const seen: Array<{ kind: string; affected: number }> = [];
+  return {
+    seen,
+    onChange: (event: RichTextChangeEvent): void => {
+      seen.push({ kind: event.gesture.kind, affected: event.gesture.affectedParagraphIds.length });
+    },
+  };
 }
 
 function bindingOf(
@@ -2089,5 +2106,272 @@ describe("CL-4f remote-delete and pending order (jsdom/in-memory)", () => {
     redo(editor);
     expect(sharedOf(resolved)).toBe("abcdefZ");
     expect(counter.seen).toHaveLength(0);
+  });
+
+  it("(f) void pop-through press emits nothing; the next press emits exactly one undo", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const gestures = recordGestures();
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer, gestures.onChange);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    await tick();
+    expect(observer.undoLength()).toBe(2);
+    // The remote peer deletes every character of the newest gesture B.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "B"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefA");
+    gestures.seen.length = 0;
+    // The void press consumes B's empty item beside A's effective one and
+    // restores it: no visible effect, so no gesture event at all.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefA");
+    expect(docText(editor)).toBe("abcdefA");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toEqual([]);
+    // The next press addresses A alone and emits exactly one undo naming
+    // the touched block.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toHaveLength(1);
+    expect(gestures.seen[0]).toMatchObject({ kind: "undo" });
+    expect(gestures.seen[0]?.affected ?? 0).toBeGreaterThanOrEqual(1);
+    expect(gestures.seen.every((entry) => entry.affected > 0)).toBe(true);
+  });
+
+  it("(g) two consecutive remotely-deleted gestures: one silent press each, then the effective gesture", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const gestures = recordGestures();
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer, gestures.onChange);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    await tick();
+    expect(observer.undoLength()).toBe(3);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "A"), 1);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "B"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    gestures.seen.length = 0;
+    // Press 1 consumes B's empty item only; press 2 consumes A's.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toEqual([]);
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toEqual([]);
+    // Press 3 reaches the effective gesture below the voids.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toHaveLength(1);
+    expect(gestures.seen[0]).toMatchObject({ kind: "undo" });
+    expect(gestures.seen[0]?.affected ?? 0).toBeGreaterThanOrEqual(1);
+  });
+
+  it("(h) three consecutive remotely-deleted gestures: three silent presses, then the effective gesture", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const gestures = recordGestures();
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer, gestures.onChange);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    typeEnd(editor, "C");
+    stepBoth(editor, observer);
+    await tick();
+    expect(observer.undoLength()).toBe(4);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "A"), 1);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "B"), 1);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "C"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    gestures.seen.length = 0;
+    for (let press = 0; press < 3; press += 1) {
+      undo(editor);
+      expect(sharedOf(resolved)).toBe("abcdefZ");
+      expect(counter.seen).toHaveLength(0);
+    }
+    expect(gestures.seen).toEqual([]);
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toHaveLength(1);
+    expect(gestures.seen[0]).toMatchObject({ kind: "undo" });
+    expect(gestures.seen[0]?.affected ?? 0).toBeGreaterThanOrEqual(1);
+  });
+
+  it("(i) consecutive voids with nothing below: later presses keep working", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const gestures = recordGestures();
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer, gestures.onChange);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stepBoth(editor, observer);
+    typeEnd(editor, "A");
+    stepBoth(editor, observer);
+    typeEnd(editor, "B");
+    stepBoth(editor, observer);
+    await tick();
+    const markTxn = humanTxnOf(store, "bold").transactionId;
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "A"), 1);
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "B"), 1);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    gestures.seen.length = 0;
+    // Both character items pop empty with nothing effective below: two
+    // silent presses, then the mark gesture below stays reachable.
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toEqual([]);
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(0);
+    expect(gestures.seen).toEqual([]);
+    undo(editor);
+    await tick(3);
+    expect(counter.seen).toHaveLength(1);
+    expect(counter.seen[0]).toMatchObject({ transactionId: markTxn, direction: "undo" });
+    expect(yMarksAt(resolved.text, 2)).toBe(null);
+    // New local work after the voids truncates them: type and undo again.
+    typeEnd(editor, "C");
+    stepBoth(editor, observer);
+    await tick();
+    expect(sharedOf(resolved)).toBe("abcdefC");
+    gestures.seen.length = 0;
+    undo(editor);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(gestures.seen).toHaveLength(1);
+    expect(gestures.seen[0]).toMatchObject({ kind: "undo" });
+    redo(editor);
+    expect(sharedOf(resolved)).toBe("abcdefC");
+  });
+
+  it("(j) mixed gesture with a live character half keeps redo-stack order", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    mixedTypeBoldAtEnd(editor);
+    stepBoth(editor, observer);
+    await tick();
+    const mixedTxn = humanTxnOf(store, "bold").transactionId;
+    expect(sharedOf(resolved)).toBe("abcdefZXYZ");
+    inner.holdOutcomes();
+    // Press 1 undoes the mixed gesture's character half; its mark half
+    // stays pending. Press 2 undoes the older character through the
+    // pending path. The pending mark outcome resolves last.
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    inner.releaseOutcomes();
+    await tick(10);
+    expect(counter.seen).toHaveLength(1);
+    // Redo follows the character stack (LIFO): the older character first —
+    // a press that re-applied the mixed gesture here would pop the older
+    // character's stack item and misattribute it.
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdefZXYZ");
+    expect(counter.seen).toHaveLength(2);
+    expect(counter.seen[1]).toMatchObject({ transactionId: mixedTxn, direction: "redo" });
+    expect(yMarksAt(resolved.text, sharedOf(resolved).indexOf("XYZ"))).toBe(true);
+  });
+
+  it("(k) R7: void mixed gesture above an effective character undone through the pending path", async () => {
+    const { source, doc, resolved, store } = await setupUndoSource();
+    const inner: MarkUndoStandIn = createMarkUndoPerformerStandIn({ source, documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKeys: [FIELD], store, actorId: HUMAN });
+    const counter = countingPerformer(inner);
+    const editor = await mountWithUndo(source, doc, HUMAN, store, counter.performer);
+    const observer = observeStacks(source, HUMAN);
+    stepBoth(editor, observer);
+    typeEnd(editor, "Z");
+    stepBoth(editor, observer);
+    boldRange(editor, pmTextPos(editor, "abcdef", 1), pmTextPos(editor, "abcdef", 4));
+    stepBoth(editor, observer);
+    mixedTypeBoldAtEnd(editor);
+    stepBoth(editor, observer);
+    await tick();
+    const markTxn = humanTxnOf(store, "bold", 0).transactionId;
+    const mixedTxn = humanTxnOf(store, "bold", 1).transactionId;
+    expect(sharedOf(resolved)).toBe("abcdefZXYZ");
+    // The mixed gesture's characters are deleted remotely in full: its
+    // character half is void while its mark half stays live.
+    remoteDelete(resolved, sharedIndexOf(resolved.text, "XYZ"), 3);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    inner.holdOutcomes();
+    // Press 1 consumes the void character half beside the effective older
+    // one (restored silently) and dispatches the mixed mark undo; press 2
+    // undoes the older character through the pending path.
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(1);
+    expect(counter.seen[0]).toMatchObject({ transactionId: mixedTxn, direction: "undo" });
+    undo(editor);
+    await tick(3);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(1);
+    inner.releaseOutcomes();
+    await tick(10);
+    expect(counter.seen).toHaveLength(1);
+    // Redo spends the mixed mark first (its completion is last) without
+    // touching the character stack, then the older character.
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdef");
+    expect(counter.seen).toHaveLength(2);
+    expect(counter.seen[1]).toMatchObject({ transactionId: mixedTxn, direction: "redo" });
+    redo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(2);
+    // The final undo addresses the newest redoable gesture first and keeps
+    // text and performer count exact.
+    undo(editor);
+    await tick(10);
+    expect(sharedOf(resolved)).toBe("abcdefZ");
+    expect(counter.seen).toHaveLength(3);
+    expect(counter.seen[2]).toMatchObject({ transactionId: mixedTxn, direction: "undo" });
+    expect(markTxn).not.toBe(mixedTxn);
   });
 });
