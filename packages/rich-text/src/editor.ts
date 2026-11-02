@@ -1453,7 +1453,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       projection path skips) — and exactly one `undo`/`redo` gesture names
       the blocks whose content actually changed. Mark undo never passes
       through here: mark-only transactions are untracked by construction
-      (§4.5 boundary), so the stacks hold no mark step to consume. */
+      (§4.5 boundary), so the stacks hold no mark step to consume. The §5.6
+      mark-undo wiring beside this function is MISSING / AMB-C5 STOP (no
+      ordered-log read seam); the pure computation (`latestEffectiveIntent`,
+      `planMarkRevert`) and recording are shipped. */
   const runBoundHistory = (direction: "undo" | "redo"): void => {
     if (tracker.destroyed || !isActive()) return;
     if (boundImpl === undefined) return;

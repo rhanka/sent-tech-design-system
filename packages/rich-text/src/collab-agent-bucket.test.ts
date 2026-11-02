@@ -59,15 +59,20 @@ function seedAbcdef(driver: AgentWitnessDriver): void {
 function fiftyInserts(read: import("./collaboration.js").AgentDocumentState): AgentEditOperation[] {
   const field = read.fields[0];
   if (field === undefined) throw new Error("bucket witness: no field");
-  const anchors = field.requestedAnchors ?? [];
-  const at = (field.paragraphs[0]?.endAnchor ?? field.paragraphs[0]?.startAnchor) as RelativeAnchor;
-  if (at === undefined) throw new Error("bucket witness: no end anchor");
-  void anchors;
+  const requested = (field.requestedAnchors ?? []) as RelativeAnchor[];
+  const endAnchor = (field.paragraphs[0]?.endAnchor ?? field.paragraphs[0]?.startAnchor) as RelativeAnchor;
+  if (endAnchor === undefined) throw new Error("bucket witness: no end anchor");
+  const anchors = requested.length > 0 ? requested : [endAnchor];
   const operations: AgentEditOperation[] = [];
   for (let index = 0; index < 50; index += 1) {
+    const at = anchors[index % anchors.length] as RelativeAnchor;
     operations.push({ type: "insert", fieldKey: "description", paragraphId: P1, at, text: "x" });
   }
   return operations;
+}
+
+function anchorRequestsForFifty(): Array<{ paragraphId: string; paragraphOffset: number }> {
+  return Array.from({ length: 7 }, (_, offset) => ({ paragraphId: P1, paragraphOffset: offset }));
 }
 
 describe("canonical payload hashing (section 5.4.1, AMB-C1)", () => {
@@ -124,7 +129,10 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 5 bounds
       const { bridge, store } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"], undefined, {
         now: () => nowMs,
       });
-      const read = bridge.readState({ binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" } });
+      const read = bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: anchorRequestsForFifty(),
+      });
       const patch = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, fiftyInserts(read));
       const receipt = await bridge.applyPatch(patch);
       expect(receipt.status).toBe("applied");
@@ -152,7 +160,10 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 5 bounds
       const { bridge, store } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"], undefined, {
         now: () => nowMs,
       });
-      const read = bridge.readState({ binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" } });
+      const read = bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: anchorRequestsForFifty(),
+      });
       const first = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, fiftyInserts(read));
       expect((await bridge.applyPatch(first)).status).toBe("applied");
       const second = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
@@ -205,7 +216,10 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 5 bounds
       const authDoc = authDocOf(driver.source, DOCUMENT_ID, SESSION_ID, "description");
       const beforeSV = svHex(authDoc);
       const beforeDS = dsHex(authDoc);
-      const read = bridge.readState({ binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" } });
+      const read = bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: anchorRequestsForFifty(),
+      });
       const operations = fiftyInserts(read);
       operations[49] = {
         type: "mergeWithPrevious",
@@ -258,22 +272,22 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 5 bounds
   it("refuses scope-denied fields and revoked actors without debit", async () => {
     await withDriver(kind, async (driver) => {
       seedAbcdef(driver);
-      const { bridge } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"]);
-      const read = bridge.readState({ binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" } });
+      let nowMs = 4_000_000;
+      const { bridge } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, ["description"], undefined, {
+        now: () => nowMs,
+      });
+      void nowMs;
+      const read = bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: anchorRequestsForFifty(),
+      });
       const at = read.fields[0]?.paragraphs[0]?.endAnchor as RelativeAnchor;
-      const outOfScope = agentPatchFromRead(
-        { ...read, revision: { ...read.revision, documentId: DOCUMENT_ID } },
-        "description",
-        DOCUMENT_ID,
-        SESSION_ID,
-        ACTOR_A,
-        EPOCH,
-        [{ type: "insert", fieldKey: "description", paragraphId: P1, at, text: "x" }],
-      );
-      outOfScope.binding = { documentId: "canvas:other", sessionId: SESSION_ID, fieldKey: "description" };
+      const outOfScope = agentPatchFromRead(read, "notes", DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH, [
+        { type: "insert", fieldKey: "notes", paragraphId: P1, at, text: "x" },
+      ]);
       const scoped = await bridge.applyPatch(outOfScope);
       expect(scoped.status).toBe("refused");
-      expect(scoped.reason).toBe("target-gone");
+      expect(scoped.reason).toBe("scope-denied");
       bridge.admitAgentActor({ actorId: ACTOR_B, displayLabel: "Agent B", color: "#112233" });
       driver.source.revokeActor?.(ACTOR_B);
       const revokedPatch = agentPatchFromRead(read, "description", DOCUMENT_ID, SESSION_ID, ACTOR_B, EPOCH, [
@@ -282,6 +296,15 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)("witness 5 bounds
       const revoked = await bridge.applyPatch(revokedPatch);
       expect(revoked.status).toBe("refused");
       expect(revoked.reason).toBe("revoked");
+      bridge.admitAgentActor({ actorId: ACTOR_B, displayLabel: "Agent B", color: "#112233" });
+      const fullRead = bridge.readState({
+        binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+        anchorRequests: anchorRequestsForFifty(),
+      });
+      const fullPatch = agentPatchFromRead(fullRead, "description", DOCUMENT_ID, SESSION_ID, ACTOR_B, "epoch:revoked-ok", fiftyInserts(fullRead));
+      const fullReceipt = await bridge.applyPatch(fullPatch);
+      expect(fullReceipt.status).toBe("applied");
+      expect(fullReceipt.operationResults).toHaveLength(50);
     });
   });
 });
