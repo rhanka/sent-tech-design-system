@@ -88,6 +88,11 @@ import {
   canonicalPlainMetadata,
 } from "./editor-full-markdown.js";
 import type { FormattingIntentDraft } from "./editor-collaboration.js";
+import type {
+  SessionMarkUndoMarkGroup,
+  SessionMarkUndoOutcome,
+  SessionMarkUndoPerformer,
+} from "./editor-collaboration.js";
 import {
   attributesToMarks,
   fieldMetaName,
@@ -135,6 +140,62 @@ export interface AgentBridgeReceiptStore {
   revertReceipts: Record<string, AgentPatchReceipt>;
   /** Session epoch presented at admission per full key (readability). */
   patchEpochs: Record<string, string>;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): transition table per
+      human step, keyed by `${fieldKey}:${transactionId}`. Holds the current
+      durable transition and the effective intent groups for the next
+      invocation through the transition chain. */
+  markUndoTransitions?: Record<
+    string,
+    {
+      transitionId: string | null;
+      effective: Array<{ mark: string; intentIds: string[] }>;
+    }
+  >;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): request-outcome table
+      per requestId for idempotent replay and changed-payload refusal. */
+  markUndoOutcomes?: Record<
+    string,
+    {
+      outcome: {
+        status: string;
+        requestId: string;
+        duplicate?: boolean;
+        transitionId?: string | null;
+        changed?: boolean;
+        reason?: string;
+        detail: string;
+        conflict?: {
+          kind: string;
+          fieldKey: string;
+          mark: string;
+          items: Array<{ client: number; clock: number }>;
+          detail: string;
+        };
+      };
+      payload: string;
+    }
+  >;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): transition sequence. */
+  markUndoTransitionSeq?: number;
+  /** CL-4e fix 1 (test-only, AMB-D2): committed human-transaction
+      envelopes per `${fieldKey}:${transactionId}`, indexed from the log as
+      intents commit. Survives log truncation so a later invocation still
+      evaluates against the real envelope (genuine keyless
+      `mark-provenance-conflict`) instead of misreading a missing log as
+      `target-gone`. */
+  markUndoEnvelopes?: Record<
+    string,
+    {
+      actorId: string;
+      fieldKey: string;
+      transactionId: string;
+      groups: Array<{
+        mark: string;
+        intentIds: string[];
+        items: Array<{ client: number; clock: number }>;
+      }>;
+    }
+  >;
 }
 
 export function createAgentBridgeReceiptStore(): AgentBridgeReceiptStore {
@@ -1802,10 +1863,24 @@ function applyOneOperation(
       // Live-state preflight past the pure validator (bridge-owned checks):
       // the target exists (R-ANCH-5, with the R-FULL-META-2 run-value-only
       // exception for a still-referenced deleted source) and member-carried
-      // run values are refused for their target (AMB-E4). An HR or preserved
-      // target is not refused here: wrapper-only records pass the
-      // resulting-state check below, Task 6 shapes refuse there (AMB-E3).
+      // run values are refused for their target (AMB-E4). CL-4e fix 1
+      // (double-only, shipped `validateFieldState` reverted): metadata
+      // writes targeting a preserved block refuse `scope-denied` (R-ANCH-3,
+      // a capability boundary, not a structural conflict) and wrapper-only
+      // metadata (`blockKind` absent) on a text paragraph refuses
+      // `incompatible-schema`; HR wrapper-only records stay admitted and
+      // pass the resulting-state check below (AMB-E3).
       const live = paragraphs.find((entry) => entry.paragraphId === operation.paragraphId);
+      if (live !== undefined && live.kind === "preserved") {
+        throw new BridgeRefusal("scope-denied", `operation ${operationIndex} setBlockMetadata: preserved blocks carry no metadata (R-ANCH-3)`, operationIndex);
+      }
+      if (
+        live !== undefined &&
+        live.kind === "paragraph" &&
+        (operation.metadata as { blockKind?: unknown }).blockKind === undefined
+      ) {
+        throw new BridgeRefusal("incompatible-schema", `operation ${operationIndex} setBlockMetadata: text paragraph requires blockKind`, operationIndex);
+      }
       if (live === undefined) {
         if (!isRunValueOnlyWrite(target, operation.paragraphId, operation.metadata)) {
           throw new BridgeRefusal("target-gone", `operation ${operationIndex} setBlockMetadata: paragraph no longer exists (R-ANCH-5)`, operationIndex);
@@ -2113,7 +2188,6 @@ function applyRevertInverse(
         stats.restoredOps += 1;
         continue;
       }
-      stats.restoredOps += 1;
       stats.keptLaterItems += 1;
       continue;
     } else if (operation.kind === "insertHorizontalRule") {
@@ -3463,5 +3537,572 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
       return receipt;
     },
   };
+}
+
+/**
+ * CL-4e mark-undo performer stand-in (test-only, register AMB-D2).
+ * Wraps the double store's ordered `provenanceLog`, the keyless-capable
+ * `planMarkRevert`, a transition table and a request-outcome table held in
+ * the same injected store, and the format-application machinery
+ * `revertPatch` already uses, driven by the §3.2 input instead of a patch
+ * key. It proves the DS contract shape, not the host execution.
+ */
+export interface MarkUndoStandInOptions {
+  source: LiveSessionBindingSource;
+  documentId: string;
+  sessionId: string;
+  fieldKeys: readonly string[];
+  store: AgentBridgeReceiptStore;
+  actorId: string;
+}
+
+/** Test handle over the mark-undo performer stand-in (CL-4e fix 1):
+    native D-C4c/D-C5 controls — commit holds, outcome holds and manual
+    echo — so witnesses drive lag and echo orders through the stand-in
+    itself, never through a test-only gating wrapper. */
+export interface MarkUndoStandIn extends SessionMarkUndoPerformer {
+  /** Withhold the original transaction's commit: invocations naming it
+      stay pending (never `target-gone` on lag alone) until released. */
+  holdTransactionCommit(transactionId: string): void;
+  releaseTransactionCommit(transactionId: string): void;
+  /** Withhold evaluated outcomes: the echo still applies synchronously,
+      the promise stays pending until released (echo-before-response). */
+  holdOutcomes(): void;
+  releaseOutcomes(): void;
+  /** Manual echo: outcomes return immediately with no shared transact;
+      `flushEcho` delivers the queued format transactions afterwards
+      (response-before-echo). */
+  setEchoMode(mode: "auto" | "manual"): void;
+  flushEcho(): void;
+  /** Sink wrapper indexing committed human envelopes in real time (so a
+      later log truncation still evaluates against the real envelope),
+      then forwarding to the wrapped sink. */
+  wrapSink(sink: { recordFormattingIntent(intent: unknown): void }): {
+    recordFormattingIntent(intent: unknown): void;
+  };
+}
+
+export function createMarkUndoPerformerStandIn(
+  options: MarkUndoStandInOptions,
+): MarkUndoStandIn {
+  const { source, documentId, sessionId, fieldKeys, store, actorId } = options;
+  if (store.markUndoTransitions === undefined) store.markUndoTransitions = {};
+  if (store.markUndoOutcomes === undefined) store.markUndoOutcomes = {};
+  if (store.markUndoTransitionSeq === undefined) store.markUndoTransitionSeq = 0;
+  if (store.markUndoEnvelopes === undefined) store.markUndoEnvelopes = {};
+  // D-C4c lag: original transactions whose commit is withheld.
+  const uncommitted = new Set<string>();
+  const commitWaiters = new Map<string, Array<() => void>>();
+  // Echo-before-response: evaluated outcomes withheld at delivery.
+  let outcomesHeld = false;
+  const outcomeWaiters: Array<() => void> = [];
+  // Response-before-echo: format transactions queued for `flushEcho`.
+  let echoMode: "auto" | "manual" = "auto";
+  const pendingEchoes: Array<() => void> = [];
+  const held = new Map<string, LiveSessionBinding>();
+  for (const fieldKey of fieldKeys) {
+    held.set(
+      fieldKey,
+      source.resolveBinding({ documentId, sessionId, fieldKey }),
+    );
+  }
+  const transitionKeyFor = (fieldKey: string, transactionId: string): string =>
+    `${fieldKey}:${transactionId}`;
+  const liveUnitsOf = (
+    ytext: Y.Text,
+  ): Array<{ client: number; clock: number }> => {
+    const live = new Set<string>();
+    const list: Array<{ client: number; clock: number }> = [];
+    for (const item of walkVisibleItems(ytext)) {
+      if (item.kind !== "text") continue;
+      for (let offset = 0; offset < item.length; offset += 1) {
+        const pair = `${item.client}:${item.clock + offset}`;
+        if (!live.has(pair)) {
+          live.add(pair);
+          list.push({ client: item.client, clock: item.clock + offset });
+        }
+      }
+    }
+    return list;
+  };
+  const noteEnvelopeIntent = (intent: {
+    actorId: string;
+    intentId: string;
+    source: { kind: string; transactionId?: string };
+    fieldKey: string;
+    mark: string;
+    items: Array<{ client: number; clock: number }>;
+  }): void => {
+    if (intent.source?.kind !== "human-transaction") return;
+    const transactionId = intent.source.transactionId;
+    if (typeof transactionId !== "string") return;
+    if (store.markUndoEnvelopes === undefined) store.markUndoEnvelopes = {};
+    const key = transitionKeyFor(intent.fieldKey, transactionId);
+    let envelope = store.markUndoEnvelopes[key];
+    if (envelope === undefined) {
+      envelope = { actorId: intent.actorId, fieldKey: intent.fieldKey, transactionId, groups: [] };
+      store.markUndoEnvelopes[key] = envelope;
+    }
+    let group = envelope.groups.find((entry) => entry.mark === intent.mark);
+    if (group === undefined) {
+      group = { mark: intent.mark, intentIds: [], items: [] };
+      envelope.groups.push(group);
+    }
+    if (!group.intentIds.includes(intent.intentId)) group.intentIds.push(intent.intentId);
+    const seen = new Set(group.items.map((item) => `${item.client}:${item.clock}`));
+    for (const item of intent.items) {
+      const pair = `${item.client}:${item.clock}`;
+      if (!seen.has(pair)) {
+        seen.add(pair);
+        group.items.push({ client: item.client, clock: item.clock });
+      }
+    }
+  };
+  const indexEnvelopeFor = (fieldKey: string, transactionId: string): void => {
+    for (const intent of store.provenanceLog) {
+      if (intent.fieldKey !== fieldKey) continue;
+      if (intent.source.kind !== "human-transaction") continue;
+      if ((intent.source as { transactionId: string }).transactionId !== transactionId) continue;
+      noteEnvelopeIntent(intent as {
+        actorId: string;
+        intentId: string;
+        source: { kind: string; transactionId?: string };
+        fieldKey: string;
+        mark: string;
+        items: Array<{ client: number; clock: number }>;
+      });
+    }
+  };
+  const indexAllEnvelopes = (): void => {
+    const seen = new Set<string>();
+    for (const intent of store.provenanceLog) {
+      if (intent.source.kind !== "human-transaction") continue;
+      if (!held.has(intent.fieldKey)) continue;
+      const transactionId = (intent.source as { transactionId: string }).transactionId;
+      const key = transitionKeyFor(intent.fieldKey, transactionId);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      indexEnvelopeFor(intent.fieldKey, transactionId);
+    }
+  };
+  indexAllEnvelopes();
+  const standIn: MarkUndoStandIn = {
+    async requestMarkUndo(input: {
+      fieldKey: string;
+      transactionId: string;
+      requestId: string;
+      commandTransactionId: string;
+      expectedTransitionId: string | null;
+      direction: "undo" | "redo";
+      marks: readonly SessionMarkUndoMarkGroup[];
+    }): Promise<SessionMarkUndoOutcome> {
+      const fieldKey = input.fieldKey;
+      const entry = held.get(fieldKey);
+      if (entry === undefined) {
+        return {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: null,
+          reason: "scope-denied",
+          detail: "mark-undo field is outside the admitted set",
+        };
+      }
+      const payload = JSON.stringify({
+        fieldKey: input.fieldKey,
+        transactionId: input.transactionId,
+        commandTransactionId: input.commandTransactionId,
+        expectedTransitionId: input.expectedTransitionId,
+        direction: input.direction,
+        marks: input.marks,
+      });
+      // Durable delivery: every evaluated outcome is stored under its
+      // requestId before it resolves; when outcomes are held the promise
+      // stays pending while the echo is already applied.
+      const deliver = async (
+        outcome: SessionMarkUndoOutcome,
+      ): Promise<SessionMarkUndoOutcome> => {
+        const table = store.markUndoOutcomes;
+        if (table !== undefined) {
+          table[input.requestId] = {
+            outcome: outcome as unknown as (typeof table)[string]["outcome"],
+            payload,
+          };
+        }
+        if (outcomesHeld) {
+          await new Promise<void>((resolve) => {
+            outcomeWaiters.push(resolve);
+          });
+        }
+        return outcome;
+      };
+      const storedOutcome = store.markUndoOutcomes?.[input.requestId];
+      if (storedOutcome !== undefined) {
+        if (storedOutcome.payload === payload) {
+          const replayed = storedOutcome.outcome as unknown as SessionMarkUndoOutcome;
+          if (replayed.status === "applied") {
+            return { ...replayed, requestId: input.requestId, duplicate: true };
+          }
+          if (replayed.status === "refused") {
+            return { ...replayed, requestId: input.requestId, duplicate: true };
+          }
+          return { ...replayed, requestId: input.requestId };
+        }
+        const currentKey = transitionKeyFor(input.fieldKey, input.transactionId);
+        const currentTransition = store.markUndoTransitions?.[currentKey]?.transitionId ?? null;
+        return {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: currentTransition,
+          reason: "idempotency-key-reuse",
+          detail: "same requestId with a changed payload refuses without replacing the outcome",
+        };
+      }
+      const ytext = entry.text;
+      const fieldMeta = entry.fieldMeta;
+      const log = store.provenanceLog;
+      // Committed envelopes, indexed as intents commit (at creation and on
+      // every call) and surviving log truncation: a later invocation still
+      // evaluates against the real envelope (genuine keyless
+      // `mark-provenance-conflict`) instead of misreading a missing log as
+      // `target-gone`.
+      indexEnvelopeFor(input.fieldKey, input.transactionId);
+      // D-C4c: the original transaction is not yet committed — the promise
+      // stays pending until its committed disposition is known; lag alone
+      // never resolves as `target-gone`.
+      if (uncommitted.has(input.transactionId)) {
+        await new Promise<void>((resolve) => {
+          const list = commitWaiters.get(input.transactionId) ?? [];
+          list.push(resolve);
+          commitWaiters.set(input.transactionId, list);
+        });
+      }
+      const envelope = store.markUndoEnvelopes?.[transitionKeyFor(input.fieldKey, input.transactionId)];
+      const recorded: Array<{ actorId: string; mark: string; intentId: string }> = [];
+      if (envelope !== undefined) {
+        for (const group of envelope.groups) {
+          for (const intentId of group.intentIds) {
+            recorded.push({ actorId: envelope.actorId, mark: group.mark, intentId });
+          }
+        }
+      }
+      if (recorded.length === 0) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: null,
+          reason: "target-gone",
+          detail: "unknown human transaction after settled ingress (no recorded intent)",
+        };
+        return deliver(outcome);
+      }
+      for (const intent of recorded) {
+        if (intent.actorId !== actorId) {
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: null,
+            reason: "scope-denied",
+            detail: "another actor's intent ids refuse scope-denied",
+          };
+          return deliver(outcome);
+        }
+      }
+      const recordedByMark = new Map<string, string[]>();
+      for (const intent of recorded) {
+        const list = recordedByMark.get(intent.mark) ?? [];
+        list.push(intent.intentId);
+        recordedByMark.set(intent.mark, list);
+      }
+      const receivedByMark = new Map<string, string[]>();
+      for (const group of input.marks) {
+        receivedByMark.set(group.mark, [...group.intentIds]);
+      }
+      if (recordedByMark.size !== receivedByMark.size) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: store.markUndoTransitions?.[transitionKeyFor(input.fieldKey, input.transactionId)]?.transitionId ?? null,
+          reason: "scope-denied",
+          detail: "mark groups do not correspond exactly to the recorded transaction",
+        };
+        return deliver(outcome);
+      }
+      for (const [mark, ids] of recordedByMark) {
+        const received = receivedByMark.get(mark);
+        if (received === undefined || received.length !== ids.length || !ids.every((id) => received.includes(id))) {
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: store.markUndoTransitions?.[transitionKeyFor(input.fieldKey, input.transactionId)]?.transitionId ?? null,
+            reason: "scope-denied",
+            detail: "mark groups do not correspond exactly to the recorded transaction",
+          };
+          return deliver(outcome);
+        }
+      }
+      const tKey = transitionKeyFor(input.fieldKey, input.transactionId);
+      let slot = store.markUndoTransitions?.[tKey];
+      if (slot === undefined) {
+        slot = {
+          transitionId: null,
+          effective: [...receivedByMark.entries()].map(([mark, intentIds]) => ({
+            mark,
+            intentIds: [...intentIds],
+          })),
+        };
+        if (store.markUndoTransitions !== undefined) store.markUndoTransitions[tKey] = slot;
+      }
+      if (input.expectedTransitionId !== slot.transitionId) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: slot.transitionId,
+          reason: "step-out-of-date",
+          detail: "expected transition does not match the durable step transition",
+        };
+        return deliver(outcome);
+      }
+      const liveList = liveUnitsOf(ytext);
+      const planned: Array<{
+        mark: string;
+        plan: Extract<ReturnType<typeof planMarkRevert>, { ok: true }>;
+      }> = [];
+      for (const group of slot.effective) {
+        const plan = planMarkRevert(log, {
+          fieldKey: input.fieldKey,
+          mark: group.mark as InlineMarkKey,
+          intentIds: group.intentIds,
+          liveItems: liveList,
+        });
+        if (plan.ok === false) {
+          const conflict = plan.conflict;
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: slot.transitionId,
+            reason: "mark-provenance-conflict",
+            detail: conflict.detail,
+            conflict: {
+              kind: "mark-provenance-conflict",
+              fieldKey: conflict.fieldKey,
+              mark: conflict.mark,
+              ...(conflict.paragraphId !== undefined ? { paragraphId: conflict.paragraphId } : {}),
+              items: [...conflict.items],
+              detail: conflict.detail,
+            },
+          };
+          return deliver(outcome);
+        }
+        planned.push({ mark: group.mark, plan });
+      }
+      let restoredCount = 0;
+      let keptLaterCount = 0;
+      let satisfiedCount = 0;
+      for (const { plan } of planned) {
+        for (const decision of plan.decisions) {
+          if (decision.action === "restore") restoredCount += 1;
+          else if (decision.action === "kept-later") keptLaterCount += 1;
+          else satisfiedCount += 1;
+        }
+      }
+      if (restoredCount === 0) {
+        const nextSeq = (store.markUndoTransitionSeq ?? 0) + 1;
+        store.markUndoTransitionSeq = nextSeq;
+        const transitionId = `markundo:trans:${input.fieldKey}:${input.transactionId}:${nextSeq}`;
+        slot.transitionId = transitionId;
+        // CL-4e fix 1: a no-op undo produces no restore intents, so the
+        // transition chain carries no linkage forward — a later redo of
+        // this step is a no-op too instead of re-planning over the
+        // original intents (host §4.3: redo targets the undo's restores).
+        slot.effective = [];
+        const outcome: SessionMarkUndoOutcome = {
+          status: "applied",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId,
+          changed: false,
+          detail: `mark undo ${input.direction} recorded with no material change (kept-later ${keptLaterCount}, satisfied ${satisfiedCount})`,
+        };
+        return deliver(outcome);
+      }
+      const byMarkValue = new Map<
+        string,
+        { mark: string; value: true | string | null; units: Array<{ client: number; clock: number }>; range: unknown }
+      >();
+      const rangeByMark = new Map<string, unknown>();
+      for (const intent of log) {
+        if (intent.fieldKey !== input.fieldKey) continue;
+        if (!rangeByMark.has(intent.mark)) rangeByMark.set(intent.mark, intent.range);
+      }
+      for (const { mark, plan } of planned) {
+        const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
+        for (const decision of plan.decisions) {
+          if (decision.action !== "restore") continue;
+          const valueKey = JSON.stringify(decision.value);
+          let valueGroup = byValue.get(valueKey);
+          if (valueGroup === undefined) {
+            valueGroup = { value: decision.value, units: [] };
+            byValue.set(valueKey, valueGroup);
+          }
+          valueGroup.units.push(decision.item);
+        }
+        for (const valueGroup of byValue.values()) {
+          const key = `${mark}:${JSON.stringify(valueGroup.value)}`;
+          byMarkValue.set(key, {
+            mark,
+            value: valueGroup.value,
+            units: valueGroup.units,
+            range: rangeByMark.get(mark) ?? { start: "anchor:a", end: "anchor:b" },
+          });
+        }
+      }
+      const revertOrigin = `revert:${actorId}`;
+      const fieldDoc = ytext.doc as Y.Doc;
+      const pendingDrafts: FormattingIntentDraft[] = [];
+      void pendingDrafts;
+      const newRestoreByMark = new Map<string, string[]>();
+      const restoreDescriptors: Array<{
+        mark: string;
+        value: true | string | null;
+        units: Array<{ client: number; clock: number }>;
+        range: unknown;
+        intentId: string;
+      }> = [];
+      let restoreIndex = 0;
+      for (const { mark, value, units, range } of byMarkValue.values()) {
+        const intentId = `markundo:restore:${input.commandTransactionId}:${mark}:${restoreIndex}`;
+        restoreIndex += 1;
+        restoreDescriptors.push({ mark, value, units, range, intentId });
+        const list = newRestoreByMark.get(mark) ?? [];
+        list.push(intentId);
+        newRestoreByMark.set(mark, list);
+      }
+      slot.effective = [...newRestoreByMark.entries()].map(([mark, intentIds]) => ({
+        mark,
+        intentIds: [...intentIds],
+      }));
+      // The committed echo: the format transaction under the non-local
+      // `revert:<actor>` origin plus its restore intents. In manual echo
+      // mode the outcome returns first and the echo waits for `flushEcho`
+      // (response-before-echo); otherwise it applies synchronously.
+      const deliverEcho = (): void => {
+        fieldDoc.transact(() => {
+          for (const { mark, value, units } of byMarkValue.values()) {
+            const indexes: number[] = [];
+            for (const unit of units) {
+              const at = linearIndexOfUnitIn(ytext, unit.client, unit.clock);
+              if (at !== null) indexes.push(at);
+            }
+            indexes.sort((a, b) => a - b);
+            let runStart: number | null = null;
+            let runLength = 0;
+            const runs: Array<{ start: number; length: number }> = [];
+            for (const at of indexes) {
+              if (runStart === null || at !== runStart + runLength) {
+                if (runStart !== null) runs.push({ start: runStart, length: runLength });
+                runStart = at;
+                runLength = 1;
+              } else {
+                runLength += 1;
+              }
+            }
+            if (runStart !== null) runs.push({ start: runStart, length: runLength });
+            for (const run of runs) {
+              ytext.format(run.start, run.length, { [mark]: value });
+            }
+          }
+        }, revertOrigin);
+        for (const { mark, value, units, range, intentId } of restoreDescriptors) {
+          appendProvenanceDraft(store, {
+            intentId,
+            actorId,
+            source: { kind: "human-transaction", transactionId: input.commandTransactionId },
+            fieldKey: input.fieldKey,
+            mark: mark as InlineMarkKey,
+            value,
+            range: range as never,
+            items: units,
+          });
+        }
+      };
+      const nextSeq = (store.markUndoTransitionSeq ?? 0) + 1;
+      store.markUndoTransitionSeq = nextSeq;
+      const transitionId = `markundo:trans:${input.fieldKey}:${input.transactionId}:${nextSeq}`;
+      slot.transitionId = transitionId;
+      const outcome: SessionMarkUndoOutcome = {
+        status: "applied",
+        requestId: input.requestId,
+        duplicate: false,
+        transitionId,
+        changed: true,
+        detail: `mark undo ${input.direction} applied: restored ${restoredCount}, kept-later ${keptLaterCount}, satisfied ${satisfiedCount}`,
+      };
+      if (echoMode === "manual") {
+        pendingEchoes.push(deliverEcho);
+        return deliver(outcome);
+      }
+      deliverEcho();
+      return deliver(outcome);
+    },
+    holdTransactionCommit(transactionId: string): void {
+      uncommitted.add(transactionId);
+    },
+    releaseTransactionCommit(transactionId: string): void {
+      uncommitted.delete(transactionId);
+      const waiters = commitWaiters.get(transactionId) ?? [];
+      commitWaiters.delete(transactionId);
+      for (const resolve of waiters) resolve();
+    },
+    holdOutcomes(): void {
+      outcomesHeld = true;
+    },
+    releaseOutcomes(): void {
+      outcomesHeld = false;
+      const waiters = outcomeWaiters.splice(0, outcomeWaiters.length);
+      for (const resolve of waiters) resolve();
+    },
+    setEchoMode(mode: "auto" | "manual"): void {
+      echoMode = mode;
+    },
+    flushEcho(): void {
+      const queued = pendingEchoes.splice(0, pendingEchoes.length);
+      for (const echo of queued) echo();
+    },
+    wrapSink(sink: { recordFormattingIntent(intent: unknown): void }): {
+      recordFormattingIntent(intent: unknown): void;
+    } {
+      return {
+        recordFormattingIntent(intent: unknown): void {
+          try {
+            const draft = intent as {
+              intentId: string;
+              actorId: string;
+              source: { kind: string; transactionId?: string };
+              fieldKey: string;
+              mark: string;
+              items: Array<{ client: number; clock: number }>;
+            };
+            // Index the draft itself (it appends to the log only when the
+            // wrapped sink runs below).
+            if (draft !== null && typeof draft === "object" && held.has(draft.fieldKey)) {
+              noteEnvelopeIntent(draft);
+            }
+          } catch {
+            // Envelope indexing never breaks recording.
+          }
+          sink.recordFormattingIntent(intent);
+        },
+      };
+    },
+  };
+  return standIn;
 }
 
