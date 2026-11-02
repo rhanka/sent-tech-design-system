@@ -334,8 +334,9 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         const refusedA = agentPatchFromRead(readAfter, FIELD, DOCUMENT_ID, SESSION_ID, ACTOR_A, EPOCH_2, [
           { type: "insert", fieldKey: FIELD, paragraphId: P1, at: paraOf(readAfter, P1).endAnchor, text: "A2" },
         ]);
-        expect((await bridge.applyPatch(refusedA)).status).toBe("refused");
-        expect((await bridge.applyPatch(refusedA)).reason).toBe("revoked");
+        const refused = await bridge.applyPatch(refusedA);
+        expect(refused.status).toBe("refused");
+        expect(refused.reason).toBe("revoked");
         // The still-admitted agent and a human driver transaction merge beside it.
         const fromB = agentPatchFromRead(readAfter, FIELD, DOCUMENT_ID, SESSION_ID, ACTOR_B, EPOCH_1, [
           { type: "insert", fieldKey: FIELD, paragraphId: P1, at: paraOf(readAfter, P1).endAnchor, text: "B" },
