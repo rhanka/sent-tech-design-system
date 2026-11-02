@@ -1,8 +1,9 @@
 # @sentropic/design-system-elements
 
-JSON-render standard, lot L2: thin Svelte custom-element wrappers over the
+JSON-render standard, lots L2/L6: thin Svelte custom-element wrappers over the
 catalogue components of the sentropic design system. One ESM browser bundle
-registers three elements:
+registers three elements (lot L6 imposes the Focus renderer defaults
+F-R0–F-R7 on the dossier engine chunk; see below):
 
 | Element | Catalogue component | Engine chunk (§6.6) |
 | --- | --- | --- |
@@ -78,7 +79,46 @@ interface IntentDetail {
 
 | Interaction | Element behaviour |
 | --- | --- |
-| option card click / keyboard activation (when enabled) | `st-intent` `choose-option`, `target = <option id>`; an option gated inert by an `interactions` entry `{ name: "choose-option", targetRef, enabled: false }` dispatches nothing |
+| option card click / keyboard activation (when enabled) | `st-intent` `choose-option`, `target = <option id>`; an option gated inert by an `interactions` entry `{ name: "choose-option", targetRef, enabled: false }` renders as an inert card and dispatches nothing |
+| card click again / another card (single-selection rule) | local renderer state only: reselecting clears the card with no emission, choosing another card moves the selection with one emission; the envelope and the document are never written back |
+| expand control on a long card | toggles the folded argument, emits nothing, never selects |
+
+### Dossier renderer defaults (F-R0–F-R7, lot L6)
+
+The `focus-renderer` chunk (`src/element/dom/engines/focus-renderer.ts` plus
+its stylesheet `dossier-styles.ts`) imposes the §11.2 defaults; the author
+cannot work around them:
+
+- F-R0: no author layout property exists anywhere — a `layout` hint at
+  `root` level is refused by the catalogue structure and one inside the
+  document by the embedded focus schema, both with `schema-violation`
+  (§4.5 panel, never a partial dossier).
+- F-R1: the whole option card is the single selection control (one node
+  carries both `data-option-card` and `data-option-id`).
+- F-R2: card outlines are `1px solid var(--st-…)`; every colour resolves to
+  a `--st-*` token and no rule exceeds 1 px (static scan in
+  `tests/focus-renderer-l6.test.ts`, computed scan in
+  `tests/browser/chromium-suite.mjs`).
+- F-R3: selection is a light local state (1 px outline change and/or token
+  tint, no layout shift); F-R7: nothing is ever preselected, not even the
+  recommended option.
+- F-R4: an argument over 300 characters (the option `body`, else its
+  label-plus-consequence text) renders collapsed with a labelled expand
+  control; shorter arguments render fully with no fold control.
+- F-R5: the renderer alone picks `list` (any long option, or one or two
+  options) or `grid` (three or more short options, capped at two columns),
+  exposed as `data-st-layout` (`decideOptionSetLayout`).
+- F-R6: annotations render as display state only — no per-option control
+  besides the card (and the fold control on long cards).
+- F-R7: the recommended option carries one discreet badge; an unmatched
+  `recommendedAnswer` renders as question context text, never as a
+  preselection.
+
+Content parity with the owner `renderHtml` is witnessed on the
+presentation-valid fixtures (`tests/focus-renderer-l6.test.ts`); inputs the
+owner presentation gate refuses (long bodies, legacy documents) still render
+their sections, ids and outcome from the input. Diagrams render as the
+fenced fallback until a diagram renderer exists.
 
 ### `st-bpmn-canvas` (`BpmnCanvas`)
 
@@ -103,8 +143,11 @@ the wrappers define no font of their own (the content inherits the page's).
 (`npm run build:browser` re-runs the bundle step alone). `sri.json` lists
 every file with raw / gzip / brotli sizes and a sha384 integrity hash
 (`sri.json` never lists itself). The §6.6 core budget — the entry closure
-that renders `<st-bar-chart>` — is 53,916 B gzip of the 153,600 B budget
-(re-measured at 0.1.0; 23 files pinned by `sri.json`).
+that renders `<st-bar-chart>` — is 53,920 B gzip of the 153,600 B budget
+(53,919 B at L7a, +1 B rebuild variance; 23 files pinned by `sri.json`).
+The L6 `focus` chunk is 21,174 B gzip (19,073 B at L7a, +2,101 B for the
+stylesheet, fold/layout and selection logic); core + focus raw bytes stay
+far under the §8.3 2 MiB `ui://` resource budget.
 The bundle is eval-free (§6.4: no `eval`, no `new Function` in any chunk —
 enforced by `scripts/elements-browser-artifacts.test.mjs`), works mounted
 under any subpath (no document-anchored preload hints), and needs no

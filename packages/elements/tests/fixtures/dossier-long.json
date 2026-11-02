@@ -1,0 +1,96 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "DecisionDossier",
+    "id": "root",
+    "document": {
+      "ref": "decision-long",
+      "subject": "Shared rendering contract",
+      "title": "Which rendering contract do we adopt for the shared pieces?",
+      "hash": "l6long",
+      "cursor": "2026-11-02T00:00:00Z",
+      "sections": [
+        {
+          "id": "p1",
+          "kind": "prose",
+          "targetRef": "decision-long",
+          "questionId": "q1",
+          "markdown": "The choice turns on upkeep and consistency. See the [shared notes](https://example.com/notes) for background."
+        },
+        {
+          "id": "q1",
+          "kind": "question",
+          "targetRef": "decision-long",
+          "question": "Which rendering contract do we adopt for the shared pieces?",
+          "state": "open",
+          "context": "Every screen keeps its own rendering path today, and small differences grow with each release. A shared contract lets every team ship from plain data while the design system owns layout and tone.",
+          "readingTimeMinutes": 2,
+          "recommendedAnswer": "Adopt the shared contract because it keeps every screen consistent with the least upkeep.",
+          "recommendedOptionId": "opt-long-1"
+        },
+        {
+          "id": "os-long",
+          "kind": "optionSet",
+          "targetRef": "decision-long",
+          "questionId": "q1",
+          "title": "Options",
+          "options": [
+            {
+              "id": "opt-long-1",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Adopt the shared contract",
+              "consequence": "One contract to keep, and no drift across screens.",
+              "body": "Adopting the shared contract means every screen renders from the same plain data, so visual drift disappears and each release ships sooner because teams stop rebuilding the same patterns, while the design system owns layout, spacing and tone in one place for every host and every future screen and every theme.",
+              "annotation": "none"
+            },
+            {
+              "id": "opt-long-2",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Keep separate rendering paths",
+              "consequence": "Each team keeps its own upkeep and its own drift.",
+              "body": "Keeping separate rendering paths leaves each team free to move at its own pace, so urgent screens ship without waiting on shared work, while the cost stays visible in repeated upkeep and slow drift that later releases must pay down with dedicated cleanup across every affected screen and every release train.",
+              "annotation": "none"
+            },
+            {
+              "id": "opt-long-3",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Share only the colour tokens",
+              "consequence": "Tokens align while each screen keeps its own layout.",
+              "body": "Sharing only the colour tokens aligns the look without touching layout code, so teams adopt the smallest shared piece first and keep their own structure, while deeper consistency waits for a later round of shared layout work across every screen and every release train and every future screen and every theme.",
+              "annotation": "none"
+            },
+            {
+              "id": "opt-long-4",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Pause and revisit next quarter",
+              "consequence": "No change now, at the cost of more drift later.",
+              "body": "Pausing the choice avoids churn this quarter and leaves every team focused on its own roadmap, so no migration cost lands now, while drift keeps growing and the later decision inherits a wider gap between screens that must be closed then with extra effort and dedicated cleanup time across every screen.",
+              "annotation": "none"
+            }
+          ]
+        },
+        {
+          "id": "o1",
+          "kind": "outcome",
+          "targetRef": "decision-long",
+          "questionId": "q1",
+          "modality": "decision",
+          "statement": "The team adopts the shared contract for all new screens."
+        }
+      ],
+      "interactions": [],
+      "provenance": { "source": "track", "readAt": "2026-11-02T00:00:00Z" },
+      "readability": {
+        "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+        "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+        "stakesLevel": "medium",
+        "readingBudgetMinutes": 4
+      },
+      "amendmentTrace": []
+    }
+  }
+}
