@@ -158,7 +158,16 @@ function annotationNode(option: Record<string, unknown>): HTMLElement | undefine
   return marker;
 }
 
-/** One option card. The whole card is the single selection control (F-R1). */
+/** One header row: label plus the discreet badge on one line (F-R7). */
+function optionHead(label: string, recommended: boolean): HTMLElement {
+  const head = document.createElement("div");
+  head.className = "st-dossier__optionHead";
+  head.append(text("span", "st-dossier__optionLabel", label));
+  if (recommended) head.append(text("span", "st-dossier__badge", "Recommended"));
+  return head;
+}
+
+/** One option card. The select and the fold are siblings (F-R1, F-R4). */
 function optionCard(
   option: Record<string, unknown>,
   face: { readonly disabled: boolean; readonly recommended: boolean; readonly selected: boolean; readonly expanded: boolean },
@@ -167,36 +176,58 @@ function optionCard(
   const label = field(option.label) ?? "";
   const consequence = field(option.consequence);
   const annotationComment = field(option.annotationComment);
+  const bodyText = field(option.body);
+  const long = isLongOption(option);
   if (face.disabled) {
     const card = document.createElement("div");
     card.className = "st-dossier__optionCard st-dossier__optionCard--disabled";
     card.setAttribute("data-option-disabled", id);
     card.setAttribute("aria-disabled", "true");
-    card.append(text("span", "st-dossier__optionLabel", label));
-    if (face.recommended) card.append(text("span", "st-dossier__badge", "Recommended"));
-    if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+    card.append(optionHead(label, face.recommended));
+    if (long) {
+      if (bodyText !== undefined) {
+        if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+        const folded = text("span", "st-dossier__optionBody", bodyText);
+        folded.id = `st-dossier-body-${id}`;
+        folded.setAttribute("hidden", "");
+        card.append(folded);
+      } else {
+        const folded = text("span", "st-dossier__optionBody", consequence ?? argumentText(option));
+        folded.id = `st-dossier-body-${id}`;
+        folded.setAttribute("hidden", "");
+        card.append(folded);
+      }
+    } else {
+      if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+      if (bodyText !== undefined) card.append(text("span", "st-dossier__optionBody", bodyText));
+    }
     const marker = annotationNode(option);
     if (marker !== undefined) card.append(marker);
     if (annotationComment !== undefined) card.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
-    const body = field(option.body);
-    if (body !== undefined) card.append(text("span", "st-dossier__optionBody", body));
     return card;
   }
   const card = document.createElement("div");
   card.className = "st-dossier__optionCard";
   card.setAttribute("data-option-card", id);
-  card.setAttribute("data-option-id", id);
-  card.setAttribute("role", "button");
-  card.setAttribute("tabindex", "0");
-  card.setAttribute("aria-pressed", face.selected ? "true" : "false");
-  if (face.selected) card.setAttribute("data-st-selected", "true");
-  card.append(text("span", "st-dossier__optionLabel", label));
-  if (face.recommended) card.append(text("span", "st-dossier__badge", "Recommended"));
-  if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
+  card.setAttribute("role", "group");
+  const select = document.createElement("button");
+  select.type = "button";
+  select.className = "st-dossier__optionSelect";
+  select.setAttribute("data-option-id", id);
+  select.setAttribute("aria-pressed", face.selected ? "true" : "false");
+  if (face.selected) select.setAttribute("data-st-selected", "true");
+  select.append(optionHead(label, face.recommended));
+  if (!(long && bodyText === undefined) && consequence !== undefined) {
+    select.append(text("span", "st-dossier__optionConsequence", consequence));
+  }
   const marker = annotationNode(option);
-  if (marker !== undefined) card.append(marker);
-  if (annotationComment !== undefined) card.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
-  if (isLongOption(option)) {
+  if (marker !== undefined) select.append(marker);
+  if (annotationComment !== undefined) select.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
+  if (!long && bodyText !== undefined) {
+    select.append(text("span", "st-dossier__optionBody", bodyText));
+  }
+  card.append(select);
+  if (long) {
     const fold = document.createElement("button");
     fold.type = "button";
     fold.className = "st-dossier__optionFold";
@@ -205,13 +236,11 @@ function optionCard(
     fold.setAttribute("aria-controls", `st-dossier-body-${id}`);
     fold.textContent = face.expanded ? "Hide details" : "Show details";
     card.append(fold);
-    const body = text("span", "st-dossier__optionBody", argumentText(option));
+    const foldedText = bodyText ?? consequence ?? argumentText(option);
+    const body = text("span", "st-dossier__optionBody", foldedText);
     body.id = `st-dossier-body-${id}`;
     if (!face.expanded) body.setAttribute("hidden", "");
     card.append(body);
-  } else {
-    const body = field(option.body);
-    if (body !== undefined) card.append(text("span", "st-dossier__optionBody", body));
   }
   return card;
 }
@@ -251,8 +280,7 @@ function sectionNode(
     const answer = field(section.answer);
     if (answer !== undefined) wrap.append(text("p", "st-dossier__questionAnswer", answer));
     const recommendedAnswer = field(section.recommendedAnswer);
-    const recommendedId = field(section.recommendedOptionId);
-    if (recommendedAnswer !== undefined && (recommendedId === undefined || !face.knownOptions.has(recommendedId))) {
+    if (recommendedAnswer !== undefined) {
       wrap.append(text("p", "st-dossier__questionReco", recommendedAnswer));
     }
     return wrap;
@@ -267,7 +295,8 @@ function sectionNode(
     const title = field(section.title);
     if (title !== undefined) wrap.append(text("h4", "st-dossier__optionsTitle", title));
     const setId = field(section.id) ?? "";
-    const recommendedId = field(section.questionId) !== undefined ? face.recommended.get(field(section.questionId) ?? "") : undefined;
+    const recommendedKey = field(section.questionId) ?? field(section.targetRef);
+    const recommendedId = recommendedKey !== undefined ? face.recommended.get(recommendedKey) : undefined;
     for (const record of records) {
       const optionId = field(record.id) ?? "";
       wrap.append(
@@ -394,23 +423,23 @@ export function renderDossier(
   }
 
   /** Apply one selection move inside its option set (F-R3 single rule). */
-  const applySelection = (card: Element): void => {
-    const optionId = card.getAttribute("data-option-id");
+  const applySelection = (select: Element): void => {
+    const optionId = select.getAttribute("data-option-id");
     if (optionId === null) return;
-    const set = card.closest("[data-st-option-set]");
+    const set = select.closest("[data-st-option-set]");
     const setId = set?.getAttribute("data-st-option-set") ?? "";
     if (selected.get(setId) === optionId) {
       selected.delete(setId);
-      card.removeAttribute("data-st-selected");
-      card.setAttribute("aria-pressed", "false");
+      select.removeAttribute("data-st-selected");
+      select.setAttribute("aria-pressed", "false");
       return;
     }
     const previous = set?.querySelector('[data-st-selected="true"]');
     previous?.removeAttribute("data-st-selected");
     previous?.setAttribute("aria-pressed", "false");
     selected.set(setId, optionId);
-    card.setAttribute("data-st-selected", "true");
-    card.setAttribute("aria-pressed", "true");
+    select.setAttribute("data-st-selected", "true");
+    select.setAttribute("aria-pressed", "true");
     dispatch(optionId);
   };
 
@@ -418,9 +447,15 @@ export function renderDossier(
     const target = event.target;
     if (!(target instanceof Element)) return;
     if (target.closest("[data-option-fold]") !== null) return;
-    const card = target.closest("[data-option-id]");
+    const select = target.closest("[data-option-id]");
+    if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
+      applySelection(select);
+      return;
+    }
+    const card = target.closest("[data-option-card]");
     if (card !== null && node.contains(card) && card.closest("[data-option-disabled]") === null) {
-      applySelection(card);
+      const ownSelect = card.querySelector("[data-option-id]");
+      if (ownSelect !== null) applySelection(ownSelect);
     }
   };
   const onKeyDown = (event: Event): void => {
@@ -429,10 +464,10 @@ export function renderDossier(
     const target = event.target;
     if (!(target instanceof Element)) return;
     if (target.closest("[data-option-fold]") !== null) return;
-    const card = target.closest("[data-option-id]");
-    if (card !== null && node.contains(card) && card.closest("[data-option-disabled]") === null) {
+    const select = target.closest("[data-option-id]");
+    if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
       event.preventDefault();
-      applySelection(card);
+      applySelection(select);
     }
   };
   const onFold = (event: Event): void => {

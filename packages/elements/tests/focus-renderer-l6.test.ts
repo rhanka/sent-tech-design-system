@@ -19,7 +19,7 @@ import { describe, expect, it } from "vitest";
 
 import { renderMarkdown } from "../src/element/markdown/minimal-markdown.js";
 import { renderHtml } from "@sentropic/focus";
-import { DOSSIER_CSS, FOLD_THRESHOLD_CHARS } from "../src/element/dom/engines/dossier-styles.js";
+import { adoptDossierSheet, DOSSIER_CSS, FOLD_THRESHOLD_CHARS } from "../src/element/dom/engines/dossier-styles.js";
 import {
   decideOptionSetLayout,
   renderDossier,
@@ -75,6 +75,9 @@ function renderDoc(document_: unknown): { readonly target: HTMLElement; readonly
 function afterEachCleanup(stop: () => void, target: HTMLElement): void {
   stop();
   target.remove();
+  for (const leftover of Array.from(document.head.querySelectorAll("style[data-st-dossier-sheet]"))) {
+    leftover.remove();
+  }
 }
 
 /** Whitespace-collapsed text comparison (AMB-L6-5 normalisation). */
@@ -116,7 +119,7 @@ describe("F-R0 consumed contract: author layout is refused (criterion 11-refusal
   });
 
   it("accepts every L6 fixture envelope with no error diagnostic", () => {
-    for (const name of ["dossier-short2", "dossier-short4", "dossier-long", "dossier-reco", "dossier-annotated", "dossier-diagram", "decision-dossier"]) {
+    for (const name of ["dossier-short2", "dossier-short4", "dossier-long", "dossier-reco", "dossier-annotated", "dossier-diagram", "decision-dossier", "dossier-disabled-long"]) {
       const errors = validateEnvelope(fixtureEnvelope(name)).filter((d) => d.severity === "error");
       expect(errors).toEqual([]);
     }
@@ -188,11 +191,32 @@ describe("F-R2 stylesheet foundation (criteria 3 and 8, static half)", () => {
   it("exposes the fold threshold at the pinned 300 characters (AMB-L6-2)", () => {
     expect(FOLD_THRESHOLD_CHARS).toBe(300);
   });
+
+  it("falls back to a <style> element when replaceSync throws", () => {
+    const realSheet = (globalThis as Record<string, unknown>).CSSStyleSheet;
+    class ThrowingSheet {
+      replaceSync(): void {
+        throw new Error("constructable sheets unavailable");
+      }
+    }
+    (globalThis as Record<string, unknown>).CSSStyleSheet = ThrowingSheet;
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    (shadow as unknown as Record<string, unknown>).adoptedStyleSheets = [];
+    try {
+      expect(() => adoptDossierSheet(shadow as unknown as ShadowRoot)).not.toThrow();
+      expect(shadow.querySelector("style[data-st-dossier-sheet]")).not.toBeNull();
+    } finally {
+      (globalThis as Record<string, unknown>).CSSStyleSheet = realSheet;
+      host.remove();
+    }
+  });
 });
 
 describe("F-R1 whole card clickable + F-R3 light selection + F-R7 nothing preselected", () => {
   it("starts with no selected state and no emission on every fixture including reco", () => {
-    for (const name of ["dossier-short2", "dossier-short4", "dossier-long", "dossier-reco", "dossier-annotated", "dossier-diagram", "decision-dossier"]) {
+    for (const name of ["dossier-short2", "dossier-short4", "dossier-long", "dossier-reco", "dossier-annotated", "dossier-diagram", "decision-dossier", "dossier-disabled-long"]) {
       const { target, emitted, stop } = renderDoc(docOf(name));
       try {
         expect(target.querySelectorAll('[data-st-selected="true"]').length).toBe(0);
@@ -312,7 +336,7 @@ describe("F-R4 long arguments folded + F-R5 renderer-chosen layout", () => {
   it("renders long options collapsed by default with label, consequence and expand control visible", () => {
     const { target, emitted, stop } = renderDoc(docOf("dossier-long"));
     try {
-      const cards = target.querySelectorAll('[data-option-id^="opt-long-"]');
+      const cards = target.querySelectorAll('[data-option-card^="opt-long-"]');
       expect(cards.length).toBe(4);
       for (const card of Array.from(cards)) {
         const fold = card.querySelector("[data-option-fold]") as HTMLElement | null;
@@ -334,7 +358,7 @@ describe("F-R4 long arguments folded + F-R5 renderer-chosen layout", () => {
   it("expanding reveals the full text with no choose-option emission", () => {
     const { target, emitted, stop } = renderDoc(docOf("dossier-long"));
     try {
-      const card = target.querySelector('[data-option-id="opt-long-1"]') as HTMLElement;
+      const card = target.querySelector('[data-option-card="opt-long-1"]') as HTMLElement;
       const fold = card.querySelector("[data-option-fold]") as HTMLElement;
       const body = card.querySelector(".st-dossier__optionBody") as HTMLElement;
       const fullText = norm(body.textContent);
@@ -417,6 +441,51 @@ describe("F-R4 long arguments folded + F-R5 renderer-chosen layout", () => {
     expect(DOSSIER_CSS).toMatch(/repeat\(\s*2\s*,/);
     expect(DOSSIER_CSS).not.toMatch(/repeat\(\s*[3-9]\s*,/);
   });
+
+  it("folds a body-absent long option once, without duplicating label and consequence", () => {
+    const document_ = docOf("dossier-short2");
+    const doc = document_ as Record<string, unknown>;
+    const set = (doc.sections as Record<string, unknown>[]).find((s) => s.kind === "optionSet") as Record<string, unknown>;
+    const options = set.options as Record<string, unknown>[];
+    options[0]!.body = undefined;
+    options[0]!.label = `Long label ${"label ".repeat(60).trim()}`;
+    options[0]!.consequence = `Long consequence ${"consequence ".repeat(30).trim()}`;
+    const { target, emitted, stop } = renderDoc(document_);
+    try {
+      const card = target.querySelector('[data-option-card="opt-a"]') as HTMLElement;
+      expect(card).not.toBeNull();
+      const fold = card.querySelector('[data-option-fold="opt-a"]') as HTMLElement | null;
+      expect(fold).not.toBeNull();
+      const body = card.querySelector(".st-dossier__optionBody") as HTMLElement | null;
+      expect(body).not.toBeNull();
+      expect(body!.hasAttribute("hidden")).toBe(true);
+      const labelText = norm(card.querySelector(".st-dossier__optionLabel")?.textContent);
+      const consequenceNodes = card.querySelectorAll(".st-dossier__optionConsequence");
+      expect(consequenceNodes.length).toBe(0);
+      expect(norm(body!.textContent)).toContain("Long consequence");
+      expect(labelText).toContain("Long label");
+      expect(norm(card.textContent).split(labelText)[1]).not.toContain(labelText);
+      expect(emitted).toEqual([]);
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
+
+  it("badges through targetRef when the optionSet questionId is absent", () => {
+    const document_ = docOf("dossier-reco");
+    const doc = document_ as Record<string, unknown>;
+    const set = (doc.sections as Record<string, unknown>[]).find((s) => s.kind === "optionSet") as Record<string, unknown>;
+    delete set.questionId;
+    set.targetRef = "q1";
+    const { target, stop } = renderDoc(document_);
+    try {
+      const select = target.querySelector('[data-option-id="opt-r1"]') as HTMLElement | null;
+      expect(select).not.toBeNull();
+      expect(select!.querySelector(".st-dossier__badge")).not.toBeNull();
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
 });
 
 describe("F-R6 single annotation + F-R7 discreet badge (criteria 12, 13)", () => {
@@ -438,11 +507,49 @@ describe("F-R6 single annotation + F-R7 discreet badge (criteria 12, 13)", () =>
     try {
       const badge = target.querySelector(".st-dossier__badge") as HTMLElement;
       expect(["SPAN", "P", "EM", "STRONG"]).toContain(badge.tagName);
-      expect(badge.closest("button, a")).toBeNull();
       expect(badge.hasAttribute("tabindex")).toBe(false);
+      expect(badge.closest("a")).toBeNull();
+      const select = badge.closest("[data-option-id]") as HTMLElement | null;
+      expect(select).not.toBeNull();
+      expect(select!.tagName).toBe("BUTTON");
+      expect(badge.closest("[data-option-fold]")).toBeNull();
+      const head = badge.closest(".st-dossier__optionHead") as HTMLElement | null;
+      expect(head).not.toBeNull();
+      expect(norm(head!.querySelector(".st-dossier__optionLabel")?.textContent).length).toBeGreaterThan(0);
       (target.querySelector('[data-option-id="opt-r2"]') as HTMLElement).click();
       expect(emitted).toEqual(["opt-r2"]);
       expect(target.querySelectorAll(".st-dossier__badge").length).toBe(1);
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
+
+  it("keeps the badge on one header row without growing the card (F-R7 layout)", () => {
+    const { target, stop } = renderDoc(docOf("dossier-reco"));
+    try {
+      const badge = target.querySelector(".st-dossier__badge") as HTMLElement;
+      const head = badge.closest(".st-dossier__optionHead") as HTMLElement;
+      expect(head).not.toBeNull();
+      expect(head.querySelector(".st-dossier__optionLabel")).not.toBeNull();
+      expect(head.querySelector(".st-dossier__badge")).not.toBeNull();
+      expect(DOSSIER_CSS).toMatch(/\.st-dossier__optionHead\{[^}]*display:\s*flex/);
+      expect(DOSSIER_CSS).toMatch(/\.st-dossier__badge\{[^}]*padding-block:\s*0/);
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
+
+  it("renders the matched recommendedAnswer alongside the badge, never preselected", () => {
+    const { target, emitted, stop } = renderDoc(docOf("dossier-reco"));
+    try {
+      expect(target.querySelectorAll(".st-dossier__badge").length).toBe(1);
+      const reco = target.querySelector(".st-dossier__questionReco") as HTMLElement | null;
+      expect(reco).not.toBeNull();
+      const doc = docOf("dossier-reco") as Record<string, unknown>;
+      const question = (doc.sections as Record<string, unknown>[]).find((s) => s.kind === "question") as Record<string, unknown>;
+      expect(norm(reco!.textContent)).toBe(norm(question.recommendedAnswer as string));
+      expect(target.querySelectorAll('[data-st-selected="true"]').length).toBe(0);
+      expect(emitted).toEqual([]);
     } finally {
       afterEachCleanup(stop, target);
     }
@@ -496,6 +603,81 @@ describe("F-R6 single annotation + F-R7 discreet badge (criteria 12, 13)", () =>
       afterEachCleanup(stop, target);
     }
   });
+
+  it("keeps the fold control as a sibling of the select, never nested in a role=button", () => {
+    const { target, emitted, stop } = renderDoc(docOf("dossier-long"));
+    try {
+      for (const holder of Array.from(target.querySelectorAll('[role="button"]'))) {
+        expect(holder.querySelectorAll("button, a, input, select, textarea, [tabindex]").length).toBe(0);
+      }
+      const card = target.querySelector('[data-option-card="opt-long-1"]') as HTMLElement;
+      expect(card).not.toBeNull();
+      expect(card.getAttribute("role")).toBe("group");
+      const select = card.querySelector('[data-option-id="opt-long-1"]') as HTMLElement;
+      expect(select.tagName).toBe("BUTTON");
+      expect(select.getAttribute("aria-pressed")).toBe("false");
+      const fold = card.querySelector('[data-option-fold="opt-long-1"]') as HTMLElement;
+      expect(fold.tagName).toBe("BUTTON");
+      expect(select.contains(fold)).toBe(false);
+      expect(fold.parentElement).toBe(card);
+      expect(select.parentElement).toBe(card);
+      expect(fold.getAttribute("aria-expanded")).toBe("false");
+      const body = card.querySelector(".st-dossier__optionBody") as HTMLElement;
+      expect(fold.getAttribute("aria-controls")).toBe(body.id);
+      expect(select.getAttribute("style")).toBeNull();
+      select.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      expect(emitted).toEqual(["opt-long-1"]);
+      expect(select.getAttribute("aria-pressed")).toBe("true");
+      fold.click();
+      expect(fold.getAttribute("aria-expanded")).toBe("true");
+      expect(body.hasAttribute("hidden")).toBe(false);
+      expect(emitted).toEqual(["opt-long-1"]);
+      fold.click();
+      expect(fold.getAttribute("aria-expanded")).toBe("false");
+      expect(body.hasAttribute("hidden")).toBe(true);
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
+
+  it("reaches the select then the fold with Tab order and keeps focus visible on both", () => {
+    const { target, stop } = renderDoc(docOf("dossier-long"));
+    try {
+      const card = target.querySelector('[data-option-card="opt-long-1"]') as HTMLElement;
+      const select = card.querySelector('[data-option-id="opt-long-1"]') as HTMLElement;
+      const fold = card.querySelector('[data-option-fold="opt-long-1"]') as HTMLElement;
+      expect(select.tagName).toBe("BUTTON");
+      expect(fold.tagName).toBe("BUTTON");
+      expect(select.tabIndex).not.toBe(-1);
+      expect(fold.tabIndex).not.toBe(-1);
+      const order = Array.from(card.querySelectorAll("button")).map((node) => node.getAttribute("data-option-id") ?? node.getAttribute("data-option-fold"));
+      expect(order).toEqual(["opt-long-1", "opt-long-1"]);
+      expect(DOSSIER_CSS).toMatch(/\.st-dossier__optionSelect:focus-visible/);
+      expect(DOSSIER_CSS).toMatch(/\.st-dossier__optionFold:focus-visible/);
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
+
+  it("keeps a disabled long option inert and folded without a control (F-R4 inert)", () => {
+    const { target, emitted, stop } = renderDoc(docOf("dossier-disabled-long"));
+    try {
+      const disabled = target.querySelector('[data-option-disabled="opt-long-2"]') as HTMLElement;
+      expect(disabled).not.toBeNull();
+      expect(disabled.querySelectorAll("button, a, input, select, textarea, [tabindex], [role='button']").length).toBe(0);
+      expect(disabled.querySelector("[data-option-fold]")).toBeNull();
+      expect(disabled.getAttribute("aria-disabled")).toBe("true");
+      const body = disabled.querySelector(".st-dossier__optionBody") as HTMLElement | null;
+      expect(body).not.toBeNull();
+      expect(body!.hasAttribute("hidden")).toBe(true);
+      expect(norm(body!.textContent).length).toBeGreaterThan(0);
+      disabled.click();
+      expect(emitted).toEqual([]);
+      expect(target.querySelector('[data-option-id="opt-long-2"]')).toBeNull();
+    } finally {
+      afterEachCleanup(stop, target);
+    }
+  });
 });
 
 describe("criterion 4 element half: the §4.6 choose-option detail", () => {
@@ -518,14 +700,34 @@ describe("criterion 4 element half: the §4.6 choose-option detail", () => {
   });
 
   it("maps the element intent to the h2a submit_intent shape at the boundary (MCP leg unverified)", () => {
-    // DS-side only: the element emits the §4.6 detail; the h2a §8.2
-    // `tools/call` of `submit_intent` (visibility ["app"]), the
-    // decision-inject route and delivery stay h2a-side and unverified
-    // without a host in this run (split table, consequence 2).
-    const detail: IntentDetail = { event: "intent", name: "choose-option", target: "opt-r1", context: {} };
-    expect(detail.event).toBe("intent");
-    expect(detail.name).toBe("choose-option");
-    expect(detail.target).toBe("opt-r1");
+    const host = document.createElement("div");
+    document.body.append(host);
+    const seen: IntentDetail[] = [];
+    const target = document.createElement("div");
+    host.append(target);
+    try {
+      host.addEventListener("st-intent", (event) => {
+        seen.push((event as CustomEvent<IntentDetail>).detail);
+      });
+      const cleanup = renderDossier(target, docOf("dossier-reco"), (id) => void dispatchIntent(host, "choose-option", id));
+      try {
+        (target.querySelector('[data-option-id="opt-r1"]') as HTMLElement).click();
+        expect(seen.length).toBe(1);
+        expect(seen[0]).toEqual({ event: "intent", name: "choose-option", target: "opt-r1", context: {} });
+        const components = (catalog as unknown as Record<string, Record<string, Record<string, unknown>>>).components!;
+        const entry = components.DecisionDossier!;
+        const events = ((entry["x-sentropic"] as Record<string, unknown> | undefined)!).events as readonly string[];
+        expect(events).toContain(seen[0]!.name);
+      } finally {
+        cleanup();
+        target.remove();
+      }
+    } finally {
+      host.remove();
+      for (const leftover of Array.from(document.head.querySelectorAll("style[data-st-dossier-sheet]"))) {
+        leftover.remove();
+      }
+    }
   });
 });
 
@@ -575,6 +777,17 @@ describe("criterion 2 content parity with the owner renderHtml (AMB-L6-5)", () =
         // owner always appends its amendment-trace section, even "(none)".
         const expectedKinds = sections.map((s) => String(s.kind));
         expect(ownerKinds(article!)).toEqual([...expectedKinds, "amendmentTrace"]);
+        const renderedKinds = Array.from(
+          target.querySelectorAll("[data-st-question], [data-st-option-set], [data-st-outcome], .st-dossier__prose, [data-st-diagram], [data-st-trace]"),
+        ).map((el) => {
+          if (el.hasAttribute("data-st-question")) return "question";
+          if (el.hasAttribute("data-st-option-set")) return "optionSet";
+          if (el.hasAttribute("data-st-outcome")) return "outcome";
+          if (el.hasAttribute("data-st-diagram")) return "diagram";
+          if (el.hasAttribute("data-st-trace")) return "amendmentTrace";
+          return "prose";
+        });
+        expect(renderedKinds).toEqual(expectedKinds);
         // Same option ids and titles.
         const expectedOptions = sections.flatMap((s) =>
           s.kind === "optionSet"
