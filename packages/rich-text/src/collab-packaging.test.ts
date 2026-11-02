@@ -437,4 +437,42 @@ describe("CL-4b-07 fixture publication and test-support isolation", () => {
     expect(pure.includes("rawOffset?: number")).toBe(true);
     expect(pure.includes("rawComplete?: boolean")).toBe(true);
   });
+
+  it("CL-4c shipped surface stays in its graphs (validator and computation in ., sink in editor/collaboration)", () => {
+    const pure = readFileSync(join(SRC_DIR, "collaboration.ts"), "utf8");
+    expect(pure.includes("validateFormattingIntentDraft")).toBe(true);
+    expect(pure.includes("planMarkRevert")).toBe(true);
+    expect(pure.includes("latestEffectiveIntent")).toBe(true);
+    for (const entry of ["index.ts"] as const) {
+      const graph = runtimeGraphFrom(entry);
+      for (const specifier of graph.flatMap((file) => runtimeSpecifiersOf(file))) {
+        expect(specifier.startsWith("yjs"), `${entry}: shipped code imports "${specifier}"`).toBe(false);
+        expect(specifier.includes("node:crypto"), `${entry}: pure graph reaches node:crypto`).toBe(false);
+      }
+      expect(graph).not.toContain("collab-agent-bridge.test-support.ts");
+      expect(graph).not.toContain("editor-bound.ts");
+      expect(graph).not.toContain("editor-collaboration.ts");
+    }
+    const boundEntry = readFileSync(join(SRC_DIR, "editor-bound.ts"), "utf8");
+    expect(boundEntry.includes("provenanceSink")).toBe(true);
+    const editorGraph = runtimeGraphFrom("editor-bound.ts");
+    expect(editorGraph).toContain("editor-collaboration.ts");
+    expect(editorGraph).not.toContain("collab-agent-bridge.test-support.ts");
+    const editorOnly = runtimeGraphFrom("editor.ts");
+    expect(editorOnly).not.toContain("collab-agent-bridge.test-support.ts");
+    expect(editorOnly).not.toContain("collab-hocuspocus-source.test-support.ts");
+  });
+
+  it("the packed tarball carries the new pure exports and no test support", () => {
+    const raw = execFileSync("npm", ["pack", "--dry-run", "--json"], {
+      cwd: join(SRC_DIR, ".."),
+      encoding: "utf8",
+    });
+    const packed = JSON.parse(raw) as Array<{ files?: Array<{ path?: string }> }>;
+    const paths = (packed[0]?.files ?? []).map((entry) => entry.path ?? "");
+    for (const path of paths) {
+      expect(path, `tarball ships no test support: ${path}`).not.toMatch(/test-support/);
+    }
+    expect(paths.some((path) => path === "dist/index.js" || path === "dist/index.d.ts")).toBe(true);
+  });
 });

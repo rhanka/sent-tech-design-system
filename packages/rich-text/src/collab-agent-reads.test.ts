@@ -716,3 +716,54 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
     }, 120000);
   },
 );
+
+describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
+  "CL-4c fieldKey binding of page tokens (%s)",
+  (kind) => {
+    it("refuses a pageToken minted for one field when replayed against its sibling", async () => {
+      await withDriver(kind, ["description", "notes"], async (driver) => {
+        expect(driver.label).toBe(kind);
+        seedField(driver, "description", p0Doc([p0Para("paragraph:1", "alpha"), p0Para("paragraph:2", "beta")]));
+        seedField(driver, "notes", p0Doc([p0Para("paragraph:1", "notes-one")]));
+        const setup = bridgeFor(driver, ["description", "notes"]);
+        const first = setup.bridge.readState({
+          binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+          maxParagraphs: 1,
+        });
+        const field = first.fields[0] as AgentFieldState;
+        expect(field.nextPageToken, "first page carries a continuation").toBeDefined();
+        const token = field.nextPageToken as string;
+        let refusal: unknown = null;
+        try {
+          setup.bridge.readState({
+            binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "notes" },
+            pageToken: token,
+          });
+        } catch (error) {
+          refusal = error;
+        }
+        expect(refusal).toBeInstanceOf(AgentBridgeReadRefusal);
+        expect((refusal as AgentBridgeReadRefusal).reason).toBe("target-gone");
+      });
+    });
+
+    it("refuses a pageToken that fails to decode", async () => {
+      await withDriver(kind, ["description"], async (driver) => {
+        expect(driver.label).toBe(kind);
+        seedField(driver, "description", p0Doc([p0Para("paragraph:1", "alpha")]));
+        const setup = bridgeFor(driver, ["description"]);
+        let refusal: unknown = null;
+        try {
+          setup.bridge.readState({
+            binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: "description" },
+            pageToken: "not-a-page-token",
+          });
+        } catch (error) {
+          refusal = error;
+        }
+        expect(refusal).toBeInstanceOf(AgentBridgeReadRefusal);
+        expect((refusal as AgentBridgeReadRefusal).reason).toBe("target-gone");
+      });
+    });
+  },
+);
