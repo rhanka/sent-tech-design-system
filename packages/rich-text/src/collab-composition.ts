@@ -32,7 +32,8 @@ import {
 } from "yjs";
 import type { BoundUndoManager } from "./editor-collaboration.js";
 import { linearBlocksOf, mintCompositionTransactionId } from "./collab-projection.js";
-import { coveredItemIdentities } from "./collab-selection.js";
+import { coveredItemIdentities, tryResolveAnchorToLinear } from "./collab-selection.js";
+import type { RelativeAnchor } from "./collaboration.js";
 
 /** Session identifier: the binding identity plus a per-binding counter. */
 export interface CompositionSessionId {
@@ -475,7 +476,20 @@ export class BoundCompositionDriver {
             group = { mark: entry.mark, value: entry.value, items: [], start: entry.start, end: entry.end };
             groups.set(groupKey, group);
           } else {
-            group.end = entry.end;
+            // Widen-only, mirroring the projection grouping: commit runs
+            // arrive in strictly increasing cursor order, so this guard
+            // closes over reordered input the public driver cannot produce
+            // (reachability argument in the CL-4d1 report, no RED claimed).
+            const entryStart = tryResolveAnchorToLinear(this.ytext, entry.start as RelativeAnchor);
+            const entryEnd = tryResolveAnchorToLinear(this.ytext, entry.end as RelativeAnchor);
+            const groupStart = tryResolveAnchorToLinear(this.ytext, group.start as RelativeAnchor);
+            const groupEnd = tryResolveAnchorToLinear(this.ytext, group.end as RelativeAnchor);
+            if (entryStart !== null && groupStart !== null && entryStart < groupStart) {
+              group.start = entry.start;
+            }
+            if (entryEnd !== null && groupEnd !== null && entryEnd > groupEnd) {
+              group.end = entry.end;
+            }
           }
           const seen = new Set(group.items.map((item) => `${item.client}:${item.clock}`));
           for (const item of entry.items) {

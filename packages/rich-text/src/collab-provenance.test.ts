@@ -839,3 +839,34 @@ describe("Task 10 shipped halves (jsdom, in-memory source)", () => {
     expect(textOf(mountedA.ytext, mountedA.meta, "paragraph:1") as string).toContain("base");
   });
 });
+
+describe("CL-4d1 Task 8 MarkType removal (jsdom, in-memory source)", () => {
+  it("records the full user-addressed coverage for a MarkType removal", async () => {
+    const provider = createInMemoryTestDoubleProvider();
+    const documentId = `prov:doc:marktyperemove`;
+    const sessionId = `prov:session:marktyperemove`;
+    const received: FormattingIntentDraft[] = [];
+    const source = provider.openSession(documentId, sessionId, [FIELD_A]) as LiveSessionBindingSource;
+    (source as unknown as { provenanceSink?: SessionProvenanceSink }).provenanceSink = {
+      recordFormattingIntent: (intent) => { received.push(intent); },
+    };
+    const doc = p0Doc([{ paragraphId: "paragraph:1", text: "alphaBeta" }]);
+    const resolved = source.resolveBinding({ documentId, sessionId, fieldKey: FIELD_A });
+    seedFieldFromDocument(resolved.text, resolved.fieldMeta, FIELD_A, doc);
+    const mountedA = await mountField(source, documentId, sessionId, FIELD_A, doc, "actor:human-a");
+    // Only "alpha" carries bold; the removal addresses the whole 9-wide word.
+    boldRange(mountedA.editor, pmTextPos(mountedA.editor, "alpha", 0), pmTextPos(mountedA.editor, "alpha", 5));
+    expect(received).toHaveLength(1);
+    expect(received[0]?.items).toHaveLength(5);
+    const view = (mountedA.editor as unknown as { view: { state: { tr: any; schema: any }; dispatch(tr: unknown): void } }).view;
+    const start = pmTextPos(mountedA.editor, "alpha", 0);
+    // toggleMark remove path: removeMark with the MarkType, not a Mark instance.
+    view.dispatch(view.state.tr.removeMark(start, start + 9, view.state.schema.marks.bold));
+    expect(received).toHaveLength(2);
+    const draft = received[1] as FormattingIntentDraft;
+    expect(draft.mark).toBe("bold");
+    expect(draft.value).toBe(null);
+    // Full user-addressed coverage: 9 items, not the 5 of the changed subset.
+    expect(draft.items).toHaveLength(9);
+  });
+});
