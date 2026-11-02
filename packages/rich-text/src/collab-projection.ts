@@ -27,10 +27,10 @@
 import * as Y from "yjs";
 import { AddMarkStep, RemoveMarkStep, ReplaceStep, Transform } from "@tiptap/pm/transform";
 import type { Node as ProseMirrorNode, Schema } from "@tiptap/pm/model";
-import type { Transaction } from "@tiptap/pm/state";
+import { Transaction } from "@tiptap/pm/state";
 import type { EditorView } from "@tiptap/pm/view";
 import { isAllowedHref } from "./collaboration.js";
-import type { FullBlockMetadata, RichTextInlineMarks } from "./collaboration.js";
+import type { FullBlockMetadata, InlineMarkKey, RichTextInlineMarks } from "./collaboration.js";
 import type { RichTextDocument, RichTextFormat } from "./model.js";
 import {
   captureDocumentFromField,
@@ -50,8 +50,11 @@ import { fullDocumentToProseMirror, fullProseMirrorToDocument } from "./editor-f
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import type { SelectionMap, SelectionMapBlock } from "./collab-selection.js";
 import {
+  coveredItemIdentities,
   cursorJsonToSelection,
   linearToPmPosition,
+  mintAnchorAt,
+  mintEndOfFieldAnchor,
   pmPositionToLinear,
   selectionToCursorJson,
 } from "./collab-selection.js";
@@ -75,13 +78,102 @@ export interface ProjectionBinding {
   localOrigin: string;
   /** Mark origin (CL-3b1 §4.5 boundary): a mark-only transaction transacts
       under this origin, which no field `UndoManager` tracks, so formatting
-      never enters the undo stacks (mark undo is the §5.6 provenance log,
-      CL-4). Must differ from `localOrigin`. */
+      never enters the undo stacks. The §5.6 mark-undo wiring beside
+      `runBoundHistory` is MISSING / AMB-C5 STOP (no ordered-log read seam);
+      the pure computation and recording are shipped. Must differ from
+      `localOrigin`. */
   markOrigin: string;
+  /** Provenance sink for human intents (R-REV-3, CL-4c): type-erased, called
+      once per (transaction, mark) on the live phase only. Absent means
+      computed and dropped (decisions §1.6). */
+  provenanceSink?: { recordFormattingIntent(intent: unknown): void } | null;
+  /** Local actor id for provenance drafts (collaborationActor or fallback). */
+  provenanceActorId?: string;
+  /** Per-transaction id minted by the outer call, never reused. Present only
+      on the live phase binding; the scratch phase strips it. */
+  provenanceTransactionId?: string;
 }
 
 /** Transaction flag marking binding-origin dispatches (echo suppression). */
 export const BINDING_ORIGIN_META = "richTextBindingOrigin";
+
+/** Transaction meta carrying the user-addressed mark ranges (R-REV-3): every
+    `addMark`/`removeMark` call records its full `{ from, to }` before
+    ProseMirror narrows the steps to the unmarked subset, so a same-value
+    reassertion records all items it covers, not only the step sub-range. */
+const PROVENANCE_MARK_META = "rich-text.provenance-mark-ranges";
+
+interface ProvenanceUserMarkRange {
+  from: number;
+  to: number;
+  markName: string | null;
+  attrs: Record<string, unknown>;
+  remove: boolean;
+  removeAll: boolean;
+  /** Steps already present when the mark call ran: the call's own steps
+      occupy `tr.steps[stepIndex..]` up to the next call's `stepIndex`, so
+      the user range resolves against the step-time document (prior steps
+      applied), never the pre-transaction document. */
+  stepIndex: number;
+}
+
+let provenanceMarkWrapInstalled = false;
+
+function ensureProvenanceMarkTracking(): void {
+  if (provenanceMarkWrapInstalled) return;
+  const proto = Transaction.prototype as unknown as Record<string, unknown>;
+  if (proto === null || typeof proto !== "object") return;
+  const origAdd = proto["addMark"];
+  const origRemove = proto["removeMark"];
+  if (typeof origAdd !== "function" || typeof origRemove !== "function") return;
+  provenanceMarkWrapInstalled = true;
+  proto["addMark"] = function (from: number, to: number, mark: { type: { name: string }; attrs: Record<string, unknown> }, ...rest: unknown[]) {
+    try {
+      const self = this as { getMeta(k: string): unknown; setMeta(k: string, v: unknown): unknown; steps: unknown[] };
+      const existing = (self.getMeta(PROVENANCE_MARK_META) as ProvenanceUserMarkRange[] | undefined) ?? [];
+      const entry: ProvenanceUserMarkRange = {
+        from,
+        to,
+        markName: (mark as { type?: { name?: unknown } })?.type?.name as string ?? null,
+        attrs: { ...(((mark as { attrs?: unknown })?.attrs as Record<string, unknown> | undefined) ?? {}) },
+        remove: false,
+        removeAll: false,
+        stepIndex: Array.isArray(self.steps) ? self.steps.length : 0,
+      };
+      self.setMeta(PROVENANCE_MARK_META, [...existing, entry]);
+    } catch {
+      // Meta capture never breaks the mark call.
+    }
+    return (origAdd as (...args: unknown[]) => unknown).apply(this, [from, to, mark, ...rest]);
+  };
+  proto["removeMark"] = function (from: number, to: number, mark?: { type: { name: string }; attrs: Record<string, unknown> }, ...rest: unknown[]) {
+    try {
+      const self = this as { getMeta(k: string): unknown; setMeta(k: string, v: unknown): unknown; steps: unknown[] };
+      const existing = (self.getMeta(PROVENANCE_MARK_META) as ProvenanceUserMarkRange[] | undefined) ?? [];
+      const stepIndex = Array.isArray(self.steps) ? self.steps.length : 0;
+      if (mark === undefined || mark === null) {
+        const entry: ProvenanceUserMarkRange = { from, to, markName: null, attrs: {}, remove: true, removeAll: true, stepIndex };
+        self.setMeta(PROVENANCE_MARK_META, [...existing, entry]);
+      } else {
+        const entry: ProvenanceUserMarkRange = {
+          from,
+          to,
+          markName: (mark as { type?: { name?: unknown } })?.type?.name as string ?? null,
+          attrs: { ...(((mark as { attrs?: unknown })?.attrs as Record<string, unknown> | undefined) ?? {}) },
+          remove: true,
+          removeAll: false,
+          stepIndex,
+        };
+        self.setMeta(PROVENANCE_MARK_META, [...existing, entry]);
+      }
+    } catch {
+      // Meta capture never breaks the mark call.
+    }
+    return (origRemove as (...args: unknown[]) => unknown).apply(this, mark === undefined ? [from, to, ...rest] : [from, to, mark, ...rest]);
+  };
+}
+
+ensureProvenanceMarkTracking();
 
 function throwingAllocator(): string {
   throw new Error("rich-text.collab-no-alloc: projection mints no identities (splits allocate through the binding)");
@@ -462,6 +554,83 @@ interface ProjectionRun {
       must rebuild them from the shared state so formats hidden while the
       block was code are revealed (R-FULL-CODE-1). */
   revealedIds: string[];
+  /** Provenance collection (R-REV-3, CL-4c): present only on the live phase
+      when the binding carries a sink, actor and transaction id. Entries are
+      (mark, value) observations with step-time item identities and anchors
+      captured immediately after the step mutates the shared text, so later
+      steps in the same transaction cannot shift them; drafts are minted
+      after the transaction commits, once per (transaction, mark, value)
+      with the exact union of per-step items (disjoint ranges never span
+      their unmarked gap). */
+  provenance?: {
+    sink: { recordFormattingIntent(intent: unknown): void } | undefined | null;
+    actorId: string;
+    fieldKey: string;
+    transactionId: string;
+    collected: Array<{
+      mark: InlineMarkKey;
+      value: true | string | null;
+      items: Array<{ client: number; clock: number }>;
+      start: string;
+      end: string;
+      /** Linear offsets the anchors were minted at: group bounds widen only. */
+      startOffset: number;
+      endOffset: number;
+    }>;
+  };
+}
+
+/** Admitted mark keys for provenance collection (R-FULL-MARK-1). */
+const PROVENANCE_MARKS: readonly string[] = ["bold", "italic", "code", "strike", "underline", "link", "linkTitle"];
+
+/** Push one provenance entry with step-time anchors (R-REV-3): the anchors
+    bind the linear range against the current shared state; the offsets let
+    group bounds widen only, never narrow to a later sub-range. */
+function collectProvenanceEntry(
+  run: ProjectionRun,
+  mark: InlineMarkKey,
+  value: true | string | null,
+  items: Array<{ client: number; clock: number }>,
+  linearFrom: number,
+  linearTo: number,
+): void {
+  const provenance = run.provenance;
+  if (provenance === undefined || items.length === 0) return;
+  const start =
+    linearFrom >= run.ytext.length
+      ? mintEndOfFieldAnchor(run.ytext, run.ytext.length)
+      : mintAnchorAt(run.ytext, linearFrom, 0);
+  const end =
+    linearTo >= run.ytext.length
+      ? mintEndOfFieldAnchor(run.ytext, run.ytext.length)
+      : mintAnchorAt(run.ytext, linearTo, 0);
+  provenance.collected.push({ mark, value, items: [...items], start, end, startOffset: linearFrom, endOffset: linearTo });
+}
+
+function collectProvenanceAttributes(
+  run: ProjectionRun,
+  index: number,
+  length: number,
+  attributes: Record<string, unknown>,
+): void {
+  const provenance = run.provenance;
+  if (provenance === undefined || length <= 0) return;
+  for (const key of Object.keys(attributes)) {
+    if (!PROVENANCE_MARKS.includes(key)) continue;
+    const raw = attributes[key];
+    let value: true | string | null | undefined;
+    if (key === "link" || key === "linkTitle") {
+      if (raw === null) value = null;
+      else if (typeof raw === "string") value = raw;
+      else continue;
+    } else {
+      if (raw === true) value = true;
+      else if (raw === null) value = null;
+      else continue;
+    }
+    const items = coveredItemIdentities(run.ytext, index, index + length);
+    collectProvenanceEntry(run, key as InlineMarkKey, value, items, index, index + length);
+  }
 }
 
 function runInsert(
@@ -473,6 +642,7 @@ function runInsert(
   run.journal.push({ op: "insert", index, text, attributes });
   if (attributes !== undefined && Object.keys(attributes).length > 0) {
     run.ytext.insert(index, text, attributes);
+    collectProvenanceAttributes(run, index, text.length, attributes);
   } else {
     // Explicit empty attributes: a bare Yjs insert inherits the left
     // neighbour's marks, so a plain insertion right after a marked run
@@ -529,6 +699,7 @@ function runFormat(
   const captured = captureRange(run, index, length);
   run.journal.push({ op: "format", index, length, captured });
   run.ytext.format(index, length, attributes);
+  collectProvenanceAttributes(run, index, length, attributes);
 }
 
 function runMetaSet(run: ProjectionRun, key: string, value: unknown): void {
@@ -1105,6 +1276,146 @@ function collectCodeReveals(
   });
 }
 
+let provenanceTransactionCounter = 0;
+
+/** Mint one human transaction id per outer projection call, never reused. */
+function mintProvenanceTransactionId(): string {
+  provenanceTransactionCounter += 1;
+  return `txn:${provenanceTransactionCounter}`;
+}
+
+/** Mint one composition transaction id from the same process-global counter,
+    so a remounted composition driver never reuses an intent id (AMB-C7). */
+export function mintCompositionTransactionId(fieldKey: string): string {
+  provenanceTransactionCounter += 1;
+  return `composition:${fieldKey}:${provenanceTransactionCounter}`;
+}
+
+/** Read the user-addressed mark ranges carried on the transaction, in call
+    order. Never throws: provenance capture never breaks the projection. */
+function readProvenanceUserRanges(tr: Transaction): ProvenanceUserMarkRange[] {
+  try {
+    const raw = (tr as Transaction).getMeta(PROVENANCE_MARK_META) as ProvenanceUserMarkRange[] | undefined;
+    if (!Array.isArray(raw)) return [];
+    return raw.filter(
+      (entry) =>
+        typeof entry?.from === "number" &&
+        typeof entry?.to === "number" &&
+        typeof entry?.stepIndex === "number",
+    );
+  } catch {
+    return [];
+  }
+}
+
+/** Find the mark call that produced step `stepIndex`: the last range whose
+    observed step count does not exceed it. The step's mark kind must match
+    the call (an add call's side-effect removal, or a step from another call,
+    falls back to the narrowed step range). */
+function findProvenanceOwner(
+  userRanges: ProvenanceUserMarkRange[],
+  stepCount: number,
+  stepIndex: number,
+  step: AddMarkStep | RemoveMarkStep,
+  stepMarkName: unknown,
+): ProvenanceUserMarkRange | null {
+  if (userRanges.length === 0) return null;
+  let owner: ProvenanceUserMarkRange | null = null;
+  let ownerEnd = stepCount;
+  for (const user of userRanges) {
+    if (user.stepIndex <= stepIndex) {
+      owner = user;
+    } else {
+      ownerEnd = user.stepIndex;
+      break;
+    }
+  }
+  if (owner === null || stepIndex >= ownerEnd) return null;
+  if (step instanceof AddMarkStep) {
+    if (owner.remove || owner.markName === null || owner.markName !== stepMarkName) return null;
+  } else {
+    if (!owner.remove) return null;
+    if (!owner.removeAll && (owner.markName === null || owner.markName !== stepMarkName)) return null;
+  }
+  return owner;
+}
+
+/** Record the user-addressed range for one mark step at execution time
+    (R-REV-3): the ProseMirror step covers only the unmarked subset, so the
+    meta range — resolved against the current step-time map — records every
+    item the gesture covers, including already-marked neighbours. Without a
+    matching owner the narrowed step range (collected by `runFormat`) stands
+    alone. Never throws. */
+function unionProvenanceUserRange(
+  run: ProjectionRun,
+  map: SelectionMap,
+  userRanges: ProvenanceUserMarkRange[],
+  stepCount: number,
+  stepIndex: number,
+  step: AddMarkStep | RemoveMarkStep,
+  stepMarkName: string,
+): void {
+  try {
+    if (run.provenance === undefined) return;
+    const owner = findProvenanceOwner(userRanges, stepCount, stepIndex, step, stepMarkName);
+    if (owner === null) return;
+    let linearFrom = 0;
+    let linearTo = 0;
+    try {
+      linearFrom = pmPositionToLinear(map, owner.from);
+      linearTo = pmPositionToLinear(map, owner.to);
+    } catch {
+      return;
+    }
+    if (linearTo <= linearFrom) return;
+    const pushFull = (attributes: Record<string, unknown>): void => {
+      const items = coveredItemIdentities(run.ytext, linearFrom, linearTo);
+      for (const key of Object.keys(attributes)) {
+        if (!PROVENANCE_MARKS.includes(key)) continue;
+        const raw = attributes[key];
+        let value: true | string | null | undefined;
+        if (key === "link" || key === "linkTitle") {
+          if (raw === null) value = null;
+          else if (typeof raw === "string") value = raw;
+          else continue;
+        } else {
+          if (raw === true) value = true;
+          else if (raw === null) value = null;
+          else continue;
+        }
+        collectProvenanceEntry(run, key as InlineMarkKey, value, items, linearFrom, linearTo);
+      }
+    };
+    try {
+      if (owner.removeAll) {
+        // One entry per executed removal step: across the call's steps every
+        // present mark is covered exactly as the pre-seed sweep did.
+        const name = (step as unknown as { mark?: { type?: { name?: unknown } } }).mark?.type?.name;
+        if (typeof name !== "string") return;
+        if (name === "link") pushFull({ link: null, linkTitle: null });
+        else if ([...PROVENANCE_MARKS].includes(name)) pushFull({ [name]: null });
+      } else if (owner.remove) {
+        if (owner.markName === null) return;
+        const attributes = pmMarkToAttributes(owner.markName, owner.attrs);
+        const removal: Record<string, unknown> = {};
+        for (const key of Object.keys(attributes)) removal[key] = null;
+        if (owner.markName === "link") {
+          removal["link"] = null;
+          removal["linkTitle"] = null;
+        }
+        pushFull(removal);
+      } else {
+        if (owner.markName === null) return;
+        pushFull(pmMarkToAttributes(owner.markName, owner.attrs));
+      }
+    } catch {
+      return;
+    }
+  } catch {
+    // User-range union never breaks the projection.
+  }
+}
+
 export function projectPmTransactionToYText(
   binding: ProjectionBinding,
   pmDocBefore: ProseMirrorNode,
@@ -1119,7 +1430,12 @@ export function projectPmTransactionToYText(
   // a refusal at any step leaves the live state vector byte-equal. Phase 2
   // executes the identical projection onto the live state while replaying
   // the recorded allocator outputs, keeping identities stable across both
-  // phases (one allocation sequence per transaction, as before).
+  // phases (one allocation sequence per transaction, as before). R-REV-3:
+  // provenance records once per committed transaction on the live phase
+  // only; the scratch phase strips the provenance context so it never
+  // double-records.
+  const provenanceTransactionId =
+    binding.provenanceActorId !== undefined ? mintProvenanceTransactionId() : undefined;
   const scratch = cloneFieldDoc(binding);
   const recorded: string[] = [];
   projectIntoRun(
@@ -1127,6 +1443,9 @@ export function projectPmTransactionToYText(
       ...binding,
       ytext: scratch.ytext,
       fieldMeta: scratch.fieldMeta,
+      provenanceSink: undefined,
+      provenanceActorId: undefined,
+      provenanceTransactionId: undefined,
       allocateId: () => {
         const id = binding.allocateId();
         recorded.push(id);
@@ -1140,6 +1459,7 @@ export function projectPmTransactionToYText(
   return projectIntoRun(
     {
       ...binding,
+      ...(provenanceTransactionId === undefined ? {} : { provenanceTransactionId }),
       allocateId: () =>
         replay < recorded.length ? (recorded[replay++] as string) : binding.allocateId(),
     },
@@ -1193,12 +1513,29 @@ function projectIntoRun(
     freshQueue: [],
     inserted: [],
     revealedIds: [],
+    ...(binding.provenanceActorId !== undefined && binding.provenanceTransactionId !== undefined
+      ? {
+          provenance: {
+            sink: binding.provenanceSink as { recordFormattingIntent(intent: unknown): void },
+            actorId: binding.provenanceActorId,
+            fieldKey: binding.fieldKey,
+            transactionId: binding.provenanceTransactionId,
+            collected: [],
+          },
+        }
+      : {}),
   };
   if (binding.pmTransactionDoc !== undefined) {
     run.freshQueue = freshIdQueue(pmDocBefore, binding.pmTransactionDoc);
   }
   let workingDoc = pmDocBefore;
   let map = buildSelectionMap(workingDoc, ytext);
+  // User-addressed mark ranges (R-REV-3) resolve at step execution time, not
+  // against the pre-transaction document: each range carries the step index
+  // its mark call observed, so a mixed transaction (insert plus reassertion)
+  // maps the range after prior steps applied. Mark steps preserve document
+  // positions, so resolving against the current step-time map is exact.
+  const userRanges = readProvenanceUserRanges(tr);
   let failed = false;
   let failure: unknown = null;
 
@@ -1211,7 +1548,8 @@ function projectIntoRun(
   const origin = isMarkOnlyTransaction(tr) ? binding.markOrigin : binding.localOrigin;
   ydoc.transact(() => {
     try {
-      for (const step of tr.steps) {
+      for (let stepIndex = 0; stepIndex < tr.steps.length; stepIndex += 1) {
+        const step = tr.steps[stepIndex] as (typeof tr.steps)[number];
         if (step instanceof ReplaceStep) {
           const from = (step as unknown as { from: number }).from;
           const to = (step as unknown as { to: number }).to;
@@ -1382,6 +1720,11 @@ function projectIntoRun(
             }
             runFormat(run, linearFrom, linearTo - linearFrom, removal);
           }
+          // The step covers only the unmarked subset: union the
+          // user-addressed range (same mark call, step-time map) so a
+          // same-value reassertion records every item it covers — in mark-only
+          // and mixed transactions alike.
+          unionProvenanceUserRange(run, map, userRanges, tr.steps.length, stepIndex, step, mark.type.name);
         }
         // Apply the step to the working document so the next step maps
         // against the post-step document (evolving map discipline).
@@ -1421,7 +1764,89 @@ function projectIntoRun(
   if (failed) {
     throw failure;
   }
+  recordProvenanceIntents(run);
   return run.revealedIds;
+}
+
+/** Mint one draft per (transaction, mark, value) after a committed live phase
+    (R-REV-3): same-value reassertions record identically; mixed gestures
+    record their mark parts; an absent sink computes and drops. Items are the
+    exact union of step-time identities (disjoint same-mark ranges never span
+    their gap); the range carries the first step start and last step end. */
+function recordProvenanceIntents(run: ProjectionRun): void {
+  const provenance = run.provenance;
+  if (provenance === undefined || provenance.collected.length === 0) return;
+  const groups = new Map<
+    string,
+    {
+      mark: InlineMarkKey;
+      value: true | string | null;
+      items: Array<{ client: number; clock: number }>;
+      start: string;
+      end: string;
+      startOffset: number;
+      endOffset: number;
+    }
+  >();
+  for (const entry of provenance.collected) {
+    const groupKey = `${entry.mark}:${JSON.stringify(entry.value)}`;
+    let group = groups.get(groupKey);
+    if (group === undefined) {
+      group = {
+        mark: entry.mark,
+        value: entry.value,
+        items: [],
+        start: entry.start,
+        end: entry.end,
+        startOffset: entry.startOffset,
+        endOffset: entry.endOffset,
+      };
+      groups.set(groupKey, group);
+    } else {
+      // Bounds widen only: a later narrowed step entry never pulls the group
+      // bounds back inside the covered span (already-marked prefix narrows
+      // a later start; an already-marked suffix narrows a later end).
+      if (entry.startOffset < group.startOffset) {
+        group.start = entry.start;
+        group.startOffset = entry.startOffset;
+      }
+      if (entry.endOffset > group.endOffset) {
+        group.end = entry.end;
+        group.endOffset = entry.endOffset;
+      }
+    }
+    const seen = new Set(group.items.map((item) => `${item.client}:${item.clock}`));
+    for (const item of entry.items) {
+      const pair = `${item.client}:${item.clock}`;
+      if (!seen.has(pair)) {
+        seen.add(pair);
+        group.items.push(item);
+      }
+    }
+  }
+  const distinctMarks = new Set([...groups.values()].map((group) => group.mark)).size;
+  const needsSuffix = distinctMarks < groups.size;
+  let suffix = 0;
+  for (const group of groups.values()) {
+    const intentId =
+      needsSuffix === false
+        ? `${provenance.transactionId}:${group.mark}`
+        : `${provenance.transactionId}:${group.mark}:${suffix}`;
+    suffix += 1;
+    if (group.items.length === 0) continue;
+    const draft = {
+      intentId,
+      actorId: provenance.actorId,
+      source: { kind: "human-transaction", transactionId: provenance.transactionId },
+      fieldKey: provenance.fieldKey,
+      mark: group.mark,
+      value: group.value,
+      range: { start: group.start, end: group.end },
+      items: group.items,
+    };
+    if (provenance.sink === undefined || provenance.sink === null) continue;
+    provenance.sink.recordFormattingIntent(draft);
+  }
 }
 
 /** Node type of the duplicated split tail: the last textblock occurrence

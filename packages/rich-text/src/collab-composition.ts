@@ -31,7 +31,8 @@ import {
   relativePositionToJSON,
 } from "yjs";
 import type { BoundUndoManager } from "./editor-collaboration.js";
-import { linearBlocksOf } from "./collab-projection.js";
+import { linearBlocksOf, mintCompositionTransactionId } from "./collab-projection.js";
+import { coveredItemIdentities } from "./collab-selection.js";
 
 /** Session identifier: the binding identity plus a per-binding counter. */
 export interface CompositionSessionId {
@@ -230,13 +231,29 @@ export class BoundCompositionDriver {
     charAnchors: string[];
   } | null = null;
   private nextId = 0;
+  private provenanceSink: { recordFormattingIntent(intent: unknown): void } | undefined | null = null;
+  private provenanceActorId: string | undefined = undefined;
 
   constructor(
     private readonly ytext: Y.Text,
     private readonly fieldKey: string,
     private readonly localOrigin: string,
     private readonly undoManager: BoundUndoManager,
-  ) {}
+    provenanceSink?: { recordFormattingIntent(intent: unknown): void } | null,
+    provenanceActorId?: string,
+  ) {
+    if (provenanceSink !== undefined) this.provenanceSink = provenanceSink;
+    if (provenanceActorId !== undefined) this.provenanceActorId = provenanceActorId;
+  }
+
+  /** Update the provenance recorder without a new export (CL-4c B3). */
+  setProvenanceRecorder(
+    sink: { recordFormattingIntent(intent: unknown): void } | null,
+    actorId: string,
+  ): void {
+    this.provenanceSink = sink;
+    this.provenanceActorId = actorId;
+  }
 
   get isOpen(): boolean {
     return this.session !== null;
@@ -396,6 +413,14 @@ export class BoundCompositionDriver {
     const origin = this.localOrigin;
     // Descending positions: earlier indices stay valid while later edits land.
     const orderedDeletes = [...deletes].sort((left, right) => right - left);
+    const provenanceMarks = ["bold", "italic", "code", "strike", "underline", "link", "linkTitle"] as const;
+    const commitProvenance: Array<{
+      mark: string;
+      value: true | string | null;
+      items: Array<{ client: number; clock: number }>;
+      start: string;
+      end: string;
+    }> = [];
     ydoc.transact(() => {
       for (const index of orderedDeletes) this.ytext.delete(index, 1);
       let cursor = at;
@@ -406,8 +431,84 @@ export class BoundCompositionDriver {
           continue;
         }
         if (run.text !== "") {
-          this.ytext.insert(cursor, run.text, { ...run.attributes });
+          const attributes = { ...run.attributes };
+          this.ytext.insert(cursor, run.text, attributes);
+          const runStart = cursor;
+          const runEnd = cursor + run.text.length;
+          for (const key of Object.keys(attributes)) {
+            if ((provenanceMarks as readonly string[]).includes(key) === false) continue;
+            const raw = attributes[key];
+            let value: true | string | null | undefined;
+            if (key === "link" || key === "linkTitle") {
+              if (raw === null) value = null;
+              else if (typeof raw === "string") value = raw;
+              else continue;
+            } else {
+              if (raw === true) value = true;
+              else if (raw === null) value = null;
+              else continue;
+            }
+            try {
+              const items = coveredItemIdentities(this.ytext, runStart, runEnd);
+              const start = this.mintAnchor(runStart);
+              const end = this.mintAnchor(runEnd);
+              commitProvenance.push({ mark: key, value, items, start, end });
+            } catch {
+              // Provenance capture never breaks the commit.
+            }
+          }
           cursor += run.text.length;
+        }
+      }
+      // Composition-staged marks record at commit, inside the commit
+      // transaction, once per (mark, value) over the committed runs
+      // (R-REV-3); never mid-composition.
+      if (commitProvenance.length > 0 && this.provenanceSink !== undefined && this.provenanceSink !== null && this.provenanceActorId !== undefined) {
+        // Process-global counter discipline (shared with the projection
+        // minter): a remounted driver never reuses an intent id (AMB-C7).
+        const transactionId = mintCompositionTransactionId(this.fieldKey);
+        const groups = new Map<string, { mark: string; value: true | string | null; items: Array<{ client: number; clock: number }>; start: string; end: string }>();
+        for (const entry of commitProvenance) {
+          const groupKey = `${entry.mark}:${JSON.stringify(entry.value)}`;
+          let group = groups.get(groupKey);
+          if (group === undefined) {
+            group = { mark: entry.mark, value: entry.value, items: [], start: entry.start, end: entry.end };
+            groups.set(groupKey, group);
+          } else {
+            group.end = entry.end;
+          }
+          const seen = new Set(group.items.map((item) => `${item.client}:${item.clock}`));
+          for (const item of entry.items) {
+            const pair = `${item.client}:${item.clock}`;
+            if (seen.has(pair) === false) {
+              seen.add(pair);
+              group.items.push(item);
+            }
+          }
+        }
+        const distinctMarks = new Set([...groups.values()].map((group) => group.mark)).size;
+        const needsSuffix = distinctMarks < groups.size;
+        let suffix = 0;
+        for (const group of groups.values()) {
+          const intentId =
+            needsSuffix === false ? `${transactionId}:${group.mark}` : `${transactionId}:${group.mark}:${suffix}`;
+          suffix += 1;
+          if (group.items.length === 0) continue;
+          try {
+            this.provenanceSink.recordFormattingIntent({
+              intentId,
+              actorId: this.provenanceActorId,
+              source: { kind: "human-transaction", transactionId },
+              fieldKey: this.fieldKey,
+              mark: group.mark,
+              value: group.value,
+              range: { start: group.start, end: group.end },
+              items: group.items,
+            });
+          } catch {
+            // The sink contract is synchronous and non-throwing for valid
+            // drafts; a throw never breaks the commit.
+          }
         }
       }
     }, origin);
@@ -449,11 +550,15 @@ export function createBoundCompositionDriver(options: {
   fieldKey: string;
   localOrigin: string;
   undoManager: BoundUndoManager;
+  provenanceSink?: { recordFormattingIntent(intent: unknown): void } | null;
+  provenanceActorId?: string;
 }): BoundCompositionDriver {
   return new BoundCompositionDriver(
     options.ytext,
     options.fieldKey,
     options.localOrigin,
     options.undoManager,
+    options.provenanceSink,
+    options.provenanceActorId,
   );
 }

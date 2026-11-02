@@ -30,9 +30,12 @@ import {
   derivePresenceBadgeState,
   isAllowedHref,
   isLockExpired,
+  latestEffectiveIntent,
+  planMarkRevert,
   validateAgentPatch,
   validateAgentReadRequest,
   validateCollaborationColor,
+  validateFormattingIntentDraft,
   validateFullBlockMetadata,
 } from "./collaboration.js";
 import type {
@@ -43,6 +46,8 @@ import type {
   CollaborationActor,
   CollaborationCapabilities,
   FieldBindingIdentity,
+  FormattingIntent,
+  InlineMarkKey,
   LockSnapshot,
   PresenceSnapshot,
   RelativeAnchor,
@@ -1274,5 +1279,365 @@ describe("computeEffectiveEditable (CL-2 R-API-2, RED)", () => {
         nowIso: "2026-10-29T12:00:00.000Z",
       }),
     ).toBe(true);
+  });
+});
+
+describe("validateFormattingIntentDraft (CL-4c Task 2, C-D5-6)", () => {
+  const KEY: AgentPatchKey = {
+    documentId: "canvas:doc-1",
+    actorId: "actor:agent-1",
+    sessionEpoch: "epoch:1",
+    patchId: "patch:1",
+  };
+  function humanDraft(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+    return {
+      intentId: "intent:1",
+      actorId: "actor:human-1",
+      source: { kind: "human-transaction", transactionId: "txn:1" },
+      fieldKey: "description",
+      mark: "bold",
+      value: true,
+      range: { start: "anchor:a", end: "anchor:b" },
+      items: [{ client: 1, clock: 0 }],
+      ...overrides,
+    };
+  }
+  function agentDraft(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+    return {
+      intentId: "intent:agent-1",
+      actorId: "actor:agent-1",
+      source: { kind: "agent-patch", key: KEY, operationIndex: 0 },
+      fieldKey: "description",
+      mark: "bold",
+      value: true,
+      range: { start: "anchor:a", end: "anchor:b" },
+      items: [{ client: 1, clock: 0 }],
+      ...overrides,
+    };
+  }
+  it("accepts one valid draft per source variant and mark family", () => {
+    expect(validateFormattingIntentDraft(humanDraft()).ok).toBe(true);
+    expect(validateFormattingIntentDraft(agentDraft()).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "italic", value: true })).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "code", value: null })).ok).toBe(true);
+    expect(
+      validateFormattingIntentDraft(humanDraft({ mark: "link", value: "https://example.com/x" })).ok,
+    ).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "link", value: null })).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "linkTitle", value: "Title" })).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "linkTitle", value: null })).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "strike", value: true })).ok).toBe(true);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "underline", value: null })).ok).toBe(true);
+  });
+  it("refuses extra keys and client-supplied seq", () => {
+    expect(validateFormattingIntentDraft({ ...humanDraft(), extra: 1 }).ok).toBe(false);
+    expect(validateFormattingIntentDraft({ ...humanDraft(), seq: 1 }).ok).toBe(false);
+  });
+  it("refuses empty and over-budget ids", () => {
+    const empty = validateFormattingIntentDraft(humanDraft({ intentId: "" }));
+    expect(empty.ok).toBe(false);
+    if (!empty.ok) expect(empty.reason).toBe("incompatible-schema");
+    const big = validateFormattingIntentDraft(humanDraft({ intentId: "x".repeat(257) }));
+    expect(big.ok).toBe(false);
+    if (!big.ok) expect(big.reason).toBe("too-large");
+  });
+  it("refuses an incomplete patch key and a bad operationIndex", () => {
+    const incomplete = validateFormattingIntentDraft(
+      agentDraft({ source: { kind: "agent-patch", key: { documentId: "d" }, operationIndex: 0 } }),
+    );
+    expect(incomplete.ok).toBe(false);
+    const negative = validateFormattingIntentDraft(
+      agentDraft({ source: { kind: "agent-patch", key: KEY, operationIndex: -1 } }),
+    );
+    expect(negative.ok).toBe(false);
+    const fractional = validateFormattingIntentDraft(
+      agentDraft({ source: { kind: "agent-patch", key: KEY, operationIndex: 1.5 } }),
+    );
+    expect(fractional.ok).toBe(false);
+  });
+  it("refuses every mark/value mispairing", () => {
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "bold", value: "yes" })).ok).toBe(false);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "link", value: true })).ok).toBe(false);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "link", value: "javascript:alert(1)" })).ok).toBe(false);
+    expect(validateFormattingIntentDraft(humanDraft({ mark: "linkTitle", value: 3 })).ok).toBe(false);
+    const longHref = validateFormattingIntentDraft(humanDraft({ mark: "link", value: `https://example.com/${"x".repeat(2048)}` }));
+    expect(longHref.ok).toBe(false);
+    if (!longHref.ok) expect(longHref.reason).toBe("too-large");
+  });
+  it("refuses bad anchors, items and duplicated pairs", () => {
+    expect(validateFormattingIntentDraft(humanDraft({ range: { start: "", end: "anchor:b" } })).ok).toBe(false);
+    expect(validateFormattingIntentDraft(humanDraft({ items: [{ client: 1.5, clock: 0 }] })).ok).toBe(false);
+    expect(validateFormattingIntentDraft(humanDraft({ items: [{ client: 1 }] })).ok).toBe(false);
+    expect(
+      validateFormattingIntentDraft(humanDraft({ items: [{ client: 1, clock: 0, extra: 1 }] })).ok,
+    ).toBe(false);
+    expect(
+      validateFormattingIntentDraft(humanDraft({ items: [{ client: 1, clock: 0 }, { client: 1, clock: 0 }] })).ok,
+    ).toBe(false);
+  });
+  it("refuses prototype-carried fields with own-key presence", () => {
+    const proto = {
+      intentId: "intent:proto",
+      actorId: "actor:human-1",
+      source: { kind: "human-transaction", transactionId: "txn:1" },
+      fieldKey: "description",
+      mark: "bold",
+      value: true,
+      range: { start: "anchor:a", end: "anchor:b" },
+      items: [{ client: 1, clock: 0 }],
+    };
+    const draft = Object.create(proto);
+    const result = validateFormattingIntentDraft(draft);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("incompatible-schema");
+    const protoSource = Object.create({ kind: "human-transaction", transactionId: "txn:1" });
+    const withProtoSource = humanDraft({ source: protoSource });
+    expect(validateFormattingIntentDraft(withProtoSource).ok).toBe(false);
+  });
+  it("never throws on throwing getters, proxies and cycles", () => {
+    const throwing = humanDraft();
+    Object.defineProperty(throwing, "intentId", {
+      enumerable: true,
+      get() {
+        throw new Error("boom");
+      },
+    });
+    const throwingResult = validateFormattingIntentDraft(throwing);
+    expect(throwingResult.ok).toBe(false);
+    if (!throwingResult.ok) expect(throwingResult.reason).toBe("incompatible-schema");
+    const target = humanDraft();
+    const proxy = new Proxy(target, {
+      get() {
+        throw new Error("boom");
+      },
+    });
+    expect(validateFormattingIntentDraft(proxy).ok).toBe(false);
+    const cyclic = humanDraft() as Record<string, unknown>;
+    (cyclic as Record<string, unknown>)["self"] = cyclic;
+    expect(validateFormattingIntentDraft(cyclic).ok).toBe(false);
+    expect(validateFormattingIntentDraft(new Date()).ok).toBe(false);
+    expect(validateFormattingIntentDraft(Object.create(null, {})).ok).toBe(false);
+  });
+  it("refuses huge arrays, long strings and non-plain objects as too-large or schema", () => {
+    const hugeItems = Array.from({ length: 20001 }, (_, index) => ({ client: 1, clock: index }));
+    const huge = validateFormattingIntentDraft(humanDraft({ items: hugeItems }));
+    expect(huge.ok).toBe(false);
+    if (!huge.ok) expect(huge.reason).toBe("too-large");
+    const longTxn = validateFormattingIntentDraft(
+      humanDraft({ source: { kind: "human-transaction", transactionId: "x".repeat(257) } }),
+    );
+    expect(longTxn.ok).toBe(false);
+    if (!longTxn.ok) expect(longTxn.reason).toBe("too-large");
+    const longKey = validateFormattingIntentDraft(
+      agentDraft({
+        source: {
+          kind: "agent-patch",
+          key: { ...KEY, documentId: "d".repeat(257) },
+          operationIndex: 0,
+        },
+      }),
+    );
+    expect(longKey.ok).toBe(false);
+    if (!longKey.ok) expect(longKey.reason).toBe("too-large");
+    const longAnchor = validateFormattingIntentDraft(
+      humanDraft({ range: { start: "a".repeat(2049), end: "anchor:b" } }),
+    );
+    expect(longAnchor.ok).toBe(false);
+    if (!longAnchor.ok) expect(longAnchor.reason).toBe("too-large");
+    expect(validateFormattingIntentDraft(new Map() as unknown).ok).toBe(false);
+    expect(validateFormattingIntentDraft(/bold/ as unknown).ok).toBe(false);
+  });
+});
+
+describe("latestEffectiveIntent and planMarkRevert (CL-4c Task 5, R-REV-4)", () => {
+  const KEY: AgentPatchKey = {
+    documentId: "canvas:doc-1",
+    actorId: "actor:agent-1",
+    sessionEpoch: "epoch:1",
+    patchId: "patch:1",
+  };
+  function intent(
+    seq: number,
+    intentId: string,
+    actorId: string,
+    mark: InlineMarkKey,
+    value: true | string | null,
+    items: Array<{ client: number; clock: number }>,
+  ): FormattingIntent {
+    return {
+      seq,
+      intentId,
+      actorId,
+      source: { kind: "human-transaction", transactionId: `txn:${seq}` },
+      fieldKey: "description",
+      mark,
+      value,
+      range: { start: "anchor:a" as RelativeAnchor, end: "anchor:b" as RelativeAnchor },
+      items,
+    };
+  }
+  const MARKS: InlineMarkKey[] = ["bold", "italic", "code", "strike", "underline", "link", "linkTitle"];
+  for (const mark of MARKS) {
+    it(`plain inverse restores null for ${mark} with no preceding intent`, () => {
+      const value = mark === "link" ? "https://example.com/x" : mark === "linkTitle" ? "Title" : true;
+      const patchIntent = intent(1, "intent:patch", "actor:agent-1", mark, value, [{ client: 1, clock: 0 }]);
+      const result = planMarkRevert([patchIntent], {
+        key: KEY,
+        fieldKey: "description",
+        mark,
+        intentIds: ["intent:patch"],
+        liveItems: [{ client: 1, clock: 0 }],
+      });
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.decisions).toEqual([{ item: { client: 1, clock: 0 }, action: "restore", value: null }]);
+      }
+    });
+  }
+  it("restores the preceding value after a replacement", () => {
+    const before = intent(1, "intent:before", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const patchIntent = intent(2, "intent:patch", "actor:agent-1", "bold", null, [{ client: 1, clock: 0 }]);
+    const result = planMarkRevert([before, patchIntent], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.decisions).toEqual([{ item: { client: 1, clock: 0 }, action: "restore", value: true }]);
+    }
+  });
+  it("keeps later wider assertions and splits per item", () => {
+    const patchA = intent(1, "intent:patch-a", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const patchB = intent(1, "intent:patch-b", "actor:agent-1", "bold", true, [{ client: 1, clock: 1 }]);
+    const laterA = intent(2, "intent:later-a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const result = planMarkRevert([patchA, patchB, laterA], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch-a", "intent:patch-b"],
+      liveItems: [{ client: 1, clock: 0 }, { client: 1, clock: 1 }],
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.decisions).toContainEqual({ item: { client: 1, clock: 0 }, action: "kept-later" });
+      expect(result.decisions).toContainEqual({ item: { client: 1, clock: 1 }, action: "restore", value: null });
+    }
+  });
+  it("marks deleted items satisfied", () => {
+    const patchIntent = intent(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const result = planMarkRevert([patchIntent], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [],
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.decisions).toEqual([{ item: { client: 1, clock: 0 }, action: "satisfied" }]);
+    }
+  });
+  it("refuses whole on missing coverage, missing patch intent and duplicate maximal seq", () => {
+    const patchIntent = intent(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const missing = planMarkRevert([patchIntent], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:unknown"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(missing.ok).toBe(false);
+    const absent = planMarkRevert([], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(absent.ok).toBe(false);
+    if (!absent.ok) expect(absent.conflict.items).toEqual([]);
+    const dupA = intent(2, "intent:dup-a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const dupB = intent(2, "intent:dup-b", "actor:human-2", "bold", null, [{ client: 1, clock: 0 }]);
+    const dup = planMarkRevert([patchIntent, dupA, dupB], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(dup.ok).toBe(false);
+    if (!dup.ok) {
+      expect(dup.conflict.key).toEqual(KEY);
+      expect(dup.conflict.fieldKey).toBe("description");
+      expect(dup.conflict.mark).toBe("bold");
+    }
+  });
+  it("orders by seq, never by array position", () => {
+    const first = intent(1, "intent:first", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const second = intent(2, "intent:patch", "actor:agent-1", "bold", null, [{ client: 1, clock: 0 }]);
+    const forward = planMarkRevert([first, second], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    const backward = planMarkRevert([second, first], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(forward).toEqual(backward);
+  });
+  it("filters intents by fieldKey and detects ambiguous preceding intents", () => {
+    const otherField = { ...intent(2, "intent:other", "actor:human-1", "bold", null, [{ client: 1, clock: 0 }]), fieldKey: "notes" };
+    const patchIntent = intent(1, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const filtered = planMarkRevert([patchIntent, otherField], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(filtered.ok).toBe(true);
+    if (filtered.ok) {
+      expect(filtered.decisions).toEqual([{ item: { client: 1, clock: 0 }, action: "restore", value: null }]);
+    }
+    const precedingA = intent(1, "intent:pre-a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const precedingB = intent(1, "intent:pre-b", "actor:human-2", "bold", null, [{ client: 1, clock: 0 }]);
+    const patchLater = intent(2, "intent:patch", "actor:agent-1", "bold", true, [{ client: 1, clock: 0 }]);
+    const ambiguous = planMarkRevert([precedingA, precedingB, patchLater], {
+      key: KEY,
+      fieldKey: "description",
+      mark: "bold",
+      intentIds: ["intent:patch"],
+      liveItems: [{ client: 1, clock: 0 }],
+    });
+    expect(ambiguous.ok).toBe(false);
+    if (!ambiguous.ok) expect(ambiguous.conflict.kind).toBe("mark-provenance-conflict");
+  });
+  it("latestEffectiveIntent reports not-found and duplicate-maximal outcomes", () => {
+    const found = latestEffectiveIntent(
+      [intent(1, "intent:a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }])],
+      { client: 1, clock: 0 },
+      "bold",
+    );
+    expect(found.ok).toBe(true);
+    const missing = latestEffectiveIntent([], { client: 9, clock: 9 }, "bold");
+    expect(missing).toEqual({ ok: true, found: false });
+    const dup = latestEffectiveIntent(
+      [
+        intent(2, "intent:a", "actor:human-1", "bold", true, [{ client: 1, clock: 0 }]),
+        intent(2, "intent:b", "actor:human-2", "bold", null, [{ client: 1, clock: 0 }]),
+      ],
+      { client: 1, clock: 0 },
+      "bold",
+    );
+    expect(dup.ok).toBe(false);
   });
 });
