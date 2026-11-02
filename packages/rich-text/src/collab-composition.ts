@@ -31,7 +31,7 @@ import {
   relativePositionToJSON,
 } from "yjs";
 import type { BoundUndoManager } from "./editor-collaboration.js";
-import { linearBlocksOf } from "./collab-projection.js";
+import { linearBlocksOf, mintCompositionTransactionId } from "./collab-projection.js";
 import { coveredItemIdentities } from "./collab-selection.js";
 
 /** Session identifier: the binding identity plus a per-binding counter. */
@@ -231,7 +231,6 @@ export class BoundCompositionDriver {
     charAnchors: string[];
   } | null = null;
   private nextId = 0;
-  private provenanceTxnCounter = 0;
   private provenanceSink: { recordFormattingIntent(intent: unknown): void } | undefined | null = null;
   private provenanceActorId: string | undefined = undefined;
 
@@ -451,8 +450,8 @@ export class BoundCompositionDriver {
             }
             try {
               const items = coveredItemIdentities(this.ytext, runStart, runEnd);
-              const start = this.mintAnchorAt(runStart, 0);
-              const end = this.mintAnchorAt(runEnd, 0);
+              const start = this.mintAnchor(runStart);
+              const end = this.mintAnchor(runEnd);
               commitProvenance.push({ mark: key, value, items, start, end });
             } catch {
               // Provenance capture never breaks the commit.
@@ -465,8 +464,9 @@ export class BoundCompositionDriver {
       // transaction, once per (mark, value) over the committed runs
       // (R-REV-3); never mid-composition.
       if (commitProvenance.length > 0 && this.provenanceSink !== undefined && this.provenanceSink !== null && this.provenanceActorId !== undefined) {
-        this.provenanceTxnCounter += 1;
-        const transactionId = `composition:${this.fieldKey}:${this.provenanceTxnCounter}`;
+        // Process-global counter discipline (shared with the projection
+        // minter): a remounted driver never reuses an intent id (AMB-C7).
+        const transactionId = mintCompositionTransactionId(this.fieldKey);
         const groups = new Map<string, { mark: string; value: true | string | null; items: Array<{ client: number; clock: number }>; start: string; end: string }>();
         for (const entry of commitProvenance) {
           const groupKey = `${entry.mark}:${JSON.stringify(entry.value)}`;
