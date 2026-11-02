@@ -1,0 +1,1184 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "DecisionDossier",
+    "id": "root",
+    "document": {
+      "ref": "01M6F299S0TJJ085JDRZ0YM64B",
+      "subject": "Mémoire cible · choix communs",
+      "title": "Mémoire cible complète : 24 choix communs",
+      "hash": "count:2517",
+      "cursor": "count:2517",
+      "sections": [
+        {
+          "kind": "prose",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:context",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:context",
+          "markdown": "Mémoire cible complète : engram live gère les demandes, avec une seule sémantique partagée avec Track. Ce dossier conserve les 23 choix r2 et ajoute le partage du suivi entre machines. Les droits et les défauts restent explicites. Engram live indexe en continu Git, les journaux Track et les specs. Il classe et relie les demandes, calcule leur état et leur reste à faire, répond avec des sources citées et liste les écarts. Les hooks, le contexte et la mémoire de session utilisent ce gestionnaire. Cluster-mesh exploite le service ; Track valide et enregistre seul les changements et publie seul le tableau de suivi.",
+          "questionId": "track-auto"
+        },
+        {
+          "kind": "question",
+          "id": "track-auto",
+          "targetRef": "track-auto",
+          "question": "Quelles écritures Track peuvent partir seules, y compris les brouillons de promotion ?",
+          "recommendedAnswer": "Engram recommande les propositions jusqu’à mesure ; h2a présente les deux voies sans les départager, sentropic garde la divergence. Si la liste bornée est ouverte, les trois apports recommandent le brouillon automatique. La relecture est le défaut conditionnel h2a, pas sa recommandation.",
+          "state": "open",
+          "context": "Engram prépare et classe les commandes ; Track les contrôle et les enregistre. La liste bornée couvre enfants du mandat, brouillons, preuves de critères existants, demandes/blocages et liens de spec. Les étapes factuelles détectées relèvent aussi de D1 : preuve et droit explicite requis, proposition seule avant qualification. Sans réponse : Propositions uniquement : aucune ouverture automatique par silence. Réserve : Jamais de choix, clôture, réouverture, levée de blocage, exemption ni renoncement automatique. Ajouter un critère reste proposé. Les listes exactes et les reçus doivent être qualifiés ; sinon, propositions seules. L’exception mécanique relève de D2 ; l’auteur n’applique jamais sa promotion.",
+          "recommendedOptionId": "track-auto-propositions",
+          "readingTimeMinutes": 1.3
+        },
+        {
+          "kind": "question",
+          "id": "spec-mechanical",
+          "targetRef": "spec-mechanical",
+          "question": "Un amendement de spec purement mécanique peut-il s’appliquer sans relecture ?",
+          "recommendedAnswer": "Proposition uniquement tant que contrôle, fixtures et reçu n’existent pas.",
+          "state": "open",
+          "context": "Un chemin renommé ou une empreinte actualisée peut laisser le sens inchangé. L’exception porte seulement sur ce cas ; tout changement normatif reste proposé. Sans réponse : Proposition uniquement. Réserve : Choisir l’exception ne qualifie pas son prédicat et ne permet aucun changement de phrase normative.",
+          "recommendedOptionId": "spec-mechanical-review",
+          "readingTimeMinutes": 0.55
+        },
+        {
+          "kind": "question",
+          "id": "local-disposition",
+          "targetRef": "local-disposition",
+          "question": "Qui peut décider qu’une décision de session reste locale ?",
+          "recommendedAnswer": "Motifs mécaniques ouverts à l’auteur, avec liste fermée et preuves.",
+          "state": "open",
+          "context": "Votre règle veut qu’une décision de projet ou de harnais rejoigne Track. Le modèle unique d’engram valide les motifs de maintien local ; le mandat décide qui peut les enregistrer. Être conducteur ou gestionnaire ne donne aucun droit supplémentaire. Sans réponse : Acteur autorisé ou propriétaire pour tout. Réserve : Le motif sensible au propriétaire seul est la lecture stricte, à confirmer au gel du vocabulaire. Le refus exige son reçu ; l’auteur n’applique jamais sa promotion. Le motif « essai abandonné » reste à confirmer dans la liste commune.",
+          "recommendedOptionId": "local-disposition-mechanical",
+          "readingTimeMinutes": 0.95
+        },
+        {
+          "kind": "question",
+          "id": "admission-request",
+          "targetRef": "admission-request",
+          "question": "La demande d’admission en mémoire durable peut-elle partir automatiquement ?",
+          "recommendedAnswer": "Prévoir le droit par mandat, fermé ; garder la demande explicite en fonctionnement jusqu’aux mesures. H2a/sentropic privilégient la forme par mandat, engram insiste sur l’attente.",
+          "state": "open",
+          "context": "La capture produit des candidats ; l’hôte décide chaque admission. Sans admission ni promotion Track, un fait utile reste invisible aux autres sessions sous la règle actuelle. Sans réponse : Aucune demande automatique. Réserve : Demander ne vaut pas admettre. La lecture mémoire par le pipeline attend aussi la réponse producteur engram ; aucune option ne contourne cette porte.",
+          "recommendedOptionId": "admission-request-mandate",
+          "readingTimeMinutes": 0.8
+        },
+        {
+          "kind": "question",
+          "id": "cross-session",
+          "targetRef": "cross-session",
+          "question": "Faut-il amender le modèle pour partager des faits entre sessions avant leur admission ?",
+          "recommendedAnswer": "Garder la règle actuelle. Les trois élargissements sont des amendements du modèle engram, jamais une simple lecture directe.",
+          "state": "open",
+          "context": "La règle commune actuelle garde les corps non admis dans la session propriétaire. Engram repose explicitement son élargissement ; h2a final a retiré sa position favorable au partage par rôle. Sans réponse : Session propriétaire uniquement. Réserve : Référence + étiquette du prédécesseur (si D22 l’autorise), file de revue en référence + compte + statut et revue opérateur dédiée restent possibles ; ils ne donnent pas les corps au modèle.",
+          "recommendedOptionId": "cross-session-owner-session",
+          "readingTimeMinutes": 0.95
+        },
+        {
+          "kind": "question",
+          "id": "reference-disclosure",
+          "targetRef": "reference-disclosure",
+          "question": "Sans autorisation de contenu, un chemin et son empreinte peuvent-ils être envoyés au modèle externe ?",
+          "recommendedAnswer": "Chemin et empreinte seulement, comme les trois apports. Le contenu demeure soumis à son autorisation déjà décidée.",
+          "state": "open",
+          "context": "La règle du 17/10 exige une autorisation dépôt × fournisseur × portée × durée pour le contenu. Seul le statut des références est ouvert ; les métadonnées Track restent hors de cette règle. Sans réponse : Compteurs uniquement. Réserve : Le contenu sous autorisation est une règle acquise, pas une troisième option concurrente. Rien ne sort en références avant une réponse explicite.",
+          "recommendedOptionId": "reference-disclosure-refs",
+          "readingTimeMinutes": 0.7
+        },
+        {
+          "kind": "question",
+          "id": "prompt-relevance",
+          "targetRef": "prompt-relevance",
+          "question": "Une version ultérieure pourra-t-elle utiliser le texte de votre message pour cibler le contexte ?",
+          "recommendedAnswer": "Empreintes en première version ; ciblage local éphémère seulement si les échecs de rappel démontrent le besoin.",
+          "state": "open",
+          "context": "La première version reste limitée aux empreintes. Engram porte une ouverture future ; les autres apports la formulent au présent. Ce dossier conserve la borne de version et distingue leurs variantes. Sans réponse : Empreintes uniquement. Réserve : Aucune réponse ne change la première version. La variante locale engram minimise les termes ; h2a/sentropic permettent le texte en valeur : cette différence doit être bornée dans le contrat avant usage.",
+          "recommendedOptionId": "prompt-relevance-hashes",
+          "readingTimeMinutes": 0.95
+        },
+        {
+          "kind": "question",
+          "id": "study-access",
+          "targetRef": "study-access",
+          "question": "Quel accès l’étude des six mois de sessions peut-elle avoir aux contenus ?",
+          "recommendedAnswer": "Métadonnées et classification déterministe. Ouvrir le texte seulement si le pilote révèle une question de modélisation bloquée.",
+          "state": "open",
+          "context": "Les mesures de redécouverte et d’écart de réponse demandent du sens ; sans texte, leurs résultats restent partiels. H2a conserve un défaut plus fermé que les deux autres apports. Sans réponse : Métadonnées seules : le défaut h2a plus fermé est conservé ; engram/sentropic proposent déjà la classification. Réserve : La demande d’étude n’autorise ni lecture de transcription ni sortie de contenu. Le manifeste doit nommer sources, exclusions et droits avant toute extraction.",
+          "recommendedOptionId": "study-access-classify",
+          "readingTimeMinutes": 0.95
+        },
+        {
+          "kind": "question",
+          "id": "study-corpus",
+          "targetRef": "study-corpus",
+          "question": "Quelle profondeur d’étude faut-il viser après le pilote obligatoire de 30 sessions ?",
+          "recommendedAnswer": "Corpus complet après pilote ; limiter la ronde au pilote si son coût mesuré ou ses limites l’imposent.",
+          "state": "open",
+          "context": "L’étude couvre les six derniers mois. Le pilote vérifie sources et métriques avant extension. La qualification porte aussi sur la sémantique exécutable et la gestion des demandes, en plus de Git, de l’architecture et des sessions. Le coût d’extraction complet reste non mesuré. Sans réponse : Pilote seul, défaut engram conservé ; h2a/sentropic prévoient le corpus complet après pilote. Réserve : La demande de corpus ne vaut pas droit d’accès au texte (D8). Les seuils sont fixés sur la calibration avant l’essai réservé.",
+          "recommendedOptionId": "study-corpus-full",
+          "readingTimeMinutes": 0.9
+        },
+        {
+          "kind": "question",
+          "id": "federation",
+          "targetRef": "federation",
+          "question": "Les journaux et résumés de contexte peuvent-ils être synchronisés vers une autre machine ?",
+          "recommendedAnswer": "Locaux uniquement pour le pilote.",
+          "state": "open",
+          "context": "D10 porte sur les journaux et résumés de contexte. Le suivi des demandes entre machines relève séparément de D24. Les faits admis suivent la fédération mémoire ordinaire ; le contrôle distant des sessions garde son propre consentement. Sans réponse : Locaux uniquement. Réserve : Les médias du journal de session restent locaux et hors activation initiale dans toutes les options. D10 n’autorise ni le partage du suivi D24, ni les faits de session non admis régis par D5.",
+          "recommendedOptionId": "federation-local",
+          "readingTimeMinutes": 0.8
+        },
+        {
+          "kind": "question",
+          "id": "capture-purpose",
+          "targetRef": "capture-purpose",
+          "question": "Faut-il pouvoir arrêter la capture automatique des faits de session sans arrêter leur réutilisation ?",
+          "recommendedAnswer": "Finalité dédiée, pour pouvoir couper la capture seule.",
+          "state": "open",
+          "context": "Une finalité décrit l’usage autorisé de la mémoire. Les deux conceptions interdisent aujourd’hui d’utiliser celle du rappel pour capturer ; une option commune amenderait cette séparation. Sans réponse : Aucune capture automatisée tant que sa finalité dédiée n’est pas autorisée. Réserve : La recommandation n’active pas la capture. Les droits et la finalité doivent être vérifiés à chaque appel.",
+          "recommendedOptionId": "capture-purpose-dedicated",
+          "readingTimeMinutes": 0.65
+        },
+        {
+          "kind": "question",
+          "id": "promotion-sweep",
+          "targetRef": "promotion-sweep",
+          "question": "À quel moment faut-il balayer les décisions locales pour proposer leur promotion ?",
+          "recommendedAnswer": "Clôture et compaction, puis bornes observées si le retard coûte en redécouvertes.",
+          "state": "open",
+          "context": "La capture citée après chaque envoi est acquise. Le balayage prépare résumé et promotions en résolvant leurs cibles dans les vues d’engram live. Seul un reçu Track retrouvé établit une promotion ; une réponse perdue laisse son effet inconnu. Sans réponse : Clôture et compaction. Réserve : Une session tuée sans signal de clôture perd son dernier balayage dans toutes les options ; cette perte doit être journalisée. Capture et balayage ne sont pas interchangeables.",
+          "recommendedOptionId": "promotion-sweep-close",
+          "readingTimeMinutes": 0.8
+        },
+        {
+          "kind": "question",
+          "id": "log-retention",
+          "targetRef": "log-retention",
+          "question": "Combien de temps faut-il conserver les journaux de contexte ?",
+          "recommendedAnswer": "Alignement sur l’audit hôte dès que sa valeur est énoncée.",
+          "state": "open",
+          "context": "Ces journaux portent des métadonnées, sans contenu : empreintes, octets, refus et latences. La valeur de conservation d’audit de l’hôte n’est pas énoncée dans les sources finales. Sans réponse : 30 jours jusqu’à déclaration de la valeur hôte, puis alignement. Réserve : Le cache ne conserve que le dernier état local. Ce nettoyage n’efface aucun original Track, Git ou fait admis.",
+          "recommendedOptionId": "log-retention-host",
+          "readingTimeMinutes": 0.65
+        },
+        {
+          "kind": "question",
+          "id": "session-lifecycle",
+          "targetRef": "session-lifecycle",
+          "question": "Après la clôture, quand arrêter de montrer les éléments traités et effacer leur texte local ?",
+          "recommendedAnswer": "Fenêtre bornée, puis expiration et purge. Le défaut unique porté par engram r5b évite que le silence détruise à la clôture des éléments que les recommandations veulent auditer. Le défaut pair de conservation locale reste une option visible.",
+          "state": "open",
+          "context": "Un seul ensemble de travail de session est partagé avec le gestionnaire. Expirer arrête la présentation ; purger efface le texte local ; nettoyer l’index retire sa copie dérivée. Seuls les éléments traités sont concernés. Une décision sans sort survit ; Track et la mémoire durable gardent leur propre cycle. Sans réponse : Fenêtre de D13, puis fin de présentation et purge annoncée des éléments traités (EB-03). Réserve : Aucune disparition silencieuse avant terme. Les décisions sans sort ne sont jamais purgées par cette échéance ; elles passent en revue. L’historique promu ou admis reste dans ses sources canoniques.",
+          "recommendedOptionId": "session-lifecycle-window",
+          "readingTimeMinutes": 1.3
+        },
+        {
+          "kind": "question",
+          "id": "modelling-gate",
+          "targetRef": "modelling-gate",
+          "question": "L’activation par les hooks doit-elle attendre tout le modèle ou chaque tranche qualifiée ?",
+          "recommendedAnswer": "Tranche par tranche, avec critères et étiquettes propres à chaque tranche.",
+          "state": "open",
+          "context": "La qualification couvre la sémantique partagée réelle, sa complétude et sa fidélité aux sources. Les mêmes faits doivent donner le même résultat dans le gestionnaire et Track. La route manuelle des six outils reste utilisable ; ce choix porte sur l’injection par hooks. Sans réponse : Rapport complet d’abord pour toute injection par hooks ; lecture hors injection disponible. Réserve : Dire « déterministe » ne suffit pas à qualifier une tranche. La mémoire ne se calcule pas avant confirmation du profil composé par engram, même sans injection. Les requêtes de demandes seules n’attendent pas cette confirmation mémoire.",
+          "recommendedOptionId": "modelling-gate-slices",
+          "readingTimeMinutes": 0.9
+        },
+        {
+          "kind": "question",
+          "id": "activation",
+          "targetRef": "activation",
+          "question": "Pour quelles sessions le contexte doit-il être actif par défaut ?",
+          "recommendedAnswer": "Sessions de rôle gouvernées lancées par h2a.",
+          "state": "open",
+          "context": "Activer le contexte d’une session est distinct d’inscrire les sources du service d’arrière-plan. Le contexte et la mémoire restent deux réglages séparés. L’indexation de fond autorisée continue même si une session n’utilise pas le contexte. Sans réponse : Inactif partout. Réserve : Les sessions natives hors gouvernance ne sont incluses dans aucune option ; leur rattachement demanderait un amendement d’identité. D18 reste nécessaire pour une session sans agent mémorial.",
+          "recommendedOptionId": "activation-roles",
+          "readingTimeMinutes": 0.75
+        },
+        {
+          "kind": "question",
+          "id": "degraded",
+          "targetRef": "degraded",
+          "question": "Une session peut-elle démarrer quand le service de contexte ne répond pas ?",
+          "recommendedAnswer": "Dégradé explicitement signalé.",
+          "state": "open",
+          "context": "Une panne du service ou de l’index se distingue d’un refus de droits. Track peut encore lire et écrire avec sa bibliothèque locale compatible et ses contrôles normaux. D17 décide si la session démarre sans le contexte du gestionnaire. Sans réponse : Dégradé signalé ; sans effet tant que D16 reste inactif. Réserve : Une session suspendue ou révoquée ne démarre jamais. Aucun contexte n’est fabriqué. Track refuse une écriture si sa sémantique locale est incompatible ; un refus de droits ne devient jamais une autorisation dégradée.",
+          "recommendedOptionId": "degraded-degraded",
+          "readingTimeMinutes": 0.8
+        },
+        {
+          "kind": "question",
+          "id": "pass-through",
+          "targetRef": "pass-through",
+          "question": "Une session sans identité mémoire peut-elle recevoir le contexte Track, Git, architecture et règles ?",
+          "recommendedAnswer": "Lecture seule des tranches hors mémoire, sous politique explicite.",
+          "state": "open",
+          "context": "Ces sessions n’ont pas d’identité de mémoire. Elles pourraient recevoir Track, Git, architecture et règles en lecture seule, mais jamais mémoire ni capture. Sans réponse : Aucun contexte ; zéro octet sans politique enregistrée et sans réponse. Réserve : La politique est un préalable, jamais créée par le simple lancement ; mémoire refusée et aucune capture dans toutes les options.",
+          "recommendedOptionId": "pass-through-readonly",
+          "readingTimeMinutes": 0.65
+        },
+        {
+          "kind": "question",
+          "id": "hook-fallback",
+          "targetRef": "hook-fallback",
+          "question": "Que reçoivent les CLI sans injection de contexte pendant le tour ?",
+          "recommendedAnswer": "Hybride là où une surface gouvernée est prouvée, ouverture sinon. H2a privilégie l’hybride ; engram lie le choix aux capacités.",
+          "state": "open",
+          "context": "Les capacités diffèrent selon l’hôte et doivent être prouvées. Un fichier de lancement peut donner un contexte initial ; une lecture gouvernée peut le rafraîchir ensuite. Sans réponse : Ouverture seulement, défaut final h2a/sentropic repris par engram r5b ; ancien défaut engram : aucun contexte. Réserve : Aucune capacité n’est déduite d’un rendu de configuration. Sans lecture agent (D20), aucun pull : le complément dépend d’un hook outil ou lancement gouverné, sinon perte étiquetée. Le fichier de lancement exclut mémoire, session et finalités.",
+          "recommendedOptionId": "hook-fallback-hybrid",
+          "readingTimeMinutes": 0.85
+        },
+        {
+          "kind": "question",
+          "id": "agent-surface",
+          "targetRef": "agent-surface",
+          "question": "Que peut faire l’agent sur sa demande de contexte pendant la session ?",
+          "recommendedAnswer": "Lecture et adaptation par l’outil hôte contrôlé, comme les trois apports. Cela réalise l’évolution demandée sans ajouter d’outil mémoire.",
+          "state": "open",
+          "context": "L’outil hôte consulte le gestionnaire live : recherche, statut, explication et reste à faire. Adapter la requête de contexte reste une écriture de session. Les commandes et rapports de statut demandés sont acquis ; D20 règle leur lecture et l’adaptation par l’agent en session. Sans réponse : Lecture seule ; aucune adaptation. Réserve : Les commandes sur les demandes restent des opérations gouvernées distinctes. Les six outils mémoire restent figés dans la cible recommandée ; l’option qui en ajoute un exige sa propre version co-signée. Sans outil agent, pas de lecture à la demande ni de dépôt explicite sans hook final.",
+          "recommendedOptionId": "agent-surface-host",
+          "readingTimeMinutes": 1.15
+        },
+        {
+          "kind": "question",
+          "id": "worktree",
+          "targetRef": "worktree",
+          "question": "Comment inscrire les copies de travail des jobs pour suivre Git et leurs journaux Track ?",
+          "recommendedAnswer": "Délégation par alias approuvé pour les jobs qui modifient du code ; aucune inscription sinon.",
+          "state": "open",
+          "context": "La copie courante de chaque dépôt déjà inscrit et sa référence commitée sont indexées : chaque ligne distingue « commitée », « copie seule » ou « absente ». D21 porte sur les copies des jobs. Sans inscription d’un job, l’oracle Git ponctuel reste disponible, le suivi live reste partiel. Sans réponse : Aucune inscription. Réserve : Un alias non mappé n’autorise rien ; délégation et révocation sont tracées. Le défaut ne retire pas la visibilité déjà autorisée de la copie courante. L’état local ne devient jamais l’état publié sur le tableau de suivi.",
+          "recommendedOptionId": "worktree-alias",
+          "readingTimeMinutes": 0.9
+        },
+        {
+          "kind": "question",
+          "id": "inheritance",
+          "targetRef": "inheritance",
+          "question": "La session suivante doit-elle hériter des références de la précédente ou repartir du mandat seul ?",
+          "recommendedAnswer": "Deux recommandations restent en présence : engram et sentropic privilégient la chaîne d’empreintes revérifiées ; h2a privilégie le mandat seul jusqu’à mesure. Le défaut commun est le mandat seul ; il ne transforme pas la position h2a en accord des trois dépôts.",
+          "state": "open",
+          "context": "Les empreintes peuvent éviter de redériver les graines et épingles. Elles ne transportent ni transcription ni corps de faits non admis ; l’héritage reste limité au même agent et au même espace. Sans réponse : Mandat seul ; aucune référence au prédécesseur sans réponse explicite. Réserve : Les éléments du prédécesseur passent seulement en référence + étiquette. Toute extension des corps exige D5 ; hériter ne fixe pas le déclencheur de relève (D23).",
+          "recommendedOptionId": "inheritance-mandate",
+          "readingTimeMinutes": 0.9
+        },
+        {
+          "kind": "question",
+          "id": "rollover",
+          "targetRef": "rollover",
+          "question": "Quand faut-il proposer ou déclencher une nouvelle session pour prendre le relais ?",
+          "recommendedAnswer": "Manuelle maintenant ; proposée seulement après preuve de correction maintenue et de gain reproductible.",
+          "state": "open",
+          "context": "Une relève renouvelle le contexte, mais peut casser un raisonnement. Les économies sont calculées dans les études, pas mesurées ; aucune promesse de gain ne fonde ce choix. Sans réponse : Relève manuelle. Réserve : Le seuil reste à calibrer ; l’héritage est décidé indépendamment en D22. Aucun avantage chiffré n’est qualifié à ce stade.",
+          "recommendedOptionId": "rollover-manual",
+          "readingTimeMinutes": 0.7
+        },
+        {
+          "kind": "question",
+          "id": "request-state-federation",
+          "targetRef": "request-state-federation",
+          "question": "Jusqu’où partager le suivi des demandes entre machines ?",
+          "recommendedAnswer": "Vues et commandes comme cible, après qualification des vues seules. Cela permet le travail distant tout en conservant une seule autorité d’écriture.",
+          "state": "open",
+          "context": "Une machine d’origine conserve l’autorité Track. Vous autorisez le périmètre partagé, machine par machine. Une vue porte par défaut des états et références, sans phrase exacte, texte de décision ni corps de preuve. Ce choix est distinct des journaux et résumés de contexte de D10. Sans réponse : Suivi à l’origine seulement ; aucun nouveau partage activé. Réserve : L’action distante ajoute une surface à qualifier alors que les vues seules couvrent déjà beaucoup d’usages. Aucune conversation, aucun journal de contexte ni fait de session non admis n’est exporté. Une coupure ne crée jamais un second décideur.",
+          "recommendedOptionId": "request-state-federation-commands",
+          "readingTimeMinutes": 1
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:track-auto",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:track-auto",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "track-auto-propositions",
+              "targetRef": "track-auto-propositions",
+              "label": "Propositions uniquement",
+              "annotation": "none",
+              "annotationComment": "Propositions uniquement d'abord : aucune écriture ne part seule sans mesure ; chaque autre choix porte sa recommandation propre.",
+              "consequence": "Toute écriture attend une relecture."
+            },
+            {
+              "kind": "option",
+              "id": "track-auto-borne-review",
+              "targetRef": "track-auto-borne-review",
+              "label": "Liste bornée, promotion relue",
+              "annotation": "none",
+              "consequence": "La liste s’applique ; le brouillon de promotion attend un tiers autorisé."
+            },
+            {
+              "kind": "option",
+              "id": "track-auto-borne-auto",
+              "targetRef": "track-auto-borne-auto",
+              "label": "Liste bornée, brouillon automatique",
+              "annotation": "none",
+              "consequence": "La promotion crée un brouillon Track, par un écrivain autre que son auteur."
+            },
+            {
+              "kind": "option",
+              "id": "track-auto-extensible",
+              "targetRef": "track-auto-extensible",
+              "label": "Liste élargissable par mandat",
+              "annotation": "none",
+              "consequence": "Même brouillon automatique, plus d’autres types non tranchants autorisés."
+            }
+          ],
+          "questionId": "track-auto"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:spec-mechanical",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:spec-mechanical",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "spec-mechanical-review",
+              "targetRef": "spec-mechanical-review",
+              "label": "Proposition uniquement",
+              "annotation": "none",
+              "consequence": "Même la correction mécanique attend une relecture."
+            },
+            {
+              "kind": "option",
+              "id": "spec-mechanical-proved",
+              "targetRef": "spec-mechanical-proved",
+              "label": "Exception prouvée et signée",
+              "annotation": "none",
+              "consequence": "Application après contrôle déterministe nommé, fixtures exécutées et reçu signé."
+            }
+          ],
+          "questionId": "spec-mechanical"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:local-disposition",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:local-disposition",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "local-disposition-authorized",
+              "targetRef": "local-disposition-authorized",
+              "label": "Acteur autorisé ou propriétaire",
+              "annotation": "none",
+              "consequence": "Chaque motif local est relu par un tiers portant le droit."
+            },
+            {
+              "kind": "option",
+              "id": "local-disposition-mechanical",
+              "targetRef": "local-disposition-mechanical",
+              "label": "Motifs mécaniques ouverts à l’auteur",
+              "annotation": "none",
+              "consequence": "L’auteur traite les cas propres à la session, remplacés ou déjà dans Track ; essai abandonné à confirmer."
+            },
+            {
+              "kind": "option",
+              "id": "local-disposition-mandated",
+              "targetRef": "local-disposition-mandated",
+              "label": "Auteur autorisé plus largement",
+              "annotation": "none",
+              "consequence": "Le mandat peut lui confier les autres motifs admissibles."
+            }
+          ],
+          "questionId": "local-disposition"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:admission-request",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:admission-request",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "admission-request-manual",
+              "targetRef": "admission-request-manual",
+              "label": "Demande explicite seulement",
+              "annotation": "none",
+              "consequence": "Un acteur autorisé demande chaque admission."
+            },
+            {
+              "kind": "option",
+              "id": "admission-request-mandate",
+              "targetRef": "admission-request-mandate",
+              "label": "Ouverture explicite par mandat",
+              "annotation": "none",
+              "consequence": "Le mandat énumère les types autorisés ; les candidats dépôt attendent preuve verte ou revue."
+            },
+            {
+              "kind": "option",
+              "id": "admission-request-proof",
+              "targetRef": "admission-request-proof",
+              "label": "Demande automatique sur preuve",
+              "annotation": "none",
+              "consequence": "Événement Track commis ou test vert déclenche la demande."
+            }
+          ],
+          "questionId": "admission-request"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:cross-session",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:cross-session",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "cross-session-owner-session",
+              "targetRef": "cross-session-owner-session",
+              "label": "Garder la règle actuelle",
+              "annotation": "none",
+              "consequence": "Corps visibles dans la session et ses sous-agents internes seulement."
+            },
+            {
+              "kind": "option",
+              "id": "cross-session-same-agent",
+              "targetRef": "cross-session-same-agent",
+              "label": "Même agent, même espace",
+              "annotation": "none",
+              "consequence": "Les sessions successives du même agent accèdent aux corps."
+            },
+            {
+              "kind": "option",
+              "id": "cross-session-role-repo",
+              "targetRef": "cross-session-role-repo",
+              "label": "Portée rôle ou dépôt, dans le mandat",
+              "annotation": "none",
+              "consequence": "Les faits destinés à cette portée circulent entre sessions du même espace."
+            },
+            {
+              "kind": "option",
+              "id": "cross-session-workspace",
+              "targetRef": "cross-session-workspace",
+              "label": "Tout agent autorisé du même espace",
+              "annotation": "none",
+              "consequence": "Accès aux corps dans tout l’espace autorisé."
+            }
+          ],
+          "questionId": "cross-session"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:reference-disclosure",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:reference-disclosure",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "reference-disclosure-counts",
+              "targetRef": "reference-disclosure-counts",
+              "label": "Compteurs uniquement",
+              "annotation": "none",
+              "consequence": "Le modèle sait que du travail existe, sans chemin précis."
+            },
+            {
+              "kind": "option",
+              "id": "reference-disclosure-refs",
+              "targetRef": "reference-disclosure-refs",
+              "label": "Chemin et empreinte seulement",
+              "annotation": "none",
+              "consequence": "Le modèle peut citer les fichiers, sans contenu ni extrait."
+            }
+          ],
+          "questionId": "reference-disclosure"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:prompt-relevance",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:prompt-relevance",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "prompt-relevance-hashes",
+              "targetRef": "prompt-relevance-hashes",
+              "label": "Empreintes uniquement",
+              "annotation": "none",
+              "consequence": "Le ciblage garde les graines fixes de la requête."
+            },
+            {
+              "kind": "option",
+              "id": "prompt-relevance-local",
+              "targetRef": "prompt-relevance-local",
+              "label": "Ciblage local éphémère",
+              "annotation": "none",
+              "consequence": "Termes bornés ou texte transmis en valeur à l’instance locale, sans conservation ni journal."
+            },
+            {
+              "kind": "option",
+              "id": "prompt-relevance-full",
+              "targetRef": "prompt-relevance-full",
+              "label": "Texte complet dans le classement",
+              "annotation": "none",
+              "consequence": "Variante large conservée par engram : texte complet et chaîne journalisée."
+            },
+            {
+              "kind": "option",
+              "id": "prompt-relevance-model",
+              "targetRef": "prompt-relevance-model",
+              "label": "Tri assisté par modèle autorisé",
+              "annotation": "none",
+              "consequence": "Ajoute au ciblage local une étape modèle sous autorisation explicite de contenu."
+            }
+          ],
+          "questionId": "prompt-relevance"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:study-access",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:study-access",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "study-access-metadata",
+              "targetRef": "study-access-metadata",
+              "label": "Métadonnées seules",
+              "annotation": "none",
+              "consequence": "Aucun texte ni classification des appels ; défaut h2a."
+            },
+            {
+              "kind": "option",
+              "id": "study-access-classify",
+              "targetRef": "study-access-classify",
+              "label": "Métadonnées et classification déterministe",
+              "annotation": "none",
+              "consequence": "Classe les appels d’outils sans ouvrir les transcriptions dans une session agent."
+            },
+            {
+              "kind": "option",
+              "id": "study-access-owner-text",
+              "targetRef": "study-access-owner-text",
+              "label": "Classification du texte par le propriétaire",
+              "annotation": "none",
+              "consequence": "Ajoute une lecture locale par vous seul ; aucun texte dans le rapport."
+            },
+            {
+              "kind": "option",
+              "id": "study-access-bounded",
+              "targetRef": "study-access-bounded",
+              "label": "Extraits bornés par le manifeste",
+              "annotation": "none",
+              "consequence": "Permet la lecture d’extraits selon leurs classes de divulgation."
+            }
+          ],
+          "questionId": "study-access"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:study-corpus",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:study-corpus",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "study-corpus-full",
+              "targetRef": "study-corpus-full",
+              "label": "Corpus complet après pilote",
+              "annotation": "none",
+              "consequence": "Suit l’intention d’étudier toutes les sessions."
+            },
+            {
+              "kind": "option",
+              "id": "study-corpus-pilot",
+              "targetRef": "study-corpus-pilot",
+              "label": "Pilote seul pour cette ronde",
+              "annotation": "none",
+              "consequence": "La suite attend les conclusions et le coût du pilote."
+            },
+            {
+              "kind": "option",
+              "id": "study-corpus-sample",
+              "targetRef": "study-corpus-sample",
+              "label": "Échantillon stratifié, au moins 300 sessions",
+              "annotation": "none",
+              "consequence": "Échantillon intermédiaire après le pilote."
+            }
+          ],
+          "questionId": "study-corpus"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:federation",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:federation",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "federation-local",
+              "targetRef": "federation-local",
+              "label": "Locaux uniquement",
+              "annotation": "none",
+              "consequence": "Briefs, journaux et mémoire de travail restent sur la station."
+            },
+            {
+              "kind": "option",
+              "id": "federation-owner-nodes",
+              "targetRef": "federation-owner-nodes",
+              "label": "Instances du même propriétaire",
+              "annotation": "none",
+              "consequence": "Envoi après filtre et vérification à chaque transfert."
+            },
+            {
+              "kind": "option",
+              "id": "federation-mandate",
+              "targetRef": "federation-mandate",
+              "label": "Selon une étiquette de mandat",
+              "annotation": "none",
+              "consequence": "Local par défaut, avec politique explicite de transfert."
+            }
+          ],
+          "questionId": "federation"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:capture-purpose",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:capture-purpose",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "capture-purpose-off",
+              "targetRef": "capture-purpose-off",
+              "label": "Aucune capture automatique",
+              "annotation": "none",
+              "consequence": "Les faits restent à déposer explicitement."
+            },
+            {
+              "kind": "option",
+              "id": "capture-purpose-dedicated",
+              "targetRef": "capture-purpose-dedicated",
+              "label": "Finalité dédiée",
+              "annotation": "none",
+              "consequence": "La capture se révoque sans couper le rappel."
+            },
+            {
+              "kind": "option",
+              "id": "capture-purpose-session",
+              "targetRef": "capture-purpose-session",
+              "label": "Finalité de session commune",
+              "annotation": "none",
+              "consequence": "Capture et rappel dépendent de la même finalité."
+            }
+          ],
+          "questionId": "capture-purpose"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:promotion-sweep",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:promotion-sweep",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "promotion-sweep-close",
+              "targetRef": "promotion-sweep-close",
+              "label": "Clôture et compaction",
+              "annotation": "none",
+              "consequence": "Résumé complet et propositions à ces frontières seulement."
+            },
+            {
+              "kind": "option",
+              "id": "promotion-sweep-boundaries",
+              "targetRef": "promotion-sweep-boundaries",
+              "label": "Ajouter les bornes observées",
+              "annotation": "none",
+              "consequence": "Balayage aussi au commit et à la fin de phase."
+            },
+            {
+              "kind": "option",
+              "id": "promotion-sweep-turn",
+              "targetRef": "promotion-sweep-turn",
+              "label": "À chaque envoi",
+              "annotation": "none",
+              "consequence": "Résumé et propositions toujours à jour."
+            }
+          ],
+          "questionId": "promotion-sweep"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:log-retention",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:log-retention",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "log-retention-30",
+              "targetRef": "log-retention-30",
+              "label": "30 jours",
+              "annotation": "none",
+              "consequence": "Fenêtre d’audit immédiatement définie."
+            },
+            {
+              "kind": "option",
+              "id": "log-retention-90",
+              "targetRef": "log-retention-90",
+              "label": "90 jours",
+              "annotation": "none",
+              "consequence": "Comparaison sur une fenêtre plus large."
+            },
+            {
+              "kind": "option",
+              "id": "log-retention-host",
+              "targetRef": "log-retention-host",
+              "label": "Alignement sur l’audit hôte",
+              "annotation": "none",
+              "consequence": "Une seule politique dès que sa valeur est déclarée."
+            }
+          ],
+          "questionId": "log-retention"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:session-lifecycle",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:session-lifecycle",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "session-lifecycle-close",
+              "targetRef": "session-lifecycle-close",
+              "label": "Fin et purge à la clôture",
+              "annotation": "none",
+              "consequence": "Le texte local disparaît dès la clôture ; audit via Track et mémoire durable."
+            },
+            {
+              "kind": "option",
+              "id": "session-lifecycle-window",
+              "targetRef": "session-lifecycle-window",
+              "label": "Fenêtre, puis fin et purge",
+              "annotation": "none",
+              "consequence": "La durée D13 permet l’audit ; à son terme, arrêt de présentation et purge annoncée."
+            },
+            {
+              "kind": "option",
+              "id": "session-lifecycle-explicit",
+              "targetRef": "session-lifecycle-explicit",
+              "label": "Fin après fenêtre, purge explicite",
+              "annotation": "none",
+              "consequence": "À la durée D13, arrêt de présentation ; texte conservé jusqu’à purge explicite."
+            },
+            {
+              "kind": "option",
+              "id": "session-lifecycle-all",
+              "targetRef": "session-lifecycle-all",
+              "label": "Tout garder et remontrer",
+              "annotation": "none",
+              "consequence": "Conservation et réutilisation sans échéance dans la session propriétaire."
+            }
+          ],
+          "questionId": "session-lifecycle"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:modelling-gate",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:modelling-gate",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "modelling-gate-whole",
+              "targetRef": "modelling-gate-whole",
+              "label": "Rapport complet d’abord",
+              "annotation": "none",
+              "consequence": "Aucune tranche injectée avant la porte complète."
+            },
+            {
+              "kind": "option",
+              "id": "modelling-gate-slices",
+              "targetRef": "modelling-gate-slices",
+              "label": "Tranche par tranche",
+              "annotation": "none",
+              "consequence": "Chaque tranche s’injecte quand ses critères passent ; les autres restent calculées sans injection."
+            }
+          ],
+          "questionId": "modelling-gate"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:activation",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:activation",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "activation-off",
+              "targetRef": "activation-off",
+              "label": "Inactif partout",
+              "annotation": "none",
+              "consequence": "Activation explicite par session ou mandat."
+            },
+            {
+              "kind": "option",
+              "id": "activation-roles",
+              "targetRef": "activation-roles",
+              "label": "Sessions de rôle lancées par h2a",
+              "annotation": "none",
+              "consequence": "Contexte automatique sur le périmètre gouverné avec rôle."
+            },
+            {
+              "kind": "option",
+              "id": "activation-governed",
+              "targetRef": "activation-governed",
+              "label": "Toutes les sessions gouvernées équipées",
+              "annotation": "none",
+              "consequence": "Inclut les sessions sans rôle sous leur politique applicable."
+            }
+          ],
+          "questionId": "activation"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:degraded",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:degraded",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "degraded-degraded",
+              "targetRef": "degraded-degraded",
+              "label": "Dégradé explicitement signalé",
+              "annotation": "none",
+              "consequence": "Le travail continue avec bandeau et journal ; route manuelle disponible."
+            },
+            {
+              "kind": "option",
+              "id": "degraded-block",
+              "targetRef": "degraded-block",
+              "label": "Démarrage refusé",
+              "annotation": "none",
+              "consequence": "La session attend le service."
+            },
+            {
+              "kind": "option",
+              "id": "degraded-role",
+              "targetRef": "degraded-role",
+              "label": "Posture par rôle",
+              "annotation": "none",
+              "consequence": "Conducteurs refusés, autres rôles en dégradé."
+            }
+          ],
+          "questionId": "degraded"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:pass-through",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:pass-through",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "pass-through-none",
+              "targetRef": "pass-through-none",
+              "label": "Aucun contexte",
+              "annotation": "none",
+              "consequence": "La session utilise ses outils ordinaires autorisés."
+            },
+            {
+              "kind": "option",
+              "id": "pass-through-readonly",
+              "targetRef": "pass-through-readonly",
+              "label": "Tranches hors mémoire en lecture seule",
+              "annotation": "none",
+              "consequence": "Une politique générale enregistrée autorise les seules tranches prévues."
+            }
+          ],
+          "questionId": "pass-through"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:hook-fallback",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:hook-fallback",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "hook-fallback-hybrid",
+              "targetRef": "hook-fallback-hybrid",
+              "label": "Hybride gouverné",
+              "annotation": "none",
+              "consequence": "Contexte au lancement puis complément à la première surface de lecture disponible."
+            },
+            {
+              "kind": "option",
+              "id": "hook-fallback-open",
+              "targetRef": "hook-fallback-open",
+              "label": "Ouverture seulement",
+              "annotation": "none",
+              "consequence": "Contexte initial, sans mise à jour pendant la session."
+            },
+            {
+              "kind": "option",
+              "id": "hook-fallback-none",
+              "targetRef": "hook-fallback-none",
+              "label": "Aucun contexte",
+              "annotation": "none",
+              "consequence": "Ces hôtes restent hors injection."
+            }
+          ],
+          "questionId": "hook-fallback"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:agent-surface",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:agent-surface",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "agent-surface-readonly",
+              "targetRef": "agent-surface-readonly",
+              "label": "Lecture seule",
+              "annotation": "none",
+              "consequence": "L’agent lit, explique et consulte l’état ; la requête reste figée."
+            },
+            {
+              "kind": "option",
+              "id": "agent-surface-host",
+              "targetRef": "agent-surface-host",
+              "label": "Lire et adapter par l’outil hôte",
+              "annotation": "none",
+              "consequence": "L’agent adapte et dépose sous contrôle à chaque appel ; les six outils mémoire restent inchangés."
+            },
+            {
+              "kind": "option",
+              "id": "agent-surface-seventh",
+              "targetRef": "agent-surface-seventh",
+              "label": "Lire et ajouter un outil mémoire",
+              "annotation": "none",
+              "consequence": "Un septième outil mémoire porte l’adaptation."
+            },
+            {
+              "kind": "option",
+              "id": "agent-surface-exclude",
+              "targetRef": "agent-surface-exclude",
+              "label": "Aucun outil agent de contexte",
+              "annotation": "none",
+              "consequence": "Seuls les hooks et le lancement gouverné livrent le contexte."
+            }
+          ],
+          "questionId": "agent-surface"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:worktree",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:worktree",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "worktree-none",
+              "targetRef": "worktree-none",
+              "label": "Aucune inscription",
+              "annotation": "none",
+              "consequence": "Oracle ponctuel seulement."
+            },
+            {
+              "kind": "option",
+              "id": "worktree-alias",
+              "targetRef": "worktree-alias",
+              "label": "Délégation par alias approuvé",
+              "annotation": "none",
+              "consequence": "L’hôte inscrit les copies sous un alias borné et révocable du propriétaire."
+            },
+            {
+              "kind": "option",
+              "id": "worktree-each",
+              "targetRef": "worktree-each",
+              "label": "Approbation par copie",
+              "annotation": "none",
+              "consequence": "Vous inscrivez chaque copie créée pour un job."
+            }
+          ],
+          "questionId": "worktree"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:inheritance",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:inheritance",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "inheritance-mandate",
+              "targetRef": "inheritance-mandate",
+              "label": "Mandat seul",
+              "annotation": "none",
+              "consequence": "La session reprend Track et la mémoire admise sans héritage implicite."
+            },
+            {
+              "kind": "option",
+              "id": "inheritance-fingerprints",
+              "targetRef": "inheritance-fingerprints",
+              "label": "Chaîne d’empreintes",
+              "annotation": "none",
+              "consequence": "Graines, épingles et références du résumé précédent, revérifiées à l’ouverture."
+            }
+          ],
+          "questionId": "inheritance"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:rollover",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:rollover",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "rollover-manual",
+              "targetRef": "rollover-manual",
+              "label": "Relève manuelle",
+              "annotation": "none",
+              "consequence": "Le conducteur déclenche la nouvelle session."
+            },
+            {
+              "kind": "option",
+              "id": "rollover-suggest",
+              "targetRef": "rollover-suggest",
+              "label": "Relève proposée après mesure",
+              "annotation": "none",
+              "consequence": "Au seuil, le propriétaire ou rôle accepte la proposition ; ouverture après non-infériorité mesurée."
+            },
+            {
+              "kind": "option",
+              "id": "rollover-automatic",
+              "targetRef": "rollover-automatic",
+              "label": "Relève automatique au seuil",
+              "annotation": "none",
+              "consequence": "Bascule sur les signaux définis."
+            }
+          ],
+          "questionId": "rollover"
+        },
+        {
+          "kind": "optionSet",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:options:request-state-federation",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:options:request-state-federation",
+          "title": "Options",
+          "options": [
+            {
+              "kind": "option",
+              "id": "request-state-federation-origin",
+              "targetRef": "request-state-federation-origin",
+              "label": "Suivi à l’origine seulement",
+              "annotation": "none",
+              "consequence": "Lecture et modification sur la machine d’origine."
+            },
+            {
+              "kind": "option",
+              "id": "request-state-federation-views",
+              "targetRef": "request-state-federation-views",
+              "label": "Vues sur les machines autorisées",
+              "annotation": "none",
+              "consequence": "Lecture distante avec origine et fraîcheur affichées ; modifications à l’origine."
+            },
+            {
+              "kind": "option",
+              "id": "request-state-federation-commands",
+              "targetRef": "request-state-federation-commands",
+              "label": "Vues et commandes vers l’origine",
+              "annotation": "none",
+              "consequence": "Action distante ; droits revérifiés, seul Track à l’origine enregistre."
+            }
+          ],
+          "questionId": "request-state-federation"
+        },
+        {
+          "kind": "outcome",
+          "id": "01M6F299S0TJJ085JDRZ0YM64B:outcome",
+          "targetRef": "01M6F299S0TJJ085JDRZ0YM64B:outcome",
+          "modality": "decision",
+          "statement": "PENDING — the decision is not yet settled.",
+          "questionId": "track-auto"
+        }
+      ],
+      "interactions": [],
+      "provenance": {
+        "source": "track:/home/antoinefa/src/h2a/.track/events.jsonl",
+        "readAt": "2026-11-02T22:16:57.868Z"
+      },
+      "amendmentTrace": [
+        {
+          "at": "2026-11-02T21:23:07.171Z",
+          "author": "human:fabien.antoine@m4x.org (human)",
+          "summary": "decision.artifact-added"
+        }
+      ],
+      "readability": {
+        "ownerRequestQuote": "… que les demandes soient gérées avec le engram live en tant que gestionnaire. Refais un tour de roue pour faire converger l'étude avec cette demande déjà existante, autant faire une mémoire cible complète",
+        "stakes": "Conserver vos droits et vos choix tout en couvrant la mémoire cible complète ; décider séparément du partage du suivi entre machines.",
+        "stakesLevel": "high",
+        "readingBudgetMinutes": 25,
+        "glossary": [
+          {
+            "term": "CLI",
+            "definition": "Outil d’agent en ligne de commande."
+          },
+          {
+            "term": "D1",
+            "definition": "Décision de ce dossier : Écritures Track."
+          },
+          {
+            "term": "D10",
+            "definition": "Décision de ce dossier : Sortie de machine."
+          },
+          {
+            "term": "D13",
+            "definition": "Décision de ce dossier : Durée des journaux."
+          },
+          {
+            "term": "D16",
+            "definition": "Décision de ce dossier : Contexte par défaut."
+          },
+          {
+            "term": "D17",
+            "definition": "Décision de ce dossier : Démarrage dégradé."
+          },
+          {
+            "term": "D18",
+            "definition": "Décision de ce dossier : Sans identité mémoire."
+          },
+          {
+            "term": "D2",
+            "definition": "Décision de ce dossier : Spec mécanique."
+          },
+          {
+            "term": "D20",
+            "definition": "Décision de ce dossier : Lecture et adaptation."
+          },
+          {
+            "term": "D21",
+            "definition": "Décision de ce dossier : Copies de travail Git."
+          },
+          {
+            "term": "D22",
+            "definition": "Décision de ce dossier : Héritage de session."
+          },
+          {
+            "term": "D23",
+            "definition": "Décision de ce dossier : Déclencher la relève."
+          },
+          {
+            "term": "D24",
+            "definition": "Décision de ce dossier : Suivi entre machines."
+          },
+          {
+            "term": "D5",
+            "definition": "Décision de ce dossier : Partage entre sessions."
+          },
+          {
+            "term": "D8",
+            "definition": "Décision de ce dossier : Accès à l’étude."
+          },
+          {
+            "term": "EB-03",
+            "definition": "Conflit entre dépôts recensé dans l’errata engram et retracé dans la table de fusion."
+          },
+          {
+            "term": "H2a",
+            "definition": "Nom du produit h2a."
+          }
+        ]
+      }
+    }
+  }
+}
