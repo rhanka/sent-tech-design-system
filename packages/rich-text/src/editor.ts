@@ -87,7 +87,14 @@ import type { CaptureTracker } from "./document.js";
 import { PARAGRAPH_ID_ATTRIBUTE } from "./identity.js";
 import { createP0EditorExtensions, removeHistoryExtension } from "./editor-extensions.js";
 import type { P0EditorExtensionOptions } from "./editor-extensions.js";
-import type { BoundUndoManager, LiveSessionBindingSource } from "./editor-collaboration.js";
+import type {
+  BoundMarkUndoState,
+  BoundUndoManager,
+  LiveSessionBindingSource,
+  SessionMarkUndoMarkGroup,
+  SessionMarkUndoOutcome,
+  SessionMarkUndoPerformer,
+} from "./editor-collaboration.js";
 import type { BoundCompositionDriver, StagedCompositionRun } from "./collab-composition.js";
 import type { AnyExtension } from "@tiptap/core";
 import { FULL_PROFILE_ID } from "./profile.js";
@@ -404,6 +411,15 @@ export interface BoundImpl {
   /** Erased provenance sink (CL-4c R-REV-3): captured once at bound
       construction. Null when the source carries no sink. */
   provenanceSink: { recordFormattingIntent(intent: unknown): void } | null;
+  /** Erased host-performed mark undo (CL-4e §3.2): captured once at bound
+      construction beside the sink. Null when the source carries no
+      performer: the mark half of undo/redo is a silent no-op. */
+  provenanceUndo: { requestMarkUndo(input: unknown): Promise<unknown> } | null;
+  /** Per-field mark-step history plus at most one pending invocation
+      (CL-4e §3.3): built from the transaction ids and intent ids the
+      binding already mints when it records through the sink. Null when
+      the source carries no performer. */
+  markUndo: BoundMarkUndoState | null;
   /** Private composition staging driver (CL-3b2 §4.6.1): type-erased, no `Y`
       type crosses this seam. Present on every bound mount. */
   composition: BoundCompositionDriver;
@@ -1444,19 +1460,23 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     return changed;
   };
 
-  /** Bound undo/redo through the field `UndoManager` (CL-3b1 §4.5): a
-      no-op (no throw, no event) when the editor is inactive or the stack is
-      empty. Otherwise the manager applies, the change flows through the same
-      observers as a remote update — the view repaints, the selection
-      restores through relative positions, and no echo reaches `Y.Text`
-      (the repaint dispatches with the binding origin, which the local
-      projection path skips) — and exactly one `undo`/`redo` gesture names
-      the blocks whose content actually changed. Mark undo never passes
-      through here: mark-only transactions are untracked by construction
-      (§4.5 boundary), so the stacks hold no mark step to consume. The §5.6
-      mark-undo wiring beside this function is MISSING / AMB-C5 STOP (no
-      ordered-log read seam); the pure computation (`latestEffectiveIntent`,
-      `planMarkRevert`) and recording are shipped. */
+  /** Bound undo/redo with the local mark-step history beside the field
+      `UndoManager` (CL-3b1 §4.5, CL-4e §3.3): one editor command, two
+      mechanisms, no atomicity across them. The character half, when present,
+      applies synchronously through the `UndoManager` at press time, exactly
+      once, with selection restoration through relative positions. The mark
+      half, when a retained step names the gesture, issues at most one
+      performer call for that gesture's mark step — including when the
+      gesture is mark-only and the manager holds no step for it. Retrying or
+      recovering the mark half never re-runs the character half. The marks
+      stay exactly as they are while the mark half is pending: no speculative
+      local revert, no local inverse on outcome arrival. The committed echo
+      arrives as an ordinary remote update under a non-local
+      `revert:<actor>` origin; history for the step advances once, when the
+      outcome resolves, keyed by `requestId`/`transitionId`. Every resolved
+      refusal and every `unavailable` maps to a silent no-op for the mark
+      half. Absent performer leaves recording and character undo working with
+      mark undo a silent no-op. */
   const runBoundHistory = (direction: "undo" | "redo"): void => {
     if (tracker.destroyed || !isActive()) return;
     if (boundImpl === undefined) return;
@@ -1466,12 +1486,124 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
     // composing even before the first staged transaction lands.
     if (tracker.composing || editor.view.composing || isStagingOpen()) return;
     const manager = boundImpl.undoManager;
-    if (direction === "undo" ? !manager.canUndo() : !manager.canRedo()) return;
-    const before = displayedCaptureResult();
-    const applied = direction === "undo" ? manager.undo() : manager.redo();
-    if (applied === null || applied === undefined) return;
-    const after = displayedCaptureResult();
-    emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
+    const markState: BoundMarkUndoState | null = boundImpl.markUndo ?? null;
+    const performer = boundImpl.provenanceUndo as unknown as SessionMarkUndoPerformer | null;
+    const canChar = direction === "undo" ? manager.canUndo() : manager.canRedo();
+    const findUndoTarget = (): number => {
+      if (markState === null) return -1;
+      for (let index = markState.steps.length - 1; index >= 0; index -= 1) {
+        if (markState.steps[index]?.undone === false) return index;
+      }
+      return -1;
+    };
+    const findRedoTarget = (): number => {
+      if (markState === null) return -1;
+      for (let index = 0; index < markState.steps.length; index += 1) {
+        if (markState.steps[index]?.undone === true) return index;
+      }
+      return -1;
+    };
+    const applyCharHalf = (): void => {
+      if (!canChar) return;
+      const before = displayedCaptureResult();
+      const applied = direction === "undo" ? manager.undo() : manager.redo();
+      if (applied === null || applied === undefined) return;
+      const after = displayedCaptureResult();
+      emitChange(direction, orderIdsByDocument(diffBlockIds(before.document, after.document)), undefined, after);
+    };
+    if (markState !== null && markState.pending !== null) {
+      applyCharHalf();
+      return;
+    }
+    const targetIndex = direction === "undo" ? findUndoTarget() : findRedoTarget();
+    const hasMarkTarget = targetIndex >= 0 && performer !== null && markState !== null;
+    if (!canChar && !hasMarkTarget) return;
+    applyCharHalf();
+    if (!hasMarkTarget || markState === null || performer === null) return;
+    const target = markState.steps[targetIndex] as {
+      transactionId: string;
+      fieldKey: string;
+      marks: SessionMarkUndoMarkGroup[];
+      transitionId: string | null;
+      undone: boolean;
+    };
+    markState.requestCounter += 1;
+    const counter = markState.requestCounter;
+    const requestId = `markundo:req:${markState.sessionId}:${markState.fieldKey}:${counter}`;
+    const commandTransactionId = `markundo:cmd:${markState.sessionId}:${markState.fieldKey}:${counter}`;
+    const expectedTransitionId = target.transitionId;
+    markState.pending = {
+      requestId,
+      commandTransactionId,
+      expectedTransitionId,
+      stepTransactionId: target.transactionId,
+      direction,
+      fieldKey: target.fieldKey,
+    };
+    const input = {
+      fieldKey: target.fieldKey,
+      transactionId: target.transactionId,
+      requestId,
+      commandTransactionId,
+      expectedTransitionId,
+      direction,
+      marks: target.marks,
+    };
+    let promised: Promise<unknown>;
+    try {
+      const erased = performer as unknown as {
+        requestMarkUndo(input: unknown): Promise<unknown>;
+      };
+      promised = erased.requestMarkUndo(input);
+    } catch {
+      markState.pending = null;
+      return;
+    }
+    promised.then(
+      (raw) => {
+        if (tracker.destroyed) return;
+        const current = markState.pending;
+        if (current === null || current.requestId !== requestId) return;
+        const outcome = raw as SessionMarkUndoOutcome;
+        if (outcome === null || typeof outcome !== "object" || !("status" in outcome)) {
+          markState.pending = null;
+          return;
+        }
+        const stepIndex = markState.steps.findIndex(
+          (entry) => entry.transactionId === current.stepTransactionId,
+        );
+        if (outcome.status === "unavailable") {
+          markState.pending = null;
+          return;
+        }
+        if (stepIndex < 0) {
+          markState.pending = null;
+          return;
+        }
+        const step = markState.steps[stepIndex] as {
+          transitionId: string | null;
+          undone: boolean;
+        };
+        if (outcome.status === "applied") {
+          step.transitionId = outcome.transitionId;
+          step.undone = current.direction === "undo";
+          markState.pending = null;
+          return;
+        }
+        if (outcome.status === "refused") {
+          step.transitionId = outcome.transitionId;
+          markState.pending = null;
+          return;
+        }
+        markState.pending = null;
+      },
+      () => {
+        if (tracker.destroyed) return;
+        if (markState.pending !== null && markState.pending.requestId === requestId) {
+          markState.pending = null;
+        }
+      },
+    );
   };
 
   /** Provenance of one native (unsuppressed) transaction, from ProseMirror

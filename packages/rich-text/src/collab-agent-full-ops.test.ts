@@ -630,6 +630,9 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
             expect(entry.kind).toBe("horizontalRule");
             expect(entry.text).toBeUndefined();
             expect(entry.segments).toBeUndefined();
+            expect(entry.metadata).toEqual(
+              (block as unknown as { hrMetadata?: unknown }).hrMetadata,
+            );
             continue;
           }
           expect(entry.kind).toBe("paragraph");
@@ -952,12 +955,80 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
           // Decided at scratch preflight resulting-state validation (AMB-E3):
           // the pure validator cannot know the target is an HR id.
           expect(receipt.detail ?? "").toContain("HR admits wrapper keys only");
+          expect(bridge.getReceipt({
+            documentId: DOCUMENT_ID,
+            actorId: actor,
+            sessionEpoch: EPOCH,
+            patchId: patch.patchId,
+          })).toEqual(receipt);
           expect(svHex(authDoc)).toBe(beforeSv);
           expect(dsHex(authDoc)).toBe(beforeDs);
           expect(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD)).toEqual(beforeCapture);
         }
         // No broadcast-equivalent change on replicas: pre-synced replicas are untouched.
         expect(replicaFullDocs(replicas, FIELD)).toEqual(replicaBefore);
+      });
+    });
+
+    it("refuses wrapper-only metadata on a text paragraph and metadata on a preserved block", async () => {
+      await withDriver(kind, async (driver) => {
+        const preservedId = "h:preserved-1";
+        seedAgentField(
+          driver.source,
+          DOCUMENT_ID,
+          SESSION_ID,
+          FIELD,
+          fullDoc([
+            fullPara(BODY, [ftext("hello")], plainMeta()),
+            { paragraphId: preservedId, kind: "preserved", preservedKind: "verbatim", raw: "<x/>" } as never,
+          ]),
+        );
+        const { bridge } = setupAgentBridge(driver.source, DOCUMENT_ID, SESSION_ID, [FIELD], FULL_FAMILIES, undefined, "full");
+        const actor = freshActor();
+        const authDoc = authDocOf(driver.source, DOCUMENT_ID, SESSION_ID, FIELD);
+        const beforeSv = svHex(authDoc);
+        const beforeDs = dsHex(authDoc);
+        const beforeCapture = captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD);
+        const read = bridge.readState({
+          binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: FIELD },
+        });
+        const wrapperOnly = { ...plainMeta(), blockKind: undefined } as unknown as FullBlockMetadata;
+        delete (wrapperOnly as { blockKind?: unknown }).blockKind;
+        const patchWrapper = agentPatchFromRead(read, FIELD, DOCUMENT_ID, SESSION_ID, actor, EPOCH, [
+          { type: "setBlockMetadata", fieldKey: FIELD, paragraphId: BODY, metadata: wrapperOnly },
+        ]);
+        const receiptWrapper = await bridge.applyPatch(patchWrapper);
+        expect(receiptWrapper.status).toBe("refused");
+        expect(receiptWrapper.reason).toBe("incompatible-schema");
+        expect(receiptWrapper.detail ?? "").toContain("text paragraph requires blockKind");
+        expect(bridge.getReceipt({
+          documentId: DOCUMENT_ID,
+          actorId: actor,
+          sessionEpoch: EPOCH,
+          patchId: patchWrapper.patchId,
+        })).toEqual(receiptWrapper);
+        expect(svHex(authDoc)).toBe(beforeSv);
+        expect(dsHex(authDoc)).toBe(beforeDs);
+        expect(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD)).toEqual(beforeCapture);
+        const read2 = bridge.readState({
+          binding: { documentId: DOCUMENT_ID, sessionId: SESSION_ID, fieldKey: FIELD },
+        });
+        const patchPreserved = agentPatchFromRead(read2, FIELD, DOCUMENT_ID, SESSION_ID, actor, EPOCH, [
+          { type: "setBlockMetadata", fieldKey: FIELD, paragraphId: preservedId, metadata: plainMeta() },
+        ]);
+        const receiptPreserved = await bridge.applyPatch(patchPreserved);
+        expect(receiptPreserved.status).toBe("refused");
+        expect(receiptPreserved.reason).toBe("incompatible-schema");
+        expect(receiptPreserved.detail ?? "").toContain("preserved blocks carry no metadata");
+        expect(bridge.getReceipt({
+          documentId: DOCUMENT_ID,
+          actorId: actor,
+          sessionEpoch: EPOCH,
+          patchId: patchPreserved.patchId,
+        })).toEqual(receiptPreserved);
+        expect(svHex(authDoc)).toBe(beforeSv);
+        expect(dsHex(authDoc)).toBe(beforeDs);
+        expect(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD)).toEqual(beforeCapture);
       });
     });
   },

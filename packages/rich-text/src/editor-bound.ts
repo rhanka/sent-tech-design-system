@@ -15,12 +15,18 @@
  * type-erased handle.
  */
 import type { FieldBindingIdentity } from "./collaboration.js";
+import type { FormattingIntentDraft } from "./editor-collaboration.js";
 import {
   boundLocalOriginFor,
   boundMarkOriginFor,
   createBoundUndoManager,
 } from "./editor-collaboration.js";
-import type { LiveSessionBindingSource, SessionProvenanceSink } from "./editor-collaboration.js";
+import type {
+  BoundMarkUndoState,
+  LiveSessionBindingSource,
+  SessionMarkUndoPerformer,
+  SessionProvenanceSink,
+} from "./editor-collaboration.js";
 import type { RichTextEditor, RichTextEditorOptions } from "./editor.js";
 import type { RichTextProfile } from "./profile.js";
 import { buildEditor } from "./editor.js";
@@ -72,7 +78,51 @@ export async function createBoundRichTextEditor(
     trackedOrigin: localOrigin,
   });
   const provenanceSink: SessionProvenanceSink | null = bindingSource.provenanceSink ?? null;
+  const provenanceUndo: SessionMarkUndoPerformer | null = bindingSource.provenanceUndo ?? null;
   const localActorId = actorId ?? `binding:${bindingIdentity.sessionId}:${bindingIdentity.fieldKey}`;
+  const markUndo: BoundMarkUndoState | null =
+    provenanceUndo === null
+      ? null
+      : {
+          steps: [],
+          pending: null,
+          requestCounter: 0,
+          sessionId: bindingIdentity.sessionId,
+          fieldKey: bindingIdentity.fieldKey,
+        };
+  const recordingSink: SessionProvenanceSink | null =
+    provenanceSink === null || markUndo === null
+      ? provenanceSink
+      : {
+          recordFormattingIntent(intent: FormattingIntentDraft): void {
+            const source = intent.source as { kind: string; transactionId?: unknown };
+            const transactionId =
+              source.kind === "human-transaction" && typeof source.transactionId === "string"
+                ? source.transactionId
+                : null;
+            if (transactionId !== null && intent.fieldKey === markUndo.fieldKey) {
+              let step = markUndo.steps.find((entry) => entry.transactionId === transactionId);
+              if (step === undefined) {
+                step = {
+                  transactionId,
+                  fieldKey: intent.fieldKey,
+                  marks: [],
+                  transitionId: null,
+                  undone: false,
+                };
+                markUndo.steps.push(step);
+              }
+              const groups = step.marks as Array<{ mark: string; intentIds: string[] }>;
+              const existing = groups.find((group) => group.mark === intent.mark);
+              if (existing === undefined) {
+                groups.push({ mark: intent.mark as string, intentIds: [intent.intentId] });
+              } else if (!existing.intentIds.includes(intent.intentId)) {
+                existing.intentIds.push(intent.intentId);
+              }
+            }
+            provenanceSink.recordFormattingIntent(intent);
+          },
+        };
   // CL-3b2 (§4.6.1): the private composition staging driver over this
   // binding, type-erased through `BoundImpl` like the other collaboration
   // pieces. The `"./editor"` entry only ever sees the handle. The recorder
@@ -83,7 +133,7 @@ export async function createBoundRichTextEditor(
     fieldKey: bindingIdentity.fieldKey,
     localOrigin,
     undoManager,
-    provenanceSink: provenanceSink as never,
+    provenanceSink: (recordingSink ?? provenanceSink) as never,
     provenanceActorId: localActorId,
   });
   // CL-3b2 (§5.1.1): the DS remote-cursor decoration plugin plus the local
@@ -123,7 +173,9 @@ export async function createBoundRichTextEditor(
     localOrigin,
     markOrigin,
     undoManager: undoManager as never,
-    provenanceSink: provenanceSink as never,
+    provenanceSink: (recordingSink ?? provenanceSink) as never,
+    provenanceUndo: (provenanceUndo as never) ?? null,
+    markUndo: (markUndo as never) ?? null,
     composition: compositionDriver as never,
     cursors: {
       extension: cursor.wrapCursorPlugin(cursorPlugin),

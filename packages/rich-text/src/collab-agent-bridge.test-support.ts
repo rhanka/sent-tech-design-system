@@ -88,6 +88,11 @@ import {
   canonicalPlainMetadata,
 } from "./editor-full-markdown.js";
 import type { FormattingIntentDraft } from "./editor-collaboration.js";
+import type {
+  SessionMarkUndoMarkGroup,
+  SessionMarkUndoOutcome,
+  SessionMarkUndoPerformer,
+} from "./editor-collaboration.js";
 import {
   attributesToMarks,
   fieldMetaName,
@@ -135,6 +140,43 @@ export interface AgentBridgeReceiptStore {
   revertReceipts: Record<string, AgentPatchReceipt>;
   /** Session epoch presented at admission per full key (readability). */
   patchEpochs: Record<string, string>;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): transition table per
+      human step, keyed by `${fieldKey}:${transactionId}`. Holds the current
+      durable transition and the effective intent groups for the next
+      invocation through the transition chain. */
+  markUndoTransitions?: Record<
+    string,
+    {
+      transitionId: string | null;
+      effective: Array<{ mark: string; intentIds: string[] }>;
+    }
+  >;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): request-outcome table
+      per requestId for idempotent replay and changed-payload refusal. */
+  markUndoOutcomes?: Record<
+    string,
+    {
+      outcome: {
+        status: string;
+        requestId: string;
+        duplicate?: boolean;
+        transitionId?: string | null;
+        changed?: boolean;
+        reason?: string;
+        detail: string;
+        conflict?: {
+          kind: string;
+          fieldKey: string;
+          mark: string;
+          items: Array<{ client: number; clock: number }>;
+          detail: string;
+        };
+      };
+      payload: string;
+    }
+  >;
+  /** CL-4e mark-undo stand-in (test-only, AMB-D2): transition sequence. */
+  markUndoTransitionSeq?: number;
 }
 
 export function createAgentBridgeReceiptStore(): AgentBridgeReceiptStore {
@@ -2113,7 +2155,6 @@ function applyRevertInverse(
         stats.restoredOps += 1;
         continue;
       }
-      stats.restoredOps += 1;
       stats.keptLaterItems += 1;
       continue;
     } else if (operation.kind === "insertHorizontalRule") {
@@ -3461,6 +3502,527 @@ export function createAgentBridgeDouble(options: AgentBridgeDoubleOptions): Agen
       };
       options.store.revertReceipts[keyString] = receipt;
       return receipt;
+    },
+  };
+}
+
+/**
+ * CL-4e mark-undo performer stand-in (test-only, register AMB-D2).
+ * Wraps the double store's ordered `provenanceLog`, the keyless-capable
+ * `planMarkRevert`, a transition table and a request-outcome table held in
+ * the same injected store, and the format-application machinery
+ * `revertPatch` already uses, driven by the §3.2 input instead of a patch
+ * key. It proves the DS contract shape, not the host execution.
+ */
+export interface MarkUndoStandInOptions {
+  source: LiveSessionBindingSource;
+  documentId: string;
+  sessionId: string;
+  fieldKeys: readonly string[];
+  store: AgentBridgeReceiptStore;
+  actorId: string;
+}
+
+export function createMarkUndoPerformerStandIn(
+  options: MarkUndoStandInOptions,
+): SessionMarkUndoPerformer {
+  const { source, documentId, sessionId, fieldKeys, store, actorId } = options;
+  if (store.markUndoTransitions === undefined) store.markUndoTransitions = {};
+  if (store.markUndoOutcomes === undefined) store.markUndoOutcomes = {};
+  if (store.markUndoTransitionSeq === undefined) store.markUndoTransitionSeq = 0;
+  const held = new Map<string, LiveSessionBinding>();
+  for (const fieldKey of fieldKeys) {
+    held.set(
+      fieldKey,
+      source.resolveBinding({ documentId, sessionId, fieldKey }),
+    );
+  }
+  const transitionKeyFor = (fieldKey: string, transactionId: string): string =>
+    `${fieldKey}:${transactionId}`;
+  const liveUnitsOf = (
+    ytext: Y.Text,
+  ): Array<{ client: number; clock: number }> => {
+    const live = new Set<string>();
+    const list: Array<{ client: number; clock: number }> = [];
+    for (const item of walkVisibleItems(ytext)) {
+      if (item.kind !== "text") continue;
+      for (let offset = 0; offset < item.length; offset += 1) {
+        const pair = `${item.client}:${item.clock + offset}`;
+        if (!live.has(pair)) {
+          live.add(pair);
+          list.push({ client: item.client, clock: item.clock + offset });
+        }
+      }
+    }
+    return list;
+  };
+  return {
+    async requestMarkUndo(input: {
+      fieldKey: string;
+      transactionId: string;
+      requestId: string;
+      commandTransactionId: string;
+      expectedTransitionId: string | null;
+      direction: "undo" | "redo";
+      marks: readonly SessionMarkUndoMarkGroup[];
+    }): Promise<SessionMarkUndoOutcome> {
+      const fieldKey = input.fieldKey;
+      const entry = held.get(fieldKey);
+      if (entry === undefined) {
+        return {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: null,
+          reason: "scope-denied",
+          detail: "mark-undo field is outside the admitted set",
+        };
+      }
+      const payload = JSON.stringify({
+        fieldKey: input.fieldKey,
+        transactionId: input.transactionId,
+        commandTransactionId: input.commandTransactionId,
+        expectedTransitionId: input.expectedTransitionId,
+        direction: input.direction,
+        marks: input.marks,
+      });
+      const storedOutcome = store.markUndoOutcomes?.[input.requestId];
+      if (storedOutcome !== undefined) {
+        if (storedOutcome.payload === payload) {
+          const replayed = storedOutcome.outcome as unknown as SessionMarkUndoOutcome;
+          if (replayed.status === "applied") {
+            return { ...replayed, requestId: input.requestId, duplicate: true };
+          }
+          if (replayed.status === "refused") {
+            return { ...replayed, requestId: input.requestId, duplicate: true };
+          }
+          return { ...replayed, requestId: input.requestId };
+        }
+        const currentKey = transitionKeyFor(input.fieldKey, input.transactionId);
+        const currentTransition = store.markUndoTransitions?.[currentKey]?.transitionId ?? null;
+        return {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: currentTransition,
+          reason: "idempotency-key-reuse",
+          detail: "same requestId with a changed payload refuses without replacing the outcome",
+        };
+      }
+      const ytext = entry.text;
+      const fieldMeta = entry.fieldMeta;
+      const log = store.provenanceLog;
+      const recorded = log.filter(
+        (intent) =>
+          intent.fieldKey === input.fieldKey &&
+          intent.source.kind === "human-transaction" &&
+          (intent.source as { transactionId: string }).transactionId === input.transactionId,
+      );
+      if (recorded.length === 0) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: null,
+          reason: "target-gone",
+          detail: "unknown human transaction after settled ingress (no recorded intent)",
+        };
+        if (store.markUndoOutcomes !== undefined) {
+          store.markUndoOutcomes[input.requestId] = {
+            outcome: outcome as unknown as {
+              status: string;
+              requestId: string;
+              duplicate?: boolean;
+              transitionId?: string | null;
+              changed?: boolean;
+              reason?: string;
+              detail: string;
+              conflict?: {
+                kind: string;
+                fieldKey: string;
+                mark: string;
+                items: Array<{ client: number; clock: number }>;
+                detail: string;
+              };
+            },
+            payload,
+          };
+        }
+        return outcome;
+      }
+      for (const intent of recorded) {
+        if (intent.actorId !== actorId) {
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: null,
+            reason: "scope-denied",
+            detail: "another actor's intent ids refuse scope-denied",
+          };
+          if (store.markUndoOutcomes !== undefined) {
+            store.markUndoOutcomes[input.requestId] = {
+              outcome: outcome as unknown as {
+                status: string;
+                requestId: string;
+                duplicate?: boolean;
+                transitionId?: string | null;
+                changed?: boolean;
+                reason?: string;
+                detail: string;
+                conflict?: {
+                  kind: string;
+                  fieldKey: string;
+                  mark: string;
+                  items: Array<{ client: number; clock: number }>;
+                  detail: string;
+                };
+              },
+              payload,
+            };
+          }
+          return outcome;
+        }
+      }
+      const recordedByMark = new Map<string, string[]>();
+      for (const intent of recorded) {
+        const list = recordedByMark.get(intent.mark) ?? [];
+        list.push(intent.intentId);
+        recordedByMark.set(intent.mark, list);
+      }
+      const receivedByMark = new Map<string, string[]>();
+      for (const group of input.marks) {
+        receivedByMark.set(group.mark, [...group.intentIds]);
+      }
+      if (recordedByMark.size !== receivedByMark.size) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: store.markUndoTransitions?.[transitionKeyFor(input.fieldKey, input.transactionId)]?.transitionId ?? null,
+          reason: "scope-denied",
+          detail: "mark groups do not correspond exactly to the recorded transaction",
+        };
+        if (store.markUndoOutcomes !== undefined) {
+          store.markUndoOutcomes[input.requestId] = {
+            outcome: outcome as unknown as {
+              status: string;
+              requestId: string;
+              duplicate?: boolean;
+              transitionId?: string | null;
+              changed?: boolean;
+              reason?: string;
+              detail: string;
+              conflict?: {
+                kind: string;
+                fieldKey: string;
+                mark: string;
+                items: Array<{ client: number; clock: number }>;
+                detail: string;
+              };
+            },
+            payload,
+          };
+        }
+        return outcome;
+      }
+      for (const [mark, ids] of recordedByMark) {
+        const received = receivedByMark.get(mark);
+        if (received === undefined || received.length !== ids.length || !ids.every((id) => received.includes(id))) {
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: store.markUndoTransitions?.[transitionKeyFor(input.fieldKey, input.transactionId)]?.transitionId ?? null,
+            reason: "scope-denied",
+            detail: "mark groups do not correspond exactly to the recorded transaction",
+          };
+          if (store.markUndoOutcomes !== undefined) {
+            store.markUndoOutcomes[input.requestId] = {
+              outcome: outcome as unknown as {
+                status: string;
+                requestId: string;
+                duplicate?: boolean;
+                transitionId?: string | null;
+                changed?: boolean;
+                reason?: string;
+                detail: string;
+                conflict?: {
+                  kind: string;
+                  fieldKey: string;
+                  mark: string;
+                  items: Array<{ client: number; clock: number }>;
+                  detail: string;
+                };
+              },
+              payload,
+            };
+          }
+          return outcome;
+        }
+      }
+      const tKey = transitionKeyFor(input.fieldKey, input.transactionId);
+      let slot = store.markUndoTransitions?.[tKey];
+      if (slot === undefined) {
+        slot = {
+          transitionId: null,
+          effective: [...receivedByMark.entries()].map(([mark, intentIds]) => ({
+            mark,
+            intentIds: [...intentIds],
+          })),
+        };
+        if (store.markUndoTransitions !== undefined) store.markUndoTransitions[tKey] = slot;
+      }
+      if (input.expectedTransitionId !== slot.transitionId) {
+        const outcome: SessionMarkUndoOutcome = {
+          status: "refused",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId: slot.transitionId,
+          reason: "step-out-of-date",
+          detail: "expected transition does not match the durable step transition",
+        };
+        if (store.markUndoOutcomes !== undefined) {
+          store.markUndoOutcomes[input.requestId] = {
+            outcome: outcome as unknown as {
+              status: string;
+              requestId: string;
+              duplicate?: boolean;
+              transitionId?: string | null;
+              changed?: boolean;
+              reason?: string;
+              detail: string;
+              conflict?: {
+                kind: string;
+                fieldKey: string;
+                mark: string;
+                items: Array<{ client: number; clock: number }>;
+                detail: string;
+              };
+            },
+            payload,
+          };
+        }
+        return outcome;
+      }
+      const liveList = liveUnitsOf(ytext);
+      const planned: Array<{
+        mark: string;
+        plan: Extract<ReturnType<typeof planMarkRevert>, { ok: true }>;
+      }> = [];
+      for (const group of slot.effective) {
+        const plan = planMarkRevert(log, {
+          fieldKey: input.fieldKey,
+          mark: group.mark as InlineMarkKey,
+          intentIds: group.intentIds,
+          liveItems: liveList,
+        });
+        if (plan.ok === false) {
+          const conflict = plan.conflict;
+          const outcome: SessionMarkUndoOutcome = {
+            status: "refused",
+            requestId: input.requestId,
+            duplicate: false,
+            transitionId: slot.transitionId,
+            reason: "mark-provenance-conflict",
+            detail: conflict.detail,
+            conflict: {
+              kind: "mark-provenance-conflict",
+              fieldKey: conflict.fieldKey,
+              mark: conflict.mark,
+              ...(conflict.paragraphId !== undefined ? { paragraphId: conflict.paragraphId } : {}),
+              items: [...conflict.items],
+              detail: conflict.detail,
+            },
+          };
+          if (store.markUndoOutcomes !== undefined) {
+            store.markUndoOutcomes[input.requestId] = {
+              outcome: outcome as unknown as {
+                status: string;
+                requestId: string;
+                duplicate?: boolean;
+                transitionId?: string | null;
+                changed?: boolean;
+                reason?: string;
+                detail: string;
+                conflict?: {
+                  kind: string;
+                  fieldKey: string;
+                  mark: string;
+                  items: Array<{ client: number; clock: number }>;
+                  detail: string;
+                };
+              },
+              payload,
+            };
+          }
+          return outcome;
+        }
+        planned.push({ mark: group.mark, plan });
+      }
+      let restoredCount = 0;
+      let keptLaterCount = 0;
+      let satisfiedCount = 0;
+      for (const { plan } of planned) {
+        for (const decision of plan.decisions) {
+          if (decision.action === "restore") restoredCount += 1;
+          else if (decision.action === "kept-later") keptLaterCount += 1;
+          else satisfiedCount += 1;
+        }
+      }
+      if (restoredCount === 0) {
+        const nextSeq = (store.markUndoTransitionSeq ?? 0) + 1;
+        store.markUndoTransitionSeq = nextSeq;
+        const transitionId = `markundo:trans:${input.fieldKey}:${input.transactionId}:${nextSeq}`;
+        slot.transitionId = transitionId;
+        const outcome: SessionMarkUndoOutcome = {
+          status: "applied",
+          requestId: input.requestId,
+          duplicate: false,
+          transitionId,
+          changed: false,
+          detail: `mark undo ${input.direction} recorded with no material change (kept-later ${keptLaterCount}, satisfied ${satisfiedCount})`,
+        };
+        if (store.markUndoOutcomes !== undefined) {
+          store.markUndoOutcomes[input.requestId] = {
+            outcome: outcome as unknown as {
+              status: string;
+              requestId: string;
+              duplicate?: boolean;
+              transitionId?: string | null;
+              changed?: boolean;
+              reason?: string;
+              detail: string;
+              conflict?: {
+                kind: string;
+                fieldKey: string;
+                mark: string;
+                items: Array<{ client: number; clock: number }>;
+                detail: string;
+              };
+            },
+            payload,
+          };
+        }
+        return outcome;
+      }
+      const byMarkValue = new Map<
+        string,
+        { mark: string; value: true | string | null; units: Array<{ client: number; clock: number }>; range: unknown }
+      >();
+      const rangeByMark = new Map<string, unknown>();
+      for (const intent of log) {
+        if (intent.fieldKey !== input.fieldKey) continue;
+        if (!rangeByMark.has(intent.mark)) rangeByMark.set(intent.mark, intent.range);
+      }
+      for (const { mark, plan } of planned) {
+        const byValue = new Map<string, { value: true | string | null; units: Array<{ client: number; clock: number }> }>();
+        for (const decision of plan.decisions) {
+          if (decision.action !== "restore") continue;
+          const valueKey = JSON.stringify(decision.value);
+          let valueGroup = byValue.get(valueKey);
+          if (valueGroup === undefined) {
+            valueGroup = { value: decision.value, units: [] };
+            byValue.set(valueKey, valueGroup);
+          }
+          valueGroup.units.push(decision.item);
+        }
+        for (const valueGroup of byValue.values()) {
+          const key = `${mark}:${JSON.stringify(valueGroup.value)}`;
+          byMarkValue.set(key, {
+            mark,
+            value: valueGroup.value,
+            units: valueGroup.units,
+            range: rangeByMark.get(mark) ?? { start: "anchor:a", end: "anchor:b" },
+          });
+        }
+      }
+      const revertOrigin = `revert:${actorId}`;
+      const fieldDoc = ytext.doc as Y.Doc;
+      const pendingDrafts: FormattingIntentDraft[] = [];
+      fieldDoc.transact(() => {
+        for (const { mark, value, units } of byMarkValue.values()) {
+          const indexes: number[] = [];
+          for (const unit of units) {
+            const at = linearIndexOfUnitIn(ytext, unit.client, unit.clock);
+            if (at !== null) indexes.push(at);
+          }
+          indexes.sort((a, b) => a - b);
+          let runStart: number | null = null;
+          let runLength = 0;
+          const runs: Array<{ start: number; length: number }> = [];
+          for (const at of indexes) {
+            if (runStart === null || at !== runStart + runLength) {
+              if (runStart !== null) runs.push({ start: runStart, length: runLength });
+              runStart = at;
+              runLength = 1;
+            } else {
+              runLength += 1;
+            }
+          }
+          if (runStart !== null) runs.push({ start: runStart, length: runLength });
+          for (const run of runs) {
+            ytext.format(run.start, run.length, { [mark]: value });
+          }
+        }
+      }, revertOrigin);
+      const newRestoreByMark = new Map<string, string[]>();
+      let restoreIndex = 0;
+      for (const { mark, value, units, range } of byMarkValue.values()) {
+        const intentId = `markundo:restore:${input.commandTransactionId}:${mark}:${restoreIndex}`;
+        restoreIndex += 1;
+        appendProvenanceDraft(store, {
+          intentId,
+          actorId,
+          source: { kind: "human-transaction", transactionId: input.commandTransactionId },
+          fieldKey: input.fieldKey,
+          mark: mark as InlineMarkKey,
+          value,
+          range: range as never,
+          items: units,
+        });
+        const list = newRestoreByMark.get(mark) ?? [];
+        list.push(intentId);
+        newRestoreByMark.set(mark, list);
+      }
+      slot.effective = [...newRestoreByMark.entries()].map(([mark, intentIds]) => ({
+        mark,
+        intentIds: [...intentIds],
+      }));
+      const nextSeq = (store.markUndoTransitionSeq ?? 0) + 1;
+      store.markUndoTransitionSeq = nextSeq;
+      const transitionId = `markundo:trans:${input.fieldKey}:${input.transactionId}:${nextSeq}`;
+      slot.transitionId = transitionId;
+      const outcome: SessionMarkUndoOutcome = {
+        status: "applied",
+        requestId: input.requestId,
+        duplicate: false,
+        transitionId,
+        changed: true,
+        detail: `mark undo ${input.direction} applied: restored ${restoredCount}, kept-later ${keptLaterCount}, satisfied ${satisfiedCount}`,
+      };
+      if (store.markUndoOutcomes !== undefined) {
+        store.markUndoOutcomes[input.requestId] = {
+          outcome: outcome as unknown as {
+            status: string;
+            requestId: string;
+            duplicate?: boolean;
+            transitionId?: string | null;
+            changed?: boolean;
+            reason?: string;
+            detail: string;
+            conflict?: {
+              kind: string;
+              fieldKey: string;
+              mark: string;
+              items: Array<{ client: number; clock: number }>;
+              detail: string;
+            };
+          },
+          payload,
+        };
+      }
+      return outcome;
     },
   };
 }
