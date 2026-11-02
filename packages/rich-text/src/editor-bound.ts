@@ -20,7 +20,7 @@ import {
   boundMarkOriginFor,
   createBoundUndoManager,
 } from "./editor-collaboration.js";
-import type { LiveSessionBindingSource } from "./editor-collaboration.js";
+import type { LiveSessionBindingSource, SessionProvenanceSink } from "./editor-collaboration.js";
 import type { RichTextEditor, RichTextEditorOptions } from "./editor.js";
 import type { RichTextProfile } from "./profile.js";
 import { buildEditor } from "./editor.js";
@@ -71,14 +71,20 @@ export async function createBoundRichTextEditor(
     fieldMeta: resolved.fieldMeta,
     trackedOrigin: localOrigin,
   });
+  const provenanceSink: SessionProvenanceSink | null = bindingSource.provenanceSink ?? null;
+  const localActorId = actorId ?? `binding:${bindingIdentity.sessionId}:${bindingIdentity.fieldKey}`;
   // CL-3b2 (§4.6.1): the private composition staging driver over this
   // binding, type-erased through `BoundImpl` like the other collaboration
-  // pieces. The `"./editor"` entry only ever sees the handle.
+  // pieces. The `"./editor"` entry only ever sees the handle. The recorder
+  // (sink, actor) is threaded so the commit records staged marks inside the
+  // commit transaction, once (R-REV-3); never mid-composition.
   const compositionDriver = composition.createBoundCompositionDriver({
     ytext: resolved.text,
     fieldKey: bindingIdentity.fieldKey,
     localOrigin,
     undoManager,
+    provenanceSink: provenanceSink as never,
+    provenanceActorId: localActorId,
   });
   // CL-3b2 (§5.1.1): the DS remote-cursor decoration plugin plus the local
   // selection publisher over this binding. The renderer resolves remote
@@ -87,7 +93,6 @@ export async function createBoundRichTextEditor(
   // (AMB-1/AMB-5), falling back to the binding-scoped identity when the
   // host names no actor (renders nowhere until admitted, like a revoked
   // actor). The `"./editor"` entry only ever sees the handle.
-  const localActorId = actorId ?? `binding:${bindingIdentity.sessionId}:${bindingIdentity.fieldKey}`;
   const cursorPublisher = cursor.createCursorPublisher({
     ytext: resolved.text,
     fieldKey: bindingIdentity.fieldKey,
@@ -118,6 +123,7 @@ export async function createBoundRichTextEditor(
     localOrigin,
     markOrigin,
     undoManager: undoManager as never,
+    provenanceSink: provenanceSink as never,
     composition: compositionDriver as never,
     cursors: {
       extension: cursor.wrapCursorPlugin(cursorPlugin),

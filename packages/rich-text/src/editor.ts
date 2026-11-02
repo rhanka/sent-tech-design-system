@@ -401,6 +401,9 @@ export interface BoundImpl {
   /** The field `UndoManager` handle (spec §4.5, CL-3b1): type-erased, no `Y`
       type crosses this seam. */
   undoManager: BoundUndoManager;
+  /** Erased provenance sink (CL-4c R-REV-3): captured once at bound
+      construction. Null when the source carries no sink. */
+  provenanceSink: { recordFormattingIntent(intent: unknown): void } | null;
   /** Private composition staging driver (CL-3b2 §4.6.1): type-erased, no `Y`
       type crosses this seam. Present on every bound mount. */
   composition: BoundCompositionDriver;
@@ -1450,7 +1453,10 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       projection path skips) — and exactly one `undo`/`redo` gesture names
       the blocks whose content actually changed. Mark undo never passes
       through here: mark-only transactions are untracked by construction
-      (§4.5 boundary), so the stacks hold no mark step to consume. */
+      (§4.5 boundary), so the stacks hold no mark step to consume. The §5.6
+      mark-undo wiring beside this function is MISSING / AMB-C5 STOP (no
+      ordered-log read seam); the pure computation (`latestEffectiveIntent`,
+      `planMarkRevert`) and recording are shipped. */
   const runBoundHistory = (direction: "undo" | "redo"): void => {
     if (tracker.destroyed || !isActive()) return;
     if (boundImpl === undefined) return;
@@ -1665,6 +1671,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
       let projectionFailure: unknown = null;
       isProjecting = true;
       try {
+        const provenanceActorId =
+          options.collaborationActor?.actorId ?? (binding ? `binding:${binding.sessionId}:${binding.fieldKey}` : "");
         const revealedIds = (boundImpl.projection.projectPmTransactionToYText(
           {
             ytext: boundImpl.ytext,
@@ -1672,6 +1680,8 @@ export function buildEditor(options: RichTextEditorOptions, boundImpl?: BoundImp
             fieldKey: binding?.fieldKey ?? "",
             allocateId: allocateFresh,
             format: documentFormat,
+            provenanceSink: boundImpl.provenanceSink as never,
+            provenanceActorId,
             // The live document after the identity plugin's repairs for
             // this transaction (review 2 B-NEW-2): the projection adopts the
             // minted split-tail and inserted-block identities instead of

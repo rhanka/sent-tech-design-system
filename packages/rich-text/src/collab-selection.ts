@@ -89,6 +89,51 @@ export function resolveAnchorToLinear(ytext: Y.Text, anchor: RelativeAnchor): nu
   return resolved;
 }
 
+/**
+ * Per-unit Yjs item identities covering a linear range (R-REV-3 items).
+ * Text items only; hard-break and embed positions carry no mark items.
+ * Reads the pinned yjs item chain; per-unit clocks are item.clock + offset.
+ */
+export function coveredItemIdentities(
+  ytext: Y.Text,
+  low: number,
+  high: number,
+): Array<{ client: number; clock: number }> {
+  const chain = (ytext as unknown as { _start?: unknown })._start as
+    | { id: { client: number; clock: number }; length: number; right: unknown; deleted?: boolean; content: { constructor: { name: string }; str?: unknown } | null }
+    | null
+    | undefined;
+  const out: Array<{ client: number; clock: number }> = [];
+  let position = 0;
+  let current = chain ?? null;
+  while (current !== null) {
+    if ((current as { deleted?: boolean }).deleted === true) {
+      const nextDeleted = (current as { right?: unknown }).right;
+      current = (nextDeleted ?? null) as typeof current;
+      if (current === undefined) break;
+      continue;
+    }
+    const name = (current.content?.constructor?.name ?? "") as string;
+    if (name === "ContentString") {
+      const text = current.content?.str;
+      const length = typeof text === "string" ? text.length : current.length;
+      for (let offset = 0; offset < length; offset += 1) {
+        const index = position + offset;
+        if (index >= low && index < high) {
+          out.push({ client: current.id.client, clock: current.id.clock + offset });
+        }
+      }
+      position += length;
+    } else if (name === "ContentEmbed") {
+      position += 1;
+    }
+    const next = (current as { right?: unknown }).right;
+    current = (next ?? null) as typeof current;
+    if (current === undefined) break;
+  }
+  return out;
+}
+
 /** Insert text at the position an anchor resolves to (association kept). */
 export function insertThroughAnchor(ytext: Y.Text, anchor: RelativeAnchor, text: string): number {
   const index = resolveAnchorToLinear(ytext, anchor);
