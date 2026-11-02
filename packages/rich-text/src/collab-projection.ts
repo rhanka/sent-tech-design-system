@@ -119,6 +119,20 @@ interface ProvenanceUserMarkRange {
 
 let provenanceMarkWrapInstalled = false;
 
+/** User-range mark name for the transaction wrappers: a `Mark` instance
+    yields its type name, a `MarkType` (the toggleMark remove path) yields its
+    own name. A missing name stays null and the wrapper never throws. */
+function userMarkName(mark: unknown): string | null {
+  if (mark === null || mark === undefined || typeof mark !== "object") return null;
+  const record = mark as { name?: unknown; type?: unknown };
+  if (typeof record.name === "string") return record.name;
+  if (record.type !== null && typeof record.type === "object") {
+    const typeName = (record.type as { name?: unknown }).name;
+    if (typeof typeName === "string") return typeName;
+  }
+  return null;
+}
+
 function ensureProvenanceMarkTracking(): void {
   if (provenanceMarkWrapInstalled) return;
   const proto = Transaction.prototype as unknown as Record<string, unknown>;
@@ -134,7 +148,7 @@ function ensureProvenanceMarkTracking(): void {
       const entry: ProvenanceUserMarkRange = {
         from,
         to,
-        markName: (mark as { type?: { name?: unknown } })?.type?.name as string ?? null,
+        markName: userMarkName(mark),
         attrs: { ...(((mark as { attrs?: unknown })?.attrs as Record<string, unknown> | undefined) ?? {}) },
         remove: false,
         removeAll: false,
@@ -158,7 +172,7 @@ function ensureProvenanceMarkTracking(): void {
         const entry: ProvenanceUserMarkRange = {
           from,
           to,
-          markName: (mark as { type?: { name?: unknown } })?.type?.name as string ?? null,
+          markName: userMarkName(mark),
           attrs: { ...(((mark as { attrs?: unknown })?.attrs as Record<string, unknown> | undefined) ?? {}) },
           remove: true,
           removeAll: false,

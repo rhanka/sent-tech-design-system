@@ -18,24 +18,233 @@ import {
   fieldTextName,
   seedFieldFromDocument,
 } from "./collab-codec.js";
-import type { RichTextDocument } from "./model.js";
 import type {
+  FullInlineSegment,
+  RichTextBlock,
+  RichTextDocument,
+  RichTextFormat,
+} from "./model.js";
+import type {
+  AgentAffectedOperation,
   AgentDocumentState,
   AgentEditOperation,
   AgentPatch,
+  AgentPatchKey,
+  AgentPatchProfile,
+  FullBlockMetadata,
+  InlineMarkKey,
+  RelativeAnchor,
+  RichTextInlineMarks,
 } from "./collaboration.js";
+import type { FormattingIntentDraft } from "./editor-collaboration.js";
 import {
+  appendProvenanceDraft,
   createAgentBridgeDouble,
   createAgentBridgeReceiptStore,
   type AgentBridgeDouble,
   type AgentBridgeReceiptStore,
 } from "./collab-agent-bridge.test-support.js";
 import {
+  coveredItemIdentities,
+  tryResolveAnchorToLinear,
+} from "./collab-selection.js";
+import {
   openHocuspocusTestSession,
   type HocuspocusTestDriver,
 } from "./collab-hocuspocus-source.test-support.js";
+import { canonicalPlainMetadata } from "./editor-full-markdown.js";
 
 export const P0 = "focus.markdown.p0@1" as const;
+
+/** Full-profile format constant for the CL-4d1 witnesses. */
+export const FULL: RichTextFormat = "ds.markdown.full@1";
+
+/** Every operation family of the full profile (scope mechanism stays B-BRIDGE-3). */
+export const FULL_FAMILIES: readonly AgentEditOperation["type"][] = [
+  "insert",
+  "insertHardBreak",
+  "delete",
+  "mark",
+  "splitParagraph",
+  "mergeWithPrevious",
+  "setBlockMetadata",
+  "insertHorizontalRule",
+  "deleteHorizontalRule",
+];
+
+/** One full text run (marks carried directly, never re-serialised). */
+export function ftext(text: string, marks?: RichTextInlineMarks): FullInlineSegment {
+  return { type: "text", text, marks: marks ?? {} };
+}
+
+/** One full text-like paragraph with its complete metadata record. */
+export function fullPara(
+  id: string,
+  segments: readonly FullInlineSegment[] = [],
+  metadata?: FullBlockMetadata,
+): RichTextBlock {
+  return {
+    paragraphId: id,
+    kind: "paragraph",
+    metadata: metadata ?? (canonicalPlainMetadata() as FullBlockMetadata),
+    segments,
+  } as RichTextBlock;
+}
+
+/** One horizontal-rule block (wrapper metadata only, never blockKind family). */
+export function fullHr(id: string, hrMetadata?: FullBlockMetadata): RichTextBlock {
+  const block: RichTextBlock = { paragraphId: id, kind: "horizontalRule" };
+  if (hrMetadata !== undefined) block.hrMetadata = hrMetadata;
+  return block;
+}
+
+/** One full document for seeding (retained run sources restored verbatim). */
+export function fullDoc(
+  blocks: readonly RichTextBlock[],
+  retainedRunMetadata?: RichTextDocument["retainedRunMetadata"],
+): RichTextDocument {
+  return {
+    format: FULL,
+    blocks,
+    ...(retainedRunMetadata === undefined ? {} : { retainedRunMetadata }),
+  };
+}
+
+/** Authoritative full capture of one field (metadata and mark runs included). */
+export function captureFullDoc(
+  source: LiveSessionBindingSource,
+  documentId: string,
+  sessionId: string,
+  fieldKey: string,
+): RichTextDocument {
+  const binding = source.resolveBinding({ documentId, sessionId, fieldKey });
+  return captureDocumentFromField(binding.text, binding.fieldMeta, FULL).document;
+}
+
+/** One captured block by paragraph id (undefined when absent). */
+export function fullBlockById(doc: RichTextDocument, paragraphId: string): RichTextBlock | undefined {
+  return doc.blocks.find((block) => block.paragraphId === paragraphId);
+}
+
+/** Full captures of replica docs (converged or not — the caller compares). */
+export function replicaFullDocs(replicas: readonly Y.Doc[], fieldKey: string): RichTextDocument[] {
+  return replicas.map((replica) => {
+    const text = replica.getText(fieldTextName(fieldKey));
+    const meta = replica.getMap(fieldMetaName(fieldKey)) as Y.Map<unknown>;
+    return captureDocumentFromField(text, meta, FULL).document;
+  });
+}
+
+/** R-REV-2 affected-items record of one patch by its complete key. */
+export function storeRecordOf(
+  store: AgentBridgeReceiptStore,
+  key: AgentPatchKey,
+): AgentBridgeReceiptStore["records"][string] | undefined {
+  const keyString = JSON.stringify([key.documentId, key.actorId, key.sessionEpoch, key.patchId]);
+  return store.records[keyString];
+}
+
+/** The mark operation entry of a stored patch record (undefined when absent). */
+export function storeMarkOperationOf(
+  store: AgentBridgeReceiptStore,
+  key: AgentPatchKey,
+): AgentAffectedOperation | undefined {
+  return storeRecordOf(store, key)?.operations.find((entry) => entry.kind === "mark");
+}
+
+/** Reopen the bridge over an existing store (restart; durable semantics stay CL-4c). */
+export function reopenBridge(
+  source: LiveSessionBindingSource,
+  documentId: string,
+  sessionId: string,
+  fieldKeys: readonly string[],
+  store: AgentBridgeReceiptStore,
+  families: readonly AgentEditOperation["type"][] = FULL_FAMILIES,
+  profile: AgentPatchProfile = "full",
+): AgentBridgeDouble {
+  return createAgentBridgeDouble({
+    source,
+    documentId,
+    sessionId,
+    fieldKeys,
+    families,
+    store,
+    profile,
+  });
+}
+
+function resolveHumanAnchor(ytext: Y.Text, fieldKey: string, anchor: RelativeAnchor, what: string): number {
+  const resolved = tryResolveAnchorToLinear(ytext, anchor);
+  if (resolved === null) {
+    throw new Error(`rich-text.full-witness-human: ${what} anchor does not resolve on ${fieldKey}`);
+  }
+  return resolved;
+}
+
+/** Human mark through the real paths: driver transaction plus the store sink. */
+export function recordHumanMark(
+  driver: AgentWitnessDriver,
+  store: AgentBridgeReceiptStore,
+  documentId: string,
+  sessionId: string,
+  input: {
+    fieldKey: string;
+    mark: InlineMarkKey;
+    value: true | string | null;
+    startAnchor: RelativeAnchor;
+    endAnchor: RelativeAnchor;
+    actorId: string;
+    transactionId: string;
+  },
+): void {
+  const binding = driver.source.resolveBinding({
+    documentId,
+    sessionId,
+    fieldKey: input.fieldKey,
+  });
+  const ytext = binding.text;
+  const low = Math.min(
+    resolveHumanAnchor(ytext, input.fieldKey, input.startAnchor, "human mark start"),
+    resolveHumanAnchor(ytext, input.fieldKey, input.endAnchor, "human mark end"),
+  );
+  const high = Math.max(
+    resolveHumanAnchor(ytext, input.fieldKey, input.startAnchor, "human mark start"),
+    resolveHumanAnchor(ytext, input.fieldKey, input.endAnchor, "human mark end"),
+  );
+  ytext.doc?.transact(() => {
+    if (high > low) {
+      ytext.format(low, high - low, { [input.mark]: input.value } as Record<string, unknown>);
+    }
+  });
+  const draft: FormattingIntentDraft = {
+    intentId: `${input.transactionId}:${input.mark}`,
+    actorId: input.actorId,
+    source: { kind: "human-transaction", transactionId: input.transactionId },
+    fieldKey: input.fieldKey,
+    mark: input.mark,
+    value: input.value,
+    range: { start: input.startAnchor, end: input.endAnchor },
+    items: coveredItemIdentities(ytext, low, high),
+  };
+  appendProvenanceDraft(store, draft);
+}
+
+/** Human metadata write through a driver transaction (no provenance intent: metadata carries none). */
+export function writeHumanMetadata(
+  driver: AgentWitnessDriver,
+  documentId: string,
+  sessionId: string,
+  fieldKey: string,
+  paragraphId: string,
+  record: FullBlockMetadata,
+): void {
+  const binding = driver.source.resolveBinding({ documentId, sessionId, fieldKey });
+  const doc = binding.text.doc;
+  if (doc === null) throw new Error("rich-text.full-witness-human: field has no doc");
+  doc.transact(() => {
+    binding.fieldMeta.set(paragraphId, structuredClone(record) as unknown);
+  });
+}
 
 export function p0Para(paragraphId: string, text: string): RichTextDocument["blocks"][number] {
   return { paragraphId, kind: "paragraph", text } as never;
@@ -141,6 +350,7 @@ export function setupAgentBridge(
   fieldKeys: readonly string[],
   families?: readonly AgentEditOperation["type"][],
   clock?: { now?: () => number; retentionTtlMs?: number },
+  profile: AgentPatchProfile = "p0",
 ): AgentBridgeSetup {
   const store = createAgentBridgeReceiptStore();
   const bridge = createAgentBridgeDouble({
@@ -157,6 +367,7 @@ export function setupAgentBridge(
       "mergeWithPrevious",
     ],
     store,
+    profile,
     ...(clock?.now !== undefined ? { now: clock.now } : {}),
     ...(clock?.retentionTtlMs !== undefined ? { retentionTtlMs: clock.retentionTtlMs } : {}),
   });
