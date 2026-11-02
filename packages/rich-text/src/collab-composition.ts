@@ -422,6 +422,15 @@ export class BoundCompositionDriver {
       start: string;
       end: string;
     }> = [];
+    // CL-4f (CL-4e review follow-up 1): break the manager capture window
+    // before the commit transact, so the commit never merges into a
+    // preceding character, mark or mixed gesture within the capture window.
+    // Unconditional on the applied path — a mark check before transacting
+    // would have to predict the in-transact provenance collection, and
+    // every applied commit is its own step (F-1). A quiet close or a failed
+    // commit returned above runs no transact, so nothing breaks there. The
+    // post-transact break below keeps following typing separate.
+    this.undoManager.stopCapturing();
     ydoc.transact(() => {
       for (const index of orderedDeletes) this.ytext.delete(index, 1);
       let cursor = at;
@@ -526,8 +535,9 @@ export class BoundCompositionDriver {
         }
       }
     }, origin);
-    // F-1: the commit is its own undo step — adjacent typing within the
-    // capture window never merges into it.
+    // F-1, both breaks: the pre-transact break above keeps the preceding
+    // gesture separate, this post-transact break keeps following typing
+    // separate — the commit is its own undo step on both sides.
     this.undoManager.stopCapturing();
     // R-IME-5: the post-commit caret is the insertion point plus the
     // inserted units, so composing at the end of a field lands after the
