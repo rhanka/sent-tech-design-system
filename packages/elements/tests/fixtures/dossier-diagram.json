@@ -1,0 +1,92 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "DecisionDossier",
+    "id": "root",
+    "document": {
+      "ref": "decision-diagram",
+      "subject": "Shared rendering contract",
+      "title": "Which rendering contract do we adopt for the shared pieces?",
+      "hash": "l6diagram",
+      "cursor": "2026-11-02T00:00:00Z",
+      "sections": [
+        {
+          "id": "p1",
+          "kind": "prose",
+          "targetRef": "decision-diagram",
+          "questionId": "q1",
+          "markdown": "The choice turns on upkeep and consistency. See the [shared notes](https://example.com/notes) for background."
+        },
+        {
+          "id": "q1",
+          "kind": "question",
+          "targetRef": "decision-diagram",
+          "question": "Which rendering contract do we adopt for the shared pieces?",
+          "state": "open",
+          "context": "Every screen keeps its own rendering path today, and small differences grow with each release. A shared contract lets every team ship from plain data while the design system owns layout and tone.",
+          "readingTimeMinutes": 2,
+          "recommendedAnswer": "Adopt the shared contract because it keeps every screen consistent with the least upkeep.",
+          "recommendedOptionId": "opt-d1"
+        },
+        {
+          "id": "os1",
+          "kind": "optionSet",
+          "targetRef": "decision-diagram",
+          "questionId": "q1",
+          "title": "Options",
+          "options": [
+            {
+              "id": "opt-d1",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Adopt the shared contract",
+              "consequence": "One contract to keep, and no drift across screens.",
+              "annotation": "none"
+            },
+            {
+              "id": "opt-d2",
+              "kind": "option",
+              "targetRef": "q1",
+              "label": "Keep separate rendering paths",
+              "consequence": "Each team keeps its own upkeep and its own drift.",
+              "annotation": "none"
+            }
+          ]
+        },
+        {
+          "id": "o1",
+          "kind": "outcome",
+          "targetRef": "decision-diagram",
+          "questionId": "q1",
+          "modality": "decision",
+          "statement": "The team adopts the shared contract for all new screens."
+        },
+        {
+          "id": "g1",
+          "kind": "diagram",
+          "targetRef": "decision-diagram",
+          "syntax": "mermaid",
+          "source": "graph TD\n  start --> finish",
+          "alt": "Flow of the decision from start to finish"
+        },
+        {
+          "id": "t1",
+          "kind": "amendmentTrace",
+          "targetRef": "decision-diagram",
+          "steps": [
+            { "at": "2026-11-02", "author": "Rosa", "summary": "First draft shared with the team." }
+          ]
+        }
+      ],
+      "interactions": [],
+      "provenance": { "source": "track", "readAt": "2026-11-02T00:00:00Z" },
+      "readability": {
+        "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+        "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+        "stakesLevel": "medium",
+        "readingBudgetMinutes": 3
+      },
+      "amendmentTrace": []
+    }
+  }
+}
