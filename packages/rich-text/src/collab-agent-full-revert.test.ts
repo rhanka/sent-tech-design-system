@@ -161,6 +161,11 @@ function keptLaterOf(receipt: { detail?: string }): number {
   return match === null ? -1 : Number(match[1]);
 }
 
+function restoredOpsOf(receipt: { detail?: string }): number {
+  const match = /restored ops (\d+)/.exec(receipt.detail ?? "");
+  return match === null ? -1 : Number(match[1]);
+}
+
 function restoredItemsOf(receipt: { detail?: string }): number {
   const match = /restored items (\d+)/.exec(receipt.detail ?? "");
   return match === null ? -1 : Number(match[1]);
@@ -235,6 +240,7 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         const revert = await restarted.revertPatch({ key, requestedBy: HUMAN });
         expect(revert.status).toBe("applied");
         expect(keptLaterOf(revert)).toBe(1);
+        expect(restoredOpsOf(revert)).toBe(0);
         expect(fullBlockById(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD), BODY)?.metadata).toEqual({
           ...plainMeta(),
           blockKind: "heading",
@@ -290,6 +296,7 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         const revert = await restarted.revertPatch({ key, requestedBy: HUMAN });
         expect(revert.status).toBe("applied");
         expect(keptLaterOf(revert)).toBe(1);
+        expect(restoredOpsOf(revert)).toBe(0);
         expect(fullBlockById(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD), SRC)?.metadata).toEqual(
           orderedSourceMeta(7),
         );
@@ -1064,7 +1071,9 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         const record = storeMarkOperationOf(setup.store, {
           documentId: DOCUMENT_ID, actorId: actor, sessionEpoch: EPOCH, patchId: patch.patchId,
         });
-        const doomed = new Set(record?.markIntentIds ?? []);
+        const titleGroup = record?.markIntents?.find((entry) => entry.mark === "linkTitle");
+        expect(titleGroup?.intentIds.length).toBeGreaterThan(0);
+        const doomed = new Set(titleGroup?.intentIds ?? []);
         setup.store.provenanceLog = setup.store.provenanceLog.filter((entry) => !doomed.has(entry.intentId));
         const restarted = reopenBridge(driver.source, DOCUMENT_ID, SESSION_ID, [FIELD], setup.store, FULL_FAMILIES, "full");
         const revert = await restarted.revertPatch({
@@ -1073,6 +1082,7 @@ describe.each([["in-memory-double"], ["hocuspocus"]] as const)(
         });
         expect(revert.status).toBe("refused");
         expect(revert.reason).toBe("mark-provenance-conflict");
+        expect(revert.conflict?.mark).toBe("linkTitle");
         expect(svHex(authDoc)).toBe(beforeSv);
         expect(dsHex(authDoc)).toBe(beforeDs);
         expect(captureFullDoc(driver.source, DOCUMENT_ID, SESSION_ID, FIELD)).toEqual(beforeCapture);
