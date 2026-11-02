@@ -11,6 +11,8 @@
 
 *Amendment 2026-11-01 (AMB-D7 / §13 F4): owner ratification recorded in `scratchpad/requests/2026-11-01-owner-amb-d7-f4.md`; design source `cl4-decisions.md` §2. This amendment adds `rawOffset?` / `rawComplete?` to `AgentParagraphState` (§5.6), appends the preserved-continuation sentence to R-READ-1, and deletes the metadata-only parenthetical in §13 F4.*
 
+*Amendment 2026-11-02 (mark-undo keyless human conflict, Option B): owner ratification recorded in `scratchpad/requests/2026-11-02-owner-markundo-key-optional.md`; design source `scratchpad/canvas-live/markundo-ds-reaction.md` §3.1 (host §5 wording verbatim); host review ACCEPT ALL D-C1..D-C6 in `/home/antoinefa/src/sentropic/.tmp/canvas-live/markundo-dc-accept-argon.md`. This amendment changes `MarkProvenanceConflict.key` (§5.6 R-REV-5, §5.7) and `PlanMarkRevertInput.key` (§5.7) to optional, absent for a human-transaction target and mandatory with its real full key for every agent-patch target. No other contract change.*
+
 ## 0. How to read this specification
 
 ### 0.1 Source tags
@@ -933,8 +935,8 @@ export interface AgentPatchKey {
   ```ts
   export interface MarkProvenanceConflict {
     kind: 'mark-provenance-conflict';
-    /** The complete key of the patch whose revert was refused. */
-    key: AgentPatchKey;
+    /** The real full key whenever the target of the refused revert or mark undo is an agent patch, including every bridge revert refusal. The key is absent when the refused target is a human-transaction history step, regardless of whether other covering intents considered during evaluation come from agent patches. */
+    key?: AgentPatchKey;
     fieldKey: string;
     mark: InlineMarkKey;
     /** The paragraph containing the undeterminable items at refusal time,
@@ -1039,7 +1041,7 @@ export interface FormattingIntent {
 }
 export interface MarkProvenanceConflict {
   kind: 'mark-provenance-conflict';
-  key: AgentPatchKey;
+  key?: AgentPatchKey;
   fieldKey: string;
   mark: InlineMarkKey;
   paragraphId?: string;

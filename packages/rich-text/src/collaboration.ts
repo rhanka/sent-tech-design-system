@@ -205,7 +205,12 @@ export interface FormattingIntent {
 }
 export interface MarkProvenanceConflict {
   kind: 'mark-provenance-conflict';
-  key: AgentPatchKey;
+  /** Real full key whenever the refused target is an agent patch, including
+      every bridge revert refusal. Absent when the refused target is a
+      human-transaction history step, regardless of whether other covering
+      intents considered during evaluation come from agent patches (R-REV-5,
+      Amendment 2026-11-02). */
+  key?: AgentPatchKey;
   fieldKey: string;
   mark: InlineMarkKey;
   paragraphId?: string;
@@ -2515,7 +2520,9 @@ export function latestEffectiveIntent(
 
 /** Input to the whole-plan mark revert computation (R-REV-4). */
 export interface PlanMarkRevertInput {
-  key: AgentPatchKey;
+  /** Real full key for an agent-patch target, enforced at agent entry points.
+      Omitted for a human-transaction history step (Amendment 2026-11-02). */
+  key?: AgentPatchKey;
   fieldKey: string;
   mark: InlineMarkKey;
   /** The patch's recorded intent ids for this (fieldKey, mark). */
@@ -2561,7 +2568,7 @@ export function planMarkRevert(
       ok: false,
       conflict: {
         kind: "mark-provenance-conflict",
-        key: input.key,
+        ...(input.key !== undefined ? { key: input.key } : {}),
         fieldKey: input.fieldKey,
         mark: input.mark,
         items: [],
@@ -2614,7 +2621,7 @@ export function planMarkRevert(
       ok: false,
       conflict: {
         kind: "mark-provenance-conflict",
-        key: input.key,
+        ...(input.key !== undefined ? { key: input.key } : {}),
         fieldKey: input.fieldKey,
         mark: input.mark,
         items: undeterminable,
