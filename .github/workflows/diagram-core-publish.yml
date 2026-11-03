@@ -1,0 +1,146 @@
+name: Diagram Core Publish
+
+# Publication de @sentropic/diagram-core, sur sa propre ligne de version,
+# indépendante des paquets elements et des autres paquets DS.
+# Déclenchée par un tag `diagram-core-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
+# jeton temporaire pour la PREMIÈRE publication, comme elements-publish.yml.
+#
+# Pourquoi un amorçage : @sentropic/diagram-core n'existe pas au registre
+# (mesuré le 2026-11-03 : `npm view` rend E404), et npm ne permet de déclarer
+# un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
+# « The first publication used a temporary bootstrap token because npm Trusted
+# Publishing can only be configured after each package exists. »
+#
+# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
+#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
+#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
+#   3. poser le tag `diagram-core-v<version>` — l'étape d'amorçage du job `publish`
+#      s'active seule quand le secret est présent et reste inerte quand il est
+#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
+#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
+#      diagram-core-publish.yml) sur le paquet désormais créé ;
+#   5. supprimer le secret (seulement quand plus aucun workflow d'amorçage n'en a
+#      besoin), révoquer le jeton, puis retirer l'étape d'amorçage ici et son
+#      entrée dans scripts/verify-workflow-invariants.test.mjs.
+
+on:
+  push:
+    tags: ["diagram-core-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Verify diagram-core package
+        run: |
+          npm --workspace @sentropic/diagram-core run build
+          npm --workspace @sentropic/diagram-core run check
+          npm --workspace @sentropic/diagram-core test
+      - name: Verify publishable licensing
+        run: npm run licensing:check
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/diagram-core-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify diagram-core version matches tag
+        run: |
+          EXPECTED="${TAG#diagram-core-v}"
+          ACTUAL=$(node -p "require('./packages/diagram-core/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/diagram-core is ${ACTUAL}."
+            exit 1
+          fi
+          echo "diagram-core version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/diagram-core-v')
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/diagram-core run build
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
+      - name: Publish diagram-core package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Skipped when the version is already on npm; never republished.
+          VERSION="${TAG#diagram-core-v}"
+          if npm view "@sentropic/diagram-core@${VERSION}" version --silent > /dev/null 2>&1; then
+            echo "@sentropic/diagram-core@${VERSION} is already on npm: skipped."
+          else
+            npm publish --workspace @sentropic/diagram-core --access public
+          fi
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/diagram-core-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#diagram-core-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/diagram-core@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/diagram-core@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
+      - name: Verify jsDelivr serves the pinned package (AC-L7b CDN gate)
+        run: |
+          VERSION="${TAG#diagram-core-v}"
+          node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version "${VERSION}" --attempts 20 --delay-ms 15000

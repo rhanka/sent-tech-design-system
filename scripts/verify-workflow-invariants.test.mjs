@@ -265,6 +265,12 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured 404 (never published) on 2026-11-01.
     removeWhen: "@sentropic/design-system-elements has had a first successful npm publish",
   },
+  "diagram-core-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/diagram-core has a first successful
+    // `npm publish`. Measured E404 (never published) on 2026-11-03.
+    removeWhen: "@sentropic/diagram-core has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;

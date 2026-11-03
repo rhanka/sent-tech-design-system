@@ -4,10 +4,9 @@ The typed semantic core of the diagram programme: versioned documents and
 profiles, views with occurrences, and transactional commands that return their
 logical inverse. No runtime dependency, no DOM, no framework, no renderer.
 
-**This package is private.** `"private": true` is part of its contract for this
-lot: no npm name is committed without an explicit gesture from the owner, and the
-repository's publishable-package count (17, asserted by
-`scripts/verify-publishable-licensing.test.mjs`) does not move because of it.
+This package is public as `@sentropic/diagram-core` (0.1.0, first publication).
+Pin the exact version — never a range, never `latest`. Publication is CI-only
+through `.github/workflows/diagram-core-publish.yml` on tags `diagram-core-v<version>`.
 
 ## The five objects, and which two live here
 

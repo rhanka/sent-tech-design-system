@@ -1,8 +1,14 @@
 {
   "name": "@sentropic/diagram-core",
   "version": "0.1.0",
-  "private": true,
   "description": "Typed semantic core for diagrams: versioned documents and profiles, views with occurrences, transactional commands with logical inverses. No runtime dependency, no DOM, no framework.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
   "type": "module",
   "license": "MIT",
   "repository": {

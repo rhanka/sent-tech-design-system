@@ -8,7 +8,7 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 15 packages
+//                                 this run (a subset of the 16 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
@@ -370,6 +370,34 @@ async function verifyGraphWorkerSubpaths() {
   );
 }
 
+// L7b: the public semantic core. Zero runtime dependencies, so the
+// throwaway install resolving the tarball alone is the proof: the public
+// entry loads and a minimal value round-trips through the package's own
+// canonical form (key order is content, never insertion order).
+async function verifyDiagramCore() {
+  const mod = await import("@sentropic/diagram-core");
+  if (typeof mod.canonicalise !== "function") {
+    fail("@sentropic/diagram-core", "missing canonicalise export (or not a function)");
+    return;
+  }
+  if (typeof mod.validateDocument !== "function") {
+    fail("@sentropic/diagram-core", "missing validateDocument export (or not a function)");
+    return;
+  }
+  let text;
+  try {
+    text = mod.canonicalise({ b: 1, a: 2 });
+  } catch (error) {
+    fail("@sentropic/diagram-core", "canonicalise threw: " + String(error && error.message ? error.message : error));
+    return;
+  }
+  if (text !== '{"a":2,"b":1}') {
+    fail("@sentropic/diagram-core", "canonicalise did not sort keys: " + JSON.stringify(text));
+    return;
+  }
+  console.log("OK @sentropic/diagram-core: canonicalise + validateDocument import verified");
+}
+
 async function verifyRichText() {
   // Both entries resolve for real out of the installed tarball (never the
   // workspace source): the pure entry carries the model without the editor
@@ -546,6 +574,7 @@ const verifiers = {
   "@sentropic/design-system-vue": verifyVue,
   "@sentropic/design-system-angular": verifyAngular,
   "@sentropic/graph": verifyGraph,
+  "@sentropic/diagram-core": verifyDiagramCore,
   "@sentropic/design-system-rich-text": verifyRichText,
   "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,

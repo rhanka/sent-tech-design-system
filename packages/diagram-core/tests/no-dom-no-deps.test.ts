@@ -145,16 +145,20 @@ describe("the manifest keeps the promises the layering guard relies on", () => {
     readonly name: string;
     readonly version: string;
     readonly private?: boolean;
+    readonly publishConfig?: { readonly access?: string };
+    readonly files?: readonly string[];
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly peerDependencies?: Readonly<Record<string, string>>;
     readonly optionalDependencies?: Readonly<Record<string, string>>;
     readonly devDependencies?: Readonly<Record<string, string>>;
   };
 
-  it("is private, so no npm name is committed and no publishable count moves", () => {
+  it("is public on its own tag line with no private flag", () => {
     expect(manifest.name).toBe("@sentropic/diagram-core");
     expect(manifest.version).toBe("0.1.0");
-    expect(manifest.private).toBe(true);
+    expect(manifest.private).toBeUndefined();
+    expect(manifest.publishConfig?.access).toBe("public");
+    expect(manifest.files).toEqual(["dist", "!dist/**/*.map"]);
   });
 
   it("declares no dependency of any kind", () => {
