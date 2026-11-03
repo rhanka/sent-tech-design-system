@@ -1718,7 +1718,7 @@ function main() {
     },
     target_stack: {
       graph: '@sentropic/graph 0.3.0 (packages/graph)',
-      diagramCore: '@sentropic/diagram-core 0.1.0, private (packages/diagram-core)',
+      diagramCore: '@sentropic/diagram-core 0.1.0, public (packages/diagram-core)',
       diagramCanvas: '@sentropic/diagram-canvas 0.1.0, private (packages/diagram-canvas)',
     },
     counting_conventions: COUNTING_CONVENTIONS,
