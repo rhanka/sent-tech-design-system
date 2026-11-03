@@ -12,7 +12,8 @@
  *   3. THE SOURCE. Every module reachable from the barrel is read and its import
  *      specifiers checked against the one allowed bare name.
  *   4. THE MANIFEST. The promises the repository's layering guard and its
- *      licensing gate rely on: private, one dependency, that dependency.
+ *      licensing gate rely on: private-until-its-own-lot, one dependency,
+ *      that dependency pinned exact and public.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -159,13 +160,16 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
     readonly optionalDependencies?: Readonly<Record<string, string>>;
   };
 
-  it("is private, which is a CONSEQUENCE of depending on a private package", () => {
+  it("stays private until its own publication lot, while its dependency is public", () => {
     expect(manifest.name).toBe("@sentropic/diagram-canvas");
     expect(manifest.version).toBe("0.1.0");
-    // `@sentropic/diagram-core` is `private: true` and absent from the registry
-    // (measured: `npm view @sentropic/diagram-core version` answers E404). A
-    // PUBLISHED package naming it as a dependency installs broken for everyone,
-    // so this flag is not a preference. Publishable count stays at 17.
+    // Since L7b-a `@sentropic/diagram-core` is public (`publishConfig.access:
+    // "public"`, no `private` flag, tag `diagram-core-v<version>`), so the old
+    // reason — "a PUBLISHED package naming it installs broken for everyone" —
+    // no longer applies to this edge. This flag stays for the new reason:
+    // `diagram-canvas` itself has no publication lot yet (no publish workflow,
+    // no tag line in `docs/release.md`). The publishable count is pinned by
+    // `scripts/verify-publishable-licensing.test.mjs`, not restated here.
     expect(manifest.private).toBe(true);
   });
 
@@ -176,13 +180,15 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
     expect(manifest.optionalDependencies).toBeUndefined();
   });
 
-  it("pins the dependency at the exact version the workspace holds", () => {
+  it("pins a public dependency at the exact version the workspace holds", () => {
     const core = JSON.parse(readFileSync(join(packageDir, "..", "diagram-core", "package.json"), "utf8")) as {
       readonly version: string;
       readonly private?: boolean;
+      readonly publishConfig?: { readonly access?: string };
     };
     expect(manifest.dependencies!["@sentropic/diagram-core"]).toBe(core.version);
-    expect(core.private).toBe(true);
+    expect(core.private).toBeUndefined();
+    expect(core.publishConfig?.access).toBe("public");
   });
 
   it("compiles src without the DOM lib and without ambient types", () => {
