@@ -121,9 +121,12 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/diagram-core-v')
+    permissions:
+      contents: read
     env:
       TAG: ${{ github.ref_name }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"

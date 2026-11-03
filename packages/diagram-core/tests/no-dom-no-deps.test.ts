@@ -158,7 +158,7 @@ describe("the manifest keeps the promises the layering guard relies on", () => {
     expect(manifest.version).toBe("0.1.0");
     expect(manifest.private).toBeUndefined();
     expect(manifest.publishConfig?.access).toBe("public");
-    expect(manifest.files).toEqual(["dist", "!dist/**/*.map"]);
+    expect(manifest.files).toEqual(["dist", "!dist/**/*.map", "!dist/.srchash"]);
   });
 
   it("declares no dependency of any kind", () => {
