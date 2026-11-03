@@ -265,6 +265,12 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured 404 (never published) on 2026-11-01.
     removeWhen: "@sentropic/design-system-elements has had a first successful npm publish",
   },
+  "diagram-core-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/diagram-core has a first successful
+    // `npm publish`. Measured E404 (never published) on 2026-11-03.
+    removeWhen: "@sentropic/diagram-core has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
@@ -468,10 +474,67 @@ test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cove
     `elements-publish.yml must run the tarball guard in both verify and publish jobs (found ${runs.length}) — the verify job is the only one that runs on workflow_dispatch`,
   );
   const planner = readFileSync(join(scriptsDir, "ci-affected-workspaces.mjs"), "utf8");
-  for (const name of ["@sentropic/design-system-elements", "@sentropic/design-system-rich-text"]) {
+  for (const name of ["@sentropic/design-system-elements", "@sentropic/design-system-rich-text", "@sentropic/diagram-core"]) {
     assert.ok(
       planner.includes(`"${name}"`),
       `scripts/ci-affected-workspaces.mjs must list ${name} in smokePackWorkspaces — otherwise its shards never run a pack-smoke task`,
     );
   }
+});
+
+// --- 7. every job that runs a scripts/ step checks out the repository first -
+// Measured 2026-11-03 (L7b-a B1): the post-publish-check jobs of
+// diagram-core-publish.yml and elements-publish.yml ran
+// `node scripts/verify-jsdelivr-published.mjs ...` on a fresh runner with no
+// `actions/checkout` step, so every release tag push failed with
+// ERR_MODULE_NOT_FOUND after a successful publish. A job that references a
+// repository script must check it out first, in the same job.
+function jobsWithScriptSteps(strippedText) {
+  const lines = strippedText.split("\n");
+  const jobsStart = lines.findIndex((line) => /^jobs:\s*$/.test(line));
+  if (jobsStart < 0) return [];
+  const jobs = [];
+  let current = null;
+  for (let i = jobsStart + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^[A-Za-z].*:\s*$/.test(line)) break; // next top-level key ends jobs:
+    const header = line.match(/^  ([A-Za-z0-9_-]+):\s*$/);
+    if (header) {
+      current = { name: header[1], lines: [] };
+      jobs.push(current);
+      continue;
+    }
+    if (current) current.lines.push(line);
+  }
+  return jobs;
+}
+
+test("every job that runs a scripts/ step checks out the repository first", () => {
+  const files = workflowFiles();
+  const offenders = [];
+  for (const name of files) {
+    const { strippedText } = scanWorkflow(readWorkflow(name));
+    for (const job of jobsWithScriptSteps(strippedText)) {
+      let checkoutAt = -1;
+      const scriptSteps = [];
+      job.lines.forEach((line, index) => {
+        if (checkoutAt < 0 && /actions\/checkout@/.test(line)) checkoutAt = index;
+        if (/scripts\/[A-Za-z0-9_.-]+\.mjs/.test(line)) scriptSteps.push({ index, line: line.trim() });
+      });
+      if (scriptSteps.length === 0) continue;
+      if (checkoutAt < 0) {
+        offenders.push(`${name} job ${job.name}: runs ${scriptSteps.length} scripts/ step(s) with no actions/checkout in the job`);
+      } else {
+        const before = scriptSteps.filter((step) => step.index < checkoutAt);
+        if (before.length > 0) {
+          offenders.push(`${name} job ${job.name}: ${before.length} scripts/ step(s) run before actions/checkout`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `job(s) running repository scripts without checking them out:\n  ${offenders.join("\n  ")}`,
+  );
 });
