@@ -30,12 +30,15 @@ on:
     tags: ["diagram-core-v*"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
           cache: "npm"
@@ -60,7 +63,7 @@ jobs:
       RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
       TAG: ${{ github.ref_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
       - name: Verify tag is merged into default branch
@@ -91,8 +94,8 @@ jobs:
       # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -126,8 +129,8 @@ jobs:
     env:
       TAG: ${{ github.ref_name }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24"
       - name: Wait for npm propagation
