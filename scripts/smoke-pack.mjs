@@ -41,11 +41,11 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 15 packages listed below are covered by the tarball-shape and
+// - Only the 16 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
 //   untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 20
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 21
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
@@ -275,6 +275,16 @@ const packages = [
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...angularComponentFiles()]; },
   },
   {
+    name: "@sentropic/diagram-core",
+    // L7b: the public semantic core. Zero runtime dependencies, so the
+    // throwaway install resolving the tarball alone is the proof.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts"],
+    // The manifest ships maps only when the build emits them, and never the
+    // ensure-theme-dists stamp; the files field negates both, so the tarball
+    // half of that promise is checked here alongside the entry points.
+    absentPatterns: ["\\.map$", "\\.srchash$"],
+  },
+  {
     name: "@sentropic/graph",
     // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
     // root entry; both are required in the tarball.
@@ -438,6 +448,7 @@ const deepVerify = {
   // local DS dependencies from workspace tarballs (never the registry), so
   // a single-package shard still deep-verifies against real code.
   "@sentropic/graph": { closure: [], peers: [] },
+  "@sentropic/diagram-core": { closure: [], peers: [] },
   "@sentropic/dataviz-core": { closure: [], peers: [] },
   "@sentropic/dataviz-svelte": {
     // Compiling .svelte source never resolves the component's own imports
