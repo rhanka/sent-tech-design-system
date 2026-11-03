@@ -1,12 +1,12 @@
 /**
  * `@sentropic/diagram-canvas` - the headless scene and its hit test.
  *
- * The package is PRIVATE, and that is a CONSEQUENCE, not a preference: it
- * depends on `@sentropic/diagram-core`, which is itself `private: true` and
- * absent from the registry (measured: `npm view @sentropic/diagram-core version`
- * answers E404). A published package whose manifest names an unpublished
- * dependency installs broken for everyone. See README, "Why this package is
- * private".
+ * The package is PRIVATE until its own publication lot: it has no publish
+ * workflow and no tag line in `docs/release.md` yet. Since L7b-a that is a
+ * standalone state, not a consequence: its only dependency,
+ * `@sentropic/diagram-core`, is itself public (`publishConfig.access:
+ * "public"`, no `private` flag, tag `diagram-core-v<version>`). See README,
+ * "Why this package is private".
  *
  * No DOM, no renderer, no framework, no design system package. Its ONLY bare
  * import specifier is `@sentropic/diagram-core`, which is the edge

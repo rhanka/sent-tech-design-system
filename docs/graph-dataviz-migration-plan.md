@@ -143,7 +143,7 @@ Cette section remplace, pour M2, la ligne « M2 » du tableau « Migration en pa
 | `GD-M2-PARITY` | **terminé à ce que la mesure permet : 113 / 119** | mesuré le 26 septembre 2026 par `node tools/dataviz-angular-port/classify.mjs` (union = noms distincts des trois barils svelte/react/vue ; portés = noms exportés par `packages/dataviz-angular/src/index.ts`) : **union 119, portés 113, en attente 6**. Les six restants sont des **refus structurels** documentés un par un dans `tools/dataviz-angular-port/README.md` : `ChartExport` (dépend de l'utilitaire DOM d'export `chart-export.ts`, jamais porté), `TimeSeriesLineChart` (React seul, SVG sur mesure, aucun composant DS), `UrlSync` (un hook, pas un composant), `WebFrame` et `DataImage` (iframe / img, invisibles au rendu serveur), `DashboardGrid` (éditeur par glisser-déposer sur un contrat DS différent). Parité mesurée par `npm run parity:dataviz-angular` : **86/111** entrées à markup exact, **105/111** à signature exacte ; chaque résidu est attribué dans `tools/dataviz-angular-parity/PARITY.md` (framework, ou dette DS nommée avec contrôle nu). Deux écarts DS révélés par le port ont été corrigés à part : les entrées `aria-label` / `aria-pressed` des composants Angular (#151) et le nom accessible de `TreeView` en React (#152). |
 | `GD-M2-THEMES` | **9 des 10 cibles hors CAC 40 livrées ; `latex` construit** | 148 paquets `packages/theme-*` dans `main`, dont 144 en `"private": true` (publiables : `canada`, `dsfr`, `quebec`, `latex`). Programme « top 50 des capitalisations françaises » : la cible restante, `bollore`, attend une décision propriétaire — `bollore.com` bloque les requêtes non-navigateur (403), et la copie archivée que la méthode prévoit en repli passe par un hôte que la politique des agents délégués n'autorise pas. `latex` est dans `main`, sa première publication attend le jeton d'amorçage (`docs/release.md`). |
 
-### Quatre écarts entre ce document et le code livré
+### Cinq écarts entre ce document et le code livré
 
 1. **Le contrat transversal esquissé plus haut (`DiagramDocumentV1`, `DiagramCommandV1`) est dépassé.** Il décrit une forme plate `{ nodes, edges }` avec un `payload: unknown`. La décision D1-A du 24 septembre 2026 (`spec/SPEC_DECISIONS_GRAPH_DATAVIZ_REPATRIATION.md`, reprise par `spec/SPEC_EVOL_GD_M2_MODEL.md`) impose l'inverse : union discriminée par type **et** profil, attributs validés par un schéma de profil versionné, jamais un sac de propriétés. `packages/diagram-core` implémente la décision ; l'esquisse de ce document n'est plus la cible et n'est conservée ici que pour l'historique.
 2. **`@sentropic/diagram-core` n'importe pas `@sentropic/graph`.** L'arête `diagram-core → graph` de `docs/graph-dataviz-architecture-dag.json` reste `"status": "proposed"` : le lot M2-MODEL n'a eu besoin d'aucun contrat sans DOM du paquet `graph`, et le sous-chemin `@sentropic/graph/contracts` prévu par `spec/SPEC_EVOL_GD_M2_MODEL.md` §3.1 n'a donc pas été créé. La raison est dans `packages/diagram-core/README.md`, section « What this package does not import » : lier un schéma persisté et migré par version aux types d'un autre paquet est précisément ce que la règle de migration interdit. Le sous-chemin reste possible dès qu'un consommateur réel le demande — `GD-M2-CANVAS` est le candidat.
@@ -159,6 +159,14 @@ Cette section remplace, pour M2, la ligne « M2 » du tableau « Migration en pa
    `studio/src/tests/pickingBackendAgnostic.test.js`.) ». Ce fichier n'existe pas ici
    (`git ls-files | grep -i pickingBackendAgnostic` rend vide, et il n'y a pas de dossier `studio/`) :
    la référence a survécu au rapatriement et pointe vers un artefact du dépôt amont.
+5. **`@sentropic/diagram-core` est public depuis L7b-a.** L'amendement A′ ci-dessus
+   (« `diagram-core` stays zero-dependency, zero-DOM and private ») et le tableau M2
+   (« livré, privé », `"private": true`, et le raisonnement « conséquence » de la ligne
+   `GD-M2-CANVAS`) sont antérieurs à la publication approuvée par l'owner (tag
+   `diagram-core-v<version>`, `.github/workflows/diagram-core-publish.yml`,
+   `publishConfig.access: "public"`). `diagram-canvas` reste `private: true` pour son
+   propre compte jusqu'à son lot de publication ; l'ancienne conséquence ne tient plus.
+   Consigné plutôt que réécrit : les lignes datées ci-dessus restent l'état mesuré à leur date.
 
 ### Étape A (xyflow + bpmn-js) — inchangée et non commencée
 

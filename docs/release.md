@@ -150,7 +150,7 @@ For normal releases, Trusted Publishing handles `npm publish` through OIDC. The 
 
 ### Names that have never been published
 
-Measured on 2026-09-25 against the registry (`npm view <name> version` for each of the 20 publishable workspaces):
+Measured on 2026-09-25 against the registry (`npm view <name> version` for each of the 21 publishable workspaces, counting `@sentropic/diagram-core` since L7b-a):
 
 | Package | Repository version | Registry | Path to the first publish |
 |---|---|---|---|

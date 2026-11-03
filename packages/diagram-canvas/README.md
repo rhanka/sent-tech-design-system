@@ -13,24 +13,24 @@ under *What is not covered yet*, with the lot that owns each item.
 
 ## Why this package is private
 
-`"private": true` here is a **consequence**, not a preference.
+`"private": true` here is a standalone state, not a preference: this package
+has no publication lot yet (no publish workflow, no tag line in
+`docs/release.md`).
 
-It depends on `@sentropic/diagram-core`, which is itself `private: true` and is
-not on the registry:
+Since L7b-a its only dependency, `@sentropic/diagram-core`, is itself public
+(`publishConfig.access: "public"`, no `private` flag, tag
+`diagram-core-v<version>` in `diagram-core-publish.yml`). The old reason for
+this flag therefore no longer holds: a published package that names an
+*unpublished* dependency installs broken for every consumer, and `pack:smoke`
+caught that exact failure once in this repository (see the header of
+`scripts/verify-layering.test.mjs` on PR #65) — but `diagram-core` is no
+longer unpublished.
 
-```
-$ npm view @sentropic/diagram-core version
-npm error code E404
-npm error 404 Not Found - GET https://registry.npmjs.org/@sentropic%2fdiagram-core - Not found
-```
-
-A published package that names an unpublished dependency installs broken for
-every consumer, and `pack:smoke` has already caught that exact failure once in
-this repository (see the header of `scripts/verify-layering.test.mjs` on PR #65).
 Inside the workspace the dependency resolves by link, which `package-lock.json`
 records as `"resolved": "packages/diagram-core", "link": true` — no registry URL.
-So this lot depends on no npm publication at all, and the publishable package
-count stays at 17.
+The publishable package count is pinned by
+`scripts/verify-publishable-licensing.test.mjs` (21 since L7b-a, with
+`diagram-core` counted and `diagram-canvas` not); it is not restated here.
 
 ## The three contracts this slice fixes
 
