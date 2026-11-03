@@ -538,3 +538,64 @@ test("every job that runs a scripts/ step checks out the repository first", () =
     `job(s) running repository scripts without checking them out:\n  ${offenders.join("\n  ")}`,
   );
 });
+
+// --- 8. every remote action reference is pinned to a full commit SHA -------
+// Measured 2026-11-03 (lot CI-H): 112 `uses:` references across the 19
+// workflows, 7 distinct remote actions, all floating on major tags
+// (`actions/checkout@v4`, …). A floating tag resolves to whatever the
+// upstream owner last moved it to, so a compromised or mistaken upstream
+// retag changes what CI executes with no repository diff to review.
+// Pinning `owner/repo@<40-hex-sha>` (human tag kept as a trailing comment,
+// refreshed by Dependabot's github-actions ecosystem) makes the executed
+// code content-addressed. Local actions (`./…`) carry no remote code and are
+// excluded; every other `uses:` value must be `owner/repo@<40-hex-sha>`.
+function usesRefs(strippedText) {
+  const refs = [];
+  for (const line of strippedText.split("\n")) {
+    const match = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)/);
+    if (match) refs.push(match[1]);
+  }
+  return refs;
+}
+
+test("every remote uses: reference is pinned to a full 40-hex commit SHA", () => {
+  const files = workflowFiles();
+  const offenders = [];
+  for (const name of files) {
+    const { strippedText } = scanWorkflow(readWorkflow(name));
+    for (const ref of usesRefs(strippedText)) {
+      if (ref.startsWith("./")) continue; // local action: no remote code
+      if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+@[0-9a-f]{40}$/.test(ref)) {
+        offenders.push(`${name}: uses: ${ref}`);
+      }
+    }
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `unpinned remote action reference(s) — pin to owner/repo@<40-hex-sha>:\n  ${offenders.join("\n  ")}`,
+  );
+});
+
+// --- 9. every workflow declares a top-level permissions: key ----------------
+// Measured 2026-11-03 (lot CI-H): `verify.yml` and
+// `design-quality-gate.yml` declared no `permissions:` at all, so their jobs
+// ran with the repository-default token scope instead of an explicit
+// least-privilege grant. Every workflow must carry one top-level
+// `permissions:` key (default `contents: read`); any broader scope a job
+// really needs (`id-token: write` for OIDC publish, `pages: write` for the
+// Pages deploy) stays on that job, never at the top level. The check is
+// column-0 anchored on the comment-stripped text, so a commented-out block
+// or a job-level-only grant does not satisfy it.
+test("every workflow declares a top-level permissions: key", () => {
+  const files = workflowFiles();
+  const offenders = files.filter((name) => {
+    const { strippedText } = scanWorkflow(readWorkflow(name));
+    return !strippedText.split("\n").some((line) => /^permissions:\s*$/.test(line));
+  });
+  assert.deepEqual(
+    offenders,
+    [],
+    `workflow(s) with no top-level permissions: key:\n  ${offenders.join("\n  ")}`,
+  );
+});
