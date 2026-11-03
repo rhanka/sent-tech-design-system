@@ -547,15 +547,72 @@ test("every job that runs a scripts/ step checks out the repository first", () =
 // retag changes what CI executes with no repository diff to review.
 // Pinning `owner/repo@<40-hex-sha>` (human tag kept as a trailing comment,
 // refreshed by Dependabot's github-actions ecosystem) makes the executed
-// code content-addressed. Local actions (`./…`) carry no remote code and are
-// excluded; every other `uses:` value must be `owner/repo@<40-hex-sha>`.
+// code content-addressed. Local actions (`./…`, `../…`) carry no remote code
+// and are excluded; every other `uses:` value must be one of the pinned
+// forms accepted by `isPinnedRef` below.
+function stripSurroundingQuotes(value) {
+  if (value.length >= 2) {
+    const first = value[0];
+    const last = value[value.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      return value.slice(1, -1);
+    }
+  }
+  return value;
+}
+
 function usesRefs(strippedText) {
   const refs = [];
+  let inBlockScalar = false;
+  let blockScalarIndent = -1;
   for (const line of strippedText.split("\n")) {
-    const match = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)/);
-    if (match) refs.push(match[1]);
+    if (inBlockScalar) {
+      const indent = line.match(/^[ \t]*/)[0].length;
+      if (line.trim().length === 0 || indent > blockScalarIndent) {
+        continue; // still inside a `run: |` body: never a step ref
+      }
+      inBlockScalar = false; // dedent: normal YAML again
+    }
+    if (/:\s*[|>][\d+-]*$/.test(line.trimEnd())) {
+      inBlockScalar = true;
+      blockScalarIndent = line.match(/^[ \t]*/)[0].length;
+      continue;
+    }
+    if (line.includes("{") && line.includes("}")) {
+      let found = false;
+      for (const m of line.matchAll(/uses\s*:\s*([^\s,}]+)/g)) {
+        found = true;
+        const ref = stripSurroundingQuotes(m[1].trim());
+        refs.push(ref === "" ? "<empty>" : ref);
+      }
+      if (found) continue; // a flow line cannot also be a plain `uses:` line
+      if (/uses\s*:/.test(line)) {
+        refs.push("<empty>"); // flow `uses:` with no value
+        continue;
+      }
+    }
+    const match = line.match(/^\s*(?:-\s+)?uses\s*:\s*([^\s,}]+)?/);
+    if (match) {
+      if (match[1] === undefined) {
+        refs.push("<empty>");
+      } else {
+        const ref = stripSurroundingQuotes(match[1].trim());
+        refs.push(ref === "" ? "<empty>" : ref);
+      }
+    }
   }
   return refs;
+}
+
+// Pinned forms: `owner/repo(/path)*@<40 lowercase hex>` (plain, subpath and
+// reusable-workflow refs; no `.`/`..` segment) and
+// `docker://<image>@sha256:<64 lowercase hex>`. Uppercase hex is rejected.
+const PINNED_ACTION_RE =
+  /^(?!\.{1,2}(?:[/@]|$))[A-Za-z0-9_.-]+\/(?!\.{1,2}(?:[/@]|$))[A-Za-z0-9_.-]+(?:\/(?!\.{1,2}(?:[/@]|$))[A-Za-z0-9_.-]+)*@[0-9a-f]{40}$/;
+const PINNED_DOCKER_RE = /^docker:\/\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*@sha256:[0-9a-f]{64}$/;
+
+function isPinnedRef(ref) {
+  return PINNED_ACTION_RE.test(ref) || PINNED_DOCKER_RE.test(ref);
 }
 
 test("every remote uses: reference is pinned to a full 40-hex commit SHA", () => {
@@ -564,8 +621,8 @@ test("every remote uses: reference is pinned to a full 40-hex commit SHA", () =>
   for (const name of files) {
     const { strippedText } = scanWorkflow(readWorkflow(name));
     for (const ref of usesRefs(strippedText)) {
-      if (ref.startsWith("./")) continue; // local action: no remote code
-      if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+@[0-9a-f]{40}$/.test(ref)) {
+      if (ref.startsWith("./") || ref.startsWith("../")) continue; // local action: no remote code
+      if (!isPinnedRef(ref)) {
         offenders.push(`${name}: uses: ${ref}`);
       }
     }
@@ -577,25 +634,229 @@ test("every remote uses: reference is pinned to a full 40-hex commit SHA", () =>
   );
 });
 
-// --- 9. every workflow declares a top-level permissions: key ----------------
+// --- 9. every workflow declares a least-privilege top-level permissions -----
 // Measured 2026-11-03 (lot CI-H): `verify.yml` and
 // `design-quality-gate.yml` declared no `permissions:` at all, so their jobs
 // ran with the repository-default token scope instead of an explicit
 // least-privilege grant. Every workflow must carry one top-level
-// `permissions:` key (default `contents: read`); any broader scope a job
-// really needs (`id-token: write` for OIDC publish, `pages: write` for the
-// Pages deploy) stays on that job, never at the top level. The check is
-// column-0 anchored on the comment-stripped text, so a commented-out block
-// or a job-level-only grant does not satisfy it.
+// `permissions:` key; any broader scope a job really needs
+// (`id-token: write` for OIDC publish, `pages: write` for the Pages deploy)
+// stays on that job, never at the top level. Accepted top-level forms:
+// a block whose every scope is `read`/`none` (default `contents: read`),
+// `permissions: {}`, and the scalar `permissions: read-all`. Rejected:
+// a missing key, an empty block, `write-all`, and any block scope granting
+// more than `read`/`none`. The check is column-0 anchored on the
+// comment-stripped text, so a commented-out block or a job-level-only grant
+// does not satisfy it.
+function hasAcceptableTopLevelPermissions(strippedText) {
+  const lines = strippedText.split("\n");
+  const idx = lines.findIndex((line) => /^permissions\s*:(.*)$/.test(line));
+  if (idx < 0) return false; // missing key
+  const rest = lines[idx].replace(/^permissions\s*:(.*)$/, "$1").trim();
+  if (/^\{\s*\}$/.test(rest)) return true; // permissions: {}
+  if (/^['"]?read-all['"]?$/.test(rest)) return true;
+  if (rest !== "") return false; // write-all and every other inline form
+  const entries = [];
+  for (let i = idx + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.trim() === "") continue;
+    if (/^\S/.test(line)) break; // next top-level key ends the block
+    entries.push(line.trim());
+  }
+  if (entries.length === 0) return false; // empty block
+  return entries.every((entry) => /^[a-z-]+\s*:\s*['"]?(?:read|none)['"]?$/.test(entry));
+}
+
 test("every workflow declares a top-level permissions: key", () => {
   const files = workflowFiles();
   const offenders = files.filter((name) => {
     const { strippedText } = scanWorkflow(readWorkflow(name));
-    return !strippedText.split("\n").some((line) => /^permissions:\s*$/.test(line));
+    return !hasAcceptableTopLevelPermissions(strippedText);
   });
   assert.deepEqual(
     offenders,
     [],
-    `workflow(s) with no top-level permissions: key:\n  ${offenders.join("\n  ")}`,
+    `workflow(s) without an acceptable least-privilege top-level permissions: grant:\n  ${offenders.join("\n  ")}`,
   );
+});
+
+// --- fixtures: item 1, flow-style steps and `uses :` spacing ----------------
+test("guard fixture (item 1): flow-style and spaced uses: with pinned SHAs pass", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    "      - {uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262}",
+    "      - { name: x, uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 }",
+    "      - uses : actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.deepEqual(refs, [
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+  ]);
+  assert.ok(refs.every((ref) => isPinnedRef(ref)), `expected every flow/spaced ref pinned, got: ${refs.join(", ")}`);
+});
+
+test("guard fixture (item 1): flow-style and spaced uses: with floating tags fail", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    "      - {uses: actions/checkout@v4}",
+    "      - { name: x, uses: actions/setup-node@v4 }",
+    "      - uses : actions/cache@v4",
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.deepEqual(refs, ["actions/checkout@v4", "actions/setup-node@v4", "actions/cache@v4"]);
+  assert.ok(refs.every((ref) => !isPinnedRef(ref)), "expected every flow/spaced floating ref to be unpinned");
+});
+
+// --- fixtures: item 2, block-scalar bodies are not step refs ----------------
+test("guard fixture (item 2): uses: inside run: | bodies is not a step ref", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "      - name: script",
+    "        run: |",
+    "          echo hello",
+    "          uses: evil/action@v1",
+    "          echo done",
+    "        run2: outer",
+    "      - name: folded",
+    "        run: >",
+    "          uses: evil/other@v1",
+    "      - name: stripped",
+    "        run: |-",
+    "          uses: evil/third@v1",
+    "      - name: kept",
+    "        run: >+2",
+    "            uses: evil/fourth@v1",
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  assert.deepEqual(usesRefs(strippedText), ["actions/checkout@11d5960a326750d5838078e36cf38b85af677262"]);
+});
+
+test("guard fixture (item 2): real uses: after a block scalar is still checked", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    "      - name: script",
+    "        run: |",
+    "          echo hi",
+    "      - uses: evil/action@v1",
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.deepEqual(refs, ["evil/action@v1"]);
+  assert.ok(!isPinnedRef(refs[0]), "expected the real ref after the scalar body to fail the pin check");
+});
+
+// --- fixtures: item 3, quotes stripped and local refs skipped ----------------
+test("guard fixture (item 3): quoted pinned refs pass and local ./ ../ refs are skipped", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    '      - uses: "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"',
+    "      - uses: './.github/actions/local'",
+    '      - uses: "../shared/action"',
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.deepEqual(refs, [
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "./.github/actions/local",
+    "../shared/action",
+  ]);
+  const remote = refs.filter((ref) => !ref.startsWith("./") && !ref.startsWith("../"));
+  assert.deepEqual(remote, ["actions/checkout@11d5960a326750d5838078e36cf38b85af677262"]);
+  assert.ok(remote.every((ref) => isPinnedRef(ref)));
+});
+
+test("guard fixture (item 3): quoted floating refs fail", () => {
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    '      - uses: "actions/checkout@v4"',
+    "      - uses: 'actions/setup-node@v4'",
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.deepEqual(refs, ["actions/checkout@v4", "actions/setup-node@v4"]);
+  assert.ok(refs.every((ref) => !isPinnedRef(ref)), "expected quoted floating refs to stay unpinned after quote stripping");
+});
+
+// --- fixtures: item 4, subpath / reusable / docker pinned forms --------------
+test("guard fixture (item 4): pinned subpath, reusable-workflow and docker digest refs pass", () => {
+  const sha40 = "11d5960a326750d5838078e36cf38b85af677262";
+  const sha64 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    `      - uses: github/codeql-action/init@${sha40}`,
+    `      - uses: myorg/myrepo/.github/workflows/reusable.yml@${sha40}`,
+    `      - uses: docker://ghcr.io/myorg/myimage@sha256:${sha64}`,
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.equal(refs.length, 3);
+  assert.ok(refs.every((ref) => isPinnedRef(ref)), `expected subpath/reusable/docker refs pinned, got: ${refs.join(", ")}`);
+});
+
+test("guard fixture (item 4): uppercase SHAs, dot-segments and floating docker refs fail", () => {
+  const sha40upper = "11D5960A326750D5838078E36CF38B85AF677262";
+  const sha40 = "11d5960a326750d5838078e36cf38b85af677262";
+  const sha64upper = "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855";
+  const snippet = [
+    "jobs:",
+    "  build:",
+    "    steps:",
+    `      - uses: actions/checkout@${sha40upper}`,
+    `      - uses: myorg/myrepo/../evil@${sha40}`,
+    "      - uses: docker://alpine:latest",
+    `      - uses: docker://alpine@sha256:${sha64upper}`,
+    "",
+  ].join("\n");
+  const { strippedText } = scanWorkflow(snippet);
+  const refs = usesRefs(strippedText);
+  assert.equal(refs.length, 4);
+  assert.ok(refs.every((ref) => !isPinnedRef(ref)), `expected every bad pin shape rejected, got: ${refs.join(", ")}`);
+});
+
+// --- fixtures: item 5, least-privilege top-level permissions -----------------
+test("guard fixture (item 5): block, {} and read-all top-level permissions pass", () => {
+  const block = ["permissions:", "  contents: read", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  const emptyMap = ["permissions: {}", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  const readAll = ["permissions: read-all", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  for (const snippet of [block, emptyMap, readAll]) {
+    const { strippedText } = scanWorkflow(snippet);
+    assert.ok(hasAcceptableTopLevelPermissions(strippedText), `expected acceptable permissions, got:\n${snippet}`);
+  }
+});
+
+test("guard fixture (item 5): missing, empty, write-all and write scopes fail", () => {
+  const missing = ["jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  const emptyBlock = ["permissions:", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  const writeAll = ["permissions: write-all", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  const writeScope = ["permissions:", "  contents: write", "jobs:", "  build:", "    runs-on: ubuntu-latest", ""].join("\n");
+  for (const snippet of [missing, emptyBlock, writeAll, writeScope]) {
+    const { strippedText } = scanWorkflow(snippet);
+    assert.ok(!hasAcceptableTopLevelPermissions(strippedText), `expected rejected permissions, got:\n${snippet}`);
+  }
 });
