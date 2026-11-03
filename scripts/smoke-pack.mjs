@@ -279,10 +279,10 @@ const packages = [
     // L7b: the public semantic core. Zero runtime dependencies, so the
     // throwaway install resolving the tarball alone is the proof.
     requiredFiles: ["dist/index.js", "dist/index.d.ts"],
-    // The manifest ships maps only when the build emits them; the files
-    // field negates them, so the tarball half of that promise is checked
-    // here alongside the entry points.
-    absentPatterns: ["\\.map$"],
+    // The manifest ships maps only when the build emits them, and never the
+    // ensure-theme-dists stamp; the files field negates both, so the tarball
+    // half of that promise is checked here alongside the entry points.
+    absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {
     name: "@sentropic/graph",

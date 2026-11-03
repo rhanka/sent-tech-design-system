@@ -20,8 +20,9 @@ name: Elements Publish
 #      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
 #   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
 #      elements-publish.yml) sur le paquet désormais créé ;
-#   5. supprimer le secret, révoquer le jeton, puis retirer l'étape d'amorçage ici
-#      et son entrée dans scripts/verify-workflow-invariants.test.mjs.
+#   5. supprimer le secret (seulement quand plus aucun workflow d'amorçage n'en a
+#      besoin), révoquer le jeton, puis retirer l'étape d'amorçage ici et son
+#      entrée dans scripts/verify-workflow-invariants.test.mjs.
 #
 # Côté consommateur (contexte seul, aucun changement h2a dans ce lot) : le
 # module de rendu h2a chargera les gros chunks depuis les coordonnées CDN
@@ -140,9 +141,12 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/elements-v')
+    permissions:
+      contents: read
     env:
       TAG: ${{ github.ref_name }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
