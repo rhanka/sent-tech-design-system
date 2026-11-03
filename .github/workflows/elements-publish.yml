@@ -49,6 +49,13 @@ jobs:
           npm --workspace @sentropic/design-system-elements run build:browser
           npm --workspace @sentropic/design-system-elements run check
           npm --workspace @sentropic/design-system-elements test
+      # Stable-host Chromium rows (L7b Task 7): CI on ubuntu-latest is the
+      # stable host — never run locally on the GPU host. This step runs on
+      # both tag pushes and workflow_dispatch dry runs (no `if`), so the
+      # dossier-l6 rows, the selected-state computed-colour scan and the
+      # dossier-track.json criterion-1 standalone row execute here.
+      - name: Run Chromium suite (stable host)
+        run: node packages/elements/tests/browser/chromium-suite.mjs
       # The tarball guard, against THIS runner's bytes: the `verify` job is
       # the only one that runs on `workflow_dispatch`, so without this step a
       # bad tarball would pass that path unchecked (the `publish` job runs the
@@ -152,3 +159,7 @@ jobs:
           done
           echo "::error::Timed out waiting for npm propagation."
           exit 1
+      - name: Verify jsDelivr serves the pinned bundle (AC-L7b CDN gate)
+        run: |
+          VERSION="${TAG#elements-v}"
+          node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version "${VERSION}" --attempts 20 --delay-ms 15000
