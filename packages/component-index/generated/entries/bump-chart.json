@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "bump-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f64fea579b3657fb4265811f5f351352f4b4ade8d7eedb1efd87b851dc4ce223",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BumpChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9186711b8fa7351eb6088ea22d74e08b78ccb155a0045afe22067b9093ab4217",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BumpChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4e37f3b730433190c82f6652fd902ec8262365f3b6494476471d61a719f4e222",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BumpChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ceaf2f2a36a002a3f13e8d2dd9f7e79db5acc328001c185ce69f294c9403f1eb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BumpChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Rankings over time: rising and falling rank lines.",
+    "fr": "Classements dans le temps : lignes qui montent et descendent."
+  },
+  "digest": "sha256:e33f0e78899913af853e268c871a312f03406f36331355de536005998f546c12",
+  "displayName": "BumpChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

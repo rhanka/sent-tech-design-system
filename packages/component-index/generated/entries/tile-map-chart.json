@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "tile-map-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:54b74e72ca0789c77603464fb1b749cccd85079e0ea46200893806612154d022",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TileMapChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7b26096e976212fb536e7bbc73113afe2db9a5260e592dddb29f368a05bc41f9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TileMapChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9f1b59f387f3818dfb37c4873044bf8fa8ac594a41952319b88a63ac4d265f8d",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TileMapChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:05ea95af7aa04f4175eb521a1f908ad94dc42b7c7dbd66f84a552cab1e8252e2",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TileMapChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
+    "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
+  },
+  "digest": "sha256:25bff267ac9b9bc0c6d7c61e2a60960fa82138c6e8ae3419a2b3c366e16198d7",
+  "displayName": "TileMapChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

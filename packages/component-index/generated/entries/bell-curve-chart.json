@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "bell-curve-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:30b4a7d7ef6842a558b1f6091eab1bfd5cf7625486bc8649088c8bb093244f89",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BellCurveChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d6db3ff043911f2119188b71fe58bccddf12a7dd9b6e5fa8a69a99648a8d67a7",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BellCurveChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e6ff6969802d6bf8426ae2ea2db58d2dc7b0c3f550a75f74feb211714c5fa53c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BellCurveChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7d44b443dcb8652bf98b956aefa94d17e34f3a85296a5293266f708eff048a02",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BellCurveChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ.",
+    "fr": "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ."
+  },
+  "digest": "sha256:816637abbdae8a6d57f280d863f2df1c35581c90dabc7c643ebd51a2749521ac",
+  "displayName": "BellCurveChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "radar-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ec3547e882655d5af271b9bb6db6a6582a406827acb444858c6f28287e01ce81",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RadarChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b06bb89ab1a6b5c50eef39ed3495030122f140f0777c1476f3101dddfca0463f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RadarChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:76faa4113b5782a67f14387b601f8ab1382d6c3e24f485ecef45a92d377453d3",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RadarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a2ddf73c1c1e7b63e315f219f599f7bea1c7f8ebfcffb36aa51fe75e81f565c5",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RadarChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Polar radar chart for comparing series across shared axes.",
+    "fr": "Radar polaire pour comparer plusieurs séries sur des axes communs."
+  },
+  "digest": "sha256:9136b6e224c7d5a1ca51165ff33772e26231403c20c99cc7744c1b3608d3e61c",
+  "displayName": "RadarChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

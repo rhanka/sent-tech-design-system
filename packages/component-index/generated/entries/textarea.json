@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "textarea",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9e348f1484297466b7e93519d71dffe90b02b5dcf21a2c63b91092c52efd85ec",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Textarea.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e4b1ca8ba31778d6d8337a7681ebf5cc2b9f48a73f59b9cce98e325fc6d9b07b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Textarea.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:af543ca7056b3418f21dcdbd06fefa7f4cfae1fda9a998edd478d97a1b7be214",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Textarea.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b045e99839b61e39c97744068e43222e617c184c3d64643d5bc30b92f1f9501c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Textarea.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Multi-line text field.",
+    "fr": "Champ texte multi-ligne."
+  },
+  "digest": "sha256:3c360dcc6d17f2a5136ed64bf88d2e2943b897bdf21d5c12ea22dabbaad258f7",
+  "displayName": "Textarea",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "textarea",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

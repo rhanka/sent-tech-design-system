@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "aspect-ratio",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:e7d378384e0edcf2b1290bf0ef66896cf68a0e13d90fb9230737afa04a2e2b1c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AspectRatio.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9b28287d7fc8301c5cde311909a7e7ca9a5abad402fabdf3c65c80c181346d12",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AspectRatio.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:92ca5e66fb6c6d8545d9c6900db110a7c90e93538b1c20806f4a9313434b529a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AspectRatio.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d47489e0563b761e4efe4ee073ee6cd2bda9aff75a0649b8849e10c844dfc51a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AspectRatio.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Fixed aspect-ratio container (media, embeds).",
+    "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
+  },
+  "digest": "sha256:e74fbf51ca7602e5f52d81233760b45787357490da85e0e6728cd65255a6fd5f",
+  "displayName": "AspectRatio",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

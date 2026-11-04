@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "dependency-wheel-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:b369ac5ebfd6ab1e1d85f35adf2e80f69eb42af8756e64961065ef67f116fe2c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DependencyWheelChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c60610f585f72edb2b5e26555708c0aaf08c2cb7c2cc53a432d361d40c5ff197",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DependencyWheelChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c90ac2d3b50f5704e557a704be169d473160d1b6b0eae002c48d9d7b6af5ae51",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DependencyWheelChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:28407b6f934ad1fc1d46c12e74a45b6f05431d360097c9d54f7ce082ed089a58",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DependencyWheelChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Dependency wheel: nodes on a circle, weighted ribbons coloured by source.",
+    "fr": "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source."
+  },
+  "digest": "sha256:d7888a45f4e98e6089c5278933a666657bd17fda92cb0a2deb04b8a0bc19dece",
+  "displayName": "DependencyWheelChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

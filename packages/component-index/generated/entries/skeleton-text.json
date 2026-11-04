@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "skeleton-text",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:5eacd517b24020a45b4899588d0f8440d9a8cf64d1b5a3384bc062c221075f51",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SkeletonText.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:98f5c9041734c59b96ed6f7d5cd0f04d6f12f0ceba1243eefbcf3523a5ce7621",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SkeletonText.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:56e157663b557dfcf04b8a2c4bfdec6744d46c7b5a1d3bfbc9117f70df58c375",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SkeletonText.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1df9f71cd7601b26190ecd6b53e151472ab0cb1ceaf4f7af3ca8ba60e0b6e4ec",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SkeletonText.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Placeholder text lines while loading.",
+    "fr": "Placeholder lignes de texte en chargement."
+  },
+  "digest": "sha256:0e09abd22c6605e857361d8d226d61a700c0f28412247b0cd467ef84285fae68",
+  "displayName": "SkeletonText",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

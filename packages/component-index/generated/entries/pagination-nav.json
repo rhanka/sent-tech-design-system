@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "pagination-nav",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ba7e73be4bf43a21088568e993d7958aa652c53eee6bb10b3fe8b056eeff113c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PaginationNav.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a9a9c83196cd999225d0994bc04d0f35e406229ace5bee8ed79b43d4a5c9be88",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PaginationNav.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:494f5dec2755f844ef2b3edbbf06be22f0aa35d14135f583019d96b1c915c3fa",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PaginationNav.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2af127965032e64102a4f88bdd75e935352cd9490bae67f86b7a7ee2e6a07772",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PaginationNav.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Extended pagination with numbered pages and ellipses.",
+    "fr": "Pagination étendue avec page numérotée et ellipses."
+  },
+  "digest": "sha256:1d59701ab4cafb95c3360ea8d6a8d7c242f5221a21c1beee573b1d2ccce6b7de",
+  "displayName": "PaginationNav",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "pagination-nav",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

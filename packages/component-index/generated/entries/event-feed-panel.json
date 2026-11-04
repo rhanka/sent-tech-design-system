@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "event-feed-panel",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:684fb4c11b085c33e3c148360593787807633101e9bb683ca4802d3ca8cf728c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/EventFeedPanel.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6f47761d55e8e5289d61a3af486523b8c4a96e2909f5390326269cc16e6933a5",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/EventFeedPanel.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2474f835bfe302beddb51b77a39e673f50f05f67ea2e080f470670e6b862d709",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/EventFeedPanel.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5ec9d728229185a384d20da5bde9b7ab45504d32fed2fec54446ee823ce73ef2",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/EventFeedPanel.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message.",
+    "fr": "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message."
+  },
+  "digest": "sha256:1c221769cf70090a063cc640cc7235a9d0e514fc8b9bb01ac1700194cd0ebc22",
+  "displayName": "EventFeedPanel",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

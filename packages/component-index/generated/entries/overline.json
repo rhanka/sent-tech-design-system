@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "overline",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:2a7a69c2881ef18002a877bbcf35b0699e1101b6e5f420984fe97682c9e00759",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Overline.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4952f1531d5867f3ba717ecb6e2f072b58ee498a4c3d4a346676366be8d3baaa",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Overline.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b8defe44717e4c0dc2452e0e8b45f5f877eea3f33dabf71b2aba04f1ad353fbd",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Overline.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e724aa10bdbea359bd4330c3b621dfdad715772f098df866fd08ab72c6458e20",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Overline.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Discreet small-caps section label (group heading above a block).",
+    "fr": "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc)."
+  },
+  "digest": "sha256:685f00b3a47fbaac4acf991f7380d231b641e665f1a48e0ade2a62a22975f823",
+  "displayName": "Overline",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

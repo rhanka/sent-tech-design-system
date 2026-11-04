@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "number-input",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:745a2cf972395e603e22092b5e90f45d7b9af0a31103a529265a33e9c17d2c22",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/NumberInput.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9c934873d0de3f591b450bf94c9a0fb2c89769dde1a78754ee60cef14e54c424",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/NumberInput.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6e823e773de1632906e5218fc59bad4707b28eef9156634071045e19806f3aa4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/NumberInput.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9d40f938cf88ff6e1bf2debe305209c963ac47d42be1f56b08b18c5aeae22079",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/NumberInput.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Numeric field with increment/decrement.",
+    "fr": "Champ numérique avec incrément/décrément."
+  },
+  "digest": "sha256:4542633be43d1cf00fd4938a63e2761d5b145c608a6cba196d951bff366e4665",
+  "displayName": "NumberInput",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

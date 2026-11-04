@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "ohlc-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:155b068a8f64f72aa079b0a0dcb63a0d42cee03cde2ea1fdd7be88d80ccbab92",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/OHLCChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1e7b4e217793a323b2f417db65a83270ccf6204c19703e72baa18a51058df7be",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/OHLCChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8afb9427c34bcbf0565b1dcd0ec565de256c3edb6a82ba570e2d70743aa3e33a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/OHLCChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a41c70494a3a9f8882467de6706d9d8747222cc0a2ff258743779d052f034063",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/OHLCChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "OHLC bars: a vertical low→high bar with a left open tick and a right close tick.",
+    "fr": "Bâtons OHLC : barre verticale low→high, tick gauche à l'ouverture, tick droite à la clôture."
+  },
+  "digest": "sha256:720325d3a04793706a8daed0e5e4131e379516140b2a4bf0777f1ffa2c0e4040",
+  "displayName": "OHLCChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

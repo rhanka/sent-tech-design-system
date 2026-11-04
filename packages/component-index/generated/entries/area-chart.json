@@ -1,0 +1,64 @@
+{
+  "category": "data",
+  "componentId": "area-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4786042523ad398136a23782eb2bc17fdda9ba4ddb58f156e9d5a127e9dd01bb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AreaChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4a32c37449be0ab1f816642c6e4f14ce6c4eeca8ee792220dac794ce06154633",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AreaChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e62276a1ac2abf76a0fdd400fee2b73e55a7444daece0cdeacbd4c106e2a2564",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AreaChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:72ec4e60bfd7e735afdb3ad524794af852ce024d7d5333c6fcf0b667c4966a30",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AreaChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Area chart to visualize temporal or numeric data.",
+    "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
+  },
+  "digest": "sha256:68c3382c43d84fe4c7099c583b4b762574b0f9ca45488b4e553f2d6257c7c311",
+  "displayName": "AreaChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "area-chart",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

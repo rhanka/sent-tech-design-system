@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "organization-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:25bbd4c978d895d645f8f89b66431b67d81624feeb73b370689d4ef836f9260b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/OrganizationChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4950d76ba377e592d17ffb31181ac92f354395b5525ac24ee7ac39da1d245a18",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/OrganizationChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:dd6f2277a436b921a46460d036a81eb8d058318125151c9858bcc0f5bf32f92e",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/OrganizationChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9de914fa0b8cdd28130edbc29f4b82eb91e7b7c35cc4d3575c99a64cac8787ec",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/OrganizationChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
+    "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
+  },
+  "digest": "sha256:a8dc59cf42c92caad5910622c5c3455bb03916af32a19393d53da534ab8ad74b",
+  "displayName": "OrganizationChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

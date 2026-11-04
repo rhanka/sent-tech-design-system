@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "status-history-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3dcb6a7c8e6227fa38a00663d94003698530e5505de027c1dbe8d40839598a66",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StatusHistoryChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6a85a981757c05de35e7c80aee717a3241cae4442a21580f97875a8a8cccbc61",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StatusHistoryChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:00fd91fd4cd79e35017cc5ebebef61673189540dd505feedcf885751f0b0a2e1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StatusHistoryChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:177ed03b8bff3c50d2c1b7e8eae104949da02c28e65245f67858ab9f2004503d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StatusHistoryChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
+    "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
+  },
+  "digest": "sha256:846277d1a708752356e4560ec2f1cbf580436b0124466039055c2fbce1b56bb1",
+  "displayName": "StatusHistoryChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

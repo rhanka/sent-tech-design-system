@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "time-range-picker",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:79fad72e67ebe3aa8732109d3f9e588ab41f912ac8c67f9bdea84db2ee355f86",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TimeRangePicker.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5af128511085157cff329c2ddd1695a106573359984a97d1742dfc8ef8d1b46a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TimeRangePicker.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7b02882028da834ce2c8e3530bf0575525c8f98741b3f1478bd52012de9cd709",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TimeRangePicker.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b9163fb67cfb92755f3e11a3f55ca30d26cf23ebd99dfd8f81c1d86cebe1fdaf",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TimeRangePicker.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Time-range selector: relative presets or an absolute range.",
+    "fr": "Sélecteur de plage temporelle : presets relatifs ou plage absolue."
+  },
+  "digest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
+  "displayName": "TimeRangePicker",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "candlestick-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:15359d8def127c33cebc66684f223e0355ff861f4c217a8395d16b8c48c56dbb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/CandlestickChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d0e776c167cdf64439d553c0f95361e0b0e77f27a9d51c63056112439142f2ba",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/CandlestickChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6277e38064780f71b782c7b43674085b856f6a1785b07fa05cde0c131ab16dce",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/CandlestickChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a0b90dd79105c605adb1c00fdd66f6c8cf33645015406cdd0396970f7495ae17",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/CandlestickChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "OHLC candlestick chart for financial price data.",
+    "fr": "Bougies OHLC pour visualiser les cours financiers."
+  },
+  "digest": "sha256:1c2fdeafe266ff8be68cef186e4198a1825dbd013e9adb30b36414b47dbe9265",
+  "displayName": "CandlestickChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

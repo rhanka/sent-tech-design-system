@@ -1,0 +1,63 @@
+{
+  "category": "chat",
+  "componentId": "message-actions",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c5f20bd2c5a907b440fe29e32fa4c5a83b2677ed947c920cdd04b576263eea4e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MessageActions.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e9fd08322c58af1ec5d8629dce211188016d397b852e245ce003740eb29f60c8",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MessageActions.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:51e0cec340c5aab6139ee6b16c1b507fd63cdc6d78681b1dea70ab67efdfb712",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MessageActions.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:94be497a3989a733182d3d29fab7b0c854e99e6967f461852dcc1c3e484579e4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MessageActions.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Message action row with icon buttons and optional overflow.",
+    "fr": "Rangée d’actions d’un message avec boutons icône et overflow optionnel."
+  },
+  "digest": "sha256:7432309904c3b0068a5c6a6382077dea4d9dd58dd3f8a58b8f4d24050be79c64",
+  "displayName": "MessageActions",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

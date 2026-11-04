@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "bullet-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:63517a62dc67b6ac9aabb28b705e2657f2c15fb00f10602b9ade78d625892ddc",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BulletChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c03191bca6dab4ce3ac7e74d8b4a768dd54ddaf4ca082792277c127ea0fa7b8f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BulletChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:82859330737829d7b266af114978cd28a0f25106478a6cdca16a96eba36bdce2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BulletChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:acd8428ccbf4c9290c3e61875998d04cc0a54228327515ddfcd632e11b3c4eb4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BulletChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Bullet graph: measure vs target with qualitative range bands.",
+    "fr": "Bullet graph : mesure vs cible avec bandes qualitatives."
+  },
+  "digest": "sha256:54549e859d183dba0c416a86c0db6b3c49cf92862c5d87752e6a491b6a44bbc5",
+  "displayName": "BulletChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

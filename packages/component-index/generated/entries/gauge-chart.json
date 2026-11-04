@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "gauge-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:37edc0193ec528ee70eef277ed57967eff091b9d0f495356a5f1e85eb6790192",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/GaugeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c512e837fa7617068abbc2d945dd1593974a74aa7791eaf45b7dbf616e139d22",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/GaugeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:dd3bc1e50045df8c8d6e1568236eb8e485333b6c86a0e2337ef694e05022c46b",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/GaugeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:89894ef173f457c8812ff5017760f7d6c0348fa49296b7fc1ad1536eb7db78c0",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/GaugeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Semi-circular gauge with color thresholds, centered value and unit.",
+    "fr": "Jauge semi-circulaire avec seuils colorés, valeur et unité centrées."
+  },
+  "digest": "sha256:93bd0a1d02685e323984752e5f658087fc4a10c65c79bd9b248df1284cfbd8f3",
+  "displayName": "GaugeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

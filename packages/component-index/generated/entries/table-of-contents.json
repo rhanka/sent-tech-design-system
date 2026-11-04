@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "table-of-contents",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1edcf852f79fc97a055e2cccc07db14f885bff00a7b511d27a1af6574649981c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TableOfContents.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ca6c80471d0949617477bcc2a881b2d999c3c89a3e5278b7c0be62ca627de8ca",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TableOfContents.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d98fa95e5542b7156d05492bc92ea975c72df211a1996c8cbd8bd00a4ff051e0",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TableOfContents.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:efd7034bf0d2e8e3f7c8ee3808cede4888eebe0a6d3c606c78bae67ba5b52fef",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TableOfContents.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Page route menu with anchor links by level.",
+    "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
+  },
+  "digest": "sha256:02d35abe23d69dd7230a512391445ce546d4e6da14f678b1722a6c3688d542d8",
+  "displayName": "TableOfContents",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

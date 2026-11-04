@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "alert",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:24f0ff8c00bf90818888eb6e9641011d7af86ad3d8ab8699806fdaf4b4de6962",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Alert.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f552eda695d739d719f2a3b370600f5a7b0a753aa5a996bb4fbd60866b0c5838",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Alert.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e857f3525fe1bae2e236d5e9dc2a85a51f9f73ef4cf2621b39b542b8a9cd0d1c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Alert.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8ed429a8ef30539fcbecf86e2757cd114fdd541cbab3c1145a9e6f7bbac94736",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Alert.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Info/success/warning/error banner.",
+    "fr": "Bandeau d’information info/success/warning/error."
+  },
+  "digest": "sha256:e41d13a78667fcb4fd40c8186a32119a44c1ff88592ef32adc8b180fd301aaea",
+  "displayName": "Alert",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "alert",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

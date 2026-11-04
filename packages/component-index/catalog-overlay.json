@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "note": "Non-catalogue entries (spec 6.2). Additive metadata only: a row colliding with a catalogue slug fails generation. FR+EN descriptions are verbatim in-repo copy with sources recorded in the K1a report (Q6); where no source text exists the row is excluded, never invented.",
+  "entries": [
+    {
+      "componentId": "design-tokens",
+      "displayName": "DesignTokens",
+      "description": {
+        "fr": "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens.",
+        "en": "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens."
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "componentId": "bpmn-canvas",
+      "reason": "missing source: no FR copy in-repo (EN exists: packages/elements/README.md st-bpmn-canvas section; packages/elements/src/contracts/bpmn-canvas.ts document JSDoc); entry omitted, logged at generation"
+    },
+    {
+      "componentId": "decision-dossier",
+      "reason": "missing source: no FR copy in-repo (EN exists: packages/elements/src/contracts/decision-dossier.ts document JSDoc; packages/elements/README.md choose-option mapping); entry omitted, logged at generation"
+    },
+    {
+      "componentId": "geo-map",
+      "reason": "conductor Q8 OUT: branch feat/geo-adapter-svelte not landed; packages/components-geo-svelte absent on base 24f6f8e9; no digest fabricated"
+    }
+  ]
+}

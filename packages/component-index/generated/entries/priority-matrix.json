@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "priority-matrix",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:2803f2cb43ed306f69294f00c29577bc06b7278c827ae2fbc62db8288391e564",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PriorityMatrix.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:02cf46af0cdfca3b20cb1f047db029bda8ca098f054beee2f0d3b3a12c27f6bf",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PriorityMatrix.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fdc8ae40f2ea1b492145415c119270b1b26d42cf5384bb75b8fd443f6abbf532",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PriorityMatrix.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1a29e2239464e7cd3cdcb0dccc94e74cf7139ac0b6d594845989b6e9d8b71a59",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PriorityMatrix.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement.",
+    "fr": "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement."
+  },
+  "digest": "sha256:e977ef6e56ac6fc25f3b680c07278a09e731df13dd5d853bd831846bb94912ad",
+  "displayName": "PriorityMatrix",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

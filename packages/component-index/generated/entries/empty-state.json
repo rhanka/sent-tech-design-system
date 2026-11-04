@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "empty-state",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:0339733732b3e75b16228694e78548710a1ba0ba8373c35c2e3479573686a11f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/EmptyState.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e6b3b2c8bfb340e6afbdb7dd49883536b1cbeca64e8c3b535618faf02011c4ed",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/EmptyState.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e18f6c6db289b8551085a08d5e63f28bb4785171eee93577c2d298233cdb2755",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/EmptyState.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8db7783e50fde8ee0df59b3770627a79f924b1fc8b195d68171f992889cc554c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/EmptyState.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Empty state with a primary action.",
+    "fr": "État vide avec action principale."
+  },
+  "digest": "sha256:5bd3d2ef006d3137510bf1fdf59c38a0c743f037bc26c90396aecafefd27b014",
+  "displayName": "EmptyState",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "empty-state",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

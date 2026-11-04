@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "nav-action-stack",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:af905960424f16bd2bd32ef2f0b4b0c88d8bcf5b227d88bb9bb1dfc6b2c2b217",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/NavActionStack.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:88a59641481011387f8cc6d9a91799c4bf179cf6912b7b780bcb7ccaed7d05e5",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/NavActionStack.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3b138dfedc00ce28f12f380ea18ae3d943bb5b887858e44bd449b550e9d36bac",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/NavActionStack.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2cf336998a5ba6a0d12d104ecd068654e7e20456be48d3b40b4dfb51a5f25772",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/NavActionStack.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone.",
+    "fr": "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée."
+  },
+  "digest": "sha256:d97509ada4f74e85081678561c0f5233a9e455e67891f70b725ed9bda2c01f01",
+  "displayName": "NavActionStack",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

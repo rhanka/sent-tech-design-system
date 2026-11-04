@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "tabs",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a8b3dcf9c83a135cdc3a60cb08b8d96df8936fc587260a3ca3bc56de01842c14",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Tabs.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:aef34b2d3e9feff005beb180fff5c6fb187eadd22cdd17c201fb63d357ad0d4c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Tabs.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2b3e051123bb9926e90c70dd820bc81994f2c59b592805ae7181176ebc20daf8",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Tabs.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f4f6ba0990b68d57b1970b32c722f4dcf1f2bbc5a0790746acbb0f81d52436e5",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Tabs.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Tabs with tablist/tab/tabpanel.",
+    "fr": "Onglets tablist/tab/tabpanel."
+  },
+  "digest": "sha256:ec517cf8756c26ceb20aac776e797ec926548f18096c353240e35575d6dd764a",
+  "displayName": "Tabs",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "tabs",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

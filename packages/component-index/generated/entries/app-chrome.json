@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "app-chrome",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d105c0f69c5ce4a88061a460125cb6f65295a614ff64157b2f7ed18b00978662",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AppChrome.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bd188c6c70bc8a4abd3ee60ba2a85919132948cc4c1fdace0358412f4f7f98f9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AppChrome.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:eba2ecfeae68f6c9c8c09e39176db15041203726d0f30d52e807d827aac9b1d6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AppChrome.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e776ceffc4653e02ca2fdfeee38ef3dd0d695e12a1ab044a86a3d831a4a68699",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AppChrome.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
+    "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
+  },
+  "digest": "sha256:676b4bf587e3faad62397d5200fc758ce8eca96268848287aabe4cf976c29a19",
+  "displayName": "AppChrome",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "header",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

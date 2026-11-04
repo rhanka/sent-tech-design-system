@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "step-line-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9ed163bf4b11d064e20f9a2933318f003b3c59dd9b3adb964c2c0b42aeec417e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StepLineChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:559325bcc486aebe91bc3d29f94404f883e036a97b7d072b415bf72a6c99f5fc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StepLineChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b2d6c620563ac8e2abaa102cd2f940e88be2cf2b145886973da394c7b42d2b16",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StepLineChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:930e495eafaa93042d325d5db38546d568c71b29e995b12bc63558850b3b5126",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StepLineChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Step line chart: the value stays flat until the next threshold.",
+    "fr": "Courbe en paliers : la valeur reste stable jusqu'au prochain seuil."
+  },
+  "digest": "sha256:1e8c6a1b7d8ad66fcadb0d52fa6b080cb0c463e617ff8ebcd2fa8b15cb6e5925",
+  "displayName": "StepLineChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "area-range-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:bc902c92e927ba43dd55860f5afbf09148f222f5817b91fa4c6bc05f69f0ba28",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AreaRangeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:da516f21bc2f1cd72c97eb7a643e16fb798a2f76328f2138c975f26997b7a2f1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AreaRangeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:51d0109ebb81e292c43d1ce19bf4c52affe32e39bdcad8bf18d8411f9f9c3243",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AreaRangeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9a73d42360cdd934e40b6e69da2e15161933b6d7cf28302a6c03c3bfe30a650d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AreaRangeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Filled band between a low and a high series along an X axis (e.g. daily temperature range, stock min/max).",
+    "fr": "Bande remplie entre une série basse et une série haute le long d'un axe X (ex. fourchette de température jour par jour, min/max boursier)."
+  },
+  "digest": "sha256:2caf40e0cd7a614a4a9fc61d8dc09f58566bb277f65f45d053e4a62069b7a1d2",
+  "displayName": "AreaRangeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

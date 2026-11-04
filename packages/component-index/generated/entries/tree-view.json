@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "tree-view",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a054028ba0d7e5ed35cf7223588b36954a5085cb8a808a6e4fa5c5a2c6b1294d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TreeView.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9b93ef30b254508f25fec70f582cdf27afbefec83116f3900c4292382c2941a9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TreeView.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:338a7e52305aee19102029901351dd88d34e255d9e0985c0c1e0ceecb30fe757",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TreeView.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2d5863597cb83eeab7495ffb3af37fc3985b0f746f4de86c46d61e1c2e9040ba",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TreeView.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Tree view: expand/collapse, selection, keyboard navigation (arrows).",
+    "fr": "Arborescence : expand/collapse, sélection, navigation clavier (flèches)."
+  },
+  "digest": "sha256:032b0f3ea07c5b8b5f5bc830e6cc8e8226a51f453cfc92b3a39fd67762bb1ac8",
+  "displayName": "TreeView",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

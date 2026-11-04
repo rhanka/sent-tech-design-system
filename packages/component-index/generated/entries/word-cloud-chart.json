@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "word-cloud-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:10fe0094b733a9be0f662c77e8f9ee8778c9e3babd862578d8e5dd818256c2d6",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/WordCloudChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d1b067371bdd918ebd9e97f846886f38e0dfd2795911d2a134647b53c9fcdd96",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/WordCloudChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ded5f14232b0c15e8409f704d0971a63c377b5060efd3ddb986b4a46101d8d4a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/WordCloudChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:14c8cbb8575cd7b43a59100d692b3fd65915c4e0d84c14dd4b76ff1ce348939a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/WordCloudChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap.",
+    "fr": "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement."
+  },
+  "digest": "sha256:63a9ab13df0bc8fe59da624b3d0155d77447db9eae1b748ede0efa14e273d718",
+  "displayName": "WordCloudChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

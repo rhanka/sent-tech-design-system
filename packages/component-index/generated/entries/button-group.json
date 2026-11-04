@@ -1,0 +1,63 @@
+{
+  "category": "action",
+  "componentId": "button-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1ae5b0f2c9124b48b325a47059f011ee81f32d16904e6fc710a09c53ed0b7b63",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ButtonGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:27d003ed29289bef4cb8b4e20adf5091dfacbb0d21f8c3375999ceb997a4adde",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ButtonGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:18563f0f78b0093564de61e5b6e6a594b5ce9877c6d59ec43fe6d4553e3936ef",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ButtonGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:da911df1aabedf4be8be02372efdeab15fcfd0c6960d8ef3df510cde6766efbb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ButtonGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Groups buttons, either attached as segments or spaced.",
+    "fr": "Regroupe des boutons, en segments joints ou espacés."
+  },
+  "digest": "sha256:1f2501b3ecfea5b3da52d6fdbf7d710f986a7def9501a4da4a41e29cb9095be2",
+  "displayName": "ButtonGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

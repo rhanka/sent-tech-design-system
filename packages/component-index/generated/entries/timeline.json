@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "timeline",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6b26ba2e8322b6de5f382796bfc6ba812676bab3d28719427e8912d32d08ef2d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Timeline.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:dfce69dc7cbda889d193b5e1e85f5e127c475b20b8ae1bc2e92b9c53833c6f16",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Timeline.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f336c9bf517fc74019e4d4a72a290bc262f3203e8f512ad5e558640a5c62e205",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Timeline.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:097a573e4ba7bb8de112d052c786cb525edfb7bdb866e58ba4b1e8edc9f5c12f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Timeline.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
+    "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
+  },
+  "digest": "sha256:9ea7464ceb249bac25102d0b1f898e00ebcc256525eb1646bf356b5ff8618826",
+  "displayName": "Timeline",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

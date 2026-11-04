@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "heatmap-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3fb9f4ba6e41da3f49db2147f165bcd49ab40f8d5a9e7e549078f9af48991085",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/HeatmapChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c9e94edabde3d1c2f944cda0116b3bf38278c58d9efd41225534bb4b8e4506f6",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/HeatmapChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4e04feda92c0064ec4ac95188bbe3739e812eefab05f453b957d4ac66dfe705a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/HeatmapChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5b114db70d5c51555a52d16e6a52f1d7f8709eb77afff23b01375c527a2190f6",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/HeatmapChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Colored matrix for crossing two categorical dimensions.",
+    "fr": "Matrice colorée pour croiser deux dimensions catégorielles."
+  },
+  "digest": "sha256:d02c2136ddbba4a800ecc98c56321bbb10b00964b4c0cf50665b38862b1a8aee",
+  "displayName": "HeatmapChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

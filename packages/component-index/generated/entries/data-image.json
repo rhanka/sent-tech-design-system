@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "data-image",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7ba0eef08c4b3864b30a53cb0c2de0678bbb782af826f1c8b7d8bf1152a7d533",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DataImage.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e0da066ada3ffaa467bed5431d31d37b31ebeb0b67fc7ad80eea6d6f80ac9a6e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DataImage.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:612d028854c2bbd59472fb385fafdf2b639593635d6f8f30ceff9732e41730a4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DataImage.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:55c080badd6cdb9780b3518b62311b37aea97b795e3ce853246a65f08a33ed8a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DataImage.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius).",
+    "fr": "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon)."
+  },
+  "digest": "sha256:648e25b039015702a7037ea48982e90b843a2356f4ba8c18e0e1da50d87652d7",
+  "displayName": "DataImage",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

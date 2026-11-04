@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "decomposition-tree-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d31de12dfb25085cd19c037d8c66ed14529704ef282d4ad4886c971a2b69bb2e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DecompositionTreeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c4edc87ff4006d46b2c3353561e9f5c75b2ec9cb44c0102e5c26b6ce108a1cc0",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DecompositionTreeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d9d01876519604b0bb4f2188f3b83d3ef0fb3e05e25f0df43ac8fb6a3b7195a2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DecompositionTreeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b4f99d5dff0cf13d1411d3a606f905785e3a35894fac5ed035e0046310cd38fc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DecompositionTreeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Hierarchical decomposition tree: a total measure broken down level by level into columns of bars linked to their parent.",
+    "fr": "Arbre de décomposition hiérarchique : une mesure totale éclatée niveau par niveau en colonnes de barres reliées au parent."
+  },
+  "digest": "sha256:f2513f9012f1d04083f59ad73fe223073db51a5956bc9dba6db5f1d1c33af7b9",
+  "displayName": "DecompositionTreeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "treegraph-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:007a17bf817ba5c0b25f425c8c9537619e938cd59fd61b755fd18a423cc3cf90",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TreegraphChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:41f6d95996952f75b12992be545d86683be971fdbbb80d83c146b000c1f7164c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TreegraphChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:35d1e7ae7874f912d3740704b747393fe3c4e2e97baf67c52c2ebd96fc950979",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TreegraphChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:80bb8016ce8c0b1c54c6f046ecb617ba9ba8241e535565b1909e237d0feb0122",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TreegraphChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically.",
+    "fr": "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement."
+  },
+  "digest": "sha256:45bf5249b5943967121381f72fb2dab25b183e6838f515aea8826c21e37fd6c4",
+  "displayName": "TreegraphChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

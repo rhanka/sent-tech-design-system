@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "back-to-top",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:56ff80e0c25ea49ee6aafde4e219f4767c501f7b28f4d40ee0c53ffd46869372",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BackToTop.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:03e33cdf64df0d73536f0dbc72d5c05aaaa77e3cc06765111ef5fe09fd0efa96",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BackToTop.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d90aae1ec2cd0f7a4cd42b9526ef0b31f8e9bb57245e71b124aeb5b1c598b774",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BackToTop.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9d0277012145e2cdc535948d73608931a9b293fa4396971343fedee8841cdf19",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BackToTop.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Quick-access button to return to the top after scrolling.",
+    "fr": "Bouton d’accès rapide qui remonte vers le haut de la page au défilement."
+  },
+  "digest": "sha256:a42952de4e04e901734008baef0b1fe0a272c30c0c63119f368a9d77650d8ed7",
+  "displayName": "BackToTop",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

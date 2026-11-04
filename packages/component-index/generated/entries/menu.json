@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "menu",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:24d1a1d6a549c97038fb303c255772b22abcd6edf38070aa9b4406535203b405",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Menu.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fb75b0f5f8a42283bb4c59045b435b84ab57417d02bcda5cb67412e53036a018",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Menu.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d5917d133fb2ebc8d0e5fdd4d8a68abe5dcb620f0a57ab75c73f296c5a024772",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Menu.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c91b69e629abccf227b4a19924e3778397ba62f2bf6e90dc67ca1b5eb92fd37e",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Menu.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Contextual actions menu.",
+    "fr": "Menu d’actions contextuel."
+  },
+  "digest": "sha256:be9504a0586c0b809c7382e42009d4febb6a35ed624bfbe6ae4b4858b0aeff04",
+  "displayName": "Menu",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "menu",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

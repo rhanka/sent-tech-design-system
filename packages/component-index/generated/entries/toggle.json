@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "toggle",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:bf6a922718febbb5d85986226e3ef791a68cc8b3afa37981ce4fecced3f4c714",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Toggle.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:31f67e77128f9ee599f4396644ce0d1b33c055cfb1f8b7933ff78d916ec7667a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Toggle.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5f492ea8f25baf7ac1198bc244bfd8a29f63a689e0b8161ef8ca69c033085f06",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Toggle.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c72cd82b0d9bf107982baf38c4f87c98744484865da9708e2cb325221a6d6ebb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Toggle.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact toggle (Switch variant).",
+    "fr": "Toggle compact (variante du Switch)."
+  },
+  "digest": "sha256:6fc653bf4f975219070be00fc81fd0b08af0821df625ca19251473f68a60e537",
+  "displayName": "Toggle",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

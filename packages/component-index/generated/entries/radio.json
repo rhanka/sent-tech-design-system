@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "radio",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:68205eeae689fdd2b616701513f12120fe35137d4793fcf22207780b0da1acb9",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Radio.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b09a143fcd4a1492185788b56d0ff5b754e2d9aecf0d4e24c12f546fc8e8c3fd",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Radio.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7c24d713b190c8a27ab890a98bbd10d44d75316e1793b4bbe1dafb04316e9efc",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Radio.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:331b4e83e94b8898eedb3f6f20aab9a049476e061d7061b054dc3222cd5cafac",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Radio.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Radio button grouped via `name`.",
+    "fr": "Bouton radio groupé via `name`."
+  },
+  "digest": "sha256:f1389c235bc13c5e80155da92319ffabc95caa08ba58586e315259dfabc8d674",
+  "displayName": "Radio",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "radio",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

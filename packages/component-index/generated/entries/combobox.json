@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "combobox",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:b4ef34cb42af085f576240e51256dfe51ce77add3c40c208057a06779f9677c4",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Combobox.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c3af8566f14324a8bc1d0d9be8fd4d8d62d7f5e3a9dcacb9525f592fd71b8f37",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Combobox.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bcbe16dc2401e896afb46be55e6089b789e9e87ef0ec10750017963d5011da15",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Combobox.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f4702d9c32da786e9b8de39a72ee292799ebcce49c5a698de43783952185c3ed",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Combobox.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Autocomplete text field with selection from a list.",
+    "fr": "Champ texte autocomplété avec sélection dans une liste."
+  },
+  "digest": "sha256:18dd004d1afe3e075645b74ab730b5d07fddbc4b070301f53ff2dda73612878c",
+  "displayName": "Combobox",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
