@@ -1,0 +1,302 @@
+{
+  "componentId": "structured-list",
+  "contractSource": "derived",
+  "digest": "sha256:bce328fe2b5495b0b0bf91a2ceb27b5c1bd885e01dae76d8226a135204d906e0",
+  "entryDigest": "sha256:b779b54c9a95fbaac0dc1ae3b1ddfa32ba79d759a2096f7ba87766467907c032",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StructuredListItem": {
+            "properties": {
+              "description": {},
+              "label": {},
+              "term": {},
+              "value": {}
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "bordered": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/StructuredListItem"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "StructuredListItem.description",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.term",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.value",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5dc61574ccce9f929d08231458590968b2d42e3c2c842d27be8dd3bb2df81ba4",
+        "declarationPath": "packages/components-angular/dist/StructuredList.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StructuredListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "StructuredListItem.description",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "StructuredListItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "StructuredListItem.term",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "StructuredListItem.value",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDListElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "StructuredListItem": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "properties": {
+          "bordered": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/StructuredListItem"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StructuredListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "snippet",
+          "name": "StructuredListItem.value",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[]>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDListElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StructuredListItem": {
+            "properties": {
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "bordered": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/StructuredListItem"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f1fa63bf758ee65a7c3a57d79b2953b33f0fba1e06ecf11c4516c64f130dd8d1",
+        "declarationPath": "packages/components-svelte/dist/StructuredList.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StructuredListProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StructuredListItem": {
+            "properties": {
+              "description": {},
+              "label": {},
+              "term": {},
+              "value": {}
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "bordered": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/StructuredListItem"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "StructuredListItem.description",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.term",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StructuredListItem.value",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:26ecfe8ad617e6f777f202c4e7ae87d21ea27d8bb606fd0a8089702f9cf14381",
+        "declarationPath": "packages/components-vue/dist/StructuredList.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StructuredListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

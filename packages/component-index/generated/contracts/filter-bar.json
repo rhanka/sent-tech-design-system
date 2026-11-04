@@ -1,0 +1,205 @@
+{
+  "componentId": "filter-bar",
+  "contractSource": "derived",
+  "digest": "sha256:f782167bdd4fadb47ccac2759b18bd1402a6e28ae4299a9c4f28ba4674d60a34",
+  "entryDigest": "sha256:5f8438688fc61567d873c1755da3fa5b21210b06fd2423e7643ded5dc8d8908d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClearAll",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clearAllLabel": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:f68216d7ba3f713c3696555be23b6ded326490d34b249fc1f81a48f8cac2f49b",
+        "declarationPath": "packages/components-angular/dist/FilterBar.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FilterBarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClearAll"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "clearAllLabel": {
+            "description": "Libellé du bouton \"tout effacer\". Défaut \"Tout effacer\".",
+            "type": "string"
+          },
+          "label": {
+            "description": "Aria-label du groupe de filtres, ex \"Filtres actifs\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FilterBarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClearAll"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clearAllLabel": {
+            "description": "Libellé du bouton \"tout effacer\". Défaut \"Tout effacer\".",
+            "type": "string"
+          },
+          "label": {
+            "description": "Aria-label du groupe de filtres, ex \"Filtres actifs\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:815299e6ff047be303637196c2d2a77720282635b2587d080efa8cbabf2cd9a1",
+        "declarationPath": "packages/components-svelte/dist/FilterBar.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FilterBarProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClearAll",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClearAll"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clearAllLabel": {
+            "description": "Libellé du bouton \"tout effacer\". Défaut \"Tout effacer\".",
+            "type": "string"
+          },
+          "label": {
+            "description": "Aria-label du groupe de filtres, ex \"Filtres actifs\".",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:72e21975e7e0f7daa33122e39c1bbd95d08676a64bb18c7b3abcc1b04d2e35e8",
+        "declarationPath": "packages/components-vue/dist/FilterBar.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FilterBarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

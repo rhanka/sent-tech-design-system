@@ -1,0 +1,296 @@
+{
+  "componentId": "renko-chart",
+  "contractSource": "derived",
+  "digest": "sha256:ce7b5ea458a9d12d47fea0680d0237e93af638e3f4a3385becd10137698d20fe",
+  "entryDigest": "sha256:aa23fc164c8d2c721bcaf1c05408b90f1b86355ebff66b4690226bc87063ff3c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RenkoChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "date": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RenkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4c5ea077a7441d4a3dbb82c5794150f2b1932d4d35d6382d8ac53c8733d3f275",
+        "declarationPath": "packages/components-angular/dist/RenkoChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RenkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "RenkoChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des briques.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RenkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6b2f64ef9f962c2ed225106640e754b1104856aaa89a8de3e3a3fa7c70082b46",
+        "declarationPath": "packages/components-react/dist/RenkoChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RenkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RenkoChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des briques.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RenkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c70969fed9475e8bdcf09bfdeda64278cced5c1922b0ba2ea5ef011c0dfb9353",
+        "declarationPath": "packages/components-svelte/dist/RenkoChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RenkoChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "RenkoChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des briques.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RenkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:aaa580a634f965c420187098c97b53ab4a74633a981681fc5402ce8c7134a9a4",
+        "declarationPath": "packages/components-vue/dist/RenkoChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RenkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

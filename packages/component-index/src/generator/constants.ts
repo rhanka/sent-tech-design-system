@@ -44,9 +44,16 @@ export const OVERLAY_FILENAME = "catalog-overlay.json";
 
 export const HOUSE_THEMES = ["sent-tech", "forge", "entropic"] as const;
 
-// Digest domain tags (unchanged by the freeze).
+// Digest domain tags (K1a pair unchanged by the freeze; K1b pair added
+// additively in section 4, same DS-CANON-1 serializer).
 export const ENTRY_DIGEST_TAG = "sentropic.ds.component-entry/v1";
 export const INDEX_DIGEST_TAG = "sentropic.ds.component-index/v1";
+export const CONTRACT_DIGEST_TAG = "sentropic.ds.component-contract/v1";
+export const CONTRACT_INDEX_DIGEST_TAG = "sentropic.ds.component-contract-index/v1";
+
+/** K1b contract formats (additive; the K1a FORMAT_* constants are frozen). */
+export const FORMAT_CONTRACT = "component-contract/v1";
+export const FORMAT_CONTRACT_INDEX = "component-contract-index/v1";
 
 // Delivery channel rank (spec section 6.4): source-by-framework,
 // then element, css-classes, tokens, esm.

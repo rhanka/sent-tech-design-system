@@ -1,0 +1,207 @@
+{
+  "componentId": "back-to-top",
+  "contractSource": "derived",
+  "digest": "sha256:4623f01be7aa1613921d4751942b0d2691a851181028557ef0dbea6526dd151b",
+  "entryDigest": "sha256:a42952de4e04e901734008baef0b1fe0a272c30c0c63119f368a9d77650d8ed7",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "autoHide": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a56242736d54064c8020b6305b8b290b4c5e82c3aebb272a723c28203975f78c",
+        "declarationPath": "packages/components-angular/dist/BackToTop.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "BackToTopProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "autoHide": {
+            "type": "boolean"
+          },
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:68bff5ee17bd02af483faad0da99494a9ed5cb7841a5dbd7d3bc79a42df16bc5",
+        "declarationPath": "packages/components-react/dist/BackToTop.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "BackToTopProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLButtonElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "autoHide": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a2d71a70e25a0c7a608f47ee8bf3c5cb72bf2c3807f3245aa6c5962d7fdbe1cd",
+        "declarationPath": "packages/components-svelte/dist/BackToTop.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "BackToTopProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "autoHide": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e5bf7f6f8c360cee47fefcd82cbc13e92619e09713472cfab74c0fe3faf0a969",
+        "declarationPath": "packages/components-vue/dist/BackToTop.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "BackToTopProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

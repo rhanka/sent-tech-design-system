@@ -1,0 +1,307 @@
+{
+  "componentId": "tag",
+  "contractSource": "derived",
+  "digest": "sha256:a57f824c26a596555880cfadf06cfdb09d8eb83ecca15770f6ec07253469ef64",
+  "entryDigest": "sha256:fc79a62986456916083e96f00ba293ec918288f14334be2472386d66e0bac205",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onDismiss",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "dismiss",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ab2b3e2c19b7efe4541dc73e43597bceab268de6473bd2e2d86541aff0dcc694",
+        "declarationPath": "packages/components-angular/dist/Tag.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TagProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "dismiss.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onDismiss",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLSpanElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TagProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onDismiss.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent<Element, MouseEvent>"
+        }
+      ],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onDismiss",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:508daf3c760079e4f7365137498d9d901387b4a162a9e266c4deabf013d343e9",
+        "declarationPath": "packages/components-svelte/dist/Tag.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TagProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onDismiss.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onDismiss",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "dismiss"
+        },
+        {
+          "name": "onDismiss",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:549acd1db6013377420df3a0fab6269d40e6bbe0ccb0c171bfdb8421a428f699",
+        "declarationPath": "packages/components-vue/dist/Tag.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TagProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onDismiss.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": [
+        "emit \"dismiss\": payload not in declaration",
+        "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

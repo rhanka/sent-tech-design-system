@@ -1,0 +1,513 @@
+{
+  "componentId": "nav-item",
+  "contractSource": "derived",
+  "digest": "sha256:420cbf32eb3338edcd31a0e30a20452cb386aa5c21bf87a43442edea984ca02c",
+  "entryDigest": "sha256:a4e504f8c4179d927fb72af84a999dc8eab81f928680cc982b033c12c79ea45d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavItemSwatch": {
+            "properties": {
+              "color": {
+                "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Forme de la pastille couleur (ColorSwatch). Défaut « square ».",
+                "enum": [
+                  "circle",
+                  "square",
+                  "pill"
+                ]
+              },
+              "tone": {
+                "description": "Ton sémantique → rendu par StatusDot (un point). Ignoré si `color`.",
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          },
+          "depth": {
+            "enum": [
+              0,
+              2,
+              1,
+              3
+            ]
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "divider": {
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "swatch": {
+            "$ref": "#/$defs/NavItemSwatch"
+          },
+          "title": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fc9d845e35d473a637fe06174653da4d036360b1fb01b03cff792d12a8230811",
+        "declarationPath": "packages/components-angular/dist/NavItem.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "NavItemProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "leading",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "trailing",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavItemSwatch": {
+            "properties": {
+              "color": {
+                "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Forme de la pastille couleur (ColorSwatch). Défaut « square ».",
+                "enum": [
+                  "circle",
+                  "square",
+                  "pill"
+                ]
+              },
+              "tone": {
+                "description": "Ton sémantique → rendu par StatusDot (un point). Ignoré si `color`.",
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "caption": {
+            "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Bulle de compte en queue (Badge circle/sm, tabular-nums).",
+            "type": "number"
+          },
+          "depth": {
+            "description": "Profondeur (défaut 0) → échelle typo + indentation de la tête.",
+            "enum": [
+              0,
+              2,
+              1,
+              3
+            ]
+          },
+          "disabled": {
+            "description": "Non-interactif.",
+            "type": "boolean"
+          },
+          "divider": {
+            "description": "Séparateur token-only rendu APRÈS la rangée.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Rend la rangée comme un lien (ancre) — anatomie identique.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Sélection (honorée en standalone ; la liste prime si encadrée).",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Ton sémantique de la rangée.",
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          },
+          "swatch": {
+            "$ref": "#/$defs/NavItemSwatch",
+            "description": "Pastille de tête : couleur arbitraire (ColorSwatch) ou ton (StatusDot)."
+          },
+          "title": {
+            "description": "Libellé principal (1ʳᵉ ligne).",
+            "type": "string"
+          },
+          "value": {
+            "description": "Clé de sélection, passée telle quelle à SelectableRow (data-value).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:38a469c7aa5cff03df415ba06349f86b504fe7f2839c4e8ef60e7299e5da68e8",
+        "declarationPath": "packages/components-react/dist/NavItem.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "NavItemProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "selected"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavItemSwatch": {
+            "properties": {
+              "color": {
+                "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Forme de la pastille couleur (ColorSwatch). Défaut « square ».",
+                "enum": [
+                  "circle",
+                  "square",
+                  "pill"
+                ]
+              },
+              "tone": {
+                "description": "Ton sémantique → rendu par StatusDot (un point). Ignoré si `color`.",
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "caption": {
+            "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Bulle de compte en queue (Badge circle/sm, tabular-nums).",
+            "type": "number"
+          },
+          "depth": {
+            "description": "Profondeur (défaut 0) → échelle typo + indentation de la tête.",
+            "enum": [
+              0,
+              2,
+              1,
+              3
+            ]
+          },
+          "disabled": {
+            "description": "Non-interactif.",
+            "type": "boolean"
+          },
+          "divider": {
+            "description": "Séparateur token-only rendu APRÈS la rangée.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Rend la rangée comme un lien (ancre) — anatomie identique.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Sélection (bindable, honorée en standalone ; la liste prime si encadrée).",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Ton sémantique de la rangée.",
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "swatch": {
+            "$ref": "#/$defs/NavItemSwatch",
+            "description": "Pastille de tête : couleur arbitraire (ColorSwatch) ou ton (StatusDot)."
+          },
+          "title": {
+            "description": "Libellé principal (1ʳᵉ ligne).",
+            "type": "string"
+          },
+          "value": {
+            "description": "Clé de sélection, passée telle quelle à SelectableRow (data-value).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "leading",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "trailing",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e34d51c11f8e40fdd2ebf0c2d01bb467b61369b8a3be1cd5da69255129da1a28",
+        "declarationPath": "packages/components-svelte/dist/NavItem.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "NavItemProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(selected: boolean) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "NavItemSwatch": {
+            "properties": {
+              "color": {
+                "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Forme de la pastille couleur (ColorSwatch). Défaut « square ».",
+                "enum": [
+                  "circle",
+                  "square",
+                  "pill"
+                ]
+              },
+              "tone": {
+                "description": "Ton sémantique → rendu par StatusDot (un point). Ignoré si `color`.",
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "caption": {
+            "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Bulle de compte en queue (Badge circle/sm, tabular-nums).",
+            "type": "number"
+          },
+          "depth": {
+            "description": "Profondeur (défaut 0) → échelle typo + indentation de la tête.",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "disabled": {
+            "description": "Non-interactif.",
+            "type": "boolean"
+          },
+          "divider": {
+            "description": "Séparateur token-only rendu APRÈS la rangée.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Rend la rangée comme un lien (ancre) — anatomie identique.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Sélection (honorée en standalone ; la liste prime si encadrée).",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Ton sémantique de la rangée.",
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "swatch": {
+            "$ref": "#/$defs/NavItemSwatch",
+            "description": "Pastille de tête : couleur arbitraire (ColorSwatch) ou ton (StatusDot)."
+          },
+          "title": {
+            "description": "Libellé principal (1ʳᵉ ligne).",
+            "type": "string"
+          },
+          "value": {
+            "description": "Clé de sélection, passée telle quelle à SelectableRow (data-value).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c4e787d76ee4a0a70041ba0361687f7d5237b17929d5abaec7e38ec561bc82a9",
+        "declarationPath": "packages/components-vue/dist/NavItem.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "NavItemProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

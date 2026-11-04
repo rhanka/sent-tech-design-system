@@ -1,0 +1,446 @@
+{
+  "componentId": "checkbox-group",
+  "contractSource": "derived",
+  "digest": "sha256:cad3e49889abb26218bbd67fab7184fea5b540e5d7b1d489a765574d1cdf130b",
+  "entryDigest": "sha256:f8d67030e7f51f6ef3b765d6a9932ad068f0b15d0c5dccbb141f44407076f323",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string[]) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "valueChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CheckboxGroupOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/CheckboxGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c5af90f15debf3aea0872ef7f9ae6b9c77a6c749342eefd733e4a845849e0f0c",
+        "declarationPath": "packages/components-angular/dist/CheckboxGroup.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CheckboxGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.FieldsetHTMLAttributes<HTMLFieldSetElement>",
+        "omitted": [
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CheckboxGroupOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Désactive le groupe entier.",
+            "type": "boolean"
+          },
+          "helperText": {
+            "description": "Description optionnelle affichée sous la légende.",
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé par les cases (utile pour la soumission de formulaire).",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/CheckboxGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeurs cochées (liste contrôlée).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "legend"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3d4be6354213e16be6554b26c671d8119580a380d7586ac3b35e20bb9a3ba845",
+        "declarationPath": "packages/components-react/dist/CheckboxGroup.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CheckboxGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLFieldSetElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CheckboxGroupOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Marque le groupe comme requis.",
+            "type": "boolean"
+          },
+          "helperText": {
+            "description": "Description optionnelle affichée sous la légende.",
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé par les cases (utile pour la soumission de formulaire).",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/CheckboxGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeurs cochées (liste contrôlée).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "legend"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e4ea257b34850708e35d7fbdb54816f79dd9ac6aa761b8dbdf23cc6dd0de68b5",
+        "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CheckboxGroupProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string[]) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CheckboxGroupOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Désactive le groupe entier.",
+            "type": "boolean"
+          },
+          "helperText": {
+            "description": "Description optionnelle affichée sous la légende.",
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé par les cases (utile pour la soumission de formulaire).",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/CheckboxGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeurs cochées (liste contrôlée).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "legend"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1646eb04000a5f7f38160065d2224af8a4940bf3103409ea4953861d7343857e",
+        "declarationPath": "packages/components-vue/dist/CheckboxGroup.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CheckboxGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

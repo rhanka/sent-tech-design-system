@@ -1,0 +1,317 @@
+{
+  "componentId": "heikin-ashi-chart",
+  "contractSource": "derived",
+  "digest": "sha256:d45e4071fc806214966ff475acfc5795387a02005a20caa06e4970ef8114c363",
+  "entryDigest": "sha256:cbef55548968d93a4f234585c075709346c220739ef5f3918bd28d847cd3d8a0",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HeikinAshiChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HeikinAshiChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5670445e27e50278721b22602bedcaaa372d23cc23b9a06e361182ea82bd149b",
+        "declarationPath": "packages/components-angular/dist/HeikinAshiChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "HeikinAshiChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "HeikinAshiChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HeikinAshiChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:171df0eedaf00478a90c3abdb4593cf2de8ab66dbc74e1169dc6ee9df90e377f",
+        "declarationPath": "packages/components-react/dist/HeikinAshiChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "HeikinAshiChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HeikinAshiChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HeikinAshiChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:184d4097350425279c31c65704f84d6a44caae7055f597270c5b793756244932",
+        "declarationPath": "packages/components-svelte/dist/HeikinAshiChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "HeikinAshiChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "HeikinAshiChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HeikinAshiChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dea4c640c162d66e8a8aed32f76048fd2996d9a231df2325d2e4de623e313696",
+        "declarationPath": "packages/components-vue/dist/HeikinAshiChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "HeikinAshiChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

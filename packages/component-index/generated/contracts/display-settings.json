@@ -1,0 +1,370 @@
+{
+  "componentId": "display-settings",
+  "contractSource": "derived",
+  "digest": "sha256:76ec749e2c6c0fcd2dd14c4384ea0521bcf1ac09e83f3d58b4b555b745686b83",
+  "entryDigest": "sha256:7c21f39982fdf0338d065ada408366470e8e340786107f87a5f63ec172703280",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "$ref": "#/$defs/DisplaySettingsState"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "showContrast": {
+            "type": "boolean"
+          },
+          "showFontScale": {
+            "type": "boolean"
+          },
+          "showLineSpacing": {
+            "type": "boolean"
+          },
+          "showReducedMotion": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "values": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "values",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Partial<DisplaySettingsState>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:cc79d8623132534ac0f41b8e555194866cd2d50d7402986044c89e364b510bd7",
+        "declarationPath": "packages/components-angular/dist/DisplaySettings.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DisplaySettingsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/DisplaySettingsState"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "children",
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "showContrast": {
+            "type": "boolean"
+          },
+          "showFontScale": {
+            "type": "boolean"
+          },
+          "showLineSpacing": {
+            "type": "boolean"
+          },
+          "showReducedMotion": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "values": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "values",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Partial<DisplaySettingsState>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6b9e841ae62ef535e820441fa75ed1102fbeedfeab0c36ec1e56affac6b4a406",
+        "declarationPath": "packages/components-react/dist/DisplaySettings.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DisplaySettingsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/DisplaySettingsState"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "children",
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "showContrast": {
+            "type": "boolean"
+          },
+          "showFontScale": {
+            "type": "boolean"
+          },
+          "showLineSpacing": {
+            "type": "boolean"
+          },
+          "showReducedMotion": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "values": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "values",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Partial<DisplaySettingsState>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bfc7aa56b5a7ab8b5648cc1296d3e555a960776e159314541d2ef03726b8d50b",
+        "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DisplaySettingsProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "showContrast": {
+            "type": "boolean"
+          },
+          "showFontScale": {
+            "type": "boolean"
+          },
+          "showLineSpacing": {
+            "type": "boolean"
+          },
+          "showReducedMotion": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "values": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "values",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Partial<DisplaySettingsState>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d00fd788c74b4b3fc93d52f8aadb8562f6a6cdb5f8c1d2e89c036371932dd7f3",
+        "declarationPath": "packages/components-vue/dist/DisplaySettings.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DisplaySettingsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

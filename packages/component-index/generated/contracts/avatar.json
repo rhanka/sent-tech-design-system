@@ -1,0 +1,296 @@
+{
+  "componentId": "avatar",
+  "contractSource": "derived",
+  "digest": "sha256:bf3e30a93e4faad77fe53adf759941271db2796c8f8b5ebb5d375511c4ee3216",
+  "entryDigest": "sha256:bb80838eeec4e068dc1c650b887ac675f493f1605ec0a4cafefad67bf04d4a57",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "alt": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "src": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e10828a364e9cfbfa3d2dddda5a2be9d8c693f9d080fc3254264f11dd2913adc",
+        "declarationPath": "packages/components-angular/dist/Avatar.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AvatarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Texte alternatif de l'image. Par défaut = `name`.",
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom complet, utilisé pour dériver les initiales et l'étiquette a11y.",
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "src": {
+            "description": "URL de la photo. Si absente, on rend un cercle d'initiales.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Catégorie de couleur pour le fond des initiales.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8bba89be839e2e685cf250770620aadffacfb911063eb4dfc638b3a8eea6d610",
+        "declarationPath": "packages/components-react/dist/Avatar.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AvatarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Texte alternatif de l'image. Par défaut = `name`.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom complet, utilisé pour dériver les initiales et l'étiquette a11y.",
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "src": {
+            "description": "URL de la photo. Si absente, on rend un cercle d'initiales.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Catégorie de couleur pour le fond des initiales.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6095d313945d4c7278f0641ff54328cd326f28cac844dd48dcfa3a874931fcc3",
+        "declarationPath": "packages/components-svelte/dist/Avatar.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AvatarProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Texte alternatif de l'image. Par défaut = `name`.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom complet, utilisé pour dériver les initiales et l'étiquette a11y.",
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "src": {
+            "description": "URL de la photo. Si absente, on rend un cercle d'initiales.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Catégorie de couleur pour le fond des initiales.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:487627c0b045246f4a2b741f7018778eef93919481df4289133d412b36b01137",
+        "declarationPath": "packages/components-vue/dist/Avatar.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AvatarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

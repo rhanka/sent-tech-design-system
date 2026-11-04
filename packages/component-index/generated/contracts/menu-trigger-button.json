@@ -1,0 +1,239 @@
+{
+  "componentId": "menu-trigger-button",
+  "contractSource": "derived",
+  "digest": "sha256:104fc418f152d07e974670e6c42628d67dd15358e1d6497e6ea3969676378437",
+  "entryDigest": "sha256:6da4166f098c517cbcaa4cdac6b36fa618f14c29eac1dd0ebc797e3eaf2692a9",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "expanded": {
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5a6342a734336a51226c33b90a9acc3c1c77abb0d6ada3b26b323741013d110e",
+        "declarationPath": "packages/components-angular/dist/MenuTriggerButton.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "MenuTriggerButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "expanded": {
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "MenuTriggerButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLButtonAttributes",
+        "omitted": [
+          "aria-controls",
+          "aria-expanded",
+          "aria-haspopup",
+          "aria-label",
+          "class",
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "aria-controls": {
+            "type": "string"
+          },
+          "aria-label": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "expanded": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost"
+            ]
+          }
+        },
+        "required": [
+          "aria-label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:aac815b74aece6d17c5fb88ee8c281306b788d0d67f24049ccdd65b23c247111",
+        "declarationPath": "packages/components-svelte/dist/MenuTriggerButton.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "MenuTriggerButtonProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "expanded": {
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:caea6491d62a661eb7a48a7c974337e46f987c43dcc8c4efdd9813ca7ab6314d",
+        "declarationPath": "packages/components-vue/dist/MenuTriggerButton.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "MenuTriggerButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

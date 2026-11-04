@@ -1,0 +1,434 @@
+{
+  "componentId": "solid-gauge-chart",
+  "contractSource": "derived",
+  "digest": "sha256:53a8e7cf7b41230c0ec1159883c112cc204a8bfb2dfdb8b17d0029df3f6d3883",
+  "entryDigest": "sha256:876ffd820d54fbcae556bd45f41b90c30a8382ed5177100b78a0cc53de9a6004",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "SolidGaugeThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "innerRadius": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "startAngle": {
+            "type": "number"
+          },
+          "thresholds": {
+            "items": {
+              "$ref": "#/$defs/SolidGaugeThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8dd646f6f8abfaf3d6bcf9ee271f7dff8db797c0447ae4c7dacb86f748f1c0c0",
+        "declarationPath": "packages/components-angular/dist/SolidGaugeChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SolidGaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "SolidGaugeThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "endAngle": {
+            "description": "Angle de fin en degrés.",
+            "type": "number"
+          },
+          "format": {
+            "description": "Format de la valeur centrale.",
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "innerRadius": {
+            "description": "Rayon intérieur de l'anneau, en fraction du rayon (0..1).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Libellé décrivant la jauge (a11y + texte sous la valeur).",
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "startAngle": {
+            "description": "Angle de départ en degrés (0 = est, sens horaire).",
+            "type": "number"
+          },
+          "thresholds": {
+            "description": "Bandes colorées triées par `value` croissante : la zone contenant la valeur teinte l'arc.",
+            "items": {
+              "$ref": "#/$defs/SolidGaugeThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "description": "Suffixe d'unité (ignoré pour `percent`).",
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f2bd8c7920b36a1ec6927ef8ac5c905b6f0ff785bc882ec55924063037d41bc4",
+        "declarationPath": "packages/components-react/dist/SolidGaugeChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SolidGaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "SolidGaugeThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "description": "Angle de fin en degrés.",
+            "type": "number"
+          },
+          "format": {
+            "description": "Format de la valeur centrale.",
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "innerRadius": {
+            "description": "Rayon intérieur de l'anneau, en fraction du rayon (0..1).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Libellé décrivant la jauge (a11y + texte sous la valeur).",
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "startAngle": {
+            "description": "Angle de départ en degrés (0 = est, sens horaire).",
+            "type": "number"
+          },
+          "thresholds": {
+            "description": "Bandes colorées. Triées par `value` croissante : la zone contenant la valeur teinte l'arc rempli.",
+            "items": {
+              "$ref": "#/$defs/SolidGaugeThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "description": "Suffixe d'unité (ignoré pour `percent`).",
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6409aad3a32caf47a634f382afe88c03819138535b245170090c38b67b07b12d",
+        "declarationPath": "packages/components-svelte/dist/SolidGaugeChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SolidGaugeChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "SolidGaugeThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "innerRadius": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "startAngle": {
+            "type": "number"
+          },
+          "thresholds": {
+            "items": {
+              "$ref": "#/$defs/SolidGaugeThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8e167b52b00fcd1fad04426351e9ecbefff951e162fac1e700ae2d6c9b21c8a3",
+        "declarationPath": "packages/components-vue/dist/SolidGaugeChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SolidGaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

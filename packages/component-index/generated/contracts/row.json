@@ -1,0 +1,263 @@
+{
+  "componentId": "row",
+  "contractSource": "derived",
+  "digest": "sha256:b439e5fd90a7bf9a44406b87e55f7ad73bfd5d51b6f678fdea07de295e70fd28",
+  "entryDigest": "sha256:18fd55d7f8809794dadf8ebd8ac56d51751311564030568060029ac678fa4872",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gutter": {
+            "type": "number"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:2671aa868f3c1001da29fe9c811497eb79e7d1e7ea50d544183d017dba157539",
+        "declarationPath": "packages/components-angular/dist/Row.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RowProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "gutter": {
+            "description": "Spacing scale step (0..12) used for the column gutter.",
+            "type": "number"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:10c924c11ce589954ca609f9a43ca52340be8863ad71ed45c03c091d00efac29",
+        "declarationPath": "packages/components-react/dist/Row.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RowProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gutter": {
+            "description": "Spacing scale step (0..12) used for the column gutter.",
+            "type": "number"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:1cfd1f54b649ff835053fd906a7b0f141ac1a38c7e3416d2d9425f1e2db5d734",
+        "declarationPath": "packages/components-svelte/dist/Row.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RowProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gutter": {
+            "description": "Spacing scale step (0..12) used for the column gutter.",
+            "type": "number"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c486bc068646252119daf169e94b14dc0cf9e3862d49dfb147cb42c3fe51503d",
+        "declarationPath": "packages/components-vue/dist/Row.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RowProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

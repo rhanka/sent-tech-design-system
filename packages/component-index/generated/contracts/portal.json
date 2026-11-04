@@ -1,0 +1,221 @@
+{
+  "componentId": "portal",
+  "contractSource": "derived",
+  "digest": "sha256:549aad29850cac7ed67ccd4bbba67dfa0b4a475ef2630746ac212797787437b7",
+  "entryDigest": "sha256:db5b4634c706ed328a2533aac07c1f76485abca9f5d75d8c1b30e516c90c25dd",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "target",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:8494e80f667da8faed254a2391246260bb048fcd8225e3b47bfc0c8ee4beb293",
+        "declarationPath": "packages/components-angular/dist/Portal.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PortalProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "className": {
+            "description": "Optional class applied to the portal container element.",
+            "type": "string"
+          },
+          "disabled": {
+            "description": "When `true`, render inline in place (no teleportation).",
+            "type": "boolean"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ],
+            "description": "Where to teleport the children. A CSS selector string or an actual\n`HTMLElement`. Defaults to the document `<body>`."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "target",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:061b056c78144c4b7e89537b5b16a3a086e509735444d5fff90bd7d137e6660f",
+        "declarationPath": "packages/components-react/dist/Portal.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PortalProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "description": "Optional class applied to the portal container element.",
+            "type": "string"
+          },
+          "disabled": {
+            "description": "When `true`, render inline in place (no teleportation).",
+            "type": "boolean"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ],
+            "description": "Where to teleport the children. A CSS selector string or an actual\n`HTMLElement`. Defaults to the document `<body>`."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "target",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:35d1f561da087ceb74cd610219543bf29f3769177222815060af09d07a49db5a",
+        "declarationPath": "packages/components-svelte/dist/Portal.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PortalProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "description": "Optional class applied to the portal container element.",
+            "type": "string"
+          },
+          "disabled": {
+            "description": "When `true`, render inline in place (no teleportation).",
+            "type": "boolean"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ],
+            "description": "Where to teleport the children. A CSS selector string or an actual\n`HTMLElement`. Defaults to the document `<body>`."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "target",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ce6cf9abdcf774b55dcfc75462c4f251ae17b5fc32880c39bc68dc66cd082d0b",
+        "declarationPath": "packages/components-vue/dist/Portal.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PortalProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

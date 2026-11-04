@@ -1,0 +1,251 @@
+{
+  "componentId": "embed",
+  "contractSource": "derived",
+  "digest": "sha256:a22c67ac6e8e865e6d3af56156ab8bb51a62755821edc15916db7ea3e9d7a38d",
+  "entryDigest": "sha256:7667418a840bbbb7af4be5820058ef0ad5eee43c5c12c0e5ef5aaf660ce61e23",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "allow": {
+            "type": "string"
+          },
+          "aspectRatio": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "loading": {
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "sandbox": {
+            "type": "string"
+          },
+          "src": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:af4b1d7be1b945f960fb6cd5453d10b8322acd7304d61ebb5843adb157645901",
+        "declarationPath": "packages/components-angular/dist/Embed.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "EmbedProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className",
+          "title"
+        ]
+      },
+      "props": {
+        "properties": {
+          "allow": {
+            "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",
+            "type": "string"
+          },
+          "aspectRatio": {
+            "description": "Aspect ratio of the frame container (CSS `aspect-ratio`). Default `16/9`.",
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "loading": {
+            "description": "Iframe loading strategy. Default `lazy`; use `eager` for above-the-fold embeds.",
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "sandbox": {
+            "description": "`sandbox` token list. Defaults to `\"\"` for the strictest sandbox. Pass your\nown token list to relax it deliberately.",
+            "type": "string"
+          },
+          "src": {
+            "description": "URL of the embedded document (required).",
+            "type": "string"
+          },
+          "title": {
+            "description": "Accessible name of the frame (required for a11y — every iframe must carry a\nmeaningful `title`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:47e6bfd44966f8c168a954cbae67fe126f392b1d0a7f4ff77b494c416da9c0d3",
+        "declarationPath": "packages/components-react/dist/Embed.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "EmbedProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "title"
+        ]
+      },
+      "props": {
+        "properties": {
+          "allow": {
+            "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",
+            "type": "string"
+          },
+          "aspectRatio": {
+            "description": "Aspect ratio of the frame container (CSS `aspect-ratio`). Default `16/9`.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "loading": {
+            "description": "Iframe loading strategy. Default `lazy`; use `eager` for above-the-fold embeds.",
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "sandbox": {
+            "description": "`sandbox` token list. Defaults to `\"\"` for the strictest sandbox. Pass\nyour own token list to relax it deliberately.",
+            "type": "string"
+          },
+          "src": {
+            "description": "URL of the embedded document (required).",
+            "type": "string"
+          },
+          "title": {
+            "description": "Accessible name of the frame (required for a11y — every iframe must carry\na meaningful `title`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:440005ad4531e5e55304c3b1c50dfa792dda09fcf5010de132a079358896eac5",
+        "declarationPath": "packages/components-svelte/dist/Embed.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "EmbedProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "allow": {
+            "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",
+            "type": "string"
+          },
+          "aspectRatio": {
+            "description": "Aspect ratio of the frame container (CSS `aspect-ratio`). Default `16/9`.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "loading": {
+            "description": "Iframe loading strategy. Default `lazy`; use `eager` for above-the-fold embeds.",
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "sandbox": {
+            "description": "`sandbox` token list. Defaults to `\"\"` for the strictest sandbox. Pass your\nown token list to relax it deliberately.",
+            "type": "string"
+          },
+          "src": {
+            "description": "URL of the embedded document (required).",
+            "type": "string"
+          },
+          "title": {
+            "description": "Accessible name of the frame (required for a11y — every iframe must carry a\nmeaningful `title`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9029105c171229e4a0eb257314ae629a800b62be2d2a62350925e015f5586c56",
+        "declarationPath": "packages/components-vue/dist/Embed.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "EmbedProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

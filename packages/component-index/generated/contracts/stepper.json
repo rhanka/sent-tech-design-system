@@ -1,0 +1,349 @@
+{
+  "componentId": "stepper",
+  "contractSource": "derived",
+  "digest": "sha256:6f0e8b0a5326b5e36169ec16c43ead641266c9de0583b91e27b2a746167c2308",
+  "entryDigest": "sha256:9a65386e7c1df9d31b41fee441b51026773fab16f630bdc5fbcca0feae311f2b",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onStepClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(index: number) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "stepClick",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StepperStep": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clickable": {
+            "type": "boolean"
+          },
+          "current": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/$defs/StepperStep"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:95f07901113cf4fd18817c1cb90db1b717ba85fa1ec50d6500ee9405a1322714",
+        "declarationPath": "packages/components-angular/dist/Stepper.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StepperProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onStepClick",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLOListElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StepperStep": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "clickable": {
+            "description": "Autorise la navigation au clic sur les étapes.",
+            "type": "boolean"
+          },
+          "current": {
+            "description": "Index de l'étape courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y de la liste d'étapes.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/$defs/StepperStep"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "steps"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4544a8c6e5f67f6a78724633eb160d32605ee9845873926dc4c1462ee1deeede",
+        "declarationPath": "packages/components-react/dist/Stepper.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StepperProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onStepClick",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLOListElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StepperStep": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clickable": {
+            "description": "Autorise la navigation au clic sur les étapes.",
+            "type": "boolean"
+          },
+          "current": {
+            "description": "Index de l'étape courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y de la liste d'étapes.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/$defs/StepperStep"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "steps"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d1756ea09971d4a22f3fbc7f820c599b2d1a918165b7c4239e125282abcb4704",
+        "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StepperProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onStepClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(index: number) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onStepClick",
+          "payload": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "stepClick"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StepperStep": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clickable": {
+            "description": "Autorise la navigation au clic sur les étapes.",
+            "type": "boolean"
+          },
+          "current": {
+            "description": "Index de l'étape courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y de la liste d'étapes.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/$defs/StepperStep"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "steps"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:21247175993fd054a0a94c48da6f374f2b48f9a1cced6cccc46473c0d4326626",
+        "declarationPath": "packages/components-vue/dist/Stepper.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StepperProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"stepClick\": payload not in declaration",
+        "event pair: emits \"stepClick\" and prop \"onStepClick\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}
