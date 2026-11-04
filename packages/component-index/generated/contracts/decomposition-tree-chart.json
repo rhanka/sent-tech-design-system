@@ -1,7 +1,7 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:a23c2e0bffcd51cbe03e991bcc61d303be6266e79239b254dec12da1052a0e13",
+  "digest": "sha256:b31af47819663aeaf57a2201f2f45825e2254241093810a64373f2be16ce25bf",
   "entryDigest": "sha256:f2513f9012f1d04083f59ad73fe223073db51a5956bc9dba6db5f1d1c33af7b9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "DecompositionTreeData": {
+            "additionalProperties": false,
             "properties": {
               "levels": {
                 "items": {
@@ -33,6 +34,7 @@
             "type": "object"
           },
           "DecompositionTreeLevel": {
+            "additionalProperties": false,
             "properties": {
               "dimension": {
                 "type": "string"
@@ -51,6 +53,7 @@
             "type": "object"
           },
           "DecompositionTreeNode": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -69,6 +72,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -120,6 +124,7 @@
       "props": {
         "$defs": {
           "DecompositionTreeData": {
+            "additionalProperties": false,
             "properties": {
               "levels": {
                 "items": {
@@ -138,6 +143,7 @@
             "type": "object"
           },
           "DecompositionTreeLevel": {
+            "additionalProperties": false,
             "properties": {
               "dimension": {
                 "type": "string"
@@ -156,6 +162,7 @@
             "type": "object"
           },
           "DecompositionTreeNode": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -174,6 +181,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -222,6 +230,7 @@
       "props": {
         "$defs": {
           "DecompositionTreeData": {
+            "additionalProperties": false,
             "properties": {
               "levels": {
                 "items": {
@@ -240,6 +249,7 @@
             "type": "object"
           },
           "DecompositionTreeLevel": {
+            "additionalProperties": false,
             "properties": {
               "dimension": {
                 "type": "string"
@@ -258,6 +268,7 @@
             "type": "object"
           },
           "DecompositionTreeNode": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -276,6 +287,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -325,6 +337,7 @@
       "props": {
         "$defs": {
           "DecompositionTreeData": {
+            "additionalProperties": false,
             "properties": {
               "levels": {
                 "items": {
@@ -343,6 +356,7 @@
             "type": "object"
           },
           "DecompositionTreeLevel": {
+            "additionalProperties": false,
             "properties": {
               "dimension": {
                 "type": "string"
@@ -361,6 +375,7 @@
             "type": "object"
           },
           "DecompositionTreeNode": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -379,6 +394,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

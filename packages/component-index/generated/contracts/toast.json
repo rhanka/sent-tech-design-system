@@ -1,7 +1,7 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:853d56186d06833e284673cf014e39974d948bf8acc7c0db1f8ca433ac37c86c",
+  "digest": "sha256:ba008d8bb8b05670ae2661d2e3ec88ae37ddb223920d5b7ab2160175794f225a",
   "entryDigest": "sha256:d3fa822102d0e3f77ff78713fe404936ac1106ae4f0ec88bf3497406d8828426",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "actions": {},
           "class": {
@@ -140,6 +141,7 @@
       "props": {
         "$defs": {
           "ToastItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -159,6 +161,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "autoDismiss": {
             "type": "boolean"
@@ -213,6 +216,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -240,12 +244,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actions",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actions"
         }
       ],
       "source": {
@@ -298,6 +297,7 @@
       "props": {
         "$defs": {
           "ToastItem": {
+            "additionalProperties": false,
             "properties": {
               "actions": {},
               "id": {
@@ -321,6 +321,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "autoDismiss": {
             "type": "boolean"
@@ -380,6 +381,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onClose.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onDismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         },
         {
           "name": "title",

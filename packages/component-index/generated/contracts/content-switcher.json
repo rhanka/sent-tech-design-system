@@ -1,7 +1,7 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:f8857961b1d055184c771d820aec5568e57b770cc6d5ceef46e5bdba5ed6a2f5",
+  "digest": "sha256:abd24bb5dffcf17ce66bf4b7bcda6936a1270e6e006f40e36b42eb715bb26abe",
   "entryDigest": "sha256:0641a3beef24e8f35479f1044e8de9e6f703eab841fdd0c0264b6a551a81d210",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "ContentSwitcherItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -40,6 +41,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -124,6 +126,7 @@
       "props": {
         "$defs": {
           "ContentSwitcherItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -138,6 +141,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -196,6 +200,7 @@
       "props": {
         "$defs": {
           "ContentSwitcherItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -214,6 +219,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -285,6 +291,7 @@
       "props": {
         "$defs": {
           "ContentSwitcherItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -303,6 +310,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -338,6 +346,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

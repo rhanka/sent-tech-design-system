@@ -1,7 +1,7 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:9e303da38c0fb0fa6982606a695bb38c7336380ce76bdff1f0662904176973d6",
+  "digest": "sha256:76538c7bb0cb2c0fb8bff039a077d7d1cb5a1aea0416506f186b7e55b041eb55",
   "entryDigest": "sha256:e33f0e78899913af853e268c871a312f03406f36331355de536005998f546c12",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "BumpChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -48,6 +49,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "categories": {
             "items": {
@@ -105,6 +107,7 @@
       "props": {
         "$defs": {
           "BumpChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -138,6 +141,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "categories": {
             "items": {
@@ -194,6 +198,7 @@
       "props": {
         "$defs": {
           "BumpChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -227,6 +232,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "categories": {
             "items": {
@@ -284,6 +290,7 @@
       "props": {
         "$defs": {
           "BumpChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -317,6 +324,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "categories": {
             "items": {

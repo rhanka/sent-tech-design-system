@@ -1,7 +1,7 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:c5e289c8b510abc4c22d8aa51574eca0868cf6d6eafa0accdf2e8181cd3c18ba",
+  "digest": "sha256:854f083478d34dd0a8726b504c3ed6b11ee80aa35e501941ebb48844a31697c6",
   "entryDigest": "sha256:b3c5cabc129dfd403262645e76c83efdcd02cfe21a8bdf4385e63a5b8ff64ced",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "VectorFieldChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "type": "number"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -92,6 +94,7 @@
       "props": {
         "$defs": {
           "VectorFieldChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
@@ -117,6 +120,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -168,6 +172,7 @@
       "props": {
         "$defs": {
           "VectorFieldChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
@@ -193,6 +198,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -245,6 +251,7 @@
       "props": {
         "$defs": {
           "VectorFieldChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
@@ -270,6 +277,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

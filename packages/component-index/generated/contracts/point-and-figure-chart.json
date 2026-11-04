@@ -1,7 +1,7 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:80d15a178ff4ef4f03aeaca5704ff74adbc83623edc17f41cba337ed1800765d",
+  "digest": "sha256:7a0ede1e641d532eb52726cba8fcb89308e07b9ff2e89cce3bcc077af6963eb3",
   "entryDigest": "sha256:31380502a862c7f8f9ac2d60b92eb9b17a79156682425e874e0fa043db869781",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "PointAndFigureChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -30,6 +31,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -90,6 +92,7 @@
       "props": {
         "$defs": {
           "PointAndFigureChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des colonnes.",
@@ -107,6 +110,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -164,6 +168,7 @@
       "props": {
         "$defs": {
           "PointAndFigureChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des colonnes.",
@@ -181,6 +186,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -239,6 +245,7 @@
       "props": {
         "$defs": {
           "PointAndFigureChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des colonnes.",
@@ -256,6 +263,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"

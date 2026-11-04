@@ -1,7 +1,7 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:5e31b1439953f746b9c7b9a5884d2b16cce4404f47910c30330037ec8b3a47be",
+  "digest": "sha256:837e07031c3d2d47494ee6ef54717cc702750e74ae4918265dc682dd9d5c9f0c",
   "entryDigest": "sha256:73e0ad57b0d4c8db3484183f8780dfcdbbe6704ecc82c4b6a17bcc568ebfed2a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -36,6 +36,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "ariaLabelMax": {
             "type": "string"
@@ -181,6 +182,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "ariaLabelMax": {
             "description": "aria-label de la poignée haute. Défaut \"Valeur maximale\".",
@@ -291,6 +293,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "ariaLabelMax": {
             "description": "aria-label de la poignée haute. Défaut \"Valeur maximale\".",
@@ -418,6 +421,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "ariaLabelMax": {
             "type": "string"
@@ -504,7 +508,20 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:58ccb972027586f41565a7611fc5fa2f2598f7a58552bd6a906324a646ef92f8",

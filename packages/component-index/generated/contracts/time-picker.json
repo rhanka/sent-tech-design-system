@@ -1,7 +1,7 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:c05757621005a8940f8271e587206e53fa26245e3fe9f6e7bb179620520cc4ac",
+  "digest": "sha256:6c11290565a5f7dd5077cab43fef8b2a9799566b0a4a665cf69a624e30f53212",
   "entryDigest": "sha256:507f82adffc1273dcc72bc8e89602705ffd97c81a6ff408c06fb662bab5969d2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -27,6 +27,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "disabled": {
             "type": "boolean"
@@ -105,6 +106,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -186,6 +188,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -281,6 +284,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -327,7 +331,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:232ea2eb2c42852089818ca59b0f3141d635a2240e38a8d814c6bf21a4808f25",

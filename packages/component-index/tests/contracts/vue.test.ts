@@ -26,7 +26,10 @@ function inputFor(identifier: string, expectedSlots: string[] = []): FrameworkIn
 describe("K1b Vue extractor (spec 7.4)", () => {
   it("derives events from emits and onX, pairs update: with bindable", () => {
     const body = extractVue(inputFor("Sheet"));
-    expect(body.status).toBe("complete");
+    // GEN-C2: the onClose payload (...args: unknown[]) records a replaced
+    // row even in payload mode, so the cell is partial.
+    expect(body.status).toBe("partial");
+    expect(body.replaced.map((row) => row.name)).toContain("onClose.args[]");
     expect(Object.keys(body.props?.["properties"] ?? {})).toEqual(["count", "modelValue", "open", "title"]);
     expect(body.events.map((event) => event.name).sort()).toEqual(["close", "onClose", "update:modelValue"]);
     expect(body.events.find((event) => event.name === "close")).not.toHaveProperty("payload");

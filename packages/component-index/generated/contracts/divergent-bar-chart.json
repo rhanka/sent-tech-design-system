@@ -1,7 +1,7 @@
 {
   "componentId": "divergent-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:bc068e7204e57d915f4a0ceb0462c59cf699474076117c4d0665a4d111c70906",
+  "digest": "sha256:17065185087ee73e66112825d5c30d8eb3e1e76b92ccf58718d23977668bcc2b",
   "entryDigest": "sha256:bfa16322a694911ca8b0039f5133f02f9862afac226b52a0b942cf55ba50e12a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "DivergentBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -44,6 +45,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -117,6 +119,7 @@
       "props": {
         "$defs": {
           "DivergentBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -139,6 +142,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -210,6 +214,7 @@
       "props": {
         "$defs": {
           "DivergentBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -232,6 +237,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -304,6 +310,7 @@
       "props": {
         "$defs": {
           "DivergentBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -326,6 +333,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

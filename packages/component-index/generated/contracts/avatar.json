@@ -1,7 +1,7 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:bf3e30a93e4faad77fe53adf759941271db2796c8f8b5ebb5d375511c4ee3216",
+  "digest": "sha256:6a4be6466fd94274421d561b59fc1ede5e34b713934ae04fafaf8ba9e31acd4d",
   "entryDigest": "sha256:bb80838eeec4e068dc1c650b887ac675f493f1605ec0a4cafefad67bf04d4a57",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "type": "string"
@@ -82,6 +83,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Texte alternatif de l'image. Par défaut = `name`.",
@@ -158,6 +160,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Texte alternatif de l'image. Par défaut = `name`.",
@@ -229,6 +232,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Texte alternatif de l'image. Par défaut = `name`.",

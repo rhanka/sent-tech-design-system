@@ -1,7 +1,7 @@
 {
   "componentId": "step-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:7a3e3cebeae0066394558ee19538811c77b253221e4a7c653b3e1f275c4413db",
+  "digest": "sha256:76e5fb28198d36a387cd866ca00db6b32a588ab903acc6a90bc9bc6b7b892293",
   "entryDigest": "sha256:1e8c6a1b7d8ad66fcadb0d52fa6b080cb0c463e617ff8ebcd2fa8b15cb6e5925",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "StepLineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "x": {
                 "anyOf": [
@@ -37,6 +38,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -100,6 +102,7 @@
       "props": {
         "$defs": {
           "StepLineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "x": {
                 "anyOf": [
@@ -122,6 +125,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -183,6 +187,7 @@
       "props": {
         "$defs": {
           "StepLineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "x": {
                 "anyOf": [
@@ -205,6 +210,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -267,6 +273,7 @@
       "props": {
         "$defs": {
           "StepLineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "x": {
                 "anyOf": [
@@ -289,6 +296,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

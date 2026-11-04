@@ -1,7 +1,7 @@
 {
   "componentId": "state-timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:848f9678d536f0b7ea349f59edc2c4cf931c1fb3473d029247b349abce4272d7",
+  "digest": "sha256:8646c53eba0c31458fed1441459459f5ec26a31b2b4b9719897e10433883d264",
   "entryDigest": "sha256:1e53acb0dd8d2c53c987338cced16b85dcdbf8240b0e0b6c61bf2fd64096cbef",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "StateTimelineSegment": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "type": "number"
@@ -58,6 +59,7 @@
             "type": "object"
           },
           "StateTimelineSeries": {
+            "additionalProperties": false,
             "properties": {
               "segments": {
                 "items": {
@@ -76,6 +78,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -127,6 +130,7 @@
       "props": {
         "$defs": {
           "StateTimelineSegment": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "type": "number"
@@ -170,6 +174,7 @@
             "type": "object"
           },
           "StateTimelineSeries": {
+            "additionalProperties": false,
             "properties": {
               "segments": {
                 "items": {
@@ -188,6 +193,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -236,6 +242,7 @@
       "props": {
         "$defs": {
           "StateTimelineSegment": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "type": "number"
@@ -279,6 +286,7 @@
             "type": "object"
           },
           "StateTimelineSeries": {
+            "additionalProperties": false,
             "properties": {
               "segments": {
                 "items": {
@@ -297,6 +305,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -346,6 +355,7 @@
       "props": {
         "$defs": {
           "StateTimelineSegment": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "type": "number"
@@ -389,6 +399,7 @@
             "type": "object"
           },
           "StateTimelineSeries": {
+            "additionalProperties": false,
             "properties": {
               "segments": {
                 "items": {
@@ -407,6 +418,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

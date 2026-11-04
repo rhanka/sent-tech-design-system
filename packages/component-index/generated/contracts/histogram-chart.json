@@ -1,7 +1,7 @@
 {
   "componentId": "histogram-chart",
   "contractSource": "derived",
-  "digest": "sha256:906ea59e56bd16b8b9baa47a9fd49d38d02b81b7e5cabdbfef13c91cbec70d06",
+  "digest": "sha256:977da79aa1e7f36535330218dfd3d11009d00f0a34f6ee20d40532329a941c31",
   "entryDigest": "sha256:b5f09c0ea158a6ebf5976ebf08cfbbc0d9a65f6f2bfb524a760fcae42b225844",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "HistogramChartBin": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -103,6 +105,7 @@
       "props": {
         "$defs": {
           "HistogramChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -130,6 +133,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -192,6 +196,7 @@
       "props": {
         "$defs": {
           "HistogramChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -219,6 +224,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -282,6 +288,7 @@
       "props": {
         "$defs": {
           "HistogramChartBin": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -309,6 +316,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"

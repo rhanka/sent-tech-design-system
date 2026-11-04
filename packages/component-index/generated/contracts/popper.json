@@ -1,7 +1,7 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:dee2e38ee19c00eed0840751002ea5fb3a7eb1d0c8f9f04b3f362bff2eb9226b",
+  "digest": "sha256:4f15fdb7d2be596de08b22aefc6c99de823867712fe4d4ee518b0b882fa8a7ba",
   "entryDigest": "sha256:15a17e81a2a7f8ce4eae0621f7bbcf8af6914ed5fd88caca383f29bdb1e8397a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -26,6 +26,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "anchor": {
             "anyOf": [
@@ -142,6 +143,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "anchor": {
             "anyOf": [
@@ -273,6 +275,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "anchor": {
             "anyOf": [
@@ -359,12 +362,7 @@
       ],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -423,6 +421,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "anchor": {
             "anyOf": [

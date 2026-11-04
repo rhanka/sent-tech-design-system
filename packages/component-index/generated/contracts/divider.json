@@ -1,7 +1,7 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:a2d2797de9d169dc7c9a3206cd2fa09945804432e34a03cebca8914c7f30a826",
+  "digest": "sha256:e42d945c59914b9f022366ae9fc52ec5c8a77a7065873a3f78590271bdcf9544",
   "entryDigest": "sha256:8cc17088cdaec1f24158ae93075824d67c042c66e67f85f8920b0dd109e420f1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -65,6 +66,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -119,6 +121,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -168,6 +171,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

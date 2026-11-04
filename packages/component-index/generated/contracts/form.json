@@ -1,7 +1,7 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:fa7f9257f42bf5e92cbb145b747daf5ba7008d0499858250db5f639c5640b666",
+  "digest": "sha256:91ddad51237443b213da0de71890afeccb3f55bf67a33a840d50913ade93c9b3",
   "entryDigest": "sha256:d780e531f05402611a60fb1f0f583cf18e92599a2e1058f01a2a99d1eda83519",
   "format": "component-contract/v1",
   "frameworks": {
@@ -18,6 +18,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -90,6 +91,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "status": {
             "enum": [
@@ -144,6 +146,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -170,11 +173,6 @@
       "slots": [
         {
           "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          },
           "required": true
         }
       ],
@@ -216,6 +214,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -234,7 +233,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onSubmit.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:40b561573489abcb14af89e9239dc7ab96e3e306cb1b13f3c6092e1f1b90a18d",
@@ -243,7 +249,7 @@
         "propsType": "FormProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"submit\": payload not in declaration",

@@ -1,7 +1,7 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:e730f4a95ea9b30a65bce4545a72e6c518e0897673926aba01a1e8e0afa163c4",
+  "digest": "sha256:e75e985d2ab6bdfce1a6751da17f8bd65278ba462f4e8e6dd1f2185c4d788828",
   "entryDigest": "sha256:f24240f9442f737dfcc1962ef88371ad546d6e82774c37c762bd6d64f72ad803",
   "format": "component-contract/v1",
   "frameworks": {
@@ -10,14 +10,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "close",
-          "payload": {}
+          "name": "close"
         }
       ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -98,6 +98,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "label": {
             "type": "string"
@@ -143,6 +144,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -177,20 +179,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "trigger",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "trigger"
         }
       ],
       "source": {
@@ -226,6 +218,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -250,7 +243,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:86920c299665657bcb3c6e54cc7d53babc7d108404b8f740111cec9da91e8c72",
@@ -259,7 +259,7 @@
         "propsType": "PopoverProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"update:open\": payload not in declaration",

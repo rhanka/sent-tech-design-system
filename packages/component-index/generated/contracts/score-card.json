@@ -1,7 +1,7 @@
 {
   "componentId": "score-card",
   "contractSource": "derived",
-  "digest": "sha256:381d0febc783b6b18af5ba80529f8a3873abb1b39845d9e161f25604c6a47b5a",
+  "digest": "sha256:49d088c259aaa3c33f845f44552fa3b516abbd8d2ec149a52e7972034e59f09c",
   "entryDigest": "sha256:c0c7119df7b670fc001f4ac5fb48934fed72bc92d13b4bbf3919c64d0454cb27",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -75,6 +76,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -148,6 +150,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -216,6 +219,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

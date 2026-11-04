@@ -1,7 +1,7 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:6dd9dbbf4a1005c53e76220578d5af9503656fbb6a245af894f3de7047a469e1",
+  "digest": "sha256:4b2761b8101112e8dff70431578d1ee5fd75dacfc3f592f7bc5cc69cfecf31d9",
   "entryDigest": "sha256:f1389c235bc13c5e80155da92319ffabc95caa08ba58586e315259dfabc8d674",
   "format": "component-contract/v1",
   "frameworks": {
@@ -30,6 +30,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -120,6 +121,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "invalid": {
             "type": "boolean"
@@ -155,6 +157,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -219,6 +222,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -253,7 +257,20 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:7af31e8a6af0e22c88c6df6974255257479ca49c0ab37d4c166ff5aa796755f8",
@@ -262,7 +279,7 @@
         "propsType": "RadioProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"change\": payload not in declaration",
