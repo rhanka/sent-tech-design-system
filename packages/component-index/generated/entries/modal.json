@@ -1,0 +1,64 @@
+{
+  "category": "overlay",
+  "componentId": "modal",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a1a68a99cc12ba9a1d51e0b2f14669c2154bcf53d9acb868d750184d7604dc9d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Modal.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4779aafbd54e24a2a6c37f3d52c7f4f0b6c2921eba7af8aa2ab39acdc2a80583",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Modal.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d588d093854b5e951fcc758c86d96f10cc58e746e7d4f9a6c33bd66c13384618",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Modal.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1f38043516980a4986a3eebe191892cf5bbcb69368741a75c90ec53a3e88d274",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Modal.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Centered modal dialog.",
+    "fr": "Dialogue modal recentré."
+  },
+  "digest": "sha256:9549775f37c719b242590a36d634e200481597c5009a0da89b816785868b0896",
+  "displayName": "Modal",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "modal",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

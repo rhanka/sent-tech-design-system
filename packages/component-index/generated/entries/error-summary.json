@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "error-summary",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7c5072d4e0c6156c8f90bbe8defe2f2e45521d4c07ac07105352d3e7310ee135",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ErrorSummary.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3bc9ee72ec43f7190ab551c1bce2ccd5db82b940b5c230cf6263f4c22ac7f6ae",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ErrorSummary.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a1841095b554d70efdb62098fa98352478e1e35594c040fdbd72980dc70ffa26",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ErrorSummary.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4a209f427c2467ec5c0dd26fb5a0df21bdbf8ffafd009397d4643a0a53f97775",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ErrorSummary.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Aggregated list of a form's errors, each entry linked to the offending field.",
+    "fr": "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif."
+  },
+  "digest": "sha256:4541cbfbcf8950b0b6301c607fcec7ed4b4340d41b0615385eee7bd4432cd5ab",
+  "displayName": "ErrorSummary",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "error-summary",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

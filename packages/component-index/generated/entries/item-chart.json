@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "item-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:2fa4b1acdf7e4307b1ffc0daa628dcc224b0f3cf0f6520cf39204001ea1aa4f9",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ItemChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f9b8aca89176f1f7af3c46b4015608ec74e057f970d9a88d597b8ffbe2957ba9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ItemChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0a98728cb15f44a00dd6c619c79f851f7b1bed76b43ddb5013d12be0b204a963",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ItemChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a8666ae72e9c26c06a30e694ba994ed1893eae2b19dc71bbad3ace53997b656f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ItemChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length.",
+    "fr": "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc."
+  },
+  "digest": "sha256:547d0046156728e1167acbdc7a2f39b48cb222dafc02851da258d586d59ffecb",
+  "displayName": "ItemChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

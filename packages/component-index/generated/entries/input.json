@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "input",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3b8e54dad4549b04a8e6e3700707da04e66c1f5a43130b6a0ab3a46218dffe1d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Input.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1cad9c96557d71dd78fcc84f009380a319bd3463062d286c6fa6f86d37714d40",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Input.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:82668e45041224a120a0d9e988792c824a08ef8fc7e64dfa159c295eeb86279d",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Input.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4e83c5bdb8d412b9ab6f48d3463795e730996b2d26dc47ad91e7f4054aecf716",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Input.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Standard text field, sm/md/lg sizes.",
+    "fr": "Champ texte standard, tailles sm/md/lg."
+  },
+  "digest": "sha256:06a971195471042ab79c1cea2904fc2ec948f15436a46455ef0bf6e413281f2f",
+  "displayName": "Input",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "input",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

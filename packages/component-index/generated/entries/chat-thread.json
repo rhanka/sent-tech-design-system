@@ -1,0 +1,63 @@
+{
+  "category": "chat",
+  "componentId": "chat-thread",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f7b593e1746b598f96ded81c5821971a63f4ab3ef7de32f9626ee2015583b7ff",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ChatThread.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cf23d09a1c1fb82283ee40beff2201e125487c50fd4f5f90c29773b9a5ed37a1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ChatThread.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:28706a25984cb9ca5b86c0223276588d1bd76fb37cbf6b2dbbbd91f8426f8f9c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ChatThread.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:db5cc83c811674c9a0dac93e11b37e26343729c7738296c4110d21fa9827309a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ChatThread.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Scrollable message list with auto-scroll and empty-state.",
+    "fr": "Liste de messages scrollable avec auto-scroll et état vide."
+  },
+  "digest": "sha256:7523c2ae92339de0fd5cb4f1ab67757b075ca8754c150b132d05bde17ddd4b5b",
+  "displayName": "ChatThread",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

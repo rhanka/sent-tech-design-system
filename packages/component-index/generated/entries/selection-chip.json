@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "selection-chip",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:88e90bcdc43ad7440488b4def7607562374188b6da1d0ae88724cd26857cac94",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SelectionChip.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:61fe9cabff2e27800fdeb78bb0f92d3098ed352d11b979bac10b2acbc94db762",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SelectionChip.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:28125fcba1d32a9b58a633e62b25ecdf12750253c62b4b493ccaa63bd7a7e57a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SelectionChip.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f100cf242427b0c20de9b93dcb2d595198952bfbb32b5ac08fafa01d02dbd509",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SelectionChip.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact chip showing a selection with count and optional clear button.",
+    "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
+  },
+  "digest": "sha256:714d35c9ece5634d07577a71cc0ed36e7007c4724067f8af653e7a48752a6d05",
+  "displayName": "SelectionChip",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

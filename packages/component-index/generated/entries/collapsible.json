@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "collapsible",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:08dcdb171a826813fea34da9773cb31ca57b18200dbdd2c749707ce0223ae1f3",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Collapsible.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:690a926eb60ee132b8da071b54d576f696c380d29bffd46f4701fb82f2e16777",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Collapsible.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b7e53bdec8b631eaa33f81397f6bcee57dd81e09636455cdfcc17d59eda67b70",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Collapsible.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d8f369563bf782de95541d0d81fd1a06911dd46bc578c9cbe61257ce9572c0bc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Collapsible.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Clickable header revealing a collapsible content region.",
+    "fr": "En-tête cliquable révélant une région de contenu repliable."
+  },
+  "digest": "sha256:834dd2da14e075dbe56770cb40e2c4cd9849c741a15927b32b6a12f9794e96f5",
+  "displayName": "Collapsible",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "ordered-list",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7ab5b7ca2abce44b74e6ac316d2d50fedc9e98b53bbd586beb2c039b94d26998",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/OrderedList.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7d7996bcadd96eb30fb6686bcbd90ae1e6b5465c0142c23a3940b57be63a8f0e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/OrderedList.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:13081ad51b01305430d9491e91f591e666827836ef6cd683163cd64980b69028",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/OrderedList.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8826152d92a89aed8acaf9d79fa74ae03694664e23b03fdddbc695cce0d54012",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/OrderedList.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Numbered ordered list, with nesting.",
+    "fr": "Liste ordonnée numérotée, avec imbrication."
+  },
+  "digest": "sha256:00ee6d09bd935ccc0795c3cce4ef5e7e1034552b495c70f35b53b22a8a8a493c",
+  "displayName": "OrderedList",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

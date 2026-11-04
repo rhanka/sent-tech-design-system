@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "structured-list",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6e793a247a0025353842914c0e6adc549f4ad40530861b37dfaed10dc936a545",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StructuredList.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6fe9eb3623ac3a1521d09fb335f5d250f786b13b0cba17b5fa7e08211845241c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StructuredList.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:480b4cc6b80059417a4f9a21d9015c336719078617ecadc4f9dcacb70544517e",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StructuredList.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b48336de6f89f9d0b29815a582c7c92f9471a2d3954f13abc83a9834d2aaf800",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StructuredList.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Structured key/value list (term/definition pairs).",
+    "fr": "Liste clé/valeur structurée (paires terme/définition)."
+  },
+  "digest": "sha256:b779b54c9a95fbaac0dc1ae3b1ddfa32ba79d759a2096f7ba87766467907c032",
+  "displayName": "StructuredList",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

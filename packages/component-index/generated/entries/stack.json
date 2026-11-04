@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "stack",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4b5a839ab57dec65613b2148b84dfa9efef6172f841a3de9180bf32339f674bf",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Stack.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:60edfb7dc634345b579f4048e3030c84f57a875970bfd508d729ab29c2f8d88e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Stack.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:975a508a50801d5187f66e4b8e5e9b6e2ed673de126e9996ab6a3e74ccfcc361",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Stack.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e7f164f1d94144e054c0fa7d22afbe64e0e2266f5ae66b4770d60a649b9d66af",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Stack.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Vertical stack with uniform gap (Flex column shorthand).",
+    "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
+  },
+  "digest": "sha256:0ab2be77315ba1af65fcbab441591839bb2094eaf3ceb8fc41be1314a8d1b74c",
+  "displayName": "Stack",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

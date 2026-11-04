@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "marimekko-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:66bc44db77633e6d8b7a3588427db3808a32ff644596ab69f404e98ede1756b2",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MarimekkoChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8e769fa9daf080b0c72bc5d257ec143a97d1b8c069eb529aa7fa67de7ecf2f2c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MarimekkoChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b83fa090e776cc3d4a68e067d8241eb44a19371ae5855f89f8c3564afb238d27",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MarimekkoChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d5e13b9d1e9445f58f27759259f3f275ddaeefb042e8e8dc8748e1cd23f0ff8b",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MarimekkoChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Marimekko chart: weighted column width with stacked segments.",
+    "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
+  },
+  "digest": "sha256:afa6cb54ce3b94a2ff55f47c4610b46ab7b3f0ee128b7ae8ac5bc2b9b12bd126",
+  "displayName": "MarimekkoChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

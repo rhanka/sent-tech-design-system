@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "display-settings",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:857dcd15b81f1d9b89afc09452be1da3d1a0d4d4b1cf123c8a5429dc13e72181",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DisplaySettings.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b0e1ed9abfb7d22d572014e2da02fbd6021e54a2701bae44154be8076f42ee1d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DisplaySettings.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5e23a9c7467fcbaa42e4aff4425f7282ba0995f039c5393801559734644719e8",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DisplaySettings.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:24f37945e7280dd5e3611e6abd42d4ce73c9892be7f4b3f6bb16601320af14ab",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DisplaySettings.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Display preferences controls (font size, contrast, line spacing, motion).",
+    "fr": "Préférences d’affichage (taille de texte, contraste, interligne, animations)."
+  },
+  "digest": "sha256:7c21f39982fdf0338d065ada408366470e8e340786107f87a5f63ec172703280",
+  "displayName": "DisplaySettings",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

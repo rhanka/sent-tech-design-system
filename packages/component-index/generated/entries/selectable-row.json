@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "selectable-row",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:21484c6fec7b423eb77721bfa72c8b3cfc47b3cf47d9315d1df4eac0bd9142c0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SelectableRow.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6b7ba4fc696dd7dc575d04218091b32f5f9ec01291d7482e9978175e8ba34fc9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SelectableRow.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8fc2062d060208cbf8b39b23e512bb369d5e5c8f8dd59dbeb6d936318b7791ba",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SelectableRow.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8ecd172309d3aadb8979bd8511604a51343b67a27594e21726881ce889762d87",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SelectableRow.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
+    "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
+  },
+  "digest": "sha256:8e8a13cec18e71b3446f9d921a5d649ce0848195a042eb8190c2ea01ab98c57d",
+  "displayName": "SelectableRow",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

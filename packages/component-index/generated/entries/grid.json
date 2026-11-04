@@ -1,0 +1,64 @@
+{
+  "category": "layout",
+  "componentId": "grid",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:20e865d60469502bf876b101c5f2427f918a2fac9403ae2a619abb59e6ba8c44",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Grid.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:898c0919309c90abc5a0c0ac36d694a49f8da91030dfeb92fbbea9b55aba693f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Grid.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5f16bcd8dad591a42bcd3c6fc2524c6b5e95dfb1359900e4aa5016da891bb114",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Grid.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:59352ccbb58920dce8f09082d86c5048f693d6e8b040259d6941c17db24305f6",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Grid.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
+    "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
+  },
+  "digest": "sha256:fac42cd15de536c5081d2fce2d5e07136e94fb30dace449ec956e3f61377be72",
+  "displayName": "Grid",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "container",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "funnel-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:39a9892b65f61e77a38fe64975d43c482b861c6f4ee0fd98c735493411e0202c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FunnelChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:de77c47c59e4b7dca62af52f80573f5524c09f0b45ec7c246e72b926298c0082",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FunnelChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:138b9b77efea72489df348bc3f2162e0f3362f6c8f60a57140d69249ebd8f277",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FunnelChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a043cb40f57e1461f9400c56020bf27dfab7cb3ad7e66747ebb3022a098b51a1",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FunnelChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Vertical or horizontal funnel with per-step conversion percentages.",
+    "fr": "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape."
+  },
+  "digest": "sha256:d3352e298d44ff85d50e71e2cddc9051b1183ea4c6abab153e3b09572056dac5",
+  "displayName": "FunnelChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "inline-loading",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:81e3f3fcece1e1c2f9e668d20e99941475c88cb5e8c198530af6aa4f2feb3054",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/InlineLoading.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9c7e69b46e910ba96964170d5c33bffa955dc0025884dc2ae6f816b90b75f697",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/InlineLoading.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:696938fc80e59089945c66b41bcb520f3e805c303bd23f8adfe6e9f1308d2ab0",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/InlineLoading.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0fea68d22e757a44d1ac7e81b0f5f686e2092a3e129c386f194c5a1243922f91",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/InlineLoading.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Inline loading indicator paired with a label.",
+    "fr": "Indicateur de chargement inline accompagné d’un libellé."
+  },
+  "digest": "sha256:aa052f77aa5d520227a832f517229b502986ca0789b4d207d46cd938bed88025",
+  "displayName": "InlineLoading",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "inline-loading",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
