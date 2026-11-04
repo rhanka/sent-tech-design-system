@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    // NO "DOM" in lib: the generator is a Node CLI that reads committed
+    // artifacts and writes the index; like the Elements node build it stays
+    // DOM-free by compilation.
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}

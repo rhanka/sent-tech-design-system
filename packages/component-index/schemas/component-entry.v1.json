@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.sent-tech.ca/catalogs/components/v1/component-entry.json",
+  "title": "component-entry/v1",
+  "description": "One design-system catalogue entry on the single component-tools taxonomy (converged-r2 S3, frozen K1a). Closed object: the retired R1 kind axis and any other unlisted field are invalid.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "producerId", "componentId", "displayName", "renderable", "scope", "visibility", "parity", "dataClass", "delivery", "digest"],
+  "properties": {
+    "format": { "const": "component-entry/v1" },
+    "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "componentId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "displayName": { "type": "string", "minLength": 1 },
+    "description": { "$ref": "#/$defs/bilingual" },
+    "category": { "enum": ["action", "form", "chat", "navigation", "overlay", "feedback", "data", "layout", "other"] },
+    "status": { "enum": ["documented", "stub"] },
+    "groupSlug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "frameworks": { "type": "array", "uniqueItems": true, "items": { "enum": ["svelte", "react", "vue", "angular"] } },
+    "renderable": { "enum": ["mcp", "https", "doc-only"] },
+    "scope": { "enum": ["generic", "producer"] },
+    "visibility": { "enum": ["public", "tenant", "workspace"] },
+    "scopePolicyRef": { "type": "string", "minLength": 1 },
+    "parity": { "$ref": "#/$defs/parity" },
+    "dataClass": { "enum": ["public-safe", "tenant-private", "workspace-private"] },
+    "delivery": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delivery" } },
+    "contract": { "$ref": "#/$defs/contract" },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "visibility": { "enum": ["tenant", "workspace"] } }, "required": ["visibility"] },
+      "then": { "required": ["scopePolicyRef"] },
+      "else": { "not": { "required": ["scopePolicyRef"] } }
+    }
+  ],
+  "$defs": {
+    "bilingual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fr", "en"],
+      "properties": {
+        "fr": { "type": "string", "minLength": 1, "maxLength": 280 },
+        "en": { "type": "string", "minLength": 1, "maxLength": 280 }
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["svelte", "react", "vue", "angular"],
+      "properties": {
+        "svelte": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "react": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "vue": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "angular": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "package", "version", "digest"],
+      "properties": {
+        "channel": { "enum": ["source", "esm", "element", "css-classes", "tokens"] },
+        "framework": { "enum": ["svelte", "react", "vue", "angular"] },
+        "element": { "type": "string", "pattern": "^st-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "package": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+        "path": { "type": "string", "pattern": "^packages/[A-Za-z0-9._/-]+$" },
+        "url": { "type": "string", "pattern": "^https://\\S+$" },
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractId", "version", "contractSource"],
+      "properties": {
+        "contractId": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "contractSource": { "enum": ["published", "derived"] },
+        "schemaDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    }
+  }
+}
