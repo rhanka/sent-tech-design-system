@@ -1,0 +1,23 @@
+{
+  "name": "@sentropic/design-system-component-index",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Private v1 component entry/index schemas and deterministic generator (K1a). Nothing is hosted or published by this package.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/component-index"
+  },
+  "exports": {
+    ".": "./dist/generator/main.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "index:generate": "node dist/generator/main.js",
+    "index:check": "node dist/generator/main.js --check"
+  }
+}
