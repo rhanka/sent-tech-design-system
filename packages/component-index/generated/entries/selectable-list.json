@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "selectable-list",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:74f38217a1a264785e8f7dfc208e5867c0de4e3debcbcd48e69436da4dcd14f0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SelectableList.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d7588e35ba2c05a11fb0fec64d4d1f1046a42b729dad0c6954a40f5e373f6cc4",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SelectableList.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:92a16c8ae391ca1fcfd5f1f91d3e31d42188485c409cf07786cd0bb831830330",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SelectableList.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:efa6cdff6bd87fb1413d973018002eabdd284fdaffccbb3026da426aba5645eb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SelectableList.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Accessible listbox driving its rows: single or multiple selection, keyboard navigation.",
+    "fr": "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier."
+  },
+  "digest": "sha256:db9b8d243b38bcb86c5fe4fdeb059c71dd6b59bd05c48bda0cbdf55e46e9e1be",
+  "displayName": "SelectableList",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

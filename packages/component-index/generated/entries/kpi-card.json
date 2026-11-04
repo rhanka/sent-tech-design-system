@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "kpi-card",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:df6273b05ff6968674fc4db2a0eb675db07d4667278d340bc808d8703105f358",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/KpiCard.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5f1987f0a8ff14e3a5d372134cc04104d58ef8c3fd0ab0ea94c2dc735956f503",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/KpiCard.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fec9b131d113320a9ae6c77ff0736384e2fe55231686a3af7e7795d8d32b3743",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/KpiCard.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:40421bd71772dc6b7eb76d3d7787a9bf018d5bf137184f6a7ded9f22880effc7",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/KpiCard.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "KPI card with value, delta, trend indicator, and optional sparkline.",
+    "fr": "Carte indicateur clé avec valeur, delta, tendance et sparkline optionnelle."
+  },
+  "digest": "sha256:7ae3d3b1872aab411bd6daf13eaa0420d1055ca87df4969c525e2dcbc8189799",
+  "displayName": "KpiCard",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

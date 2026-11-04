@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "rating",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:e1992755795566a94ebf81f7785ea61949143b59e668ce6d47a0abac55ce99f8",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Rating.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1ef493b6f8f6b15ca75694ea46204d5f188fc56c94bb347f009096d62fda7b49",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Rating.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d38b998122f10c6e2fc48fedb8cfa70b3f3b01e0427503ff61c658104c5ed20a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Rating.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b636378d3fbc907ebe859aed32fa433316bc3e1521fe67bea5b5432cdc798e9c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Rating.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Star rating, read-only or interactive, with half-stars.",
+    "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
+  },
+  "digest": "sha256:cc98127a56908e893515db24a24d49c0877f8fd9e9271d6a25e7c7542bd3ced1",
+  "displayName": "Rating",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

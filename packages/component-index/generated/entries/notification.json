@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "notification",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:67ed4309101090a6c86affd197fe60078d4756d404ecf99410b31ddc6bf98ce0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Notification.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0f3a2384d4ee9ed53cc990929bb41b1bac4718079a51196880c8af3e757133e1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Notification.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:095e00311fa5516e76eccbcf6bed7b29f3a8a038dd276426d4e6dc4a154f5bb1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Notification.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:49d442b6c7713a510ac6a40fb4606a76ae48695318a5888485275b0558a702ba",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Notification.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Inline/actionable notification with info/success/warning/error tones.",
+    "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
+  },
+  "digest": "sha256:8a4ae17d0b968429dd7dec77562884ae296c4cc45c000b2f090a4d700da761ac",
+  "displayName": "Notification",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "notification",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

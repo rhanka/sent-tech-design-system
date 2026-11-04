@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "form",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:52ce57c8a4123cc47f5fe04ed17eedfa7f52f61bf9131af3e0290ec2839a182e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Form.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e53dfd7389db133175ef5b6cbce8bed6c7e5bea268225958567fc1149e6e2558",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Form.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f6710a48e9aab9d54ee56912cf2890b5207daf498fde7213268a5c90b87b4db6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Form.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6ab1348ff609ea4c8f59e738483374fefbc8bea2a2e6241a125b905109747a44",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Form.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Form wrapper with submitting/error/success status.",
+    "fr": "Wrapper formulaire avec statut submitting/error/success."
+  },
+  "digest": "sha256:d780e531f05402611a60fb1f0f583cf18e92599a2e1058f01a2a99d1eda83519",
+  "displayName": "Form",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

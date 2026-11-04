@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "treemap-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:0c19e1de2699bc20bb47a9595feb2245055cce22b2084d099cb7b9645e513ee4",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TreemapChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f95edcc7a09d12dec2dda86230e071e1a21581227d41b2d8a7f36b3ae5340e46",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TreemapChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0a02cc994713f08ac2995a09d19ab77c7f0aa4715178b0f8755f8ed885db9ff2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TreemapChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:44d3306725c2f8ade29ef4bbd6efa9ea0a6c59e7cf699d861b61940a29303a56",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TreemapChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Squarified hierarchical treemap, 1 or 2 levels, with optional labels.",
+    "fr": "Carte proportionnelle hiérarchique (squarified), 1 ou 2 niveaux, labels."
+  },
+  "digest": "sha256:5cebc0f947f9063c3162247b11ef842675315378e68fbf012bd3c971b67a61d2",
+  "displayName": "TreemapChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "footer",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:26efc180165df290e049809704249dc965a3d463f7d3a5b3aa053fb2f7934583",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Footer.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b8b9975acb2b01698749d8123e49cba4a616df171756abaec6160689b6117ba4",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Footer.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4e8d833a7eb998a8157d6210e0d0b0e89ed645b5a68c5b50749a99580e78f0e1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Footer.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c793f657ebf8fe6cf8bc50000fce7239e9b80a52d9be98b32b43e43242ffbcd9",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Footer.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Application footer: brand, link columns, copyright and legal links.",
+    "fr": "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux."
+  },
+  "digest": "sha256:8424903dfcb3589ab0a97ba0d04d4b68ce9708439e259ad7bb8dd8434b622925",
+  "displayName": "Footer",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "timeline-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:db7bc2fa77eae060a518e173fe2ce833d5a1b051ae973c1b23c2521374e43ffa",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TimelineChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a0ed7f58e5e7fefdc551a51e608f3bc54356d4e417b97d9d0dee23f229f107b3",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TimelineChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9e09b0443ac4f2034a2af0a86361b760bf5128feafe90095559c48880463f9e4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TimelineChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:42536bebc7793c63ef9c1215e307a143cd1146a7716fa6c79a26988e9a740ae2",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TimelineChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
+    "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
+  },
+  "digest": "sha256:48b40207230edd789d5b31ed53ddf610fc7e9d472e912df0c80b6c1d0da13576",
+  "displayName": "TimelineChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

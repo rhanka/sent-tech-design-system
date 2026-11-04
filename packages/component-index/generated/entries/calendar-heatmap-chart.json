@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "calendar-heatmap-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4da71a0a97daef8019e5fbd2d1c8d73e53f4c87b6efec22060378eee47f93e5b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/CalendarHeatmapChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e4d1d70c1cc2a7c554c3d513d0ed7dabf224ffd0cd6f10e8fc26825bcdc22601",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/CalendarHeatmapChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fac54d96dce5b31282fb9441a9e731d117a37e4af62359e070ddb12fcb4e71b9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/CalendarHeatmapChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ccd63a65c475ff549830ce7e05133002ca8162726b6fab44f963aebf1f7ef932",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/CalendarHeatmapChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "GitHub-style calendar grid for visualizing daily activity.",
+    "fr": "Grille calendrier GitHub-style pour visualiser l'activité quotidienne."
+  },
+  "digest": "sha256:e751307184322eef12f4c32fe05a3636998f34cba4be980c2c0338807a1942a8",
+  "displayName": "CalendarHeatmapChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

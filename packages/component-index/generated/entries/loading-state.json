@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "loading-state",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ef3c0b6a1d3761bfce796ee865c94223c6cf77f5eb9651ff04863ec462ccdf55",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LoadingState.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:229ef63a60ca3f29634e0655cb54458c0a1ee555daee8876345f98519461040f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/LoadingState.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:82e645e674a795f4201f82ead36f80a64d819399b3eabc3998c08db1f4c1d702",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/LoadingState.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bb61ea51918dd87dac813518787b8c32036b82ac8fa9f8220f646dea65395cfb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/LoadingState.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Full loading indicator or skeleton.",
+    "fr": "Indicateur de chargement plein ou skeleton."
+  },
+  "digest": "sha256:0d6df34c3ea41add26bec273b89ccf9100d5e0c8e30627142eb8ec34753aace2",
+  "displayName": "LoadingState",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "loading-state",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

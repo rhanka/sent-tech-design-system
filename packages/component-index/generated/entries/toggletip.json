@@ -1,0 +1,63 @@
+{
+  "category": "overlay",
+  "componentId": "toggletip",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1905f378de5caa2fef0af0a6af535d5c435bfac27ed9ca08d67edf6ce768824f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Toggletip.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fbe99238238e5ffe0e54ed44de1157479901628a260450fc747841d7a43f6f4f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Toggletip.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f3f7841caee0573e7fa9f0809c9fa304aca5123133d82107513329b3ca621c33",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Toggletip.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7377f3ed7f8ec7a2d9831e9b830208c403ad5336010b68d37034becac1ecef99",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Toggletip.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Click-activated, persistent tooltip.",
+    "fr": "Tooltip activable au clic, persistant."
+  },
+  "digest": "sha256:9ff494ded5c4fb74cbfba4d5a1762ade0879eca4c89a88389879c588a6b21c11",
+  "displayName": "Toggletip",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

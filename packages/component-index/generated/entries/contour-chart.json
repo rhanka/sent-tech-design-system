@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "contour-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d92aade0e42f356d233f8fc754c83cb76811132f14195529f46819f58f6d71e1",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ContourChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:61485b957e18f7c9b1f054ef8be88345f287bc7b116f689b15a3c869cb09765c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ContourChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7e7377e883e1480608de4c6aa0bb785f74a3ba224f63026228bda58844a7f4ec",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ContourChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bafa043bd560aec7303cbf76e971ec612d0ceb67f5cd22f106e8be15ae092f40",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ContourChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Topographic contour: 2D grid painted as colour bands with isolines at level boundaries (data category1…8 scale).",
+    "fr": "Contour topographique : grille 2D peinte en bandes de couleur avec isolignes aux ruptures de niveau (échelle data category1…8)."
+  },
+  "digest": "sha256:690aad2cfb5abc50752baf4bf3a4e60de83dc5a082b061686d7d70984ff0c784",
+  "displayName": "ContourChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

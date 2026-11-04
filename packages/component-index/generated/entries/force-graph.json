@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "force-graph",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:89ab22084e59bfa10eb1cb3d5481ffff3a24b7f2a0c9de434271d2d9fc1d5855",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ForceGraph.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2596cd3a0c660b4f29da8dfb1ce00c0dc0dcf1e9d34459d6f038553879366f5c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ForceGraph.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f219aa4e05c62be809153448467c46ffb020446a9a44529424f9d7621bb04496",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ForceGraph.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:53a9c2c1b7e298ec523741d2f9adf4b5a30f568a47c8ad698f0a228721eb6cbf",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ForceGraph.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip.",
+    "fr": "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip."
+  },
+  "digest": "sha256:08b9b628de9ac513f5ae1774a206cd24a3dcc3bc0375c62b571200660c9f1b59",
+  "displayName": "ForceGraph",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

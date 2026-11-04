@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "streamgraph-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:580fdd8d75823c919fa44d0eba76e7ea722edb80f55ef776d48760263eb33041",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StreamgraphChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:55fb43e749f51e8457d8939e57b7c6c2f0c386f96356611981cbb63c4aebea3d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StreamgraphChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3b8e418e5d5a622eb409e1e136972f6b8a15812b8bdf87760c488ca43393df32",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StreamgraphChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f84eb3c64ef7cd40cfe03a8541a3364727fc956f181ef7725c988a5e72f917e2",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StreamgraphChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Streamgraph (themeriver): stacked smoothed areas on a centred \"wiggle\" baseline, for time-series data.",
+    "fr": "Streamgraph (themeriver) : aires empilées et lissées sur une ligne de base centrée « wiggle », pour des séries temporelles."
+  },
+  "digest": "sha256:ad64b20ac32683f8fda4fe707be93cbdeb5db5ea4722cdb89143e2ce5fd5a479",
+  "displayName": "StreamgraphChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

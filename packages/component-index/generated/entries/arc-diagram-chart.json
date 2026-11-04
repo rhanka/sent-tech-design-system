@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "arc-diagram-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a504ec64f5f8fd0c48c80992ee2c78aa8c4f70c97d7e3e856b0be79d237464cf",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ArcDiagramChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:768d73afd712337fafa1fdcb1442af5f731c6728c2c147723c41b4bc3c4b225d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ArcDiagramChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e309b5b9ec878ef4df518e6c38a01bbb273b673b72bd6326180426cbd6846117",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ArcDiagramChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3510f16d95a5272961b09c5396d24a7d5c1e2aa236ef0564fd12e2935aa7c8aa",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ArcDiagramChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Arc diagram: nodes on an axis, weighted arcs coloured by source.",
+    "fr": "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source."
+  },
+  "digest": "sha256:33ca43b79eb2f403ac96d1ffeeb9f6d105be762977ce7f3414461460f88f6d54",
+  "displayName": "ArcDiagramChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
