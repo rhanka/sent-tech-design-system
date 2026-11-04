@@ -1,7 +1,7 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:705c234a30562d956d89da3604651b3d07bfb0c27d341145704736e8bbc6215c",
+  "digest": "sha256:ac14b7b5f169617603f426a45cb6ab94ea643bc387d3c6777ae8e0cf4fd14fbc",
   "entryDigest": "sha256:21127a6b6092289ee23afa9dc5d54a2c6e3093d972adfcb1c6e79af49f4fed2e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "area": {
             "type": "boolean"
@@ -76,6 +77,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "area": {
             "type": "boolean"
@@ -136,6 +138,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "area": {
             "type": "boolean"
@@ -197,6 +200,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "area": {
             "type": "boolean"

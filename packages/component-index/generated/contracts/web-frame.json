@@ -1,7 +1,7 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:9fef55545a77036d5f6379e2a435b1461b0de814f96e90afedb4f131a95493bc",
+  "digest": "sha256:bd5d333bbd6ae5a8253b7476c356c62a15d27c77d33ceaeef7d76acb0e4d94b4",
   "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -49,6 +49,7 @@
       "props": {
         "$defs": {
           "WebFrameConfig": {
+            "additionalProperties": false,
             "properties": {
               "allow": {
                 "type": "string"
@@ -111,6 +112,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "frame": {
             "$ref": "#/$defs/WebFrameConfig"
@@ -144,6 +146,7 @@
       "props": {
         "$defs": {
           "WebFrameConfig": {
+            "additionalProperties": false,
             "properties": {
               "allow": {
                 "type": "string"
@@ -206,6 +209,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -243,6 +247,7 @@
       "props": {
         "$defs": {
           "WebFrameConfig": {
+            "additionalProperties": false,
             "properties": {
               "allow": {
                 "type": "string"
@@ -305,6 +310,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

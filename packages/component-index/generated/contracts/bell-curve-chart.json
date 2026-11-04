@@ -1,7 +1,7 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:4e8ef94f54fac4366b132a0184336a1af7b3451d0ded8af95c8b4bc768ae968c",
+  "digest": "sha256:f919290daf9de74100d02646fa90f2a3ca417794b5191432add2c0270befe40b",
   "entryDigest": "sha256:816637abbdae8a6d57f280d863f2df1c35581c90dabc7c643ebd51a2749521ac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -80,6 +81,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -145,6 +147,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -211,6 +214,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

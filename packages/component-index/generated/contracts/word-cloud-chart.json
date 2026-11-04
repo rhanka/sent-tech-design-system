@@ -1,7 +1,7 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:de83a332f161336e747bd604975455d68b48faa6ea6d194744262c06e87901ce",
+  "digest": "sha256:ee095abae444a6752c74448ad5c0875922282e5eb8025259a7fe13379a1b9af7",
   "entryDigest": "sha256:63a9ab13df0bc8fe59da624b3d0155d77447db9eae1b748ede0efa14e273d718",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "WordCloudChartWord": {
+            "additionalProperties": false,
             "properties": {
               "text": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "WordCloudChartWord": {
+            "additionalProperties": false,
             "properties": {
               "text": {
                 "type": "string"
@@ -120,6 +123,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -170,6 +174,7 @@
       "props": {
         "$defs": {
           "WordCloudChartWord": {
+            "additionalProperties": false,
             "properties": {
               "text": {
                 "type": "string"
@@ -197,6 +202,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -248,6 +254,7 @@
       "props": {
         "$defs": {
           "WordCloudChartWord": {
+            "additionalProperties": false,
             "properties": {
               "text": {
                 "type": "string"
@@ -275,6 +282,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

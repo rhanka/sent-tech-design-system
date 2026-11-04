@@ -1,7 +1,7 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:70f9d3d0509f93894c595c894551a36409d40194fe35e2af5440f8dfd48b185b",
+  "digest": "sha256:59399ff53c5b144c821f9fec13f28ef57acb8babf261d5a7d2ead62016deba5b",
   "entryDigest": "sha256:a3d819e7bad5ad689804d131d61cb2914c6112d4109569e4f8b5de99eb04ecb4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "AreaSplineRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -41,6 +42,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -104,6 +106,7 @@
       "props": {
         "$defs": {
           "AreaSplineRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -130,6 +133,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -191,6 +195,7 @@
       "props": {
         "$defs": {
           "AreaSplineRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -217,6 +222,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -279,6 +285,7 @@
       "props": {
         "$defs": {
           "AreaSplineRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -305,6 +312,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

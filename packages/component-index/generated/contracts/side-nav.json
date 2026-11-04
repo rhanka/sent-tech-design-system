@@ -1,7 +1,7 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:7b8a5ba197a8e3a06cf83601aa31c5ac60657f6ae9453e809a026839700e9bac",
+  "digest": "sha256:1675ed31fa4b6407c03a42e34a145642562ce661ce06e7654dec1c7f7cb7f013",
   "entryDigest": "sha256:9c2b6007dcb6a86a7a8cdfdfe1a237c5edbfdd354e026ec5b0923cf5970ce874",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "SideNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "type": "boolean"
@@ -37,6 +38,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -94,6 +96,7 @@
       "props": {
         "$defs": {
           "SideNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "type": "boolean"
@@ -114,6 +117,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "items": {
             "items": {
@@ -159,6 +163,7 @@
       "props": {
         "$defs": {
           "SideNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "type": "boolean"
@@ -177,6 +182,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -220,6 +226,7 @@
       "props": {
         "$defs": {
           "SideNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "type": "boolean"
@@ -242,6 +249,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

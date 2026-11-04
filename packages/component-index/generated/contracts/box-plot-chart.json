@@ -1,7 +1,7 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:23b4f0d9562e7c4d4efea32910e450ec05e710806a9b3ea9ce000a844048d133",
+  "digest": "sha256:5d9b191e0f94fc2ec7f278715fd10a145e88336bfb700d1b797d05e5c2ade2f4",
   "entryDigest": "sha256:265f1b942bc75db8e09b3bee1b0c262be5f8b620125ae562507b9bd1dd7f48c6",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "BoxPlotChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -64,6 +65,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -115,6 +117,7 @@
       "props": {
         "$defs": {
           "BoxPlotChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -164,6 +167,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -213,6 +217,7 @@
       "props": {
         "$defs": {
           "BoxPlotChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -262,6 +267,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -312,6 +318,7 @@
       "props": {
         "$defs": {
           "BoxPlotChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -361,6 +368,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

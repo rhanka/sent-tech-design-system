@@ -1,7 +1,7 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:ec87c92a483fb9fed3080ba5b5575d423f43306b0e8575fb95073934dc0b6276",
+  "digest": "sha256:7f616adede6a50ab51f2888c8cb77ebe4b6112bb574b7704e7ba0d9b45c3620c",
   "entryDigest": "sha256:8a4ae17d0b968429dd7dec77562884ae296c4cc45c000b2f090a4d700da761ac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -10,14 +10,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "dismiss",
-          "payload": {}
+          "name": "dismiss"
         }
       ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -94,6 +94,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -162,6 +163,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -198,20 +200,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actions",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actions"
         },
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -245,6 +237,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -278,7 +271,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onDismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:6804684010bff6cfcf903fe6911215d25f5a5ed1a769910467b01cda332f5bd8",
@@ -287,7 +287,7 @@
         "propsType": "NotificationProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"dismiss\": payload not in declaration",

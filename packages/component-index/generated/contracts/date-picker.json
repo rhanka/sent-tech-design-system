@@ -1,7 +1,7 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:5a7f229b08921af4ff98c2ec7483b93222371a9be106ecb255f80511256fee3f",
+  "digest": "sha256:09147c92b3eb463f977ac8b7798231508e582efe97c16450718bcc372172fe89",
   "entryDigest": "sha256:174358bef5b8be8cf303808e416931c3a1ee3a91a07aefab55cc9dbb0f719c66",
   "format": "component-contract/v1",
   "frameworks": {
@@ -33,6 +33,7 @@
       "props": {
         "$defs": {
           "DatePickerRange": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "format": "date-time",
@@ -56,6 +57,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -160,6 +162,12 @@
           "sourceType": "Date"
         },
         {
+          "name": "modelValueChange.payload",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
           "name": "value",
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
@@ -232,6 +240,7 @@
       "props": {
         "$defs": {
           "DatePickerRange": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "format": "date-time",
@@ -255,6 +264,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "defaultValue": {
             "anyOf": [
@@ -369,6 +379,12 @@
           "sourceType": "Date"
         },
         {
+          "name": "onChange.value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
           "name": "value",
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
@@ -405,6 +421,7 @@
       "props": {
         "$defs": {
           "DatePickerRange": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "format": "date-time",
@@ -428,6 +445,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -585,6 +603,7 @@
       "props": {
         "$defs": {
           "DatePickerRange": {
+            "additionalProperties": false,
             "properties": {
               "end": {
                 "format": "date-time",
@@ -608,6 +627,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -729,6 +749,18 @@
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
           "sourceType": "Date"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

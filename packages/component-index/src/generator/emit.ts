@@ -833,10 +833,12 @@ export function buildArtifacts(
     entries: indexRows,
   };
 
-  // K1b: derived contracts for the population (209 entries: everything
-  // except bar-chart and design-tokens, which carry no derived contract).
+  // K1b derived population: every K1a entry without a published contract
+  // that carries component props (at least one source delivery). Bar-chart
+  // drops out via entry.contract, design-tokens via the no-source-delivery
+  // rule; population stays 209 without hardcoding componentIds.
   const population = entries.filter(
-    (entry) => entry.componentId !== "bar-chart" && entry.componentId !== "design-tokens",
+    (entry) => entry.contract === undefined && entry.delivery.some((delivery) => delivery.channel === "source"),
   );
   const contractResult = buildContracts(
     repoRoot,

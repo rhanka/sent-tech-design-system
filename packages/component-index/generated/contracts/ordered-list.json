@@ -1,7 +1,7 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:11e161ef4988c709b0828a5a223ccd9aada3fac74bf8a36f20557333cb196761",
+  "digest": "sha256:b99d9a870668046a1134841bcc9c585d0297fb64479eaaae29b4e1b26e808d11",
   "entryDigest": "sha256:00ee6d09bd935ccc0795c3cce4ef5e7e1034552b495c70f35b53b22a8a8a493c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "OrderedListItem": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "description": "Sous-items : chaînes ou objets (normalisés au rendu).",
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -104,6 +106,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "nested": {
             "type": "boolean"
@@ -147,6 +150,7 @@
       "props": {
         "$defs": {
           "OrderedListItem": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "description": "Sous-items : chaînes ou objets (normalisés au rendu).",
@@ -166,6 +170,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -214,6 +219,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

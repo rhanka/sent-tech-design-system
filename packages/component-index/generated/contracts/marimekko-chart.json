@@ -1,7 +1,7 @@
 {
   "componentId": "marimekko-chart",
   "contractSource": "derived",
-  "digest": "sha256:2f377f3d785fc0564b9536efa1f24b10a80dd080b14d01f2539e71a4cdc081e2",
+  "digest": "sha256:608cc79296aa1a1cc4d6cca458a7a5f97d224caea640ebea2a5f3d55533a43b7",
   "entryDigest": "sha256:afa6cb54ce3b94a2ff55f47c4610b46ab7b3f0ee128b7ae8ac5bc2b9b12bd126",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "MarimekkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -37,6 +38,7 @@
             "type": "object"
           },
           "MarimekkoChartSegment": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -64,6 +66,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -115,6 +118,7 @@
       "props": {
         "$defs": {
           "MarimekkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -137,6 +141,7 @@
             "type": "object"
           },
           "MarimekkoChartSegment": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -164,6 +169,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -213,6 +219,7 @@
       "props": {
         "$defs": {
           "MarimekkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -235,6 +242,7 @@
             "type": "object"
           },
           "MarimekkoChartSegment": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -262,6 +270,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -312,6 +321,7 @@
       "props": {
         "$defs": {
           "MarimekkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -334,6 +344,7 @@
             "type": "object"
           },
           "MarimekkoChartSegment": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -361,6 +372,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

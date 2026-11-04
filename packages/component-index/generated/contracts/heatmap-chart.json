@@ -1,7 +1,7 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:9f3c57429ef39e47f8f4bb0a8a7cc1b636de6da5933617914738f76b64e9432f",
+  "digest": "sha256:bb2045e6d90455bdbfaeba4a127429b6b904fee5dd13d423016915c50464f653",
   "entryDigest": "sha256:d02c2136ddbba4a800ecc98c56321bbb10b00964b4c0cf50665b38862b1a8aee",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "HeatmapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -46,6 +47,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -106,6 +108,7 @@
       "props": {
         "$defs": {
           "HeatmapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -137,6 +140,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -195,6 +199,7 @@
       "props": {
         "$defs": {
           "HeatmapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -226,6 +231,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -285,6 +291,7 @@
       "props": {
         "$defs": {
           "HeatmapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -316,6 +323,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

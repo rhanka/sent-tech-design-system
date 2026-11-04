@@ -1,7 +1,7 @@
 {
   "componentId": "timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:8bbef6950645752937ed20c63830ee8749957d1dd665f5621c82d485ca89a7ba",
+  "digest": "sha256:e45191a39fd820f6d4cdc71461ad237be20a47bebe7b37426c74cf4863f771ef",
   "entryDigest": "sha256:48b40207230edd789d5b31ed53ddf610fc7e9d472e912df0c80b6c1d0da13576",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TimelineChartEvent": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Optional longer description, surfaced in the accessible list + tooltip.",
@@ -49,6 +50,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -100,6 +102,7 @@
       "props": {
         "$defs": {
           "TimelineChartEvent": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Optional longer description, surfaced in the accessible list + tooltip.",
@@ -134,6 +137,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -183,6 +187,7 @@
       "props": {
         "$defs": {
           "TimelineChartEvent": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Optional longer description, surfaced in the accessible list + tooltip.",
@@ -217,6 +222,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -267,6 +273,7 @@
       "props": {
         "$defs": {
           "TimelineChartEvent": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Optional longer description, surfaced in the accessible list + tooltip.",
@@ -301,6 +308,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

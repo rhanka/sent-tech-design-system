@@ -1,7 +1,7 @@
 {
   "componentId": "geo-chart",
   "contractSource": "derived",
-  "digest": "sha256:13fe6673293e6475621e8809a59e3ad45271e6ae0f08b4f9a49ba8354babfb09",
+  "digest": "sha256:4a7fc3b1afc9a4a46a752d36ffa171dfca7ed763ebad43a1c4fbc9be3bd0db93",
   "entryDigest": "sha256:65b6f75a765d8b7c2986569bd2d6ded3efeecc8020a98fde520dd74674e2dc81",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "GeoChartBounds": {
+            "additionalProperties": false,
             "properties": {
               "east": {
                 "type": "number"
@@ -38,6 +39,7 @@
             "type": "object"
           },
           "GeoChartChoroplethLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -80,9 +82,54 @@
             "type": "object"
           },
           "GeoChartClusterLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "radius": {
                 "description": "Rayon de regroupement en degrés (défaut 1).",
@@ -105,11 +152,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartCoordinate": {
+            "additionalProperties": false,
             "properties": {
               "latitude": {
                 "type": "number"
@@ -125,12 +174,57 @@
             "type": "object"
           },
           "GeoChartDensityLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
               },
               "maxRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "description": "Ton de la nappe (défaut `category3` — parité visuelle dataviz).",
@@ -150,11 +244,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartFeature": {
+            "additionalProperties": false,
             "properties": {
               "geometry": {
                 "$ref": "#/$defs/GeoChartGeometry"
@@ -176,6 +272,7 @@
             "type": "object"
           },
           "GeoChartFlow": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -200,6 +297,7 @@
             "type": "object"
           },
           "GeoChartFlowLayer": {
+            "additionalProperties": false,
             "properties": {
               "flows": {
                 "items": {
@@ -233,6 +331,7 @@
             "type": "object"
           },
           "GeoChartGeojsonLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -266,6 +365,7 @@
             "type": "object"
           },
           "GeoChartGeometry": {
+            "additionalProperties": false,
             "properties": {
               "coordinates": {
                 "items": {},
@@ -289,6 +389,7 @@
             "type": "object"
           },
           "GeoChartHexbinLayer": {
+            "additionalProperties": false,
             "properties": {
               "cellSize": {
                 "description": "Taille de cellule en degrés (défaut 1).",
@@ -296,6 +397,50 @@
               },
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -314,11 +459,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartPointsLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -328,6 +475,50 @@
               },
               "minRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -346,11 +537,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bounds": {
             "$ref": "#/$defs/GeoChartBounds"
@@ -427,32 +620,7 @@
         "version": "0.38.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "GeoChartClusterLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartDensityLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartHexbinLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartPointsLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     },
     "react": {
@@ -471,6 +639,7 @@
       "props": {
         "$defs": {
           "GeoChartBounds": {
+            "additionalProperties": false,
             "properties": {
               "east": {
                 "type": "number"
@@ -494,6 +663,7 @@
             "type": "object"
           },
           "GeoChartChoroplethLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -536,9 +706,54 @@
             "type": "object"
           },
           "GeoChartClusterLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "radius": {
                 "description": "Rayon de regroupement en degrés (défaut 1).",
@@ -561,11 +776,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartCoordinate": {
+            "additionalProperties": false,
             "properties": {
               "latitude": {
                 "type": "number"
@@ -581,12 +798,57 @@
             "type": "object"
           },
           "GeoChartDensityLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
               },
               "maxRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "description": "Ton de la nappe (défaut `category3` — parité visuelle dataviz).",
@@ -606,11 +868,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartFeature": {
+            "additionalProperties": false,
             "properties": {
               "geometry": {
                 "$ref": "#/$defs/GeoChartGeometry"
@@ -632,6 +896,7 @@
             "type": "object"
           },
           "GeoChartFlow": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -656,6 +921,7 @@
             "type": "object"
           },
           "GeoChartFlowLayer": {
+            "additionalProperties": false,
             "properties": {
               "flows": {
                 "items": {
@@ -689,6 +955,7 @@
             "type": "object"
           },
           "GeoChartGeojsonLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -722,6 +989,7 @@
             "type": "object"
           },
           "GeoChartGeometry": {
+            "additionalProperties": false,
             "properties": {
               "coordinates": {
                 "items": {},
@@ -745,6 +1013,7 @@
             "type": "object"
           },
           "GeoChartHexbinLayer": {
+            "additionalProperties": false,
             "properties": {
               "cellSize": {
                 "description": "Taille de cellule en degrés (défaut 1).",
@@ -752,6 +1021,50 @@
               },
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -770,11 +1083,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartPointsLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -784,6 +1099,50 @@
               },
               "minRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -802,11 +1161,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bounds": {
             "$ref": "#/$defs/GeoChartBounds",
@@ -888,32 +1249,7 @@
         "version": "0.38.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "GeoChartClusterLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartDensityLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartHexbinLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartPointsLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     },
     "svelte": {
@@ -926,6 +1262,7 @@
       "props": {
         "$defs": {
           "GeoChartBounds": {
+            "additionalProperties": false,
             "properties": {
               "east": {
                 "type": "number"
@@ -949,6 +1286,7 @@
             "type": "object"
           },
           "GeoChartChoroplethLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -991,9 +1329,54 @@
             "type": "object"
           },
           "GeoChartClusterLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "radius": {
                 "description": "Rayon de regroupement en degrés (défaut 1).",
@@ -1016,11 +1399,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartCoordinate": {
+            "additionalProperties": false,
             "properties": {
               "latitude": {
                 "type": "number"
@@ -1036,12 +1421,57 @@
             "type": "object"
           },
           "GeoChartDensityLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
               },
               "maxRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "description": "Ton de la nappe (défaut `category3` — parité visuelle dataviz).",
@@ -1061,11 +1491,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartFeature": {
+            "additionalProperties": false,
             "properties": {
               "geometry": {
                 "$ref": "#/$defs/GeoChartGeometry"
@@ -1087,6 +1519,7 @@
             "type": "object"
           },
           "GeoChartFlow": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -1111,6 +1544,7 @@
             "type": "object"
           },
           "GeoChartFlowLayer": {
+            "additionalProperties": false,
             "properties": {
               "flows": {
                 "items": {
@@ -1144,6 +1578,7 @@
             "type": "object"
           },
           "GeoChartGeojsonLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -1177,6 +1612,7 @@
             "type": "object"
           },
           "GeoChartGeometry": {
+            "additionalProperties": false,
             "properties": {
               "coordinates": {
                 "items": {},
@@ -1200,6 +1636,7 @@
             "type": "object"
           },
           "GeoChartHexbinLayer": {
+            "additionalProperties": false,
             "properties": {
               "cellSize": {
                 "description": "Taille de cellule en degrés (défaut 1).",
@@ -1207,6 +1644,50 @@
               },
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -1225,11 +1706,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartPointsLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -1239,6 +1722,50 @@
               },
               "minRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -1257,11 +1784,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bounds": {
             "$ref": "#/$defs/GeoChartBounds",
@@ -1343,32 +1872,7 @@
         "version": "0.36.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "GeoChartClusterLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartDensityLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartHexbinLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartPointsLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     },
     "vue": {
@@ -1382,6 +1886,7 @@
       "props": {
         "$defs": {
           "GeoChartBounds": {
+            "additionalProperties": false,
             "properties": {
               "east": {
                 "type": "number"
@@ -1405,6 +1910,7 @@
             "type": "object"
           },
           "GeoChartChoroplethLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -1447,9 +1953,54 @@
             "type": "object"
           },
           "GeoChartClusterLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "radius": {
                 "description": "Rayon de regroupement en degrés (défaut 1).",
@@ -1472,11 +2023,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartCoordinate": {
+            "additionalProperties": false,
             "properties": {
               "latitude": {
                 "type": "number"
@@ -1492,12 +2045,57 @@
             "type": "object"
           },
           "GeoChartDensityLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
               },
               "maxRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "description": "Ton de la nappe (défaut `category3` — parité visuelle dataviz).",
@@ -1517,11 +2115,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartFeature": {
+            "additionalProperties": false,
             "properties": {
               "geometry": {
                 "$ref": "#/$defs/GeoChartGeometry"
@@ -1543,6 +2143,7 @@
             "type": "object"
           },
           "GeoChartFlow": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -1567,6 +2168,7 @@
             "type": "object"
           },
           "GeoChartFlowLayer": {
+            "additionalProperties": false,
             "properties": {
               "flows": {
                 "items": {
@@ -1600,6 +2202,7 @@
             "type": "object"
           },
           "GeoChartGeojsonLayer": {
+            "additionalProperties": false,
             "properties": {
               "features": {
                 "items": {
@@ -1633,6 +2236,7 @@
             "type": "object"
           },
           "GeoChartGeometry": {
+            "additionalProperties": false,
             "properties": {
               "coordinates": {
                 "items": {},
@@ -1656,6 +2260,7 @@
             "type": "object"
           },
           "GeoChartHexbinLayer": {
+            "additionalProperties": false,
             "properties": {
               "cellSize": {
                 "description": "Taille de cellule en degrés (défaut 1).",
@@ -1663,6 +2268,50 @@
               },
               "label": {
                 "type": "string"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -1681,11 +2330,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           },
           "GeoChartPointsLayer": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -1695,6 +2346,50 @@
               },
               "minRadius": {
                 "type": "number"
+              },
+              "points": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "r": {
+                      "description": "Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32.",
+                      "type": "number"
+                    },
+                    "tone": {
+                      "enum": [
+                        "category1",
+                        "category2",
+                        "category3",
+                        "category4",
+                        "category5",
+                        "category6",
+                        "category7",
+                        "category8"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
               },
               "tone": {
                 "enum": [
@@ -1713,11 +2408,13 @@
               }
             },
             "required": [
+              "points",
               "type"
             ],
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bounds": {
             "$ref": "#/$defs/GeoChartBounds",
@@ -1799,32 +2496,7 @@
         "version": "0.38.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "GeoChartClusterLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartDensityLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartHexbinLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        },
-        {
-          "kind": "other",
-          "name": "GeoChartPointsLayer.points[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "GeoChartPoint"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     }
   },

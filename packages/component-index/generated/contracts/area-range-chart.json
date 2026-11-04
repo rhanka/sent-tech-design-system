@@ -1,7 +1,7 @@
 {
   "componentId": "area-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:dbec51f9f07757a9d8e2c7401f585bdb4a8ff90168f3ba82422c40b2b2b067a9",
+  "digest": "sha256:43d7960fbd9a0147777efb921938b169f56aefb3f802187abfc0279222729887",
   "entryDigest": "sha256:2caf40e0cd7a614a4a9fc61d8dc09f58566bb277f65f45d053e4a62069b7a1d2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "AreaRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -41,6 +42,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -107,6 +109,7 @@
       "props": {
         "$defs": {
           "AreaRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -133,6 +136,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -197,6 +201,7 @@
       "props": {
         "$defs": {
           "AreaRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -223,6 +228,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -288,6 +294,7 @@
       "props": {
         "$defs": {
           "AreaRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "high": {
                 "type": "number"
@@ -314,6 +321,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

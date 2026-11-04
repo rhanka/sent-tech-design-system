@@ -1,7 +1,7 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:586d67935d6b723d387c5d89932d39cc51a41a92b5c967f7289c497a79fa88cc",
+  "digest": "sha256:a6e39ba6928cc67216073c7957abe8639d9a4528f7a8eba3cd264cc10ea2fc29",
   "entryDigest": "sha256:5685f86f8d635328e191e4c0c71d51d1a54adf50d6e49b30e471971dd0ff73ef",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "TileGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {},
               "disabled": {
@@ -41,6 +42,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -153,6 +155,7 @@
       "props": {
         "$defs": {
           "TileGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -167,6 +170,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "disabled": {
             "type": "boolean"
@@ -231,6 +235,7 @@
       "props": {
         "$defs": {
           "TileGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -252,6 +257,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -328,6 +334,7 @@
       "props": {
         "$defs": {
           "TileGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {},
               "disabled": {
@@ -347,6 +354,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -400,6 +408,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

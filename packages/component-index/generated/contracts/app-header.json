@@ -1,7 +1,7 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:e4c4d2cb9db87e2098e52246545502b0b40cb596dd3ba67d3e644f5b14937a02",
+  "digest": "sha256:38bfd25ff99b0167a7f997878f3553a98c133fc2f389b9d13c436b976c271c3a",
   "entryDigest": "sha256:5f1e019e3ca774e201494056f09052610ee2921cb26ea4944b9954876ca62e75",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "type": "string"
@@ -117,6 +118,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "description": "Cible du lien de la marque. Défaut : `/`.",
@@ -190,6 +192,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "description": "Cible du lien de la marque. Défaut : `/`.",
@@ -254,36 +257,16 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actions",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actions"
         },
         {
-          "name": "drawer",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "drawer"
         },
         {
-          "name": "logo",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "logo"
         },
         {
-          "name": "nav",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "nav"
         }
       ],
       "source": {
@@ -317,6 +300,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "description": "Cible du lien de la marque. Défaut : `/`.",
@@ -361,7 +345,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onMenuToggle.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:249ebd653fd129c11d9356778dafb2b02c857dae5c6f3ca687c78e44b0175801",
@@ -370,7 +361,7 @@
         "propsType": "AppHeaderProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"menuToggle\": payload not in declaration",

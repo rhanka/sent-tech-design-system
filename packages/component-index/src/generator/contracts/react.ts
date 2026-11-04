@@ -116,7 +116,7 @@ export function extractReact(input: FrameworkInput): FrameworkBody {
   }
 
   if (Object.keys(properties).length > 0 || body.passthrough !== undefined) {
-    const schema: JsonSchema = { type: "object", properties };
+    const schema: JsonSchema = { type: "object", properties, additionalProperties: false };
     if (required.length > 0) schema["required"] = [...required].sort();
     body.props = schema;
   }

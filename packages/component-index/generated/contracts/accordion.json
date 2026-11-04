@@ -1,7 +1,7 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:0d8f7bb8cf34b79a9ee7e54564a18ceb63e5187b4a422d153cb40a3cc7f0d684",
+  "digest": "sha256:72623a1add06dfe57ace7a23ae425def0f4a78d45e5f813431a546751e5545bf",
   "entryDigest": "sha256:eb295ad42fc2e1a53064105b283799fe6ed7c62f48a8a2fa2c776f675361e22c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -32,6 +32,7 @@
       "props": {
         "$defs": {
           "AccordionItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -49,6 +50,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -149,6 +151,7 @@
       "props": {
         "$defs": {
           "AccordionItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -160,6 +163,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -254,6 +258,7 @@
       "props": {
         "$defs": {
           "AccordionItem": {
+            "additionalProperties": false,
             "properties": {
               "content": {
                 "type": "string"
@@ -276,6 +281,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -356,6 +362,7 @@
       "props": {
         "$defs": {
           "AccordionItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -373,6 +380,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -428,7 +436,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:f4ff86c237520d074f5570f4d7284fdf78d7418af19a0f3d445007d68e8e636f",

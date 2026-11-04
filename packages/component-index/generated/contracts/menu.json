@@ -1,7 +1,7 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:417f314342dfc2d089e6ecd17d484eae784b45085ac1db975dfa51a5c92c9f67",
+  "digest": "sha256:f994ed7cd080e7bac958a5de6ea17e1721d017bc142d3499cf8077a01c60286c",
   "entryDigest": "sha256:be9504a0586c0b809c7382e42009d4febb6a35ed624bfbe6ae4b4858b0aeff04",
   "format": "component-contract/v1",
   "frameworks": {
@@ -39,6 +39,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -69,6 +70,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -83,6 +85,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -107,6 +110,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -214,6 +218,7 @@
       "props": {
         "$defs": {
           "ActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -237,6 +242,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -251,6 +257,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -271,6 +278,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "dense": {
             "type": "boolean"
@@ -343,6 +351,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -367,6 +376,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "kind": {
                 "const": "divider"
@@ -378,6 +388,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "kind": {
                 "const": "group"
@@ -393,6 +404,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -480,6 +492,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -507,6 +520,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -521,6 +535,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -545,6 +560,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -595,6 +611,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

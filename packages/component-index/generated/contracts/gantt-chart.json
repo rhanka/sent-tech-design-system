@@ -1,7 +1,7 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:db2cf69ce7431855e82b679ec326d9e679c8d366df2a622b921fdff13dcb54dc",
+  "digest": "sha256:e490acba05cfb3638d253e033f28d8f9d0b557ffe1c4e8fc328604ce5bceae06",
   "entryDigest": "sha256:ff7c71bc9c5398d25acb5f345b7b7bfe9c4bc5becdf4cab4886ce19dfd7e40de",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "GanttChartTask": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -37,6 +38,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -91,6 +93,7 @@
       "props": {
         "$defs": {
           "GanttChartTask": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -113,6 +116,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -165,6 +169,7 @@
       "props": {
         "$defs": {
           "GanttChartTask": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -187,6 +192,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -240,6 +246,7 @@
       "props": {
         "$defs": {
           "GanttChartTask": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -262,6 +269,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

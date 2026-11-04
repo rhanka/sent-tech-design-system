@@ -1,7 +1,7 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:0598d044bddbb3e55be734fa6cf556167e5b3661d5a58ef68f5deb87924efd01",
+  "digest": "sha256:e534f02a85e6817ed64388833fd3252b3677cf2f1c8cef2c6c2db5f83f58b011",
   "entryDigest": "sha256:172b0b5b04a7d9a0e9d15b773e98d3f1489446e8185f6822e466fc729e9d93a1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "FlamegraphNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -36,6 +37,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -87,6 +89,7 @@
       "props": {
         "$defs": {
           "FlamegraphNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -108,6 +111,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -156,6 +160,7 @@
       "props": {
         "$defs": {
           "FlamegraphNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -177,6 +182,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -226,6 +232,7 @@
       "props": {
         "$defs": {
           "FlamegraphNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -247,6 +254,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:060a1f322e7127683f1951607f2f61bb20bb02192efcb18654b30a946edacb68",
+  "digest": "sha256:f7a10a9a00d7069fc0ab273ab5688c8a4c53835feb47766bccb6fd30eafe08dd",
   "entryDigest": "sha256:ec517cf8756c26ceb20aac776e797ec926548f18096c353240e35575d6dd764a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -29,6 +29,7 @@
       "props": {
         "$defs": {
           "TabItem": {
+            "additionalProperties": false,
             "properties": {
               "content": {},
               "disabled": {
@@ -48,6 +49,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -140,6 +142,7 @@
       "props": {
         "$defs": {
           "TabItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -154,6 +157,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -219,6 +223,7 @@
       "props": {
         "$defs": {
           "TabItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -237,6 +242,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeValue": {
             "type": "string"
@@ -301,6 +307,7 @@
       "props": {
         "$defs": {
           "TabItem": {
+            "additionalProperties": false,
             "properties": {
               "content": {},
               "disabled": {
@@ -320,6 +327,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -357,6 +365,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

@@ -1,7 +1,7 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:b359f8eefd1f6d241964271f591a9cb615164dcc15d81365ecfca10feb5de71e",
+  "digest": "sha256:6bdcbbe61b607c761fdf553b905d3b7cc73a98f1d665bf3bc9aabff9d56814f0",
   "entryDigest": "sha256:b6603a223ccdce827731fa81c2b0cf2cef4b22d7db208d7262df4d2eacdb2efd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -26,6 +26,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -90,6 +91,7 @@
         {
           "name": "onSubmit",
           "payload": {
+            "additionalProperties": false,
             "properties": {
               "value": {
                 "type": "string"
@@ -112,6 +114,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "placeholder": {
             "type": "string"
@@ -147,6 +150,7 @@
         {
           "name": "onsubmit",
           "payload": {
+            "additionalProperties": false,
             "properties": {
               "event": {},
               "message": {
@@ -178,6 +182,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "autosize": {
             "type": "boolean"
@@ -230,28 +235,13 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actionsLeft",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actionsLeft"
         },
         {
-          "name": "actionsRight",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actionsRight"
         },
         {
-          "name": "attachments",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "attachments"
         }
       ],
       "source": {
@@ -298,6 +288,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -313,6 +304,12 @@
         "type": "object"
       },
       "replaced": [
+        {
+          "name": "onSubmit.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
         {
           "name": "submitLabel",
           "reason": "any JSON value, stated in the row",

@@ -1,7 +1,7 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:1ae8bedc8da0d0bc3d406f50c2b3f9186684a328f9052a3917d765fd2f040fcd",
+  "digest": "sha256:78b74bc8e3c28a291d95b7c21a1e974ba7469df4b826554c0362ce689e1b2e00",
   "entryDigest": "sha256:1d59701ab4cafb95c3360ea8d6a8d7c242f5221a21c1beee573b1d2ccce6b7de",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,6 +20,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -80,6 +81,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "label": {
             "type": "string"
@@ -151,6 +153,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -216,6 +219,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -250,7 +254,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onPage-change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:923c29f4db3c026a5907de8e785365086c0d6818848df7b8273cf5507f389fe2",
@@ -259,7 +270,7 @@
         "propsType": "PaginationNavProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"page-change\": payload not in declaration",

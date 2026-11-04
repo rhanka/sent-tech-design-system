@@ -1,7 +1,7 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:f44f09cdcca3f38cdc293aa680702cfa2030344e2a768f525ca5354df9550b94",
+  "digest": "sha256:15ec8f3daaab0406c8cfe4476b65cf81f4e891a204474a428204024fbf9db4d4",
   "entryDigest": "sha256:e09a33eb6eb9c40576ef6588e25514463816326007c9c8499a1ac07a321b87dd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "enum": [
@@ -70,6 +71,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",
@@ -130,6 +132,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",
@@ -166,20 +169,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "action",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "action"
         },
         {
           "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          },
           "required": true
         }
       ],
@@ -220,6 +213,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",

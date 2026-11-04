@@ -1,7 +1,7 @@
 {
   "componentId": "gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:6a9d456dedd1928a03d956d02495212e24c753cdaebcf91fe625d8f5d6756d4d",
+  "digest": "sha256:37bf2eee38cadb5944d93106eabce9014c7acaadae76f4de5562e0747573be24",
   "entryDigest": "sha256:93bd0a1d02685e323984752e5f658087fc4a10c65c79bd9b248df1284cfbd8f3",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "GaugeChartThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -44,6 +45,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -119,6 +121,7 @@
       "props": {
         "$defs": {
           "GaugeChartThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -148,6 +151,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -228,6 +232,7 @@
       "props": {
         "$defs": {
           "GaugeChartThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -257,6 +262,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -338,6 +344,7 @@
       "props": {
         "$defs": {
           "GaugeChartThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -367,6 +374,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

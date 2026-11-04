@@ -1,7 +1,7 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:c03fdf1b3e99686c5138f2a220bca0f1652c180216ad773b3e42a2567b0892a4",
+  "digest": "sha256:f75e427ae4d9185e07c6099a2fe0aef9fbb1e8b1d620801ae34b4447a8f99ca1",
   "entryDigest": "sha256:bc5a6cbb2a361d7582feef944aeeeb0348983065ba773d942d31cf2a5902f3ae",
   "format": "component-contract/v1",
   "frameworks": {
@@ -32,6 +32,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -68,6 +69,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -135,6 +137,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -171,6 +174,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -235,6 +239,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -271,6 +276,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -343,6 +349,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -379,6 +386,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

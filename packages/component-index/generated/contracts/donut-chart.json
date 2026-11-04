@@ -1,7 +1,7 @@
 {
   "componentId": "donut-chart",
   "contractSource": "derived",
-  "digest": "sha256:f34a4607fb84ab51f595a3537d10be4b61d9ccbb3f240e51ed9aa27136df7cd1",
+  "digest": "sha256:a66d33130343d8dc69226e99f68785746d8dede18e31bbba9dfdb82ce09c9eee",
   "entryDigest": "sha256:914b6dc2fdd6aae5544a05f434b5b7d803f6ef0021bcabc45e8b50896fe3d6d3",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "DonutChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -49,6 +50,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "centerLabel": {
             "type": [
@@ -74,6 +76,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -138,6 +141,7 @@
       "props": {
         "$defs": {
           "DonutChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -165,6 +169,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "centerLabel": {
             "description": "Texte au centre (sinon le total). null pour masquer.",
@@ -191,6 +196,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -256,6 +262,7 @@
       "props": {
         "$defs": {
           "DonutChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -283,6 +290,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "centerLabel": {
             "description": "Texte au centre (sinon le total). null pour masquer.",
@@ -309,6 +317,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -375,6 +384,7 @@
       "props": {
         "$defs": {
           "DonutChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -402,6 +412,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "centerLabel": {
             "type": [
@@ -427,6 +438,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
