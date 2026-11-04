@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "form-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1fbfc8afe9e6193366e29405ac94c16d593acc31be7834bacd30ffc7c80c165c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FormGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2c81bba5dfdc26e787f207732f2f1e43d52bac0548e8d6f7befc0a470adbf2e3",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FormGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:250c3853c81bed8c6b26318e7dec9936e163d7c1cb81777c7fecbaf0730c506a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FormGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0e06756d63aa4c4e23eadbb787f89871566a44ac968c2238b3fa3750090ada2d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FormGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Fieldset/legend grouping controls with helper text.",
+    "fr": "Fieldset/legend groupant des contrôles avec helper text."
+  },
+  "digest": "sha256:c6aa98b87bd1eb3b29ad8260d5eeb071c553a8fc64206199c71903541c3cad31",
+  "displayName": "FormGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

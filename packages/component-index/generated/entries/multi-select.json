@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "multi-select",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:68b8c3c9966cdb26d011ddcd79e989b95473de017418ecc9d451e907f1d01633",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MultiSelect.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:693a7a166550c17c2bae9647048c7296a81f02d4a9ea50ad6119eb2437d8e036",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MultiSelect.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:65d86ef8c0c775f83a44a0047a00b5b00f7658163c6bfa6b0ecc03d3960c2099",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MultiSelect.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6c423297e67a850e7e41cfb0ea8b002dfdc1587a488a44553de87a6df199e5bc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MultiSelect.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Multi-select with filterable tags.",
+    "fr": "Sélection multiple avec tags filtrables."
+  },
+  "digest": "sha256:7ab858b991c8b0af20fad5707a84d89f799d8db623ee52be83a808f3942c2620",
+  "displayName": "MultiSelect",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

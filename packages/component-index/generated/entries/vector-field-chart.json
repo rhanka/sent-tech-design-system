@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "vector-field-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:13c3327d995a307909798c91889ed80ca29023d1ec768d46d9296c2f0ad102e0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/VectorFieldChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ef8bac3f6fa62fad98a90c39287e30286266e225aa96da609f3c52c4eab260ad",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/VectorFieldChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6462b81d77a92c78c4e574528ea3f2eecdceed8d130a93b321505ded1b7f80ed",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/VectorFieldChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3ccfca9cd528a68c262316350d0f333f39741a94a9de986470f36a9e56ba2c0c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/VectorFieldChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Vector field: grid of arrows whose length encodes magnitude and orientation encodes direction.",
+    "fr": "Champ de vecteurs : grille de flèches dont la longueur encode la magnitude et l'orientation la direction."
+  },
+  "digest": "sha256:b3c5cabc129dfd403262645e76c83efdcd02cfe21a8bdf4385e63a5b8ff64ced",
+  "displayName": "VectorFieldChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "radio-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7b7feccecd2aaf8f9bc453a19ad761b841fdf8bce5a723103c8128ce2c039946",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RadioGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ab65656b57dc09969f1d07bba8808a92c88687e0fbdbf61b557bb3a33d41d91b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RadioGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e258f56c27def6c29968e67ca6a5616fd62decb666ee7e1aca7a198cf82edada",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RadioGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:301687de64b6b3f46c63d712dba27aada5bc8e79bedea32428de9069835307e8",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RadioGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Exclusive choice among options, with legend and a11y.",
+    "fr": "Choix exclusif parmi plusieurs options, légende et a11y."
+  },
+  "digest": "sha256:1f93abb63d4f41386ad9d9f2893714f17c7d87ad68a111f78e60477b67c71022",
+  "displayName": "RadioGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "chat",
+  "componentId": "message-status-badge",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4032e7eb1cc1993bcd4d859bf0552711b3910a56bb33738ea7fdfa1e39b2f896",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MessageStatusBadge.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2751133476e1501aa5e7ce770b12c81f12d02fdf9f85e03a7f1d1782e43de17a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MessageStatusBadge.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0462df72846d12d01130519b10cb2454401e3fe222dea9549bfb8a14800b9300",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MessageStatusBadge.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:245519b3899daa5e25e4aaf79a2aa9a22c6e04aa7788bc5a38f9e34bcad6f00f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MessageStatusBadge.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Message status badge mapped to pending/processing/completed/failed.",
+    "fr": "Badge de statut de message basé sur les niveaux pending/processing/completed/failed."
+  },
+  "digest": "sha256:0f1fe1c814665152714c1c6e077a15d6bea360de80d689ae3ebc97aadd9536e7",
+  "displayName": "MessageStatusBadge",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

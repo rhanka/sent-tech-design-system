@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "point-and-figure-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3d31fdcf8e94e02b74624f3693628c739dd2bab132740c648a38ea1f05a2dad0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PointAndFigureChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c67c0b0b444184d0d2aacadcf1d70774eefabf23bf9bbae7b980d4da72583340",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PointAndFigureChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b31d4c40352802d91802ab74f086af6bccab17fd639787f3cc9e03c0bab4bd91",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PointAndFigureChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:869cd0dfbde6608c5210c659ec904932ecad9d30b6dffaf5040e80bb20406f69",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PointAndFigureChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
+    "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
+  },
+  "digest": "sha256:31380502a862c7f8f9ac2d60b92eb9b17a79156682425e874e0fa043db869781",
+  "displayName": "PointAndFigureChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

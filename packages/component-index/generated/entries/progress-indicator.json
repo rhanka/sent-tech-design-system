@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "progress-indicator",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:785422114bf40d2106b0e6d342f7ddb0cca502b592e1d5010305786406b31608",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ProgressIndicator.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fcb9e4e6c8475d0ce942b79034c73f115616bf68362ffbee9e058fad6c301acc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ProgressIndicator.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:27c698b21cedafbed990ad70a2e2aef6e7a347423feafcdc1bc77f65d5b81e11",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ProgressIndicator.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5fca3898f59f2237b3a0746f2feb02544761501796b4f9c8f84faac55480fc8f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ProgressIndicator.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Step sequence with complete/current/upcoming status.",
+    "fr": "Suite d’étapes avec statut complete/current/upcoming."
+  },
+  "digest": "sha256:56747bb4a30acfdd02c12f1419fdebd6f7a89febc756a5d029a602fcc1182d7c",
+  "displayName": "ProgressIndicator",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "progress-indicator",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

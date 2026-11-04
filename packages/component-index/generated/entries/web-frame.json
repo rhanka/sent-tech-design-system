@@ -1,0 +1,50 @@
+{
+  "category": "data",
+  "componentId": "web-frame",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c8ea0c5ff52a56b9a6f38e2ac7e5cef956afeadf072ca5456f4fcbd234db790d",
+      "framework": "svelte",
+      "package": "@sentropic/dataviz-svelte",
+      "path": "packages/dataviz-svelte/src/lib/WebFrame.svelte",
+      "version": "0.5.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:61e4910550444393e861853d8831657f129a7de869484640f74a4e6297c5c4ef",
+      "framework": "react",
+      "package": "@sentropic/dataviz-react",
+      "path": "packages/dataviz-react/src/lib/ObjectLayers.tsx",
+      "version": "0.5.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
+      "framework": "vue",
+      "package": "@sentropic/dataviz-vue",
+      "path": "packages/dataviz-vue/src/lib/ObjectLayers.ts",
+      "version": "0.5.0"
+    }
+  ],
+  "description": {
+    "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
+    "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
+  },
+  "digest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "displayName": "WebFrame",
+  "format": "component-entry/v1",
+  "frameworks": [],
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "missing",
+    "vue": "missing"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

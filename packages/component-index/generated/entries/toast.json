@@ -1,0 +1,64 @@
+{
+  "category": "feedback",
+  "componentId": "toast",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3ed71bdf3e2e614b8ea724a9c7537daf7d6b719e4f381dcf2b70d689581fd035",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Toast.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b3506126fb19ea65734993e73541c82dc495a28ec384a7bc428684471f834523",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Toast.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:44d733c5cf753667d177b70b08733357ee07294680cc7614ffe8d51f9a54118c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Toast.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:eda87628706cc9a9699111b0fdff9f5dd6f584b719b9359eeee2830b94370b45",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Toast.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Ephemeral success/error notification.",
+    "fr": "Notification éphémère success/error."
+  },
+  "digest": "sha256:d3fa822102d0e3f77ff78713fe404936ac1106ae4f0ec88bf3497406d8828426",
+  "displayName": "Toast",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "toast",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "action",
+  "componentId": "copy-button",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d7093c02ce827f1d7a2072b50645a7b5be502572654dd3334b8187f4a881935c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/CopyButton.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:80176ec29318b28658050eae581e38bfee0d7b665b2a5b6b1988c81fca446188",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/CopyButton.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1965c156f4843b74732260621a03b4e287c78497ad038b48b31b044a939e1f27",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/CopyButton.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1980d10c03d08646d1d67c6fe794ad1ac0c8ab693dbf6abf993b6225a4967743",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/CopyButton.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Button dedicated to copying a value to the clipboard.",
+    "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
+  },
+  "digest": "sha256:4c9574523e0465d49ece1e85b3a7713a51947dcfda8f2c62ee5ef276ec791866",
+  "displayName": "CopyButton",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "copy-button",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "data",
+  "componentId": "sparkline",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9a61f7df7695871f3d337495a194203c55f140b9e6f112426f5caab5b15db249",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Sparkline.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ce31c8673ec21204ae74824d11ba2e6da619f28fe1a3f8d0a9c36b21b8259aa1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Sparkline.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cc161491c9fb8ff1d0faad2b5a04ca8c5ffc81e62006050c2abaac6815cc88c6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Sparkline.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0efb212bf0ab405405cc446b3901c0b5f477e7d9f9c611f36680223e2d3b1b3d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Sparkline.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact inline line micro-chart for trends.",
+    "fr": "Mini-graphique en ligne, inline, pour tendances compactes."
+  },
+  "digest": "sha256:21127a6b6092289ee23afa9dc5d54a2c6e3093d972adfcb1c6e79af49f4fed2e",
+  "displayName": "Sparkline",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "sparkline",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

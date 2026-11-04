@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "donut-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c7308600bb0ae7a0f63efe41500789313cb6b738ecdc6ea6fcfcf5d653293559",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DonutChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7b3f21e1586d4f8147b228137f4222fbebc5e73453a8811dc3c9dd1a59eea2de",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DonutChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4edee505f5a1f4a6b0a93b95e9d7df03c31cc50d4c0bb459320f97f592132f61",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DonutChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7e14445d1abc5e121c72c4f9216a9c4e33ebd78fd9dcfab39d71816a9141d22d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DonutChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Donut chart (parts of a whole), tooltip and center total.",
+    "fr": "Graphique en anneau (parts d'un total), tooltip et total au centre."
+  },
+  "digest": "sha256:914b6dc2fdd6aae5544a05f434b5b7d803f6ef0021bcabc45e8b50896fe3d6d3",
+  "displayName": "DonutChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

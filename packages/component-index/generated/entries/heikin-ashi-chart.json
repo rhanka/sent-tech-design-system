@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "heikin-ashi-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:0d483fda75be6975a7fb370edae688d1094b931722bdf2ab331234410e16277a",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/HeikinAshiChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:780717f7a2f129cb6b333b8fe5eaa800142e0688c52d43083683ccef6747ad0f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/HeikinAshiChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:72a333c04065c301143980ad5144a4b50d6a3bb5caf9806edba587883280a3fe",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/HeikinAshiChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2e515309f8f83a367dcbc1837f77156c3e476fc83c42f559cd1cc618a1d6ed81",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/HeikinAshiChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Heikin-Ashi candlesticks: OHLC smoothed by successive averages to surface the trend.",
+    "fr": "Chandeliers Heikin-Ashi : OHLC lissé par moyennes successives pour faire ressortir la tendance."
+  },
+  "digest": "sha256:cbef55548968d93a4f234585c075709346c220739ef5f3918bd28d847cd3d8a0",
+  "displayName": "HeikinAshiChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

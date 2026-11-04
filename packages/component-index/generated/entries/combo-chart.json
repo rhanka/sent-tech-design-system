@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "combo-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:8f9be58cce7beb11f50115c89877ee1161ff63c05a171ac82a821c66d73cca27",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ComboChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6e4016992ed693fb1765161142cb067849032c895b042a0a46af66e0713807a5",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ComboChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5aa96a91b3ea2a16acca4a4afd732b22c8eea6bc40ea2fd98753ce684a529b8b",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ComboChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1be81aee76d8ddaa274a34171b118cfd0e943862a7f40eaf226e00fce80c45b8",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ComboChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Combo chart with bars and lines, dual Y axis, and legend.",
+    "fr": "Graphique combiné barres + courbes, double axe Y, légende."
+  },
+  "digest": "sha256:0e29990eee6de9d0c21f7c0d3d68d69a1c995e47f08224665606511c967a095d",
+  "displayName": "ComboChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

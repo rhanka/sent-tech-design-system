@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "portal",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f0bffbdc2c2b859e2a22ced4cf80de88a3c1027bbf08cbbc1f65c9ee4525ff8b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Portal.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a916c5e32e1141f98b7bf524caca5724448738be1adbcadd4bedba7ffe5cf225",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Portal.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:93a93721a6b701f2449fe43a6b6650f3c81eb419e6f8ac087f756c29a420d7f1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Portal.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fa7100767b4332dd2d74c70f00655521ad6a5106dcd6e8e20669c3d47a395aee",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Portal.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
+    "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
+  },
+  "digest": "sha256:db5b4634c706ed328a2533aac07c1f76485abca9f5d75d8c1b30e516c90c25dd",
+  "displayName": "Portal",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

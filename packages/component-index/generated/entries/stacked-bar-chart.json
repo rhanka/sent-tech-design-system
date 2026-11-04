@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "stacked-bar-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c78110d14a770e1d97e4c82b4f6b0d5d1431d936f6a4b5579aebf8424b26e6f5",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StackedBarChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:efb05313b74de9e9aa0342397294b0f90345e6b00dd127649ac7c0445ff2b155",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StackedBarChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bc9be173a9c4a88805a343b98bcd6ccef3ac16e16bf5af277b4f8e4b7298901c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StackedBarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bcff672ac1113fd0495d014797a1016d961d6e61bd3260420b61e8716b8437ca",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StackedBarChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Stacked bar chart (series), legend, per-segment tooltip.",
+    "fr": "Barres empilées (séries), légende, tooltip par segment."
+  },
+  "digest": "sha256:e47668993a6646e6908e8f9aa79377b647fe2e4393d9435fa7a252fabaeb4703",
+  "displayName": "StackedBarChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

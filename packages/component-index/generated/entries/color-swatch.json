@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "color-swatch",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:cfb4eae87634a8821318146c7643bb9c826b0cccaee359de4e9619bb959f2be3",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ColorSwatch.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e8b940ea27049bd13ce3400e012b3723109506686fd8a9b22da3aa93b2a1178a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ColorSwatch.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:09d9ca5b1d5af0d66a891735e7c099626d69fd4bc963330d5e3c11ffa00f0db5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ColorSwatch.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:37f5c0f7dfdcd4369b858c1a9579a0edee6d12a417fafc1e3951585b89936cfc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ColorSwatch.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Swatch of an arbitrary color (hex/rgb/oklch/token) with an optional label: a palette or legend building block.",
+    "fr": "Pastille d'une couleur arbitraire (hex/rgb/oklch/token) avec libellé optionnel : brique d'une palette ou d'une légende."
+  },
+  "digest": "sha256:5110ce92d8089ab0145fffabf4eb3fc66c236a054e75785c62adb8674ddf12b1",
+  "displayName": "ColorSwatch",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

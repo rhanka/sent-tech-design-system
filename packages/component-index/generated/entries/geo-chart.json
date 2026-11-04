@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "geo-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f5a636af964df606cf1379082b920b8872979f00d1df3ebda1227b43366de75b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/GeoChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:63c94c97d72ee11e2855db608802f414e0def0869ba8616f63e46580adcd8a3f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/GeoChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:dac9b1c9a22ffb53cb9875e8188be71809bc38dce3361819ea0554b0ebef8f46",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/GeoChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:01f74b04effb1695262a584ede7fe515af6cd97926098e82a1104dedb90ff2cb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/GeoChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Generic layered 2D map (GeoJSON, choropleth, points, density, flows, hexbin, clusters), equirectangular or Mercator projection, accessible value list.",
+    "fr": "Carte 2D générique à couches (GeoJSON, choroplèthe, points, densité, flux, hexbin, clusters), projection équirectangulaire ou Mercator, liste de valeurs accessible."
+  },
+  "digest": "sha256:65b6f75a765d8b7c2986569bd2d6ded3efeecc8020a98fde520dd74674e2dc81",
+  "displayName": "GeoChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

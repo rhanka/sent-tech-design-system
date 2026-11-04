@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "scatter-plot",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:e0c26b4a07694f004f3b9949162b5e28423543a7b131cc7aac77b402f7666c55",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ScatterPlot.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a91d3e43affad6fb981ca4d44a6a989c9c9e70b1014da21228b98259dffd27eb",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ScatterPlot.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f5c2d2947f8999b87a77c7627f2c51372ff86d57553d8d5fdc5dccf62c781f80",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ScatterPlot.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:37d757600fa3159551dddb51074f9da4cdf0f58197c9c1ffe3d806085636b989",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ScatterPlot.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Scatter plot (two numeric axes), tooltip and accessible value list.",
+    "fr": "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible."
+  },
+  "digest": "sha256:0121dba0f4b645ee3f44dba76ccf797c3ccf3b2e9a07791e05801c7747076bbb",
+  "displayName": "ScatterPlot",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

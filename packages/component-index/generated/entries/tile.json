@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "tile",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:993f05722d57467327212a920c5a2e9139a6d19133f0895bc67dc8febd025e0f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Tile.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:41770d0e3c4370eaeb2f47f5e7abae79ad98f05dbdf1b35b364060bd05f770be",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Tile.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:168f547ef46fcab36ab63d9bdfb59b6320ced3921aa3e135b64545ef08e815ff",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Tile.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6e4234c16b3899757e764676080a2666481296b2d87711d9de54b10db0f20217",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Tile.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
+    "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
+  },
+  "digest": "sha256:77d27e4c1394338bebd85f55d2b21d815d314ff4f1b2c72e91af1af09ed4b3e7",
+  "displayName": "Tile",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

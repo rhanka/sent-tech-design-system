@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "density-2d-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ea6b0b5b22310a984514aa100663a2025e12c9faf14759a3d12126e002e8e45a",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Density2DChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:01c89b180ef8f29793051d20ae0cc8cbc7c6b65c080cec105a9e6c8a016b1126",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Density2DChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fe177850ea7a42afa88f99e555d8fe0dc1d42b11aa9e9fbbfde30a53591117a5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Density2DChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:83495d99f6ee46ba7784ea6ddd27105661b9c5b1efe2411d674206873fa71140",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Density2DChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Binned 2D density on numeric axes: (x,y) points aggregated into cells whose color encodes density.",
+    "fr": "Densité 2D binned sur axes numériques : points (x,y) agrégés en cellules dont la couleur encode la densité."
+  },
+  "digest": "sha256:2c75ad2cbd8bd57891d724c9448348b2d9d97167fe20beb6bfba666ecbc3390c",
+  "displayName": "Density2DChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

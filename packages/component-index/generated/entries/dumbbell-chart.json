@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "dumbbell-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:642a2e1d5323dc649356432b29ab7b2b83c13bbc2f84b28e8f0ad619eaf4b199",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DumbbellChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9eda63389d86483870720a27429fc6a9fc096a8aed7a13862821a197169d2777",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DumbbellChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1fdae4e9871c141d3c7c7fdd200e09d5b0fe7b604d36d9d51022bc7da2f2a43f",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DumbbellChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f7262b46adc850554e7cabfe76317ccd97d6c8e30b25e42123c664db9b7d469c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DumbbellChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Per category, a line connecting a low to a high value with a coloured dot at each end (e.g. before/after, min/max).",
+    "fr": "Pour chaque catégorie, une ligne reliant une valeur basse à une valeur haute, avec un cercle teinté à chaque extrémité (ex. avant/après, min/max)."
+  },
+  "digest": "sha256:c8c86e2027f990e9c4bf3fd9c9ac2999bfee542d221aaa14a0a9b5194308ffa1",
+  "displayName": "DumbbellChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

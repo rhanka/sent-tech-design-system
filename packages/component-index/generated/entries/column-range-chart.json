@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "column-range-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7010b6105503a2857e136b3651f316a1a872a4e1063fdd8a88cd81fff8f768ad",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ColumnRangeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e549ebab91e63e379799c3266ed3fc09de0a4cfe461d9f3b2c2c06475f803175",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ColumnRangeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e75ede05145e99fd0d4892f0f9f67fc981febea72e703d87a593ab2797d0311e",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ColumnRangeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e36bf84df63d80d4e663ac84dc51f8c4f70783a5fab6d685d7b0c76c7d5ea97e",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ColumnRangeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
+    "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
+  },
+  "digest": "sha256:fa3565fad1f7f02676ba2d120573ff707e3ffd5b95a7ea6813da49c070842fb1",
+  "displayName": "ColumnRangeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

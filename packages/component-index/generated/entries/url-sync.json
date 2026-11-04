@@ -1,0 +1,34 @@
+{
+  "category": "data",
+  "componentId": "url-sync",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:b3ebc6b4543f5f683748f425587da1bbe40a2098577acde5d848b0a2250b04e0",
+      "framework": "svelte",
+      "package": "@sentropic/dataviz-svelte",
+      "path": "packages/dataviz-svelte/src/lib/UrlSync.svelte",
+      "version": "0.5.0"
+    }
+  ],
+  "description": {
+    "en": "Store ↔ URL binding: declarative deep-linking of dashboard state.",
+    "fr": "Liaison store ↔ URL : deep-linking déclaratif de l’état dashboard."
+  },
+  "digest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
+  "displayName": "UrlSync",
+  "format": "component-entry/v1",
+  "frameworks": [],
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "missing",
+    "vue": "missing"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

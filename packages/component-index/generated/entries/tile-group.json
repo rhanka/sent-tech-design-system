@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "tile-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:82f24be46ce11fa62ff70524996d3ecd7abebc8094b7417ba50186481d2ac03c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TileGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4d0283e226ae68fa6502795eab4b72c97118ed0f753011ffc94e3f37952a86d8",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TileGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:69b69a0d7a063a816071fdf6ef2ea393297ea82bf3105c1a77b29a5041f16c51",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TileGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b986e280d5b224a14e1db40ea6659c52f9a6c9c494cb04145f69da0dd2d1712a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TileGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Selectable tile group (radio), with legend.",
+    "fr": "Groupe de tuiles sélectionnables (radio), avec légende."
+  },
+  "digest": "sha256:5685f86f8d635328e191e4c0c71d51d1a54adf50d6e49b30e471971dd0ff73ef",
+  "displayName": "TileGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

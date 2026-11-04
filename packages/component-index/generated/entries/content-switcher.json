@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "content-switcher",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:37fc0c738baecfcaf9d83df53c9c6d11568732a0aa1c11f240190af914850aa7",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ContentSwitcher.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:66ae402b1d328cb85aa58f046068745738540a54beefd3c327ee9c64e0d6ba23",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ContentSwitcher.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:15fa87495b96dd30ec5c72a6279678bc0fb651969a4d0171310ea0e3508c85e9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ContentSwitcher.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e68b6fed38039843ee08b097e731fc5c47c86fc48174c6e458b106996e70373a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ContentSwitcher.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Segmented switcher between multiple views.",
+    "fr": "Bascule segmentée entre plusieurs vues."
+  },
+  "digest": "sha256:0641a3beef24e8f35479f1044e8de9e6f703eab841fdd0c0264b6a551a81d210",
+  "displayName": "ContentSwitcher",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

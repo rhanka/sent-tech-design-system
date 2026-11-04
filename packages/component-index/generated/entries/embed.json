@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "embed",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4358fe210cb5025761d90a4d3227eb50e52b2ee89a449dbbfc6d81bcf66683ad",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Embed.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cb40f011a9fd647e95c7170acbc62df2cfd40a4f6e85e7bf80bf2ded704f1696",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Embed.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2d0ec6d3f1be6fa1ea126ef0a4101f3a80a1f3bd77f6c968be55fc585ac66672",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Embed.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ca3ad38dceee37f72fa4ff5e8862a64f68d437fbbda20627346f15285bb8e1ef",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Embed.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Controlled iframe wrapper with strict sandbox, ratio, and loading control.",
+    "fr": "Iframe contrôlée avec sandbox strict, ratio et chargement configurable."
+  },
+  "digest": "sha256:7667418a840bbbb7af4be5820058ef0ad5eee43c5c12c0e5ef5aaf660ce61e23",
+  "displayName": "Embed",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

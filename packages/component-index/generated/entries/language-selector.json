@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "language-selector",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:033e169ee1746866facff244448d47fe559a3f6ff9fd2ba916710593a3f3d964",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LanguageSelector.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5162cf99808d8167c4a640445fade366a11e224fca7df39b548c1b77d1a87b49",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/LanguageSelector.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2886b8c7cbd757c319d6e407525669811fe35c7ea60feb9b4c918620e2cf30e2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/LanguageSelector.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:84ef3c0d49c9f766f7ca1d8f214e79c42ec0f068f7ad5d684860d6a231804246",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/LanguageSelector.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact language switcher (i18n): current locale + menu.",
+    "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
+  },
+  "digest": "sha256:469e3e29d01ee5c50bc6b71ba1ff2888e9177c248d5ad10ae16ee49af78ab9e0",
+  "displayName": "LanguageSelector",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "divider",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7576479e57a94ea044e289df5d1252091608bb5e99d6defc6292c871d3579d5f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Divider.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c9ddfd21a615a87faac45c3201c5b38a7d4a33c5069894ffd94637e01a304852",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Divider.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:98acfefddbbbb4c4f397d80bf5782a738a1a7f6b685dd3f8f0d4e14c28bd3d5a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Divider.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:01a0ca5dc5de939dc94cb85786a4d79e6813d2bf612466064cb7dab8580bef4a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Divider.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Horizontal/vertical separator, optionally with a label.",
+    "fr": "Séparateur horizontal/vertical, optionnellement avec libellé."
+  },
+  "digest": "sha256:8cc17088cdaec1f24158ae93075824d67c042c66e67f85f8920b0dd109e420f1",
+  "displayName": "Divider",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

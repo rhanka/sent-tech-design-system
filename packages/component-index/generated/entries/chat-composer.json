@@ -1,0 +1,63 @@
+{
+  "category": "chat",
+  "componentId": "chat-composer",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:95d0c7ccbed730c6faa7d1b901e7b9b872b156476c8e54638d5513485554bef2",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ChatComposer.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d94a049450bfcb8367c8600801cc0e3c4487978d4f4597b042c65c9ddb2bcebc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ChatComposer.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:94461e05924f6b4860bff10e2a6608904a91bb5d681835ccf5121be21ededcb7",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ChatComposer.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1beb113a37cb7b6d6b9603c278b7784575b8e9586402aab8036c2de628d0b2a8",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ChatComposer.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Composer with action slots and send/stop handling.",
+    "fr": "Barre de rédaction avec slots d’actions et envoi/arrêt."
+  },
+  "digest": "sha256:b6603a223ccdce827731fa81c2b0cf2cef4b22d7db208d7262df4d2eacdb2efd",
+  "displayName": "ChatComposer",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

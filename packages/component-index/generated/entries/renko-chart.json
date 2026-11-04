@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "renko-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:cb06c12c6b59b998972148b36125d01c1c55ff41cbe919866954c1f3cfda31bc",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RenkoChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a85e7baedd2b683e5a81bd9512b4296792b42fe57f5cfbb24e5ccd3d4cb37250",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RenkoChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6860d6c8f8f16456c5552117a06c7efeae20e06554a4e78fe7e18734f144ae23",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RenkoChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6f073da0b4dce5caf0918f252a4b0b5aa5ec91832f24987734ef2ebe732f29d5",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RenkoChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Renko bricks: from a price series, stacks fixed-size bricks (boxSize) while ignoring regular time.",
+    "fr": "Briques Renko : à partir d'une série de prix, empile des briques d'une taille fixe (boxSize) en ignorant le temps régulier."
+  },
+  "digest": "sha256:aa23fc164c8d2c721bcaf1c05408b90f1b86355ebff66b4690226bc87063ff3c",
+  "displayName": "RenkoChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

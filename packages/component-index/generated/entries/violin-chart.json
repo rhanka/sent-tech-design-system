@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "violin-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:085cba5eb37c475b47f2a03ce42e7b244327272dfc672ddc5633858bfc1c47fc",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ViolinChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9ce714e80955db1010dcd1bb9c2847d7b6a09b55bdd260bf59038222f8b18b7f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ViolinChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:37ddfdb56b0ad67bcbdc149199e99f8cdd83e30e37f9b6c1e13804fb19044bc1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ViolinChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:34c0300b1c7a965260e6e28a752a7b96cfd983becebfc5c04a799f94e542f2b4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ViolinChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Mirrored distribution density per category, with median and quartiles.",
+    "fr": "Densité de distribution en miroir par catégorie, avec médiane et quartiles."
+  },
+  "digest": "sha256:ff517ae2fd6d22e9d90f48782ab7695041c21092267729b09b18747c3f6741f2",
+  "displayName": "ViolinChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

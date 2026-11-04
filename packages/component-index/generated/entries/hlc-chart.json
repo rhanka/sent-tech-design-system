@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "hlc-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:8c18fa3ae3babd735a329edcef950d9dcadd811fda17a60fd5f180a8c1ea65ae",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/HLCChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:59f3d67c8d1ffe85743643aa1094fc7a7ef681cbbbd43d36756429134f641f79",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/HLCChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:768258bea0eb5599d66637480b7a76956cae8511ca8581dfdc941fbffae5f883",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/HLCChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:75fc33ad6cb589534a0845bdfa5c06c94bf8967a52862ac6111c08ae635713f4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/HLCChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "HLC bars: a vertical low→high bar with a right close tick (an OHLC variant without an open tick).",
+    "fr": "Bâtons HLC : barre verticale low→high, tick droite à la clôture (variante d'OHLC sans tick d'ouverture)."
+  },
+  "digest": "sha256:6df020965dccf57ffe9db50035fa9577b1e9c9c67677b57097cc0187f24fe01a",
+  "displayName": "HLCChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

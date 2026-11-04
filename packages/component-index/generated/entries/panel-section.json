@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "panel-section",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ead050cabbb910f09ed7de57e978a2c3ad5769cf1685a55826037a9fdf9af011",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PanelSection.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4b0443647ee206e9a3b8e32132614b9f6c2806874b92977af46b11b82dc05e90",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PanelSection.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6c25fd6747158091fb32822c3e422c13f2c66988fcd8be4b99b4e8ee528af203",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PanelSection.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:04027a1be48b2629cd41a50132fdfd6d857386e4fdc15424609f8c5104935912",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PanelSection.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "One PanelStack section: collapsible header and scroll-owning body.",
+    "fr": "Section d'un PanelStack : en-tête repliable et corps propriétaire du défilement."
+  },
+  "digest": "sha256:62ea3a4f8692d9308b86c6f69db3f1a31b0417c91b036f6e5aad17518af74651",
+  "displayName": "PanelSection",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

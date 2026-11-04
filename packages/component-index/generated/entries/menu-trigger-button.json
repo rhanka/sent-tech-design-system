@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "menu-trigger-button",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:8b1c494d559348e23fe2f95c38bf1516bf6caa0cf4ef042385736361cc25dd91",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MenuTriggerButton.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fba3f871d5da469371b8e4e54b9c0dd467016d35f8228f625e130d5e78b55bc1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MenuTriggerButton.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b5ea70b949ce4e0c34eabf107a40c7687ae38708f678071db293a6d0bfe143c6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MenuTriggerButton.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e4c00c0d427a4c968928752f968ae22b31312cdc67dfdc30a2eb06a2bfaa2798",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MenuTriggerButton.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Square icon button preconfigured to open a menu (haspopup/expanded wired).",
+    "fr": "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
+  },
+  "digest": "sha256:6da4166f098c517cbcaa4cdac6b36fa618f14c29eac1dd0ebc797e3eaf2692a9",
+  "displayName": "MenuTriggerButton",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "menu-trigger-button",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

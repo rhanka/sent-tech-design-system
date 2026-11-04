@@ -1,0 +1,64 @@
+{
+  "category": "data",
+  "componentId": "line-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:5f80bde5795b49eed9c71c127074f348766657f59435dc16013dbe1ef8adc7eb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LineChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:caf35ad77539a4542f4fe2762e6e31b05a1d82c81fb29b1cef05840dca6287a2",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/LineChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:41379119d4720faadfbb89855ca803f8083a8d5198fe05ef078f9ec4c0918ff6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/LineChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6ca2bfe7ded2ffa98787687dda3cd48a5e7c6c9da670d502a3d7ca429386b234",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/LineChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Line chart for temporal or numeric series.",
+    "fr": "Graphique en courbes pour séries temporelles ou numériques."
+  },
+  "digest": "sha256:b715fd5c49834d29962874fd5eb276e1a6651039e20930f94c1cf1ae8ca19876",
+  "displayName": "LineChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "line-chart",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

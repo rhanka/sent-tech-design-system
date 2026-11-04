@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "hollow-candlestick-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a4f81a53f3aa65f535dcb023e8bc0b1c49b91734cdcdb37a138796ffeb074aeb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/HollowCandlestickChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:260debb5b0d30446a5d6286771b2c2123db4c7497f9541a6e71cc37c207205b9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/HollowCandlestickChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0091d630346149d56be74eba7fc940741ab5cfea555d8b0942d045ac5542f7c6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/HollowCandlestickChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b89532d02274195bedcbe529df458ff9c02971078e083028cf57699123269bdb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/HollowCandlestickChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Hollow candlesticks: colour by close vs previous close, hollow body when bullish and filled when bearish.",
+    "fr": "Chandeliers creux : couleur selon la clôture vs la précédente, corps creux si haussier et plein si baissier."
+  },
+  "digest": "sha256:42f8a7a681d0509ce5ab17f1297e7745753cff10cd898e3af1f4384bf99a31b3",
+  "displayName": "HollowCandlestickChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

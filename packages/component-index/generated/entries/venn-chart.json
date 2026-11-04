@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "venn-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6e6b1490681932b598f4d8dfff0759d3b7ceaa679eb3dc9c9de5b56552e3434a",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/VennChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:39022680d5ed20ef17cdd2f39b2ba2630d7c03b4b2b37f945a8e9da3bff7d9b6",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/VennChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:318bb701235ab68de0b3f8c74d49bd2a08c2f69a9e077dfe5dc4513d623b55cc",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/VennChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6ce6bfa629352f58faec1e9b51ec6388694f3e0d86676388f650d73213c12a9e",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/VennChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Venn / Euler diagram: 2 or 3 sets as overlapping circles with labeled intersections; radius scales with √(set size).",
+    "fr": "Diagramme de Venn / Euler : 2 ou 3 ensembles en cercles superposés, intersections étiquetées ; rayon ∝ √(taille de l'ensemble)."
+  },
+  "digest": "sha256:fa9c7459ac9a774c4c3bfd1e2e57fc949d59f282669489259640514292a9ea23",
+  "displayName": "VennChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

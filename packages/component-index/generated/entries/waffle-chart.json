@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "waffle-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:81c1224d0207b75ebc6a7d239ea64769dd647f45404b70e79c481c82917f75a3",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/WaffleChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9cbc532f89870ddfca9be4d0b4adcb9635f92feb06ae4437ac8d915e7ddb0046",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/WaffleChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d2e9fce82c637753c09245f269140a9f5a617c9b03f34c2c137f10659325aee1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/WaffleChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:be04a642b9e5989074857e96aa8db955f9455007767300dda7214e367b3d735a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/WaffleChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "N×M cell grid: the share of colored cells encodes each category's proportion.",
+    "fr": "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie."
+  },
+  "digest": "sha256:4f0aa1657b8a96b96a155d58d4fb575e858851f70711a631bc7c02f3f9239d2e",
+  "displayName": "WaffleChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

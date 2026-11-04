@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "dashboard-grid",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:818c8620f4d37d14c1e406c4bc3b9b18df18f0f3f4a25df0c78d568009120069",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DashboardGrid.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e6827f347ef13fda7ca54d7762d8a72593e1b87af1161e3ababd9bb9a67435cc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DashboardGrid.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bf5b76459dd2d6cf6cbca4a0a0d205497a625a445712e37eb112c8047e1fd9d2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DashboardGrid.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:660ad37f762bdf8a853e40aeb4189a0696bfb0b858d83ce2749c084ace6aa3e8",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DashboardGrid.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Analytics tile canvas positioned by grid coordinates, with accessible edit mode.",
+    "fr": "Canvas de tuiles analytiques positionnées par grille, avec mode édition accessible."
+  },
+  "digest": "sha256:245b2f8579935411e264dcedc3e07eede3a6b7e8b65d6b86451780d3d9aa4790",
+  "displayName": "DashboardGrid",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "transcription",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:081e7ef9c47f571c90b9f3229b264c3669c5c707221bb21a85483fd4fae25f61",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Transcription.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:092828d0ad2ef3ee2e6af149a4a8aecbaff348869cce9bffeafd281f0b3cfebc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Transcription.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:66f02d2574c027a3e53a979bfd611ee3dac582ac465a110bfb7c76232795854a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Transcription.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8e94dac3f63a1af7fd59641cbc2e3524b831ae5d19b188f21f01f482aae3fdc3",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Transcription.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Collapsible transcript panel with timestamps and speaker labels.",
+    "fr": "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant."
+  },
+  "digest": "sha256:455493888d9056d3e72e8f81f1c27dc23803b58ac37ae363a2a043549c07d7b4",
+  "displayName": "Transcription",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

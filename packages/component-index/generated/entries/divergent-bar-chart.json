@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "divergent-bar-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:57f2587b2c2ea8fccc72900be7501409d7caa6aeaa94d96074d7268cfa80e2be",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DivergentBarChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cbf245f585d50e68865f481377ea72afe4e815056c12df8e6f47a991c099f48a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DivergentBarChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:aeccfb0d92ab07b78383b334ea64f89a82dd852fe2cebb4fa7c6a171b8d6b837",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DivergentBarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1a1df9413df90bbeb45c5692f44d5d99276a55616a2bd8c53862c09c322df58f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DivergentBarChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Divergent bars (positive, negative, neutral) around a shared zero axis.",
+    "fr": "Barres divergentes positives, négatives et neutres autour d'un axe zéro."
+  },
+  "digest": "sha256:bfa16322a694911ca8b0039f5133f02f9862afac226b52a0b942cf55ba50e12a",
+  "displayName": "DivergentBarChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "icon",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:bc0293589f3ee45cfb629be573c86a09c0b0b45b770816c64d0b791e1fb4e2c2",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Icon.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0adc6ae30d5a9486c5c0fadb2aad9aa77f65b3d37437c90c3fd3119a00f522cf",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Icon.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8a2c10a61076d775e7021fc4407dfd97d4ac0b4f0772ec6b18df9203c9456a44",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Icon.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9550adc4b7f73d4512c52a61433f9c3e2c6bc5fc9a1066e54d0117954eca1884",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Icon.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
+    "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
+  },
+  "digest": "sha256:b76106c69523a6039021cf37cb99ce8f6d39bb259034356391212a062b38ab46",
+  "displayName": "Icon",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "dataviz-score-card",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d0cbedc524a452ff34c7b5d71b7879c710ace687d5ec9187948ebb5142c40bea",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ScoreCard.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:37398139e4b7711b58e13cecf7ca1f70143cc65a7e8f5da3b6a89b738f809dbe",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ScoreCard.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:16603dde2abba2356b78e039501435d519c0fc19a2e1efeaeaf93fb5b6c6b72c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ScoreCard.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:91c32be63114ed05c1bad202310b288fc1abbeac6f27f2beedb5d8b09804237a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ScoreCard.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Indicator card aggregated from a store (renders KpiCard).",
+    "fr": "Carte d’indicateur agrégée depuis un store (rend KpiCard)."
+  },
+  "digest": "sha256:5e947904001ff93421cbc84c8b264f86e0adb725424827815260d310141ae424",
+  "displayName": "ScoreCard (dataviz)",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "app-header",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:cfe67861678e1bee8526b90d5eaa229235c0a88b77dfb9cb2024ae0407b0b61f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AppHeader.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:36cef0be8fa5becc59a9912aeb6316742ef8af74433c31bc116f2cc1625e1071",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AppHeader.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:57d636f5cf3263af50bcf17e3239789894dadb012f88c2edd280fedb021fe36e",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AppHeader.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bb0661cb101e0895e3adcf7cb26ff490bbe3695880987f194e207992642f67a1",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AppHeader.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact application header with menu trigger, navigation, and actions.",
+    "fr": "En-tête applicatif compact avec burger, navigation et zone d’actions."
+  },
+  "digest": "sha256:5f1e019e3ca774e201494056f09052610ee2921cb26ea4944b9954876ca62e75",
+  "displayName": "AppHeader",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "header",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

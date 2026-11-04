@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "polygon-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7b975b5c7fbe0fb32fc0accd21b17f1f91f2703fc6052914392f3260b0c56987",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PolygonChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f0a72188735913c7346dd099eddbe0d1c6d1ed86dd633e4d435e2e3b74985d6c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PolygonChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:849790108cb5313dd24f05aa2c6d58fcbb3daf9c81fee97f9b63e0fb351023d7",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PolygonChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:24452633242e1fd8faf265713db85e5648bdb806a05908f2eb06cd75d0262d4b",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PolygonChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
+    "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
+  },
+  "digest": "sha256:234bcde24ef98ec6a34b8aa2e07d02323abf6631489d2c4b82e71c6d806b4f00",
+  "displayName": "PolygonChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

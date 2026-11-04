@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "switch",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:5c725c6289e455c44354f3d5aa66919965b6603eaec96ea3da265c5a94525730",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Switch.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3ca3a804153c650e05bf3543158ccb2072cf4c3734cf731075a33dde534b691e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Switch.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:54040a447652cb9c0258460921a9a91585d5c373f4b7431a4cabbbec6b648298",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Switch.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:57c4ba08e84a2465fa5026d7d436e40c6d3dc4b166e37b200541f83a21a449ed",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Switch.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "On/off switch.",
+    "fr": "Bascule on/off."
+  },
+  "digest": "sha256:51d1abd92c802c42c2c21f1f8e45d621f78b0d0016f0d80f8c2097b5b7d39016",
+  "displayName": "Switch",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "switch",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "chord-diagram",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3552638d908fda340408ed5e3c04d33bc907d0c41f4941db5e12c00817d2dd4d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ChordDiagram.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:23457dc52616ae6b6d260fa974b6e7911b1f5c986a91ead4b18f296d75ff3f33",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ChordDiagram.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:844374cedb2ab9dc1e5981643b49ca6b0c7ece3debe4740172f01ffc3a89ee60",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ChordDiagram.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6cd7c9b06394ab589aba50f041f38a6f57caf32ba80ca2c2f7ab344480f49482",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ChordDiagram.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Chord diagram: weighted flows between nodes laid out on a circle.",
+    "fr": "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle."
+  },
+  "digest": "sha256:faec76301ef5b609cacac50207569f57b8b3081178a23080fdee0bc10a94f65d",
+  "displayName": "ChordDiagram",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

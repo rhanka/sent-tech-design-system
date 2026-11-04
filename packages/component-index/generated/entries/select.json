@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "select",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9d2c6b3ceb58fddb2cdbfcd810ea64017cbe149c69342a0d9351d7bbf13eb172",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Select.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a171316d15877301ba4db9ce4e44ed9c17051cfc5189178214e523031a23e37e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Select.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:870e88022b0baa8a0458fea7819cba125bed51d4219657eafb98db91483018dc",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Select.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6311262f14d0ff7ed64793b28ea7e93fc4641690b8d645168f23d8425fb42d73",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Select.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Styled native select, sm/md/lg sizes.",
+    "fr": "Sélecteur natif stylé, tailles sm/md/lg."
+  },
+  "digest": "sha256:8957becbe3aab2c64eda85035a882e4498b2e2c02aa3f7430ca7ce8f1114f4f6",
+  "displayName": "Select",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "select",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

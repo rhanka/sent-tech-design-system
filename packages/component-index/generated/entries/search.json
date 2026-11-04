@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "search",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:486019f72099b3e914f64078332e7aa15945eeace117dc7d041188dbe6f7c167",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Search.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:14503a1a9d1b90613bed29db45ebc2e4eecd9c11a09c5c319dfc975a4de0a656",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Search.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d29384f62afcb4a074f6c698cb7f68be7fcb4169d5167607dfb5afeafafd66ef",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Search.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2de2b04d845dc59407271a8a96b0490beebbdda1f0d8c53c87e81dd2ed0df6a2",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Search.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Search field with icon and clear button.",
+    "fr": "Champ de recherche avec icône et bouton clear."
+  },
+  "digest": "sha256:fa871afb11e1a9ee4d8ad8b053eb842ca4f786be61befa28d98889d9a3b04334",
+  "displayName": "Search",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "search",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

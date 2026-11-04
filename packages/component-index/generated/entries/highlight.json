@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "highlight",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:864c22899a39e7a4e0b2b0ccab22afec2540aba9b6dfe80bd26cf63116215814",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Highlight.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e2f3e37a5513f8da01273894612b92a5f97b8afea222767447f76853ca2f4d89",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Highlight.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4fb4385c659d08fad5ff1ed3bf3822442c94f24af63584bcc25f4eaf4df21fbb",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Highlight.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:200138770c63c8570e5c5c4922276cfe1c980b202c8e805f3531450e3dd7e7b5",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Highlight.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Editorial highlight / callout box, with accent tone.",
+    "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
+  },
+  "digest": "sha256:e9e3edeff13bd4a0c25dc01a161e31f3c0b7dc4ae0e461d4783a7cf665a40300",
+  "displayName": "Highlight",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

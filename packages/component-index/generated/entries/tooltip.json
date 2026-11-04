@@ -1,0 +1,64 @@
+{
+  "category": "overlay",
+  "componentId": "tooltip",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:5fbe964cd4a4575d75b7e9f80262074d86a989097ebb999d1f769ff9ce868565",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Tooltip.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:985ed23605bb688aa5c446863daec25d3bc4b4e8e89ded4faaf3bc91c9138f51",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Tooltip.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:19c6d7d6861f344b37385d98fd8a89933a5ce7a6649f3dbeed01ae9960f233ec",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Tooltip.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3b883c27f08862ed19b1813b616bec368e8bf48c0e015581fc48974633e52022",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Tooltip.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Contextual hint on hover/focus.",
+    "fr": "Info contextuelle au survol/focus."
+  },
+  "digest": "sha256:7b09b5f34962a59bdc11334ce7e9860a268cee41f2ac68773bd4ef47d5a9638e",
+  "displayName": "Tooltip",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "tooltip",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "dropdown",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:0ee2eb4c363af5bf8871f66d90dc2910a7fc5a6a54a3ffdcb69a95de5bf93b54",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Dropdown.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e3bfafac5b692021acfa4fa60a716aca2e733cf8bfa7ed7181b303a13bd39299",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Dropdown.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3b7d0829c6c89a280584ef2d52e48eba1986e4dbf70995d31b78666f278ce68a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Dropdown.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6f732914b98c0e228fd5a6c0284ca8f94c237ea2932caa02a2db9fda22848afe",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Dropdown.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Selection dropdown (listbox).",
+    "fr": "Liste déroulante de sélection (listbox)."
+  },
+  "digest": "sha256:f7de59d4c3ec9502b8d618e9082ab449361a6d445a93a0647a8d9afca79e90d6",
+  "displayName": "Dropdown",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "dropdown",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

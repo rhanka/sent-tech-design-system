@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "stepper",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6fc2c4fe7b31e3ab1491a5889b19df582969f64f60f4d6caf3420003cbf061ce",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Stepper.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:dddfc86641e8edf1b3a98b99b04553f028e3fc19707457ba5f2182d702cd0f6e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Stepper.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5e87da346811b154ef9354c1131efc376951a1c5e09fbf32d779eaafe7e07fb2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Stepper.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f783cd39f5cc9f9b76f97d79b69d2378817fceda9e787da8e572515fd4b9aaf8",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Stepper.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Step indicator for a flow, horizontal or vertical.",
+    "fr": "Indicateur d'étapes d'un parcours, horizontal ou vertical."
+  },
+  "digest": "sha256:9a65386e7c1df9d31b41fee441b51026773fab16f630bdc5fbcca0feae311f2b",
+  "displayName": "Stepper",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

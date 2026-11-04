@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "parallel-coordinates-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1f2d04ba5234170b6288fe1e20cf132323c0ac24f2ec702eb4d10488e91a7759",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ParallelCoordinatesChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8c84194812618e503dfdaa3639a7d9213c7343dc9f6f1f755f98a26ff1651acc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ParallelCoordinatesChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:aed5675a92ec0b3c7d49700e619bc15dac369c52a4afb7126b499096ae4c9ca7",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ParallelCoordinatesChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:124c7fcb36bc9410ff550c0a6e0e3863ce82a042b5123fd72ef303b14c006925",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ParallelCoordinatesChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Parallel coordinates for comparing multi-dimensional records.",
+    "fr": "Axes parallèles pour comparer des enregistrements multidimensionnels."
+  },
+  "digest": "sha256:0eb9d87f7ba8abfe06d05a4f44dd088166b332f313d44ec43a085547e11198e2",
+  "displayName": "ParallelCoordinatesChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

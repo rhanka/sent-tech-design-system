@@ -1,0 +1,64 @@
+{
+  "category": "form",
+  "componentId": "file-uploader",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:25b7244bb46002f68a785df994a01f5d53fd9459029f44b0255f97c7c8873eda",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FileUploader.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7b47672d6b974826b451dfedf355d1d98feef1a587e521e12596c83ad6f408f3",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FileUploader.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:51276297f20576c54c094833f8676305ca90ad3bcc5f5a0f8c94c8a5db107c5d",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FileUploader.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:77b16e02f247d98f9d349c352933d0e1cdf49a4f8aa981ada9988691173c013e",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FileUploader.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "File upload with progress states.",
+    "fr": "Téléversement de fichiers avec états de progression."
+  },
+  "digest": "sha256:9e9c9eb40fa0fba19fb23bf79a5c1e7161c1ca237b5ba47490dafa1ae107df96",
+  "displayName": "FileUploader",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "file-uploader",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

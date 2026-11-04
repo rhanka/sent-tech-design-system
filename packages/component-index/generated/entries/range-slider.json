@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "range-slider",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ae1bdcd8742e20157b1805b9e3864b69469115ea78db17582aed578a3bc43c83",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RangeSlider.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8b522a1f7fc17f719069f33c5d82bcf1a5cf71f14faf4f56edb5ff3db26baacc",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RangeSlider.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1b187c9f1f9f261ec871bb7bf648e0fcf0e024181b5a1e1f603bf79944f61a4d",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RangeSlider.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f5905420115d9625dc94e1f2ce753ba81b06b5ee0e3f9e464084aad63536fca9",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RangeSlider.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Two-handle slider for selecting a value range.",
+    "fr": "Curseur à deux poignées pour sélectionner une plage de valeurs."
+  },
+  "digest": "sha256:73e0ad57b0d4c8db3484183f8780dfcdbbe6704ecc82c4b6a17bcc568ebfed2a",
+  "displayName": "RangeSlider",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

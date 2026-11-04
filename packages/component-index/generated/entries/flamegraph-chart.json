@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "flamegraph-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:00de1e700efb01261a188ebdcd972072b7d1e5283a8e26cf346738c309bae930",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FlamegraphChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:364d05064b5a9dd58d759802ec48dbe6e3e7c924c4cf76f35454d95541dc0e19",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FlamegraphChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bab45ae5f068c108612c8481ef258e122cf1d21448bf41d32e790fbd0a3a288f",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FlamegraphChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c159799789498a8f1567ea71351cb358ee88e2e4fb8a16ac3473004b3d3fe9e4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FlamegraphChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Stacked icicle call stack: width ∝ value, recursive hierarchy laid out level by level.",
+    "fr": "Pile d'appels « icicle » empilée : largeur ∝ valeur, hiérarchie récursive posée niveau par niveau."
+  },
+  "digest": "sha256:172b0b5b04a7d9a0e9d15b773e98d3f1489446e8185f6822e466fc729e9d93a1",
+  "displayName": "FlamegraphChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
