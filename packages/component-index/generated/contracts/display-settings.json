@@ -1,7 +1,7 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:76ec749e2c6c0fcd2dd14c4384ea0521bcf1ac09e83f3d58b4b555b745686b83",
+  "digest": "sha256:31c4532cfb33b4709d4817d04cb02ca0b12900793c7dc13d9a73cbda463a862f",
   "entryDigest": "sha256:7c21f39982fdf0338d065ada408366470e8e340786107f87a5f63ec172703280",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "DisplaySettingsState": {
+            "additionalProperties": false,
             "properties": {
               "contrast": {
                 "enum": [
@@ -55,6 +56,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -123,6 +125,7 @@
       "props": {
         "$defs": {
           "DisplaySettingsState": {
+            "additionalProperties": false,
             "properties": {
               "contrast": {
                 "enum": [
@@ -156,6 +159,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -223,6 +227,7 @@
       "props": {
         "$defs": {
           "DisplaySettingsState": {
+            "additionalProperties": false,
             "properties": {
               "contrast": {
                 "enum": [
@@ -256,6 +261,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -319,6 +325,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -343,6 +350,12 @@
         "type": "object"
       },
       "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
         {
           "name": "values",
           "reason": "library type not expanded",

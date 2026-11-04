@@ -1,7 +1,7 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:b0724de2473a226db76284e93073459ef5d5c8663594dae6280ce454a030afe6",
+  "digest": "sha256:8a9ebf279c62d3022dffb4039a6d69a1d34662a6c1d07c6ccf5ca515eacc0bca",
   "entryDigest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -47,6 +47,7 @@
       "props": {
         "$defs": {
           "TimeRange": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
@@ -75,6 +76,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -125,6 +127,7 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "durationMs": {
                       "type": "number"
@@ -235,6 +238,7 @@
       "props": {
         "$defs": {
           "TimeRange": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
@@ -263,6 +267,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -311,6 +316,7 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "durationMs": {
                       "type": "number"
@@ -405,6 +411,7 @@
       "props": {
         "$defs": {
           "TimeRange": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "number"
@@ -430,6 +437,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -480,6 +488,7 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "durationMs": {
                       "type": "number"
@@ -525,12 +534,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "customExtra",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "customExtra"
         }
       ],
       "source": {
@@ -606,6 +610,7 @@
       "props": {
         "$defs": {
           "TimeRange": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
@@ -634,6 +639,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -688,6 +694,7 @@
                   "type": "string"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "durationMs": {
                       "type": "number"
@@ -731,7 +738,20 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onOpenChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:015b72fd46688015bbadb09e1e2c627c28d13303c40e4bd49846394c5b310fcc",

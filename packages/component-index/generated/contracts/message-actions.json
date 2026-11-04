@@ -1,7 +1,7 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:69bc1d0211f350e846f4d586da72273d2c6fb9f2d7a2f863802cb9e17c1bf990",
+  "digest": "sha256:017e45fb8ca56d2a58ee7bfa4e3a421353d5a91ab46aecbe3f6e703de841047b",
   "entryDigest": "sha256:7432309904c3b0068a5c6a6382077dea4d9dd58dd3f8a58b8f4d24050be79c64",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "MessageAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -43,6 +44,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {
@@ -84,7 +86,32 @@
     },
     "react": {
       "bindable": [],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "actions[].icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "actions[].icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "actions[].label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "actions[].onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
       "events": [],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
@@ -94,7 +121,35 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
+          "actions": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "danger": {
+                  "type": "boolean"
+                },
+                "disabled": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "variant": {
+                  "enum": [
+                    "danger",
+                    "default"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
           "visibility": {
             "enum": [
               "always",
@@ -102,6 +157,9 @@
             ]
           }
         },
+        "required": [
+          "actions"
+        ],
         "type": "object"
       },
       "replaced": [],
@@ -114,14 +172,7 @@
         "version": "0.38.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "actions[]",
-          "reason": "type form has no conversion rule",
-          "sourceType": "MessageAction"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     },
     "svelte": {
@@ -154,6 +205,7 @@
       "props": {
         "$defs": {
           "MessageAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -178,6 +230,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {
@@ -203,12 +256,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "overflow",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "overflow"
         }
       ],
       "source": {
@@ -240,6 +288,7 @@
       "props": {
         "$defs": {
           "MessageAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -259,6 +308,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {

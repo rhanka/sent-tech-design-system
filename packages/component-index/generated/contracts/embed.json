@@ -1,7 +1,7 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:a22c67ac6e8e865e6d3af56156ab8bb51a62755821edc15916db7ea3e9d7a38d",
+  "digest": "sha256:ac7d5cd38c43f87436031566aab3f13a0c3ee09500d71db25a62c04f1085bee9",
   "entryDigest": "sha256:7667418a840bbbb7af4be5820058ef0ad5eee43c5c12c0e5ef5aaf660ce61e23",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allow": {
             "type": "string"
@@ -69,6 +70,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allow": {
             "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",
@@ -135,6 +137,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allow": {
             "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",
@@ -195,6 +198,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allow": {
             "description": "`allow` permissions policy (e.g. `\"fullscreen; picture-in-picture\"`).",

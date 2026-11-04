@@ -1,7 +1,7 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:a1f27f305e7e9627b51c8e570eff5edf431e9af64d2a1c1684f173717c589a49",
+  "digest": "sha256:98a8bbf09d21254c12c466098b766e80998c8d6b68fe88946af9d0708cab6f25",
   "entryDigest": "sha256:4f0aa1657b8a96b96a155d58d4fb575e858851f70711a631bc7c02f3f9239d2e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "WaffleChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -47,6 +48,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -101,6 +103,7 @@
       "props": {
         "$defs": {
           "WaffleChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -133,6 +136,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -184,6 +188,7 @@
       "props": {
         "$defs": {
           "WaffleChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -216,6 +221,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -268,6 +274,7 @@
       "props": {
         "$defs": {
           "WaffleChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -300,6 +307,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:ea5de86c8a5ecb903585e1d0e0af19ee3ba6fa044a9dbda0479ca030acba5708",
+  "digest": "sha256:7ea5f6a10b77d94a1b6d9c240d699d8d6cc499958c44b026dcb34919d9f9bace",
   "entryDigest": "sha256:085430d1e868d2074d1f1e97ad22e0b8e6d6b513a013656d753d25446398b99a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "RibbonChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -53,6 +54,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -107,6 +109,7 @@
       "props": {
         "$defs": {
           "RibbonChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -145,6 +148,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -196,6 +200,7 @@
       "props": {
         "$defs": {
           "RibbonChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -234,6 +239,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -286,6 +292,7 @@
       "props": {
         "$defs": {
           "RibbonChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -324,6 +331,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

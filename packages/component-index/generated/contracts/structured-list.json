@@ -1,7 +1,7 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:bce328fe2b5495b0b0bf91a2ceb27b5c1bd885e01dae76d8226a135204d906e0",
+  "digest": "sha256:36c8d4200703c08f49533b3e5a3fa3816f1725f8c1bfa852079af9c1178318be",
   "entryDigest": "sha256:b779b54c9a95fbaac0dc1ae3b1ddfa32ba79d759a2096f7ba87766467907c032",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "StructuredListItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {},
               "label": {},
@@ -24,6 +25,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bordered": {
             "type": "boolean"
@@ -121,10 +123,12 @@
       "props": {
         "$defs": {
           "StructuredListItem": {
+            "additionalProperties": false,
             "properties": {},
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bordered": {
             "type": "boolean"
@@ -177,6 +181,7 @@
       "props": {
         "$defs": {
           "StructuredListItem": {
+            "additionalProperties": false,
             "properties": {
               "key": {
                 "type": "string"
@@ -188,6 +193,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bordered": {
             "type": "boolean"
@@ -231,6 +237,7 @@
       "props": {
         "$defs": {
           "StructuredListItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {},
               "label": {},
@@ -240,6 +247,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bordered": {
             "type": "boolean"

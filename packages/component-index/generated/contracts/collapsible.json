@@ -1,7 +1,7 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:78db3103b84857f92b05467dd511cb85cb64da7af704a1d439d83ea2a985b5ff",
+  "digest": "sha256:9309aedc25ebd4ee102e7859371df353cf477360612727ef015490e03b45b9d9",
   "entryDigest": "sha256:834dd2da14e075dbe56770cb40e2c4cd9849c741a15927b32b6a12f9794e96f5",
   "format": "component-contract/v1",
   "frameworks": {
@@ -27,6 +27,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -97,6 +98,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -154,6 +156,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -185,20 +188,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "trailing",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "trailing"
         }
       ],
       "source": {
@@ -238,6 +231,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

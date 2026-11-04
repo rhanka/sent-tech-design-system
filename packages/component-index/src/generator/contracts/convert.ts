@@ -185,24 +185,35 @@ export function convertType(state: ConvertState, type: ts.Type, name: string): C
     return { outcome: "schema", schema: { type: "string" } };
   }
   if ((type.flags & ts.TypeFlags.Any) !== 0 || (type.flags & ts.TypeFlags.Unknown) !== 0) {
-    if (!state.payloadMode) {
-      recordReplaced(state, name, typeText(checker, type), "{}", "any JSON value, stated in the row");
-    }
+    // Spec 6.2: the {} replacement row is stated in the row, never implied,
+    // in props and in payload/params mode alike (GEN-C2: a payload any
+    // forces partial via the non-empty replaced list).
+    recordReplaced(state, name, typeText(checker, type), "{}", "any JSON value, stated in the row");
     return { outcome: "schema", schema: {} };
   }
   if ((type.flags & ts.TypeFlags.NonPrimitive) !== 0) {
     // Bare object / {} / Record<string, unknown>-shaped: any JSON.
-    if (!state.payloadMode) {
-      recordReplaced(state, name, typeText(checker, type), "{}", "any JSON value, stated in the row");
-    }
+    recordReplaced(state, name, typeText(checker, type), "{}", "any JSON value, stated in the row");
     return { outcome: "schema", schema: {} };
   }
   if ((type.flags & ts.TypeFlags.Intersection) !== 0) {
     // `string & {}` (and number/boolean twins) is the open-primitive
     // idiom: the object side carries no members, so the intersection IS
-    // the primitive. Branded intersections keep their loss below.
+    // the primitive. Every other intersection of object forms merges
+    // properties (spec 6.2); nested members route here via convertObject
+    // so GeoChartPoint and Omit-intersections convert instead of going
+    // unresolved. Framework-internal intersections are never expanded.
     const reduced = reduceOpenPrimitive(checker, type as ts.IntersectionType);
     if (reduced !== undefined) return convertType(state, reduced, name);
+    if (isLibraryType(type)) {
+      if (state.payloadMode) {
+        recordUnresolved(state, name, "other", typeText(checker, type), "library type has no JSON Schema form");
+      } else {
+        recordReplaced(state, name, typeText(checker, type), "{}", "library type not expanded");
+      }
+      return { outcome: "schema", schema: {} };
+    }
+    return convertObject(state, type, name);
   }
 
   // Snippet/node/emitter checks precede the function check: render-function
@@ -224,9 +235,7 @@ export function convertType(state: ConvertState, type: ts.Type, name: string): C
     return { outcome: "omitted" };
   }
   if (isDateType(checker, type)) {
-    if (!state.payloadMode) {
-      recordReplaced(state, name, typeText(checker, type), '{"type":"string","format":"date-time"}', "runtime value is an object; JSON form is a string");
-    }
+    recordReplaced(state, name, typeText(checker, type), '{"type":"string","format":"date-time"}', "runtime value is an object; JSON form is a string");
     return { outcome: "schema", schema: { type: "string", format: "date-time" } };
   }
 
@@ -461,9 +470,19 @@ function convertIntersection(state: ConvertState, type: ts.IntersectionType, nam
   const properties: Record<string, JsonSchema> = {};
   const required: string[] = [];
   const descriptions: Record<string, string> = {};
+  let skippedLibrary = false;
   for (const constituent of type.types) {
     if (isDomBaseType(checker, constituent)) {
       state.warnings.push(`nested DOM base not enumerated (${typeText(checker, constituent)})`);
+      skippedLibrary = true;
+      continue;
+    }
+    // Framework-internal constituents are never expanded (spec 6.2/7.1);
+    // structural utility wrappers (Omit/Pick/Partial/…) expand because
+    // their members come from the wrapped (repo) type.
+    if (isLibraryType(constituent) && !isUtilityWrapper(constituent)) {
+      state.warnings.push(`nested library type not enumerated (${typeText(checker, constituent)})`);
+      skippedLibrary = true;
       continue;
     }
     const memberType = constituent;
@@ -485,7 +504,14 @@ function convertIntersection(state: ConvertState, type: ts.IntersectionType, nam
     }
   }
   void descriptions;
-  const schema: JsonSchema = { type: "object", properties };
+  if (Object.keys(properties).length === 0 && required.length === 0 && skippedLibrary) {
+    // Every constituent was a DOM/library base: nothing convertible.
+    // Stay loud (unresolved) rather than emitting an empty closed object.
+    recordUnresolved(state, name, "other", typeText(checker, type), "intersection has no convertible members");
+    return { outcome: "omitted" };
+  }
+  // Spec 6.2: closed object forms carry additionalProperties false.
+  const schema: JsonSchema = { type: "object", properties, additionalProperties: false };
   if (required.length > 0) schema["required"] = [...required].sort();
   return { outcome: "schema", schema };
 }
@@ -528,7 +554,9 @@ function buildObjectSchema(state: ConvertState, type: ts.Type, owner: string): J
   const index = checker
     .getIndexInfosOfType(type)
     .find((info) => (info.keyType.flags & ts.TypeFlags.String) !== 0);
-  const schema: JsonSchema = { type: "object", properties };
+  // Spec 6.2: member-only object forms are closed; index-signature maps
+  // keep their value conversion in additionalProperties.
+  const schema: JsonSchema = { type: "object", properties, additionalProperties: false };
   if (required.length > 0) schema["required"] = required;
   if (index !== undefined) {
     // One replaced row per index signature (kind: index-signature in the
@@ -675,6 +703,15 @@ function enumValues(checker: ts.TypeChecker, type: ts.Type): (string | number)[]
 }
 
 /**
+ * Structural utility wrappers (Omit/Pick/Partial/…) live in lib but expand
+ * structurally: their members come from the wrapped type.
+ */
+export function isUtilityWrapper(type: ts.Type): boolean {
+  const name = aliasOrTargetName(type);
+  return name !== undefined && /^(Omit|Pick|Partial|Required|Record|Readonly|NonNullable|Extract|Exclude)$/.test(name);
+}
+
+/**
  * DOM-passthrough base detection (spec 6.2/7.1): a reference whose name ends
  * in Attributes, or whose target lives in a DOM library or a known element
  * attribute module.
@@ -683,6 +720,11 @@ export function isDomBaseType(checker: ts.TypeChecker, type: ts.Type): boolean {
   void checker;
   const name = aliasOrTargetName(type);
   if (name !== undefined && /(Attributes|AriaAttributes)$/.test(name)) return true;
+  // Utility mapped types (Omit/Pick/Partial/…) live in lib but are
+  // structural, never DOM bases: their members must merge, not skip.
+  if (name !== undefined && /^(Omit|Pick|Partial|Required|Record|Readonly|NonNullable|Extract|Exclude)$/.test(name)) {
+    return false;
+  }
   const symbol = (type as ts.TypeReference).target?.symbol ?? type.symbol ?? type.aliasSymbol;
   const declarations = symbol?.getDeclarations() ?? [];
   return declarations.some((declaration) => declaration.getSourceFile().fileName.includes("/typescript/lib/"));

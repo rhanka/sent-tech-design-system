@@ -1,7 +1,7 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:c981598851b7f13438e4ae96d2f604ba110ae895d2872cdd84b3a6b4c9f6015f",
+  "digest": "sha256:f4cf29611ebc9ef7913512762057668fd8bb0e9e69a1fbc07daa231c82eeb46a",
   "entryDigest": "sha256:25bff267ac9b9bc0c6d7c61e2a60960fa82138c6e8ae3419a2b3c366e16198d7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TileMapChartTile": {
+            "additionalProperties": false,
             "properties": {
               "col": {
                 "type": "number"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -89,6 +91,7 @@
       "props": {
         "$defs": {
           "TileMapChartTile": {
+            "additionalProperties": false,
             "properties": {
               "col": {
                 "type": "number"
@@ -112,6 +115,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -161,6 +165,7 @@
       "props": {
         "$defs": {
           "TileMapChartTile": {
+            "additionalProperties": false,
             "properties": {
               "col": {
                 "type": "number"
@@ -184,6 +189,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -234,6 +240,7 @@
       "props": {
         "$defs": {
           "TileMapChartTile": {
+            "additionalProperties": false,
             "properties": {
               "col": {
                 "type": "number"
@@ -257,6 +264,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:cad3e49889abb26218bbd67fab7184fea5b540e5d7b1d489a765574d1cdf130b",
+  "digest": "sha256:427a4f7516061f5e13595c78f828c4d908b484f411aa4364cef5ffc23beb9686",
   "entryDigest": "sha256:f8d67030e7f51f6ef3b765d6a9932ad068f0b15d0c5dccbb141f44407076f323",
   "format": "component-contract/v1",
   "frameworks": {
@@ -32,6 +32,7 @@
       "props": {
         "$defs": {
           "CheckboxGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -53,6 +54,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -137,6 +139,7 @@
       "props": {
         "$defs": {
           "CheckboxGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -158,6 +161,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -242,6 +246,7 @@
       "props": {
         "$defs": {
           "CheckboxGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -263,6 +268,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -310,12 +316,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -360,6 +361,7 @@
       "props": {
         "$defs": {
           "CheckboxGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -381,6 +383,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:2ce8117470102cdf84bbafd8fa7e1461798911b48b433db9ab94763bddf35e8c",
+  "digest": "sha256:35ba9e0c57f362b615b110274ba68cbfcbbfab157902ea8e7d362c6dad0ca734",
   "entryDigest": "sha256:4c9574523e0465d49ece1e85b3a7713a51947dcfda8f2c62ee5ef276ec791866",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -79,6 +80,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "locale": {
             "type": "string"
@@ -138,6 +140,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -170,7 +173,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onError.err",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:ece28e441cb00602161ec6c66792bdf7c1e1501c287f6dcc324009f7bf25f6e4",
@@ -179,7 +189,7 @@
         "propsType": "CopyButtonProps",
         "version": "0.36.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": []
     },
@@ -203,6 +213,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -232,7 +243,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onClick.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:7b51c8ae2905fa95bbb82cc039da8c7c4361406feefdc32c009fb22b1f50ff9f",
@@ -241,7 +259,7 @@
         "propsType": "CopyButtonProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"click\": payload not in declaration",

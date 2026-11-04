@@ -1,7 +1,7 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:549aad29850cac7ed67ccd4bbba67dfa0b4a475ef2630746ac212797787437b7",
+  "digest": "sha256:8f61f1ad2ea738197043929d0623b0ef56ad9fa0deca554241c8708394ed0bc1",
   "entryDigest": "sha256:db5b4634c706ed328a2533aac07c1f76485abca9f5d75d8c1b30e516c90c25dd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -63,6 +64,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "description": "Optional class applied to the portal container element.",
@@ -116,6 +118,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "description": "Optional class applied to the portal container element.",
@@ -147,12 +150,7 @@
       ],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -175,6 +173,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "description": "Optional class applied to the portal container element.",

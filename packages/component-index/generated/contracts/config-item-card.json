@@ -1,7 +1,7 @@
 {
   "componentId": "config-item-card",
   "contractSource": "derived",
-  "digest": "sha256:ba85946996b4e11445b6ef7c2cb4a279f8acc4afcc7e0eb4fec978d0297d2fe6",
+  "digest": "sha256:b51ceb03167a6d5b50ec6a1644b571e0dd2da855168ddabb221a08ab841cb995",
   "entryDigest": "sha256:b73fa7459e903fe5217b98301748d227fff92241f9a31496ccf53084e2eacd6f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -40,6 +40,7 @@
       "props": {
         "$defs": {
           "ConfigItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": [
@@ -83,6 +84,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -153,6 +155,7 @@
       "props": {
         "$defs": {
           "ConfigItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": [
@@ -196,6 +199,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -276,6 +280,7 @@
       "props": {
         "$defs": {
           "ConfigItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": [
@@ -319,6 +324,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -344,12 +350,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -424,6 +425,7 @@
       "props": {
         "$defs": {
           "ConfigItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": [
@@ -467,6 +469,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

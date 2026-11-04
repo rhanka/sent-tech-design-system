@@ -1,7 +1,7 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:ff4031bfa60c000f23857a9b934c03cdd126c77749b3aa756cfc5d9215604bc4",
+  "digest": "sha256:0f3b1842acc53e02ecd5322020e78e44741fa441502aa9538626a7ec8f91859d",
   "entryDigest": "sha256:a8dc59cf42c92caad5910622c5c3455bb03916af32a19393d53da534ab8ad74b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "OrganizationChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -48,6 +49,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -99,6 +101,7 @@
       "props": {
         "$defs": {
           "OrganizationChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -132,6 +135,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -182,6 +186,7 @@
       "props": {
         "$defs": {
           "OrganizationChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -215,6 +220,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -266,6 +272,7 @@
       "props": {
         "$defs": {
           "OrganizationChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -299,6 +306,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

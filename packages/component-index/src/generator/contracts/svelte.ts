@@ -102,12 +102,23 @@ function snippetParams(
   if (parameters.length === 1 && parameters[0] !== undefined) {
     const argsType = input.checker.getTypeOfSymbol(parameters[0]);
     const elements = tupleElementTypes(input.checker, argsType);
+    if (elements !== undefined && elements.length === 0) return undefined;
     if (elements !== undefined && elements.length === 1 && elements[0] !== undefined) {
       const converted = convertType(state, elements[0], `${owner}.params`);
       return converted.outcome === "schema" ? converted.schema : undefined;
     }
     const converted = convertType(state, argsType, `${owner}.params`);
-    return converted.outcome === "schema" ? converted.schema : undefined;
+    if (converted.outcome !== "schema") return undefined;
+    // An empty fixed tuple is the zero-argument form: omit params.
+    if (
+      typeof converted.schema["type"] === "string" &&
+      converted.schema["type"] === "array" &&
+      Array.isArray(converted.schema["prefixItems"]) &&
+      (converted.schema["prefixItems"] as unknown[]).length === 0
+    ) {
+      return undefined;
+    }
+    return converted.schema;
   }
   const prefixItems: JsonSchema[] = [];
   for (let index = 0; index < parameters.length; index += 1) {
@@ -187,7 +198,7 @@ export function extractSvelte(input: FrameworkInput): FrameworkBody {
   body.bindable = bindable;
 
   if (Object.keys(properties).length > 0 || body.passthrough !== undefined) {
-    const schema: JsonSchema = { type: "object", properties };
+    const schema: JsonSchema = { type: "object", properties, additionalProperties: false };
     if (required.length > 0) schema["required"] = [...required].sort();
     body.props = schema;
   }

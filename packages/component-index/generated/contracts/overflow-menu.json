@@ -1,7 +1,7 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:8b92595301d7ae9c630b2906c7a0037c5fb669ba8bb85ca7bbb3d111e2395ffb",
+  "digest": "sha256:a7fe816c54d8fe805a1d90306bcd13b7fc8120c0a4fe5df1f0ce4aab4bc29de2",
   "entryDigest": "sha256:f86d966c7f052ee24a25593d94a04ea59e7b8e4ac2d0ca4d99062c06d6c06eeb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -39,6 +39,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -69,6 +70,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -83,6 +85,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -107,6 +110,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -224,6 +228,7 @@
       "props": {
         "$defs": {
           "ActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -247,6 +252,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -261,6 +267,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -281,6 +288,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "dense": {
             "type": "boolean"
@@ -370,6 +378,7 @@
       "props": {
         "$defs": {
           "OverflowMenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -394,6 +403,7 @@
             "type": "object"
           },
           "OverflowMenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "kind": {
                 "const": "divider"
@@ -405,6 +415,7 @@
             "type": "object"
           },
           "OverflowMenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "kind": {
                 "const": "group"
@@ -420,6 +431,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -516,6 +528,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -543,6 +556,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -557,6 +571,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -581,6 +596,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -642,6 +658,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

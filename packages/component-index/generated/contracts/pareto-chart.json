@@ -1,7 +1,7 @@
 {
   "componentId": "pareto-chart",
   "contractSource": "derived",
-  "digest": "sha256:faae013f4dd193076868f55c75d8e76d189f9442949a0b4b98deb1850e4bdf0c",
+  "digest": "sha256:da37aa70e7b5b65df9fb5ac87c2b9c0fade2f21d5825a3c73aa20cd668fffc0d",
   "entryDigest": "sha256:851b2dca53faf3bd9acd5e87b9919445b2cf4daa8c8781f2fa859a74bda5efd4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ParetoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "ParetoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -120,6 +123,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -169,6 +173,7 @@
       "props": {
         "$defs": {
           "ParetoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -196,6 +201,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -246,6 +252,7 @@
       "props": {
         "$defs": {
           "ParetoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -273,6 +280,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

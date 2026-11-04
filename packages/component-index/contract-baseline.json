@@ -65,7 +65,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -459,7 +459,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "partial"
@@ -677,13 +677,13 @@
   },
   "copy-button": {
    "svelte": {
-    "status": "complete"
+    "status": "partial"
    },
    "react": {
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -1019,7 +1019,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "partial"
@@ -1243,7 +1243,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "partial"
@@ -1509,7 +1509,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "partial"
@@ -1565,7 +1565,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -1759,7 +1759,7 @@
     "bindable": []
    },
    "vue": {
-    "status": "complete",
+    "status": "partial",
     "props": [
      "class",
      "closeLabel",
@@ -1860,7 +1860,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -1972,7 +1972,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -1986,7 +1986,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -2084,7 +2084,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "complete"
@@ -2196,7 +2196,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
     "status": "partial"

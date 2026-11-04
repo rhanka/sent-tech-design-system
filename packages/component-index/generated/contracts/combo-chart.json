@@ -1,7 +1,7 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:56c4e1dee59f394798c20a250f9f191c3194b31b05bf29a081a9a46d202ac96b",
+  "digest": "sha256:22eb473b808552bff54eee3c625efb3985c4230382969f6f07a533e093aa08c5",
   "entryDigest": "sha256:0e29990eee6de9d0c21f7c0d3d68d69a1c995e47f08224665606511c967a095d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -40,6 +40,7 @@
       "props": {
         "$defs": {
           "ComboChartBarSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -70,6 +71,7 @@
             "type": "object"
           },
           "ComboChartLineSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -103,11 +105,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -144,6 +148,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -181,6 +186,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -206,6 +212,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -235,6 +242,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -244,6 +252,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -302,6 +311,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -421,6 +431,7 @@
       "props": {
         "$defs": {
           "ComboChartBarSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -451,6 +462,7 @@
             "type": "object"
           },
           "ComboChartLineSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -484,12 +496,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre) and is ignored otherwise; the\ny coordinate (and `value`/`from`/`to`) are LEFT (bar) value-axis numbers.\nRegions render behind the bars, every other kind above. Additive: absent ⇒\nunchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -526,6 +540,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -563,6 +578,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -588,6 +604,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -617,6 +634,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -626,6 +644,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -684,6 +703,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -805,6 +825,7 @@
       "props": {
         "$defs": {
           "ComboChartBarSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -835,6 +856,7 @@
             "type": "object"
           },
           "ComboChartLineSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -868,12 +890,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre); the y coordinate (and\n`value`/`from`/`to`) are LEFT (bar) value-axis numbers. Regions render\nbehind the bars, every other kind above. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -910,6 +934,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -947,6 +972,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -972,6 +998,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1001,6 +1028,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1010,6 +1038,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1068,6 +1097,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -1208,6 +1238,7 @@
       "props": {
         "$defs": {
           "ComboChartBarSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -1238,6 +1269,7 @@
             "type": "object"
           },
           "ComboChartLineSeries": {
+            "additionalProperties": false,
             "properties": {
               "data": {
                 "items": {
@@ -1271,12 +1303,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre); the y coordinate (and\n`value`/`from`/`to`) are LEFT (bar) value-axis numbers. Regions render\nbehind the bars, every other kind above. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -1313,6 +1347,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -1350,6 +1385,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1375,6 +1411,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1404,6 +1441,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1413,6 +1451,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1471,6 +1510,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",

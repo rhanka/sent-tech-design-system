@@ -1,7 +1,7 @@
 {
   "componentId": "renko-chart",
   "contractSource": "derived",
-  "digest": "sha256:ce7b5ea458a9d12d47fea0680d0237e93af638e3f4a3385becd10137698d20fe",
+  "digest": "sha256:4355ac4045b32de532608cee2fb8bb9c5878131b1dda7463d80322f1cde5fca3",
   "entryDigest": "sha256:aa23fc164c8d2c721bcaf1c05408b90f1b86355ebff66b4690226bc87063ff3c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "RenkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -30,6 +31,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -87,6 +89,7 @@
       "props": {
         "$defs": {
           "RenkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des briques.",
@@ -104,6 +107,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -158,6 +162,7 @@
       "props": {
         "$defs": {
           "RenkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des briques.",
@@ -175,6 +180,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"
@@ -230,6 +236,7 @@
       "props": {
         "$defs": {
           "RenkoChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "description": "Prix de clôture : pilote la formation des briques.",
@@ -247,6 +254,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "boxSize": {
             "type": "number"

@@ -587,27 +587,32 @@ function gitInitTree(tree) {
 }
 
 test("K1b: a K1b generation changes no K1a byte on a faithful tree", () => {
-  // The generator regenerates K1a and contracts together; the K1a bytes
-  // must be identical afterwards (modulo the sourceCommit stamp, which
-  // --check tolerates by design). The temp tree keeps the real checkout
-  // untouched: generation writes only inside the copy.
+  // The generator regenerates K1a and contracts together; every K1a entry
+  // file must be byte-identical afterwards (raw SHA-256 over file bytes).
+  // The K1a index is compared bytewise after normalising only sourceCommit
+  // and generatedBy.version (spec 10).
   const tree = buildFaithfulTree();
   try {
     gitInitTree(tree);
     const generated = runTreeGenerator(tree, []);
     assert.equal(generated.status, 0, `temp-tree generation must succeed:\n${generated.stdout}\n${generated.stderr}`);
-    const before = (relative) =>
-      JSON.parse(readFileSync(join(repoRoot, "packages", "component-index", relative), "utf8"));
-    const after = (relative) =>
-      JSON.parse(readFileSync(join(tree, "packages", "component-index", relative), "utf8"));
+    const hashBytes = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
     for (const path of entryPaths().map((entry) => entry.slice(generatedDir.length + 1))) {
-      assert.deepEqual(after(`generated/${path}`), before(`generated/${path}`), `K1a ${path} must be byte-identical`);
+      const beforeHash = hashBytes(join(repoRoot, "packages", "component-index", `generated/${path}`));
+      const afterHash = hashBytes(join(tree, "packages", "component-index", `generated/${path}`));
+      assert.equal(afterHash, beforeHash, `K1a ${path} must be byte-identical`);
     }
-    const beforeIndex = before("generated/component-index.json");
-    const afterIndex = after("generated/component-index.json");
-    delete beforeIndex.sourceCommit;
-    delete afterIndex.sourceCommit;
-    assert.deepEqual(afterIndex, beforeIndex, "K1a index must match modulo the tolerated stamp");
+    const normalizeIndex = (text) => {
+      const parsed = JSON.parse(text);
+      parsed.sourceCommit = "0".repeat(40);
+      if (parsed.generatedBy !== undefined && typeof parsed.generatedBy === "object" && parsed.generatedBy !== null) {
+        parsed.generatedBy = { ...parsed.generatedBy, version: "0.0.0" };
+      }
+      return canonicalize(parsed);
+    };
+    const beforeIndex = normalizeIndex(readFileSync(join(repoRoot, "packages", "component-index", "generated/component-index.json"), "utf8"));
+    const afterIndex = normalizeIndex(readFileSync(join(tree, "packages", "component-index", "generated/component-index.json"), "utf8"));
+    assert.equal(afterIndex, beforeIndex, "K1a index must match bytewise modulo sourceCommit and generatedBy.version");
   } finally {
     rmSync(tree, { recursive: true, force: true });
   }

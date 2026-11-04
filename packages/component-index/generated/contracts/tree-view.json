@@ -1,7 +1,7 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:949844fa5bd62c7f798249fc3ee54b2171ac368035fc0c2b65b8bcdd45bc8712",
+  "digest": "sha256:11af13c9bc93c784d77dde872ccc5133bd29c8e7724c136c762654a73c0ed57e",
   "entryDigest": "sha256:032b0f3ea07c5b8b5f5bc830e6cc8e8226a51f453cfc92b3a39fd67762bb1ac8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -28,6 +28,7 @@
       "props": {
         "$defs": {
           "TreeNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -52,6 +53,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -146,6 +148,7 @@
       "props": {
         "$defs": {
           "TreeNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -166,6 +169,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "defaultExpanded": {
             "description": "Svelte-canonical alias of `defaultExpandedIds`.",
@@ -241,6 +245,7 @@
       "props": {
         "$defs": {
           "TreeNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -265,6 +270,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -342,6 +348,7 @@
       "props": {
         "$defs": {
           "TreeNode": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -364,6 +371,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -416,6 +424,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:selectedId.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

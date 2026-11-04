@@ -1,7 +1,7 @@
 {
   "componentId": "data-image",
   "contractSource": "derived",
-  "digest": "sha256:5058bc176e4055a39bec2f5f34e1f10f76ab352e0d1f123d3066912184ddde8b",
+  "digest": "sha256:f38ecc1931ca85efc86d7657930ec7238e2b920d511bde425a04460e5e9a8f5a",
   "entryDigest": "sha256:648e25b039015702a7037ea48982e90b843a2356f4ba8c18e0e1da50d87652d7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "type": "string"
@@ -106,6 +107,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",
@@ -196,6 +198,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",
@@ -277,6 +280,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "alt": {
             "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",

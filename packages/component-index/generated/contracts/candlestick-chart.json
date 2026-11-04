@@ -1,7 +1,7 @@
 {
   "componentId": "candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:f30859f4d5a55bb1414cd1dce3229cf8c4b9661e8e49ce1a76ac2f40c653169d",
+  "digest": "sha256:8d59df92de45897b3099317a2854fe11eec913bb0ec6d2bf1e0a020876bd7639",
   "entryDigest": "sha256:1c2fdeafe266ff8be68cef186e4198a1825dbd013e9adb30b36414b47dbe9265",
   "format": "component-contract/v1",
   "frameworks": {
@@ -34,6 +34,7 @@
       "props": {
         "$defs": {
           "CandlestickChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -61,11 +62,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -102,6 +105,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -139,6 +143,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -164,6 +169,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -193,6 +199,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -202,6 +209,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -254,6 +262,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -346,6 +355,7 @@
       "props": {
         "$defs": {
           "CandlestickChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -373,12 +383,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a candle by its `label` (centre of band) and is ignored otherwise;\nthe y coordinate (and `value`/`from`/`to`) are price-axis numbers. Regions\nrender behind the candles, every other kind above. Useful for support /\nresistance lines (`line axis:y`), price zones (`region axis:y`), or events\n(`point`/`label`). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -415,6 +427,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -452,6 +465,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -477,6 +491,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -506,6 +521,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -515,6 +531,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -567,6 +584,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -660,6 +678,7 @@
       "props": {
         "$defs": {
           "CandlestickChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -687,11 +706,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -728,6 +749,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -765,6 +787,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -790,6 +813,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -819,6 +843,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -828,6 +853,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -880,6 +906,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -983,6 +1010,7 @@
       "props": {
         "$defs": {
           "CandlestickChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -1010,11 +1038,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -1051,6 +1081,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -1088,6 +1119,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1113,6 +1145,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1142,6 +1175,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1151,6 +1185,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1203,6 +1238,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",

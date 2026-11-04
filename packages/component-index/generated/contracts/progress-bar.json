@@ -1,7 +1,7 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:9d743b3ef4fb8b6e7b60023f05af506eec0de11b7ca8c175ba13c465ce7983bd",
+  "digest": "sha256:658248c2d7e3e1a3dd38b67b4ddf99074dca2f7a2a282ff3f288ac1512f157fb",
   "entryDigest": "sha256:71f9c2f348702e70adb8e876de3fb36e766d3f9e82f5c0cbdafa2165e728556c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -100,6 +101,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "indeterminate": {
             "type": "boolean"
@@ -162,6 +164,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -227,6 +230,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:c8bf052df074c1ad1082f62afc00464fbcaf0efd3016f3cd520d33369ce52e49",
+  "digest": "sha256:44304a0dcdfae1bacf72d6fde7d174542912aac54452c4d34eb91c483e523b3b",
   "entryDigest": "sha256:8957becbe3aab2c64eda85035a882e4498b2e2c02aa3f7430ca7ce8f1114f4f6",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "SelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "aria-label": {
             "type": "string"
@@ -162,6 +164,7 @@
       "props": {
         "$defs": {
           "OptionItem": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -176,6 +179,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "invalid": {
             "type": "boolean"
@@ -227,6 +231,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -275,12 +280,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -328,6 +328,7 @@
       "props": {
         "$defs": {
           "SelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -344,6 +345,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -400,6 +402,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

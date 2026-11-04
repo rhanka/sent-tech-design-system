@@ -1,7 +1,7 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:0828add4f1ab5205a410782562ae989bf936d790789d78807a077fcc648cd436",
+  "digest": "sha256:ead13aa484acb350eb885b97f87c17db4892dae25c51cb20c2bfd9c9925ebab5",
   "entryDigest": "sha256:1f2501b3ecfea5b3da52d6fdbf7d710f986a7def9501a4da4a41e29cb9095be2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "attached": {
             "type": "boolean"
@@ -73,6 +74,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "attached": {
             "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",
@@ -133,6 +135,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "attached": {
             "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",
@@ -169,12 +172,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -197,6 +195,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "attached": {
             "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",

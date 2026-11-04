@@ -1,7 +1,7 @@
 {
   "componentId": "table-of-contents",
   "contractSource": "derived",
-  "digest": "sha256:dac8dbf011150a86f69a28a06423abfb79f8e38bddc1b1f62094ff629606a277",
+  "digest": "sha256:702a4a3d6dd1869c9aa500d3bb49f937b751a12cfc95d8fdca0f044263e1ea5b",
   "entryDigest": "sha256:02d35abe23d69dd7230a512391445ce546d4e6da14f678b1722a6c3688d542d8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TableOfContentsItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -33,6 +34,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -82,6 +84,7 @@
       "props": {
         "$defs": {
           "TableOfContentsItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -100,6 +103,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -152,6 +156,7 @@
       "props": {
         "$defs": {
           "TableOfContentsItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -170,6 +175,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"
@@ -216,6 +222,7 @@
       "props": {
         "$defs": {
           "TableOfContentsItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -234,6 +241,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "activeId": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:a2a74a130d3373384367b19fb9ecefc1ce5d81e0dd44af3e60a05d2eb74d16fa",
+  "digest": "sha256:96db5e5b9853fdd017739328408fd37236fc1b3b08c93dea7bc33e42d0a7e35b",
   "entryDigest": "sha256:245b2f8579935411e264dcedc3e07eede3a6b7e8b65d6b86451780d3d9aa4790",
   "format": "component-contract/v1",
   "frameworks": {
@@ -32,6 +32,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -68,6 +69,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -135,6 +137,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -171,6 +174,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -235,6 +239,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -271,6 +276,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -343,6 +349,7 @@
       "props": {
         "$defs": {
           "DashboardGridTile": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -379,6 +386,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

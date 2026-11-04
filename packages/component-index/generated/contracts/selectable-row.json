@@ -1,7 +1,7 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:8ed08a68821b08f231a249ae7bd9e59d19c9c67f2a82732391cdc36a96ef0c22",
+  "digest": "sha256:b4d008493f100f3d037d5bc09bd276d18dec1a70f0daff76fe748e33c0aa7a55",
   "entryDigest": "sha256:8e8a13cec18e71b3446f9d921a5d649ce0848195a042eb8190c2ea01ab98c57d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,6 +20,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accentBar": {
             "type": "boolean"
@@ -120,6 +121,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accentBar": {
             "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",
@@ -185,6 +187,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accentBar": {
             "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",
@@ -219,36 +222,16 @@
       "replaced": [],
       "slots": [
         {
-          "name": "caption",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "caption"
         },
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "leading",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "leading"
         },
         {
-          "name": "trailing",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "trailing"
         }
       ],
       "source": {
@@ -285,6 +268,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accentBar": {
             "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",

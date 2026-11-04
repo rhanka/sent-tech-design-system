@@ -1,7 +1,7 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:7c7ab27e9392d0c8bfddb1ab747ec02c783bed22b005b368f85a03ff2d1f8a51",
+  "digest": "sha256:9e96dfd8ec73f3bd4f99e7a232e94ed11365c9d032c4a1e91191916fd0c8f543",
   "entryDigest": "sha256:cc98127a56908e893515db24a24d49c0877f8fd9e9271d6a25e7c7542bd3ced1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -27,6 +27,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allowHalf": {
             "type": "boolean"
@@ -94,6 +95,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allowHalf": {
             "description": "Autorise les demi-étoiles (sélection au demi-point).",
@@ -167,6 +169,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allowHalf": {
             "description": "Autorise les demi-étoiles (sélection au demi-point).",
@@ -254,6 +257,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "allowHalf": {
             "description": "Autorise les demi-étoiles (sélection au demi-point).",
@@ -292,7 +296,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:fca38d77006d7976ee8be9fee8b9a823812f2abfe444ae34d854fce18bf167b1",

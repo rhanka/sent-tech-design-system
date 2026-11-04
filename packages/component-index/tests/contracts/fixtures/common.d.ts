@@ -22,6 +22,27 @@ export interface TreeNode {
   child?: TreeNode;
 }
 export type Handler = (event: string) => void;
+// Nested-intersection regression shapes (spec 6.2): GeoChartPoint mirrors
+// GeoChart.svelte.d.ts (named coordinate base plus an inline object), and
+// MessageAction mirrors catalog.d.ts (Omit base plus an inline object).
+export type GeoChartCoordinate = {
+  latitude: number;
+  longitude: number;
+};
+export type GeoChartPoint = GeoChartCoordinate & {
+  label?: string;
+  value?: number;
+};
+export interface ActionItem {
+  id?: string;
+  value?: string;
+  label: string;
+  disabled?: boolean;
+}
+export type MessageAction = Omit<ActionItem, "label"> & {
+  label?: string;
+  variant?: string;
+};
 export interface Props {
   align?: Align;
   mode: Single;

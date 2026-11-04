@@ -1,7 +1,7 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:bedbb06963697dcc8d7898f090515203b5b07688ddc7807cdd8dda28bb14262c",
+  "digest": "sha256:9fa6d2aea620bbb5196b043595b336a89ba8986e1cceb9c8fd84cf2a53474673",
   "entryDigest": "sha256:08b9b628de9ac513f5ae1774a206cd24a3dcc3bc0375c62b571200660c9f1b59",
   "format": "component-contract/v1",
   "frameworks": {
@@ -46,6 +46,7 @@
       "props": {
         "$defs": {
           "ForceGraphEdge": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
@@ -88,6 +89,7 @@
             "type": "object"
           },
           "ForceGraphLegendEntry": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
@@ -140,6 +142,7 @@
             "type": "object"
           },
           "ForceGraphNode": {
+            "additionalProperties": false,
             "properties": {
               "fx": {
                 "description": "Pin the node to a fixed position (ignored by the simulation).",
@@ -205,6 +208,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -243,6 +247,7 @@
             "type": "string"
           },
           "mergePair": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -317,6 +322,7 @@
         {
           "name": "onMergeComplete",
           "payload": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -372,6 +378,7 @@
       "props": {
         "$defs": {
           "ForceGraphEdge": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
@@ -414,6 +421,7 @@
             "type": "object"
           },
           "ForceGraphLegendEntry": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
@@ -466,6 +474,7 @@
             "type": "object"
           },
           "ForceGraphNode": {
+            "additionalProperties": false,
             "properties": {
               "fx": {
                 "description": "Pin the node to a fixed position (ignored by the simulation).",
@@ -531,6 +540,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "edgeCurve": {
             "description": "Edge curvature, 0..1. 0 = straight <line> (back-compat). Larger values\nbow each edge into a quadratic <path>, offset perpendicular to the chord\nby `edgeCurve * dist * factor`. Defaults to a light 0.15.",
@@ -572,6 +582,7 @@
             "type": "string"
           },
           "mergePair": {
+            "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by `useEffect`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
             "properties": {
               "from": {
@@ -660,6 +671,7 @@
         {
           "name": "onMergeComplete",
           "payload": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -711,6 +723,7 @@
       "props": {
         "$defs": {
           "ForceGraphEdge": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
@@ -753,6 +766,7 @@
             "type": "object"
           },
           "ForceGraphLegendEntry": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
@@ -805,6 +819,7 @@
             "type": "object"
           },
           "ForceGraphNode": {
+            "additionalProperties": false,
             "properties": {
               "fx": {
                 "description": "Pin the node to a fixed position (ignored by the simulation).",
@@ -870,6 +885,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -914,6 +930,7 @@
             "type": "string"
           },
           "mergePair": {
+            "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by `$effect`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out\n(the node and its incident edges), then `onMergeComplete(pair)` fires\nexactly ONCE for that `id`. Purely visual — the component never mutates the\ndata; the consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the\nprop returns to null. Pass null (the default) for no merge in flight.",
             "properties": {
               "from": {
@@ -1033,6 +1050,7 @@
         {
           "name": "onMergeComplete",
           "payload": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -1085,6 +1103,7 @@
       "props": {
         "$defs": {
           "ForceGraphEdge": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
@@ -1127,6 +1146,7 @@
             "type": "object"
           },
           "ForceGraphLegendEntry": {
+            "additionalProperties": false,
             "properties": {
               "dash": {
                 "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
@@ -1179,6 +1199,7 @@
             "type": "object"
           },
           "ForceGraphNode": {
+            "additionalProperties": false,
             "properties": {
               "fx": {
                 "description": "Pin the node to a fixed position (ignored by the simulation).",
@@ -1244,6 +1265,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -1279,6 +1301,7 @@
             "type": "array"
           },
           "mergePair": {
+            "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
             "properties": {
               "from": {

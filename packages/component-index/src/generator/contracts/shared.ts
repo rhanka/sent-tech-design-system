@@ -166,7 +166,7 @@ export function partitionPropsType(
     let passthrough: Passthrough | undefined;
     for (const constituentNode of typeNode.types) {
       const parsed = parseOmitLike(checker, constituentNode);
-      if (parsed !== undefined && (isDomBaseName(parsed.baseName) || isDomBaseType(checker, parsed.baseType))) {
+      if (parsed !== undefined && (isDomBaseName(parsed.baseName, parsed.baseType) || isDomBaseType(checker, parsed.baseType))) {
         if (passthrough !== undefined) {
           state.warnings.push(`multiple DOM bases, the first is recorded (${passthrough.base})`);
           continue;
@@ -180,7 +180,7 @@ export function partitionPropsType(
   }
   if (typeNode !== undefined && ts.isTypeReferenceNode(typeNode)) {
     const parsed = parseOmitLike(checker, typeNode);
-    if (parsed !== undefined && (isDomBaseName(parsed.baseName) || isDomBaseType(checker, parsed.baseType))) {
+    if (parsed !== undefined && (isDomBaseName(parsed.baseName, parsed.baseType) || isDomBaseType(checker, parsed.baseType))) {
       return { ownTypes: [], passthrough: { base: parsed.baseText, omitted: parsed.omitted } };
     }
   }
@@ -224,7 +224,7 @@ function parseOmitLike(checker: ts.TypeChecker, node: ts.TypeNode): OmitLike | u
     return { baseText, baseName, baseType, omitted: [] };
   }
   // A direct (non-Omit) base reference: the whole reference text is the base.
-  if (isDomBaseName(baseName) || isDomBaseType(checker, baseType)) {
+  if (isDomBaseName(baseName, baseType) || isDomBaseType(checker, baseType)) {
     return { baseText: node.getText(), baseName, baseType, omitted: [] };
   }
   return undefined;
@@ -245,9 +245,20 @@ function stringLiterals(checker: ts.TypeChecker, node: ts.TypeNode): string[] {
   return typeof value === "string" ? [value] : [];
 }
 
-function isDomBaseName(name: string): boolean {
+function isDomBaseName(name: string, type?: ts.Type): boolean {
   const last = name.includes(".") ? (name.split(".").pop() as string) : name;
-  return /(Attributes|AriaAttributes)$/.test(last);
+  if (!/(Attributes|AriaAttributes)$/.test(last)) return false;
+  // Gate on declaration origin like hoistName: a future design-system type
+  // that happens to end in Attributes must not become a passthrough. Only
+  // library (lib / node_modules) declarations count as DOM bases.
+  if (type === undefined) return true;
+  const symbol = (type as ts.TypeReference).target?.symbol ?? type.symbol ?? type.aliasSymbol;
+  const declarations = symbol?.getDeclarations() ?? [];
+  if (declarations.length === 0) return true;
+  return declarations.every((declaration) => {
+    const file = declaration.getSourceFile().fileName;
+    return file.includes("/typescript/lib/") || file.includes("/node_modules/");
+  });
 }
 
 export interface CollectedMembers {

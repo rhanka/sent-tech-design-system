@@ -1,7 +1,7 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:bf465079b2daf7b885f6ddd334ab76d6f84a9a5404f8933239cd295b82836830",
+  "digest": "sha256:f8f6fb35ab71c00dd870b6e0cf937077ccf5c3ffed2060d1fcc44f3b4b41038b",
   "entryDigest": "sha256:961a97651832a30c9bc1ba30f0034797e3bcfb47b1aa0df5574b8ec7e2b6a30e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "RoseChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "RoseChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -120,6 +123,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -169,6 +173,7 @@
       "props": {
         "$defs": {
           "RoseChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -196,6 +201,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -246,6 +252,7 @@
       "props": {
         "$defs": {
           "RoseChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -273,6 +280,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

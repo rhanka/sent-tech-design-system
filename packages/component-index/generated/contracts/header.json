@@ -1,7 +1,7 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:6885408cbfe3db8da3749d32a8344e4e926c9a239efa22bd025dc95f3a4e740e",
+  "digest": "sha256:7987843397954b0ad410efa09ae985a72181a9e7c9083e6cf71b10af8804dfd3",
   "entryDigest": "sha256:0b6b4c7cb9c056b51f57f64114327839ace324021d73c25800ef0a06380469eb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "HeaderAccount": {
+            "additionalProperties": false,
             "properties": {
               "avatarUrl": {
                 "type": "string"
@@ -29,6 +30,7 @@
             "type": "object"
           },
           "HeaderNavItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -42,6 +44,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "account": {
             "$ref": "#/$defs/HeaderAccount"
@@ -146,6 +149,7 @@
       "props": {
         "$defs": {
           "HeaderAccount": {
+            "additionalProperties": false,
             "properties": {
               "avatarUrl": {
                 "type": "string"
@@ -160,12 +164,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "account": {
             "$ref": "#/$defs/HeaderAccount"
           },
           "navItems": {
             "items": {
+              "additionalProperties": false,
               "properties": {
                 "href": {
                   "type": "string"
@@ -180,6 +186,7 @@
           },
           "navigation": {
             "items": {
+              "additionalProperties": false,
               "properties": {
                 "href": {
                   "type": "string"
@@ -234,6 +241,7 @@
       "props": {
         "$defs": {
           "HeaderAccount": {
+            "additionalProperties": false,
             "properties": {
               "avatarUrl": {
                 "description": "URL de la photo de profil. Si absente, on rend les initiales.",
@@ -261,6 +269,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "account": {
             "$ref": "#/$defs/HeaderAccount",
@@ -292,44 +301,19 @@
       "replaced": [],
       "slots": [
         {
-          "name": "accountMenu",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "accountMenu"
         },
         {
-          "name": "actions",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actions"
         },
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "logo",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "logo"
         },
         {
-          "name": "navigation",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "navigation"
         }
       ],
       "source": {
@@ -354,6 +338,7 @@
       "props": {
         "$defs": {
           "HeaderAccount": {
+            "additionalProperties": false,
             "properties": {
               "avatarUrl": {
                 "type": "string"
@@ -368,6 +353,7 @@
             "type": "object"
           },
           "HeaderNavItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -381,6 +367,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "account": {
             "$ref": "#/$defs/HeaderAccount"

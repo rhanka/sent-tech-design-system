@@ -1,7 +1,7 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:6e1f105132ef8802fc03011ded6259c08abf31cf11c53a07feb0cd072e5fa6cb",
+  "digest": "sha256:b125b3aeaed35ab2b70d14cb9578d220ebd4217286c5477535d710b1057aaf6c",
   "entryDigest": "sha256:b973bdc68172c5855c844257d951e6d27c0ffade8dcb12b68a749f0b8b17d718",
   "format": "component-contract/v1",
   "frameworks": {
@@ -23,14 +23,14 @@
       ],
       "events": [
         {
-          "name": "remove",
-          "payload": {}
+          "name": "remove"
         }
       ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "active": {
             "type": "boolean"
@@ -93,6 +93,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "active": {
             "description": "Pilule active (aria-pressed). Défaut true.",
@@ -164,6 +165,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "active": {
             "description": "Pilule active (aria-pressed). Défaut true.",
@@ -249,6 +251,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "active": {
             "description": "Pilule active (aria-pressed). Défaut true.",

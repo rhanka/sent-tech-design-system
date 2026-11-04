@@ -1,7 +1,7 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:f4589017d2b148445697c6e38bd69999117224f2a4c51188c35b1e4076bedb8f",
+  "digest": "sha256:44a51dc3792381b06c1a1208edaf55c29c4156d2453376e933de08d1d6efd80a",
   "entryDigest": "sha256:7ae3d3b1872aab411bd6daf13eaa0420d1055ca87df4969c525e2dcbc8189799",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "type": "string"
@@ -35,6 +36,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -144,6 +146,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -166,6 +169,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -291,6 +295,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -313,6 +318,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -433,6 +439,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -455,6 +462,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

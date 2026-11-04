@@ -1,7 +1,7 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:ab5a8d826654cc4b1a30bb3fb6de647b94276f47436cf921f3551af18501b29b",
+  "digest": "sha256:04626fde1cdbccaf3cd36dfded833e31b36754b2026b6ff611b108049efde6fc",
   "entryDigest": "sha256:e977ef6e56ac6fc25f3b680c07278a09e731df13dd5d853bd831846bb94912ad",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "PriorityMatrixDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "description": "Étiquette affichée (une ou deux lignes).",
@@ -49,6 +50,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -118,6 +120,7 @@
       "props": {
         "$defs": {
           "PriorityMatrixDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "description": "Étiquette affichée (une ou deux lignes).",
@@ -152,6 +155,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -221,6 +225,7 @@
       "props": {
         "$defs": {
           "PriorityMatrixDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "description": "Étiquette affichée (une ou deux lignes).",
@@ -255,6 +260,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -325,6 +331,7 @@
       "props": {
         "$defs": {
           "PriorityMatrixDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "description": "Étiquette affichée (une ou deux lignes).",
@@ -359,6 +366,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

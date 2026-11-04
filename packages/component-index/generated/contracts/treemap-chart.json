@@ -1,7 +1,7 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:c757f57372c9f6e73c1a752b1f0fdf3c6b15b00dc5defe907613738a809bf73c",
+  "digest": "sha256:e4565324ae2e7f9d17eaa2bb53f6aee139d7229f5c2065cd0107287257fafda9",
   "entryDigest": "sha256:5cebc0f947f9063c3162247b11ef842675315378e68fbf012bd3c971b67a61d2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TreemapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -48,6 +49,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -108,6 +110,7 @@
       "props": {
         "$defs": {
           "TreemapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -141,6 +144,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -203,6 +207,7 @@
       "props": {
         "$defs": {
           "TreemapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -236,6 +241,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -299,6 +305,7 @@
       "props": {
         "$defs": {
           "TreemapChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "children": {
                 "items": {
@@ -332,6 +339,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

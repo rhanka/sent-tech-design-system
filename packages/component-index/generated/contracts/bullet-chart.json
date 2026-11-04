@@ -1,7 +1,7 @@
 {
   "componentId": "bullet-chart",
   "contractSource": "derived",
-  "digest": "sha256:90d9c160598524526248fde589704e2de9e372d1f85a686b462ca70a3826c8fe",
+  "digest": "sha256:569cdd8c57621bf2a1bda20e5a797189a5363c4e1da70fe4df1ccfa7230c3518",
   "entryDigest": "sha256:54549e859d183dba0c416a86c0db6b3c49cf92862c5d87752e6a491b6a44bbc5",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "BulletChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -40,6 +41,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -97,6 +99,7 @@
       "props": {
         "$defs": {
           "BulletChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -122,6 +125,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -177,6 +181,7 @@
       "props": {
         "$defs": {
           "BulletChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -202,6 +207,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -258,6 +264,7 @@
       "props": {
         "$defs": {
           "BulletChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -283,6 +290,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

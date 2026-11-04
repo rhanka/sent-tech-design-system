@@ -1,7 +1,7 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:019ea75829779b1bb660c2c20cae7617fd42fd82a20f44a31d5e3c30585fa225",
+  "digest": "sha256:8b1dc84b1909ad87a36bc666f6b3acfb231d1f0f3ed6537335fe486e2e5c36ab",
   "entryDigest": "sha256:fa3565fad1f7f02676ba2d120573ff707e3ffd5b95a7ea6813da49c070842fb1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ColumnRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -46,6 +47,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -115,6 +117,7 @@
       "props": {
         "$defs": {
           "ColumnRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -146,6 +149,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -214,6 +218,7 @@
       "props": {
         "$defs": {
           "ColumnRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -245,6 +250,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -314,6 +320,7 @@
       "props": {
         "$defs": {
           "ColumnRangeChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -345,6 +352,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

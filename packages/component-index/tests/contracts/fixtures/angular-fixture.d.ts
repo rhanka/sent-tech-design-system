@@ -1,7 +1,8 @@
 // Angular extractor fixture (spec 7.5). The ɵcmp stand-in carries the
 // input/output/selector type arguments the extractor scans structurally.
+// EventEmitter mirrors the real @angular/core shape (emit(value?: T)).
 export type EventEmitter<T> = {
-  emit(value: T): void;
+  emit(value?: T): void;
 };
 export interface ɵɵComponentDeclaration<I, O, N> {
   __inputs?: I;

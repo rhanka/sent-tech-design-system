@@ -1,7 +1,7 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:3b6b471fc9d869745c7b581f2e0f67b322ee3f1ea117df0e476113400374dc99",
+  "digest": "sha256:0e1e3645fda825a1a148a70d93f6a79a1df4d02b5dcc0245b0a1f158db3ba58a",
   "entryDigest": "sha256:455493888d9056d3e72e8f81f1c27dc23803b58ac37ae363a2a043549c07d7b4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TranscriptionEntry": {
+            "additionalProperties": false,
             "properties": {
               "role": {
                 "type": "string"
@@ -32,6 +33,7 @@
             "type": "object"
           },
           "TranscriptionSegment": {
+            "additionalProperties": false,
             "properties": {
               "endTime": {
                 "type": "string"
@@ -52,6 +54,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -112,6 +115,7 @@
       "props": {
         "$defs": {
           "TranscriptionSegment": {
+            "additionalProperties": false,
             "properties": {
               "endTime": {
                 "type": "string"
@@ -132,6 +136,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -186,6 +191,7 @@
       "props": {
         "$defs": {
           "TranscriptionSegment": {
+            "additionalProperties": false,
             "properties": {
               "endTime": {
                 "type": "string"
@@ -206,6 +212,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -255,6 +262,7 @@
       "props": {
         "$defs": {
           "TranscriptionSegment": {
+            "additionalProperties": false,
             "properties": {
               "endTime": {
                 "type": "string"
@@ -275,6 +283,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

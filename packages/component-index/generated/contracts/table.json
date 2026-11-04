@@ -1,7 +1,7 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:638005f5618a740b4c1b54a0d5d03d46e61b024ab55da30ca9bbd784cfe6fa7a",
+  "digest": "sha256:5a72073a4f60ba9f1fb0456b44a1ec406fe753b0ed1c03aff1969695de264d1b",
   "entryDigest": "sha256:662130ed7f5ad48ec2d3b77c9135c044de0b6a798e8245c8956a2392142bc34c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -40,6 +41,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {},
           "class": {
@@ -119,6 +121,7 @@
       "props": {
         "$defs": {
           "TableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -144,6 +147,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "columns": {
             "items": {
@@ -200,6 +204,7 @@
       "props": {
         "$defs": {
           "TableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -227,6 +232,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {
             "type": "string"
@@ -284,6 +290,7 @@
       "props": {
         "$defs": {
           "TableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -311,6 +318,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {},
           "class": {

@@ -1,7 +1,7 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:72eb21624f6cbf402cdccf19813b5e0858acb362d813df4d8e9e990529dc17c6",
+  "digest": "sha256:deae2c8cf170ee414f2db7b13f67d811c95263b4011b249b391f5e1197966163",
   "entryDigest": "sha256:b76106c69523a6039021cf37cb99ce8f6d39bb259034356391212a062b38ab46",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -72,6 +73,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "name": {
             "description": "Canonical DS icon name.",
@@ -131,6 +133,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -188,6 +191,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

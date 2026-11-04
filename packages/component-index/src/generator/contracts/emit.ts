@@ -242,7 +242,13 @@ function packageDistFiles(repoRoot: string, packageRelPath: string): string[] {
   const dist = join(repoRoot, packageRelPath, "dist");
   const found: string[] = [];
   const walk = (dir: string): void => {
-    for (const name of readdirSync(dir).sort()) {
+    let names: string[];
+    try {
+      names = readdirSync(dir).sort();
+    } catch {
+      throw new Error(`emit: missing source: declaration build (${packageRelPath}/dist)`);
+    }
+    for (const name of names) {
       const absolute = join(dir, name);
       if (statSync(absolute).isDirectory()) {
         walk(absolute);
@@ -302,7 +308,7 @@ export function measureContracts(repoRoot: string, entries: K1aEntryInput[]): Me
     if (cached !== undefined) return cached;
     const distFiles = packageDistFiles(repoRoot, packageRelPath);
     if (distFiles.length === 0) {
-      throw new Error(`emit: no built declarations under ${packageRelPath}/dist (missing source: declaration build)`);
+      throw new Error(`emit: missing source: declaration build (${packageRelPath}/dist)`);
     }
     const loaded = loadDeclarationProgram(distFiles);
     programs.set(packageRelPath, loaded);

@@ -1,7 +1,7 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:d8b4d584d1ba4ce794b7a08ac36084c716a36c1ef3e3fee1d66c9865290ff62e",
+  "digest": "sha256:24592e3b4370c2abe6657bc97621ca6c1bc085c32b6010313c16c139738da85f",
   "entryDigest": "sha256:da0fc83dd256dcf7a4ffc04c0c2067a82f377a4382e14e6c79e7871d7b5520fc",
   "format": "component-contract/v1",
   "frameworks": {
@@ -29,6 +29,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -59,6 +60,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -73,6 +75,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -97,6 +100,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -248,6 +252,7 @@
       "props": {
         "$defs": {
           "ActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -271,6 +276,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -285,6 +291,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -305,6 +312,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -406,6 +414,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -462,12 +471,7 @@
       ],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -518,6 +522,7 @@
       "props": {
         "$defs": {
           "MenuActionItem": {
+            "additionalProperties": false,
             "properties": {
               "danger": {
                 "type": "boolean"
@@ -545,6 +550,7 @@
             "type": "object"
           },
           "MenuDividerItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -559,6 +565,7 @@
             "type": "object"
           },
           "MenuGroupItem": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -583,6 +590,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "align": {
             "enum": [
@@ -661,6 +669,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         },
         {
           "name": "trigger",

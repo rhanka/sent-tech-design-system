@@ -1,7 +1,7 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:237325f7e0f09975c166c85a80746249f13057d0749d7ec6144fe0d064603153",
+  "digest": "sha256:8cbc8dacfe2676da764531fc8df74be85052941d4ebcaf79d1c2531d4732290c",
   "entryDigest": "sha256:24c4b4cb10de2dfc1247d0a2402abc0fc4f7d9a167bf0f6faa1ade4efed4459e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TraceSpan": {
+            "additionalProperties": false,
             "properties": {
               "duration": {
                 "type": "number"
@@ -44,11 +45,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
           },
           "data": {
+            "additionalProperties": false,
             "properties": {
               "spans": {
                 "items": {
@@ -106,6 +109,7 @@
       "props": {
         "$defs": {
           "TraceSpan": {
+            "additionalProperties": false,
             "properties": {
               "duration": {
                 "type": "number"
@@ -135,11 +139,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
           },
           "data": {
+            "additionalProperties": false,
             "properties": {
               "spans": {
                 "items": {
@@ -194,6 +200,7 @@
       "props": {
         "$defs": {
           "TraceSpan": {
+            "additionalProperties": false,
             "properties": {
               "duration": {
                 "type": "number"
@@ -223,11 +230,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
           },
           "data": {
+            "additionalProperties": false,
             "properties": {
               "spans": {
                 "items": {
@@ -283,6 +292,7 @@
       "props": {
         "$defs": {
           "TraceSpan": {
+            "additionalProperties": false,
             "properties": {
               "duration": {
                 "type": "number"
@@ -312,11 +322,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
           },
           "data": {
+            "additionalProperties": false,
             "properties": {
               "spans": {
                 "items": {

@@ -1,7 +1,7 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:03f4eb34a8a4870f01f92db4645c4a9c62a2e65e8929f8b2d5f54fee29074e91",
+  "digest": "sha256:8cca6557ed2751379cb9e55a07bca4529854089d1af093e9666a988bd6caf4b7",
   "entryDigest": "sha256:9ea7464ceb249bac25102d0b1f898e00ebcc256525eb1646bf356b5ff8618826",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "TimelineItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Description optionnelle de l'événement.",
@@ -45,6 +46,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "TimelineItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Description optionnelle de l'événement.",
@@ -123,6 +126,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -174,6 +178,7 @@
       "props": {
         "$defs": {
           "TimelineItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "description": "Description optionnelle de l'événement.",
@@ -204,6 +209,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -250,6 +256,7 @@
       "props": {
         "$defs": {
           "TimelineItem": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -276,6 +283,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

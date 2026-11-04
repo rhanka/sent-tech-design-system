@@ -1,7 +1,7 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:c80e16133eb81f6992ed5a8ec3ab2498c015028b78606f87e59714df704c45a9",
+  "digest": "sha256:765db40b10cc9828cd258284f6057ca17c3a8d45831750677c2d7e80c2b1d30d",
   "entryDigest": "sha256:685f00b3a47fbaac4acf991f7380d231b641e665f1a48e0ade2a62a22975f823",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "enum": [
@@ -59,6 +60,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",
@@ -106,6 +108,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",
@@ -125,12 +128,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -153,6 +151,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "as": {
             "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",

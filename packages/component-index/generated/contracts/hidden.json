@@ -1,7 +1,7 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:b09043c658324b1dee85bed7e75c10a06525b422e56338af9977616ee9360b65",
+  "digest": "sha256:616a719d3eea72e2fd0744289656f2e4084fc8e26d2d31600d9a0703e03fbfbe",
   "entryDigest": "sha256:d399d10b5a67085dc5efc01b7f2135ff1a3a11cab181555012d9f99bc20dbcd8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "above": {
             "enum": [
@@ -70,6 +71,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "above": {
             "description": "Hide when viewport is at or wider than this breakpoint.",
@@ -125,6 +127,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "above": {
             "description": "Hide when viewport is at or wider than this breakpoint.",
@@ -156,12 +159,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -184,6 +182,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "above": {
             "description": "Hide when viewport is at or wider than this breakpoint.",

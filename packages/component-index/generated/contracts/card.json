@@ -1,7 +1,7 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:21a9cea26b6f0158409e5b3ab71e9c4a4671dff1ddb43f430da611698bd19fb4",
+  "digest": "sha256:c4c03f97e606409f6ef0e4e2ffceec40be4c1a925a0dc0c24581bc31c90f6895",
   "entryDigest": "sha256:5c8d2c3ca0da0926f3d9cf5fb406197b16562af99f3455db376bb10ef1bdfbac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -52,6 +53,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "interactive": {
             "type": "boolean"
@@ -86,6 +88,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -99,12 +102,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -127,6 +125,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:3c2bd4e463982816642fb427998d6bef43ddd2626a3ffa1ffb5014dd8b3349e1",
+  "digest": "sha256:8b9dbb1146e73ec2a31d3b52b891bcc6fd5b213bb76c13ecc83bb8ec2016d19f",
   "entryDigest": "sha256:676b4bf587e3faad62397d5200fc758ce8eca96268848287aabe4cf976c29a19",
   "format": "component-contract/v1",
   "frameworks": {
@@ -46,6 +46,7 @@
       "props": {
         "$defs": {
           "AppChromeNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "description": "Marqué actif (souligné, aria-current=page).",
@@ -89,6 +90,7 @@
             "type": "object"
           },
           "AppChromeThemeOption": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -104,6 +106,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "type": "string"
@@ -125,6 +128,7 @@
             ]
           },
           "colorModeLabels": {
+            "additionalProperties": false,
             "properties": {
               "auto": {
                 "type": "string"
@@ -274,6 +278,7 @@
       "props": {
         "$defs": {
           "AppChromeNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "description": "Marqué actif (souligné, aria-current=page).",
@@ -333,6 +338,7 @@
             "type": "object"
           },
           "AppChromeThemeOption": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -348,6 +354,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "type": "string"
@@ -369,6 +376,7 @@
             ]
           },
           "colorModeLabels": {
+            "additionalProperties": false,
             "properties": {
               "auto": {
                 "type": "string"
@@ -507,6 +515,7 @@
       "props": {
         "$defs": {
           "AppChromeNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "description": "Marqué actif (souligné, aria-current=page).",
@@ -550,6 +559,7 @@
             "type": "object"
           },
           "AppChromeThemeOption": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -565,6 +575,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "description": "Cible du lien de marque. Défaut `/`.",
@@ -590,6 +601,7 @@
             ]
           },
           "colorModeLabels": {
+            "additionalProperties": false,
             "description": "Libellés accessibles des 3 modes (light/dark/auto).",
             "properties": {
               "auto": {
@@ -694,20 +706,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "extraSelectors",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "extraSelectors"
         },
         {
-          "name": "identity",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "identity"
         }
       ],
       "source": {
@@ -792,6 +794,7 @@
       "props": {
         "$defs": {
           "AppChromeNavItem": {
+            "additionalProperties": false,
             "properties": {
               "active": {
                 "description": "Marqué actif (souligné, aria-current=page).",
@@ -835,6 +838,7 @@
             "type": "object"
           },
           "AppChromeThemeOption": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -850,6 +854,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "brandHref": {
             "type": "string"
@@ -871,6 +876,7 @@
             ]
           },
           "colorModeLabels": {
+            "additionalProperties": false,
             "properties": {
               "auto": {
                 "type": "string"

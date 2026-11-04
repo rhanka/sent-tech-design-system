@@ -1,7 +1,7 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:160a1c133e6495815b9a93306ba41b45d09254326b54753a6ba0a35fb2c29188",
+  "digest": "sha256:8c52d9450e91caf9444b9eee1779b645a1e5b6634616b69b23441ce2a2403a7c",
   "entryDigest": "sha256:7523c2ae92339de0fd5cb4f1ab67757b075ca8754c150b132d05bde17ddd4b5b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "autoScroll": {
             "type": "boolean"
@@ -26,6 +27,7 @@
           },
           "messages": {
             "items": {
+              "additionalProperties": false,
               "properties": {
                 "content": {},
                 "id": {
@@ -120,6 +122,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "autoScroll": {
             "type": "boolean"
@@ -129,6 +132,7 @@
           },
           "messages": {
             "items": {
+              "additionalProperties": false,
               "properties": {
                 "id": {
                   "type": "string"
@@ -194,6 +198,7 @@
       "props": {
         "$defs": {
           "ChatThreadMessage": {
+            "additionalProperties": false,
             "properties": {
               "content": {
                 "type": "string"
@@ -225,6 +230,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "autoScroll": {
             "type": "boolean"
@@ -251,20 +257,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "emptyState",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "emptyState"
         }
       ],
       "source": {
@@ -287,6 +283,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "autoScroll": {
             "type": "boolean"
@@ -300,6 +297,7 @@
           },
           "messages": {
             "items": {
+              "additionalProperties": false,
               "properties": {
                 "content": {},
                 "id": {

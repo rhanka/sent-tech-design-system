@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:c6d719d261486872b4b682c45050565c3b97d4e985268e5ff1e75e11ddd5266e",
+  "digest": "sha256:3325fa3916c59a90f14c0ca6b061e68c9250dff32fe044e6f5f8a348a061cb64",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -140,6 +140,7 @@
       "props": {
         "$defs": {
           "CrossfilterGraph": {
+            "additionalProperties": false,
             "properties": {
               "views": {
                 "additionalProperties": {
@@ -155,6 +156,7 @@
             "type": "object"
           },
           "CrossfilterView": {
+            "additionalProperties": false,
             "properties": {
               "affects": {
                 "description": "The view ids this view's selection filters. If omitted, defaults to\n\"every other view\" (a fully-linked dashboard). An empty array means the\nview's selection affects no other view.",
@@ -181,6 +183,7 @@
             "type": "object"
           },
           "DashboardStore": {
+            "additionalProperties": false,
             "properties": {
               "crossfilter": {
                 "$ref": "#/$defs/CrossfilterGraph",
@@ -205,6 +208,7 @@
             "type": "object"
           },
           "DataModel": {
+            "additionalProperties": false,
             "properties": {
               "dimensions": {
                 "items": {
@@ -226,6 +230,7 @@
             "type": "object"
           },
           "Dimension": {
+            "additionalProperties": false,
             "properties": {
               "folder": {
                 "description": "Optional field-pane folder/group label.",
@@ -259,6 +264,7 @@
             "type": "object"
           },
           "Measure": {
+            "additionalProperties": false,
             "properties": {
               "aggregation": {
                 "enum": [
@@ -311,6 +317,7 @@
             "type": "object"
           },
           "UrlSyncOptions": {
+            "additionalProperties": false,
             "properties": {
               "debounceMs": {
                 "description": "Debounce window (ms) for writing rapid store changes to the URL. `0`\n(default) writes synchronously on every change.",
@@ -331,6 +338,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "options": {
             "$ref": "#/$defs/UrlSyncOptions",

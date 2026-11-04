@@ -1,7 +1,7 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:b47b383531aede9e2a87aa75bc9c750dc8055063e3d129930d039dd0979f0dea",
+  "digest": "sha256:bfb4b765ff7a2bbaa314857a3d77c923a6336077257f0b7ef3c9e5a6e93bab9c",
   "entryDigest": "sha256:9e9c9eb40fa0fba19fb23bf79a5c1e7161c1ca237b5ba47490dafa1ae107df96",
   "format": "component-contract/v1",
   "frameworks": {
@@ -36,11 +36,13 @@
       "props": {
         "$defs": {
           "FileUploadItem": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
               },
               "file": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -75,6 +77,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "accept": {
             "type": "string"
@@ -199,8 +202,10 @@
       "props": {
         "$defs": {
           "FileUploadItem": {
+            "additionalProperties": false,
             "properties": {
               "file": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -238,6 +243,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "accept": {
             "type": "string"
@@ -316,6 +322,7 @@
       "props": {
         "$defs": {
           "FileUploadItem": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
@@ -340,6 +347,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "accept": {
             "type": "string"
@@ -454,11 +462,13 @@
       "props": {
         "$defs": {
           "FileUploadItem": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
               },
               "file": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -496,6 +506,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "accept": {
             "type": "string"

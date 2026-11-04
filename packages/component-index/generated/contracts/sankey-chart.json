@@ -1,7 +1,7 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:11951de8c9a1549e8783b6dcc636dc7e8aa1e95dce8fd214a959c57cf804f02e",
+  "digest": "sha256:acad7eaf3474db1558516d5f1c7a5f5a288feb97da811795415ecbd697ec02fb",
   "entryDigest": "sha256:1c6e0104562b6fb7815654b2d4aa274f07baec826d49fec5c13883e962a7345a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "SankeyChartLink": {
+            "additionalProperties": false,
             "properties": {
               "source": {
                 "type": "string"
@@ -46,6 +47,7 @@
             "type": "object"
           },
           "SankeyChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -73,6 +75,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -130,6 +133,7 @@
       "props": {
         "$defs": {
           "SankeyChartLink": {
+            "additionalProperties": false,
             "properties": {
               "source": {
                 "type": "string"
@@ -161,6 +165,7 @@
             "type": "object"
           },
           "SankeyChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -188,6 +193,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -244,6 +250,7 @@
       "props": {
         "$defs": {
           "SankeyChartLink": {
+            "additionalProperties": false,
             "properties": {
               "source": {
                 "type": "string"
@@ -275,6 +282,7 @@
             "type": "object"
           },
           "SankeyChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -302,6 +310,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -359,6 +368,7 @@
       "props": {
         "$defs": {
           "SankeyChartLink": {
+            "additionalProperties": false,
             "properties": {
               "source": {
                 "type": "string"
@@ -390,6 +400,7 @@
             "type": "object"
           },
           "SankeyChartNode": {
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string"
@@ -417,6 +428,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

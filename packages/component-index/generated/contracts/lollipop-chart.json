@@ -1,7 +1,7 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:7e93067f0540a1c036927f0a1ae8eb574327c4fce30ea07af150d3a29032065b",
+  "digest": "sha256:20a0f2028a01370cfa55d889594649150a04998b4ac872eb69f16ce7efbc7275",
   "entryDigest": "sha256:91387d63112fa7f663f5083b12d4366dc3760da547d6d1053588991e77f2f37a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "LollipopChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -111,6 +113,7 @@
       "props": {
         "$defs": {
           "LollipopChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -138,6 +141,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -206,6 +210,7 @@
       "props": {
         "$defs": {
           "LollipopChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -233,6 +238,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -302,6 +308,7 @@
       "props": {
         "$defs": {
           "LollipopChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -329,6 +336,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

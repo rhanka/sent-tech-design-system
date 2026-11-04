@@ -1,7 +1,7 @@
 {
   "componentId": "anomaly-swim-lane-chart",
   "contractSource": "derived",
-  "digest": "sha256:066388ad9b7e544893b6bbf5b1d16e489a46f09176c132a72fa89696aca79284",
+  "digest": "sha256:aa7158bf94c129a3811410cd9984ae780d1fdeed425e6bf9af8d43a36c01527d",
   "entryDigest": "sha256:899f0c4a482f09edcba3306de2b4cef531a2879f6da7e2d1ad347e6c353ac9d0",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "AnomalySwimLaneBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -30,6 +31,7 @@
             "type": "object"
           },
           "AnomalySwimLaneSeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -48,6 +50,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -111,6 +114,7 @@
       "props": {
         "$defs": {
           "AnomalySwimLaneBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -126,6 +130,7 @@
             "type": "object"
           },
           "AnomalySwimLaneSeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -144,6 +149,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -204,6 +210,7 @@
       "props": {
         "$defs": {
           "AnomalySwimLaneBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -219,6 +226,7 @@
             "type": "object"
           },
           "AnomalySwimLaneSeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -237,6 +245,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -298,6 +307,7 @@
       "props": {
         "$defs": {
           "AnomalySwimLaneBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -313,6 +323,7 @@
             "type": "object"
           },
           "AnomalySwimLaneSeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -331,6 +342,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

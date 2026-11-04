@@ -1,7 +1,7 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:abe94346cc42e8386bf209edaf55e21a871116fc2bbe1f3d271986c5d2dbdaef",
+  "digest": "sha256:e4bd7ccf9157c6b267ec2d59a732a514371f6a3a551358ffd196f943a72252ca",
   "entryDigest": "sha256:18dd004d1afe3e075645b74ab730b5d07fddbc4b070301f53ff2dda73612878c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -22,6 +22,7 @@
       "props": {
         "$defs": {
           "ComboboxOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "allowCustomValue": {
             "type": "boolean"
@@ -188,6 +190,7 @@
       "props": {
         "$defs": {
           "ComboboxOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -202,6 +205,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "allowCustomValue": {
             "type": "boolean"
@@ -298,6 +302,7 @@
       "props": {
         "$defs": {
           "ComboboxOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -316,6 +321,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "allowCustomValue": {
             "type": "boolean"
@@ -439,6 +445,7 @@
       "props": {
         "$defs": {
           "ComboboxOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -455,6 +462,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "allowCustomValue": {
             "type": "boolean"
@@ -531,6 +539,30 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

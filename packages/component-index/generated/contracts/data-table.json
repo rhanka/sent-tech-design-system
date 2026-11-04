@@ -1,7 +1,7 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:3acd413c63d159442448e76a8e53793477cb3c6f278077121db2cb45bf8413cd",
+  "digest": "sha256:b9227081620e8ae8bce60480d20e56ff1f1f952f84005ec8544145c5d9ec2fda",
   "entryDigest": "sha256:3ebd6af94d8bb2f7f1a298d1d5a59bc0bc694db01a844682adf7687470f6099f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -87,6 +87,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "type": "string"
@@ -107,6 +108,7 @@
             "type": "object"
           },
           "DataTableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -145,6 +147,7 @@
             "type": "object"
           },
           "DataTableSort": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "enum": [
@@ -163,6 +166,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {},
           "class": {
@@ -385,6 +389,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -407,6 +412,7 @@
             "type": "object"
           },
           "DataTableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -443,6 +449,7 @@
             "type": "object"
           },
           "DataTableSort": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "enum": [
@@ -461,6 +468,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -639,6 +647,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -661,6 +670,7 @@
             "type": "object"
           },
           "DataTableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -701,6 +711,7 @@
             "type": "object"
           },
           "DataTableSort": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "enum": [
@@ -719,6 +730,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {
             "type": "string"
@@ -955,6 +967,7 @@
       "props": {
         "$defs": {
           "CellDecoration": {
+            "additionalProperties": false,
             "properties": {
               "icon": {
                 "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
@@ -977,6 +990,7 @@
             "type": "object"
           },
           "DataTableColumn": {
+            "additionalProperties": false,
             "properties": {
               "align": {
                 "enum": [
@@ -1013,6 +1027,7 @@
             "type": "object"
           },
           "DataTableSort": {
+            "additionalProperties": false,
             "properties": {
               "direction": {
                 "enum": [
@@ -1031,6 +1046,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

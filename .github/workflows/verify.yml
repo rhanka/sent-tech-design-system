@@ -59,6 +59,11 @@ jobs:
 
       - run: npm ci
 
+      # Contract guards read built declarations: build every library dist
+      # first (dependency-ordered, dataviz-core before its consumers).
+      - name: Build declarations for contract guards
+        run: node scripts/ensure-theme-dists.mjs
+
       # The repository-level guards — layering, provenance invariants, theme
       # shape and theme invariants, the licensing gate's own defect tests — were
       # held by the root `npm test` only, and no workflow ran them: measured on

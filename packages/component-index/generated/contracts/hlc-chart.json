@@ -1,7 +1,7 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:6f4d26d44f63e67731a35bf19b3912007e7b0ae5b826691ca619ad4db0dff279",
+  "digest": "sha256:2ecf11af9cd45ef9122e77e119dc1d48fc3e25e031f3c88db400fe732a0e16b7",
   "entryDigest": "sha256:6df020965dccf57ffe9db50035fa9577b1e9c9c67677b57097cc0187f24fe01a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "HLCChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -89,6 +91,7 @@
       "props": {
         "$defs": {
           "HLCChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -112,6 +115,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -161,6 +165,7 @@
       "props": {
         "$defs": {
           "HLCChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -184,6 +189,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -234,6 +240,7 @@
       "props": {
         "$defs": {
           "HLCChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -257,6 +264,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

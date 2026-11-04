@@ -40,4 +40,20 @@ describe("K1b Angular extractor (spec 7.5)", () => {
     expect(body.status).toBe("partial");
     expect(body.warnings.some((warning) => warning.includes("extra"))).toBe(true);
   });
+
+  it("treats void | undefined emit params as payload-less (real EventEmitter shape)", () => {
+    // Real @angular/core declares emit(value?: T): under strictNullChecks
+    // EventEmitter<void> reads as void | undefined. The union must strip
+    // undefined and leave no payload, while EventEmitter<string> keeps
+    // its string payload.
+    const body = extractAngular(inputFor("Pane"));
+    const closed = body.events.find((event) => event.name === "closed");
+    const changed = body.events.find((event) => event.name === "changed");
+    expect(closed).toBeDefined();
+    expect(closed).not.toHaveProperty("payload");
+    expect(changed).toMatchObject({ payload: { type: "string" } });
+    // No silent {} payload and no loss row for the void case.
+    expect(body.unresolved.map((row) => row.name)).not.toContain("closed");
+    expect(body.replaced.map((row) => row.name)).not.toContain("closed");
+  });
 });

@@ -1,7 +1,7 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:96fddc36bc76fac70ea5e52f3347810e4c83af89524b7943a12a9c6daa38df63",
+  "digest": "sha256:35445dcf1e67712dcb0e5c385bddba876588833afc9c3f1b4cd2b44d69ea2d8f",
   "entryDigest": "sha256:76b5a4d2d26f4ec49b9a7866e20d1321009a78e6496becafc9895c3543a1d039",
   "format": "component-contract/v1",
   "frameworks": {
@@ -33,6 +33,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -144,6 +145,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "invalid": {
             "type": "boolean"
@@ -208,6 +210,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -301,6 +304,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -351,7 +355,20 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:99358b62be4c72093797a569c37cf5e1d372dc86973aaea8fe8b57e50fd4d051",

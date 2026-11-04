@@ -1,7 +1,7 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:fdce12a6051dfd4e670cafc15b902d1a616c8fadfafee9c366c5c97407405112",
+  "digest": "sha256:ee695c23e6fd333fb92f38972ad58df0d27064603115e0481a3e74c91e3df721",
   "entryDigest": "sha256:9136b6e224c7d5a1ca51165ff33772e26231403c20c99cc7744c1b3608d3e61c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "RadarChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -45,6 +46,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -111,6 +113,7 @@
       "props": {
         "$defs": {
           "RadarChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -141,6 +144,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -207,6 +211,7 @@
       "props": {
         "$defs": {
           "RadarChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -237,6 +242,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -303,6 +309,7 @@
       "props": {
         "$defs": {
           "RadarChartSeries": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -333,6 +340,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {

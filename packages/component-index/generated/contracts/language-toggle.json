@@ -1,7 +1,7 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:511873f698ed9b8afb344209f21cd155c6dddaebde1a268f29919d9152a7722e",
+  "digest": "sha256:6a49f291310af79f13a076537d17b88c41c334032536d10d4a7ba73cb7c5fa4d",
   "entryDigest": "sha256:a692984363a1f3afae0dd0a019e698353c6dfe81253d9546bb77bcc6451a2c97",
   "format": "component-contract/v1",
   "frameworks": {
@@ -23,6 +23,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accordionLabel": {
             "type": "string"
@@ -107,6 +108,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -165,6 +167,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accordionLabel": {
             "description": "Titre de la section accordéon.",
@@ -239,6 +242,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "accordionLabel": {
             "type": "string"
@@ -275,7 +279,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onLocaleChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:d65657680f724d0bf05cf4d6aa8b4222e17e17b6515cb86e9f10900e08898df1",
@@ -284,7 +295,7 @@
         "propsType": "LanguageToggleProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"localeChange\": payload not in declaration",

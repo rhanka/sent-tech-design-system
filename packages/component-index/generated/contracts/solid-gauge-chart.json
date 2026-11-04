@@ -1,7 +1,7 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:53a8e7cf7b41230c0ec1159883c112cc204a8bfb2dfdb8b17d0029df3f6d3883",
+  "digest": "sha256:2f5d548025234c614e9c5041a546de445f04b0fe06441205efe1b44fbd7235c4",
   "entryDigest": "sha256:876ffd820d54fbcae556bd45f41b90c30a8382ed5177100b78a0cc53de9a6004",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "SolidGaugeThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -44,6 +45,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -119,6 +121,7 @@
       "props": {
         "$defs": {
           "SolidGaugeThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -148,6 +151,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -228,6 +232,7 @@
       "props": {
         "$defs": {
           "SolidGaugeThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -257,6 +262,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -338,6 +344,7 @@
       "props": {
         "$defs": {
           "SolidGaugeThreshold": {
+            "additionalProperties": false,
             "properties": {
               "tone": {
                 "enum": [
@@ -367,6 +374,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

@@ -1,7 +1,7 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:6f0e8b0a5326b5e36169ec16c43ead641266c9de0583b91e27b2a746167c2308",
+  "digest": "sha256:f140d42355e8c8d27f1f2ddd576c2335fd341d895ca5f059f95a9e3b7d56a328",
   "entryDigest": "sha256:9a65386e7c1df9d31b41fee441b51026773fab16f630bdc5fbcca0feae311f2b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -29,6 +29,7 @@
       "props": {
         "$defs": {
           "StepperStep": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -43,6 +44,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -107,6 +109,7 @@
       "props": {
         "$defs": {
           "StepperStep": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -121,6 +124,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -191,6 +195,7 @@
       "props": {
         "$defs": {
           "StepperStep": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -205,6 +210,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -280,6 +286,7 @@
       "props": {
         "$defs": {
           "StepperStep": {
+            "additionalProperties": false,
             "properties": {
               "description": {
                 "type": "string"
@@ -294,6 +301,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

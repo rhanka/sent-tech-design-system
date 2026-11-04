@@ -1,7 +1,7 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:44f496f94b07ef46933a93f4128e7b8a570d7aecfd65b6bf881c7e3e4dddfeca",
+  "digest": "sha256:e0bd675aa1c332f74742f08380762dc9fa8274e759b1a95b3a51186812cc813b",
   "entryDigest": "sha256:9549775f37c719b242590a36d634e200481597c5009a0da89b816785868b0896",
   "format": "component-contract/v1",
   "frameworks": {
@@ -10,14 +10,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "close",
-          "payload": {}
+          "name": "close"
         }
       ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -106,6 +106,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "closeLabel": {
             "type": "string"
@@ -147,6 +148,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -180,20 +182,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "footer",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "footer"
         }
       ],
       "source": {
@@ -227,6 +219,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -246,7 +239,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onClose.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:9686157b213f925fd276a668039a4e0c7cb8d4a5b7c01aaa14270b73f50ea47d",
@@ -255,7 +255,7 @@
         "propsType": "ModalProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"close\": payload not in declaration",
