@@ -1,0 +1,257 @@
+{
+  "componentId": "pagination",
+  "contractSource": "derived",
+  "digest": "sha256:5239a629cdefcf1be0756fee67f2b8b60980784be1a3193d4e967de6038eb38f",
+  "entryDigest": "sha256:e9820d70fdca814cad6ff6a081bb85a6a6c4391b9e3c9248ef94770fd067d48d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "pageChange",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "totalItems": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ba1f10a36644e13881f0ea46e0bf632b89ac508df3d6b8138ca28574f2fc11bf",
+        "declarationPath": "packages/components-angular/dist/Pagination.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PaginationProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onPageChange",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "totalItems": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PaginationProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onpagechange",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": "number"
+          },
+          "previousLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "page",
+          "pageCount"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:99f9b9893275369482cb86e7ba3fa5cf23f6be82c5ded11213160ad9be607750",
+        "declarationPath": "packages/components-svelte/dist/Pagination.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PaginationProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onPageChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "pageChange"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "totalItems": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "page"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dd1054c0ae59dc25498fc511b3b0be0e3e34fd6162d3415c550a966cf2130d48",
+        "declarationPath": "packages/components-vue/dist/Pagination.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PaginationProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"pageChange\": payload not in declaration",
+        "event pair: emits \"pageChange\" and prop \"onPageChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

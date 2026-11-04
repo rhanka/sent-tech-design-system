@@ -1,0 +1,308 @@
+{
+  "componentId": "point-and-figure-chart",
+  "contractSource": "derived",
+  "digest": "sha256:80d15a178ff4ef4f03aeaca5704ff74adbc83623edc17f41cba337ed1800765d",
+  "entryDigest": "sha256:31380502a862c7f8f9ac2d60b92eb9b17a79156682425e874e0fa043db869781",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "PointAndFigureChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "date": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PointAndFigureChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "reversal": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:33b0ff1a8e2355a6b8b13466f4053f10b22729c651c830a9cc42f8e8db04567b",
+        "declarationPath": "packages/components-angular/dist/PointAndFigureChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PointAndFigureChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "PointAndFigureChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des colonnes.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PointAndFigureChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "reversal": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dd56995a34dc1e8bb29e8653fc3eed32a18695b69f0d7b71c2a79f5cfdbe7078",
+        "declarationPath": "packages/components-react/dist/PointAndFigureChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PointAndFigureChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "PointAndFigureChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des colonnes.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PointAndFigureChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "reversal": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:537b06a130ba729d61a4ecf73564b15dbfe8c60c0d0d3ac9f3d12f3bd9722054",
+        "declarationPath": "packages/components-svelte/dist/PointAndFigureChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PointAndFigureChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "PointAndFigureChartDatum": {
+            "properties": {
+              "close": {
+                "description": "Prix de clôture : pilote la formation des colonnes.",
+                "type": "number"
+              },
+              "date": {
+                "description": "Position temporelle (timestamp ou index) — ignorée pour l'empilement.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "date"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "boxSize": {
+            "type": "number"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PointAndFigureChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "reversal": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:70c840d93311c16911647f6022a764913a0948d22c74faf585dd6d85fa11416a",
+        "declarationPath": "packages/components-vue/dist/PointAndFigureChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PointAndFigureChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

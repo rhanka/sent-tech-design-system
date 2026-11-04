@@ -1,0 +1,344 @@
+{
+  "componentId": "chord-diagram",
+  "contractSource": "derived",
+  "digest": "sha256:2b1b5d3e3a75c916ee9866e976b761204e4907a6a82f8c18e4516e2adbd9790a",
+  "entryDigest": "sha256:faec76301ef5b609cacac50207569f57b8b3081178a23080fdee0bc10a94f65d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ChordDiagramFlow": {
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ChordDiagramFlow"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6785542111d80940f8b4df5cee02e5e11959660c594858e032dd90b03f64d1a0",
+        "declarationPath": "packages/components-angular/dist/ChordDiagram.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ChordDiagramProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ChordDiagramFlow": {
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ChordDiagramFlow"
+            },
+            "type": "array"
+          },
+          "height": {
+            "description": "Hauteur du viewBox (défaut 360).",
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Libellés d'affichage par identifiant de nœud.",
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "description": "Largeur du viewBox (défaut 360).",
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:707ce01cc93d12df20a8469ecae2c33ab909d4419e6edd473a0ca3b8248700d0",
+        "declarationPath": "packages/components-react/dist/ChordDiagram.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ChordDiagramProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ChordDiagramFlow": {
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ChordDiagramFlow"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:55b8ceecc7527ad72c14bf44cb33b10244c03b5cd1a8290147443553cdae87ba",
+        "declarationPath": "packages/components-svelte/dist/ChordDiagram.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ChordDiagramProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ChordDiagramFlow": {
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ChordDiagramFlow"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b4f84c14f54cb586df337a1ea1f277c5bb555f35d4ba521588e607e750576e64",
+        "declarationPath": "packages/components-vue/dist/ChordDiagram.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ChordDiagramProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

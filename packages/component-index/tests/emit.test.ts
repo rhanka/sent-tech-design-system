@@ -76,14 +76,67 @@ function scaffold(): MiniTree {
     writeFile(root, `${dir}/package.json`, JSON.stringify({ name, version: "0.1.0" }));
   }
   writeFile(root, "packages/elements/catalog.json", JSON.stringify({ components: {} }));
+  // Minimal built declarations so the K1b extractor runs on the miniature
+  // tree (test fixtures, never mistaken for real component builds).
+  writeFile(
+    root,
+    "packages/components-svelte/dist/Widget.svelte.d.ts",
+    'export type WidgetProps = { title?: string };\ndeclare const Widget: import("svelte").Component<WidgetProps, {}, "">;\nexport default Widget;\n',
+  );
+  writeFile(
+    root,
+    "packages/components-react/dist/Widget.d.ts",
+    "export type WidgetProps = { title?: string };\nexport declare function Widget(props: WidgetProps): unknown;\n",
+  );
+  writeFile(
+    root,
+    "packages/components-vue/dist/Widget.d.ts",
+    "export type WidgetProps = { title?: string };\n",
+  );
+  writeFile(
+    root,
+    "packages/components-angular/dist/Widget.d.ts",
+    "export type \u0275\u0275ComponentDeclaration<T, I, O, N> = { inputs: I; outputs: O; selectors: N };\nexport declare class Widget {\n  title?: string;\n  static \u0275cmp: \u0275\u0275ComponentDeclaration<Widget, {}, {}, []>;\n}\n",
+  );
+  writeFile(
+    root,
+    "packages/dataviz-svelte/dist/lib/Gadget.svelte.d.ts",
+    'export type GadgetProps = { label?: string };\ndeclare const Gadget: import("svelte").Component<GadgetProps, {}, "">;\nexport default Gadget;\n',
+  );
   writeFile(
     pkg,
     "package.json",
     JSON.stringify({ name: "@mini/component-index", version: "0.1.0" }),
   );
-  for (const schema of ["component-entry.v1.json", "component-index.v1.json"]) {
+  for (const schema of [
+    "component-entry.v1.json",
+    "component-index.v1.json",
+    "component-contract.v1.json",
+    "component-contract-index.v1.json",
+  ]) {
     writeFile(pkg, `schemas/${schema}`, readFileSync(join(realPackageDir, "schemas", schema), "utf8"));
   }
+  writeFile(
+    pkg,
+    "contract-baseline.json",
+    JSON.stringify({
+      version: 1,
+      components: {
+        widget: {
+          svelte: { status: "complete" },
+          react: { status: "complete" },
+          vue: { status: "complete" },
+          angular: { status: "complete" },
+        },
+        gadget: {
+          svelte: { status: "complete" },
+          react: { status: "none" },
+          vue: { status: "none" },
+          angular: { status: "none" },
+        },
+      },
+    }),
+  );
   writeFile(
     pkg,
     "catalog-overlay.json",
@@ -115,7 +168,7 @@ function scaffold(): MiniTree {
         "dataviz-vue": [],
         "dataviz-angular": [],
       },
-      unresolvedStars: {
+      stars: {
         svelte: [],
         react: [],
         vue: [],
@@ -142,7 +195,7 @@ describe("emit on a miniature tree", () => {
   it("emits two entries with exact-version pins and sums counts", () => {
     const tree = scaffold();
     const { files, log } = buildArtifacts(tree.root, tree.pkg, { sourceCommit: "0".repeat(40) });
-    expect(files).toHaveLength(3);
+    expect(files).toHaveLength(6);
     expect(files[0]?.path).toBe("generated/component-index.json");
     const index = JSON.parse(files[0]?.text ?? "{}");
     expect(index.counts).toEqual({ entries: 2, byRenderable: { mcp: 0, https: 0, "doc-only": 2 } });
@@ -193,6 +246,38 @@ describe("emit on a miniature tree", () => {
       'export { default as Widget } from "./Widget.svelte";\nexport { default as Solo } from "./Solo.svelte";\n',
     );
     mutate(tree, "packages/components-svelte/src/lib/Solo.svelte", "<div>solo</div>\n");
+    mutate(
+      tree,
+      "packages/components-svelte/dist/Solo.svelte.d.ts",
+      'export type SoloProps = { label?: string };\ndeclare const Solo: import("svelte").Component<SoloProps, {}, "">;\nexport default Solo;\n',
+    );
+    mutatePkg(
+      tree,
+      "contract-baseline.json",
+      JSON.stringify({
+        version: 1,
+        components: {
+          widget: {
+            svelte: { status: "complete" },
+            react: { status: "complete" },
+            vue: { status: "complete" },
+            angular: { status: "complete" },
+          },
+          gadget: {
+            svelte: { status: "complete" },
+            react: { status: "none" },
+            vue: { status: "none" },
+            angular: { status: "none" },
+          },
+          solo: {
+            svelte: { status: "complete" },
+            react: { status: "none" },
+            vue: { status: "none" },
+            angular: { status: "none" },
+          },
+        },
+      }),
+    );
     mutate(
       tree,
       "packages/elements/catalog.json",
@@ -249,7 +334,7 @@ describe("emit on a miniature tree", () => {
           "dataviz-vue": [],
           "dataviz-angular": [],
         },
-        unresolvedStars: {
+        stars: {
           svelte: [],
           react: [],
           vue: [],
@@ -298,7 +383,7 @@ describe("emit on a miniature tree", () => {
           "dataviz-vue": [],
           "dataviz-angular": [],
         },
-        unresolvedStars: {
+        stars: {
           svelte: [],
           react: [],
           vue: [],
@@ -348,7 +433,7 @@ describe("emit on a miniature tree", () => {
           "dataviz-vue": [],
           "dataviz-angular": [],
         },
-        unresolvedStars: {
+        stars: {
           svelte: [],
           react: [],
           vue: [],

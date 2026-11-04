@@ -1,0 +1,241 @@
+{
+  "componentId": "icon-button",
+  "contractSource": "derived",
+  "digest": "sha256:904124d6450161fbf0d0a874ef4609fca2a3b0e1557cb90372256d6587f35d51",
+  "entryDigest": "sha256:2a1227a07ddf3dcf1f97e05beafb26247944020dc5388d95be00c9d4c47f07a1",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "aria-label": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ac5692f00c4c91faa1f9641f1bd623cc164a3eef7d5eb5079a70a8d534265dc6",
+        "declarationPath": "packages/components-angular/dist/IconButton.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "IconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "IconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLButtonAttributes",
+        "omitted": [
+          "aria-label",
+          "class",
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "aria-label": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "required": [
+          "aria-label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          },
+          "required": true
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e5f3791707ac5c9fb1fb54232200ec1db93dc168899262f6246139fd13c914cd",
+        "declarationPath": "packages/components-svelte/dist/IconButton.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "IconButtonProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c5b085aa3ede0083435ddca04f70ef0fb4c6f936913d1b1b803b00797a21e663",
+        "declarationPath": "packages/components-vue/dist/IconButton.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "IconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

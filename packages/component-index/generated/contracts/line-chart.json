@@ -1,0 +1,1810 @@
+{
+  "componentId": "line-chart",
+  "contractSource": "derived",
+  "digest": "sha256:f9e203aac529686fb32924585ff909d2ce6cdf397a91808c38e1e6dc9bed50bf",
+  "entryDigest": "sha256:b715fd5c49834d29962874fd5eb276e1a6651039e20930f94c1cf1ae8ca19876",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ChartBand": {
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "to": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "type": "object"
+          },
+          "ChartGoalLine": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "ChartReferenceLine": {
+            "properties": {
+              "axis": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "LineChartDatum": {
+            "properties": {
+              "forecast": {
+                "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
+                "type": "boolean"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "area": {
+            "type": "boolean"
+          },
+          "bands": {
+            "items": {
+              "$ref": "#/$defs/ChartBand"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LineChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "domain": {
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "goalLine": {
+            "$ref": "#/$defs/ChartGoalLine"
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "invertAxis": {
+            "type": "boolean"
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "referenceLines": {
+            "items": {
+              "$ref": "#/$defs/ChartReferenceLine"
+            },
+            "type": "array"
+          },
+          "scale": {
+            "enum": [
+              "linear",
+              "log"
+            ]
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d068a54217f90a8f5361103cf60d13535a6d34388d57490bd6e60e7a384b2a59",
+        "declarationPath": "packages/components-angular/dist/LineChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ChartBand": {
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "to": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "type": "object"
+          },
+          "ChartGoalLine": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "ChartReferenceLine": {
+            "properties": {
+              "axis": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "LineChartDatum": {
+            "properties": {
+              "forecast": {
+                "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
+                "type": "boolean"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "area": {
+            "type": "boolean"
+          },
+          "bands": {
+            "description": "Shaded value-axis bands between `from`..`to`.",
+            "items": {
+              "$ref": "#/$defs/ChartBand"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LineChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override. Default position is `top` (above the point).\nLabels are `aria-hidden` — the values already live in the accessible\nChartDataList."
+          },
+          "domain": {
+            "description": "Fixed value-axis (y) domain `[min, max]`. When provided (and finite,\nmin<max) the y scale uses it instead of the data-derived range. Invalid or\nabsent → auto range (unchanged).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "goalLine": {
+            "$ref": "#/$defs/ChartGoalLine",
+            "description": "A single goal line, emphasised above the data."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When\nprovided (string or null), the crosshair + tooltip track this key instead of\nthe chart's internal pointer hover (null ⇒ nothing shown), letting a parent\nshare one hover channel across several aligned charts. Absent (`undefined`)\nkeeps the legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "invertAxis": {
+            "description": "Inverts the value (y) axis. Default false.",
+            "type": "boolean"
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between\npoints (data order), Home/End jump to the first/last, Enter/Space select the\nfocused point (`onSelectKey`), Escape leaves the navigation. Each focused\npoint announces its `x` + value. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "referenceLines": {
+            "description": "Reference lines (default `axis: \"y\"` → horizontal at `value`).",
+            "items": {
+              "$ref": "#/$defs/ChartReferenceLine"
+            },
+            "type": "array"
+          },
+          "scale": {
+            "description": "Value-axis scale. `\"linear\"` (default) is unchanged. `\"log\"` switches the\ny axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks\nand clamped to the lowest tick when positioned.",
+            "enum": [
+              "linear",
+              "log"
+            ]
+          },
+          "showLegend": {
+            "description": "Toggles the legend if the chart has one. LineChart is single-series and has\nno legend surface; accepted for parity and otherwise ignored.",
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "description": "Least-squares trend line over the data points.",
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:23f7fcace2fcc55e4262b375091f79a26ecb9b54cd92559c70d20dbb8b0cf290",
+        "declarationPath": "packages/components-react/dist/LineChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ChartBand": {
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "to": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "type": "object"
+          },
+          "ChartGoalLine": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "ChartReferenceLine": {
+            "properties": {
+              "axis": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "LineChartDatum": {
+            "properties": {
+              "forecast": {
+                "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
+                "type": "boolean"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "area": {
+            "type": "boolean"
+          },
+          "bands": {
+            "description": "Shaded value-axis bands between `from`..`to`.",
+            "items": {
+              "$ref": "#/$defs/ChartBand"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LineChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override. Default position is `top` (above the point).\nLabels are `aria-hidden` — the values already live in the accessible\nChartDataList."
+          },
+          "domain": {
+            "description": "Fixed value-axis (y) domain `[min, max]`. When provided (and finite,\nmin<max) the y scale uses it instead of the data-derived range — letting\nseveral LineCharts share one scale. Invalid/absent → auto range (unchanged).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "goalLine": {
+            "$ref": "#/$defs/ChartGoalLine",
+            "description": "A single goal line, emphasised above the data."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When\nprovided (string or null), the crosshair + tooltip track this key instead of\nthe chart's internal pointer hover (null ⇒ nothing shown), letting a parent\nshare one hover channel across several aligned charts. Absent (`undefined`)\nkeeps the legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "invertAxis": {
+            "description": "Inverts the value (y) axis. Default false.",
+            "type": "boolean"
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between\npoints (data order), Home/End jump to the first/last, Enter/Space select the\nfocused point (`onSelectKey`), Escape leaves the navigation. Each focused\npoint announces its `x` + value. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "referenceLines": {
+            "description": "Reference lines (default `axis: \"y\"` → horizontal at `value`).",
+            "items": {
+              "$ref": "#/$defs/ChartReferenceLine"
+            },
+            "type": "array"
+          },
+          "scale": {
+            "description": "Value-axis scale. `\"linear\"` (default) is unchanged. `\"log\"` switches the\ny axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks\nand clamped to the lowest tick when positioned.",
+            "enum": [
+              "linear",
+              "log"
+            ]
+          },
+          "showLegend": {
+            "description": "Toggles the legend if the chart has one. LineChart is single-series and has\nno legend surface, so this prop is accepted for parity and otherwise ignored.",
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "description": "Least-squares trend line over the data points.",
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ff7ca2461e92faa1a1a738b173922c1ad36b46aeb1e3ace3fa66bcc192a88f80",
+        "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LineChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ChartBand": {
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "to": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "type": "object"
+          },
+          "ChartGoalLine": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "ChartReferenceLine": {
+            "properties": {
+              "axis": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          },
+          "LineChartDatum": {
+            "properties": {
+              "forecast": {
+                "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
+                "type": "boolean"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "area": {
+            "type": "boolean"
+          },
+          "bands": {
+            "description": "Shaded value-axis bands between `from`..`to`.",
+            "items": {
+              "$ref": "#/$defs/ChartBand"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LineChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override. Default position is `top` (above the point).\nLabels are `aria-hidden` — the values already live in the accessible\nChartDataList."
+          },
+          "domain": {
+            "description": "Fixed value-axis (y) domain `[min, max]`. When provided (and finite,\nmin<max) the y scale uses it instead of the data-derived range. Invalid or\nabsent → auto range (unchanged).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "goalLine": {
+            "$ref": "#/$defs/ChartGoalLine",
+            "description": "A single goal line, emphasised above the data."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When\nprovided (string or null), the crosshair + tooltip track this key instead of\nthe chart's internal pointer hover (null ⇒ nothing shown), letting a parent\nshare one hover channel across several aligned charts. Absent (`undefined`)\nkeeps the legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "invertAxis": {
+            "description": "Inverts the value (y) axis. Default false.",
+            "type": "boolean"
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between\npoints (data order), Home/End jump to the first/last, Enter/Space select the\nfocused point (`onSelectKey`), Escape leaves the navigation. Each focused\npoint announces its `x` + value. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "referenceLines": {
+            "description": "Reference lines (default `axis: \"y\"` → horizontal at `value`).",
+            "items": {
+              "$ref": "#/$defs/ChartReferenceLine"
+            },
+            "type": "array"
+          },
+          "scale": {
+            "description": "Value-axis scale. `\"linear\"` (default) is unchanged. `\"log\"` switches the\ny axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks\nand clamped to the lowest tick when positioned.",
+            "enum": [
+              "linear",
+              "log"
+            ]
+          },
+          "showLegend": {
+            "description": "Toggles the legend if the chart has one. LineChart is single-series and has\nno legend surface; accepted for parity and otherwise ignored.",
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "description": "Least-squares trend line over the data points.",
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d81ed9b512e6e2818e4ed222f598ae800e77dd52c3b1942e1ff7f6711e6d7631",
+        "declarationPath": "packages/components-vue/dist/LineChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

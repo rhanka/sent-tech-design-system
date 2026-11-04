@@ -1,0 +1,200 @@
+{
+  "componentId": "inline-loading",
+  "contractSource": "derived",
+  "digest": "sha256:f4d9334bfe4693ccd86f89e66672b459e2b0d375e2e06ceb6910114c3946a9f6",
+  "entryDigest": "sha256:aa052f77aa5d520227a832f517229b502986ca0789b4d207d46cd938bed88025",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {},
+          "locale": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "error",
+              "active",
+              "inactive"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ec5b0c17b7ad63e6a9c1baa88e4e17551e44bce76f8a12b8af103df9a2211ed6",
+        "declarationPath": "packages/components-angular/dist/InlineLoading.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "InlineLoadingProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "error",
+              "active",
+              "inactive"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "InlineLoadingProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "error",
+              "active",
+              "inactive"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e8c5322388fa16b4e4d769face8233b7f0114ebea64dd5c2d37cc9b479902a32",
+        "declarationPath": "packages/components-svelte/dist/InlineLoading.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "InlineLoadingProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {},
+          "locale": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "success",
+              "error",
+              "active",
+              "inactive"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ee2a574c72258fe512a70948750726e2af22ad62d2529890a8ec79b6c35d8c92",
+        "declarationPath": "packages/components-vue/dist/InlineLoading.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "InlineLoadingProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

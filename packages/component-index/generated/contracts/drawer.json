@@ -1,0 +1,283 @@
+{
+  "componentId": "drawer",
+  "contractSource": "derived",
+  "digest": "sha256:090fe636325c678c221a7f49cf7ff5e6f576d9e51e5dd8c0aed59afc98f4cf08",
+  "entryDigest": "sha256:22e7ac6794de5112ac85f3a6f8c3dbf846cba16bb1ff5794f15c3d731efc9718",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "close",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "footer": {},
+          "open": {
+            "type": "boolean"
+          },
+          "side": {
+            "enum": [
+              "left",
+              "right",
+              "bottom"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "footer",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "footer"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ebcd897150b8cb74aa3b7f5fdc0da1bbfb7a62b80e9ab28624a4a2ebaef0d189",
+        "declarationPath": "packages/components-angular/dist/Drawer.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DrawerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "description",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "footer",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClose"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "closeLabel": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "left",
+              "right",
+              "bottom"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DrawerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onclose"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "side": {
+            "enum": [
+              "left",
+              "right",
+              "bottom"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "footer",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:65888a6aaa566289fd5e6920847d07c1c1298de58689062c6a3f55de39beff31",
+        "declarationPath": "packages/components-svelte/dist/Drawer.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DrawerProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "close"
+        },
+        {
+          "name": "onClose",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "left",
+              "right",
+              "bottom"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9fb31f8dc9dc8088df19fa074e8c1d5eec75a858e78193e42a77d3924ec2b225",
+        "declarationPath": "packages/components-vue/dist/Drawer.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DrawerProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"close\": payload not in declaration",
+        "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

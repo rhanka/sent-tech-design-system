@@ -1,0 +1,336 @@
+{
+  "componentId": "web-frame",
+  "contractSource": "derived",
+  "digest": "sha256:9fef55545a77036d5f6379e2a435b1461b0de814f96e90afedb4f131a95493bc",
+  "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"WebFrame\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationPath": "packages/components-angular/dist/WebFrame.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "WebFrameProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.IframeHTMLAttributes<HTMLIFrameElement>",
+        "omitted": [
+          "allow",
+          "loading",
+          "referrerPolicy",
+          "sandbox",
+          "src",
+          "title"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "WebFrameConfig": {
+            "properties": {
+              "allow": {
+                "type": "string"
+              },
+              "loading": {
+                "enum": [
+                  "eager",
+                  "lazy"
+                ]
+              },
+              "referrerPolicy": {
+                "enum": [
+                  "no-referrer",
+                  "no-referrer-when-downgrade",
+                  "origin",
+                  "origin-when-cross-origin",
+                  "same-origin",
+                  "strict-origin",
+                  "strict-origin-when-cross-origin",
+                  "unsafe-url"
+                ]
+              },
+              "sandbox": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "items": {
+                      "enum": [
+                        "allow-downloads",
+                        "allow-forms",
+                        "allow-modals",
+                        "allow-orientation-lock",
+                        "allow-pointer-lock",
+                        "allow-popups",
+                        "allow-popups-to-escape-sandbox",
+                        "allow-presentation",
+                        "allow-same-origin",
+                        "allow-scripts",
+                        "allow-storage-access-by-user-activation",
+                        "allow-top-navigation",
+                        "allow-top-navigation-by-user-activation"
+                      ]
+                    },
+                    "type": "array"
+                  }
+                ]
+              },
+              "src": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "src"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "frame": {
+            "$ref": "#/$defs/WebFrameConfig"
+          }
+        },
+        "required": [
+          "frame"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:48e55d3cb4115c5ad0d5081b28a04f198b225db4f542973c27034e2718d837ae",
+        "declarationPath": "packages/dataviz-react/dist/lib/ObjectLayers.d.ts",
+        "package": "@sentropic/dataviz-react",
+        "propsType": "WebFrameProps",
+        "version": "0.5.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WebFrameConfig": {
+            "properties": {
+              "allow": {
+                "type": "string"
+              },
+              "loading": {
+                "enum": [
+                  "eager",
+                  "lazy"
+                ]
+              },
+              "referrerPolicy": {
+                "enum": [
+                  "no-referrer",
+                  "no-referrer-when-downgrade",
+                  "origin",
+                  "origin-when-cross-origin",
+                  "same-origin",
+                  "strict-origin",
+                  "strict-origin-when-cross-origin",
+                  "unsafe-url"
+                ]
+              },
+              "sandbox": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "items": {
+                      "enum": [
+                        "allow-downloads",
+                        "allow-forms",
+                        "allow-modals",
+                        "allow-orientation-lock",
+                        "allow-pointer-lock",
+                        "allow-popups",
+                        "allow-popups-to-escape-sandbox",
+                        "allow-presentation",
+                        "allow-same-origin",
+                        "allow-scripts",
+                        "allow-storage-access-by-user-activation",
+                        "allow-top-navigation",
+                        "allow-top-navigation-by-user-activation"
+                      ]
+                    },
+                    "type": "array"
+                  }
+                ]
+              },
+              "src": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "src"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "frame": {
+            "$ref": "#/$defs/WebFrameConfig"
+          }
+        },
+        "required": [
+          "frame"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ac76183e762bd83b3a8bca7b8e9e81caaa911cadaa3916ccf73d177382b53416",
+        "declarationPath": "packages/dataviz-svelte/dist/lib/WebFrame.svelte.d.ts",
+        "package": "@sentropic/dataviz-svelte",
+        "propsType": "WebFrameProps",
+        "version": "0.5.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "WebFrameConfig": {
+            "properties": {
+              "allow": {
+                "type": "string"
+              },
+              "loading": {
+                "enum": [
+                  "eager",
+                  "lazy"
+                ]
+              },
+              "referrerPolicy": {
+                "enum": [
+                  "no-referrer",
+                  "no-referrer-when-downgrade",
+                  "origin",
+                  "origin-when-cross-origin",
+                  "same-origin",
+                  "strict-origin",
+                  "strict-origin-when-cross-origin",
+                  "unsafe-url"
+                ]
+              },
+              "sandbox": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "items": {
+                      "enum": [
+                        "allow-downloads",
+                        "allow-forms",
+                        "allow-modals",
+                        "allow-orientation-lock",
+                        "allow-pointer-lock",
+                        "allow-popups",
+                        "allow-popups-to-escape-sandbox",
+                        "allow-presentation",
+                        "allow-same-origin",
+                        "allow-scripts",
+                        "allow-storage-access-by-user-activation",
+                        "allow-top-navigation",
+                        "allow-top-navigation-by-user-activation"
+                      ]
+                    },
+                    "type": "array"
+                  }
+                ]
+              },
+              "src": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "src"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "frame": {
+            "$ref": "#/$defs/WebFrameConfig"
+          }
+        },
+        "required": [
+          "frame"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b34a3ecd77ebb188368ffdb60fb579963c662d593efe4e6ff28850a382f7a4f6",
+        "declarationPath": "packages/dataviz-vue/dist/lib/ObjectLayers.d.ts",
+        "package": "@sentropic/dataviz-vue",
+        "propsType": "WebFrameProps",
+        "version": "0.5.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}
