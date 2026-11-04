@@ -43,6 +43,22 @@ function recordNamed(
   }
 }
 
+function hasExportModifier(statement: ts.Statement): boolean {
+  const modifiers = ts.canHaveModifiers(statement) ? ts.getModifiers(statement) : undefined;
+  return modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) ?? false;
+}
+
+function addBindingName(name: ts.BindingName, values: Map<string, string | null>): void {
+  if (ts.isIdentifier(name)) {
+    if (!values.has(name.text)) values.set(name.text, null);
+    return;
+  }
+  for (const element of name.elements) {
+    if (ts.isOmittedExpression(element)) continue;
+    addBindingName(element.name, values);
+  }
+}
+
 /** Parse barrel exports from source text (fileName labels errors). */
 export function parseBarrelText(sourceText: string, fileName: string): ParsedBarrel {
   // Barrels are TypeScript index files; component sources are resolved by
@@ -52,6 +68,23 @@ export function parseBarrelText(sourceText: string, fileName: string): ParsedBar
   const types = new Set<string>();
   const stars: string[] = [];
   for (const statement of source.statements) {
+    // D4.2: an exported variable/function/class statement also declares a
+    // barrel export (for example `export const category = …`). Record it so
+    // the editorial-metadata guard flags it.
+    if (ts.isVariableStatement(statement)) {
+      if (hasExportModifier(statement)) {
+        for (const declaration of statement.declarationList.declarations) {
+          addBindingName(declaration.name, values);
+        }
+      }
+      continue;
+    }
+    if (ts.isFunctionDeclaration(statement) || ts.isClassDeclaration(statement)) {
+      if (hasExportModifier(statement) && statement.name !== undefined) {
+        if (!values.has(statement.name.text)) values.set(statement.name.text, null);
+      }
+      continue;
+    }
     if (!ts.isExportDeclaration(statement)) continue;
     const specifier =
       statement.moduleSpecifier !== undefined && ts.isStringLiteral(statement.moduleSpecifier)

@@ -374,11 +374,16 @@ function checkBaseline(
   barrels: Map<string, ParsedBarrel>,
   identifiers: Set<string>,
   baseline: Baseline,
+  elements: Map<string, ElementsContract>,
 ): void {
   for (const row of rows) {
     const seen = presence.get(row.slug);
     if (seen === undefined) throw new Error(`emit: no presence computed for "${row.slug}"`);
-    const computed = computeParity(seen.component, seen.dataviz, new Set());
+    const computed = computeParity(
+      seen.component,
+      seen.dataviz,
+      intentionalFor(stripDatavizMarker(row.name), elements),
+    );
     if (parityAllMissing(computed) && !seen.dataviz) {
       throw new Error(`emit: "${row.slug}" is exported nowhere (all missing, no dataviz delivery)`);
     }
@@ -674,7 +679,8 @@ export function buildArtifacts(
     presence.set(row.slug, { component, dataviz });
   }
 
-  checkBaseline(rows, presence, barrels, identifiers, loadBaseline(packageDir));
+  const { contracts: baselineElementsContracts } = readElementsContracts(repoRoot);
+  checkBaseline(rows, presence, barrels, identifiers, loadBaseline(packageDir), baselineElementsContracts);
 
   const overlay: Overlay = loadOverlay(join(packageDir, "catalog-overlay.json"));
   for (const row of overlay.entries) {
@@ -762,7 +768,7 @@ export function buildArtifacts(
     if (entry.scopePolicyRef !== undefined) row["scopePolicyRef"] = entry.scopePolicyRef;
     if (entry.category !== undefined) row["category"] = entry.category;
     if (entry.status !== undefined) row["status"] = entry.status;
-    // GEN assertion: index rows copy entry fields verbatim.
+    // GEN assertion: index rows copy entry fields verbatim (frozen §4.2).
     for (const [key, source] of [
       ["producerId", entry.producerId],
       ["componentId", entry.componentId],
@@ -772,6 +778,10 @@ export function buildArtifacts(
       ["visibility", entry.visibility],
       ["parity", entry.parity],
       ["dataClass", entry.dataClass],
+      ["frameworks", entry.frameworks ?? []],
+      ["category", entry.category],
+      ["status", entry.status],
+      ["deliveryChannels", channels],
     ] as const) {
       if (JSON.stringify(row[key]) !== JSON.stringify(source)) {
         throw new Error(`emit: index row "${entry.componentId}" field "${key}" differs from its entry`);

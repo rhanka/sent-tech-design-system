@@ -146,6 +146,69 @@ test("K1a: --check refuses a mutated copy in a temp dir and exits non-zero (--ro
       original,
       "check mode must not repair or remove the gap file",
     );
+    rmSync(gapPath);
+
+    // Witness 4: one stray file directly under generated/. Proves the stray
+    // scan walks the whole generated/ tree (no suffix filter): any path not
+    // in the expected set turns --check red.
+    const strayPath = join(scratch, "generated", "component-index.old.json");
+    writeFileSync(strayPath, '{"format":"component-index/v1"}\n', "utf8");
+    const strayed = runGenerator(["--check", "--root", scratch]);
+    assert.equal(strayed.status, 1, "a stray file under generated/ must not check fresh");
+    assert.match(strayed.stderr, /generated\/component-index\.old\.json/, "the refusal must name the stray file");
+    rmSync(strayPath);
+
+    // Witness 5: a stray non-JSON file under generated/. Proves there is no
+    // .json suffix filter on stray detection.
+    const strayTxt = join(scratch, "generated", "notes.txt");
+    writeFileSync(strayTxt, "leftover\n", "utf8");
+    const strayedTxt = runGenerator(["--check", "--root", scratch]);
+    assert.equal(strayedTxt.status, 1, "a stray non-JSON file must not check fresh");
+    assert.match(strayedTxt.stderr, /generated\/notes\.txt/, "the refusal must name the stray file");
+    rmSync(strayTxt);
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+});
+
+test("K1a: --check tolerates a stamp-only index difference but refuses content or stamp corruption", () => {
+  // Frozen §5.4: sourceCommit lives outside the revision preimage. A copy
+  // whose only index difference is the stamp checks fresh; any other byte
+  // of the index (or a non-hex stamp) turns --check red naming the file.
+  const scratch = mkdtempSync(join(tmpdir(), "component-index-stamp-"));
+  try {
+    cpSync(generatedDir, join(scratch, "generated"), { recursive: true });
+    const indexPath = join(scratch, "generated", "component-index.json");
+    const originalText = readFileSync(indexPath, "utf8");
+    const original = JSON.parse(originalText);
+
+    // Witness A: a stamp-only mutation (another valid hex SHA) exits 0.
+    const freshStamp = original.sourceCommit === "f".repeat(40) ? "0".repeat(40) : "f".repeat(40);
+    const stampOnly = { ...original, sourceCommit: freshStamp };
+    assert.notEqual(stampOnly.sourceCommit, original.sourceCommit, "the stamp mutation must change the stamp");
+    writeFileSync(indexPath, `${JSON.stringify(stampOnly, null, 2)}\n`, "utf8");
+    const stamped = runGenerator(["--check", "--root", scratch]);
+    assert.equal(stamped.status, 0, `a stamp-only mutation must check fresh:\n${stamped.stdout}\n${stamped.stderr}`);
+    writeFileSync(indexPath, originalText, "utf8");
+
+    // Witness B: a registryRevision mutation exits 1 naming the file.
+    const revision = original.registryRevision;
+    assert.match(revision, /^sha256:[0-9a-f]{64}$/, "the committed revision must be a tagged digest");
+    const flippedHex = revision.endsWith("0") ? "1" : "0";
+    const tampered = { ...original, registryRevision: `${revision.slice(0, -1)}${flippedHex}` };
+    writeFileSync(indexPath, `${JSON.stringify(tampered, null, 2)}\n`, "utf8");
+    const revised = runGenerator(["--check", "--root", scratch]);
+    assert.equal(revised.status, 1, "a registryRevision mutation must not check fresh");
+    assert.match(revised.stderr, /component-index\.json/, "the refusal must name the index file");
+    writeFileSync(indexPath, originalText, "utf8");
+
+    // Witness C: a non-hex stamp exits 1 naming the file.
+    const badStamp = { ...original, sourceCommit: "not-a-hex-commit" };
+    writeFileSync(indexPath, `${JSON.stringify(badStamp, null, 2)}\n`, "utf8");
+    const bad = runGenerator(["--check", "--root", scratch]);
+    assert.equal(bad.status, 1, "a non-hex stamp must not check fresh");
+    assert.match(bad.stderr, /component-index\.json/, "the refusal must name the index file");
+    writeFileSync(indexPath, originalText, "utf8");
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }
@@ -276,5 +339,7 @@ test("K1a: generated JSON carries the frozen values and no retired predecessor v
     assert.equal(row.digest, entry.digest, `row ${row.componentId} digest must copy the entry digest`);
     assert.deepEqual(row.parity, entry.parity, `row ${row.componentId} parity must copy the entry`);
     assert.deepEqual(row.frameworks, entry.frameworks, `row ${row.componentId} frameworks must copy`);
+    assert.deepEqual(row.category, entry.category, `row ${row.componentId} category must copy the entry`);
+    assert.deepEqual(row.status, entry.status, `row ${row.componentId} status must copy the entry`);
   }
 });

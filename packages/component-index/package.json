@@ -19,5 +19,10 @@
     "test": "vitest run",
     "index:generate": "node dist/generator/main.js",
     "index:check": "node dist/generator/main.js --check"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   }
 }
