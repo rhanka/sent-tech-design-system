@@ -96,6 +96,23 @@ function findClass(input: FrameworkInput): ts.ClassDeclaration | undefined {
   return undefined;
 }
 
+/**
+ * Payload-less when the emit parameter carries no representable value:
+ * void, undefined, an empty union remainder, or a union whose every
+ * non-undefined part is void/undefined (the real `emit(value?: T)` shape
+ * for `EventEmitter<void>` reads as `void | undefined`). Spec 7.5.
+ */
+function isPayloadless(type: ts.Type): boolean {
+  if ((type.flags & ts.TypeFlags.Union) !== 0) {
+    const parts = (type as ts.UnionType).types.filter(
+      (part) => (part.flags & ts.TypeFlags.Undefined) === 0,
+    );
+    if (parts.length === 0) return true;
+    return parts.every((part) => (part.flags & (ts.TypeFlags.Void | ts.TypeFlags.Undefined)) !== 0);
+  }
+  return (type.flags & (ts.TypeFlags.Void | ts.TypeFlags.Undefined)) !== 0;
+}
+
 export function extractAngular(input: FrameworkInput): FrameworkBody {
   const checker = input.checker;
   const declaration = findClass(input);
@@ -221,7 +238,10 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
       continue;
     }
     // Payload from the emit method's first parameter (alias instantiations
-    // report no usable type arguments); void means no payload.
+    // report no usable type arguments). The real EventEmitter declares
+    // emit(value?: T), so under strictNullChecks a void payload reads as
+    // the union void | undefined: strip undefined parts first, and emit no
+    // payload when nothing representable remains (spec 7.5).
     const emitMember = checker.getPropertiesOfType(fieldType).find((member) => member.name === "emit");
     const emitSignatures =
       emitMember === undefined ? [] : checker.getSignaturesOfType(checker.getTypeOfSymbol(emitMember), ts.SignatureKind.Call);
@@ -231,10 +251,7 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
         ? checker.getTypeOfSymbol(emitParameters[0])
         : undefined;
     const event: FrameworkBody["events"][number] = { name: item.alias };
-    if (
-      payloadType === undefined ||
-      (payloadType.flags & (ts.TypeFlags.Void | ts.TypeFlags.Undefined)) !== 0
-    ) {
+    if (payloadType === undefined || isPayloadless(payloadType)) {
       body.events.push(event);
       continue;
     }
@@ -285,7 +302,7 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
   for (const discrepancy of discrepancies) body.warnings.push(discrepancy);
 
   if (Object.keys(properties).length > 0) {
-    const schema: JsonSchema = { type: "object", properties };
+    const schema: JsonSchema = { type: "object", properties, additionalProperties: false };
     if (required.length > 0) schema["required"] = [...required].sort();
     body.props = schema;
   }

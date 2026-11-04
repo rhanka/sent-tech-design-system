@@ -1,7 +1,7 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:52f4eaa477236dec62ee7dbbd9f1fa064dd5a3c66bfab21a2716b2d4847141d0",
+  "digest": "sha256:00c3195e92476fc9fab764bf71d8966f4da19808ff1a5f87c73e5445defb5af9",
   "entryDigest": "sha256:4541cbfbcf8950b0b6301c607fcec7ed4b4340d41b0615385eee7bd4432cd5ab",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ErrorSummaryItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -30,6 +31,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -77,6 +79,7 @@
       "props": {
         "$defs": {
           "ErrorSummaryItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -92,6 +95,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "errors": {
             "items": {
@@ -134,6 +138,7 @@
       "props": {
         "$defs": {
           "ErrorSummaryItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -149,6 +154,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -191,6 +197,7 @@
       "props": {
         "$defs": {
           "ErrorSummaryItem": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -206,6 +213,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

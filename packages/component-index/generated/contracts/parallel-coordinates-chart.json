@@ -1,7 +1,7 @@
 {
   "componentId": "parallel-coordinates-chart",
   "contractSource": "derived",
-  "digest": "sha256:3f7f3d6e270c6330052d06c0880bbba8a18827e79fbfdfd72e1db1297603f526",
+  "digest": "sha256:1b3733231513659adfc1c503a5eec2cf3a49225ed3a291ad926f519c1a587ffc",
   "entryDigest": "sha256:0eb9d87f7ba8abfe06d05a4f44dd088166b332f313d44ec43a085547e11198e2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ParallelAxis": {
+            "additionalProperties": false,
             "properties": {
               "key": {
                 "type": "string"
@@ -36,6 +37,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -117,6 +119,7 @@
       "props": {
         "$defs": {
           "ParallelAxis": {
+            "additionalProperties": false,
             "properties": {
               "key": {
                 "type": "string"
@@ -138,6 +141,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -218,6 +222,7 @@
       "props": {
         "$defs": {
           "ParallelAxis": {
+            "additionalProperties": false,
             "properties": {
               "key": {
                 "type": "string"
@@ -239,6 +244,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {
@@ -320,6 +326,7 @@
       "props": {
         "$defs": {
           "ParallelAxis": {
+            "additionalProperties": false,
             "properties": {
               "key": {
                 "type": "string"
@@ -341,6 +348,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "axes": {
             "items": {

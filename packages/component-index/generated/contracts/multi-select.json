@@ -1,7 +1,7 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:265c77dde18fdaf4769e86921163bdcdaea116307129b891c2246ec5739b606c",
+  "digest": "sha256:b1213e09129bb296661f33cdcc19abca82d2cae8fbbcf2f22b727394cb0fc28d",
   "entryDigest": "sha256:7ab858b991c8b0af20fad5707a84d89f799d8db623ee52be83a808f3942c2620",
   "format": "component-contract/v1",
   "frameworks": {
@@ -34,6 +34,7 @@
       "props": {
         "$defs": {
           "MultiSelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -53,6 +54,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -210,6 +212,7 @@
       "props": {
         "$defs": {
           "MultiSelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -224,6 +227,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "disabled": {
             "type": "boolean"
@@ -335,6 +339,7 @@
       "props": {
         "$defs": {
           "MultiSelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -353,6 +358,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -475,6 +481,7 @@
       "props": {
         "$defs": {
           "MultiSelectOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -491,6 +498,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -590,6 +598,24 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

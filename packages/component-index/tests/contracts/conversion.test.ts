@@ -119,4 +119,35 @@ describe("K1b conversion table (spec 6.2)", () => {
     expect(out.properties["stamp"]).toEqual({ type: "string", format: "date-time" });
     expect(state.replaced.map((row) => row.name)).toContain("Props.stamp");
   });
+
+  it("nested intersections merge properties (GeoChartPoint)", () => {
+    const { state, typeOf } = setup();
+    const outcome = convertType(state, typeOf("GeoChartPoint"), "GeoChartPoint");
+    expect(outcome.outcome).toBe("schema");
+    if (outcome.outcome !== "schema") return;
+    expect(outcome.schema).toMatchObject({
+      type: "object",
+      properties: {
+        latitude: { type: "number" },
+        longitude: { type: "number" },
+      },
+    });
+    expect(outcome.schema["properties"]).toMatchObject({
+      label: { type: "string" },
+      value: { type: "number" },
+    });
+    expect(outcome.schema["additionalProperties"]).toBe(false);
+    expect(state.unresolved).toEqual([]);
+  });
+
+  it("Omit-intersections merge without the omitted member (MessageAction)", () => {
+    const { state, typeOf } = setup();
+    const outcome = convertType(state, typeOf("MessageAction"), "MessageAction");
+    expect(outcome.outcome).toBe("schema");
+    if (outcome.outcome !== "schema") return;
+    const properties = outcome.schema["properties"] as Record<string, unknown>;
+    expect(Object.keys(properties).sort()).toEqual(["disabled", "id", "label", "value", "variant"]);
+    expect(outcome.schema["additionalProperties"]).toBe(false);
+    expect(state.unresolved).toEqual([]);
+  });
 });

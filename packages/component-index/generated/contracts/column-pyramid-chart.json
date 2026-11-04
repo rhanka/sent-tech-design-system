@@ -1,7 +1,7 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:9a8e544ed67f5d5b441891f26b82042d8c834974c5692f4384ab3f54c829cafa",
+  "digest": "sha256:d10fd56f5ba02d24035cc24af104d8e6a52efddc001f03e1061bce938841cb39",
   "entryDigest": "sha256:4264b6ed887b58f8d60466bf0c695c5e3b9d4686bcfc05d2fa929070168e1551",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ColumnPyramidChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -105,6 +107,7 @@
       "props": {
         "$defs": {
           "ColumnPyramidChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -132,6 +135,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -194,6 +198,7 @@
       "props": {
         "$defs": {
           "ColumnPyramidChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -221,6 +226,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -284,6 +290,7 @@
       "props": {
         "$defs": {
           "ColumnPyramidChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -311,6 +318,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

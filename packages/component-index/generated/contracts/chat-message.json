@@ -1,7 +1,7 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:d4f4a95b5fe6c0d764836e75665b84d6617c478a37b94060577f0e38821a4823",
+  "digest": "sha256:df7074fe0b163b28ace55799b944d0b448e3b3e814cc6d14759b0546eab68abf",
   "entryDigest": "sha256:d4e20df080ca6c31ca238e74aca5b9de924c8dca0b10050edf610221253e3dac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -13,6 +13,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "actions": {},
           "avatar": {},
@@ -135,6 +136,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "role": {
             "enum": [
@@ -187,6 +189,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -225,36 +228,16 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actions",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "actions"
         },
         {
-          "name": "avatar",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "avatar"
         },
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "footer",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "footer"
         }
       ],
       "source": {
@@ -277,6 +260,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "actions": {},
           "avatar": {},

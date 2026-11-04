@@ -1,7 +1,7 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:064b745bd809df416f6396b658bd3162d6a34f4338811a70d9ae0cea19c4ca6c",
+  "digest": "sha256:bf521a579d285448ad3adaf819ae3b4f7250667e165582d544da140bee6d751f",
   "entryDigest": "sha256:4542633be43d1cf00fd4938a63e2761d5b145c608a6cba196d951bff366e4665",
   "format": "component-contract/v1",
   "frameworks": {
@@ -40,6 +40,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "aria-label": {
             "type": "string"
@@ -204,6 +205,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "decrementLabel": {
             "type": "string"
@@ -253,6 +255,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -355,6 +358,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -456,6 +460,24 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onInput.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

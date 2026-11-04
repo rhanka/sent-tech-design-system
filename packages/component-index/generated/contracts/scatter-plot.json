@@ -1,7 +1,7 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:7256193eecb49e5507c836d0f19f7379abdd1962f8e79e4dc75278b15780fb64",
+  "digest": "sha256:ce35ad566ab5a7ea6de456e41a494cae1df2f76e0a33becd4ba315119eefa74c",
   "entryDigest": "sha256:0121dba0f4b645ee3f44dba76ccf797c3ccf3b2e9a07791e05801c7747076bbb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -34,6 +34,7 @@
       "props": {
         "$defs": {
           "ScatterPlotCentroid": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -64,6 +65,7 @@
             "type": "object"
           },
           "ScatterPlotDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -98,11 +100,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -139,6 +143,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -176,6 +181,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -201,6 +207,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -230,6 +237,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -239,6 +247,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -297,6 +306,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -398,6 +408,7 @@
       "props": {
         "$defs": {
           "ScatterPlotCentroid": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -428,6 +439,7 @@
             "type": "object"
           },
           "ScatterPlotDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -462,12 +474,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear), so `xScale`/`yScale` are\nlinear. Resolved to pixels via the chart's scales and drawn in a dedicated\n`<g class=\"st-scatterPlot__annotations\">` — regions behind the points,\nevery other kind above them. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -504,6 +518,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -541,6 +556,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -566,6 +582,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -595,6 +612,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -604,6 +622,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -663,6 +682,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -765,6 +785,7 @@
       "props": {
         "$defs": {
           "ScatterPlotCentroid": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -795,6 +816,7 @@
             "type": "object"
           },
           "ScatterPlotDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -829,12 +851,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -871,6 +895,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -908,6 +933,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -933,6 +959,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -962,6 +989,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -971,6 +999,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1030,6 +1059,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -1145,6 +1175,7 @@
       "props": {
         "$defs": {
           "ScatterPlotCentroid": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -1175,6 +1206,7 @@
             "type": "object"
           },
           "ScatterPlotDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -1209,12 +1241,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -1251,6 +1285,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -1288,6 +1323,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1313,6 +1349,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1342,6 +1379,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1351,6 +1389,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1410,6 +1449,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",

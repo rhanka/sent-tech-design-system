@@ -1,7 +1,7 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:9617c92edce3274756be259c9d8b1deeeb23cdf929cb65edd520fae285df7a09",
+  "digest": "sha256:bac5aa8e87bb4509b0a9edd0a88416510f19c9edff6b338d449426eaf105f9b9",
   "entryDigest": "sha256:1f93abb63d4f41386ad9d9f2893714f17c7d87ad68a111f78e60477b67c71022",
   "format": "component-contract/v1",
   "frameworks": {
@@ -29,6 +29,7 @@
       "props": {
         "$defs": {
           "RadioGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -50,6 +51,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -124,6 +126,7 @@
       "props": {
         "$defs": {
           "RadioGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -145,6 +148,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -223,6 +227,7 @@
       "props": {
         "$defs": {
           "RadioGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -244,6 +249,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -287,12 +293,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         }
       ],
       "source": {
@@ -334,6 +335,7 @@
       "props": {
         "$defs": {
           "RadioGroupOption": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -355,6 +357,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

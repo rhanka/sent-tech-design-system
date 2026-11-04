@@ -1,7 +1,7 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:f9e203aac529686fb32924585ff909d2ce6cdf397a91808c38e1e6dc9bed50bf",
+  "digest": "sha256:6eb29f67d44b2cf80b5446563a459868d9ca1c1ffad85856ee59d2fb0ef1f22c",
   "entryDigest": "sha256:b715fd5c49834d29962874fd5eb276e1a6651039e20930f94c1cf1ae8ca19876",
   "format": "component-contract/v1",
   "frameworks": {
@@ -34,6 +34,7 @@
       "props": {
         "$defs": {
           "ChartBand": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "number"
@@ -61,6 +62,7 @@
             "type": "object"
           },
           "ChartGoalLine": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -75,6 +77,7 @@
             "type": "object"
           },
           "ChartReferenceLine": {
+            "additionalProperties": false,
             "properties": {
               "axis": {
                 "enum": [
@@ -104,6 +107,7 @@
             "type": "object"
           },
           "LineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "forecast": {
                 "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
@@ -130,11 +134,13 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -171,6 +177,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -208,6 +215,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -233,6 +241,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -262,6 +271,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -271,6 +281,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -332,6 +343,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -475,6 +487,7 @@
       "props": {
         "$defs": {
           "ChartBand": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "number"
@@ -502,6 +515,7 @@
             "type": "object"
           },
           "ChartGoalLine": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -516,6 +530,7 @@
             "type": "object"
           },
           "ChartReferenceLine": {
+            "additionalProperties": false,
             "properties": {
               "axis": {
                 "enum": [
@@ -545,6 +560,7 @@
             "type": "object"
           },
           "LineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "forecast": {
                 "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
@@ -571,12 +587,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -613,6 +631,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -650,6 +669,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -675,6 +695,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -704,6 +725,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -713,6 +735,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -775,6 +798,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -926,6 +950,7 @@
       "props": {
         "$defs": {
           "ChartBand": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "number"
@@ -953,6 +978,7 @@
             "type": "object"
           },
           "ChartGoalLine": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -967,6 +993,7 @@
             "type": "object"
           },
           "ChartReferenceLine": {
+            "additionalProperties": false,
             "properties": {
               "axis": {
                 "enum": [
@@ -996,6 +1023,7 @@
             "type": "object"
           },
           "LineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "forecast": {
                 "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
@@ -1022,12 +1050,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -1064,6 +1094,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -1101,6 +1132,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1126,6 +1158,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1155,6 +1188,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1164,6 +1198,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1226,6 +1261,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",
@@ -1390,6 +1426,7 @@
       "props": {
         "$defs": {
           "ChartBand": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "number"
@@ -1417,6 +1454,7 @@
             "type": "object"
           },
           "ChartGoalLine": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -1431,6 +1469,7 @@
             "type": "object"
           },
           "ChartReferenceLine": {
+            "additionalProperties": false,
             "properties": {
               "axis": {
                 "enum": [
@@ -1460,6 +1499,7 @@
             "type": "object"
           },
           "LineChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "forecast": {
                 "description": "Marks the datum as a FORECAST point. Forecast points render with the\ndedicated forecast tone and every segment touching a forecast point is\ndashed — including the segment between the last actual point and the\nfirst forecast point, so the line stays connected. Absent/false ⇒\nrendering unchanged (additive).",
@@ -1486,12 +1526,14 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "annotations": {
             "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Resolved to pixels via the chart's scales and drawn in a\ndedicated `<g class=\"st-lineChart__annotations\">` — regions behind the\nseries, every other kind above it. Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "point"
@@ -1528,6 +1570,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "anchor": {
                       "enum": [
@@ -1565,6 +1608,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1590,6 +1634,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "axis": {
                       "enum": [
@@ -1619,6 +1664,7 @@
                   "type": "object"
                 },
                 {
+                  "additionalProperties": false,
                   "properties": {
                     "kind": {
                       "const": "shape"
@@ -1628,6 +1674,7 @@
                     },
                     "points": {
                       "items": {
+                        "additionalProperties": false,
                         "properties": {
                           "x": {
                             "anyOf": [
@@ -1690,6 +1737,7 @@
                 "const": true
               },
               {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "description": "Placement hint; each chart picks a sensible default when omitted.",

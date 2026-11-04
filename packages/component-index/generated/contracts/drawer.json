@@ -1,7 +1,7 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:090fe636325c678c221a7f49cf7ff5e6f576d9e51e5dd8c0aed59afc98f4cf08",
+  "digest": "sha256:31de3d7915f96bf2239e4f95b4bb84d0f4e47d08fd6cadc02669dac8bd8f01d5",
   "entryDigest": "sha256:22e7ac6794de5112ac85f3a6f8c3dbf846cba16bb1ff5794f15c3d731efc9718",
   "format": "component-contract/v1",
   "frameworks": {
@@ -10,14 +10,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "close",
-          "payload": {}
+          "name": "close"
         }
       ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -107,6 +107,7 @@
         "omitted": []
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "closeLabel": {
             "type": "string"
@@ -157,6 +158,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -189,20 +191,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "children",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "children"
         },
         {
-          "name": "footer",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "footer"
         }
       ],
       "source": {
@@ -236,6 +228,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -262,7 +255,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onClose.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:9fb31f8dc9dc8088df19fa074e8c1d5eec75a858e78193e42a77d3924ec2b225",
@@ -271,7 +271,7 @@
         "propsType": "DrawerProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"close\": payload not in declaration",

@@ -1,7 +1,7 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:0d20485eb066546782fe3032559d52616e9780297a34df72ac10d04b71b09a54",
+  "digest": "sha256:5245aab8f98d9dd8572f2c8d76f741ee4d7d5a594b85275259fca95244c7de62",
   "entryDigest": "sha256:547d0046156728e1167acbdc7a2f39b48cb222dafc02851da258d586d59ffecb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ItemChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "ItemChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -120,6 +123,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -169,6 +173,7 @@
       "props": {
         "$defs": {
           "ItemChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -196,6 +201,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -246,6 +252,7 @@
       "props": {
         "$defs": {
           "ItemChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -273,6 +280,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

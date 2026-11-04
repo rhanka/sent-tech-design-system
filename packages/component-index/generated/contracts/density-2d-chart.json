@@ -1,7 +1,7 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:5cfad85acc66b8cec21f585aa092b36cbc7270160b64d6011e528b888f5a8dfb",
+  "digest": "sha256:542bb89474758577195bd3d4d9d8bfab6e43e90624361517ad3f12c19cea719f",
   "entryDigest": "sha256:2c75ad2cbd8bd57891d724c9448348b2d9d97167fe20beb6bfba666ecbc3390c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "Density2DPoint": {
+            "additionalProperties": false,
             "properties": {
               "weight": {
                 "type": "number"
@@ -33,6 +34,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -96,6 +98,7 @@
       "props": {
         "$defs": {
           "Density2DPoint": {
+            "additionalProperties": false,
             "properties": {
               "weight": {
                 "type": "number"
@@ -114,6 +117,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -174,6 +178,7 @@
       "props": {
         "$defs": {
           "Density2DPoint": {
+            "additionalProperties": false,
             "properties": {
               "weight": {
                 "type": "number"
@@ -192,6 +197,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -253,6 +259,7 @@
       "props": {
         "$defs": {
           "Density2DPoint": {
+            "additionalProperties": false,
             "properties": {
               "weight": {
                 "type": "number"
@@ -271,6 +278,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"

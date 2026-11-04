@@ -1,7 +1,7 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:a747a286cf5c348bb82bead1416a8147b57e39418ac907170b375a8a8fe63cca",
+  "digest": "sha256:50aea756ffb15fb2be6c341c49db02b2ba6019e4a491c7df2241d7310db3ff3a",
   "entryDigest": "sha256:350003cb63962f4fe648bf6dcf5b68b8c23dd721e3fdd2632a31b09e8c5e603c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ErrorBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -38,6 +39,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -101,6 +103,7 @@
       "props": {
         "$defs": {
           "ErrorBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -124,6 +127,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -185,6 +189,7 @@
       "props": {
         "$defs": {
           "ErrorBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -208,6 +213,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -270,6 +276,7 @@
       "props": {
         "$defs": {
           "ErrorBarChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "category": {
                 "type": "string"
@@ -293,6 +300,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

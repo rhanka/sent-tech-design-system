@@ -1,7 +1,7 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:505f8de4de181fcd88e4cac3666689df53efd5f4599b05ceb56f9e02496b15c5",
+  "digest": "sha256:3179374e9fb08d11e07259c9ddd55fd42851db6ddcf8535ee26ee253a59fcb81",
   "entryDigest": "sha256:06a971195471042ab79c1cea2904fc2ec948f15436a46455ef0bf6e413281f2f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -34,6 +34,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "aria-label": {
             "type": "string"
@@ -149,6 +150,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "invalid": {
             "type": "boolean"
@@ -194,6 +196,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -308,6 +311,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -349,7 +353,38 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onBlur.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onFocus.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onInput.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:94a4aa5bfd85feddd4c73094a28df4f441b3eac216ea35f33d3f6f8f1f78cf0a",
@@ -358,7 +393,7 @@
         "propsType": "InputProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"blur\": payload not in declaration",

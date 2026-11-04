@@ -1,7 +1,7 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:7c94736226f32adffa4a0b4a11a53b64c490be6cccb409d1df48656703531f78",
+  "digest": "sha256:05d5edef6f11bb48425e12201479e0ef6632348d1ca75c760467d7420ac40b0b",
   "entryDigest": "sha256:ff517ae2fd6d22e9d90f48782ab7695041c21092267729b09b18747c3f6741f2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "ViolinChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -45,6 +46,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -102,6 +104,7 @@
       "props": {
         "$defs": {
           "ViolinChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -132,6 +135,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -187,6 +191,7 @@
       "props": {
         "$defs": {
           "ViolinChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -217,6 +222,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"
@@ -273,6 +279,7 @@
       "props": {
         "$defs": {
           "ViolinChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "label": {
                 "type": "string"
@@ -303,6 +310,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "bins": {
             "type": "number"

@@ -1,7 +1,7 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:420cbf32eb3338edcd31a0e30a20452cb386aa5c21bf87a43442edea984ca02c",
+  "digest": "sha256:fb5ecc08171490bceca4e4ba709f7f290357abe0912aa9d9ae8cef22f89128a4",
   "entryDigest": "sha256:a4e504f8c4179d927fb72af84a999dc8eab81f928680cc982b033c12c79ea45d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "NavItemSwatch": {
+            "additionalProperties": false,
             "properties": {
               "color": {
                 "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "active": {
             "type": "boolean"
@@ -139,6 +141,7 @@
       "props": {
         "$defs": {
           "NavItemSwatch": {
+            "additionalProperties": false,
             "properties": {
               "color": {
                 "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
@@ -166,6 +169,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {
             "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",
@@ -256,6 +260,7 @@
       "props": {
         "$defs": {
           "NavItemSwatch": {
+            "additionalProperties": false,
             "properties": {
               "color": {
                 "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
@@ -283,6 +288,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {
             "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",
@@ -351,20 +357,10 @@
       "replaced": [],
       "slots": [
         {
-          "name": "leading",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "leading"
         },
         {
-          "name": "trailing",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "trailing"
         }
       ],
       "source": {
@@ -403,6 +399,7 @@
       "props": {
         "$defs": {
           "NavItemSwatch": {
+            "additionalProperties": false,
             "properties": {
               "color": {
                 "description": "Couleur arbitraire (hex/rgb/var) → rendue par ColorSwatch.",
@@ -430,6 +427,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "caption": {
             "description": "2ᵉ ligne MUETTE, ellipsée indépendamment du titre.",

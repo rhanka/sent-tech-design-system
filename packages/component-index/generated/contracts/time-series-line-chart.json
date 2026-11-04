@@ -1,7 +1,7 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:e5b2dbd7d2827e4d20ac96e729b03f9672fe6827d71e3e701e4da93cc78528f8",
+  "digest": "sha256:450f740628a015cfb3f646958f2526fa25cac801cacd03ae69d0b6b1d84c6d3b",
   "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -136,6 +136,7 @@
       "props": {
         "$defs": {
           "CrossfilterGraph": {
+            "additionalProperties": false,
             "properties": {
               "views": {
                 "additionalProperties": {
@@ -151,6 +152,7 @@
             "type": "object"
           },
           "CrossfilterView": {
+            "additionalProperties": false,
             "properties": {
               "affects": {
                 "description": "The view ids this view's selection filters. If omitted, defaults to\n\"every other view\" (a fully-linked dashboard). An empty array means the\nview's selection affects no other view.",
@@ -177,6 +179,7 @@
             "type": "object"
           },
           "DashboardStore": {
+            "additionalProperties": false,
             "properties": {
               "crossfilter": {
                 "$ref": "#/$defs/CrossfilterGraph",
@@ -201,6 +204,7 @@
             "type": "object"
           },
           "DataModel": {
+            "additionalProperties": false,
             "properties": {
               "dimensions": {
                 "items": {
@@ -222,6 +226,7 @@
             "type": "object"
           },
           "Dimension": {
+            "additionalProperties": false,
             "properties": {
               "folder": {
                 "description": "Optional field-pane folder/group label.",
@@ -255,6 +260,7 @@
             "type": "object"
           },
           "Measure": {
+            "additionalProperties": false,
             "properties": {
               "aggregation": {
                 "enum": [
@@ -307,6 +313,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"

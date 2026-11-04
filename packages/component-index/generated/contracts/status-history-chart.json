@@ -1,7 +1,7 @@
 {
   "componentId": "status-history-chart",
   "contractSource": "derived",
-  "digest": "sha256:a3504d1f4dcd4dcf835de1144b2f1dc12c45fdf3dab529f6c9a34d958b68cddb",
+  "digest": "sha256:a1867c8c4a1cc78067fbfc1edafb5b97ad179846ce596b96ed86c83d2fff6314",
   "entryDigest": "sha256:846277d1a708752356e4560ec2f1cbf580436b0124466039055c2fbce1b56bb1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "StatusHistoryBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -54,6 +55,7 @@
             "type": "object"
           },
           "StatusHistorySeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -72,6 +74,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -126,6 +129,7 @@
       "props": {
         "$defs": {
           "StatusHistoryBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -165,6 +169,7 @@
             "type": "object"
           },
           "StatusHistorySeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -183,6 +188,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -234,6 +240,7 @@
       "props": {
         "$defs": {
           "StatusHistoryBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -273,6 +280,7 @@
             "type": "object"
           },
           "StatusHistorySeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -291,6 +299,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -343,6 +352,7 @@
       "props": {
         "$defs": {
           "StatusHistoryBucket": {
+            "additionalProperties": false,
             "properties": {
               "at": {
                 "type": "number"
@@ -382,6 +392,7 @@
             "type": "object"
           },
           "StatusHistorySeries": {
+            "additionalProperties": false,
             "properties": {
               "buckets": {
                 "items": {
@@ -400,6 +411,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

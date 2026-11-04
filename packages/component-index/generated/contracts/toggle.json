@@ -1,7 +1,7 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:a3a6708287b216833fb5d207a0dd910fad0367ebb192ae8a077f4e66277343ea",
+  "digest": "sha256:bcc60bf396eb6699e3a5f10663603b711cfd6498d57bb3cf462a7a25dd029313",
   "entryDigest": "sha256:6fc653bf4f975219070be00fc81fd0b08af0821df625ca19251473f68a60e537",
   "format": "component-contract/v1",
   "frameworks": {
@@ -26,6 +26,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -116,6 +117,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "labelOff": {
             "type": "string"
@@ -164,6 +166,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -240,6 +243,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -291,6 +295,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],

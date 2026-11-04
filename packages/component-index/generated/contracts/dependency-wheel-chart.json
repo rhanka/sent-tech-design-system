@@ -1,7 +1,7 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:70154a44ae5768eb51a917f0830a02a5905848e71864097fb2e9dcae88323c46",
+  "digest": "sha256:eddad9a81ad71d80d6d761fe2e6481d1a09533d1f0bcc713e817b504edd7c5e0",
   "entryDigest": "sha256:d7888a45f4e98e6089c5278933a666657bd17fda92cb0a2deb04b8a0bc19dece",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "DependencyWheelChartLink": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -34,6 +35,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -99,6 +101,7 @@
       "props": {
         "$defs": {
           "DependencyWheelChartLink": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -118,6 +121,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -184,6 +188,7 @@
       "props": {
         "$defs": {
           "DependencyWheelChartLink": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -203,6 +208,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -267,6 +273,7 @@
       "props": {
         "$defs": {
           "DependencyWheelChartLink": {
+            "additionalProperties": false,
             "properties": {
               "from": {
                 "type": "string"
@@ -286,6 +293,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

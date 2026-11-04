@@ -1,7 +1,7 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:d45e4071fc806214966ff475acfc5795387a02005a20caa06e4970ef8114c363",
+  "digest": "sha256:456bd2502dc5665e498a9c8da1276911963bfaf9cc074a0c32d88abceafcb5b6",
   "entryDigest": "sha256:cbef55548968d93a4f234585c075709346c220739ef5f3918bd28d847cd3d8a0",
   "format": "component-contract/v1",
   "frameworks": {
@@ -15,6 +15,7 @@
       "props": {
         "$defs": {
           "HeikinAshiChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -42,6 +43,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -93,6 +95,7 @@
       "props": {
         "$defs": {
           "HeikinAshiChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -120,6 +123,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -169,6 +173,7 @@
       "props": {
         "$defs": {
           "HeikinAshiChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -196,6 +201,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -246,6 +252,7 @@
       "props": {
         "$defs": {
           "HeikinAshiChartDatum": {
+            "additionalProperties": false,
             "properties": {
               "close": {
                 "type": "number"
@@ -273,6 +280,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

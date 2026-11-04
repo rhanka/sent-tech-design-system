@@ -1,7 +1,7 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:c3283497821388101483b3b4951433452b5758cfd2aa2183cc95dd07bfec49a7",
+  "digest": "sha256:bc44e8564c9d46e82466d58b520dadb8950dd735a2ed83784341f02b03dd7bd6",
   "entryDigest": "sha256:5f9e0dfdf03e12453241ea6cb6d84770d7d96d4829dacf7895d881d3d6e7f030",
   "format": "component-contract/v1",
   "frameworks": {
@@ -17,8 +17,7 @@
       ],
       "events": [
         {
-          "name": "retry",
-          "payload": {}
+          "name": "retry"
         }
       ],
       "limitations": [
@@ -27,6 +26,7 @@
       "props": {
         "$defs": {
           "AutosaveLabels": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
@@ -44,6 +44,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -119,6 +120,7 @@
       "props": {
         "$defs": {
           "AutosaveLabels": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
@@ -136,6 +138,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "className": {
             "type": "string"
@@ -214,6 +217,7 @@
       "props": {
         "$defs": {
           "AutosaveLabels": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
@@ -231,6 +235,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -314,6 +319,7 @@
       "props": {
         "$defs": {
           "AutosaveLabels": {
+            "additionalProperties": false,
             "properties": {
               "error": {
                 "type": "string"
@@ -331,6 +337,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"

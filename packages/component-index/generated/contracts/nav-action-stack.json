@@ -1,7 +1,7 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:3f122358c1ae3dc8c288ac0d0fa17b1dfcc9b856a8172b4a9698e251b68d529c",
+  "digest": "sha256:cd6a34e82eb02e29cfb2a12b6112765786bf11c6bc88235aa23f001a0f764f17",
   "entryDigest": "sha256:d97509ada4f74e85081678561c0f5233a9e455e67891f70b725ed9bda2c01f01",
   "format": "component-contract/v1",
   "frameworks": {
@@ -28,6 +28,7 @@
       "props": {
         "$defs": {
           "NavAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -52,6 +53,7 @@
             "type": "object"
           },
           "NavActionDangerZone": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -66,6 +68,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {
@@ -142,6 +145,7 @@
       "props": {
         "$defs": {
           "NavAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -166,6 +170,7 @@
             "type": "object"
           },
           "NavActionDangerZone": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -180,6 +185,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {
@@ -258,6 +264,7 @@
       "props": {
         "$defs": {
           "NavAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -282,6 +289,7 @@
             "type": "object"
           },
           "NavActionDangerZone": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -296,6 +304,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {
@@ -375,6 +384,7 @@
       "props": {
         "$defs": {
           "NavAction": {
+            "additionalProperties": false,
             "properties": {
               "disabled": {
                 "type": "boolean"
@@ -399,6 +409,7 @@
             "type": "object"
           },
           "NavActionDangerZone": {
+            "additionalProperties": false,
             "properties": {
               "href": {
                 "type": "string"
@@ -413,6 +424,7 @@
             "type": "object"
           }
         },
+        "additionalProperties": false,
         "properties": {
           "actions": {
             "items": {

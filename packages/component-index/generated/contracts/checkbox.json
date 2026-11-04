@@ -1,7 +1,7 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:bb325ccaa82c61e71bbb99c59690c4f5902b4829b5fac43171f4c6d5734138d0",
+  "digest": "sha256:c27cf529f9bcb444325aa5bf9cae6257405aefb0460331dbe146a2a790781afe",
   "entryDigest": "sha256:27d1a9796fa812cfe8b81f22a3ee0cd7cbfb8d7ef5755686c68aaef7c2fab7e7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -30,6 +30,7 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "aria-label": {
             "type": "string"
@@ -134,6 +135,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "invalid": {
             "type": "boolean"
@@ -169,6 +171,7 @@
         ]
       },
       "props": {
+        "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
@@ -195,12 +198,7 @@
       "replaced": [],
       "slots": [
         {
-          "name": "trailing",
-          "params": {
-            "items": false,
-            "prefixItems": [],
-            "type": "array"
-          }
+          "name": "trailing"
         }
       ],
       "source": {
@@ -246,6 +244,7 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "additionalProperties": false,
         "properties": {
           "checked": {
             "type": "boolean"
@@ -284,7 +283,20 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:cfa4f98fec04e94ad45123f56b920c9dc871317bea27cda8804c8286c02cecf7",
@@ -293,7 +305,7 @@
         "propsType": "CheckboxProps",
         "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
         "emit \"change\": payload not in declaration",
