@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "filter-bar",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6bd82757e3f2a765ab9c82e35afcc15ea492ae38ded2fd958b66628d40e34bd7",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FilterBar.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a8bf74c023a0ab277664f07d1a2457056a9b4def3afc48a031d315b5da1a9e8b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FilterBar.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:510d14a5ca3e46ea7b23b409a9c26cd6e2a8d8f4b2a680775e14e0587accf539",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FilterBar.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d1ac325985aab4f11c035405a660d0f6627163ce5981281d9ba931d959335cba",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FilterBar.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Bar grouping FilterPill chips with an optional clear-all action.",
+    "fr": "Barre regroupant des FilterPill avec action optionnelle « Tout effacer »."
+  },
+  "digest": "sha256:5f8438688fc61567d873c1755da3fa5b21210b06fd2423e7643ded5dc8d8908d",
+  "displayName": "FilterBar",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

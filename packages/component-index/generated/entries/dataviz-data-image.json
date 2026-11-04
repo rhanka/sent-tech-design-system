@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "dataviz-data-image",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7ba0eef08c4b3864b30a53cb0c2de0678bbb782af826f1c8b7d8bf1152a7d533",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DataImage.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e0da066ada3ffaa467bed5431d31d37b31ebeb0b67fc7ad80eea6d6f80ac9a6e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DataImage.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:612d028854c2bbd59472fb385fafdf2b639593635d6f8f30ceff9732e41730a4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DataImage.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:55c080badd6cdb9780b3518b62311b37aea97b795e3ce853246a65f08a33ed8a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DataImage.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Image resolved from a data row ({{field}} templates).",
+    "fr": "Image résolue depuis une ligne de données (gabarits {{champ}})."
+  },
+  "digest": "sha256:6c44a0a64cb6f3280510525194df99e7b5155bacfa508e80c49f8db093082a5a",
+  "displayName": "DataImage (dataviz)",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

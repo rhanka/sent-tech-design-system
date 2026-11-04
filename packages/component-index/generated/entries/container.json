@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "container",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c334d642d13f5fed819778da04fdd99b469af47ffd0bb1365079fe0ac764d15b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Container.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9c15ca1090269230df0af06c44fc93fdf1f394220b09915d1968f6827b7fc19b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Container.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a1be1de9c9e4e6d7764f2d9e871c637fcca605aaa64042f3c39b4ba4f545d3fa",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Container.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d44b4683402864a711f5401fdd3c67c9313218ca594a63752c5303b595cb71e7",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Container.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Centered container with bounded max width (sm…full).",
+    "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
+  },
+  "digest": "sha256:3b33fed66d736ffa96c5b696e3da1869a96102a99eceb2af121876d8189b3d2e",
+  "displayName": "Container",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

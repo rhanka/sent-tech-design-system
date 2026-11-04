@@ -1,0 +1,64 @@
+{
+  "category": "overlay",
+  "componentId": "drawer",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ef10feee5181e7f8ff741548219e5578dc8659141117bdd0801604b7d87ffe8e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Drawer.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:50112ee970a9307b44a8dfdc231063b420ae4eca62b3240e3f1359961455f4dd",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Drawer.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:115e1489d04f679e530a898606f5ccf5a64835137c00f204712755e48dc05aa6",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Drawer.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a7a7143c18b87306504ad786aa5aa041dc6032fbd7a21c04b1f29048c22f85ba",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Drawer.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Side panel for secondary workflows.",
+    "fr": "Panneau latéral pour workflows secondaires."
+  },
+  "digest": "sha256:22e7ac6794de5112ac85f3a6f8c3dbf846cba16bb1ff5794f15c3d731efc9718",
+  "displayName": "Drawer",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "drawer",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

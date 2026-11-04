@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "box-plot-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:8911fc2647fbce356ce70b2dcc64ca48c06126a376a988afb12a9e14b05b446a",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BoxPlotChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b41da9d5e23d5f87c5ca05ce61c1dba1e0883e550f3e68d2f773c000c5898e32",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BoxPlotChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3923e93c279edb1247900fab954e69515983d28cfc4d4999e34a88f9d67c7a13",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BoxPlotChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4ee672c52844b26b5d98f8d1457b862b3f2b66c0aa5e378c64f84ebf59099f03",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BoxPlotChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Box plots for comparing distributions and outliers.",
+    "fr": "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques."
+  },
+  "digest": "sha256:265f1b942bc75db8e09b3bee1b0c262be5f8b620125ae562507b9bd1dd7f48c6",
+  "displayName": "BoxPlotChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

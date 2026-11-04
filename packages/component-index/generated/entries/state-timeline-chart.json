@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "state-timeline-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:be674ee47ca73787e458c5544177c81b1eda177946c6f49d55db0a7c829e1bb8",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StateTimelineChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1576d4efe1707baedb4b9e8104f261268526eb13cd88abb021785b2020c609fd",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StateTimelineChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:da116bb46869556cc3cfef608f97296e2ffe8a6f3715020b00a8ccbe735df804",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StateTimelineChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a6106ae70a542e0532332d8feebf04e31e688a1774a6141c6bc6defbd3d8e747",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StateTimelineChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Discrete state bands over time: one lane per series, contiguous segments colored by state.",
+    "fr": "Bandes d'états discrets dans le temps : une ligne par série, segments contigus colorés par état."
+  },
+  "digest": "sha256:1e53acb0dd8d2c53c987338cced16b85dcdbf8240b0e0b6c61bf2fd64096cbef",
+  "displayName": "StateTimelineChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

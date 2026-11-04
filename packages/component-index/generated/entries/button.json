@@ -1,0 +1,64 @@
+{
+  "category": "action",
+  "componentId": "button",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:2d80b826faa918933d28a3714376c8d123f8f812eee7c148c8274682dabfab61",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Button.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:97f2b6bfdb0f08553eb2c309afe79d168b36445d5da2cfd2214bce2c356ecc43",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Button.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:797718abefe5fb0a74015e1422138bec508ef2b2a95009d71c8c3102f76491e0",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Button.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:760d8e14b0f16aa125fca5d9e975e77e4dfcee6d20e9ca4a81572a3887491bd4",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Button.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Primary, secondary, ghost, or destructive action.",
+    "fr": "Action primaire, secondaire, fantôme ou destructive."
+  },
+  "digest": "sha256:a9d17f9366c7a0eb42f09f01bd7a9592dd30383b0a0c6913453fa10425da45a3",
+  "displayName": "Button",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "button",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

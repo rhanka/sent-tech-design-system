@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "header",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3cbfdaa69eb80058e48f8ab2bca145f596b51d089fe000039811687644d96b22",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Header.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c489cf09d57f34a93e564d76a605eaccdda4c729b0fc47e9ca12b444a4d62661",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Header.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:68476fc0a45f3202308ed9d8d00510c53dd9cf923b104bd88cae9894fbc36464",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Header.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:311e2ac67cb974a6afed14e648dc6891a8a602f344e3c593ae91c23895c06211",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Header.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Application header with logo, navigation, and actions.",
+    "fr": "En-tête applicatif avec logo, navigation et actions."
+  },
+  "digest": "sha256:0b6b4c7cb9c056b51f57f64114327839ace324021d73c25800ef0a06380469eb",
+  "displayName": "Header",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

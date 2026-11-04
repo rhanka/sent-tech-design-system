@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "avatar-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7745e3371c432b9a9af49040b49e908bbe79ac33ccb8b05479abf9973d11805e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AvatarGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:628d79048058182aedf4484aba650fa6190580320741cabf7b0296063ae32a78",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AvatarGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:23c7c5d95ab096bc36204a5136fc0678c21eb39706f9ab205514812169d5f723",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AvatarGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0c41cab05d35eee98f3b37488092b831c09731a6dd1289d808be7ea4540ff7e7",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AvatarGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Overlapping avatar stack with a “+N” overflow token.",
+    "fr": "Pile d'avatars avec recouvrement et jeton de débordement « +N »."
+  },
+  "digest": "sha256:7a99197724e3d6c482584d04e9de99db642525e45c505cef9737036bf28c4fd3",
+  "displayName": "AvatarGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

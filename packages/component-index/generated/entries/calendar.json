@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "calendar",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:10f4d30a480b9a9198739656539d8a12c87ac791a2f61e1e949eecbfb0fa65cd",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Calendar.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b0a37adcf7e501fbf11c283fd170262a2284913b9bd61b6f7225e3a8c6bd6966",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Calendar.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:edb7be76e2a06e9d4471fa42d8c301ac7ebb9c15bba45680ae59018fa3a440b4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Calendar.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6ebc9e620ccb0d078812a50fa3b89ef2430d921d4631b13e0157034cf284493d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Calendar.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Monthly calendar: single date or range, with min/max bounds.",
+    "fr": "Calendrier mensuel : date unique ou plage, bornes min/max."
+  },
+  "digest": "sha256:134edd18db60a7f8e672629e2803de6654118e14d831054c614b358281149bc9",
+  "displayName": "Calendar",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

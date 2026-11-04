@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "overflow-menu",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a0628ee474c69f49b7d041bd7032d624b101b8f062d79c12403b2164e8513bb7",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/OverflowMenu.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:864f1fa558ea2eaf4f578d03c4022ca3a1743b3d372e5279d6ad7c6fc9bc397a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/OverflowMenu.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7d5567a11cc64af0f2b8c9926ac2baf8f11c9f9e885557bb60e6b4a0937db83f",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/OverflowMenu.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e882cf47e3fe771b884939af7fce78216e48da6472cf50236c2855c02134ceab",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/OverflowMenu.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Secondary actions menu accessible through a compact trigger.",
+    "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
+  },
+  "digest": "sha256:f86d966c7f052ee24a25593d94a04ea59e7b8e4ac2d0ca4d99062c06d6c06eeb",
+  "displayName": "OverflowMenu",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

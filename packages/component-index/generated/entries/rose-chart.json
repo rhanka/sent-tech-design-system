@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "rose-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:14eb2dbbfc6cf787ec36a53969ae802b4c60bc0767e3898be49aee0f498cd18f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RoseChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f421ab8a96e144f6c4846e2ddeabdf4b47139b50c91040c6004ef21d85f8f31b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RoseChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:497865d08d10fafd3b1d6d7de0c0dc1f9a4d54391568dd323b1cde2686b54763",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RoseChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bb96902e5faefb7cb08ca7db36e1d162dd64c36735114a4024fdf395f9a2279c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RoseChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Nightingale polar area chart: radius scales with value, equal-angle sectors.",
+    "fr": "Diagramme polaire de Nightingale : rayon proportionnel à la valeur, secteurs d'angle égal."
+  },
+  "digest": "sha256:961a97651832a30c9bc1ba30f0034797e3bcfb47b1aa0df5574b8ec7e2b6a30e",
+  "displayName": "RoseChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

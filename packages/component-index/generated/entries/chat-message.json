@@ -1,0 +1,63 @@
+{
+  "category": "chat",
+  "componentId": "chat-message",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9ffe5c404972b1cb3867b4e7f4d6612ee2f0949b32d823858c3f15c0198852d0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ChatMessage.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a9242c2e3ed391d5e92ca8ca2c5236d27199b431bac0e091b9d353c2f8b80ba2",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ChatMessage.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cc27f5ec767245982e68b07698bf62ebfa651011ff555e780039edca002bedb5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ChatMessage.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:abc6c7dd17c2a6890bc5b42d60818d89166528d2052186e05c5d483c4363d003",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ChatMessage.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Visual chat message bubble with role and status.",
+    "fr": "Bulle de message visuelle avec rôles et statut."
+  },
+  "digest": "sha256:d4e20df080ca6c31ca238e74aca5b9de924c8dca0b10050edf610221253e3dac",
+  "displayName": "ChatMessage",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

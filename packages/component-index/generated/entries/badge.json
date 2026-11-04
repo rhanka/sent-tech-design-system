@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "badge",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:cf2537beb4649c66375a6ef7de1f5645bfe91332a6f04d0fea0f5835ccabdefd",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Badge.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4e67a66fc8740f2c162bf2fd01ff56d9316c1b49fb94058c78b397f123a5f0c6",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Badge.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cad3d2a14e33c66349e08c446942ad72f173c1107df8290915e23d834cd89e68",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Badge.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:51e1c0061c5cefc5c18ad6157e35dce1f717b9d47ae7179eeb6c860b51b42feb",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Badge.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact label with tone (success/warning/...).",
+    "fr": "Étiquette compacte avec tonalité (success/warning/...)."
+  },
+  "digest": "sha256:ac9099bcd6c94f764a37753b56dca2e7a4e28bc3e74e2ba6e24b648dc93bea41",
+  "displayName": "Badge",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
