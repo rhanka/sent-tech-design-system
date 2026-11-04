@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "sankey-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ab7a53fb51fe754b295e6ed88704f57c19655ec39e686a74296c0a98cbd74c7c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SankeyChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:57c1723fe351928bc467dee33133435591c5a0957e05fb37473ef297a5893670",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SankeyChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e10df1e2bd2b9f9fd2b516217aaab898efbcb783604290a23879bd13f06dd704",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SankeyChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:49990658cdbc50ac2a29a32a09d8e4f9c561048cd212f83f31b6371f2eeec6b9",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SankeyChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Weighted flow diagram between categorical nodes.",
+    "fr": "Diagramme de flux pondérés entre nœuds catégoriels."
+  },
+  "digest": "sha256:1c6e0104562b6fb7815654b2d4aa274f07baec826d49fec5c13883e962a7345a",
+  "displayName": "SankeyChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

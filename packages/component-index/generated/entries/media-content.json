@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "media-content",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:604445044a52a9d3b9904c4341ee24382449dad9765ab7daac1710fba7e6bdb7",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MediaContent.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:64b12f3b541e7331261cf55bab38c36b553623df00ef5c7778f64d2de400302f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MediaContent.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c178f41ec1b3ee78f74cec32dc838163ea9bc6bb42e5290c4e2a561b22a38667",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MediaContent.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5b756f87fa05c5a9d5e9b22af85ad5af3fc42ecf965bb98e593e957a3c555d71",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MediaContent.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Media wrapper with caption, title, and related metadata.",
+    "fr": "Conteneur de média avec légende, titre et métadonnées associées."
+  },
+  "digest": "sha256:e2fb8f6d0c8df5242e65fadbc2d26c5094f8411b0ff2d011af16b8b6c39a97c8",
+  "displayName": "MediaContent",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

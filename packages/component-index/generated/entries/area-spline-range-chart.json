@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "area-spline-range-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4eae81e3cc74efae6c8c5ae122a6bf44ddfca6c53b2fda2d6a41281ed351cd94",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AreaSplineRangeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7ed45b6b9cb2c03c1e5ad83d05ca25b06f9f27334b60b961591061012e6e7cfb",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AreaSplineRangeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f70ab381813bc18f2cdf68089fafee159d6b89aa23a9ed67c7a694c395a7457b",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AreaSplineRangeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9f1cd8927d0e548583b54ba77786980afbed254d8a1dcb628e04c48d72ab4804",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AreaSplineRangeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Spline variant of AreaRange: filled band between a low and a high series along an X axis, always-smoothed contours (e.g. temperature range, confidence interval).",
+    "fr": "Variante spline d'AreaRange : bande remplie entre une série basse et une série haute le long d'un axe X, contours toujours lissés (ex. fourchette de température, intervalle de confiance)."
+  },
+  "digest": "sha256:a3d819e7bad5ad689804d131d61cb2914c6112d4109569e4f8b5de99eb04ecb4",
+  "displayName": "AreaSplineRangeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

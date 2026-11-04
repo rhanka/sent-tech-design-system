@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "progress-bar",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:2c8e919600553432acadcc40854a64bb43cf08b25028ead284de1314560d5254",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ProgressBar.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6d187eb1a0742b2cbd35de02198912a3c91be8f1e827f60d0a5d5d56a5be16d0",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ProgressBar.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:98c4184b693f3c9170bab79320301509458050223244e6cc9b7817eb21c2fe30",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ProgressBar.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3c5bc96b87de6bb50fe4c232c1c094b72d925f52aaf40db74c3531821efcdb12",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ProgressBar.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Determinate or indeterminate progress bar.",
+    "fr": "Barre de progression déterminée ou indéterminée."
+  },
+  "digest": "sha256:71f9c2f348702e70adb8e876de3fb36e766d3f9e82f5c0cbdafa2165e728556c",
+  "displayName": "ProgressBar",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

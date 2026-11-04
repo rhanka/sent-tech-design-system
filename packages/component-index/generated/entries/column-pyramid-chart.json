@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "column-pyramid-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:25cacb0cb23cef46571e2d261b6ddacc7946705c8fabea365801b1f4aff735cf",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ColumnPyramidChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:60def6e933f8aeae9d87748bb83704d7cd05aa98fe1029acada30d8bdf02b656",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ColumnPyramidChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:02e6316caffda705e651c0a463826e421a8c943bd9d33d2f43978d478ec76214",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ColumnPyramidChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ea2dd6cc32166407efa7fd2d04b0974a9d01ab971dac5ee8d5159f3611e20897",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ColumnPyramidChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Pyramid columns: each category is a triangle, base on the X axis and apex at the value height.",
+    "fr": "Colonnes pyramidales : chaque catégorie est un triangle, base sur l'axe X et sommet à la hauteur de la valeur."
+  },
+  "digest": "sha256:4264b6ed887b58f8d60466bf0c695c5e3b9d4686bcfc05d2fa929070168e1551",
+  "displayName": "ColumnPyramidChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

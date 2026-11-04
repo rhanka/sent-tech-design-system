@@ -1,0 +1,63 @@
+{
+  "category": "overlay",
+  "componentId": "popper",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:3da6178c60b2ecd8fd19d9fc9bf98707d45e66bf7028ed6d796fe0623bb2cc94",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Popper.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:72bc6404ecaa54429ee28c9eaa83230d3ccf193e8ad7d2769e0312a304c9425c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Popper.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:328a058795c4532846ade2c5152302a54af33d7bd52dbad4c0306e1eceffd9e1",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Popper.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:772e8784301c8a2c343a465f8e78fb50abeb646b95b3fb8468b2c8376676e8b5",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Popper.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Positions a floating panel next to an anchor: flip, shift, arrow.",
+    "fr": "Positionne un panneau flottant près d'une ancre : flip, shift, arrow."
+  },
+  "digest": "sha256:15a17e81a2a7f8ce4eae0621f7bbcf8af6914ed5fd88caca383f29bdb1e8397a",
+  "displayName": "Popper",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

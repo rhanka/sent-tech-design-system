@@ -1,0 +1,64 @@
+{
+  "category": "action",
+  "componentId": "icon-button",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:76ff0def1022c895c89a02d051d5de8ca8829d3d4f63962b1da52aef8e201a76",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/IconButton.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:420af2241f5c9bb2e0bde73947f4a184fc4c9c23ecceb85a9a4206e932aca7d4",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/IconButton.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:668a4e7d93b1bc1ae9328b85aabd177755c6e8baafba68d7f9f9a144d072d8d9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/IconButton.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:80fa5a962a971d0b45d78d573c13c996f76fa417712ad457878f2520533a9827",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/IconButton.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
+    "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
+  },
+  "digest": "sha256:2a1227a07ddf3dcf1f97e05beafb26247944020dc5388d95be00c9d4c47f07a1",
+  "displayName": "IconButton",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "icon-button",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

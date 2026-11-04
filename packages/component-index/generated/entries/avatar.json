@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "avatar",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:786a89bd4b8fc497de3abd186b1cb7bf6210387890bcd22f51c6c1c6561f8808",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Avatar.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0c8134b1f2b0ff79b056ff69f5d0bb2fb1b119b329ed627fa8ddcec826b64edd",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Avatar.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a6e65c5908ef3ddbeaee92c43e8b37c7cb103c210b08312f535366d530c416cc",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Avatar.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0f9e5297b943608b435fed805a088583e501dd7e0a5298f9b8a7604be850b07d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Avatar.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Identity badge: colored initials or photo, multiple sizes.",
+    "fr": "Vignette d'identité : initiales colorées ou photo, plusieurs tailles."
+  },
+  "digest": "sha256:bb80838eeec4e068dc1c650b887ac675f493f1605ec0a4cafefad67bf04d4a57",
+  "displayName": "Avatar",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

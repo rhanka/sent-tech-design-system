@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "color-scale-bar",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:d17637390394d41841ad6efde268c79bc578d1ef1d134355eb859084cd32f6b2",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ColorScaleBar.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:786486bab9f3b82aaade5f149f815c2e788eeb2a44a9e226b86eaebf77fdf0cd",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ColorScaleBar.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f73704cbcf8a7ba34876a3ee52a76297b770bdc1051d9a9f575a4a2c9358b9ab",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ColorScaleBar.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8d23275445fca5b7525a50be56b364a9f5f1be21e23ebdba3bd8eacfb84f1b88",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ColorScaleBar.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels.",
+    "fr": "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max."
+  },
+  "digest": "sha256:04cfac2d36a84089635cfaffaffcfe8ecc0e4abe8d8cc51101a932ecb4397b8a",
+  "displayName": "ColorScaleBar",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

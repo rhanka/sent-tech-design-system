@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "slider",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:89aecfac65d74f7a62480c0bdd9e7ede70a57a751b177453e4b09bb8a984f4e0",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Slider.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a4366d58ea1809ef7753fa4fb70526d517c79e72781f387be381a0db7e6b4d37",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Slider.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:14bbd66b6e1e93de74170cd0971d506ae68fe30d826eef3d1b75f94ffeb5fa1a",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Slider.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:75eb5fb3e4795f3519b5b9b2921f62474331d3d9a5aaf5d1e419ebfb0306abcc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Slider.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Continuous value slider.",
+    "fr": "Curseur de valeur continue."
+  },
+  "digest": "sha256:76b5a4d2d26f4ec49b9a7866e20d1321009a78e6496becafc9895c3543a1d039",
+  "displayName": "Slider",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

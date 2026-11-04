@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "nav-item",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:1160accb5435d412cb82a8e25a2c794d8f8f96b360ee63ae7625794aac6fb0a9",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/NavItem.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b2f6db71f9a4728da713ae679d007678a01094e549c20291e0a17aca8bbd718e",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/NavItem.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2dde4379db7c44c0ab0c3106f46d0b2067d2ef518f53e9e27dfa9967347587ce",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/NavItem.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b7d5be16c4cc37138d51a374860dd557f12bcbd26d3d9cea4a485835bdd3fa33",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/NavItem.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
+    "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
+  },
+  "digest": "sha256:a4e504f8c4179d927fb72af84a999dc8eab81f928680cc982b033c12c79ea45d",
+  "displayName": "NavItem",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

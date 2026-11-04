@@ -1,0 +1,64 @@
+{
+  "category": "overlay",
+  "componentId": "menu-popover",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9f691ed8189373812993ed5ef62b5d6e03715cdb2dca34cec928da9612dd6efd",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/MenuPopover.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:52774b18bc619edaedd882958ce57b92ecf5cbcb89d57bde6f2001b25b2173c1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/MenuPopover.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:514310aba735abdb8927d78715b607b1f0f97f4ac47eddeaf2378b0e801c7b47",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/MenuPopover.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:834bcd8150bad440b9e5cb667a60fea162836d430c36d863adf9c72e378a21c0",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/MenuPopover.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
+    "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
+  },
+  "digest": "sha256:da0fc83dd256dcf7a4ffc04c0c2067a82f377a4382e14e6c79e7871d7b5520fc",
+  "displayName": "MenuPopover",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "menu-popover",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

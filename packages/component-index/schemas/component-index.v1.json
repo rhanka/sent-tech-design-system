@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.sent-tech.ca/catalogs/components/v1/component-index.json",
+  "title": "component-index/v1",
+  "description": "Pinned index of component-entry/v1 entries for one producer. Rows are sorted by (producerId, componentId); registryRevision is the tagged digest of the row set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "producerId", "registryRevision", "sourceCommit", "generatedBy", "counts", "entries"],
+  "properties": {
+    "format": { "const": "component-index/v1" },
+    "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "registryRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "generatedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generator", "version"],
+      "properties": {
+        "generator": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entries", "byRenderable"],
+      "properties": {
+        "entries": { "type": "integer", "minimum": 0 },
+        "byRenderable": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mcp", "https", "doc-only"],
+          "properties": {
+            "mcp": { "type": "integer", "minimum": 0 },
+            "https": { "type": "integer", "minimum": 0 },
+            "doc-only": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "entries": { "type": "array", "items": { "$ref": "#/$defs/row" } }
+  },
+  "$defs": {
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["svelte", "react", "vue", "angular"],
+      "properties": {
+        "svelte": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "react": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "vue": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] },
+        "angular": { "enum": ["match", "source-of-truth", "no-counterpart", "missing"] }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producerId", "componentId", "digest", "renderable", "scope", "visibility", "parity", "dataClass", "frameworks", "deliveryChannels", "path"],
+      "properties": {
+        "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+        "componentId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "renderable": { "enum": ["mcp", "https", "doc-only"] },
+        "scope": { "enum": ["generic", "producer"] },
+        "visibility": { "enum": ["public", "tenant", "workspace"] },
+        "scopePolicyRef": { "type": "string", "minLength": 1 },
+        "parity": { "$ref": "#/$defs/parity" },
+        "dataClass": { "enum": ["public-safe", "tenant-private", "workspace-private"] },
+        "frameworks": { "type": "array", "uniqueItems": true, "items": { "enum": ["svelte", "react", "vue", "angular"] } },
+        "category": { "enum": ["action", "form", "chat", "navigation", "overlay", "feedback", "data", "layout", "other"] },
+        "status": { "enum": ["documented", "stub"] },
+        "deliveryChannels": { "type": "array", "uniqueItems": true, "minItems": 1, "items": { "enum": ["source", "esm", "element", "css-classes", "tokens"] } },
+        "path": { "type": "string", "pattern": "^entries/[a-z0-9]+(?:-[a-z0-9]+)*\\.json$" }
+      }
+    }
+  }
+}

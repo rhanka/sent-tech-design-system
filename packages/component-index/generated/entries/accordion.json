@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "accordion",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:6a684f7ad7ab441a0a81c63023e4ba1f291b876806499888ce0efb63320f6dfc",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Accordion.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2f47e1cfe3cef97cf4caf536bf78d4e0e424317afd3d928155290eb72f095ef4",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Accordion.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0eb81b0adccd1c42ef8a70bb269fd5fa8b052b786584d449ad0af775c0f339c0",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Accordion.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4b6c404ca923da6355deed0f38aad61432dafd325bf236e5c0ce23bd6dc0e273",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Accordion.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "List of collapsible panels.",
+    "fr": "Liste de panneaux pliables."
+  },
+  "digest": "sha256:eb295ad42fc2e1a53064105b283799fe6ed7c62f48a8a2fa2c776f675361e22c",
+  "displayName": "Accordion",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

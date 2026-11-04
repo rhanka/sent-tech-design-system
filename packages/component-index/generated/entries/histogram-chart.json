@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "histogram-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:cad1a3ea90de30df550c293f03ed4255b83af38df4859d85490fef284f7af3df",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/HistogramChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1e90ed0e1a18edfd436f7e824ac5ebad9c6a732fc1932e7cb9df8a79ce79ca3a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/HistogramChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:bfa5a10350c8936d9d80ee19a88139294b885584a2d25bbbef1b4d62da4bad61",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/HistogramChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1b9d7570e69651409a3539814a6fd9bf3a5cddebb30059bc8b5d6fc0f0c29250",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/HistogramChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Histogram for explicit or generated distribution bins.",
+    "fr": "Histogramme pour afficher des classes explicites ou générées."
+  },
+  "digest": "sha256:b5f09c0ea158a6ebf5976ebf08cfbbc0d9a65f6f2bfb524a760fcae42b225844",
+  "displayName": "HistogramChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

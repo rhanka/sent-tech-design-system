@@ -1,0 +1,63 @@
+{
+  "category": "other",
+  "componentId": "typography",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4aa380c4d9128170c6720712714ed8ecbda75351788f4d60ac34801e5ea319e5",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Typography.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d869835fbdacd28aecc1db2b67e085cfe012bb090a302ef6938ca0a222a55c1a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Typography.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:757ce5b80bcd8e8b4169153ab50a5b26974d595a9a316c50aadc19e68d7813da",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Typography.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:843bf66d396c7c48d0bb0e020da1007c4804b7b2557a2e75088c93dff3857b18",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Typography.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Text component: variants, weight, tone, and alignment.",
+    "fr": "Composant de texte : variantes, poids, ton, alignement."
+  },
+  "digest": "sha256:d8ca9d9d13a33f6808dc41d764032e44f5099434c6ec82edc7de7e8a819a9616",
+  "displayName": "Typography",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,64 @@
+{
+  "category": "data",
+  "componentId": "table",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:04296662514e99015fd4c857c89e07ac1ef06b9415f8ebcc0076c163c6ddc8d1",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Table.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c6492dd53c283d9e4f5430f7d712755f8ed678d9fded2638c5926bf8e3eeef7b",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Table.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:13a5c77d2ee892b2c895160605d16274ae618e0f5b1879f6d2f5ee3c52c2eca5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Table.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8b5ded2ebfcbde5ba4a05b495a6b7a78d029f272810a464437eedb0c5cbea008",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Table.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Styled HTML table with columns/rows.",
+    "fr": "Table HTML stylée colonnes/rows."
+  },
+  "digest": "sha256:662130ed7f5ad48ec2d3b77c9135c044de0b6a798e8245c8956a2392142bc34c",
+  "displayName": "Table",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "data-navigation",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
