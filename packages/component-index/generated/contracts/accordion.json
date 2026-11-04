@@ -1,0 +1,464 @@
+{
+  "componentId": "accordion",
+  "contractSource": "derived",
+  "digest": "sha256:72623a1add06dfe57ace7a23ae425def0f4a78d45e5f813431a546751e5545bf",
+  "entryDigest": "sha256:eb295ad42fc2e1a53064105b283799fe6ed7c62f48a8a2fa2c776f675361e22c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AccordionItem.content",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => unknown"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AccordionItem": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end"
+            ]
+          },
+          "allowMultiple": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "defaultOpenIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/AccordionItem"
+            },
+            "type": "array"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "open": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "openIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a42e4204f9ba3dc0d69c6b00aa857a5e7fcb363d6de0846d60c92a172efe7d41",
+        "declarationPath": "packages/components-angular/dist/Accordion.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AccordionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "AccordionItem.content",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "AccordionItem.title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "AccordionItem": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end"
+            ]
+          },
+          "allowMultiple": {
+            "type": "boolean"
+          },
+          "defaultOpenIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/AccordionItem"
+            },
+            "type": "array"
+          },
+          "multiple": {
+            "description": "Svelte-canonical alias for `allowMultiple`.",
+            "type": "boolean"
+          },
+          "open": {
+            "description": "Svelte-canonical alias for `defaultOpenIds` (initially open item ids).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "openIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AccordionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "AccordionItem": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "content",
+              "id",
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/AccordionItem"
+            },
+            "type": "array"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "open": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0252b4eabf38eb61a6630d7175dc3aa11090a3fc9519be9c1d93319e4e0b8ed9",
+        "declarationPath": "packages/components-svelte/dist/Accordion.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AccordionProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AccordionItem.content",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => unknown"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AccordionItem": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end"
+            ]
+          },
+          "allowMultiple": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "defaultOpenIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/AccordionItem"
+            },
+            "type": "array"
+          },
+          "multiple": {
+            "description": "Svelte-canonical alias for `allowMultiple`.",
+            "type": "boolean"
+          },
+          "open": {
+            "description": "Svelte-canonical alias for `defaultOpenIds` (initially open item ids).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "openIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f4ff86c237520d074f5570f4d7284fdf78d7418af19a0f3d445007d68e8e636f",
+        "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AccordionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

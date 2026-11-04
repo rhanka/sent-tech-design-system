@@ -18,7 +18,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
@@ -341,5 +341,341 @@ test("K1a: generated JSON carries the frozen values and no retired predecessor v
     assert.deepEqual(row.frameworks, entry.frameworks, `row ${row.componentId} frameworks must copy`);
     assert.deepEqual(row.category, entry.category, `row ${row.componentId} category must copy the entry`);
     assert.deepEqual(row.status, entry.status, `row ${row.componentId} status must copy the entry`);
+  }
+});
+
+// K1b guard: derived per-framework contracts (spec §10). The K1a tests
+// above are untouched; everything below covers generated/contracts/*.json
+// and generated/component-contract-index.json. No contract is hosted,
+// published or exposed; every one is contractSource "derived".
+//
+// RED HISTORY: before the contracts existed, the schema files were missing
+// (Ajv compile threw ENOENT), the digest tags were missing (recompute
+// threw), and --check listed every missing contract output. The mutation
+// witnesses below were observed against --root copies in a temp dir.
+
+const contractsDir = join(generatedDir, "contracts");
+const contractIndexPath = join(generatedDir, "component-contract-index.json");
+const FOUR_COMPLETENESS = ["complete", "partial", "none"];
+const FOUR_FRAMEWORKS = ["svelte", "react", "vue", "angular"];
+const EXPECTED_EXCLUDED = ["bar-chart", "bpmn-canvas", "decision-dossier", "design-tokens", "geo-map"].sort();
+
+function contractPaths() {
+  return readdirSync(contractsDir)
+    .filter((name) => name.endsWith(".json"))
+    .map((name) => join(contractsDir, name))
+    .sort();
+}
+
+function readContractIndex() {
+  return JSON.parse(readFileSync(contractIndexPath, "utf8"));
+}
+
+test("K1b: every contract and the contract index validate their v1 schemas", () => {
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  const contractSchema = JSON.parse(readFileSync(join(packageDir, "schemas", "component-contract.v1.json"), "utf8"));
+  const indexSchema = JSON.parse(
+    readFileSync(join(packageDir, "schemas", "component-contract-index.v1.json"), "utf8"),
+  );
+  const validateContract = ajv.compile(contractSchema);
+  const validateIndex = ajv.compile(indexSchema);
+  const paths = contractPaths();
+  assert.equal(paths.length, 209, `the reviewed population is 209 contracts, found ${paths.length}`);
+  for (const path of paths) {
+    const document = JSON.parse(readFileSync(path, "utf8"));
+    assert.equal(
+      validateContract(document),
+      true,
+      `${path} must validate: ${JSON.stringify(validateContract.errors)}`,
+    );
+    // Props meta-schema: every cell props must itself compile as a JSON
+    // Schema (draft 2020-12), or the contract is not a schema carrier.
+    for (const framework of FOUR_FRAMEWORKS) {
+      const props = document.frameworks[framework].props;
+      if (props !== undefined) assert.doesNotThrow(() => ajv.compile(props), `${path} ${framework} props`);
+    }
+  }
+  const index = readContractIndex();
+  assert.equal(validateIndex(index), true, `contract index must validate`);
+  assert.equal(index.counts.contracts, paths.length, "index counts.contracts must match the documents");
+  assert.equal(index.entries.length, paths.length, "index entries must match the documents");
+  for (const framework of FOUR_FRAMEWORKS) {
+    const cell = index.counts.byFramework[framework];
+    assert.equal(
+      cell.complete + cell.partial + cell.none,
+      paths.length,
+      `index byFramework.${framework} must sum to the population`,
+    );
+  }
+  assert.deepEqual(
+    index.excluded.map((row) => row.componentId).sort(),
+    EXPECTED_EXCLUDED,
+    "the excluded set is the reviewed five",
+  );
+});
+
+test("K1b: every contract digest and the contracts revision recompute independently", () => {
+  for (const path of contractPaths()) {
+    const document = JSON.parse(readFileSync(path, "utf8"));
+    const { digest, ...digestless } = document;
+    assert.equal(
+      taggedDigest(digestless, "sentropic.ds.component-contract/v1"),
+      digest,
+      `${path} contract digest must recompute`,
+    );
+  }
+  const index = readContractIndex();
+  assert.equal(
+    taggedDigest({ entries: index.entries, producerId: index.producerId }, "sentropic.ds.component-contract-index/v1"),
+    index.contractsRevision,
+    "contractsRevision must recompute from the row set",
+  );
+});
+
+test("K1b: index rows mirror their documents, and no contract is published", () => {
+  const index = readContractIndex();
+  for (const row of index.entries) {
+    const document = JSON.parse(readFileSync(join(generatedDir, row.path), "utf8"));
+    assert.equal(document.contractSource, "derived", `row ${row.componentId} document must be derived`);
+    assert.equal(row.entryDigest, document.entryDigest, `row ${row.componentId} entryDigest must join`);
+    assert.equal(row.contractDigest, document.digest, `row ${row.componentId} contractDigest must join`);
+    assert.deepEqual(
+      row.completeness,
+      {
+        svelte: document.frameworks.svelte.status,
+        react: document.frameworks.react.status,
+        vue: document.frameworks.vue.status,
+        angular: document.frameworks.angular.status,
+      },
+      `row ${row.componentId} completeness must mirror the document`,
+    );
+    const entry = JSON.parse(readFileSync(join(generatedDir, `entries/${row.componentId}.json`), "utf8"));
+    assert.equal(row.entryDigest, entry.digest, `row ${row.componentId} entryDigest must copy the K1a entry`);
+  }
+  const rawIndex = readFileSync(contractIndexPath, "utf8");
+  assert.doesNotMatch(rawIndex, /"contractSource"\s*:\s*"published"/, "no emitted contract may be published");
+  for (const path of contractPaths()) {
+    const raw = readFileSync(path, "utf8");
+    const document = JSON.parse(raw);
+    assert.equal(document.contractSource, "derived", `${path} contractSource must be derived`);
+    assert.doesNotMatch(raw, /"status"\s*:\s*"partiel"/, `${path} completeness marker is partial, never partiel`);
+    for (const framework of FOUR_FRAMEWORKS) {
+      assert.ok(
+        FOUR_COMPLETENESS.includes(document.frameworks[framework].status),
+        `${path} ${framework} status must be a completeness marker`,
+      );
+    }
+  }
+});
+
+test("K1b: --check refuses a mutated contract copy in a temp dir and exits non-zero (--root)", () => {
+  const scratch = mkdtempSync(join(tmpdir(), "contract-index-check-"));
+  try {
+    cpSync(generatedDir, join(scratch, "generated"), { recursive: true });
+
+    const fresh = runGenerator(["--check", "--root", scratch]);
+    assert.equal(fresh.status, 0, `the untouched copy must check fresh:\n${fresh.stdout}\n${fresh.stderr}`);
+
+    // Witness 1: one flipped byte in a contract. Proves --check compares
+    // committed contract bytes against regeneration.
+    const buttonPath = join(scratch, "generated", "contracts", "button.json");
+    const original = readFileSync(buttonPath, "utf8");
+    const flipped = original.includes('"Button"') ? original.replace('"Button"', '"Buttox"') : `${original} `;
+    assert.notEqual(flipped, original, "the mutation must change button.json");
+    writeFileSync(buttonPath, flipped, "utf8");
+    const edited = runGenerator(["--check", "--root", scratch]);
+    assert.equal(edited.status, 1, "a hand-edited contract must not check fresh");
+    assert.match(edited.stderr, /not fresh/, "the refusal must say the artifacts are not fresh");
+    assert.match(edited.stderr, /contracts\/button\.json/, "the refusal must name the edited contract");
+    writeFileSync(buttonPath, original, "utf8");
+
+    // Witness 2: one deleted contract. Proves --check lists missing
+    // contract outputs (a dropped contract turns CI red instead of
+    // silently shrinking the population).
+    const victim = join(scratch, "generated", "contracts", "accordion.json");
+    const victimText = readFileSync(victim, "utf8");
+    rmSync(victim);
+    const deleted = runGenerator(["--check", "--root", scratch]);
+    assert.equal(deleted.status, 1, "a deleted contract must not check fresh");
+    assert.match(deleted.stderr, /contracts\/accordion\.json/, "the refusal must name the deleted contract");
+    writeFileSync(victim, victimText, "utf8");
+
+    // Witness 3: one stray file under generated/contracts/. Proves the
+    // stray scan covers the contracts tree (no suffix filter): any path
+    // not in the expected set turns --check red.
+    const strayPath = join(scratch, "generated", "contracts", "zz-stray.json");
+    writeFileSync(strayPath, original, "utf8");
+    const strayed = runGenerator(["--check", "--root", scratch]);
+    assert.equal(strayed.status, 1, "a stray contract file must not check fresh");
+    assert.match(strayed.stderr, /contracts\/zz-stray\.json/, "the refusal must name the stray file");
+    rmSync(strayPath);
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+});
+
+// The catalogue-mutation witness needs a faithful temp tree: generation
+// reads the repo (catalogue, barrels, sources, declarations) while --root
+// only redirects the committed artifacts. The tree below copies every
+// generation input (excluding node_modules, symlinked back), so a catalogue
+// row added in the temp copy exercises both the K1a side and the contract
+// side without touching the real checkout.
+const TREE_SUBTREES = [
+  "packages/component-index/dist",
+  "packages/component-index/schemas",
+  "packages/component-index/generated",
+  "apps/docs/src/lib/components-catalog.ts",
+  "packages/elements/schemas",
+  "packages/elements/catalog.json",
+  "packages/tokens/src",
+  "packages/themes/css",
+];
+const TREE_FILES = ["packages/component-index/contract-baseline.json", "packages/component-index/parity-baseline.json", "packages/component-index/catalog-overlay.json"];
+const TREE_PACKAGES = [
+  "packages/component-index",
+  "packages/components-svelte",
+  "packages/components-react",
+  "packages/components-vue",
+  "packages/components-angular",
+  "packages/dataviz-svelte",
+  "packages/dataviz-react",
+  "packages/dataviz-vue",
+  "packages/dataviz-angular",
+  "packages/elements",
+  "packages/tokens",
+  "packages/themes",
+];
+
+function buildFaithfulTree() {
+  const tree = mkdtempSync(join(tmpdir(), "contract-index-tree-"));
+  for (const subtree of TREE_SUBTREES) cpSync(join(repoRoot, subtree), join(tree, subtree), { recursive: true });
+  for (const file of TREE_FILES) cpSync(join(repoRoot, file), join(tree, file));
+  for (const name of TREE_PACKAGES) {
+    const manifest = join(name, "package.json");
+    cpSync(join(repoRoot, manifest), join(tree, manifest));
+    for (const dir of ["src", "dist"]) {
+      const source = join(repoRoot, name, dir);
+      try {
+        cpSync(source, join(tree, name, dir), { recursive: true });
+      } catch {
+        // dataviz packages keep no top-level namesake dir; the subtrees
+        // above already cover their inputs — absence is not a failure.
+      }
+    }
+    try {
+      symlinkSync(join(repoRoot, name, "node_modules"), join(tree, name, "node_modules"));
+    } catch {
+      // Most packages hoist to the root node_modules; absence is fine.
+    }
+  }
+  symlinkSync(join(repoRoot, "node_modules"), join(tree, "node_modules"));
+  return tree;
+}
+
+function runTreeGenerator(tree, args) {
+  return spawnSync(process.execPath, [join(tree, "packages", "component-index", "dist", "generator", "main.js"), ...args], {
+    cwd: tree,
+    encoding: "utf8",
+  });
+}
+
+function gitInitTree(tree) {
+  for (const argv of [["init", "-q"], ["add", "-A"], ["-c", "user.name=guard", "-c", "user.email=guard@test", "commit", "-qm", "probe"]]) {
+    const run = spawnSync("git", argv, { cwd: tree, encoding: "utf8" });
+    assert.equal(run.status, 0, `git ${argv[0]} must succeed in the temp tree:\n${run.stderr}`);
+  }
+}
+
+test("K1b: a K1b generation changes no K1a byte on a faithful tree", () => {
+  // The generator regenerates K1a and contracts together; every K1a entry
+  // file must be byte-identical afterwards (raw SHA-256 over file bytes).
+  // The K1a index is compared bytewise after normalising only sourceCommit
+  // and generatedBy.version (spec 10).
+  const tree = buildFaithfulTree();
+  try {
+    gitInitTree(tree);
+    const generated = runTreeGenerator(tree, []);
+    assert.equal(generated.status, 0, `temp-tree generation must succeed:\n${generated.stdout}\n${generated.stderr}`);
+    const hashBytes = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
+    for (const path of entryPaths().map((entry) => entry.slice(generatedDir.length + 1))) {
+      const beforeHash = hashBytes(join(repoRoot, "packages", "component-index", `generated/${path}`));
+      const afterHash = hashBytes(join(tree, "packages", "component-index", `generated/${path}`));
+      assert.equal(afterHash, beforeHash, `K1a ${path} must be byte-identical`);
+    }
+    const normalizeIndex = (text) => {
+      const parsed = JSON.parse(text);
+      parsed.sourceCommit = "0".repeat(40);
+      if (parsed.generatedBy !== undefined && typeof parsed.generatedBy === "object" && parsed.generatedBy !== null) {
+        parsed.generatedBy = { ...parsed.generatedBy, version: "0.0.0" };
+      }
+      return canonicalize(parsed);
+    };
+    const beforeIndex = normalizeIndex(readFileSync(join(repoRoot, "packages", "component-index", "generated/component-index.json"), "utf8"));
+    const afterIndex = normalizeIndex(readFileSync(join(tree, "packages", "component-index", "generated/component-index.json"), "utf8"));
+    assert.equal(afterIndex, beforeIndex, "K1a index must match bytewise modulo sourceCommit and generatedBy.version");
+  } finally {
+    rmSync(tree, { recursive: true, force: true });
+  }
+});
+
+test("K1b: a catalogue row added in the temp tree fails both the K1a side and the contract side", () => {
+  // The probe clones the accordion catalogue row under a fresh slug, so the
+  // K1a presence computation accepts it. Generation is all-or-nothing in
+  // memory: each run below fails at exactly one gate, naming the probe.
+  const tree = buildFaithfulTree();
+  try {
+    const catalogPath = join(tree, "apps", "docs", "src", "lib", "components-catalog.ts");
+    const catalogText = readFileSync(catalogPath, "utf8");
+    const anchor = `  {
+    name: "Card",`;
+    assert.ok(catalogText.includes(anchor), "the temp catalogue must carry the card row");
+    const probeRow = `  {
+    name: "Accordion",
+    slug: "zz-guard-probe",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Sonde de garde.",
+      en: "Guard probe."
+    }
+  },
+`;
+    writeFileSync(catalogPath, catalogText.replace(anchor, `${probeRow}${anchor}`), "utf8");
+    gitInitTree(tree);
+
+    // Run 0: no baseline row anywhere. The K1a parity gate fires first.
+    const ungated = runTreeGenerator(tree, []);
+    assert.equal(ungated.status, 1, "generation with an unreviewed probe must fail");
+    assert.match(
+      ungated.stderr,
+      /baseline has no expected parity for "zz-guard-probe"/,
+      "the K1a side must refuse the unreviewed probe",
+    );
+
+    // Run 1: a reviewed parity row lets the K1a side absorb the probe; the
+    // contract baseline gate fires instead.
+    const parityPath = join(tree, "packages", "component-index", "parity-baseline.json");
+    const parity = JSON.parse(readFileSync(parityPath, "utf8"));
+    parity.expectedParity["zz-guard-probe"] = parity.expectedParity["accordion"];
+    writeFileSync(parityPath, `${JSON.stringify(parity, null, 2)}\n`, "utf8");
+    const generated = runTreeGenerator(tree, []);
+    assert.equal(generated.status, 1, "generation with an unreviewed contract probe must fail");
+    assert.match(
+      generated.stderr,
+      /contract baseline has no component "zz-guard-probe"/,
+      "the contract side must refuse the unreviewed probe",
+    );
+
+    // Run 2: a reviewed contract baseline extension passes both gates in
+    // memory; --check then fails only on the uncommitted probe outputs.
+    const baselinePath = join(tree, "packages", "component-index", "contract-baseline.json");
+    const baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
+    baseline.components["zz-guard-probe"] = baseline.components["accordion"];
+    writeFileSync(baselinePath, `${JSON.stringify(baseline, null, 1)}\n`, "utf8");
+    const checked = runTreeGenerator(tree, ["--check"]);
+    assert.equal(checked.status, 1, "check with an uncommitted probe must fail");
+    assert.match(checked.stderr, /entries\/zz-guard-probe\.json/, "the K1a side must name the missing entry");
+  } finally {
+    rmSync(tree, { recursive: true, force: true });
   }
 });

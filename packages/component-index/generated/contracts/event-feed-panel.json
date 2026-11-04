@@ -1,0 +1,382 @@
+{
+  "componentId": "event-feed-panel",
+  "contractSource": "derived",
+  "digest": "sha256:879f6a3d1cb69cfc52288dc75c3ed663728fc6dc1520173fd90d4502e2afdb6a",
+  "entryDigest": "sha256:1c221769cf70090a063cc640cc7235a9d0e514fc8b9bb01ac1700194cd0ebc22",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "EventFeedPanelEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "message": {
+                "type": "string"
+              },
+              "severity": {
+                "anyOf": [
+                  {
+                    "const": "info"
+                  },
+                  {
+                    "const": "success"
+                  },
+                  {
+                    "const": "warning"
+                  },
+                  {
+                    "const": "error"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "at",
+              "message",
+              "severity",
+              "type"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/EventFeedPanelEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxHeight": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9cad935f4f849a2d7c65ccbdcc1ea86f5cf0fee9e2482f274445509430cdb00b",
+        "declarationPath": "packages/components-angular/dist/EventFeedPanel.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "EventFeedPanelProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "EventFeedPanelEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Horodatage en millisecondes epoch (ou tout nombre croissant).",
+                "type": "number"
+              },
+              "message": {
+                "description": "Message principal affiché.",
+                "type": "string"
+              },
+              "severity": {
+                "anyOf": [
+                  {
+                    "const": "info"
+                  },
+                  {
+                    "const": "success"
+                  },
+                  {
+                    "const": "warning"
+                  },
+                  {
+                    "const": "error"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Sévérité : pilote la couleur/pastille (sémantique feedback)."
+              },
+              "type": {
+                "description": "Catégorie libre de l'événement (« deploy », « alert »…).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "at",
+              "message",
+              "severity",
+              "type"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/EventFeedPanelEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxHeight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f649a64d95f18c38bd75b46bc6723ba34b35532a64caca59005ce556e5a523df",
+        "declarationPath": "packages/components-react/dist/EventFeedPanel.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "EventFeedPanelProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "EventFeedPanelEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Horodatage en millisecondes epoch (ou tout nombre croissant).",
+                "type": "number"
+              },
+              "message": {
+                "description": "Message principal affiché.",
+                "type": "string"
+              },
+              "severity": {
+                "anyOf": [
+                  {
+                    "const": "info"
+                  },
+                  {
+                    "const": "success"
+                  },
+                  {
+                    "const": "warning"
+                  },
+                  {
+                    "const": "error"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Sévérité : pilote la couleur/pastille (sémantique feedback)."
+              },
+              "type": {
+                "description": "Catégorie libre de l'événement (« deploy », « alert »…).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "at",
+              "message",
+              "severity",
+              "type"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/EventFeedPanelEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxHeight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5db810e2db1db254677f83bdac6225de79adeaf0129ca257c64d3241b112445f",
+        "declarationPath": "packages/components-svelte/dist/EventFeedPanel.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "EventFeedPanelProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "EventFeedPanelEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Horodatage en millisecondes epoch (ou tout nombre croissant).",
+                "type": "number"
+              },
+              "message": {
+                "description": "Message principal affiché.",
+                "type": "string"
+              },
+              "severity": {
+                "anyOf": [
+                  {
+                    "const": "info"
+                  },
+                  {
+                    "const": "success"
+                  },
+                  {
+                    "const": "warning"
+                  },
+                  {
+                    "const": "error"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Sévérité : pilote la couleur/pastille (sémantique feedback)."
+              },
+              "type": {
+                "description": "Catégorie libre de l'événement (« deploy », « alert »…).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "at",
+              "message",
+              "severity",
+              "type"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/EventFeedPanelEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxHeight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:99364d7ce5bf5efeeb3edaeb37fcb9e60b841f5d896c6988556890c7bfd0b89d",
+        "declarationPath": "packages/components-vue/dist/EventFeedPanel.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "EventFeedPanelProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,218 @@
+{
+  "componentId": "color-swatch",
+  "contractSource": "derived",
+  "digest": "sha256:20a668e4dc4b871739558ec9928f078a1472daccf01574b39a39d73775bd7d0b",
+  "entryDigest": "sha256:5110ce92d8089ab0145fffabf4eb3fc66c236a054e75785c62adb8674ddf12b1",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square",
+              "pill"
+            ]
+          },
+          "size": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:856e32fcacfed75aa41e7ce3afe7217b359cfb90394768855c1c0e48cabc4772",
+        "declarationPath": "packages/components-angular/dist/ColorSwatch.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ColorSwatchProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "className",
+          "color"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "color": {
+            "description": "Couleur (hex/rgb/oklch/var(--token)) rendue via background inline — voulu.",
+            "type": "string"
+          },
+          "label": {
+            "description": "Libellé optionnel affiché à côté de la pastille.",
+            "type": "string"
+          },
+          "shape": {
+            "description": "Forme de la pastille (défaut \"square\").",
+            "enum": [
+              "circle",
+              "square",
+              "pill"
+            ]
+          },
+          "size": {
+            "description": "Côté de la pastille en px (défaut 24).",
+            "type": "number"
+          }
+        },
+        "required": [
+          "color"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f2979933ae65584de0226fc6e803f30b06d7cff3c75cab70981455be7b162b67",
+        "declarationPath": "packages/components-react/dist/ColorSwatch.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ColorSwatchProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "class",
+          "color"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square",
+              "pill"
+            ]
+          },
+          "size": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "color"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d5f4163ac237c4e036b582bed79da771e13aeaf732afc72cadc2fca7745ec894",
+        "declarationPath": "packages/components-svelte/dist/ColorSwatch.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ColorSwatchProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "square",
+              "pill"
+            ]
+          },
+          "size": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "color"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ee35c1cb649fc38456a28f0a48e2b73eb7733071c1502d4c5f85b546af0ccb02",
+        "declarationPath": "packages/components-vue/dist/ColorSwatch.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ColorSwatchProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

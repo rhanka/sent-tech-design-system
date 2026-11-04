@@ -1,0 +1,643 @@
+{
+  "componentId": "multi-select",
+  "contractSource": "derived",
+  "digest": "sha256:b1213e09129bb296661f33cdcc19abca82d2cae8fbbcf2f22b727394cb0fc28d",
+  "entryDigest": "sha256:7ab858b991c8b0af20fad5707a84d89f799d8db623ee52be83a808f3942c2620",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        {
+          "name": "selectedChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MultiSelectOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "group": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "helperText": {},
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "listLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "noResultsLabel": {
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/MultiSelectOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "removeLabel": {
+            "type": "string"
+          },
+          "searchPlaceholder": {
+            "type": "string"
+          },
+          "selected": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MultiSelectOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fcab3b17f737462ac6d8eaf5b8702bfd37a09e4d17c824db56ece9193ccf9c4d",
+        "declarationPath": "packages/components-angular/dist/MultiSelect.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "MultiSelectProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "MultiSelectOption.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "errorText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "MultiSelectOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "listLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "noResultsLabel": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/MultiSelectOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "removeLabel": {
+            "type": "string"
+          },
+          "searchPlaceholder": {
+            "type": "string"
+          },
+          "selected": {
+            "description": "Svelte-canonical alias for the selected values.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "MultiSelectProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "selected"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "MultiSelectOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "listLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "noResultsLabel": {
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/MultiSelectOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "removeLabel": {
+            "type": "string"
+          },
+          "searchPlaceholder": {
+            "type": "string"
+          },
+          "selected": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c13674af3150ad96b327c362b86c03dfbba4afc51993ed84bbe520acb1eb8561",
+        "declarationPath": "packages/components-svelte/dist/MultiSelect.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "MultiSelectProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        },
+        {
+          "name": "update:open"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "MultiSelectOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "helperText": {},
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "listLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "noResultsLabel": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/MultiSelectOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "removeLabel": {
+            "type": "string"
+          },
+          "searchPlaceholder": {
+            "type": "string"
+          },
+          "selected": {
+            "description": "Svelte-canonical alias for the selected values.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MultiSelectOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6dfc15980998e98254ac93fac586451c4900e42f3bedd95d621688b5880a1f2e",
+        "declarationPath": "packages/components-vue/dist/MultiSelect.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "MultiSelectProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
+        "two-way binding: prop \"open\" paired with emit \"update:open\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

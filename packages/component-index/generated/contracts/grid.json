@@ -1,0 +1,204 @@
+{
+  "componentId": "grid",
+  "contractSource": "derived",
+  "digest": "sha256:8b01aed01a9d3be50a1be0db586a6fc3ebd7bb1bc729b14fb285b287430d8e78",
+  "entryDigest": "sha256:fac42cd15de536c5081d2fce2d5e07136e94fb30dace449ec956e3f61377be72",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "minItemWidth": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b58e8c220b42ceea45fed386b145c03bcdaa98af53c40de8e5438ae76a1234ef",
+        "declarationPath": "packages/components-angular/dist/Grid.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "GridProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "columns": {
+            "description": "Number of equal columns: `repeat(columns, minmax(0, 1fr))`.",
+            "type": "number"
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "minItemWidth": {
+            "description": "Responsive auto mode: `repeat(auto-fill, minmax(minItemWidth, 1fr))`.\nTakes priority over `columns` when provided.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7d0dfeb4241fff492e11bed161f62938fac0289e445f0b8c9a1484b9064fc362",
+        "declarationPath": "packages/components-react/dist/Grid.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "GridProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "description": "Number of equal columns: `repeat(columns, minmax(0, 1fr))`.",
+            "type": "number"
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "minItemWidth": {
+            "description": "Responsive auto mode: `repeat(auto-fill, minmax(minItemWidth, 1fr))`.\nTakes priority over `columns` when provided.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e082f60cf51166b8cb0a38589399069d87da30c501c83fc4c3ab000b1137a7f0",
+        "declarationPath": "packages/components-svelte/dist/Grid.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "GridProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "description": "Number of equal columns: `repeat(columns, minmax(0, 1fr))`.",
+            "type": "number"
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "minItemWidth": {
+            "description": "Responsive auto mode: `repeat(auto-fill, minmax(minItemWidth, 1fr))`.\nTakes priority over `columns` when provided.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7dec5bb14efffaf809507d3b247051c399f104a80b8cf01b046cb2ffb7616006",
+        "declarationPath": "packages/components-vue/dist/Grid.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "GridProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

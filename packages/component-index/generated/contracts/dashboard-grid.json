@@ -1,0 +1,436 @@
+{
+  "componentId": "dashboard-grid",
+  "contractSource": "derived",
+  "digest": "sha256:96db5e5b9853fdd017739328408fd37236fc1b3b08c93dea7bc33e42d0a7e35b",
+  "entryDigest": "sha256:245b2f8579935411e264dcedc3e07eede3a6b7e8b65d6b86451780d3d9aa4790",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onLayout",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(tiles: DashboardGridTile[]) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "layoutChange",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DashboardGridTile": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "h": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "w": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "h",
+              "id",
+              "w",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rowHeight": {
+            "type": "number"
+          },
+          "tiles": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4fd71ecf4227aece8600f887478f240be4346d74d052e33007ad2534200a8150",
+        "declarationPath": "packages/components-angular/dist/DashboardGrid.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DashboardGridProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onLayout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DashboardGridTile": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "h": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "w": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "h",
+              "id",
+              "w",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rowHeight": {
+            "type": "number"
+          },
+          "tiles": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tiles"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c455d1d60b0e767807853e03c77fd0858265360592f67a676c3109d96076115c",
+        "declarationPath": "packages/components-react/dist/DashboardGrid.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DashboardGridProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onLayout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DashboardGridTile": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "h": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "w": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "h",
+              "id",
+              "w",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rowHeight": {
+            "type": "number"
+          },
+          "tiles": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tiles"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:37b951465fb934910211ac750417553ef3974cab0c41d53d3ea8ca3efdcc2e7e",
+        "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DashboardGridProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onLayout",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(tiles: DashboardGridTile[]) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onLayout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DashboardGridTile": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "h": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "w": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "h",
+              "id",
+              "w",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rowHeight": {
+            "type": "number"
+          },
+          "tiles": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tiles"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b7169050c8d6979851ea5522bc9a4f35030415a37ba7e4cdc6cc04c9db546db3",
+        "declarationPath": "packages/components-vue/dist/DashboardGrid.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DashboardGridProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

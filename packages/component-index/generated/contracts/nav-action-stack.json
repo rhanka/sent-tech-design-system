@@ -1,0 +1,486 @@
+{
+  "componentId": "nav-action-stack",
+  "contractSource": "derived",
+  "digest": "sha256:cd6a34e82eb02e29cfb2a12b6112765786bf11c6bc88235aa23f001a0f764f17",
+  "entryDigest": "sha256:d97509ada4f74e85081678561c0f5233a9e455e67891f70b725ed9bda2c01f01",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "NavAction.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "NavActionDangerZone.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavAction": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "primary",
+                  "secondary",
+                  "ghost"
+                ]
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "NavActionDangerZone": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/$defs/NavAction"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dangerLabel": {
+            "type": "string"
+          },
+          "dangerZone": {
+            "$ref": "#/$defs/NavActionDangerZone"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fa311fa24b458f48b2daaadb46be742e2f2150de2dccf3b8f0527cc3cfbf11f5",
+        "declarationPath": "packages/components-angular/dist/NavActionStack.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "NavActionStackProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "NavAction.icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "NavAction.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "node",
+          "name": "NavActionDangerZone.icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "NavActionDangerZone.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavAction": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "primary",
+                  "secondary",
+                  "ghost"
+                ]
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "NavActionDangerZone": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/$defs/NavAction"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "dangerLabel": {
+            "description": "Libellé de l'overline de la zone sensible. Défaut « Zone sensible ».",
+            "type": "string"
+          },
+          "dangerZone": {
+            "$ref": "#/$defs/NavActionDangerZone"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe d'actions.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c2ae1d10f1289c5c6ba76f51456fd5cbf6c913eef951d472c61e66aaed7398ef",
+        "declarationPath": "packages/components-react/dist/NavActionStack.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "NavActionStackProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "snippet",
+          "name": "NavAction.icon",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[]>"
+        },
+        {
+          "kind": "function",
+          "name": "NavAction.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "snippet",
+          "name": "NavActionDangerZone.icon",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[]>"
+        },
+        {
+          "kind": "function",
+          "name": "NavActionDangerZone.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "NavAction": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "primary",
+                  "secondary",
+                  "ghost"
+                ]
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "NavActionDangerZone": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/$defs/NavAction"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dangerLabel": {
+            "description": "Libellé de l'overline de la zone sensible. Défaut « Zone sensible ».",
+            "type": "string"
+          },
+          "dangerZone": {
+            "$ref": "#/$defs/NavActionDangerZone"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe d'actions.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:516bfac646ab5d7a1ecbe2849c1930de8769b25dd87f94a670e85a6acc2b351d",
+        "declarationPath": "packages/components-svelte/dist/NavActionStack.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "NavActionStackProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "NavAction.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        },
+        {
+          "kind": "function",
+          "name": "NavAction.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "NavActionDangerZone.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        },
+        {
+          "kind": "function",
+          "name": "NavActionDangerZone.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "NavAction": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "primary",
+                  "secondary",
+                  "ghost"
+                ]
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "NavActionDangerZone": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/$defs/NavAction"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dangerLabel": {
+            "description": "Libellé de l'overline de la zone sensible. Défaut « Zone sensible ».",
+            "type": "string"
+          },
+          "dangerZone": {
+            "$ref": "#/$defs/NavActionDangerZone"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe d'actions.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "NavAction.icon",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        },
+        {
+          "name": "NavActionDangerZone.icon",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c973e21c38fa43adc068b3037828ef127cad7b3823a3a51f1b6953a15eedf3a3",
+        "declarationPath": "packages/components-vue/dist/NavActionStack.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "NavActionStackProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

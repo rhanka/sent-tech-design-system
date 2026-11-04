@@ -1,0 +1,324 @@
+{
+  "componentId": "vector-field-chart",
+  "contractSource": "derived",
+  "digest": "sha256:854f083478d34dd0a8726b504c3ed6b11ee80aa35e501941ebb48844a31697c6",
+  "entryDigest": "sha256:b3c5cabc129dfd403262645e76c83efdcd02cfe21a8bdf4385e63a5b8ff64ced",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "VectorFieldChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "direction": {
+                "type": "number"
+              },
+              "length": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "direction",
+              "length",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/VectorFieldChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b66500b56904dfd0e0ceb3b53843b14d9be289ff6e73ca6b6e8b8f8094e32a0c",
+        "declarationPath": "packages/components-angular/dist/VectorFieldChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "VectorFieldChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "VectorFieldChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "direction": {
+                "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
+                "type": "number"
+              },
+              "length": {
+                "description": "Magnitude (≥ 0) : pilote la longueur normalisée et la couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "direction",
+              "length",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/VectorFieldChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:38daa69fe31fe31beae17528e0774e7f33edf3d3dc91de8eb521a746f903772f",
+        "declarationPath": "packages/components-react/dist/VectorFieldChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "VectorFieldChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "VectorFieldChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "direction": {
+                "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
+                "type": "number"
+              },
+              "length": {
+                "description": "Magnitude (≥ 0) : pilote la longueur normalisée et la couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "direction",
+              "length",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/VectorFieldChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f9b770a7d3229778258a8d191a98c43d5a9d93486ac4d3bd7e422b2824e47784",
+        "declarationPath": "packages/components-svelte/dist/VectorFieldChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "VectorFieldChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "VectorFieldChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "direction": {
+                "description": "Direction en DEGRÉS (0° = +X, sens trigonométrique).",
+                "type": "number"
+              },
+              "length": {
+                "description": "Magnitude (≥ 0) : pilote la longueur normalisée et la couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "direction",
+              "length",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/VectorFieldChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fd38dea36fe0565ceb4e7ee0030ccc0d53701db75f12ff4eacc5f7392327e1ba",
+        "declarationPath": "packages/components-vue/dist/VectorFieldChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "VectorFieldChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

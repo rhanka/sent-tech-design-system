@@ -1,0 +1,458 @@
+{
+  "componentId": "status-history-chart",
+  "contractSource": "derived",
+  "digest": "sha256:a1867c8c4a1cc78067fbfc1edafb5b97ad179846ce596b96ed86c83d2fff6314",
+  "entryDigest": "sha256:846277d1a708752356e4560ec2f1cbf580436b0124466039055c2fbce1b56bb1",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StatusHistoryBucket": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "at",
+              "value"
+            ],
+            "type": "object"
+          },
+          "StatusHistorySeries": {
+            "additionalProperties": false,
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/StatusHistoryBucket"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StatusHistorySeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:05dcb5b101ce51a2f3e03aac89037fa0f2345becbe83cb4a435952e94d898452",
+        "declarationPath": "packages/components-angular/dist/StatusHistoryChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StatusHistoryChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StatusHistoryBucket": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "at",
+              "value"
+            ],
+            "type": "object"
+          },
+          "StatusHistorySeries": {
+            "additionalProperties": false,
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/StatusHistoryBucket"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StatusHistorySeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e2c60c531220117ef68d7fd0e687da8702228a7fd95f0d16e98d40845a8ae939",
+        "declarationPath": "packages/components-react/dist/StatusHistoryChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StatusHistoryChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StatusHistoryBucket": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "at",
+              "value"
+            ],
+            "type": "object"
+          },
+          "StatusHistorySeries": {
+            "additionalProperties": false,
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/StatusHistoryBucket"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StatusHistorySeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:580d57893f4f0c6929619e6ead88d4a3d7f23059c93eb86a7fc35c3f05eb3ace",
+        "declarationPath": "packages/components-svelte/dist/StatusHistoryChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StatusHistoryChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StatusHistoryBucket": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "at",
+              "value"
+            ],
+            "type": "object"
+          },
+          "StatusHistorySeries": {
+            "additionalProperties": false,
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/StatusHistoryBucket"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StatusHistorySeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f3f854f4bd817df68d7c353d90fbe6a3706667a4bb994347ca02b6aa7382be75",
+        "declarationPath": "packages/components-vue/dist/StatusHistoryChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StatusHistoryChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

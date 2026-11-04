@@ -1,0 +1,311 @@
+{
+  "componentId": "wind-barb-chart",
+  "contractSource": "derived",
+  "digest": "sha256:96b848f216d3ab945cdf9fa1a778c0ab823d239b33d2ac0185618d84c016b095",
+  "entryDigest": "sha256:5e7025a9b347c14625733e320ca8a3ac918a78110814d426f7cfcb3fc529f868",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WindBarbChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "direction": {
+                "type": "number"
+              },
+              "speed": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "direction",
+              "speed"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WindBarbChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7f0d1d4b1944f3a4008324b5cbffd997a73ffdee4d187cc725a94062b2eb7804",
+        "declarationPath": "packages/components-angular/dist/WindBarbChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "WindBarbChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "WindBarbChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Position sur l'axe temporel (timestamp ou index).",
+                "type": "number"
+              },
+              "direction": {
+                "description": "Direction (d'où vient le vent) en DEGRÉS (0° = Nord).",
+                "type": "number"
+              },
+              "speed": {
+                "description": "Vitesse du vent en nœuds (≥ 0) : pilote les barbules et la couleur.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "direction",
+              "speed"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WindBarbChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e9687d4d14a8f4d142661d2ec78697c507284a7ce149c566fb67fb5a35ba334c",
+        "declarationPath": "packages/components-react/dist/WindBarbChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "WindBarbChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WindBarbChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Position sur l'axe temporel (timestamp ou index).",
+                "type": "number"
+              },
+              "direction": {
+                "description": "Direction (d'où vient le vent) en DEGRÉS (0° = Nord).",
+                "type": "number"
+              },
+              "speed": {
+                "description": "Vitesse du vent en nœuds (≥ 0) : pilote les barbules et la couleur.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "direction",
+              "speed"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WindBarbChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e58a6a711c8a635b2f24bec9d1507e4fe338ddf93481fab4467cccec5472f3e6",
+        "declarationPath": "packages/components-svelte/dist/WindBarbChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "WindBarbChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "WindBarbChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "at": {
+                "description": "Position sur l'axe temporel (timestamp ou index).",
+                "type": "number"
+              },
+              "direction": {
+                "description": "Direction (d'où vient le vent) en DEGRÉS (0° = Nord).",
+                "type": "number"
+              },
+              "speed": {
+                "description": "Vitesse du vent en nœuds (≥ 0) : pilote les barbules et la couleur.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "direction",
+              "speed"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WindBarbChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0693e23c1c6fa46fad5ce823718beb47dab9b86725eb9126b4ce4b95e6cfddb8",
+        "declarationPath": "packages/components-vue/dist/WindBarbChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "WindBarbChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}
