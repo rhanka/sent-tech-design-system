@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "pareto-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:db482a37b08d013962a49cecb65e163c3df2aba118047a3af2a03b969bd4e08f",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ParetoChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6bb1398dec74db397eb71a514262d0b3bad2a0cbd75a64577924db34259c5ee9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ParetoChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:e5ac5201dc1737253f760cfd0b81c637514ee40797671b1652cc2240402e8570",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ParetoChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:539098df951ca1da35b082f7719454b8a70a3bb05d4b8891ee6f432e601ae4fd",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ParetoChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Descending bars with a cumulative percentage curve (Pareto principle).",
+    "fr": "Barres triées décroissantes avec courbe cumulée en pourcentage (loi de Pareto)."
+  },
+  "digest": "sha256:851b2dca53faf3bd9acd5e87b9919445b2cf4daa8c8781f2fa859a74bda5efd4",
+  "displayName": "ParetoChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

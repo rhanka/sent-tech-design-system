@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "variable-pie-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:7caeb5a67f78f12c1f19f26adcbbf46c61db556d3a9e10f2dab597a35770addb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/VariablePieChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c26b8cda57fe861135f2978af1c1c5f9fcc0ff14f656a626dfa50ab6a04f1403",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/VariablePieChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f8058e33be7ea08f173957ed06006c49a07f24bf18c0cb0d073b5314be081472",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/VariablePieChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ee1e97552001e77057e477ace42b4a16fd1d2a4d9a3cfa08287bdb966d06bdb6",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/VariablePieChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius.",
+    "fr": "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max."
+  },
+  "digest": "sha256:4576dc4a8bdc7712eb5dc28ef1ab9ee6d405cdee2f41e27ea55a9b7c91390273",
+  "displayName": "VariablePieChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

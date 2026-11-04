@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "time-picker",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f1cf6b3dfa280b8c6839862f0ff46fa42d861465af60ff9124af42cab5595fee",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TimePicker.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f386737d0d0942c1ea1be44a8b9533bc2a601c2692818bdbd58db66059204b0f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TimePicker.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d28d898ec735f8f10ff1210679049567eb9809b93c5cdd1250bebd5a3179ca1c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TimePicker.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7ea686636af31b491838cc49f074585e7fcda7c315840df1e317a00b6d3e8a85",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TimePicker.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Time selection from slots generated at a fixed step.",
+    "fr": "Sélection d'une heure parmi des créneaux générés par pas."
+  },
+  "digest": "sha256:507f82adffc1273dcc72bc8e89602705ffd97c81a6ff408c06fb662bab5969d2",
+  "displayName": "TimePicker",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

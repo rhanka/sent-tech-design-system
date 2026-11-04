@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "waterfall-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a596d580c74417d448059cd56b9a36e54dba398ba49a2f8b36df4b68f885dc23",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/WaterfallChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:82e0fb5bcbadecd0a75cb54f57c4ba230d53ad742c016ed8a1dc0a03cd7f2389",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/WaterfallChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7142f016b01d0ef9f7a3e969057ba898209c267ac85fc7d44ceb8ee062e8e467",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/WaterfallChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:6bcc4302576d13a161e2896e82540a2c8313c6b2eeab60f7f3ce08b60c3c68e0",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/WaterfallChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Waterfall chart (increases, decreases, totals) with optional connectors.",
+    "fr": "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs."
+  },
+  "digest": "sha256:5ecc2f7fb580bba3c8f107ab337601392b11995ca67aad3281f404631dc90f70",
+  "displayName": "WaterfallChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

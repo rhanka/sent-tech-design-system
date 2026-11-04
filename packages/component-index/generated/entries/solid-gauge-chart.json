@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "solid-gauge-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:e7f8fa59c8e1d96e34e944060de314c95623fa54af1d215b39549137399b18c9",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SolidGaugeChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:55cf84b9b9a479e842867b6a60d01e47bb915355ac9beef55c39407316b2808a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SolidGaugeChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2943ccdf8292bb240c09c9d42ba1e48ec89fa3d26770556bb16abbbe9b445dc5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SolidGaugeChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:641f31106a9fd2c8c1d18d065f86442b4f8142088b848f48810726ed472e4815",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SolidGaugeChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Solid progress ring: filled arc proportional to value, threshold-tinted, with centered value.",
+    "fr": "Anneau de progression plein : arc rempli proportionnel à la valeur, teinté par seuils, valeur centrale."
+  },
+  "digest": "sha256:876ffd820d54fbcae556bd45f41b90c30a8382ed5177100b78a0cc53de9a6004",
+  "displayName": "SolidGaugeChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

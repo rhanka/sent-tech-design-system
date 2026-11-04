@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "date-picker",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a4f0ee59f2ced47ae7dfcd0d4c7e1ae220aaccbc18fb379b29da8e7a95928247",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DatePicker.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5fa1cf2c06f6e879dadfa00d2920437bbe506172b1c337bbaf6b56a2e25dfd40",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DatePicker.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7624d45fae5eae1f44f1a893a231d81d9195834182c9fcc5b713de3d97374e80",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DatePicker.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b7f7eb890352e4c1a29b63f2daa7bb1e5f19e5c4b064c13259d2b6f2246c6737",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DatePicker.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Date picker, single or range mode.",
+    "fr": "Sélecteur de date, mode simple ou plage."
+  },
+  "digest": "sha256:174358bef5b8be8cf303808e416931c3a1ee3a91a07aefab55cc9dbb0f719c66",
+  "displayName": "DatePicker",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

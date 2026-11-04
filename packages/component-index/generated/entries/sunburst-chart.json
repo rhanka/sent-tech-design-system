@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "sunburst-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:9d30d2227e8bc03a5905b643d04a9255f7d373f57655f228f2a9db7d96848bd6",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SunburstChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:17f192b744e66cea519fba8574dd03aca7d04aa9092b8db78c92b583be519538",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SunburstChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8a5629479cd9b633538cd25ff0db661d1352caa678aa75bf1e5f874e260fecaa",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SunburstChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:49e22641d06e9f548b1faf4853b20296b544bd301b40c656c3ce4662f6aa4ad7",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SunburstChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Radial hierarchy for exploring nested contributions.",
+    "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
+  },
+  "digest": "sha256:857b41a34a632b9385d4b2a76e8e9634e69fd7e3ef51abe9d174aebf1249df89",
+  "displayName": "SunburstChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

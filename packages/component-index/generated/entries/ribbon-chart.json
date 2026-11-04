@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "ribbon-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:bb8506e1b90ab2d27b26f71324f2aa8f12c85c566bee73e527cf1b9a2ead73ff",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/RibbonChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a0cb73ed3e1142b230f609d478b007f29b212c45eca53329774a8f8339705ab6",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/RibbonChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4b2c44128d145b80675cc916249b73d868c35d3f4f34d2a3c33133dc8bb15d2c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/RibbonChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a842c57441e38dcab559dd9b1a560a96148d9fb001229c02fe7f1a0bffbb884c",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/RibbonChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
+    "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
+  },
+  "digest": "sha256:085430d1e868d2074d1f1e97ad22e0b8e6d6b513a013656d753d25446398b99a",
+  "displayName": "RibbonChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

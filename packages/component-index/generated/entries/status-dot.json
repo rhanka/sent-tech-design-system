@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "status-dot",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:52bb6def9f7123f70bbb2af4e3000b88a013462a7a022618bc545d4193e620c3",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/StatusDot.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9d1c2de9f9ca74366bd4d5fe6de5f6cd7c92e861ba99b914c5f5d73a1ffcaabf",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/StatusDot.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:76e644f10b7501c1594a56da6c5fcf64f38d4b52c53de80bf85bb11c1ead7362",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/StatusDot.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1348cd9caa658ce12fca16c3ad9e65faea1a8514f13135b48f80e3bfea1d363b",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/StatusDot.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
+    "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
+  },
+  "digest": "sha256:f239e7a801878c5c2c5bc876a830629d3ed9ac7bf4965622fab0d0133bd44576",
+  "displayName": "StatusDot",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

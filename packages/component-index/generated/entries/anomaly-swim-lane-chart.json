@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "anomaly-swim-lane-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c6c1e6fdb01b038e7fd1ee9e41009990c2e7cf839cab50520752a922157356cc",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/AnomalySwimLaneChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:28f171c81d851a76baecb0e249f5c3dea132fb5680e0c324048ff2ed20060f23",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/AnomalySwimLaneChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:89d5bab3b2109ca4a58271709027e9fe626e1787893c201b92d71f2bd27179c9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/AnomalySwimLaneChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9cb6bc787b8857c5aaff8d9c82cb30ecdba1759c65e8cf18691c03fc71c09194",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/AnomalySwimLaneChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Time × job heatmap: color encodes a continuous anomaly score (intensity gradient).",
+    "fr": "Heatmap temps × job : la couleur encode un score d'anomalie continu (gradient d'intensité)."
+  },
+  "digest": "sha256:899f0c4a482f09edcba3306de2b4cef531a2879f6da7e2d1ad347e6c353ac9d0",
+  "displayName": "AnomalySwimLaneChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

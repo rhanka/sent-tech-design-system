@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "packed-bubbles-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:c353089bf9c56c16147eb8e01264d1dc248857841ce98bc7949c6ece927cc534",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/PackedBubblesChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8942495b626013eac8cb27e7152d7279d14035136432816a8889101b1363f290",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/PackedBubblesChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:395feab394f7a3528b7a5b7d28f00d820ebd16e50abef0855d4cc7f521c0561b",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/PackedBubblesChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:93d6195e6a05020f09f0664e157528fcd44198d001b8b3793db76fbbf9955434",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/PackedBubblesChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Packed bubbles whose area is proportional to value.",
+    "fr": "Bulles tassées dont l'aire est proportionnelle à la valeur."
+  },
+  "digest": "sha256:640d0eae42d59337cb012ad2c3022c9eee09f2fde154c5bce537aef6047a6a4a",
+  "displayName": "PackedBubblesChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

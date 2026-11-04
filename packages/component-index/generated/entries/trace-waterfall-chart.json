@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "trace-waterfall-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:27ab5ef1f39867d480078d13470842232a0022ef87c81bca8329f063cde09ea5",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/TraceWaterfallChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:cd79e67f94513c3a729df7d01f47aff4aed62175e554ab839ff0e96d528b2b1a",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/TraceWaterfallChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:02a9a5e53a8623f65092650b8666beeb9e7b8df2a6722295b496453258644ba3",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/TraceWaterfallChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c85cf16b91c6fc0bee5dd711f12500234dda0ffd75211cb07c4e262b9f19debd",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/TraceWaterfallChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Distributed span trace: start → duration bars on the time axis, ordered and indented by hierarchy.",
+    "fr": "Trace de spans distribués : barres start → durée sur l'axe temps, ordonnées et indentées par hiérarchie."
+  },
+  "digest": "sha256:24c4b4cb10de2dfc1247d0a2402abc0fc4f7d9a167bf0f6faa1ade4efed4459e",
+  "displayName": "TraceWaterfallChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

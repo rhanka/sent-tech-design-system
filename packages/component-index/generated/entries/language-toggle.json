@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "language-toggle",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:b65c4dbcef768127124832cb1e9acba2462c2d98c441dc968a1dd4b1c47e6ae7",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LanguageToggle.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4537ae070665b45f102795b5af481b30e6cc1460ed5ff66c4a4b7153765fa651",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/LanguageToggle.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:417e3381e4d5b5c1a001304a6aab0218b88dbb18e6049382513d947c0bd0e7f7",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/LanguageToggle.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8baeb5022f09b0fd61a9ee07a84c025265f495954a30412ef03e55dcf18f470f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/LanguageToggle.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Controlled language toggle, as a desktop select or mobile accordion.",
+    "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
+  },
+  "digest": "sha256:a692984363a1f3afae0dd0a019e698353c6dfe81253d9546bb77bcc6451a2c97",
+  "displayName": "LanguageToggle",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "language-selector",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

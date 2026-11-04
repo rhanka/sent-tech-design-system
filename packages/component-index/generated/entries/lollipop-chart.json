@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "lollipop-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:581838d9a99107e23faf15acf178f6d8b4bb66556e8cde1e3d8e1bdc5c32ac48",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LollipopChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:64ad96f839c332b44d7b5b2e9a9722c373d7a1bc834a5f429a06bb4e117c9b60",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/LollipopChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2366f2428d9229cdc1f0312994a3959b30c5abc44f5c6152d42b8dd3109a08a0",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/LollipopChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:088f2be6c14c01c849ae4749bcaf869bebc9d7d778e118fac9da6a9a3e80f2ef",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/LollipopChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Lollipop chart: thin stems and dots to compare values across categories.",
+    "fr": "Diagramme en sucette : tige fine et pastille pour comparer des valeurs par catégorie."
+  },
+  "digest": "sha256:91387d63112fa7f663f5083b12d4366dc3760da547d6d1053588991e77f2f37a",
+  "displayName": "LollipopChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

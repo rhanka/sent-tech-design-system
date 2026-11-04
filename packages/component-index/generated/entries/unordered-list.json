@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "unordered-list",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:db3dc43b1bf78c73282eb4fb6ed94ae2a9eb77e614a0b4a90723e67a676def8e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/UnorderedList.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:99d8148dcdfe4c6ad70f80a88ff73a5a7e39f783fbce3c33522e27b195ca51ef",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/UnorderedList.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1b2852eb817226dc96d9cee28b48bd661d3f2f19103f84719e1dc669651fe239",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/UnorderedList.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:c34ea280b929b50c77c2983e1db8855c0318da4dc7bba46ac53c0a9da7c1a77d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/UnorderedList.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Bulleted unordered list, with nesting.",
+    "fr": "Liste à puces, avec imbrication."
+  },
+  "digest": "sha256:94e3f2ff81799eb7085ee6ffb57c472048bd57c12c153e02b40ce08211d6b5b3",
+  "displayName": "UnorderedList",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "skip-link",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4f5edec2e180a6364c4bdb5aba6691eea981ab4150879dc17fd1a4006a9d4f5b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SkipLink.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8d3b4491764386c9f807ab549024a88ba90a522c0352389d7d5d5b3d53381ba9",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SkipLink.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:7f1edd5a2cb0834b12c6b0e9fd8a6eb98e00b4c6a5421078a243769ca5bfc2be",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SkipLink.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:271ebc8b343948d041d91ce26cacc402f9cb25c2545b2246cbf0e41cc2c2a868",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SkipLink.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Skip link (a11y): off-screen until keyboard focus.",
+    "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
+  },
+  "digest": "sha256:9cd7ac0a26befdbce516e78809da7b1d6fd3a70432c8fc8e949b899dd771b8e0",
+  "displayName": "SkipLink",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

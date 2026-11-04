@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "error-bar-chart",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:fcc7e1115aca5c6555d8afcda9a6750b1670784cd224f69b9940bf3521795815",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/ErrorBarChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4a9ddcc3531f1ba36d5f9b82e6d2fa50adc96d545a736eb01b035178e689ea5d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/ErrorBarChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f81a6ff02f5c5b7c8b3ca4daa8d92da7a5ad9cebacc2addcbd5079973a218320",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/ErrorBarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:abb31630f84917d6735daecc88f2f907d1fd06cfcca6cc67d134cbd59c92c394",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/ErrorBarChart.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval).",
+    "fr": "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance)."
+  },
+  "digest": "sha256:350003cb63962f4fe648bf6dcf5b68b8c23dd721e3fdd2632a31b09e8c5e603c",
+  "displayName": "ErrorBarChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
