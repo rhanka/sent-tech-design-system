@@ -1,7 +1,7 @@
 {
   "version": 2,
   "baseCommit": "24f6f8e9c66d0755e7facea4d08ff181cb7de65c",
-  "note": "Measured parity and barrel-only inventory on the base commit (spec 6.3). The generator recomputes every list and fails on any deviation: a new gap, a resolved gap, or a barrel surface change without a same-commit baseline update all turn index:check red. Never edit this file to make a gate pass.",
+  "note": "Measured parity and barrel-only inventory on the base commit (spec 6.3). The generator recomputes every list and fails on any deviation: a new gap, a resolved gap, or a barrel surface change without a same-commit baseline update all turn index:check red. Never edit this file to make a gate pass. K1b section 11: key \"unresolvedStars\" renamed to \"stars\" (same semantics); format stays version 2.",
   "completeReason": "Present as a value export in all four component barrels (svelte, react, vue, angular). Applies to every expectedParity row not listed in gaps.",
   "expectedParity": {
     "button": {
@@ -1742,7 +1742,7 @@
       "toSignalStore"
     ]
   },
-  "unresolvedStars": {
+  "stars": {
     "svelte": [],
     "react": [],
     "vue": [],

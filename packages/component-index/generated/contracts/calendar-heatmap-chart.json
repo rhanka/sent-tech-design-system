@@ -1,0 +1,293 @@
+{
+  "componentId": "calendar-heatmap-chart",
+  "contractSource": "derived",
+  "digest": "sha256:aab8905d17b1c21ce2c5dee8baed4aca46f31bd8692239ad4eee69a2fcea9ece",
+  "entryDigest": "sha256:e751307184322eef12f4c32fe05a3636998f34cba4be980c2c0338807a1942a8",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CalendarHeatmapChartDatum": {
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CalendarHeatmapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4e32b0342e0265934a301c8fbfe7cc29428f6a8994cc83997515b71b24850425",
+        "declarationPath": "packages/components-angular/dist/CalendarHeatmapChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CalendarHeatmapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CalendarHeatmapChartDatum": {
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CalendarHeatmapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:562490a7bdc523f02e94637269e7b8c84a5cc8ec381556c30a47f9e7177ccd21",
+        "declarationPath": "packages/components-react/dist/CalendarHeatmapChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CalendarHeatmapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CalendarHeatmapChartDatum": {
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CalendarHeatmapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1c019b618b4045236f0f7fec5b3aa0e2993c52531896321765c350700c65c282",
+        "declarationPath": "packages/components-svelte/dist/CalendarHeatmapChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CalendarHeatmapChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CalendarHeatmapChartDatum": {
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "date",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CalendarHeatmapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:57e2a733960ae404928e5583ded30703e34803e5affcbb99729eac38ab10c22a",
+        "declarationPath": "packages/components-vue/dist/CalendarHeatmapChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CalendarHeatmapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

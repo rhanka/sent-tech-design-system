@@ -1,0 +1,379 @@
+{
+  "componentId": "tabs",
+  "contractSource": "derived",
+  "digest": "sha256:060a1f322e7127683f1951607f2f61bb20bb02192efcb18654b30a946edacb68",
+  "entryDigest": "sha256:ec517cf8756c26ceb20aac776e797ec926548f18096c353240e35575d6dd764a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onchange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TabItem": {
+            "properties": {
+              "content": {},
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "activeId": {
+            "type": "string"
+          },
+          "activeValue": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TabItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TabItem.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "TabItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:267812be8bb0fcc822d213fec1f5b33c826122d279baea01080f58cd59744c04",
+        "declarationPath": "packages/components-angular/dist/Tabs.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TabsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "TabItem.content",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "TabItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "onchange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "TabItem": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "activeId": {
+            "type": "string"
+          },
+          "activeValue": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TabItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TabsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "snippet",
+          "name": "TabItem.content",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[]>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TabItem": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "activeValue": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TabItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0954bfeced5f130c557b3340ad5af3f9d3eefa3bfa0bf4cb6cad7b03857bc26a",
+        "declarationPath": "packages/components-svelte/dist/Tabs.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TabsProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onchange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TabItem": {
+            "properties": {
+              "content": {},
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "activeId": {
+            "type": "string"
+          },
+          "activeValue": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TabItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TabItem.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "TabItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d3c0af83a3505b3a87fc4d07298065974cbd29d587cf0ecebd3404b749e6890d",
+        "declarationPath": "packages/components-vue/dist/Tabs.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TabsProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

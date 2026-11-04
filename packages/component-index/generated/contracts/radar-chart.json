@@ -1,0 +1,393 @@
+{
+  "componentId": "radar-chart",
+  "contractSource": "derived",
+  "digest": "sha256:fdce12a6051dfd4e670cafc15b902d1a616c8fadfafee9c366c5c97407405112",
+  "entryDigest": "sha256:9136b6e224c7d5a1ca51165ff33772e26231403c20c99cc7744c1b3608d3e61c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RadarChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "values": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "values"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "maxValue": {
+            "type": "number"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/$defs/RadarChartSeries"
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:18dae00b3f3a7fe16b975b185343964e938bf6cc243a61802033c90253bc9744",
+        "declarationPath": "packages/components-angular/dist/RadarChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RadarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "RadarChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "values": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "values"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "maxValue": {
+            "description": "Valeur plafond du domaine. PAS de plancher arbitraire à 100 - s'adapte aux données.",
+            "type": "number"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/$defs/RadarChartSeries"
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "label",
+          "series"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a2ca08c6f59029738461d84d59297c02bed584bc3cab8f2de46904763dc81298",
+        "declarationPath": "packages/components-react/dist/RadarChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RadarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RadarChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "values": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "values"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "maxValue": {
+            "type": "number"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/$defs/RadarChartSeries"
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "label",
+          "series"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d2b8ad4b0bb5974d72267f63b68853b12669952a5576c026b6a6c2bc18dd824a",
+        "declarationPath": "packages/components-svelte/dist/RadarChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RadarChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "RadarChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "values": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "values"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "maxValue": {
+            "type": "number"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/$defs/RadarChartSeries"
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "label",
+          "series"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6b4b015b9aa1570ea2f5e0669cb2ca419cb423fa0496ac40846bc788c78688ff",
+        "declarationPath": "packages/components-vue/dist/RadarChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RadarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

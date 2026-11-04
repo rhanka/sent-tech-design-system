@@ -1,0 +1,422 @@
+{
+  "componentId": "decomposition-tree-chart",
+  "contractSource": "derived",
+  "digest": "sha256:a23c2e0bffcd51cbe03e991bcc61d303be6266e79239b254dec12da1052a0e13",
+  "entryDigest": "sha256:f2513f9012f1d04083f59ad73fe223073db51a5956bc9dba6db5f1d1c33af7b9",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DecompositionTreeData": {
+            "properties": {
+              "levels": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeLevel"
+                },
+                "type": "array"
+              },
+              "measure": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "levels",
+              "measure"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeLevel": {
+            "properties": {
+              "dimension": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeNode"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dimension",
+              "nodes"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeNode": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/$defs/DecompositionTreeData"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:77b1569fe67ee1e623f2838a4369ea3256ee3e58b29c8aaf1af5c0d5b0625b8b",
+        "declarationPath": "packages/components-angular/dist/DecompositionTreeChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DecompositionTreeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DecompositionTreeData": {
+            "properties": {
+              "levels": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeLevel"
+                },
+                "type": "array"
+              },
+              "measure": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "levels",
+              "measure"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeLevel": {
+            "properties": {
+              "dimension": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeNode"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dimension",
+              "nodes"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeNode": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/$defs/DecompositionTreeData"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:edd322fdb276bcf03f294000de2310a78bdc7a53424ce9778eb2da36b7c5b765",
+        "declarationPath": "packages/components-react/dist/DecompositionTreeChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DecompositionTreeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DecompositionTreeData": {
+            "properties": {
+              "levels": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeLevel"
+                },
+                "type": "array"
+              },
+              "measure": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "levels",
+              "measure"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeLevel": {
+            "properties": {
+              "dimension": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeNode"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dimension",
+              "nodes"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeNode": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/$defs/DecompositionTreeData"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d04e3a9f6073cb6d4602edbccd848b21e57ac72f64fdadeb704d559990dc062a",
+        "declarationPath": "packages/components-svelte/dist/DecompositionTreeChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DecompositionTreeChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DecompositionTreeData": {
+            "properties": {
+              "levels": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeLevel"
+                },
+                "type": "array"
+              },
+              "measure": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "levels",
+              "measure"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeLevel": {
+            "properties": {
+              "dimension": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "$ref": "#/$defs/DecompositionTreeNode"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dimension",
+              "nodes"
+            ],
+            "type": "object"
+          },
+          "DecompositionTreeNode": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/$defs/DecompositionTreeData"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ee9e22714d5e2a340420bcb5e6f844ec0d7880bd51448b512bea174f3d3fcf89",
+        "declarationPath": "packages/components-vue/dist/DecompositionTreeChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DecompositionTreeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

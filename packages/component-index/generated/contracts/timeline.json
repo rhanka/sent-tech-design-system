@@ -1,0 +1,316 @@
+{
+  "componentId": "timeline",
+  "contractSource": "derived",
+  "digest": "sha256:03f4eb34a8a4870f01f92db4645c4a9c62a2e65e8929f8b2d5f54fee29074e91",
+  "entryDigest": "sha256:9ea7464ceb249bac25102d0b1f898e00ebcc256525eb1646bf356b5ff8618826",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TimelineItem": {
+            "properties": {
+              "description": {
+                "description": "Description optionnelle de l'événement.",
+                "type": "string"
+              },
+              "meta": {
+                "description": "Métadonnée optionnelle (date, heure, libellé court).",
+                "type": "string"
+              },
+              "title": {
+                "description": "Titre de l'événement.",
+                "type": "string"
+              },
+              "tone": {
+                "description": "Ton de la pastille (mappé sur les tokens de statut DS, défaut \"neutral\").",
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "neutral",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TimelineItem"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ff6ea743082c02023018a4b5be3007e6726f43824d188ce7589bc5172b8fa7b0",
+        "declarationPath": "packages/components-angular/dist/Timeline.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TimelineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLOListElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TimelineItem": {
+            "properties": {
+              "description": {
+                "description": "Description optionnelle de l'événement.",
+                "type": "string"
+              },
+              "meta": {
+                "description": "Métadonnée optionnelle (date, heure, libellé court).",
+                "type": "string"
+              },
+              "title": {
+                "description": "Titre de l'événement.",
+                "type": "string"
+              },
+              "tone": {
+                "description": "Ton de la pastille (mappé sur les tokens de statut DS, défaut \"neutral\").",
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TimelineItem"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:017afab7518bfa12f195565f2b70a5b52a662270b80518b701fc8bd52dfe62ba",
+        "declarationPath": "packages/components-react/dist/Timeline.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TimelineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLOListElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TimelineItem": {
+            "properties": {
+              "description": {
+                "description": "Description optionnelle de l'événement.",
+                "type": "string"
+              },
+              "meta": {
+                "description": "Métadonnée optionnelle (date, heure, libellé court).",
+                "type": "string"
+              },
+              "title": {
+                "description": "Titre de l'événement.",
+                "type": "string"
+              },
+              "tone": {
+                "description": "Ton de la pastille (mappé sur les tokens de statut DS, défaut \"neutral\").",
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "neutral",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TimelineItem"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f0c8eb3004ea10c59296db14caed73082d945d5e4ad2479c92d7c05c4d61a3b6",
+        "declarationPath": "packages/components-svelte/dist/Timeline.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TimelineProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TimelineItem": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "meta": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "neutral",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/TimelineItem"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dda24a15203b2bfe3a00b81c7d98be4de4572a552edb75b4d693de3031bade67",
+        "declarationPath": "packages/components-vue/dist/Timeline.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TimelineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

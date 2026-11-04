@@ -1,0 +1,413 @@
+{
+  "componentId": "streamgraph-chart",
+  "contractSource": "derived",
+  "digest": "sha256:2726471f2eab434a57c97f719ba506a72878e456bb64eb34cb2c1075f8fecb2d",
+  "entryDigest": "sha256:ad64b20ac32683f8fda4fe707be93cbdeb5db5ea4722cdb89143e2ce5fd5a479",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StreamgraphChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "values": {
+                "items": {
+                  "$ref": "#/$defs/StreamgraphChartSeriesValue"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "category",
+              "values"
+            ],
+            "type": "object"
+          },
+          "StreamgraphChartSeriesValue": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StreamgraphChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ae1de5e3547ebffb2550c1ef32c52c59c914154ea22c9aab457a3a722b1b66e0",
+        "declarationPath": "packages/components-angular/dist/StreamgraphChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StreamgraphChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StreamgraphChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "values": {
+                "items": {
+                  "$ref": "#/$defs/StreamgraphChartSeriesValue"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "category",
+              "values"
+            ],
+            "type": "object"
+          },
+          "StreamgraphChartSeriesValue": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StreamgraphChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4d87fdbb9d1cff209d1e773c1e9312ab850cbba3a9d3f6caf1c595640e686255",
+        "declarationPath": "packages/components-react/dist/StreamgraphChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StreamgraphChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StreamgraphChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "values": {
+                "items": {
+                  "$ref": "#/$defs/StreamgraphChartSeriesValue"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "category",
+              "values"
+            ],
+            "type": "object"
+          },
+          "StreamgraphChartSeriesValue": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StreamgraphChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3ab45f23be379018efb0ecffb642e1962af1f6d615694d64ba4d49a9996420b4",
+        "declarationPath": "packages/components-svelte/dist/StreamgraphChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StreamgraphChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StreamgraphChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "values": {
+                "items": {
+                  "$ref": "#/$defs/StreamgraphChartSeriesValue"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "category",
+              "values"
+            ],
+            "type": "object"
+          },
+          "StreamgraphChartSeriesValue": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StreamgraphChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:02bb52d13b4a2897886a41b2589ba32cfa0b4b40c2aaa4c574f93d3773e96df9",
+        "declarationPath": "packages/components-vue/dist/StreamgraphChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StreamgraphChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,395 @@
+{
+  "componentId": "dropdown",
+  "contractSource": "derived",
+  "digest": "sha256:593e4569f1a36e87a29a3ffcc50ec5d653d483ea0461e1494d2534575c8997ff",
+  "entryDigest": "sha256:f7de59d4c3ec9502b8d618e9082ab449361a6d445a93a0647a8d9afca79e90d6",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DropdownOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/DropdownOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DropdownOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:65589139b2037d21e968e6127e94336c068d95f20da766d9baee3f93bf2d78a7",
+        "declarationPath": "packages/components-angular/dist/Dropdown.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DropdownProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "DropdownOption.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "onselect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        },
+        {
+          "kind": "node",
+          "name": "placeholder",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "onSelect"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DropdownOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/DropdownOption"
+            },
+            "type": "array"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DropdownProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onselect"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DropdownOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/DropdownOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dd0dc22b8f23268851ffb8c9019991c97649ced9b81464d42b6d4577edbf3937",
+        "declarationPath": "packages/components-svelte/dist/Dropdown.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DropdownProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onUpdate:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "select"
+        },
+        {
+          "name": "update:open"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DropdownOption": {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/DropdownOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DropdownOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3606aa0eb8fb6ab8eaa2142158d862eec95e8007cd67942b3f7b421b51eeb607",
+        "declarationPath": "packages/components-vue/dist/Dropdown.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DropdownProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
+        "two-way binding: prop \"open\" paired with emit \"update:open\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,259 @@
+{
+  "componentId": "color-scale-bar",
+  "contractSource": "derived",
+  "digest": "sha256:d6c89a4cb21c292729d1e71522a9563840a46dc538b976d8320181efe2d51190",
+  "entryDigest": "sha256:04cfac2d36a84089635cfaffaffcfe8ecc0e4abe8d8cc51101a932ecb4397b8a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "colors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "length": {
+            "type": "number"
+          },
+          "max": {
+            "type": "string"
+          },
+          "min": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "thickness": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b75d027032beee023ec5759625d2651ced8b37f1559408e87e6ebfc2961352cc",
+        "declarationPath": "packages/components-angular/dist/ColorScaleBar.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ColorScaleBarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "colors": {
+            "description": "Stops du gradient (≥2). Rendus via linear-gradient inline — voulu.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Libellé accessible.",
+            "type": "string"
+          },
+          "length": {
+            "description": "Longueur de la barre en px.",
+            "type": "number"
+          },
+          "max": {
+            "description": "Libellé d'extrémité haut/droite.",
+            "type": "string"
+          },
+          "min": {
+            "description": "Libellé d'extrémité bas/gauche.",
+            "type": "string"
+          },
+          "orientation": {
+            "description": "Orientation de la barre (défaut \"horizontal\").",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "thickness": {
+            "description": "Épaisseur de la barre en px.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "colors"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:70017f5121ce2d87aab375745081f00284fc25c9a99b75e1b341fe441708028e",
+        "declarationPath": "packages/components-react/dist/ColorScaleBar.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ColorScaleBarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "colors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "length": {
+            "type": "number"
+          },
+          "max": {
+            "type": "string"
+          },
+          "min": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "thickness": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "colors"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d1ab6e53ff6a0fb4c4fdb36c218afaa318924e895882b8156835413b0dbebbba",
+        "declarationPath": "packages/components-svelte/dist/ColorScaleBar.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ColorScaleBarProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "colors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "length": {
+            "type": "number"
+          },
+          "max": {
+            "type": "string"
+          },
+          "min": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "thickness": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "colors"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2c0d7dd48675a3b10429b216b47e8513d5269819f5cde2d8bc4d6f146778c65e",
+        "declarationPath": "packages/components-vue/dist/ColorScaleBar.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ColorScaleBarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

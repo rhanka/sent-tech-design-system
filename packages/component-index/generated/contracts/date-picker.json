@@ -1,0 +1,754 @@
+{
+  "componentId": "date-picker",
+  "contractSource": "derived",
+  "digest": "sha256:5a7f229b08921af4ff98c2ec7483b93222371a9be106ecb255f80511256fee3f",
+  "entryDigest": "sha256:174358bef5b8be8cf303808e416931c3a1ee3a91a07aefab55cc9dbb0f719c66",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DatePickerRange": {
+            "properties": {
+              "end": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "start": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "min": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "range",
+              "single"
+            ]
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "openLabel": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "todayLabel": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DatePickerRange.end",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "DatePickerRange.start",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "max",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "min",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:16b053a402a9191ef5fc4144cb3a7e23b82cb12d99d051c49ca4f097c6008cd4",
+        "declarationPath": "packages/components-angular/dist/DatePicker.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DatePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "errorText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "defaultValue",
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DatePickerRange": {
+            "properties": {
+              "end": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "start": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "defaultValue": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ],
+            "description": "Uncontrolled initial value when `value` is omitted."
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "min": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "single",
+              "range"
+            ]
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "openLabel": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "todayLabel": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ],
+            "description": "Controlled value (`Date | {start,end} | null`)."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DatePickerRange.end",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "DatePickerRange.start",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "defaultValue",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "max",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "min",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DatePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DatePickerRange": {
+            "properties": {
+              "end": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "start": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "min": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "single",
+              "range"
+            ]
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "openLabel": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "todayLabel": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ],
+            "description": "Bound value. In `mode=\"single\"` (default) this is `Date | null`. In\n`mode=\"range\"` this is `DatePickerRange`. The runtime checks `mode` at\nread/write time so misuse is non-fatal."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DatePickerRange.end",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "DatePickerRange.start",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "max",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "min",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:71f77df990d1ee1e33c99b8b0c79894a65ddf43d6db548fd62a5b474d231bc31",
+        "declarationPath": "packages/components-svelte/dist/DatePicker.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DatePickerProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "modelValue"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DatePickerRange": {
+            "properties": {
+              "end": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "start": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "helperText": {},
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "min": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "range",
+              "single"
+            ]
+          },
+          "modelValue": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ],
+            "description": "`v-model` value (`Date | {start,end} | null`)."
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "openLabel": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "todayLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DatePickerRange.end",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "DatePickerRange.start",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "max",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "min",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "modelValue",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:09b59a84b554b09c9e05aab333ef40a90be2d382a281016c0eb7e0986fe4b0b3",
+        "declarationPath": "packages/components-vue/dist/DatePicker.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DatePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

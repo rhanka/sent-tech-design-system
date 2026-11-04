@@ -1,0 +1,301 @@
+{
+  "componentId": "hlc-chart",
+  "contractSource": "derived",
+  "digest": "sha256:6f4d26d44f63e67731a35bf19b3912007e7b0ae5b826691ca619ad4db0dff279",
+  "entryDigest": "sha256:6df020965dccf57ffe9db50035fa9577b1e9c9c67677b57097cc0187f24fe01a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HLCChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HLCChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:19618667a57d52a066926c18f6ae78dbbb586507a4467829609eb71bd01a9391",
+        "declarationPath": "packages/components-angular/dist/HLCChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "HLCChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "HLCChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HLCChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0a0286e52caabf6a1de6eb7806839c063023b73f76a022202466a826776eacc3",
+        "declarationPath": "packages/components-react/dist/HLCChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "HLCChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HLCChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HLCChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e4fd64278b7fd013e08ee0392eaf805d01a4eb964d398938c122638651e33b7d",
+        "declarationPath": "packages/components-svelte/dist/HLCChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "HLCChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "HLCChartDatum": {
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HLCChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b16ce527ad30d2bb9408f48fa94dbe7559895d1b67e009580676ee45cfc97e87",
+        "declarationPath": "packages/components-vue/dist/HLCChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "HLCChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

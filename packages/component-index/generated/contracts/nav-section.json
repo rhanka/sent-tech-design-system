@@ -1,0 +1,274 @@
+{
+  "componentId": "nav-section",
+  "contractSource": "derived",
+  "digest": "sha256:f44f09cdcca3f38cdc293aa680702cfa2030344e2a768f525ca5354df9550b94",
+  "entryDigest": "sha256:e09a33eb6eb9c40576ef6588e25514463816326007c9c8499a1ac07a321b87dd",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "enum": [
+              "h2",
+              "h3"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "collapsible": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:f53c2bb4c64448085c6076c1898b4ae4f0519cae3b99921d8c0aa34bdd7399e1",
+        "declarationPath": "packages/components-angular/dist/NavSection.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "NavSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "action",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",
+            "enum": [
+              "h2",
+              "h3"
+            ]
+          },
+          "className": {
+            "type": "string"
+          },
+          "collapsible": {
+            "description": "Si true, l'en-tête devient le trigger d'un Collapsible (aria-expanded)\nqui montre/cache le contenu. Sinon : groupe titré statique.",
+            "type": "boolean"
+          },
+          "count": {
+            "description": "Compteur optionnel → Badge circle en queue de l'en-tête.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Libellé de la section, rendu via Overline (small-caps muet).",
+            "type": "string"
+          },
+          "open": {
+            "description": "État d'ouverture quand `collapsible`.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:f5af5cea51be9663d9d10f37f815c8b75b63a7b99d4c0809041cf4a83b0937ae",
+        "declarationPath": "packages/components-react/dist/NavSection.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "NavSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",
+            "enum": [
+              "h2",
+              "h3"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "collapsible": {
+            "description": "Si true, l'en-tête devient le trigger d'un Collapsible (aria-expanded)\nqui montre/cache le contenu. Sinon : groupe titré statique.",
+            "type": "boolean"
+          },
+          "count": {
+            "description": "Compteur optionnel → Badge circle en queue de l'en-tête.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Libellé de la section, rendu via Overline (small-caps muet).",
+            "type": "string"
+          },
+          "open": {
+            "description": "État d'ouverture quand `collapsible` (bindable).",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "action",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          },
+          "required": true
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:816f152e882d2e85ef4dd878372d0fe4083799657005470038ac88a1d283cec0",
+        "declarationPath": "packages/components-svelte/dist/NavSection.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "NavSectionProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(open: boolean) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggle",
+          "payload": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "toggle"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Niveau de titre de l'Overline quand la section n'est pas repliable.",
+            "enum": [
+              "h2",
+              "h3"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "collapsible": {
+            "description": "Si true, l'en-tête devient le trigger d'un Collapsible (aria-expanded)\nqui montre/cache le contenu. Sinon : groupe titré statique.",
+            "type": "boolean"
+          },
+          "count": {
+            "description": "Compteur optionnel → Badge circle en queue de l'en-tête.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Libellé de la section, rendu via Overline (small-caps muet).",
+            "type": "string"
+          },
+          "open": {
+            "description": "État d'ouverture quand `collapsible`.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f7a299287c946dce717ebfbf84a5bc698983be6922154a1392d273c7dd5a3661",
+        "declarationPath": "packages/components-vue/dist/NavSection.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "NavSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"toggle\": payload not in declaration",
+        "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

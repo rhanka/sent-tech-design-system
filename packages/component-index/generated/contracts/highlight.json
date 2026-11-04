@@ -1,0 +1,208 @@
+{
+  "componentId": "highlight",
+  "contractSource": "derived",
+  "digest": "sha256:8b6eff6b6420e1a2b06151088e45505165794740f887ffa71c3c90a87da6190a",
+  "entryDigest": "sha256:e9e3edeff13bd4a0c25dc01a161e31f3c0b7dc4ae0e461d4783a7cf665a40300",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "title": {},
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:cae8d8a97fbbd194d87e5e0ccf7d5d1c73f183787adcc97eb6409b7843df8eba",
+        "declarationPath": "packages/components-angular/dist/Highlight.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "HighlightProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "tone": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "HighlightProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class",
+          "title"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "title": {
+            "description": "Titre optionnel de la mise en avant.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Tonalité de l'encart (couleur d'accent).",
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:58e1249c6b6d3afdb3df96f16fcac1850ddc76cafbe35b07da154f002461c762",
+        "declarationPath": "packages/components-svelte/dist/Highlight.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "HighlightProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "title": {},
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4af1ecbae2e99cded63919cb3a0dc70d13aa419bcbad7b7db2b4294c9cc8bcde",
+        "declarationPath": "packages/components-vue/dist/Highlight.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "HighlightProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

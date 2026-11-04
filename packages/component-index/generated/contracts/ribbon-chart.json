@@ -1,0 +1,370 @@
+{
+  "componentId": "ribbon-chart",
+  "contractSource": "derived",
+  "digest": "sha256:ea5de86c8a5ecb903585e1d0e0af19ee3ba6fa044a9dbda0479ca030acba5708",
+  "entryDigest": "sha256:085430d1e868d2074d1f1e97ad22e0b8e6d6b513a013656d753d25446398b99a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RibbonChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "period": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "period",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RibbonChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b13232e5ca0aee025af9f63267c2fb3fcb88ef6a9ce0ddd124f060002e460abd",
+        "declarationPath": "packages/components-angular/dist/RibbonChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RibbonChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "RibbonChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "period": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "period",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RibbonChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2fa2e10d0f7ee1db09dadd222d0a355ac1e9ce9e2be8bc2343c9d9d508192aed",
+        "declarationPath": "packages/components-react/dist/RibbonChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RibbonChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RibbonChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "period": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "period",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RibbonChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2db8b3d212beb8cfa98015ea0d05636e3d16788b84fed9af7f3972d425f83c0e",
+        "declarationPath": "packages/components-svelte/dist/RibbonChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RibbonChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "RibbonChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "period": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "period",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/RibbonChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:25ebc15a9683234b45c919b328f7b00d73eb6d3e5bf4bc5b0d09912c457438e1",
+        "declarationPath": "packages/components-vue/dist/RibbonChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RibbonChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

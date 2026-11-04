@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.sent-tech.ca/catalogs/components/v1/component-contract-index.json",
+  "title": "component-contract-index/v1",
+  "description": "Pinned index of component-contract/v1 documents for one producer, with per-framework coverage counts. Rows are sorted by (producerId, componentId); contractsRevision is the tagged digest of the row set. K1a entries and the K1a registryRevision are not part of this document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "producerId", "contractsRevision", "sourceCommit", "generatedBy", "counts", "entries", "excluded"],
+  "properties": {
+    "format": { "const": "component-contract-index/v1" },
+    "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "contractsRevision": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "generatedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generator", "version"],
+      "properties": {
+        "generator": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" }
+      }
+    },
+    "counts": { "$ref": "#/$defs/counts" },
+    "entries": { "type": "array", "items": { "$ref": "#/$defs/row" } },
+    "excluded": { "type": "array", "items": { "$ref": "#/$defs/excluded" } }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contracts", "byFramework"],
+      "properties": {
+        "contracts": { "type": "integer", "minimum": 0 },
+        "byFramework": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["svelte", "react", "vue", "angular"],
+          "properties": {
+            "svelte": { "$ref": "#/$defs/frameworkCounts" },
+            "react": { "$ref": "#/$defs/frameworkCounts" },
+            "vue": { "$ref": "#/$defs/frameworkCounts" },
+            "angular": { "$ref": "#/$defs/frameworkCounts" }
+          }
+        }
+      }
+    },
+    "frameworkCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "partial", "none"],
+      "properties": {
+        "complete": { "type": "integer", "minimum": 0 },
+        "partial": { "type": "integer", "minimum": 0 },
+        "none": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producerId", "componentId", "entryDigest", "contractDigest", "completeness", "path"],
+      "properties": {
+        "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+        "componentId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "entryDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "contractDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "completeness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["svelte", "react", "vue", "angular"],
+          "properties": {
+            "svelte": { "enum": ["complete", "partial", "none"] },
+            "react": { "enum": ["complete", "partial", "none"] },
+            "vue": { "enum": ["complete", "partial", "none"] },
+            "angular": { "enum": ["complete", "partial", "none"] }
+          }
+        },
+        "path": { "type": "string", "pattern": "^contracts/[a-z0-9]+(?:-[a-z0-9]+)*\\.json$" }
+      }
+    },
+    "excluded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["componentId", "reason"],
+      "properties": {
+        "componentId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

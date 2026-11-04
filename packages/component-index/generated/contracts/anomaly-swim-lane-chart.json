@@ -1,0 +1,386 @@
+{
+  "componentId": "anomaly-swim-lane-chart",
+  "contractSource": "derived",
+  "digest": "sha256:066388ad9b7e544893b6bbf5b1d16e489a46f09176c132a72fa89696aca79284",
+  "entryDigest": "sha256:899f0c4a482f09edcba3306de2b4cef531a2879f6da7e2d1ad347e6c353ac9d0",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AnomalySwimLaneBucket": {
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "score"
+            ],
+            "type": "object"
+          },
+          "AnomalySwimLaneSeries": {
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/AnomalySwimLaneBucket"
+                },
+                "type": "array"
+              },
+              "job": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "job"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AnomalySwimLaneSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6ffb5e8e630fafa903d324f72f5dce1d7bf29a77d1bb8b662add67f7fa79bece",
+        "declarationPath": "packages/components-angular/dist/AnomalySwimLaneChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AnomalySwimLaneChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "AnomalySwimLaneBucket": {
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "score"
+            ],
+            "type": "object"
+          },
+          "AnomalySwimLaneSeries": {
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/AnomalySwimLaneBucket"
+                },
+                "type": "array"
+              },
+              "job": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "job"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AnomalySwimLaneSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c6d7b7149cd0c527f462b72879f96007969fefd967658b1de7b1001c2d1c5622",
+        "declarationPath": "packages/components-react/dist/AnomalySwimLaneChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AnomalySwimLaneChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AnomalySwimLaneBucket": {
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "score"
+            ],
+            "type": "object"
+          },
+          "AnomalySwimLaneSeries": {
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/AnomalySwimLaneBucket"
+                },
+                "type": "array"
+              },
+              "job": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "job"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AnomalySwimLaneSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ee7e5bd39143b56db21e4cdba2e12736640590372b5e08e73326e69d23106e63",
+        "declarationPath": "packages/components-svelte/dist/AnomalySwimLaneChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AnomalySwimLaneChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AnomalySwimLaneBucket": {
+            "properties": {
+              "at": {
+                "type": "number"
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "at",
+              "score"
+            ],
+            "type": "object"
+          },
+          "AnomalySwimLaneSeries": {
+            "properties": {
+              "buckets": {
+                "items": {
+                  "$ref": "#/$defs/AnomalySwimLaneBucket"
+                },
+                "type": "array"
+              },
+              "job": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "buckets",
+              "job"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AnomalySwimLaneSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f9317b63842536a18eef453611d81a5c19550dc9a4f1b4cb72c68436b9d82af6",
+        "declarationPath": "packages/components-vue/dist/AnomalySwimLaneChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AnomalySwimLaneChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

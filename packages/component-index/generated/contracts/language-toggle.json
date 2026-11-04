@@ -1,0 +1,296 @@
+{
+  "componentId": "language-toggle",
+  "contractSource": "derived",
+  "digest": "sha256:511873f698ed9b8afb344209f21cd155c6dddaebde1a268f29919d9152a7722e",
+  "entryDigest": "sha256:a692984363a1f3afae0dd0a019e698353c6dfe81253d9546bb77bcc6451a2c97",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "localeChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "accordionLabel": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "enLabel": {
+            "type": "string"
+          },
+          "frLabel": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "selectId": {
+            "type": "string"
+          },
+          "variant": {
+            "enum": [
+              "select",
+              "accordion"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0968fab6b800ff30fac009faaac448fe39ce6ffec809a9240c8f282432306780",
+        "declarationPath": "packages/components-angular/dist/LanguageToggle.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LanguageToggleProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "accordionLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "enLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "frLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "label": {
+            "description": "Libellé du sélecteur (associé via <label htmlFor> + aria-label).",
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "selectId": {
+            "description": "Id du <select> ; auto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "variant": {
+            "enum": [
+              "select",
+              "accordion"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LanguageToggleProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "accordionLabel": {
+            "description": "Titre de la section accordéon.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "enLabel": {
+            "description": "Libellé EN (i18n-agnostique : fourni par le parent).",
+            "type": "string"
+          },
+          "frLabel": {
+            "description": "Libellé FR (i18n-agnostique : fourni par le parent).",
+            "type": "string"
+          },
+          "label": {
+            "description": "Libellé du sélecteur (associé via <label for> + aria-label).",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Langue courante (contrôlé).",
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "selectId": {
+            "description": "Id du <select> ; auto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "variant": {
+            "description": "Variante d'affichage :\n- `select` (défaut) : le <select> de la source (header desktop).\n- `accordion` : la liste de boutons du tiroir mobile.",
+            "enum": [
+              "select",
+              "accordion"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e3cda41dcae3c305ac6b4fa39d45cb08ac0d198a20c4306d1f337c4339e9c818",
+        "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LanguageToggleProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "localeChange"
+        },
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "accordionLabel": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "enLabel": {
+            "type": "string"
+          },
+          "frLabel": {
+            "type": "string"
+          },
+          "label": {
+            "description": "Libellé du sélecteur (associé via <label for> + aria-label).",
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "selectId": {
+            "description": "Id du <select> ; auto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "variant": {
+            "enum": [
+              "select",
+              "accordion"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d65657680f724d0bf05cf4d6aa8b4222e17e17b6515cb86e9f10900e08898df1",
+        "declarationPath": "packages/components-vue/dist/LanguageToggle.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LanguageToggleProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"localeChange\": payload not in declaration",
+        "event pair: emits \"localeChange\" and prop \"onLocaleChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,187 @@
+{
+  "componentId": "overline",
+  "contractSource": "derived",
+  "digest": "sha256:c80e16133eb81f6992ed5a8ec3ab2498c015028b78606f87e59714df704c45a9",
+  "entryDigest": "sha256:685f00b3a47fbaac4acf991f7380d231b641e665f1a48e0ade2a62a22975f823",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "enum": [
+              "span",
+              "h2",
+              "h3",
+              "div"
+            ]
+          },
+          "class": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5f06e583f6045d289df15dce8efa4ed6e066ec07a86d3bb5f4f4c41a2b1d0dac",
+        "declarationPath": "packages/components-angular/dist/Overline.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "OverlineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",
+            "enum": [
+              "h2",
+              "h3",
+              "span",
+              "div"
+            ]
+          },
+          "className": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ae81e4684138e7e2e4daea18acc26007422ebc4f2effd64403c3fea128a93f99",
+        "declarationPath": "packages/components-react/dist/Overline.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "OverlineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",
+            "enum": [
+              "h2",
+              "h3",
+              "span",
+              "div"
+            ]
+          },
+          "class": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b6d744670d8185b87aafefae4f53bc0e23241bb6dffffcb96c09332e23866ef2",
+        "declarationPath": "packages/components-svelte/dist/Overline.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "OverlineProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "as": {
+            "description": "Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région.",
+            "enum": [
+              "span",
+              "h2",
+              "h3",
+              "div"
+            ]
+          },
+          "class": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c36370d60cd75f190389548f786a31b3f4c3ffdad3d5d609b6136ff647e8b3b9",
+        "declarationPath": "packages/components-vue/dist/Overline.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "OverlineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

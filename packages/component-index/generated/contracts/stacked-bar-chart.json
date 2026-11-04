@@ -1,0 +1,592 @@
+{
+  "componentId": "stacked-bar-chart",
+  "contractSource": "derived",
+  "digest": "sha256:8a30146bad66310acf4a46754e4dfa69817f3b77db347639df6e5d0489e12ae8",
+  "entryDigest": "sha256:e47668993a6646e6908e8f9aa79377b647fe2e4393d9435fa7a252fabaeb4703",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onToggleSeries",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(seriesId: string) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StackedBarDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StackedBarSegment"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "segments"
+            ],
+            "type": "object"
+          },
+          "StackedBarSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StackedBarDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a2758728183dc2974183c08881ab5f50d3ba477e567d3a1fa753e619031b9e38",
+        "declarationPath": "packages/components-angular/dist/StackedBarChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StackedBarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StackedBarDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StackedBarSegment"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "segments"
+            ],
+            "type": "object"
+          },
+          "StackedBarSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StackedBarDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-segment value labels. `false`/absent (default) → none. `true` → each\nsegment's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override (default `center` of the segment). Segments too\nshort to host a legible label are skipped. Labels are `aria-hidden` — the\nvalues already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of series hidden from the render\n(controlled by the parent; default = all visible). Each segment whose\n`label` ∈ `hiddenSeries` is omitted and its legend item is shown \"off\"\n(`aria-pressed`). Undefined → legacy non-interactive legend, unless\n`onToggleSeries` is provided.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6244bd55d1b232ed427051dad9894e3dcb1b430a614e54919a2cedf438220e38",
+        "declarationPath": "packages/components-react/dist/StackedBarChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StackedBarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StackedBarDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StackedBarSegment"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "segments"
+            ],
+            "type": "object"
+          },
+          "StackedBarSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StackedBarDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-segment value labels. `false`/absent (default) → none. `true` → each\nsegment's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override (default `center` of the segment). Segments too\nshort to host a legible label are skipped. Labels are `aria-hidden` — the\nvalues already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of series hidden from the render\n(controlled by the parent; default = all visible). Each segment whose\n`label` ∈ `hiddenSeries` is omitted and its legend item is shown \"off\"\n(`aria-pressed`). Undefined → legacy non-interactive legend, unless\n`onToggleSeries` is provided.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2a0f7f595f820b7b0ea18a460bbf3286087a17b149c3e4cd76379838756cc2c1",
+        "declarationPath": "packages/components-svelte/dist/StackedBarChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StackedBarChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onToggleSeries",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(seriesId: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StackedBarDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StackedBarSegment"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "label",
+              "segments"
+            ],
+            "type": "object"
+          },
+          "StackedBarSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StackedBarDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-segment value labels. `false`/absent (default) → none. `true` → each\nsegment's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override (default `center` of the segment). Segments too\nshort to host a legible label are skipped. Labels are `aria-hidden` — the\nvalues already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of series hidden from the render\n(controlled by the parent; default = all visible). Each segment whose\n`label` ∈ `hiddenSeries` is omitted and its legend item is shown \"off\"\n(`aria-pressed`). Undefined → legacy non-interactive legend, unless\n`onToggleSeries` is provided.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showLegend": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:701821065b821d22009ff8d577e2cb5fcdcd9b01d235c49f82a9f971bbb05342",
+        "declarationPath": "packages/components-vue/dist/StackedBarChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StackedBarChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

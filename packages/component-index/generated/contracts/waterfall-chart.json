@@ -1,0 +1,337 @@
+{
+  "componentId": "waterfall-chart",
+  "contractSource": "derived",
+  "digest": "sha256:861e3e51d8eba93235fd043618f45c63772bfc8f19b418728652229b350bd482",
+  "entryDigest": "sha256:5ecc2f7fb580bba3c8f107ab337601392b11995ca67aad3281f404631dc90f70",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WaterfallChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "total",
+                  "increase",
+                  "decrease"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "connectors": {
+            "type": "boolean"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaterfallChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:de48ce8445241a6710bd2926b438dcb04867c502dc6717f58c35546c229fe694",
+        "declarationPath": "packages/components-angular/dist/WaterfallChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "WaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "WaterfallChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "increase",
+                  "decrease",
+                  "total"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "connectors": {
+            "type": "boolean"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaterfallChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b43fc836dec3f76da2e24cffb58c457bd13649caa10f02d2bffcb56bcca27e2c",
+        "declarationPath": "packages/components-react/dist/WaterfallChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "WaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WaterfallChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "increase",
+                  "decrease",
+                  "total"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "connectors": {
+            "type": "boolean"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaterfallChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c021d8e6dcb049fd3b41b50ce08180547b0ebaa9da512f6eefa85f233aa4d8e8",
+        "declarationPath": "packages/components-svelte/dist/WaterfallChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "WaterfallChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "WaterfallChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "total",
+                  "increase",
+                  "decrease"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "connectors": {
+            "type": "boolean"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaterfallChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:927d564a1c7b402acc73c0ef6fcd1977ab99a0623229a13612a0bd25295b90b8",
+        "declarationPath": "packages/components-vue/dist/WaterfallChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "WaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

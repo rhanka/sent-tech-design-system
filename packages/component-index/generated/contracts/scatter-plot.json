@@ -1,0 +1,1481 @@
+{
+  "componentId": "scatter-plot",
+  "contractSource": "derived",
+  "digest": "sha256:7256193eecb49e5507c836d0f19f7379abdd1962f8e79e4dc75278b15780fb64",
+  "entryDigest": "sha256:0121dba0f4b645ee3f44dba76ccf797c3ccf3b2e9a07791e05801c7747076bbb",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ScatterPlotCentroid": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          "ScatterPlotDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "r": {
+                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "centroids": {
+            "items": {
+              "$ref": "#/$defs/ScatterPlotCentroid"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ScatterPlotDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "yLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ab3a91804998a91a4bee919cb5749a00252152997ec709b53a5a4e8fad37dc3e",
+        "declarationPath": "packages/components-angular/dist/ScatterPlot.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ScatterPlotProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ScatterPlotCentroid": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          "ScatterPlotDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "r": {
+                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear), so `xScale`/`yScale` are\nlinear. Resolved to pixels via the chart's scales and drawn in a dedicated\n`<g class=\"st-scatterPlot__annotations\">` — regions behind the points,\nevery other kind above them. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "centroids": {
+            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
+            "items": {
+              "$ref": "#/$defs/ScatterPlotCentroid"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ScatterPlotDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value with the chart's numeric formatter (the datum `label` wins\nwhen present). Object → `format(value)` and/or a `position` override.\nDefault position is `top` (above the point). Labels are `aria-hidden` — the\nvalues already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"` (the serialised coordinates). When provided\n(string or null), the crosshair + tooltip track this key instead of the\nchart's internal pointer hover (null ⇒ nothing shown), letting a parent\nshare one hover channel across several aligned charts. Absent (`undefined`)\nkeeps the legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between\npoints (data order), Home/End jump to the first/last, Enter/Space select the\nfocused point (`onSelectKey`), Escape leaves the navigation. Each focused\npoint announces its key + value. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "yLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:299323917b2a0d296c4b6fa99694c95fec2acde38563b9f78b3c0821cd68c629",
+        "declarationPath": "packages/components-react/dist/ScatterPlot.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ScatterPlotProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ScatterPlotCentroid": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          "ScatterPlotDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "r": {
+                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "centroids": {
+            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
+            "items": {
+              "$ref": "#/$defs/ScatterPlotCentroid"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ScatterPlotDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent → none. `true` → each point's value\n(the datum `label` wins when present). Object → `format`/`position`.\nDefault position `top`. Labels are `aria-hidden`."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"`. Absent (`undefined`) keeps the uncontrolled\nbehaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — roving-tabindex keyboard navigation of the data points.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "yLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6d10b6862846e3a20e0fb5ed71112b0e877a66f99d511d326106abb855cf4a9c",
+        "declarationPath": "packages/components-svelte/dist/ScatterPlot.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ScatterPlotProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ScatterPlotCentroid": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          "ScatterPlotDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "r": {
+                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "centroids": {
+            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
+            "items": {
+              "$ref": "#/$defs/ScatterPlotCentroid"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ScatterPlotDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value (the datum `label` wins when present). Object → `format` /\n`position`. Default position is `top`. Labels are `aria-hidden`."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"`. Absent (`undefined`) keeps the uncontrolled\nbehaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — roving-tabindex keyboard navigation of the data points.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "yLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f02c142e6aa0cf5ff6bc783c52b4d113863f96e397474b0dbbcdb77d9ce933d5",
+        "declarationPath": "packages/components-vue/dist/ScatterPlot.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ScatterPlotProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

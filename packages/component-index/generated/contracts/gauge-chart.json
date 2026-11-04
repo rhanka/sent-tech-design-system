@@ -1,0 +1,434 @@
+{
+  "componentId": "gauge-chart",
+  "contractSource": "derived",
+  "digest": "sha256:6a9d456dedd1928a03d956d02495212e24c753cdaebcf91fe625d8f5d6756d4d",
+  "entryDigest": "sha256:93bd0a1d02685e323984752e5f658087fc4a10c65c79bd9b248df1284cfbd8f3",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "GaugeChartThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "startAngle": {
+            "type": "number"
+          },
+          "thickness": {
+            "type": "number"
+          },
+          "thresholds": {
+            "items": {
+              "$ref": "#/$defs/GaugeChartThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b89df974355a52e5a698a5fe436be72e4c633ceb0f15ab8630c00bbf202e9fb6",
+        "declarationPath": "packages/components-angular/dist/GaugeChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "GaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "GaugeChartThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "endAngle": {
+            "description": "Angle de fin en degrés.",
+            "type": "number"
+          },
+          "format": {
+            "description": "Format de la valeur centrale.",
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "label": {
+            "description": "Libellé décrivant la jauge (a11y + texte sous la valeur).",
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "startAngle": {
+            "description": "Angle de départ en degrés (0 = est, sens horaire).",
+            "type": "number"
+          },
+          "thickness": {
+            "description": "Épaisseur de l'arc.",
+            "type": "number"
+          },
+          "thresholds": {
+            "description": "Bandes colorées sur la piste. Triées par `value` croissante.",
+            "items": {
+              "$ref": "#/$defs/GaugeChartThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "description": "Suffixe d'unité (ignoré pour `percent`).",
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0d5586167ab6730381a5e7a4df00e12f47121f17133ecfb07d786d22aef52fcd",
+        "declarationPath": "packages/components-react/dist/GaugeChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "GaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "GaugeChartThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "description": "Angle de fin en degrés.",
+            "type": "number"
+          },
+          "format": {
+            "description": "Format de la valeur centrale.",
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "label": {
+            "description": "Libellé décrivant la jauge (a11y + texte sous la valeur).",
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "startAngle": {
+            "description": "Angle de départ en degrés (0 = est, sens horaire).",
+            "type": "number"
+          },
+          "thickness": {
+            "description": "Épaisseur de l'arc.",
+            "type": "number"
+          },
+          "thresholds": {
+            "description": "Bandes colorées sur la piste. Triées par `value` croissante.",
+            "items": {
+              "$ref": "#/$defs/GaugeChartThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "description": "Suffixe d'unité (ignoré pour `percent`).",
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f5d75940de9d617b3edd2b3b081392646576a67b9db06bc27aae55d1e6244541",
+        "declarationPath": "packages/components-svelte/dist/GaugeChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "GaugeChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "GaugeChartThreshold": {
+            "properties": {
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "tone",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "endAngle": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "size": {
+            "type": "number"
+          },
+          "startAngle": {
+            "type": "number"
+          },
+          "thickness": {
+            "type": "number"
+          },
+          "thresholds": {
+            "items": {
+              "$ref": "#/$defs/GaugeChartThreshold"
+            },
+            "type": "array"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4277708698be410e5debe1a32d291927049daa21684f78c6fb075f68c90ccc2b",
+        "declarationPath": "packages/components-vue/dist/GaugeChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "GaugeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,332 @@
+{
+  "componentId": "selectable-list",
+  "contractSource": "derived",
+  "digest": "sha256:2cdd726dbd3db2b0dab2486f58b2a4ffa002ed8a3102727ed0eed8470d282beb",
+  "entryDigest": "sha256:db9b8d243b38bcb86c5fe4fdeb059c71dd6b59bd05c48bda0cbdf55e46e9e1be",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string | string[] | null) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labelledby": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:f2ab5dc6b3b5928ab39a33d25df4f4b04b468153c027e4ac447eb6c69fa75049",
+        "declarationPath": "packages/components-angular/dist/SelectableList.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SelectableListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "onChange"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "label": {
+            "description": "Accessible name for the listbox (required for SR users).",
+            "type": "string"
+          },
+          "labelledby": {
+            "description": "References the id of an external visible label (alternative to `label`).",
+            "type": "string"
+          },
+          "multiple": {
+            "description": "Allow more than one selected row. Adds aria-multiselectable and toggles\neach row independently. Defaults to false (single-select).",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "description": "Selected value(s). Controlled when provided. For single-select pass a\nstring (or null); for multiple pass a string[]. When omitted the list is\nuncontrolled and keeps its own internal selection."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:eea48b7257716c65a464576db22fdab86b21aae94ca1759bc719c7fb43ecf1a8",
+        "declarationPath": "packages/components-react/dist/SelectableList.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SelectableListProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "description": "Accessible name for the listbox (required for SR users).",
+            "type": "string"
+          },
+          "labelledby": {
+            "description": "References the id of an external visible label (alternative to `label`).",
+            "type": "string"
+          },
+          "multiple": {
+            "description": "Allow more than one selected row. Adds aria-multiselectable and toggles\neach row independently. Defaults to false (single-select).",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "description": "Selected value(s). Controlled when provided. For single-select pass a\nstring (or null); for multiple pass a string[]. When omitted the list is\nuncontrolled and keeps its own internal selection."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:192fa10b39deef2494b4554d2123134f53530bd99223bcc2e6ff0701a23992a6",
+        "declarationPath": "packages/components-svelte/dist/SelectableList.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SelectableListProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string | string[] | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "description": "Accessible name for the listbox (required for SR users).",
+            "type": "string"
+          },
+          "labelledby": {
+            "description": "References the id of an external visible label (alternative to `label`).",
+            "type": "string"
+          },
+          "multiple": {
+            "description": "Allow more than one selected row. Adds aria-multiselectable and toggles\neach row independently. Defaults to false (single-select).",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "description": "Selected value(s). Controlled when provided. For single-select pass a\nstring (or null); for multiple pass a string[]. When omitted the list is\nuncontrolled and keeps its own internal selection."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b735e9f29a9a764d44abb54e84ad256f193c360edf1d86328ca43881ecc8b577",
+        "declarationPath": "packages/components-vue/dist/SelectableList.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SelectableListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

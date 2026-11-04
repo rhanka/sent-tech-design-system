@@ -1,0 +1,213 @@
+{
+  "componentId": "avatar-group",
+  "contractSource": "derived",
+  "digest": "sha256:affb3b29b17aa1ddce9e2a5fed4ea930013f408017d842eb3bbcaf41b00f78f1",
+  "entryDigest": "sha256:7a99197724e3d6c482584d04e9de99db642525e45c505cef9737036bf28c4fd3",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b4513f16bff702f2653aa02f8255ea00f4c294ada4424ace1f544965ed726518",
+        "declarationPath": "packages/components-angular/dist/AvatarGroup.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AvatarGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Nombre maximum d'avatars visibles. Au-delà, un jeton « +N » est affiché.",
+            "type": "number"
+          },
+          "size": {
+            "description": "Taille appliquée au jeton de débordement (doit refléter les Avatar).",
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "total": {
+            "description": "Nombre total réel d'éléments (sert à calculer le « +N » si > max).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:575b62399d634f347df94658de2a241add151717e0438be3d4aa06c0c0e9baff",
+        "declarationPath": "packages/components-react/dist/AvatarGroup.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AvatarGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Nombre maximum d'avatars visibles. Au-delà, un jeton « +N » est affiché.",
+            "type": "number"
+          },
+          "size": {
+            "description": "Taille appliquée au jeton de débordement (doit refléter les Avatar).",
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "total": {
+            "description": "Nombre total réel d'éléments (sert à calculer le « +N » si > max).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:172d14f082211cf3209d65a70c74f61db8e289221de3c6780e0c40266616fef4",
+        "declarationPath": "packages/components-svelte/dist/AvatarGroup.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AvatarGroupProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Nombre maximum d'avatars visibles. Au-delà, un jeton « +N » est affiché.",
+            "type": "number"
+          },
+          "size": {
+            "description": "Taille appliquée au jeton de débordement (doit refléter les Avatar).",
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "total": {
+            "description": "Nombre total réel d'éléments (sert à calculer le « +N » si > max).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3b3e71b1e046b6e151193b2580814a49d600ca070d9f5c33b5e2f6790b2ef989",
+        "declarationPath": "packages/components-vue/dist/AvatarGroup.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AvatarGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

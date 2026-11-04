@@ -1,0 +1,303 @@
+{
+  "componentId": "slide-indicator",
+  "contractSource": "derived",
+  "digest": "sha256:062871ef3c50f5f27aec5c8e0c5f1d7ab9c49e0483a03ed3c4ae071ee755a142",
+  "entryDigest": "sha256:6ae208fd03b23c2b844f3925b6bec55e16f17514e294d2accdc166e1aa6e561f",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(index: number) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "bars",
+              "dots"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:72791a2b1ec9366d1d25e55db2c89b2a6580168d0a944c77bd116e9cb8dbca4b",
+        "declarationPath": "packages/components-angular/dist/SlideIndicator.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SlideIndicatorProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre total de diapositives.",
+            "type": "number"
+          },
+          "current": {
+            "description": "Index de la diapositive courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Préfixe d'étiquette accessible de chaque point (\"Diapositive 1\"...).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "dots",
+              "bars"
+            ]
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SlideIndicatorProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre total de diapositives.",
+            "type": "number"
+          },
+          "current": {
+            "description": "Index de la diapositive courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Préfixe d'étiquette accessible de chaque point (\"Diapositive 1\"...).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "dots",
+              "bars"
+            ]
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dc69042d5b0df7c48af84ed636992428b83ea5b2d99f87b0008bdb3522b8c45f",
+        "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SlideIndicatorProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(index: number) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre total de diapositives.",
+            "type": "number"
+          },
+          "current": {
+            "description": "Index de la diapositive courante (0-based).",
+            "type": "number"
+          },
+          "label": {
+            "description": "Préfixe d'étiquette accessible de chaque point (\"Diapositive 1\"...).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "bars",
+              "dots"
+            ]
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9d06de66e418bfb1efc6b9027c0b82fd5b8a920d80a6570042b48d827e85beae",
+        "declarationPath": "packages/components-vue/dist/SlideIndicator.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SlideIndicatorProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

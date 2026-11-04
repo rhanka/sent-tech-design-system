@@ -1,0 +1,1168 @@
+{
+  "componentId": "data-table",
+  "contractSource": "derived",
+  "digest": "sha256:3acd413c63d159442448e76a8e53793477cb3c6f278077121db2cb45bf8413cd",
+  "entryDigest": "sha256:3ebd6af94d8bb2f7f1a298d1d5a59bc0bc694db01a844682adf7687470f6099f",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cell",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => unknown"
+        },
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cellDecoration",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow, value: unknown, colId: string) => CellDecoration | null"
+        },
+        {
+          "kind": "function",
+          "name": "onPageChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(page: number) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onRowClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectionChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(selectedIds: string[]) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSortChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(sortBy: DataTableSort | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "rangeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(range: { start: number; end: number; total: number; }) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "pageChange",
+          "payload": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "selectionChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        {
+          "name": "sortChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "type": "string"
+              },
+              "intent": {
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          },
+          "DataTableColumn": {
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "label": {},
+              "sortable": {
+                "type": "boolean"
+              },
+              "width": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "DataTableRow": {
+            "additionalProperties": {},
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          },
+          "DataTableSort": {
+            "properties": {
+              "direction": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "direction",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "caption": {},
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/DataTableColumn"
+            },
+            "type": "array"
+          },
+          "decorations": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/$defs/CellDecoration"
+              },
+              "properties": {},
+              "type": "object"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "emptyLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "paginationLabel": {
+            "type": "string"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/DataTableRow"
+            },
+            "type": "array"
+          },
+          "selectAllLabel": {
+            "type": "string"
+          },
+          "selectRowLabel": {
+            "type": "string"
+          },
+          "selectable": {
+            "enum": [
+              "multiple",
+              "none",
+              "single"
+            ]
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sortAscendingLabel": {
+            "type": "string"
+          },
+          "sortBy": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortDescendingLabel": {
+            "type": "string"
+          },
+          "sortNoneLabel": {
+            "type": "string"
+          },
+          "sortable": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DataTableColumn.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "DataTableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "DataTableRow"
+        },
+        {
+          "name": "caption",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "decorations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
+          "sourceType": "Record<string, Record<string, CellDecoration>>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f174fe1f6189ac6ff81f1b644b3c9f7e048b67bcb84469e6c2bcef5ae5777d25",
+        "declarationPath": "packages/components-angular/dist/DataTable.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DataTableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cell",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: R, column: DataTableColumn<R>) => ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cellDecoration",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: R, value: unknown, colId: string) => CellDecoration | null"
+        },
+        {
+          "kind": "node",
+          "name": "DataTableColumn.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "caption",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "rangeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(range: { start: number; end: number; total: number; }) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onPageChange",
+          "payload": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "onRowClick",
+          "payload": {
+            "$ref": "#/$defs/DataTableRow"
+          }
+        },
+        {
+          "name": "onSelectionChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        {
+          "name": "onSortChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.TableHTMLAttributes<HTMLTableElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "neutral",
+                  "info",
+                  "warning",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          },
+          "DataTableColumn": {
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "sortable": {
+                "type": "boolean"
+              },
+              "width": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "type": "object"
+          },
+          "DataTableRow": {
+            "additionalProperties": {},
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          },
+          "DataTableSort": {
+            "properties": {
+              "direction": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "direction",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/DataTableColumn"
+            },
+            "type": "array"
+          },
+          "decorations": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/$defs/CellDecoration"
+              },
+              "properties": {},
+              "type": "object"
+            },
+            "description": "Conditional formatting : décorations sémantiques par cellule, indexées\n`rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.",
+            "properties": {},
+            "type": "object"
+          },
+          "emptyLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "paginationLabel": {
+            "type": "string"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/DataTableRow"
+            },
+            "type": "array"
+          },
+          "selectAllLabel": {
+            "type": "string"
+          },
+          "selectRowLabel": {
+            "type": "string"
+          },
+          "selectable": {
+            "enum": [
+              "multiple",
+              "none",
+              "single"
+            ]
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sortAscendingLabel": {
+            "type": "string"
+          },
+          "sortBy": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortDescendingLabel": {
+            "type": "string"
+          },
+          "sortNoneLabel": {
+            "type": "string"
+          },
+          "sortable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DataTableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "DataTableRow"
+        },
+        {
+          "name": "decorations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
+          "sourceType": "Record<string, Record<string, CellDecoration>>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:530786f01be0654a039eb6d2c29e8617db74a9165990a3d07fe995ed1a037925",
+        "declarationPath": "packages/components-react/dist/DataTable.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DataTableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "generic type parameter \"R\" of \"DataTableProps\" instantiated with its default (DataTableRow)"
+      ]
+    },
+    "svelte": {
+      "bindable": [
+        "page",
+        "selectedIds",
+        "sortBy"
+      ],
+      "dropped": [
+        {
+          "kind": "snippet",
+          "name": "DataTableColumn.cell",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[DataTableRow, DataTableColumn<DataTableRow>]>"
+        },
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cellDecoration",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow, value: unknown, colId: string) => CellDecoration | null"
+        },
+        {
+          "kind": "function",
+          "name": "rangeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(range: { start: number; end: number; total: number; }) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onRowClick",
+          "payload": {
+            "$ref": "#/$defs/DataTableRow"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLTableAttributes",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          },
+          "DataTableColumn": {
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "sortable": {
+                "type": "boolean"
+              },
+              "width": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "DataTableRow": {
+            "additionalProperties": {},
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          },
+          "DataTableSort": {
+            "properties": {
+              "direction": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "direction",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "caption": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/DataTableColumn"
+            },
+            "type": "array"
+          },
+          "decorations": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/$defs/CellDecoration"
+              },
+              "properties": {},
+              "type": "object"
+            },
+            "description": "Conditional formatting : décorations sémantiques par cellule, indexées\n`rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.",
+            "properties": {},
+            "type": "object"
+          },
+          "emptyLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "paginationLabel": {
+            "type": "string"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/DataTableRow"
+            },
+            "type": "array"
+          },
+          "selectAllLabel": {
+            "type": "string"
+          },
+          "selectRowLabel": {
+            "type": "string"
+          },
+          "selectable": {
+            "enum": [
+              "multiple",
+              "none",
+              "single"
+            ]
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sortAscendingLabel": {
+            "type": "string"
+          },
+          "sortBy": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortDescendingLabel": {
+            "type": "string"
+          },
+          "sortNoneLabel": {
+            "type": "string"
+          },
+          "sortable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DataTableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "DataTableRow"
+        },
+        {
+          "name": "decorations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
+          "sourceType": "Record<string, Record<string, CellDecoration>>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:06ed7f493384da1ccea339a935e124fd0a00f859f60c51196189d22c3facbe47",
+        "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DataTableProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)"
+      ]
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cell",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => VNodeChild"
+        },
+        {
+          "kind": "function",
+          "name": "DataTableColumn.cellDecoration",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow, value: unknown, colId: string) => CellDecoration | null"
+        },
+        {
+          "kind": "node",
+          "name": "DataTableColumn.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
+        },
+        {
+          "kind": "node",
+          "name": "caption",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
+        },
+        {
+          "kind": "function",
+          "name": "onPageChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(page: number) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onRowClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(row: DataTableRow) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectionChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(selectedIds: string[]) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSortChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(sortBy: DataTableSort | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "rangeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(range: { start: number; end: number; total: number; }) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onPageChange",
+          "payload": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "onRowClick",
+          "payload": {
+            "$ref": "#/$defs/DataTableRow"
+          }
+        },
+        {
+          "name": "onSelectionChange",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        {
+          "name": "onSortChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          },
+          "DataTableColumn": {
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "sortable": {
+                "type": "boolean"
+              },
+              "width": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "type": "object"
+          },
+          "DataTableRow": {
+            "additionalProperties": {},
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          },
+          "DataTableSort": {
+            "properties": {
+              "direction": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "direction",
+              "key"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/DataTableColumn"
+            },
+            "type": "array"
+          },
+          "decorations": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/$defs/CellDecoration"
+              },
+              "properties": {},
+              "type": "object"
+            },
+            "description": "Conditional formatting : décorations sémantiques par cellule, indexées\n`rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.",
+            "properties": {},
+            "type": "object"
+          },
+          "emptyLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "nextLabel": {
+            "type": "string"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "paginationLabel": {
+            "type": "string"
+          },
+          "previousLabel": {
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/DataTableRow"
+            },
+            "type": "array"
+          },
+          "selectAllLabel": {
+            "type": "string"
+          },
+          "selectRowLabel": {
+            "type": "string"
+          },
+          "selectable": {
+            "enum": [
+              "multiple",
+              "none",
+              "single"
+            ]
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sortAscendingLabel": {
+            "type": "string"
+          },
+          "sortBy": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DataTableSort"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortDescendingLabel": {
+            "type": "string"
+          },
+          "sortNoneLabel": {
+            "type": "string"
+          },
+          "sortable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "DataTableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "DataTableRow"
+        },
+        {
+          "name": "decorations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
+          "sourceType": "Record<string, Record<string, CellDecoration>>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8df205db886904d362671b83d839839bc688a6200520ee8314981a6f950a5adb",
+        "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DataTableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

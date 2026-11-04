@@ -1,0 +1,557 @@
+{
+  "componentId": "file-uploader",
+  "contractSource": "derived",
+  "digest": "sha256:b47b383531aede9e2a87aa75bc9c750dc8055063e3d129930d039dd0979f0dea",
+  "entryDigest": "sha256:9e9c9eb40fa0fba19fb23bf79a5c1e7161c1ca237b5ba47490dafa1ae107df96",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "removeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(filename: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "files",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "remove",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "FileUploadItem": {
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "file": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "uploading",
+                  "complete"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "accept": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dropzoneLabel": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/FileUploadItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "triggerLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dcf22772f3d282bbbd68a2c98c648f31177697619eebf21f2a6e45e4fae7921f",
+        "declarationPath": "packages/components-angular/dist/FileUploader.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FileUploaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "files.payload[]",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "File"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "FileUploadItem.error",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "dropzoneLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "errorText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "removeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(filename: string) => string"
+        },
+        {
+          "kind": "node",
+          "name": "triggerLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onRemoveItem",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "FileUploadItem": {
+            "properties": {
+              "file": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "progress": {
+                "type": "number"
+              },
+              "size": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "uploading",
+                  "complete"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "accept": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "description": "Field id. Wires the <label> (htmlFor) to the <input> (id). Auto-generated when omitted.",
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/FileUploadItem"
+            },
+            "type": "array"
+          },
+          "multiple": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FileUploaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "files"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "maxSizeErrorLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(filename: string, maxSizeBytes: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "removeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(filename: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onfiles",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "FileUploadItem": {
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "file": {},
+              "progress": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "uploading",
+                  "complete"
+                ]
+              }
+            },
+            "required": [
+              "file",
+              "status"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "accept": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dropzoneLabel": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "files": {
+            "items": {},
+            "type": "array"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/FileUploadItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxSizeBytes": {
+            "type": "number"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "triggerLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "FileUploadItem.file",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "File"
+        },
+        {
+          "name": "files[]",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "File"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f0e151eb32c39e33b85839b68745834cc99fbe726a8fddbce3b488a59de5c7e1",
+        "declarationPath": "packages/components-svelte/dist/FileUploader.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FileUploaderProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onfiles.files[]",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "File"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onRemoveItem",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(index: number) => void"
+        },
+        {
+          "kind": "function",
+          "name": "removeLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(filename: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onRemoveItem",
+          "payload": {
+            "type": "number"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "FileUploadItem": {
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "file": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "progress": {
+                "type": "number"
+              },
+              "size": {
+                "type": "number"
+              },
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "uploading",
+                  "complete"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "accept": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "dropzoneLabel": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/FileUploadItem"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "boolean"
+          },
+          "triggerLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:02cb3b5ab8a3d38038405a390291b9028f617c62e3df9087d9bed5e9c3b870ba",
+        "declarationPath": "packages/components-vue/dist/FileUploader.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FileUploaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

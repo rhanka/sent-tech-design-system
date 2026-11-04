@@ -1,0 +1,274 @@
+{
+  "componentId": "dataviz-score-card",
+  "contractSource": "derived",
+  "digest": "sha256:27fac0afacb1162b7689a9935d045ecc491893f91b4492089147ad017bd1da62",
+  "entryDigest": "sha256:5e947904001ff93421cbc84c8b264f86e0adb725424827815260d310141ae424",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "score": {
+            "type": "number"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "stars": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "value",
+              "complexity"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a1d8329a21a921bcabc8b89cba51859177c794162f10579d00370a5511ef7831",
+        "declarationPath": "packages/components-angular/dist/ScoreCard.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ScoreCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Nombre total de symboles.",
+            "type": "number"
+          },
+          "score": {
+            "description": "Score numérique affiché (formaté à une décimale).",
+            "type": "number"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "stars": {
+            "description": "Nombre de symboles pleins (0..max).",
+            "type": "number"
+          },
+          "title": {
+            "description": "Titre de la métrique notée.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Nature de la note :\n- `value` (défaut) : étoiles, accent succès.\n- `complexity` : croix, accent avertissement.",
+            "enum": [
+              "value",
+              "complexity"
+            ]
+          },
+          "unit": {
+            "description": "Libellé d'unité du score (défaut « points »).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "stars",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c7a38cb91bea8d7369601804db79aff2a5a747631e3a3f069a8953e86a50ae32",
+        "declarationPath": "packages/components-react/dist/ScoreCard.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ScoreCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Nombre total de symboles.",
+            "type": "number"
+          },
+          "score": {
+            "description": "Score numérique affiché (formaté à une décimale).",
+            "type": "number"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "stars": {
+            "description": "Nombre de symboles pleins (0..max).",
+            "type": "number"
+          },
+          "title": {
+            "description": "Titre de la métrique notée.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Nature de la note :\n- `value` (défaut) : étoiles, accent succès.\n- `complexity` : croix, accent avertissement.",
+            "enum": [
+              "value",
+              "complexity"
+            ]
+          },
+          "unit": {
+            "description": "Libellé d'unité du score (défaut « points »).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "stars",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0bada46fd65cd4d6d2b806c7fc1add3a424811e28069755bdaa913b3d6fcdd15",
+        "declarationPath": "packages/components-svelte/dist/ScoreCard.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ScoreCardProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "score": {
+            "type": "number"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "stars": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "value",
+              "complexity"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "stars",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2ed80bed95cd9e1e6b2835e18264b4cef91a9402d614168ef03b8ed35d48d8d3",
+        "declarationPath": "packages/components-vue/dist/ScoreCard.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ScoreCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

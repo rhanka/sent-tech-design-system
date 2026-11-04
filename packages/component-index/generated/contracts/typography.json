@@ -1,0 +1,348 @@
+{
+  "componentId": "typography",
+  "contractSource": "derived",
+  "digest": "sha256:754bf4e7e67759279a1d40a03ea55ee5729249866af7f430051b515fa2111dae",
+  "entryDigest": "sha256:d8ca9d9d13a33f6808dc41d764032e44f5099434c6ec82edc7de7e8a819a9616",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "justify"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "primary",
+              "secondary",
+              "muted",
+              "inverse",
+              "link"
+            ]
+          },
+          "truncate": {
+            "type": "boolean"
+          },
+          "variant": {
+            "enum": [
+              "caption",
+              "h2",
+              "h3",
+              "display",
+              "h1",
+              "h4",
+              "h5",
+              "h6",
+              "body",
+              "body-sm",
+              "overline"
+            ]
+          },
+          "weight": {
+            "enum": [
+              "regular",
+              "medium",
+              "semibold",
+              "bold"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:9fcd1db061bc9e33eeef2e541beddab6051460a90ce9df5d82d9f1b85dac1dd8",
+        "declarationPath": "packages/components-angular/dist/Typography.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TypographyProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "as",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionComponent<any>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "justify"
+            ]
+          },
+          "className": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "primary",
+              "secondary",
+              "muted",
+              "link",
+              "inverse"
+            ]
+          },
+          "truncate": {
+            "description": "Tronque sur une ligne avec ellipsis.",
+            "type": "boolean"
+          },
+          "variant": {
+            "enum": [
+              "display",
+              "h2",
+              "h3",
+              "body",
+              "caption",
+              "h1",
+              "h4",
+              "h5",
+              "h6",
+              "body-sm",
+              "overline"
+            ]
+          },
+          "weight": {
+            "enum": [
+              "regular",
+              "medium",
+              "semibold",
+              "bold"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "as",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentClass<any, any>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:09e7657768802fe21c6d6467ccb84d5f95dee18c86ae44cb7a549cccf5c138a9",
+        "declarationPath": "packages/components-react/dist/Typography.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TypographyProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "justify"
+            ]
+          },
+          "as": {
+            "description": "Surcharge la balise déduite de la variante.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "primary",
+              "secondary",
+              "muted",
+              "inverse",
+              "link"
+            ]
+          },
+          "truncate": {
+            "description": "Tronque sur une ligne avec ellipsis.",
+            "type": "boolean"
+          },
+          "variant": {
+            "enum": [
+              "display",
+              "h2",
+              "h3",
+              "h1",
+              "h4",
+              "h5",
+              "h6",
+              "body",
+              "body-sm",
+              "caption",
+              "overline"
+            ]
+          },
+          "weight": {
+            "enum": [
+              "regular",
+              "medium",
+              "semibold",
+              "bold"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b898e633edf085e6755c52990277c0ce357eda0d316fbb4b361ec1ff482590d6",
+        "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TypographyProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "justify"
+            ]
+          },
+          "as": {
+            "description": "Surcharge la balise déduite de la variante.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "primary",
+              "secondary",
+              "muted",
+              "inverse",
+              "link"
+            ]
+          },
+          "truncate": {
+            "description": "Tronque sur une ligne avec ellipsis.",
+            "type": "boolean"
+          },
+          "variant": {
+            "enum": [
+              "caption",
+              "h2",
+              "h3",
+              "display",
+              "h1",
+              "h4",
+              "h5",
+              "h6",
+              "body",
+              "body-sm",
+              "overline"
+            ]
+          },
+          "weight": {
+            "enum": [
+              "regular",
+              "medium",
+              "semibold",
+              "bold"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ad586ac76fc538946db0360a77d681f0a882949487b93abfbceb95b21844e426",
+        "declarationPath": "packages/components-vue/dist/Typography.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TypographyProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

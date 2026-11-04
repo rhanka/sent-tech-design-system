@@ -1,0 +1,254 @@
+{
+  "componentId": "sparkline",
+  "contractSource": "derived",
+  "digest": "sha256:705c234a30562d956d89da3604651b3d07bfb0c27d341145704736e8bbc6215c",
+  "entryDigest": "sha256:21127a6b6092289ee23afa9dc5d54a2c6e3093d972adfcb1c6e79af49f4fed2e",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "area": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "tone": {
+            "enum": [
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c54d4fedc0911d359115f118f6910ce36a308db293f0c2802d3952c95c7682cd",
+        "declarationPath": "packages/components-angular/dist/Sparkline.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SparklineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "area": {
+            "type": "boolean"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "tone": {
+            "enum": [
+              "neutral",
+              "success",
+              "warning",
+              "error"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:649b31cd4273ea967b69074937cf793742f347d936b4e133d9f5cca5aa4d0b3a",
+        "declarationPath": "packages/components-react/dist/Sparkline.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SparklineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "area": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "tone": {
+            "enum": [
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:32d434525f1be52b1aa3bd3076748594babff731ec8ba4d1e8ab85829e649c6e",
+        "declarationPath": "packages/components-svelte/dist/Sparkline.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SparklineProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "area": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "tone": {
+            "enum": [
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6ee790dda91c75d4ee5e60fff023578fb43f7eed2df20d0898f9effd6f0df51c",
+        "declarationPath": "packages/components-vue/dist/Sparkline.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SparklineProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

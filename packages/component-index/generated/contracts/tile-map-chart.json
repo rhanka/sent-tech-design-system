@@ -1,0 +1,301 @@
+{
+  "componentId": "tile-map-chart",
+  "contractSource": "derived",
+  "digest": "sha256:c981598851b7f13438e4ae96d2f604ba110ae895d2872cdd84b3a6b4c9f6015f",
+  "entryDigest": "sha256:25bff267ac9b9bc0c6d7c61e2a60960fa82138c6e8ae3419a2b3c366e16198d7",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TileMapChartTile": {
+            "properties": {
+              "col": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "row": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "col",
+              "label",
+              "row",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TileMapChartTile"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7c90b49a5aae24814c2fc9d6b434739c71a5fc9af733b707f1c9206b1f76a351",
+        "declarationPath": "packages/components-angular/dist/TileMapChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TileMapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TileMapChartTile": {
+            "properties": {
+              "col": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "row": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "col",
+              "label",
+              "row",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TileMapChartTile"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e0b8d935b5c12b1851bb8f8482d32cc48581be47aad316653d12896f9ebcb44c",
+        "declarationPath": "packages/components-react/dist/TileMapChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TileMapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TileMapChartTile": {
+            "properties": {
+              "col": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "row": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "col",
+              "label",
+              "row",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TileMapChartTile"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5f4d7d4187893b39ebd491884303476a94be1fdc8a712baba7e7eb4688208ccd",
+        "declarationPath": "packages/components-svelte/dist/TileMapChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TileMapChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TileMapChartTile": {
+            "properties": {
+              "col": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "row": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "col",
+              "label",
+              "row",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TileMapChartTile"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:08625dc117af6c2afcff17872c0662dc9b4fadbf68eaad00d0bf04c12206f5f9",
+        "declarationPath": "packages/components-vue/dist/TileMapChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TileMapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

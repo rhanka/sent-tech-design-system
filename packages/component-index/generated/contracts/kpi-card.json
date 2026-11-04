@@ -1,0 +1,560 @@
+{
+  "componentId": "kpi-card",
+  "contractSource": "derived",
+  "digest": "sha256:f4589017d2b148445697c6e38bd69999117224f2a4c51188c35b1e4076bedb8f",
+  "entryDigest": "sha256:7ae3d3b1872aab411bd6daf13eaa0420d1055ca87df4969c525e2dcbc8189799",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "type": "string"
+              },
+              "intent": {
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "decoration": {
+            "$ref": "#/$defs/CellDecoration"
+          },
+          "delta": {
+            "type": "number"
+          },
+          "deltaFormat": {
+            "enum": [
+              "percent",
+              "absolute"
+            ]
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent",
+              "currency"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sparkline": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5329d406dade29514b7b38db92d685e434ff2d01e9a5cd3b3929747f752e7858",
+        "declarationPath": "packages/components-angular/dist/KpiCard.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "KpiCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "neutral",
+                  "info",
+                  "warning",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "currency": {
+            "description": "Code devise ISO 4217 pour format=\"currency\" (défaut EUR).",
+            "type": "string"
+          },
+          "decoration": {
+            "$ref": "#/$defs/CellDecoration",
+            "description": "Conditional formatting : décoration sémantique de la carte (intent → token\nfeedback en fond teinté accessible + icône lucide optionnelle)."
+          },
+          "delta": {
+            "description": "Variation par rapport à la période précédente.\n\nEn `deltaFormat=\"percent\"` (défaut), la valeur est multipliée par 100 :\npassez une **fraction** (ex. `0.12` → « +12 % »).",
+            "type": "number"
+          },
+          "deltaFormat": {
+            "description": "Comment exprimer le delta : en pourcentage ou en valeur absolue.",
+            "enum": [
+              "percent",
+              "absolute"
+            ]
+          },
+          "format": {
+            "description": "Formatage de la valeur principale via Intl.NumberFormat.",
+            "enum": [
+              "number",
+              "percent",
+              "currency"
+            ]
+          },
+          "label": {
+            "description": "Étiquette de l'indicateur (ex. « Revenu mensuel »).",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale BCP 47 pour le formatage des nombres (défaut undefined = locale du runtime).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sparkline": {
+            "description": "Mini-graphique de tendance optionnel.",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "tone": {
+            "description": "Couleur catégorielle pour l'accent (pastille discrète près de l'étiquette).",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "description": "Tendance ; déduite du signe du delta si absente.",
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          },
+          "unit": {
+            "description": "Unité suffixée à la valeur (ex. « ms », « €/mois »).",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Valeur principale affichée en grand. Le formatage `format` ne s'applique\nqu'aux `number` (un `string` est rendu verbatim).\n\nPour `format=\"percent\"`, `Intl.NumberFormat` multiplie par 100 : passez une\n**fraction** (0–1). Ex. `0.42` → « 42 % », et non `42` (qui donnerait « 4 200 % »)."
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ee28c9cc1b2cf9d47053271eb3e976f4ff7eeb5bcb4975d1691f30b541e9f447",
+        "declarationPath": "packages/components-react/dist/KpiCard.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "KpiCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "currency": {
+            "description": "Code devise ISO 4217 pour format=\"currency\" (défaut EUR).",
+            "type": "string"
+          },
+          "decoration": {
+            "$ref": "#/$defs/CellDecoration",
+            "description": "Conditional formatting : décoration sémantique de la carte (intent → token\nfeedback en fond teinté accessible + icône lucide optionnelle)."
+          },
+          "delta": {
+            "description": "Variation par rapport à la période précédente.",
+            "type": "number"
+          },
+          "deltaFormat": {
+            "description": "Comment exprimer le delta : en pourcentage ou en valeur absolue.",
+            "enum": [
+              "percent",
+              "absolute"
+            ]
+          },
+          "format": {
+            "description": "Formatage de la valeur principale via Intl.NumberFormat.",
+            "enum": [
+              "number",
+              "percent",
+              "currency"
+            ]
+          },
+          "label": {
+            "description": "Étiquette de l'indicateur (ex. « Revenu mensuel »).",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale BCP 47 pour le formatage des nombres (défaut undefined = locale du runtime).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sparkline": {
+            "description": "Mini-graphique de tendance optionnel.",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "tone": {
+            "description": "Couleur catégorielle pour l'accent (bordure de gauche).",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "description": "Tendance ; déduite du signe du delta si absente.",
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          },
+          "unit": {
+            "description": "Unité suffixée à la valeur (ex. « ms », « €/mois »).",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Valeur principale affichée en grand."
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b0cd1d195cb7ae2007b19e32d6b433dd0455a4e98bb0bfd201a96809a4c31a48",
+        "declarationPath": "packages/components-svelte/dist/KpiCard.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "KpiCardProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CellDecoration": {
+            "properties": {
+              "icon": {
+                "description": "Nom d'icône lucide (kebab-case, ex. « trending-up »). Ignoré si inconnu.",
+                "type": "string"
+              },
+              "intent": {
+                "description": "Intention sémantique → token feedback + fond teinté accessible.",
+                "enum": [
+                  "info",
+                  "warning",
+                  "neutral",
+                  "positive",
+                  "negative"
+                ]
+              }
+            },
+            "required": [
+              "intent"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "decoration": {
+            "$ref": "#/$defs/CellDecoration",
+            "description": "Conditional formatting : décoration sémantique de la carte (intent → token\nfeedback en fond teinté accessible + icône lucide optionnelle)."
+          },
+          "delta": {
+            "description": "Variation. En `deltaFormat=\"percent\"` (défaut), `delta` est une FRACTION :\n`0.12` → « +12 % ». NaN/Infinity sont rendus inertes.",
+            "type": "number"
+          },
+          "deltaFormat": {
+            "enum": [
+              "percent",
+              "absolute"
+            ]
+          },
+          "format": {
+            "enum": [
+              "number",
+              "percent",
+              "currency"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "sparkline": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "trend": {
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Valeur principale. Si `format=\"percent\"`, `value` est une FRACTION (0–1) :\npasser `0.42` affiche « 42 % » (Intl multiplie par 100). Le formatage ne\ns'applique qu'aux `number` ; une `string` est rendue telle quelle."
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ca02035ca07be41ee53e7b59b68b2c632f5cae5916c6359f089ce7578d7d1e59",
+        "declarationPath": "packages/components-vue/dist/KpiCard.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "KpiCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

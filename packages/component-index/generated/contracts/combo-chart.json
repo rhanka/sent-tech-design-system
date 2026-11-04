@@ -1,0 +1,1555 @@
+{
+  "componentId": "combo-chart",
+  "contractSource": "derived",
+  "digest": "sha256:56c4e1dee59f394798c20a250f9f191c3194b31b05bf29a081a9a46d202ac96b",
+  "entryDigest": "sha256:0e29990eee6de9d0c21f7c0d3d68d69a1c995e47f08224665606511c967a095d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onToggleSeries",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(seriesId: string) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ComboChartBarSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          },
+          "ComboChartLineSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "smooth": {
+                "type": "boolean"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "bars": {
+            "items": {
+              "$ref": "#/$defs/ComboChartBarSeries"
+            },
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "leftAxisLabel": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/$defs/ComboChartLineSeries"
+            },
+            "type": "array"
+          },
+          "rightAxisLabel": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:22be0d471d2f61bb04a4d39943825a64bd614f3571db5183bf9c2867fea14b29",
+        "declarationPath": "packages/components-angular/dist/ComboChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ComboChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ComboChartBarSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          },
+          "ComboChartLineSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "smooth": {
+                "type": "boolean"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre) and is ignored otherwise; the\ny coordinate (and `value`/`from`/`to`) are LEFT (bar) value-axis numbers.\nRegions render behind the bars, every other kind above. Additive: absent ⇒\nunchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "bars": {
+            "items": {
+              "$ref": "#/$defs/ComboChartBarSeries"
+            },
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-datum value labels on BOTH the bars and the line points. `false`/absent\n(default) → none. `true` → each value with the chart's numeric formatter.\nObject → `format(value)` and/or a `position` override. Bars default to\n`outside` (above the bar), line points to `top` (above the dot). Labels are\n`aria-hidden` — the values already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of bar/line series hidden from the\nrender (controlled by the parent; default = all visible). Hidden series\nare omitted and their legend item is shown \"off\" (`aria-pressed`).\nUndefined → legacy non-interactive legend, unless `onToggleSeries` is set.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). The key is the CATEGORY string.\nWhen provided (string or null), the crosshair tracks this key instead of the\nchart's internal pointer hover (null ⇒ nothing shown), letting a parent share\none hover channel across several aligned charts. Absent (`undefined`) keeps\nthe legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the CATEGORY bands: the chart owns ONE tab stop, ←/↑/→/↓ move the focus\nbetween categories (data order), Home/End jump to first/last, Enter/Space\nselect the focused category (`onSelectKey`), Escape leaves the navigation.\nEach focused band announces its category + value summary. Absent ⇒ no\noverlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "leftAxisLabel": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/$defs/ComboChartLineSeries"
+            },
+            "type": "array"
+          },
+          "rightAxisLabel": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5351eb587d468280ec6c218e903b83aa888aff02a825f55ce1f77385b4a3da27",
+        "declarationPath": "packages/components-react/dist/ComboChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ComboChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ComboChartBarSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          },
+          "ComboChartLineSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "smooth": {
+                "type": "boolean"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre); the y coordinate (and\n`value`/`from`/`to`) are LEFT (bar) value-axis numbers. Regions render\nbehind the bars, every other kind above. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "bars": {
+            "items": {
+              "$ref": "#/$defs/ComboChartBarSeries"
+            },
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-datum value labels on BOTH the bars and the line points. `false`/absent\n(default) → none. `true` → each value with the chart's numeric formatter.\nObject → `format(value)` and/or a `position` override. Labels are\n`aria-hidden` — the values already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of bar/line series hidden from the\nrender (controlled by the parent; default = all visible). Hidden series\nare omitted and their legend item is shown \"off\" (`aria-pressed`).\nUndefined → legacy non-interactive legend, unless `onToggleSeries` is set.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). The key is the CATEGORY string.\nWhen provided (string or null), the crosshair tracks this key instead of\nthe chart's internal pointer hover (null ⇒ nothing shown). Absent keeps\nthe legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the categories (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a focusable overlay of one column per\ncategory is rendered: one tab stop, arrows move, Home/End jump, Enter/Space\nselect, Escape leaves. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "leftAxisLabel": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/$defs/ComboChartLineSeries"
+            },
+            "type": "array"
+          },
+          "rightAxisLabel": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2a8189a03fac06047ee571d16d05b18cf510228897e2387cf321c792cec91e45",
+        "declarationPath": "packages/components-svelte/dist/ComboChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ComboChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onToggleSeries",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(seriesId: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onToggleSeries",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ComboChartBarSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          },
+          "ComboChartLineSeries": {
+            "properties": {
+              "data": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "smooth": {
+                "type": "boolean"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "data",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a category by equality (band centre); the y coordinate (and\n`value`/`from`/`to`) are LEFT (bar) value-axis numbers. Regions render\nbehind the bars, every other kind above. Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "bars": {
+            "items": {
+              "$ref": "#/$defs/ComboChartBarSeries"
+            },
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-datum value labels on BOTH the bars and the line points. `false`/absent\n(default) → none. `true` → each value with the chart's numeric formatter.\nObject → `format(value)` and/or a `position` override. Labels are\n`aria-hidden` — the values already live in the accessible ChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hiddenSeries": {
+            "description": "Interactive legend (FR-4). Ids/labels of bar/line series hidden from the\nrender (controlled by the parent; default = all visible). Hidden series\nare omitted and their legend item is shown \"off\" (`aria-pressed`).\nUndefined → legacy non-interactive legend, unless `onToggleSeries` is set.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). The key is the CATEGORY string.\nWhen provided (string or null), the crosshair tracks this key instead of the\nchart's internal pointer hover (null ⇒ nothing shown). Absent keeps the\nlegacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the categories (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a focusable overlay of one column per\ncategory is rendered: one tab stop, arrows move, Home/End jump, Enter/Space\nselect, Escape leaves. Absent ⇒ no overlay, rendering unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "leftAxisLabel": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/$defs/ComboChartLineSeries"
+            },
+            "type": "array"
+          },
+          "rightAxisLabel": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e1cad8d92ef1324c4554c144c96fab5033466ad0a0d69773e9a893d4932b9d66",
+        "declarationPath": "packages/components-vue/dist/ComboChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ComboChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

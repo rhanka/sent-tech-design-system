@@ -1,0 +1,345 @@
+{
+  "componentId": "timeline-chart",
+  "contractSource": "derived",
+  "digest": "sha256:8bbef6950645752937ed20c63830ee8749957d1dd665f5621c82d485ca89a7ba",
+  "entryDigest": "sha256:48b40207230edd789d5b31ed53ddf610fc7e9d472e912df0c80b6c1d0da13576",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TimelineChartEvent": {
+            "properties": {
+              "description": {
+                "description": "Optional longer description, surfaced in the accessible list + tooltip.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Required short label, shown above/below the marker (alternated).",
+                "type": "string"
+              },
+              "position": {
+                "description": "Point on the axis (year, day index, ordinal step…).",
+                "type": "number"
+              },
+              "tone": {
+                "description": "Optional explicit categorical tone; otherwise cycles category1..8.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "position"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TimelineChartEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ae2ff64790258a2470d500dc1738e582080bbd5b39006ce74d6a6ad7b1133fcd",
+        "declarationPath": "packages/components-angular/dist/TimelineChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TimelineChartEvent": {
+            "properties": {
+              "description": {
+                "description": "Optional longer description, surfaced in the accessible list + tooltip.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Required short label, shown above/below the marker (alternated).",
+                "type": "string"
+              },
+              "position": {
+                "description": "Point on the axis (year, day index, ordinal step…).",
+                "type": "number"
+              },
+              "tone": {
+                "description": "Optional explicit categorical tone; otherwise cycles category1..8.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "position"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TimelineChartEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a8dbc721ab0a2f0a0d7c287a5f9a309d5468325e29f4eb170819c8d69a8254c2",
+        "declarationPath": "packages/components-react/dist/TimelineChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TimelineChartEvent": {
+            "properties": {
+              "description": {
+                "description": "Optional longer description, surfaced in the accessible list + tooltip.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Required short label, shown above/below the marker (alternated).",
+                "type": "string"
+              },
+              "position": {
+                "description": "Point on the axis (year, day index, ordinal step…).",
+                "type": "number"
+              },
+              "tone": {
+                "description": "Optional explicit categorical tone; otherwise cycles category1..8.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "position"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TimelineChartEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:70f244d2ba5841f3041b2270c24b80b138047446989e45950890bab72f7027cc",
+        "declarationPath": "packages/components-svelte/dist/TimelineChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TimelineChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TimelineChartEvent": {
+            "properties": {
+              "description": {
+                "description": "Optional longer description, surfaced in the accessible list + tooltip.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Required short label, shown above/below the marker (alternated).",
+                "type": "string"
+              },
+              "position": {
+                "description": "Point on the axis (year, day index, ordinal step…).",
+                "type": "number"
+              },
+              "tone": {
+                "description": "Optional explicit categorical tone; otherwise cycles category1..8.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "position"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TimelineChartEvent"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4e6b0bb2ed97c8bc9404d8abfda93b5acba3f0b6802e491b2604e42637ee9840",
+        "declarationPath": "packages/components-vue/dist/TimelineChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

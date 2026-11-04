@@ -1,0 +1,690 @@
+{
+  "componentId": "menu-popover",
+  "contractSource": "derived",
+  "digest": "sha256:d8b4d584d1ba4ce794b7a08ac36084c716a36c1ef3e3fee1d66c9865290ff62e",
+  "entryDigest": "sha256:da0fc83dd256dcf7a4ffc04c0c2067a82f377a4382e14e6c79e7871d7b5520fc",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "openChange",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "icon": {
+                "description": "Optional leading icon component (rendered in `.st-menu__itemIcon`)."
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "type": "boolean"
+          },
+          "closeOnOutside": {
+            "type": "boolean"
+          },
+          "items": {
+            "description": "Convenience (not in the Svelte contract): renders a <st-menu> from `items` instead of projected content.",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Accessible name for the panel (Svelte-canonical: applied as aria-label on role=\"dialog\").",
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "trigger": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Anchor element used for position computation and outside-click exclusion (Svelte-canonical)."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "trigger",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c628c688c7bf4f46cf75f1b3b932a802427800092b8201d83b7cb27a1c8c5413",
+        "declarationPath": "packages/components-angular/dist/MenuPopover.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "MenuPopoverProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "ActionItem.icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "ActionItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "ActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "node",
+          "name": "MenuGroupItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "type": {
+                "const": "group"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "className": {
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "type": "boolean"
+          },
+          "closeOnOutside": {
+            "type": "boolean"
+          },
+          "defaultOpen": {
+            "type": "boolean"
+          },
+          "items": {
+            "description": "Convenience (not in the Svelte contract): renders a <Menu> from `items` instead of `children`.",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Accessible name for the panel (Svelte-canonical: applied as aria-label on role=\"dialog\").",
+            "type": "string"
+          },
+          "open": {
+            "description": "Bindable in Svelte; controlled here via `open`+`onOpenChange`, uncontrolled via `defaultOpen`.",
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "trigger": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Anchor element used for position computation and outside-click exclusion (Svelte-canonical)."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "trigger",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "MenuPopoverProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "type": "boolean"
+          },
+          "closeOnOutside": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end"
+            ]
+          },
+          "trigger": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "label",
+          "trigger"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "trigger",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:dce448d047cf941f067bd85e88e420d06887c11f2fbf1dcb73c89be5dced5b30",
+        "declarationPath": "packages/components-svelte/dist/MenuPopover.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "MenuPopoverProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        },
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onUpdate:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:open"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "default",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "type": "boolean"
+          },
+          "closeOnOutside": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Accessible name for the panel (Svelte-canonical: applied as aria-label on role=\"dialog\").",
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "trigger": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Anchor element used for position computation and outside-click exclusion (Svelte-canonical)."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "trigger",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bf9c921f2ada0c8767c6c58356d5d07d210290df8b3a6697358d4acaa1771693",
+        "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "MenuPopoverProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
+        "two-way binding: prop \"open\" paired with emit \"update:open\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,392 @@
+{
+  "componentId": "lollipop-chart",
+  "contractSource": "derived",
+  "digest": "sha256:7e93067f0540a1c036927f0a1ae8eb574327c4fce30ea07af150d3a29032065b",
+  "entryDigest": "sha256:91387d63112fa7f663f5083b12d4366dc3760da547d6d1053588991e77f2f37a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "LollipopChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LollipopChartDatum"
+            },
+            "type": "array"
+          },
+          "domain": {
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1a4cca8f27354d1d257f5fce3d4014e30aff8248114f60e6ba29b8ea9a77014b",
+        "declarationPath": "packages/components-angular/dist/LollipopChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LollipopChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "LollipopChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LollipopChartDatum"
+            },
+            "type": "array"
+          },
+          "domain": {
+            "description": "Fixed value-axis domain `[min, max]`. When provided (and finite), the value\nscale uses it instead of the data-derived min/max — letting several\nLollipopCharts in a grid share one scale. When absent or invalid, the scale\nfalls back to the auto data range (unchanged).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3e94a1dc4501ff9566277fb5a5d456e5ea1bae923ddd6907af6dd1937fb04fa8",
+        "declarationPath": "packages/components-react/dist/LollipopChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LollipopChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "LollipopChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LollipopChartDatum"
+            },
+            "type": "array"
+          },
+          "domain": {
+            "description": "Domaine fixe de l'axe des valeurs `[min, max]`. Quand fourni (et fini),\nl'échelle l'utilise au lieu du min/max dérivé des données — laissant\nplusieurs LollipopCharts d'une grille partager une échelle. Absent ou\ninvalide → repli sur la plage auto (inchangé).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ba3ced0967cdc8cfc80f27c685dcc12f89d938ed390e6a46f039e469cba707fc",
+        "declarationPath": "packages/components-svelte/dist/LollipopChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LollipopChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "LollipopChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/LollipopChartDatum"
+            },
+            "type": "array"
+          },
+          "domain": {
+            "description": "Fixed value-axis domain `[min, max]`. When provided (and finite), the value\nscale uses it instead of the data-derived min/max — letting several\nLollipopCharts in a grid share one scale. When absent or invalid, the scale\nfalls back to the auto data range (unchanged).",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7ef37b13588fb4c7a87cb9bd1c5205ea285f12bb70f78693fd331dcf17d5cbbe",
+        "declarationPath": "packages/components-vue/dist/LollipopChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LollipopChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

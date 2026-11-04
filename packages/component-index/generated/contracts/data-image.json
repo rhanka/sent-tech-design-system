@@ -1,0 +1,369 @@
+{
+  "componentId": "data-image",
+  "contractSource": "derived",
+  "digest": "sha256:5058bc176e4055a39bec2f5f34e1f10f76ab352e0d1f123d3066912184ddde8b",
+  "entryDigest": "sha256:648e25b039015702a7037ea48982e90b843a2356f4ba8c18e0e1da50d87652d7",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "alt": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "decoding": {
+            "enum": [
+              "auto",
+              "async",
+              "sync"
+            ]
+          },
+          "fit": {
+            "enum": [
+              "cover",
+              "contain"
+            ]
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "loading": {
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "radius": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "src": {
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8516acca599d68abde3e6a9874cd5cf8c0f7e992e845322372fe628f05437500",
+        "declarationPath": "packages/components-angular/dist/DataImage.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DataImageProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ImgHTMLAttributes<HTMLImageElement>",
+        "omitted": [
+          "alt",
+          "className",
+          "height",
+          "src",
+          "width"
+        ]
+      },
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "fit": {
+            "description": "`object-fit` behaviour inside its box. Default `cover`.",
+            "enum": [
+              "cover",
+              "contain"
+            ]
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box height (number → px, or any CSS length)."
+          },
+          "radius": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Border radius (CSS length)."
+          },
+          "src": {
+            "description": "Image URL (required).",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box width (number → px, or any CSS length)."
+          }
+        },
+        "required": [
+          "alt",
+          "src"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b8247f0c4b85a944b7f95dd6870c89f2081c1e9e7047fecaa75cf7c0ff938c5f",
+        "declarationPath": "packages/components-react/dist/DataImage.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DataImageProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLImgAttributes",
+        "omitted": [
+          "alt",
+          "class",
+          "height",
+          "src",
+          "width"
+        ]
+      },
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "fit": {
+            "description": "`object-fit` behaviour inside its box. Default `cover`.",
+            "enum": [
+              "cover",
+              "contain"
+            ]
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box height (number → px, or any CSS length)."
+          },
+          "radius": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Border radius (CSS length)."
+          },
+          "src": {
+            "description": "Image URL (required).",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box width (number → px, or any CSS length)."
+          }
+        },
+        "required": [
+          "alt",
+          "src"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2288c0a79d20e6de6cc3f59d1e65aa0fdd6076669c6d3b66898b5a5dbf83ff2b",
+        "declarationPath": "packages/components-svelte/dist/DataImage.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DataImageProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "alt": {
+            "description": "Alternative text (required for a11y; pass \"\" only for purely decorative images).",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "decoding": {
+            "description": "Image decoding hint. Default `async`.",
+            "enum": [
+              "auto",
+              "async",
+              "sync"
+            ]
+          },
+          "fit": {
+            "description": "`object-fit` behaviour inside its box. Default `cover`.",
+            "enum": [
+              "cover",
+              "contain"
+            ]
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box height (number → px, or any CSS length)."
+          },
+          "loading": {
+            "description": "Image loading strategy. Default `lazy`; use `eager` for LCP images.",
+            "enum": [
+              "eager",
+              "lazy"
+            ]
+          },
+          "radius": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Border radius (CSS length)."
+          },
+          "src": {
+            "description": "Image URL (required).",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Intrinsic / box width (number → px, or any CSS length)."
+          }
+        },
+        "required": [
+          "alt",
+          "src"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6edcd8655a613bbe0ea38a699970bc7772b2c91b1cbdd3bc4d2f80307eb8a1b9",
+        "declarationPath": "packages/components-vue/dist/DataImage.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DataImageProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

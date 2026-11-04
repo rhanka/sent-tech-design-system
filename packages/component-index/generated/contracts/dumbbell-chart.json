@@ -1,0 +1,405 @@
+{
+  "componentId": "dumbbell-chart",
+  "contractSource": "derived",
+  "digest": "sha256:a803f80971807b29af9f3a21b4eed8fc1dd99ca91b079c6364b7f5fd876fb828",
+  "entryDigest": "sha256:c8c86e2027f990e9c4bf3fd9c9ac2999bfee542d221aaa14a0a9b5194308ffa1",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DumbbellChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "high",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DumbbellChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "highLabel": {
+            "type": "string"
+          },
+          "highTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "lowLabel": {
+            "type": "string"
+          },
+          "lowTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:74fb27dd931a8e190b8134adb66144eafd3f948c47bb37d277b29271aeb91b79",
+        "declarationPath": "packages/components-angular/dist/DumbbellChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DumbbellChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DumbbellChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "high",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DumbbellChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "highLabel": {
+            "type": "string"
+          },
+          "highTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "lowLabel": {
+            "type": "string"
+          },
+          "lowTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a66a190c578d86b18a6a2eb7cd9f4f9f798f3f117f4d0cf91fa9a9e815bc8d97",
+        "declarationPath": "packages/components-react/dist/DumbbellChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DumbbellChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DumbbellChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "high",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DumbbellChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "highLabel": {
+            "type": "string"
+          },
+          "highTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "lowLabel": {
+            "type": "string"
+          },
+          "lowTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:36adc692c353fe6c359c3d514d5a1cd4868b71796a9321b6550e866e403b3e86",
+        "declarationPath": "packages/components-svelte/dist/DumbbellChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DumbbellChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DumbbellChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "high",
+              "low"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DumbbellChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "highLabel": {
+            "type": "string"
+          },
+          "highTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "lowLabel": {
+            "type": "string"
+          },
+          "lowTone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a3e8714da09f1d48432e5937cd03ab6c9ee3e051a9e230335ed5c7f9de4605e9",
+        "declarationPath": "packages/components-vue/dist/DumbbellChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DumbbellChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,267 @@
+{
+  "componentId": "modal",
+  "contractSource": "derived",
+  "digest": "sha256:44f496f94b07ef46933a93f4128e7b8a570d7aecfd65b6bf881c7e3e4dddfeca",
+  "entryDigest": "sha256:9549775f37c719b242590a36d634e200481597c5009a0da89b816785868b0896",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "close",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "footer"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:7e9bb224f32bd2bfb0b38df805bfb3239dc444e3d75391d7722e130c4160e43e",
+        "declarationPath": "packages/components-angular/dist/Modal.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ModalProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "description",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "footer",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClose"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "closeLabel": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ModalProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onclose"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dismissible": {
+            "description": "Ferme sur clic du fond + Échap (défaut true). `false` = modale « statique »\n(étape obligatoire, wizard) que seul un bouton explicite peut fermer.",
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "zIndex": {
+            "description": "Override d'empilement (z-index du fond) — pour superposer une modale au-dessus\nd'un tiroir/une autre modale. Défaut = token `--st-component-overlay-zIndex`.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "footer",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:a757af8745632665779d23501397b2bcc02c315b76dae3cbc1b1df85aa803e73",
+        "declarationPath": "packages/components-svelte/dist/Modal.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ModalProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "close"
+        },
+        {
+          "name": "onClose",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9686157b213f925fd276a668039a4e0c7cb8d4a5b7c01aaa14270b73f50ea47d",
+        "declarationPath": "packages/components-vue/dist/Modal.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ModalProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"close\": payload not in declaration",
+        "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

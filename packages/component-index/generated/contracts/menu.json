@@ -1,0 +1,617 @@
+{
+  "componentId": "menu",
+  "contractSource": "derived",
+  "digest": "sha256:417f314342dfc2d089e6ecd17d484eae784b45085ac1db975dfa51a5c92c9f67",
+  "entryDigest": "sha256:be9504a0586c0b809c7382e42009d4febb6a35ed624bfbe6ae4b4858b0aeff04",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "select",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "$ref": "#/$defs/MenuDividerItem"
+              },
+              {
+                "$ref": "#/$defs/MenuGroupItem"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "icon": {
+                "description": "Optional leading icon component (rendered in `.st-menu__itemIcon`)."
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fd6dcfd4fa6c22ebbd9cfa141f20e74cd59710cd134079633e2b5b21f3cf88c8",
+        "declarationPath": "packages/components-angular/dist/Menu.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "MenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "ActionItem.icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "ActionItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "ActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "node",
+          "name": "MenuGroupItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "$ref": "#/$defs/ActionItem"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "ActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "type": {
+                "const": "group"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "MenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "Component<MenuIconProps, {}, string>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onselect"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "kind": {
+                "const": "item"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "kind": {
+                "const": "divider"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "kind": {
+                "const": "group"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "dismissOnSelect": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:24637fa7fe33af484f264f5ff97a0e518384d72a75feebf794453cfc91524c61",
+        "declarationPath": "packages/components-svelte/dist/Menu.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "MenuProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        },
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "select"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "default",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:756fbad39f709aeee2972c4b13be79d384bdab5c12e7d75a56ebbe71c1ebd31c",
+        "declarationPath": "packages/components-vue/dist/Menu.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "MenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

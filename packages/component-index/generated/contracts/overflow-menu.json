@@ -1,0 +1,665 @@
+{
+  "componentId": "overflow-menu",
+  "contractSource": "derived",
+  "digest": "sha256:8b92595301d7ae9c630b2906c7a0037c5fb669ba8bb85ca7bbb3d111e2395ffb",
+  "entryDigest": "sha256:f86d966c7f052ee24a25593d94a04ea59e7b8e4ac2d0ca4d99062c06d6c06eeb",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "select",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "$ref": "#/$defs/MenuDividerItem"
+              },
+              {
+                "$ref": "#/$defs/MenuGroupItem"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "icon": {
+                "description": "Optional leading icon component (rendered in `.st-menu__itemIcon`)."
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6d512c1fa41abd52f7f1c1fc9b3b242f36cac9c267db07493dfdfcd3da478b3f",
+        "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "OverflowMenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "ActionItem.icon",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "ActionItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "ActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "node",
+          "name": "MenuGroupItem.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "ActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "danger",
+                  "default"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "type": {
+                "const": "group"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "OverflowMenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "OverflowMenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "Component<OverflowMenuIconProps, {}, string>"
+        },
+        {
+          "kind": "function",
+          "name": "OverflowMenuActionItem.onclick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onselect"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "OverflowMenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "kind": {
+                "const": "item"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          },
+          "OverflowMenuDividerItem": {
+            "properties": {
+              "kind": {
+                "const": "divider"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "type": "object"
+          },
+          "OverflowMenuGroupItem": {
+            "properties": {
+              "kind": {
+                "const": "group"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/OverflowMenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/OverflowMenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/OverflowMenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end"
+            ]
+          },
+          "triggerLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f8a9f29b23133df20334f706afe0132418143701e0f367ffb6e8d5b73f73008c",
+        "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "OverflowMenuProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "MenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        },
+        {
+          "kind": "function",
+          "name": "MenuActionItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onUpdate:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:open"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "MenuActionItem": {
+            "properties": {
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              },
+              "variant": {
+                "enum": [
+                  "default",
+                  "danger"
+                ]
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "divider"
+              },
+              "type": {
+                "const": "divider"
+              }
+            },
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "group"
+              },
+              "label": {},
+              "type": {
+                "const": "group"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dense": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/MenuActionItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuDividerItem"
+                },
+                {
+                  "$ref": "#/$defs/MenuGroupItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "MenuActionItem.icon",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        },
+        {
+          "name": "MenuActionItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "MenuGroupItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:26584591fad4fd1965531f9d543471ce0fba823a2003f4fa99b71000bbed1390",
+        "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "OverflowMenuProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
+        "two-way binding: prop \"open\" paired with emit \"update:open\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,368 @@
+{
+  "componentId": "column-pyramid-chart",
+  "contractSource": "derived",
+  "digest": "sha256:9a8e544ed67f5d5b441891f26b82042d8c834974c5692f4384ab3f54c829cafa",
+  "entryDigest": "sha256:4264b6ed887b58f8d60466bf0c695c5e3b9d4686bcfc05d2fa929070168e1551",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ColumnPyramidChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ColumnPyramidChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4df927f3855171c3141c1523bb0b76bdc69d146120e896e2e38d41dc4fd08063",
+        "declarationPath": "packages/components-angular/dist/ColumnPyramidChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ColumnPyramidChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ColumnPyramidChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ColumnPyramidChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "description": "Default tone for columns whose datum has no `tone`.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7b0739a45f8085c0f770f4c663b9eea927465b8e3c5b5152121ef63a1a6a957e",
+        "declarationPath": "packages/components-react/dist/ColumnPyramidChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ColumnPyramidChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ColumnPyramidChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ColumnPyramidChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "description": "Teinte par défaut des colonnes dont le datum n'a pas de `tone`.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7966b3de175ea63cd1fe95b30f71dcc3d0f30e6211085133f90c3587b00fcc04",
+        "declarationPath": "packages/components-svelte/dist/ColumnPyramidChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ColumnPyramidChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ColumnPyramidChartDatum": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "category",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ColumnPyramidChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "description": "Default tone for columns whose datum has no `tone`.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:59fc91c8fc93b9a155dad84fb83ee90cc6d8adac4a9e6fa072f3e509281a6061",
+        "declarationPath": "packages/components-vue/dist/ColumnPyramidChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ColumnPyramidChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

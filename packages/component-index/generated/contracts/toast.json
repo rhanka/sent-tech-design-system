@@ -1,0 +1,410 @@
+{
+  "componentId": "toast",
+  "contractSource": "derived",
+  "digest": "sha256:853d56186d06833e284673cf014e39974d948bf8acc7c0db1f8ca433ac37c86c",
+  "entryDigest": "sha256:d3fa822102d0e3f77ff78713fe404936ac1106ae4f0ec88bf3497406d8828426",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "actions": {},
+          "class": {
+            "type": "string"
+          },
+          "message": {},
+          "title": {},
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "actions",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "message",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "actions"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:655c199305e3f7479d39a9e8d4d870edbebfa62a615e4d71fe6c466856ce74f8",
+        "declarationPath": "packages/components-angular/dist/Toast.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ToastProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "ToastItem.actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "ToastItem.message",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "ToastItem.title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "closeLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "dismissLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(title: ReactNode) => string"
+        },
+        {
+          "kind": "node",
+          "name": "message",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClose"
+        },
+        {
+          "name": "onDismiss",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "ToastItem": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "autoDismiss": {
+            "type": "boolean"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/ToastItem"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ToastProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ea5d4677383ff7f9f8189f79eec7582681476fc83ead1c17cbf8af028a13f0a4",
+        "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ToastProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dismissLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(title: unknown) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "close"
+        },
+        {
+          "name": "dismiss"
+        },
+        {
+          "name": "onClose",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onDismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ToastItem": {
+            "properties": {
+              "actions": {},
+              "id": {
+                "type": "string"
+              },
+              "message": {},
+              "title": {},
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "title"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "autoDismiss": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "closeLabel": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/ToastItem"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "message": {},
+          "title": {},
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "ToastItem.actions",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "ToastItem.message",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "ToastItem.title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "message",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d48f8ec669ef909272eaab41056c1e62e4b8f12ef2105af8675fbed6fb7d8ce4",
+        "declarationPath": "packages/components-vue/dist/Toast.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ToastProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"close\": payload not in declaration",
+        "emit \"dismiss\": payload not in declaration",
+        "event pair: emits \"close\" and prop \"onClose\" both listed verbatim",
+        "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

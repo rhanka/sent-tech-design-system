@@ -1,0 +1,214 @@
+{
+  "componentId": "panel-section",
+  "contractSource": "derived",
+  "digest": "sha256:6222b53291941c00a6291651e9ce8cffcb05d61e8b1d810dadbf8d0af1a52df2",
+  "entryDigest": "sha256:62ea3a4f8692d9308b86c6f69db3f1a31b0417c91b036f6e5aad17518af74651",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "toggleRequested",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "actions": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "expanded": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "description": "Angular-idiom",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scrollOwner": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ca54db1d15420cd5267c84960a4a55d671cd3f2cf7ce091748a9cf9f1afbf462",
+        "declarationPath": "packages/components-angular/dist/PanelSection.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PanelSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:9c5e2f7b7b4188c5f372598eb26346c68a92bb3a353c04161c088df99907c166",
+        "declarationPath": "packages/components-react/dist/PanelSection.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PanelSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b6b998930ff7aa98a9c42c5114a528c86daf8e3b1d1566fb18f4acee1161fe95",
+        "declarationPath": "packages/components-svelte/dist/PanelSection.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PanelSectionProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:67c307f004e359f93bd4a4a8bf5573d2ed12539263505d9d5bd88b26d87c5a30",
+        "declarationPath": "packages/components-vue/dist/PanelSection.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PanelSectionProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,255 @@
+{
+  "componentId": "form",
+  "contractSource": "derived",
+  "digest": "sha256:fa7f9257f42bf5e92cbb145b747daf5ba7008d0499858250db5f639c5640b666",
+  "entryDigest": "sha256:d780e531f05402611a60fb1f0f583cf18e92599a2e1058f01a2a99d1eda83519",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "submit",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "noNoscript": {
+            "type": "boolean"
+          },
+          "submitting": {
+            "type": "boolean"
+          },
+          "successText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:d187dca4f64747af1195fc86615899f8e82f3b9efab4440e9711eef306827a2f",
+        "declarationPath": "packages/components-angular/dist/Form.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FormProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "submit.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "SubmitEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "message",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSubmit",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.FormHTMLAttributes<HTMLFormElement>",
+        "omitted": [
+          "onSubmit"
+        ]
+      },
+      "props": {
+        "properties": {
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "submitting",
+              "submitted"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FormProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onSubmit.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "FormEvent<HTMLFormElement>"
+        }
+      ],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "submitting"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onsubmit",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLFormAttributes",
+        "omitted": [
+          "class",
+          "onsubmit"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "noNoscript": {
+            "type": "boolean"
+          },
+          "submitting": {
+            "type": "boolean"
+          },
+          "successText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          },
+          "required": true
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:da41fb67ab79ce48305c68a6d4d782b27338b1f4f7919b73377e8b7e3a42e07a",
+        "declarationPath": "packages/components-svelte/dist/Form.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FormProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onsubmit.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "SubmitEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onSubmit",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "submit"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "submitting",
+              "submitted"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:40b561573489abcb14af89e9239dc7ab96e3e306cb1b13f3c6092e1f1b90a18d",
+        "declarationPath": "packages/components-vue/dist/Form.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FormProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"submit\": payload not in declaration",
+        "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

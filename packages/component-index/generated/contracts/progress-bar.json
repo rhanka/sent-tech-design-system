@@ -1,0 +1,294 @@
+{
+  "componentId": "progress-bar",
+  "contractSource": "derived",
+  "digest": "sha256:9d743b3ef4fb8b6e7b60023f05af506eec0de11b7ca8c175ba13c465ce7983bd",
+  "entryDigest": "sha256:71f9c2f348702e70adb8e876de3fb36e766d3f9e82f5c0cbdafa2165e728556c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "indeterminate": {
+            "type": "boolean"
+          },
+          "label": {},
+          "max": {
+            "type": "number"
+          },
+          "showValue": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "valueText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:676731a1aabbb7867524d8ffb89cfa3023b2156ee0bd9e3a9698cf208458568a",
+        "declarationPath": "packages/components-angular/dist/ProgressBar.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ProgressBarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "indeterminate": {
+            "type": "boolean"
+          },
+          "max": {
+            "type": "number"
+          },
+          "showValue": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "valueText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ProgressBarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "indeterminate": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "showValue": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "valueText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0679e234a3e15f71b981b24d6742ed9fdc6e36a0560c42b99c52ac5fd0526d78",
+        "declarationPath": "packages/components-svelte/dist/ProgressBar.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ProgressBarProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "indeterminate": {
+            "type": "boolean"
+          },
+          "label": {},
+          "max": {
+            "type": "number"
+          },
+          "showValue": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "valueText": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0ffd0cf4032bbb77dc8b637b0d0f95798e368bebc76d88207538ae2ba1ae0d5e",
+        "declarationPath": "packages/components-vue/dist/ProgressBar.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ProgressBarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

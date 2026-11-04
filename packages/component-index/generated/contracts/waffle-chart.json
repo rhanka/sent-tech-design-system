@@ -1,0 +1,346 @@
+{
+  "componentId": "waffle-chart",
+  "contractSource": "derived",
+  "digest": "sha256:a1f27f305e7e9627b51c8e570eff5edf431e9af64d2a1c1684f173717c589a49",
+  "entryDigest": "sha256:4f0aa1657b8a96b96a155d58d4fb575e858851f70711a631bc7c02f3f9239d2e",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WaffleChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaffleChartDatum"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "totalCells": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c43626d91aae6ce5677853bd57f4152f0dae5c106ebe3289040fccd668d74f87",
+        "declarationPath": "packages/components-angular/dist/WaffleChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "WaffleChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "WaffleChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaffleChartDatum"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "totalCells": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:550d9cc32cf13d6010817a6fd113983ceea52c7e290639807349a8e28bfd4cb5",
+        "declarationPath": "packages/components-react/dist/WaffleChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "WaffleChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "WaffleChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaffleChartDatum"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "totalCells": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:10b12d0860daa866fbfafc6c5131ab7e92485c87f21f066863b8656d3adc10d3",
+        "declarationPath": "packages/components-svelte/dist/WaffleChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "WaffleChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "WaffleChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "number"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/WaffleChartDatum"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "totalCells": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:017795a5c61ea60d3db6842a1ac9d56de9ecb0b7e43276805c186fa4993f13a7",
+        "declarationPath": "packages/components-vue/dist/WaffleChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "WaffleChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,279 @@
+{
+  "componentId": "collapsible",
+  "contractSource": "derived",
+  "digest": "sha256:78db3103b84857f92b05467dd511cb85cb64da7af704a1d439d83ea2a985b5ff",
+  "entryDigest": "sha256:834dd2da14e075dbe56770cb40e2c4cd9849c741a15927b32b6a12f9794e96f5",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(open: boolean) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "toggleChange",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e26b5cfe650a0c9aa96b01f36f12ddddf581e0692fcdcf16895045073b4373a7",
+        "declarationPath": "packages/components-angular/dist/Collapsible.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CollapsibleProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "trailing",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggle",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className",
+          "onToggle",
+          "title"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "open": {
+            "description": "État ouvert (contrôlable).",
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:db6f9dead17aa440e22658e28e4c23dec5e9de081b4212f056223f7394545d53",
+        "declarationPath": "packages/components-react/dist/Collapsible.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CollapsibleProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onToggle",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "title"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "open": {
+            "description": "État ouvert (bindable).",
+            "type": "boolean"
+          },
+          "size": {
+            "description": "Density of the trigger — `\"md\"` (default) is the current render. `\"sm\"`\nde-emphasizes the trigger (smaller font/weight/padding) for NESTED /\nlevel-2 collapsibles; `\"lg\"` enlarges it. Additive: with `size` unset the\ntrigger renders byte-identically to before.",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        },
+        {
+          "name": "trailing",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:dc29e9d30c11c8e3eb1c87ccda337a9bbd31ffe35b4045511adf4956539bce62",
+        "declarationPath": "packages/components-svelte/dist/Collapsible.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CollapsibleProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(open: boolean) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onToggle",
+          "payload": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "toggle"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "open": {
+            "description": "État ouvert (contrôlable).",
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:883dfd9151d21b960b8e249fefbf48e844dca972663d4d6945d6990e19560f91",
+        "declarationPath": "packages/components-vue/dist/Collapsible.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CollapsibleProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"toggle\": payload not in declaration",
+        "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,202 @@
+{
+  "componentId": "skeleton-text",
+  "contractSource": "derived",
+  "digest": "sha256:dd29d0fda18c996f8f9248e31dfdfb905b4fdb7b59ecb7c45224b329e2422b6e",
+  "entryDigest": "sha256:0e09abd22c6605e857361d8d226d61a700c0f28412247b0cd467ef84285fae68",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "number"
+          },
+          "loadingLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "paragraph": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2297cf46cff7df8d68d1e5f74e94a3aca6a6a16169b15e401adb9860ab6faa9a",
+        "declarationPath": "packages/components-angular/dist/SkeletonText.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SkeletonTextProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "heading": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "number"
+          },
+          "loadingLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "paragraph": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SkeletonTextProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "number"
+          },
+          "loadingLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "paragraph": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4d0e8f3cff87770bf3427924ef8374581b7552f054dea128dc3da714223f58b6",
+        "declarationPath": "packages/components-svelte/dist/SkeletonText.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SkeletonTextProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "number"
+          },
+          "loadingLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "paragraph": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8aff9f1dac0167e3c4d9507c40058487579fdef8c591af9e96e243321591b77c",
+        "declarationPath": "packages/components-vue/dist/SkeletonText.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SkeletonTextProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

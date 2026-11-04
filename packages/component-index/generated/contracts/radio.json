@@ -1,0 +1,277 @@
+{
+  "componentId": "radio",
+  "contractSource": "derived",
+  "digest": "sha256:6dd9dbbf4a1005c53e76220578d5af9503656fbb6a245af894f3de7047a469e1",
+  "entryDigest": "sha256:f1389c235bc13c5e80155da92319ffabc95caa08ba58586e315259dfabc8d674",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change",
+          "payload": {}
+        },
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "checked": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "modelValue": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:63c06ce4a7e1e2d570a8fc4fb0693fb0c633b67144dfdcade985184bb510271c",
+        "declarationPath": "packages/components-angular/dist/Radio.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RadioProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "description",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "trailing",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.InputHTMLAttributes<HTMLInputElement>",
+        "omitted": [
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "invalid": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RadioProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLInputAttributes",
+        "omitted": [
+          "class",
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:64f64bcb53cb9368ca234808ab33eb7c5b5ade0340d9b47e609ec9ef7ccf737e",
+        "declarationPath": "packages/components-svelte/dist/Radio.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RadioProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "modelValue"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "checked": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "modelValue": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7af31e8a6af0e22c88c6df6974255257479ca49c0ab37d4c166ff5aa796755f8",
+        "declarationPath": "packages/components-vue/dist/Radio.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RadioProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

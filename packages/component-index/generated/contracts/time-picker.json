@@ -1,0 +1,350 @@
+{
+  "componentId": "time-picker",
+  "contractSource": "derived",
+  "digest": "sha256:c05757621005a8940f8271e587206e53fa26245e3fe9f6e7bb179620520cc4ac",
+  "entryDigest": "sha256:507f82adffc1273dcc72bc8e89602705ffd97c81a6ff408c06fb662bab5969d2",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "format": {
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "type": "string"
+          },
+          "min": {
+            "type": "string"
+          },
+          "modelValue": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "step": {
+            "type": "number"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:675fda2106a56438ed60a46b6f221327587970b472871c6fbe1d14920aa6f8b3",
+        "declarationPath": "packages/components-angular/dist/TimePicker.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TimePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "XProps member \"class\" is neither a ɵcmp input alias nor a class field"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "format": {
+            "description": "Affichage 24h (par défaut) ou 12h (AM/PM). La valeur émise reste \"HH:mm\".",
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "step": {
+            "description": "Pas (en minutes) entre deux créneaux générés.",
+            "type": "number"
+          },
+          "value": {
+            "description": "Heure courante au format \"HH:mm\" (24h, toujours). Vide = non renseigné.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TimePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "format": {
+            "description": "Affichage 24h (par défaut) ou 12h (AM/PM). La valeur émise reste \"HH:mm\".",
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "step": {
+            "description": "Pas (en minutes) entre deux créneaux générés.",
+            "type": "number"
+          },
+          "value": {
+            "description": "Heure courante au format \"HH:mm\" (24h, toujours). Vide = non renseigné.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5ddeff44f8c39793c484a9080a1c774d0b2dd8de1b2d279382d54051c7386dcc",
+        "declarationPath": "packages/components-svelte/dist/TimePicker.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TimePickerProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "format": {
+            "description": "Affichage 24h (par défaut) ou 12h (AM/PM). La valeur émise reste \"HH:mm\".",
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"HH:mm\" (inclusive).",
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "step": {
+            "description": "Pas (en minutes) entre deux créneaux générés.",
+            "type": "number"
+          },
+          "value": {
+            "description": "Heure courante au format \"HH:mm\" (24h, toujours). Vide = non renseigné.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:232ea2eb2c42852089818ca59b0f3141d635a2240e38a8d814c6bf21a4808f25",
+        "declarationPath": "packages/components-vue/dist/TimePicker.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TimePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

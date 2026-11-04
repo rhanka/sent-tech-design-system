@@ -1,0 +1,273 @@
+{
+  "componentId": "bell-curve-chart",
+  "contractSource": "derived",
+  "digest": "sha256:4e8ef94f54fac4366b132a0184336a1af7b3451d0ded8af95c8b4bc768ae968c",
+  "entryDigest": "sha256:816637abbdae8a6d57f280d863f2df1c35581c90dabc7c643ebd51a2749521ac",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "intervals": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ceb61f44b965f4a2a053149d364640f90c5e7a5c98fcb8809c840b550e3ab32e",
+        "declarationPath": "packages/components-angular/dist/BellCurveChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "BellCurveChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "intervals": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:49c594ef5bf509ca8dc925a4a79c915f600391e7d95d32d0c604c55999b9ec35",
+        "declarationPath": "packages/components-react/dist/BellCurveChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "BellCurveChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "intervals": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:33ed54a7bc851d61256d638464698f6fd04ab2214b283080b304c6060507e7f9",
+        "declarationPath": "packages/components-svelte/dist/BellCurveChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "BellCurveChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "intervals": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "smooth": {
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:be60c5d356373bc591d9557961ef5e051eb8b558eaa80ea0dd830f52ff3dda13",
+        "declarationPath": "packages/components-vue/dist/BellCurveChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "BellCurveChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

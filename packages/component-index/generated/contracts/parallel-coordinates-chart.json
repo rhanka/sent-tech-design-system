@@ -1,0 +1,416 @@
+{
+  "componentId": "parallel-coordinates-chart",
+  "contractSource": "derived",
+  "digest": "sha256:3f7f3d6e270c6330052d06c0880bbba8a18827e79fbfdfd72e1db1297603f526",
+  "entryDigest": "sha256:0eb9d87f7ba8abfe06d05a4f44dd088166b332f313d44ec43a085547e11198e2",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ParallelAxis": {
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "$ref": "#/$defs/ParallelAxis"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "additionalProperties": {},
+              "properties": {},
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tones": {
+            "items": {
+              "enum": [
+                "category1",
+                "category2",
+                "category3",
+                "category4",
+                "category5",
+                "category6",
+                "category7",
+                "category8"
+              ]
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "data[]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "Record<string, unknown>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b99f01b2e79976e1c7bba5c0be1f1f0787f8174523c40ceb4a0ca8d0fe4565ef",
+        "declarationPath": "packages/components-angular/dist/ParallelCoordinatesChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ParallelCoordinatesChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ParallelAxis": {
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "$ref": "#/$defs/ParallelAxis"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "additionalProperties": {},
+              "properties": {},
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tones": {
+            "items": {
+              "enum": [
+                "category1",
+                "category2",
+                "category3",
+                "category4",
+                "category5",
+                "category6",
+                "category7",
+                "category8"
+              ]
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "data[]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "Record<string, unknown>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:27bb125c10332a21c19ffff52d0047d20eeb3e3022cc59ee2b0e9dfecd71c26b",
+        "declarationPath": "packages/components-react/dist/ParallelCoordinatesChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ParallelCoordinatesChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ParallelAxis": {
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "$ref": "#/$defs/ParallelAxis"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "additionalProperties": {},
+              "properties": {},
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tones": {
+            "items": {
+              "enum": [
+                "category1",
+                "category2",
+                "category3",
+                "category4",
+                "category5",
+                "category6",
+                "category7",
+                "category8"
+              ]
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "data[]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "Record<string, unknown>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0acdfffd0cb5c21780215704ac5d903f69199a2276a200e5651fb612f6533647",
+        "declarationPath": "packages/components-svelte/dist/ParallelCoordinatesChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ParallelCoordinatesChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ParallelAxis": {
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "axes": {
+            "items": {
+              "$ref": "#/$defs/ParallelAxis"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "additionalProperties": {},
+              "properties": {},
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tones": {
+            "items": {
+              "enum": [
+                "category1",
+                "category2",
+                "category3",
+                "category4",
+                "category5",
+                "category6",
+                "category7",
+                "category8"
+              ]
+            },
+            "type": "array"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "axes",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "data[]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "Record<string, unknown>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:358b2bb4c9ed9fea8aab7093d42be06022e422bd5bd36ddcefe1d69a0f3dbc41",
+        "declarationPath": "packages/components-vue/dist/ParallelCoordinatesChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ParallelCoordinatesChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

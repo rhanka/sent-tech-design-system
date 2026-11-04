@@ -1,0 +1,334 @@
+{
+  "componentId": "textarea",
+  "contractSource": "derived",
+  "digest": "sha256:ccf958b88856267e5629a8622b4538722bc708e14688dfb5b3ab4be356c09cdd",
+  "entryDigest": "sha256:3c360dcc6d17f2a5136ed64bf88d2e2943b897bdf21d5c12ea22dabbaad258f7",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change",
+          "payload": {}
+        },
+        {
+          "name": "input",
+          "payload": {}
+        },
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "aria-label": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "helperText": {},
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "modelValue": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "readonly": {
+            "type": "boolean"
+          },
+          "rows": {
+            "type": "number"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:aef303dba4a41cf6458b4f81db52c7ada5fce7b438ec60cb21134226bc1cc9dd",
+        "declarationPath": "packages/components-angular/dist/Textarea.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TextareaProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "input.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "errorText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.TextareaHTMLAttributes<HTMLTextAreaElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "invalid": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TextareaProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLTextareaAttributes",
+        "omitted": [
+          "class",
+          "value"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2a928f87fd9b26188159dbb95d710caf8de8d97213feb91a401b495d28ab3d4b",
+        "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TextareaProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "modelValue"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "input"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onInput",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "helperText": {},
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "modelValue": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "readonly": {
+            "type": "boolean"
+          },
+          "rows": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f902b88f005f32193b41c122f8732eccf961bbd52f70013be9e5e49272bef699",
+        "declarationPath": "packages/components-vue/dist/Textarea.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TextareaProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"input\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"input\" and prop \"onInput\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

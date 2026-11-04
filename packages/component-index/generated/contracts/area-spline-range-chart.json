@@ -1,0 +1,361 @@
+{
+  "componentId": "area-spline-range-chart",
+  "contractSource": "derived",
+  "digest": "sha256:70f9d3d0509f93894c595c894551a36409d40194fe35e2af5440f8dfd48b185b",
+  "entryDigest": "sha256:a3d819e7bad5ad689804d131d61cb2914c6112d4109569e4f8b5de99eb04ecb4",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AreaSplineRangeChartDatum": {
+            "properties": {
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "high",
+              "low",
+              "x"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AreaSplineRangeChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3cd70e7f15127a5ef7d4b683910e420a9b834f097fafde27dae149020a416f74",
+        "declarationPath": "packages/components-angular/dist/AreaSplineRangeChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AreaSplineRangeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "AreaSplineRangeChartDatum": {
+            "properties": {
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "high",
+              "low",
+              "x"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AreaSplineRangeChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:66cd0c0692df691bb94b465d28258f5b2066a7245e051d73927cf05f0431391a",
+        "declarationPath": "packages/components-react/dist/AreaSplineRangeChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AreaSplineRangeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AreaSplineRangeChartDatum": {
+            "properties": {
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "high",
+              "low",
+              "x"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AreaSplineRangeChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:8b171771f8bb03229b65bc3ebfcc8cb07236fa2f61eec34a8977f0c777abbe85",
+        "declarationPath": "packages/components-svelte/dist/AreaSplineRangeChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AreaSplineRangeChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AreaSplineRangeChartDatum": {
+            "properties": {
+              "high": {
+                "type": "number"
+              },
+              "low": {
+                "type": "number"
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "high",
+              "low",
+              "x"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/AreaSplineRangeChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:79607a1b97cc206cf1a407c79c44e6311b5422f4814de6f6cbbf7b5b9f8d7dfb",
+        "declarationPath": "packages/components-vue/dist/AreaSplineRangeChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AreaSplineRangeChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,333 @@
+{
+  "componentId": "bullet-chart",
+  "contractSource": "derived",
+  "digest": "sha256:90d9c160598524526248fde589704e2de9e372d1f85a686b462ca70a3826c8fe",
+  "entryDigest": "sha256:54549e859d183dba0c416a86c0db6b3c49cf92862c5d87752e6a491b6a44bbc5",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "BulletChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranges": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "target",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BulletChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:af636875edd011d04c49ecfc8589a383e3f3876666a5d3539f5dfad392028580",
+        "declarationPath": "packages/components-angular/dist/BulletChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "BulletChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "BulletChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranges": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "target",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BulletChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6f42c584229ccffb3ff040c3a52bae21b32fdc0df0807f002fed99f0a525c843",
+        "declarationPath": "packages/components-react/dist/BulletChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "BulletChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "BulletChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranges": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "target",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BulletChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1de354d756ca262f2b36ef6a5eb3d4ede6a809419e08a400f42158b446f82024",
+        "declarationPath": "packages/components-svelte/dist/BulletChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "BulletChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "BulletChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranges": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "number"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "target",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BulletChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3931746104da1f821cb2a8de0a92573d86adc7193227ed7bfa17c72cc18d962a",
+        "declarationPath": "packages/components-vue/dist/BulletChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "BulletChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

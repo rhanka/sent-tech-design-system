@@ -27,6 +27,8 @@ import { parseCatalogueFile, stripDatavizMarker, type CatalogueRow } from "./cat
 import {
   DATA_CLASS_DEFAULT,
   DELIVERY_CHANNEL_RANK,
+  FORMAT_CONTRACT,
+  FORMAT_CONTRACT_INDEX,
   FORMAT_ENTRY,
   FORMAT_INDEX,
   FRAMEWORK_ORDER,
@@ -40,7 +42,8 @@ import {
   type ParityMap,
   type ParityStatus,
 } from "./constants.js";
-import { entryDigest, fileDigestHex, indexRevision } from "./digest.js";
+import { contractDigest, entryDigest, fileDigestHex, indexRevision } from "./digest.js";
+import { buildContracts } from "./contracts/emit.js";
 import { loadOverlay, type Overlay } from "./overlay.js";
 import { computeParity, parityAllMissing, parityProjection } from "./parity.js";
 
@@ -139,7 +142,7 @@ interface Baseline {
   expectedParity: Record<string, ParityMap>;
   gaps: { componentId: string; parity: ParityMap; reason: string }[];
   barrelOnly: Record<string, string[]>;
-  unresolvedStars: Record<string, string[]>;
+  stars: Record<string, string[]>;
 }
 
 function readJson(path: string): unknown {
@@ -332,12 +335,21 @@ function intentionalFor(identifier: string, elements: Map<string, ElementsContra
   return intentional;
 }
 
-function loadBaseline(packageDir: string): Baseline {
+/**
+ * Load the reviewed parity baseline (exported for the K1b contract tests;
+ * generation always goes through buildArtifacts, never around it).
+ */
+export function loadBaseline(packageDir: string): Baseline {
   const parsed = readJson(join(packageDir, "parity-baseline.json")) as Partial<Baseline> & {
     version?: unknown;
-  };
+  } & { unresolvedStars?: unknown };
   if ((parsed as { version?: unknown }).version !== 2) {
     throw new Error("emit: parity-baseline.json version must be 2 (frozen maps)");
+  }
+  if ("unresolvedStars" in parsed) {
+    throw new Error(
+      'emit: parity-baseline.json uses the retired key "unresolvedStars"; rename it to "stars" (K1b section 11)',
+    );
   }
   if (
     typeof parsed.expectedParity !== "object" ||
@@ -345,8 +357,8 @@ function loadBaseline(packageDir: string): Baseline {
     !Array.isArray(parsed.gaps) ||
     typeof parsed.barrelOnly !== "object" ||
     parsed.barrelOnly === null ||
-    typeof parsed.unresolvedStars !== "object" ||
-    parsed.unresolvedStars === null
+    typeof parsed.stars !== "object" ||
+    parsed.stars === null
   ) {
     throw new Error("emit: parity-baseline.json shape is invalid");
   }
@@ -434,7 +446,7 @@ function checkBaseline(
       );
     }
     const stars = [...parsed.stars].sort();
-    const expectedStars = baseline.unresolvedStars[key];
+    const expectedStars = baseline.stars[key];
     if (expectedStars === undefined) throw new Error(`emit: baseline has no stars list for "${key}"`);
     if (JSON.stringify(stars) !== JSON.stringify([...expectedStars].sort())) {
       throw new Error(`emit: baseline stars mismatch for "${key}"`);
@@ -821,19 +833,61 @@ export function buildArtifacts(
     entries: indexRows,
   };
 
+  // K1b: derived contracts for the population (209 entries: everything
+  // except bar-chart and design-tokens, which carry no derived contract).
+  const population = entries.filter(
+    (entry) => entry.componentId !== "bar-chart" && entry.componentId !== "design-tokens",
+  );
+  const contractResult = buildContracts(
+    repoRoot,
+    packageDir,
+    population.map((entry) => ({
+      componentId: entry.componentId,
+      digest: entry.digest,
+      delivery: entry.delivery.map((delivery) => ({
+        channel: delivery.channel,
+        framework: delivery.framework,
+        package: delivery.package,
+        path: delivery.path,
+      })),
+    })),
+  );
+  const contractIndex = {
+    format: FORMAT_CONTRACT_INDEX,
+    producerId: PRODUCER_ID,
+    contractsRevision: contractResult.index.contractsRevision,
+    sourceCommit,
+    generatedBy: { generator: GENERATOR_NAME, version: packageManifest.version },
+    counts: contractResult.index.counts,
+    entries: contractResult.index.entries,
+    excluded: contractResult.index.excluded,
+  };
+
   validateOutputs(packageDir, entries, index);
+  validateContracts(packageDir, population, contractResult, contractIndex);
   const files: GeneratedFile[] = [
     { path: "generated/component-index.json", text: serializeDeterministic(index) },
     ...entries.map((entry) => ({
       path: `generated/entries/${entry.componentId}.json`,
       text: serializeDeterministic(entry),
     })),
+    ...contractResult.contracts.map((contract) => ({
+      path: `generated/contracts/${contract.componentId}.json`,
+      text: serializeDeterministic(contract.document),
+    })),
+    { path: "generated/component-contract-index.json", text: serializeDeterministic(contractIndex) },
   ];
+  const contractCounts = contractResult.index.counts.byFramework;
   log.lines.push(
     `catalogue rows: ${rows.length} (documented ${rows.length - stubs}, stubs ${stubs})`,
     `entries emitted: ${entries.length}`,
     `exclusions: ${log.exclusions.length}`,
+    `contracts emitted: ${contractResult.contracts.length}`,
+    `contract coverage: ${FRAMEWORK_ORDER.map((framework) => `${framework} ${contractCounts[framework].complete}c/${contractCounts[framework].partial}p/${contractCounts[framework].none}n`).join(" ")}`,
   );
+  for (const row of contractResult.excluded) {
+    log.exclusions.push(`contract excluded: ${row.componentId} (${row.reason})`);
+  }
   return { files, log };
 }
 
@@ -860,4 +914,89 @@ function validateOutputs(packageDir: string, entries: Entry[], index: unknown): 
   }
   const raw = JSON.stringify(entries);
   if (raw.includes('"kind"')) throw new Error('emit: retired "kind" token in generated entries');
+}
+
+/**
+ * K1b emit-side validation (spec sections 5, 8, 9): schema validity of
+ * every contract and the index, digest recomputation, the props meta-schema
+ * (every props is itself a valid JSON Schema), the entryDigest join, the
+ * row↔document mirrors, and GEN-C4 (no published contract, ever).
+ */
+function validateContracts(
+  packageDir: string,
+  population: Entry[],
+  contractResult: {
+    contracts: { componentId: string; entryDigest: string; contractDigest: string; document: Record<string, unknown> }[];
+    index: { contractsRevision: string; counts: unknown; entries: Record<string, unknown>[] };
+  },
+  contractIndex: unknown,
+): void {
+  const ajv = new Ajv2020({ allErrors: true, strict: false });
+  const contractSchema = readJson(join(packageDir, "schemas/component-contract.v1.json")) as AnySchema;
+  const contractIndexSchema = readJson(join(packageDir, "schemas/component-contract-index.v1.json")) as AnySchema;
+  const validateContract = ajv.compile(contractSchema);
+  const entryById = new Map(population.map((entry) => [entry.componentId, entry]));
+  const docById = new Map<string, Record<string, unknown>>();
+  for (const contract of contractResult.contracts) {
+    if (!validateContract(contract.document)) {
+      throw new Error(
+        `emit: contract "${contract.componentId}" fails its schema: ${JSON.stringify(validateContract.errors)}`,
+      );
+    }
+    if (contract.document["contractSource"] !== "derived") {
+      throw new Error(`emit: contract "${contract.componentId}" is not derived (GEN-C4)`);
+    }
+    const entry = entryById.get(contract.componentId);
+    if (entry === undefined) throw new Error(`emit: contract "${contract.componentId}" has no K1a entry`);
+    if (contract.entryDigest !== entry.digest) {
+      throw new Error(`emit: contract "${contract.componentId}" entryDigest does not join its K1a entry`);
+    }
+    const { digest, ...digestless } = contract.document;
+    void digest;
+    if (contractDigest(digestless) !== contract.document["digest"]) {
+      throw new Error(`emit: contract "${contract.componentId}" digest does not recompute`);
+    }
+    // Props meta-schema: every contract props must itself compile as a
+    // JSON Schema (draft 2020-12).
+    for (const framework of FRAMEWORK_ORDER) {
+      const cell = (contract.document["frameworks"] as Record<string, Record<string, unknown>>)[framework];
+      if (cell === undefined) throw new Error(`emit: contract "${contract.componentId}" misses ${framework}`);
+      const props = cell["props"];
+      if (props !== undefined) {
+        try {
+          ajv.compile(props as AnySchema);
+        } catch {
+          throw new Error(`emit: contract "${contract.componentId}" (${framework}) props is not a JSON Schema`);
+        }
+      }
+    }
+    docById.set(contract.componentId, contract.document);
+  }
+  const validateContractIndex = ajv.compile(contractIndexSchema);
+  if (!validateContractIndex(contractIndex)) {
+    throw new Error(`emit: contract index fails its schema: ${JSON.stringify(validateContractIndex.errors)}`);
+  }
+  for (const row of contractResult.index.entries) {
+    const document = docById.get(row["componentId"] as string);
+    if (document === undefined) throw new Error(`emit: contract index row has no document`);
+    if (row["entryDigest"] !== document["entryDigest"]) {
+      throw new Error(`emit: contract index row entryDigest mirror broken`);
+    }
+    if (row["contractDigest"] !== document["digest"]) {
+      throw new Error(`emit: contract index row contractDigest mirror broken`);
+    }
+    const completeness = row["completeness"] as Record<string, string>;
+    for (const framework of FRAMEWORK_ORDER) {
+      const cell = (document["frameworks"] as Record<string, Record<string, unknown>>)[framework];
+      if (cell === undefined) throw new Error(`emit: contract misses ${framework}`);
+      if (completeness[framework] !== cell["status"]) {
+        throw new Error(`emit: contract index row completeness mirror broken for ${framework}`);
+      }
+    }
+  }
+  const raw = JSON.stringify([...contractResult.contracts.map((contract) => contract.document)]);
+  if (raw.includes('"contractSource": "published"') || raw.includes('"contractSource":"published"')) {
+    throw new Error("emit: a generated contract claims the published source (GEN-C4)");
+  }
+  void FORMAT_CONTRACT;
 }
