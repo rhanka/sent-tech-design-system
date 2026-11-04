@@ -1,0 +1,587 @@
+{
+  "componentId": "calendar",
+  "contractSource": "derived",
+  "digest": "sha256:84e79b6c7c4161483615de401c1618d391f382e6e8a5984d137bcec6a2b2bb5e",
+  "entryDigest": "sha256:134edd18db60a7f8e672629e2803de6654118e14d831054c614b358281149bc9",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: CalendarValue) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMonthChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(month: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "monthChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "valueChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "type": "string"
+          },
+          "min": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "range": {
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          },
+          "weekStartsOn": {
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:31e706c7427e4074bf28a569848381c17ea4f113550ed521a89489d2e1a17870",
+        "declarationPath": "packages/components-angular/dist/Calendar.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CalendarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onMonthChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "month": {
+            "description": "Mois affiché (\"YYYY-MM\"), contrôlable de l'extérieur.",
+            "type": "string"
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "range": {
+            "description": "Sélection d'une plage de deux dates.",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "description": "Date sélectionnée (\"YYYY-MM-DD\") ou tuple [start,end] si `range`."
+          },
+          "weekStartsOn": {
+            "description": "Premier jour de la semaine : 0 = dimanche, 1 = lundi.",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CalendarProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onMonthChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "month": {
+            "description": "Mois affiché (\"YYYY-MM\"), contrôlable de l'extérieur.",
+            "type": "string"
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "range": {
+            "description": "Sélection d'une plage de deux dates.",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "description": "Date sélectionnée (\"YYYY-MM-DD\") ou tuple [start,end] si `range`."
+          },
+          "weekStartsOn": {
+            "description": "Premier jour de la semaine : 0 = dimanche, 1 = lundi.",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:aaed6fa37294cf80c963c8af65cee2e20d68b9e9015b51999d18728674acb88d",
+        "declarationPath": "packages/components-svelte/dist/Calendar.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CalendarProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: CalendarValue) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMonthChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(month: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "monthChange"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onMonthChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "description": "Borne maximale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "min": {
+            "description": "Borne minimale \"YYYY-MM-DD\" (inclusive).",
+            "type": "string"
+          },
+          "month": {
+            "description": "Mois affiché (\"YYYY-MM\"), contrôlable de l'extérieur.",
+            "type": "string"
+          },
+          "nextMonthLabel": {
+            "type": "string"
+          },
+          "previousMonthLabel": {
+            "type": "string"
+          },
+          "range": {
+            "description": "Sélection d'une plage de deux dates.",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "description": "Date sélectionnée (\"YYYY-MM-DD\") ou tuple [start,end] si `range`."
+          },
+          "weekStartsOn": {
+            "description": "Premier jour de la semaine : 0 = dimanche, 1 = lundi.",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2036c4c5e1dfcdb063f1c284f08738ddb04be3bff3a5e59004bac13440b8e17e",
+        "declarationPath": "packages/components-vue/dist/Calendar.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CalendarProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"monthChange\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"monthChange\" and prop \"onMonthChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

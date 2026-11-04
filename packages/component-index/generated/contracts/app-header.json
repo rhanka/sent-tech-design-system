@@ -1,0 +1,373 @@
+{
+  "componentId": "app-header",
+  "contractSource": "derived",
+  "digest": "sha256:38bfd25ff99b0167a7f997878f3553a98c133fc2f389b9d13c436b976c271c3a",
+  "entryDigest": "sha256:5f1e019e3ca774e201494056f09052610ee2921cb26ea4944b9954876ca62e75",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "type": "string"
+          },
+          "brandLabel": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "compact": {
+            "type": "boolean"
+          },
+          "drawerId": {
+            "type": "string"
+          },
+          "logoAlt": {
+            "type": "string"
+          },
+          "logoSrc": {
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "menuOpen": {
+            "type": "boolean"
+          },
+          "productName": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "[slot=actions]"
+        },
+        {
+          "name": "[slot=logo]"
+        },
+        {
+          "name": "[slot=navigation]"
+        },
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:feeaa2ef1611ac447735ab45664a0ce68566ab499b6809d2616221ebf5de679d",
+        "declarationPath": "packages/components-angular/dist/AppHeader.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AppHeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "ng-content selector recorded verbatim: [slot=actions]",
+        "ng-content selector recorded verbatim: [slot=logo]",
+        "ng-content selector recorded verbatim: [slot=navigation]"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "drawer",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "logo",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "nav",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onMenuToggle"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "description": "Cible du lien de la marque. Défaut : `/`.",
+            "type": "string"
+          },
+          "brandLabel": {
+            "description": "aria-label du lien de marque (sinon dérivé de `brandName` + `productName`).",
+            "type": "string"
+          },
+          "brandName": {
+            "description": "Marque structurée (décision actée : logo SENT + sous-titre). Rend le bloc\ncanonique « logo carré + nom + sous-titre produit ». Si `logo` est fourni,\nil a priorité (contrôle total).",
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "compact": {
+            "type": "boolean"
+          },
+          "drawerId": {
+            "description": "Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).\nAuto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "logoAlt": {
+            "description": "Texte alternatif du logo (décoratif par défaut).",
+            "type": "string"
+          },
+          "logoSrc": {
+            "description": "Source de l'image du logo carré (ex. `/SENT-logo-squared.svg`).",
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "menuOpen": {
+            "type": "boolean"
+          },
+          "navLabel": {
+            "description": "aria-label for the primary nav element.",
+            "type": "string"
+          },
+          "productName": {
+            "description": "Sous-titre produit affiché sous le nom (ex. « Design System », « dataviz »).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AppHeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onMenuToggle"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "description": "Cible du lien de la marque. Défaut : `/`.",
+            "type": "string"
+          },
+          "brandLabel": {
+            "description": "aria-label du lien de marque (sinon dérivé de `brandName` + `productName`).",
+            "type": "string"
+          },
+          "brandMode": {
+            "description": "Mode d'affichage de la marque.\n- `\"icon\"` (défaut) : si `logoSrc` → image seule ; sinon bigramme dans un carré+cercle.\n- `\"full\"` : comportement complet logo + `brandName`/`productName`.",
+            "enum": [
+              "icon",
+              "full"
+            ]
+          },
+          "brandName": {
+            "description": "Marque structurée (décision actée : logo SENT + sous-titre). Rend le bloc\ncanonique « logo carré + nom + sous-titre produit » sans dupliquer de CSS\ncôté consommateur. Si le snippet `logo` est fourni, il a priorité (contrôle\ntotal) ; sinon ces props produisent le bloc marque par défaut.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "compact": {
+            "description": "Force le mode compact (burger). Calque la source : le burger est à GAUCHE\net la nav desktop est masquée quand `compact` est vrai.",
+            "type": "boolean"
+          },
+          "drawerId": {
+            "description": "Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).\nAuto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "logoAlt": {
+            "description": "Texte alternatif du logo (décoratif par défaut).",
+            "type": "string"
+          },
+          "logoSrc": {
+            "description": "Source de l'image du logo carré (ex. `/SENT-logo-squared.svg`).",
+            "type": "string"
+          },
+          "menuLabel": {
+            "description": "aria-label du bouton burger.",
+            "type": "string"
+          },
+          "menuOpen": {
+            "description": "État ouvert du panneau burger (contrôlé).",
+            "type": "boolean"
+          },
+          "navAlign": {
+            "description": "Alignement de la nav desktop.\n- `\"start\"` (défaut) : la nav occupe l'espace restant et pousse les actions à droite.\n- `\"center\"` : la nav est centrée absolument entre le logo et les actions.",
+            "enum": [
+              "start",
+              "center"
+            ]
+          },
+          "productName": {
+            "description": "Sous-titre produit affiché sous le nom (ex. « Design System », « dataviz »).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "drawer"
+        },
+        {
+          "name": "logo"
+        },
+        {
+          "name": "nav"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:85c68bfe3d419c388c608b25d6a4d4212a5b8fe6aa6387e4d82ce05c1765b37e",
+        "declarationPath": "packages/components-svelte/dist/AppHeader.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AppHeaderProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "menuToggle"
+        },
+        {
+          "name": "onMenuToggle",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "description": "Cible du lien de la marque. Défaut : `/`.",
+            "type": "string"
+          },
+          "brandLabel": {
+            "description": "aria-label du lien de marque (sinon dérivé de `brandName` + `productName`).",
+            "type": "string"
+          },
+          "brandName": {
+            "description": "Marque structurée (décision actée : logo SENT + sous-titre). Rend le bloc\ncanonique « logo carré + nom + sous-titre produit ». Si le slot `logo` est\nfourni, il a priorité (contrôle total).",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "compact": {
+            "type": "boolean"
+          },
+          "drawerId": {
+            "description": "Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).\nAuto-généré et stable si non fourni.",
+            "type": "string"
+          },
+          "logoAlt": {
+            "description": "Texte alternatif du logo (décoratif par défaut).",
+            "type": "string"
+          },
+          "logoSrc": {
+            "description": "Source de l'image du logo carré (ex. `/SENT-logo-squared.svg`).",
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "menuOpen": {
+            "type": "boolean"
+          },
+          "productName": {
+            "description": "Sous-titre produit affiché sous le nom (ex. « Design System », « dataviz »).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onMenuToggle.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:249ebd653fd129c11d9356778dafb2b02c857dae5c6f3ca687c78e44b0175801",
+        "declarationPath": "packages/components-vue/dist/AppHeader.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AppHeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"menuToggle\": payload not in declaration",
+        "event pair: emits \"menuToggle\" and prop \"onMenuToggle\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

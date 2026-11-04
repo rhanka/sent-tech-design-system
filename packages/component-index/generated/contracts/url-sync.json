@@ -1,0 +1,408 @@
+{
+  "componentId": "url-sync",
+  "contractSource": "derived",
+  "digest": "sha256:3325fa3916c59a90f14c0ca6b061e68c9250dff32fe044e6f5f8a348a061cb64",
+  "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationPath": "packages/components-angular/dist/UrlSync.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "UrlSyncProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationPath": "packages/components-react/dist/UrlSync.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "UrlSyncProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-react/src/index.ts), not a declaration"
+      ]
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "DashboardStore.applyCrossfilter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId?: string | undefined) => Row[]"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.clear",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(dimensionId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.clearAll",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.clearDrill",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.clearFilter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(dimensionId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.clearSelection",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.drillDown",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId: string, dimensionId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.drillUp",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.getState",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => DashboardState"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.restore",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(state: Partial<DashboardState>) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.setFilter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(dimensionId: string, spec: FilterSpec) => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.subscribe",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(listener: () => void) => () => void"
+        },
+        {
+          "kind": "function",
+          "name": "DashboardStore.toggleSelection",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(viewId: string, key: string) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CrossfilterGraph": {
+            "additionalProperties": false,
+            "properties": {
+              "views": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/CrossfilterView"
+                },
+                "properties": {},
+                "type": "object"
+              }
+            },
+            "required": [
+              "views"
+            ],
+            "type": "object"
+          },
+          "CrossfilterView": {
+            "additionalProperties": false,
+            "properties": {
+              "affects": {
+                "description": "The view ids this view's selection filters. If omitted, defaults to\n\"every other view\" (a fully-linked dashboard). An empty array means the\nview's selection affects no other view.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "field": {
+                "description": "The dimension id this view's selection keys refer to.",
+                "type": "string"
+              },
+              "selection": {
+                "description": "How selection keys should be interpreted for this view. The default `key`\nmode compares stringified field values. `range` mode expects keys produced\nby {@link rangeSelectionKey} and keeps rows whose numeric/date value falls\ninside at least one selected range.",
+                "enum": [
+                  "key",
+                  "range"
+                ]
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "DashboardStore": {
+            "additionalProperties": false,
+            "properties": {
+              "crossfilter": {
+                "$ref": "#/$defs/CrossfilterGraph",
+                "description": "The cross-filter graph, if any."
+              },
+              "data": {
+                "description": "The raw, unfiltered data (read-only copy).",
+                "items": {
+                  "$ref": "#/$defs/Row"
+                },
+                "type": "array"
+              },
+              "model": {
+                "$ref": "#/$defs/DataModel",
+                "description": "The data model (read-only)."
+              }
+            },
+            "required": [
+              "data",
+              "model"
+            ],
+            "type": "object"
+          },
+          "DataModel": {
+            "additionalProperties": false,
+            "properties": {
+              "dimensions": {
+                "items": {
+                  "$ref": "#/$defs/Dimension"
+                },
+                "type": "array"
+              },
+              "measures": {
+                "items": {
+                  "$ref": "#/$defs/Measure"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "dimensions",
+              "measures"
+            ],
+            "type": "object"
+          },
+          "Dimension": {
+            "additionalProperties": false,
+            "properties": {
+              "folder": {
+                "description": "Optional field-pane folder/group label.",
+                "type": "string"
+              },
+              "hierarchy": {
+                "description": "Optional drill-down path, ordered from coarse to fine, e.g.\n`['country', 'region', 'city']`. Each entry is a dimension id.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "discrete",
+                  "continuous"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "type"
+            ],
+            "type": "object"
+          },
+          "Measure": {
+            "additionalProperties": false,
+            "properties": {
+              "aggregation": {
+                "enum": [
+                  "sum",
+                  "avg",
+                  "min",
+                  "max",
+                  "count"
+                ]
+              },
+              "folder": {
+                "description": "Optional field-pane folder/group label.",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "aggregation",
+              "id",
+              "label"
+            ],
+            "type": "object"
+          },
+          "Row": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "const": false
+                },
+                {
+                  "const": true
+                }
+              ]
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "UrlSyncOptions": {
+            "additionalProperties": false,
+            "properties": {
+              "debounceMs": {
+                "description": "Debounce window (ms) for writing rapid store changes to the URL. `0`\n(default) writes synchronously on every change.",
+                "type": "number"
+              },
+              "history": {
+                "description": "History strategy when the URL is updated from a store change. `replace`\n(default) uses `history.replaceState` so each keystroke does not spam the\nback stack; `push` uses `history.pushState`.",
+                "enum": [
+                  "replace",
+                  "push"
+                ]
+              },
+              "param": {
+                "description": "Query parameter name to read/write. Defaults to {@link DEFAULT_URL_SYNC_PARAM}.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "$ref": "#/$defs/UrlSyncOptions",
+            "description": "Sync options (param name, debounce, push/replace)."
+          },
+          "store": {
+            "$ref": "#/$defs/DashboardStore",
+            "description": "The dashboard store to deep-link to the URL query string."
+          }
+        },
+        "required": [
+          "store"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "CrossfilterGraph.views",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/CrossfilterView\"}",
+          "sourceType": "Record<string, CrossfilterView>"
+        },
+        {
+          "name": "Row",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"string\"},{\"type\":\"number\"},{\"const\":false},{\"const\":true}]}",
+          "sourceType": "Row"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d730629cb2a3c8c54e6d42b5ff0bd8b50d859836fe4484f341602e114f506693",
+        "declarationPath": "packages/dataviz-svelte/dist/lib/UrlSync.svelte.d.ts",
+        "package": "@sentropic/dataviz-svelte",
+        "propsType": "UrlSyncProps",
+        "version": "0.5.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationPath": "packages/components-vue/dist/UrlSync.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "UrlSyncProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

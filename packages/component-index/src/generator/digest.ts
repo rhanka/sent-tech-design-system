@@ -12,7 +12,12 @@
  */
 import { createHash } from "node:crypto";
 
-import { ENTRY_DIGEST_TAG, INDEX_DIGEST_TAG } from "./constants.js";
+import {
+  CONTRACT_DIGEST_TAG,
+  CONTRACT_INDEX_DIGEST_TAG,
+  ENTRY_DIGEST_TAG,
+  INDEX_DIGEST_TAG,
+} from "./constants.js";
 
 export function canonicalizeJson(value: unknown): string {
   if (value === null) return "null";
@@ -71,4 +76,19 @@ export function entryDigest(entryWithoutDigest: unknown): string {
  */
 export function indexRevision(rows: readonly unknown[], producerId: string): string {
   return taggedDigest({ entries: [...rows], producerId }, INDEX_DIGEST_TAG);
+}
+
+/** Contract digest (spec section 4): tagged digest of the contract document WITHOUT its digest. */
+export function contractDigest(contractWithoutDigest: unknown): string {
+  return taggedDigest(contractWithoutDigest, CONTRACT_DIGEST_TAG);
+}
+
+/**
+ * Contract index revision (spec section 5.2): tagged digest
+ * (contract-index tag) of `{entries: [rows in emitted order], producerId}`.
+ * Rows carry no revision field; sourceCommit and generator version stay
+ * outside the preimage, exactly as in the K1a index rule.
+ */
+export function contractsRevision(rows: readonly unknown[], producerId: string): string {
+  return taggedDigest({ entries: [...rows], producerId }, CONTRACT_INDEX_DIGEST_TAG);
 }

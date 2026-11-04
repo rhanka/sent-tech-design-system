@@ -85,6 +85,21 @@ export function parseBarrelText(sourceText: string, fileName: string): ParsedBar
       }
       continue;
     }
+    // K1b section 11: enum, namespace/module, interface and type-alias
+    // declarations are type-side surface (props-type carriers the extractor
+    // must not mistake for components). Recorded in `types`, never in
+    // `values` (never presence, never editorial metadata).
+    if (
+      ts.isEnumDeclaration(statement) ||
+      ts.isModuleDeclaration(statement) ||
+      ts.isInterfaceDeclaration(statement) ||
+      ts.isTypeAliasDeclaration(statement)
+    ) {
+      if (hasExportModifier(statement) && statement.name !== undefined && ts.isIdentifier(statement.name)) {
+        types.add(statement.name.text);
+      }
+      continue;
+    }
     if (!ts.isExportDeclaration(statement)) continue;
     const specifier =
       statement.moduleSpecifier !== undefined && ts.isStringLiteral(statement.moduleSpecifier)
@@ -105,19 +120,39 @@ export function parseBarrelText(sourceText: string, fileName: string): ParsedBar
   return { values, types, stars };
 }
 
-/** Parse a committed barrel file, resolving relative star re-exports. */
-export function parseBarrelFile(barrelPath: string, visited: Set<string> = new Set()): ParsedBarrel {
+/**
+ * Parse a committed barrel file, resolving relative star re-exports.
+ *
+ * K1b section 11: a star specifier in one of the eight barrel files that is
+ * not relative fails generation (a bare `export *` would silently drop
+ * surface the baseline cannot pin). Nested files keep the K1a leniency —
+ * their bare stars (for example the dataviz `adapter.ts` re-export of an
+ * external package) are recorded but not followed — so the depth flag guards
+ * only the barrel the generator was asked to parse.
+ */
+export function parseBarrelFile(
+  barrelPath: string,
+  visited: Set<string> = new Set(),
+  depth: number = 0,
+): ParsedBarrel {
   if (visited.has(barrelPath)) return { values: new Map(), types: new Set(), stars: [] };
   visited.add(barrelPath);
   const parsed = parseBarrelText(readFileSync(barrelPath, "utf8"), barrelPath);
   const dir = dirname(barrelPath);
   for (const star of parsed.stars) {
-    if (!star.startsWith(".")) continue;
+    if (!star.startsWith(".")) {
+      if (depth === 0) {
+        throw new Error(
+          `${barrelPath}: non-relative star re-export "${star}" fails generation (K1b section 11)`,
+        );
+      }
+      continue;
+    }
     const target = resolveModuleFile(dir, star);
     if (target === null) {
       throw new Error(`${barrelPath}: cannot resolve star re-export "${star}"`);
     }
-    const nested = parseBarrelFile(target, visited);
+    const nested = parseBarrelFile(target, visited, depth + 1);
     for (const [name, specifier] of nested.values) {
       if (!parsed.values.has(name)) parsed.values.set(name, specifier);
     }

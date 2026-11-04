@@ -1,0 +1,213 @@
+{
+  "componentId": "code-snippet",
+  "contractSource": "derived",
+  "digest": "sha256:11aa0995a97b65ce8dd09d41cac35a65983f9f143ffc1af8f24ed1ea234c0657",
+  "entryDigest": "sha256:aa4215e5e411ddf8fd3f8bc20755afd891e17f338b7f37878fa9f9bb857d0825",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "copyLabel": {
+            "type": "string"
+          },
+          "copyable": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5232f80151f6e6c6fd387e7338672419f12e859cb54df179e1b1c7f2e939e22f",
+        "declarationPath": "packages/components-angular/dist/CodeSnippet.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CodeSnippetProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLPreElement>",
+        "omitted": []
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "copyLabel": {
+            "type": "string"
+          },
+          "copyable": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CodeSnippetProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "copyLabel": {
+            "type": "string"
+          },
+          "copyable": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d669c09b7e702406a48293e4cb09147c23efc6c7334ed693df85a0ba039e3d8d",
+        "declarationPath": "packages/components-svelte/dist/CodeSnippet.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CodeSnippetProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "copyLabel": {
+            "type": "string"
+          },
+          "copyable": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:43b430d5bba566f1ea267b9b5be31a9017008f89196278e27e9789327cbd703c",
+        "declarationPath": "packages/components-vue/dist/CodeSnippet.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CodeSnippetProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

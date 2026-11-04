@@ -1,0 +1,432 @@
+{
+  "componentId": "header",
+  "contractSource": "derived",
+  "digest": "sha256:7987843397954b0ad410efa09ae985a72181a9e7c9083e6cf71b10af8804dfd3",
+  "entryDigest": "sha256:0b6b4c7cb9c056b51f57f64114327839ace324021d73c25800ef0a06380469eb",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HeaderAccount": {
+            "additionalProperties": false,
+            "properties": {
+              "avatarUrl": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "HeaderNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {}
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/HeaderAccount"
+          },
+          "brand": {},
+          "class": {
+            "type": "string"
+          },
+          "compact": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "navItems": {
+            "items": {
+              "$ref": "#/$defs/HeaderNavItem"
+            },
+            "type": "array"
+          },
+          "navigation": {
+            "items": {
+              "$ref": "#/$defs/HeaderNavItem"
+            },
+            "type": "array"
+          },
+          "sticky": {
+            "type": "boolean"
+          },
+          "title": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "HeaderNavItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "brand",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d6414c7988c5be755e0788e77295fd43b5cb021bffde1ee2eee0f40b3de453b5",
+        "declarationPath": "packages/components-angular/dist/Header.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "HeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "brand",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "navItems[].label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "navigation[].label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "HeaderAccount": {
+            "additionalProperties": false,
+            "properties": {
+              "avatarUrl": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/HeaderAccount"
+          },
+          "navItems": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "href"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "navigation": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "href"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "sticky": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "HeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onAccountTriggerClick"
+        },
+        {
+          "name": "onSignIn"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "HeaderAccount": {
+            "additionalProperties": false,
+            "properties": {
+              "avatarUrl": {
+                "description": "URL de la photo de profil. Si absente, on rend les initiales.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "email": {
+                "description": "Email optionnel, affiché sous le nom et dans le menu compte.",
+                "type": "string"
+              },
+              "initials": {
+                "description": "Initiales explicites. Si absentes, dérivées du `name`.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Nom affiché de la personne connectée. Obligatoire : pas de carré sans nom.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/HeaderAccount",
+            "description": "Identité connectée (additif). Quand fourni, le Header rend une zone compte\ncomplète (avatar OU initiales + nom + email + déclencheur de menu). Sans\ncet objet, l'état « anonyme » s'affiche via le snippet `actions` du parent\n(typiquement un CTA « Se connecter »)."
+          },
+          "accountMenuOpen": {
+            "description": "Indique si le menu compte est ouvert (état contrôlé par le parent).",
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "signInLabel": {
+            "description": "Texte du déclencheur de connexion rendu quand `account` est absent.",
+            "type": "string"
+          },
+          "sticky": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "accountMenu"
+        },
+        {
+          "name": "actions"
+        },
+        {
+          "name": "children"
+        },
+        {
+          "name": "logo"
+        },
+        {
+          "name": "navigation"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:cea02fc569f0d609bd94c09ff7b3edc81d060d1d27e158f799f344d889b1da4c",
+        "declarationPath": "packages/components-svelte/dist/Header.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "HeaderProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "HeaderAccount": {
+            "additionalProperties": false,
+            "properties": {
+              "avatarUrl": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "HeaderNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "type": "string"
+              },
+              "label": {}
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/HeaderAccount"
+          },
+          "brand": {},
+          "class": {
+            "type": "string"
+          },
+          "navItems": {
+            "items": {
+              "$ref": "#/$defs/HeaderNavItem"
+            },
+            "type": "array"
+          },
+          "navigation": {
+            "items": {
+              "$ref": "#/$defs/HeaderNavItem"
+            },
+            "type": "array"
+          },
+          "sticky": {
+            "type": "boolean"
+          },
+          "title": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "HeaderNavItem.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "brand",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:70b70036d3f3da71b0fc6868a4a46451aa89aab325df9a65cd8282df9ba6b70b",
+        "declarationPath": "packages/components-vue/dist/Header.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "HeaderProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

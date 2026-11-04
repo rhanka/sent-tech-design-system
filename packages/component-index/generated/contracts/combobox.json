@@ -1,0 +1,592 @@
+{
+  "componentId": "combobox",
+  "contractSource": "derived",
+  "digest": "sha256:e4bd7ccf9157c6b267ec2d59a732a514371f6a3a551358ffd196f943a72252ca",
+  "entryDigest": "sha256:18dd004d1afe3e075645b74ab730b5d07fddbc4b070301f53ff2dda73612878c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "valueChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ComboboxOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "allowCustomValue": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "listLabel": {
+            "type": "string"
+          },
+          "modelValue": {
+            "type": "string"
+          },
+          "noResultsLabel": {},
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/ComboboxOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "ComboboxOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "noResultsLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:54b9318d5d2b713931a353829a0f9f9cf4468c0adf5d33d014174133db704c2b",
+        "declarationPath": "packages/components-angular/dist/Combobox.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ComboboxProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "ComboboxOption.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "errorText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "noResultsLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ComboboxOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "allowCustomValue": {
+            "type": "boolean"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "listLabel": {
+            "description": "Accessible name for the options listbox. Defaults to `label`.",
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/ComboboxOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ComboboxProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLInputAttributes",
+        "omitted": [
+          "class",
+          "onchange",
+          "size",
+          "type",
+          "value"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ComboboxOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "allowCustomValue": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "listLabel": {
+            "type": "string"
+          },
+          "noResultsLabel": {
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/ComboboxOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:32ffb37476dc8163804c64fa4819a695fec803f2496ac7c6bfe752bdbcee8495",
+        "declarationPath": "packages/components-svelte/dist/Combobox.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ComboboxProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "open"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "select"
+        },
+        {
+          "name": "update:modelValue"
+        },
+        {
+          "name": "update:open"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ComboboxOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "label": {},
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "allowCustomValue": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "listLabel": {
+            "type": "string"
+          },
+          "noResultsLabel": {},
+          "open": {
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/ComboboxOption"
+            },
+            "type": "array"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "ComboboxOption.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "noResultsLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b0c9439eb22cd0df8cb2bf10a51d12bc13abf141b0957e468c588ba2a71b45df",
+        "declarationPath": "packages/components-vue/dist/Combobox.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ComboboxProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"select\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
+        "two-way binding: prop \"open\" paired with emit \"update:open\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

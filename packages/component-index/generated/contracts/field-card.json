@@ -1,0 +1,294 @@
+{
+  "componentId": "field-card",
+  "contractSource": "derived",
+  "digest": "sha256:b466b577b03e51ee02ccee16d3e031ccd196dba588665a45cb830ee71e6afa95",
+  "entryDigest": "sha256:431ded4c9bbb75fc660f0b7b2a5be48d25cad80727b1b3ac47bcfd1270526d16",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onOpenComments",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "commentCount": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "plain",
+              "bordered",
+              "accent"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:cddf1b2a82567e55d676009a2aeb31ffd8e8b868136b499119ee113e10f8fce6",
+        "declarationPath": "packages/components-angular/dist/FieldCard.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FieldCardProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onOpenComments"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "commentCount": {
+            "description": "Nombre de commentaires ; affiche une pastille à côté du titre si > 0 ou si `onOpenComments`.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Titre de la carte / du groupe de champs.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Couleur catégorielle pour la variante `accent`.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "variant": {
+            "description": "Variante visuelle :\n- `plain` : cadre simple, titre discret.\n- `bordered` (défaut) : titre séparé par un filet sous l'en-tête.\n- `accent` : liseré catégoriel à gauche (conteneur à angles nets, jamais arrondi).",
+            "enum": [
+              "plain",
+              "bordered",
+              "accent"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c32a8fe8407db14a63edabf367a741909805a27a4457cac5e12bcce1d3116559",
+        "declarationPath": "packages/components-react/dist/FieldCard.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FieldCardProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onOpenComments"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "commentCount": {
+            "description": "Nombre de commentaires ; affiche une pastille à côté du titre si > 0 ou si `onOpenComments`.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Titre de la carte / du groupe de champs.",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Couleur catégorielle pour la variante `accent`.",
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "variant": {
+            "description": "Variante visuelle :\n- `plain` : cadre simple, titre discret.\n- `bordered` (défaut) : titre séparé par un filet sous l'en-tête.\n- `accent` : liseré catégoriel à gauche (conteneur à angles nets, jamais arrondi).",
+            "enum": [
+              "plain",
+              "bordered",
+              "accent"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ca0fa0e1f848f1eedc3b70b8be9c52edd6a572e1fa1b31d94ad98573c745b9c3",
+        "declarationPath": "packages/components-svelte/dist/FieldCard.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FieldCardProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onOpenComments",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onOpenComments"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "commentCount": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "category1",
+              "category2",
+              "category3",
+              "category4",
+              "category5",
+              "category6",
+              "category7",
+              "category8"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "plain",
+              "bordered",
+              "accent"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f4805e7324a841124d9204fd6e14b8e192ca8c321b823ad3fe7818285b6a02cb",
+        "declarationPath": "packages/components-vue/dist/FieldCard.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FieldCardProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,523 @@
+{
+  "componentId": "popper",
+  "contractSource": "derived",
+  "digest": "sha256:4f15fdb7d2be596de08b22aefc6c99de823867712fe4d4ee518b0b882fa8a7ba",
+  "entryDigest": "sha256:15a17e81a2a7f8ce4eae0621f7bbcf8af6914ed5fd88caca383f29bdb1e8397a",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onPlacementChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(placement: PopperPlacement) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "arrow": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "type": "boolean"
+          },
+          "flip": {
+            "type": "boolean"
+          },
+          "offset": {
+            "type": "number"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "placement": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          },
+          "portal": {
+            "type": "boolean"
+          },
+          "shift": {
+            "type": "boolean"
+          },
+          "strategy": {
+            "enum": [
+              "absolute",
+              "fixed"
+            ]
+          },
+          "trapFocus": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "anchor",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:dd2f902e033d07aa8ededf6fbb9dcb5e3974451eb0d2a3b37b623d3f4131fc3e",
+        "declarationPath": "packages/components-angular/dist/Popper.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PopperProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClose"
+        },
+        {
+          "name": "onPlacementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference element the panel is positioned against."
+          },
+          "arrow": {
+            "description": "Expose a positioned arrow element.",
+            "type": "boolean"
+          },
+          "className": {
+            "description": "Optional class applied to the floating panel.",
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "description": "(a11y) When true (default when open), pressing Escape calls `onClose` so\nthe consumer can set `open = false`. Set to false to suppress this behavior.",
+            "type": "boolean"
+          },
+          "flip": {
+            "description": "Flip to the opposite side when the panel would overflow the viewport.",
+            "type": "boolean"
+          },
+          "offset": {
+            "description": "Main-axis distance (px) between the anchor and the panel.",
+            "type": "number"
+          },
+          "open": {
+            "description": "Controlled open state. When false (or no anchor) nothing renders.",
+            "type": "boolean"
+          },
+          "placement": {
+            "description": "Wanted placement of the panel relative to the anchor.",
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          },
+          "portal": {
+            "description": "Render the panel into `document.body` via a Portal.",
+            "type": "boolean"
+          },
+          "shift": {
+            "description": "Shift along the cross axis to keep the panel within the viewport.",
+            "type": "boolean"
+          },
+          "strategy": {
+            "description": "CSS positioning strategy.",
+            "enum": [
+              "absolute",
+              "fixed"
+            ]
+          },
+          "trapFocus": {
+            "description": "(a11y, opt-in) When true, traps keyboard focus inside the panel while it\nis open (Tab cycles through focusable children; Shift+Tab cycles backward).\nIntended for modal overlays built on top of Popper. Non-modal usage (menus,\ntooltips) should leave this false (default) to keep the natural tab order.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "anchor"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "anchor",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ee37dcd3a7023ae1f88dda1f49dfaff8e243b274b3d71b2d4453c8c1f224b3d2",
+        "declarationPath": "packages/components-react/dist/Popper.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PopperProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClose"
+        },
+        {
+          "name": "onPlacementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference element the panel is positioned against."
+          },
+          "arrow": {
+            "description": "Expose a positioned arrow element.",
+            "type": "boolean"
+          },
+          "class": {
+            "description": "Optional class applied to the floating panel.",
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "description": "(a11y) When true (default when open), pressing Escape calls `onClose` so\nthe consumer can set `open = false`. Set to false to suppress this behavior.",
+            "type": "boolean"
+          },
+          "flip": {
+            "description": "Flip to the opposite side when the panel would overflow the viewport.",
+            "type": "boolean"
+          },
+          "offset": {
+            "description": "Main-axis distance (px) between the anchor and the panel.",
+            "type": "number"
+          },
+          "open": {
+            "description": "Controlled open state. When false (or no anchor) nothing renders.",
+            "type": "boolean"
+          },
+          "placement": {
+            "description": "Wanted placement of the panel relative to the anchor.",
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          },
+          "portal": {
+            "description": "Render the panel into `document.body` via a Portal.",
+            "type": "boolean"
+          },
+          "shift": {
+            "description": "Shift along the cross axis to keep the panel within the viewport.",
+            "type": "boolean"
+          },
+          "strategy": {
+            "description": "CSS positioning strategy.",
+            "enum": [
+              "absolute",
+              "fixed"
+            ]
+          },
+          "trapFocus": {
+            "description": "(a11y, opt-in) When true, traps keyboard focus inside the panel while it\nis open (Tab cycles through focusable children; Shift+Tab cycles backward).\nIntended for modal overlays built on top of Popper. Non-modal usage (menus,\ntooltips) should leave this false (default) to keep the natural tab order.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "anchor"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "anchor",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e1636e6747a58dfa78016dde1ba3d84e694781545af11fc974bcd41a4e6f17ff",
+        "declarationPath": "packages/components-svelte/dist/Popper.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PopperProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onPlacementChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(placement: PopperPlacement) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClose"
+        },
+        {
+          "name": "onPlacementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference element the panel is positioned against."
+          },
+          "arrow": {
+            "description": "Expose a positioned arrow element.",
+            "type": "boolean"
+          },
+          "class": {
+            "description": "Optional class applied to the floating panel.",
+            "type": "string"
+          },
+          "closeOnEscape": {
+            "description": "(a11y) When true (default when open), pressing Escape calls `onClose` so\nthe consumer can set `open = false`. Set to false to suppress this behavior.",
+            "type": "boolean"
+          },
+          "flip": {
+            "description": "Flip to the opposite side when the panel would overflow the viewport.",
+            "type": "boolean"
+          },
+          "offset": {
+            "description": "Main-axis distance (px) between the anchor and the panel.",
+            "type": "number"
+          },
+          "open": {
+            "description": "Controlled open state. When false (or no anchor) nothing renders.",
+            "type": "boolean"
+          },
+          "placement": {
+            "description": "Wanted placement of the panel relative to the anchor.",
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          },
+          "portal": {
+            "description": "Render the panel into `document.body` via a Teleport.",
+            "type": "boolean"
+          },
+          "shift": {
+            "description": "Shift along the cross axis to keep the panel within the viewport.",
+            "type": "boolean"
+          },
+          "strategy": {
+            "description": "CSS positioning strategy.",
+            "enum": [
+              "absolute",
+              "fixed"
+            ]
+          },
+          "trapFocus": {
+            "description": "(a11y, opt-in) When true, traps keyboard focus inside the panel while it\nis open (Tab cycles through focusable children; Shift+Tab cycles backward).\nIntended for modal overlays built on top of Popper. Non-modal usage (menus,\ntooltips) should leave this false (default) to keep the natural tab order.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "anchor"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "anchor",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "HTMLElement"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2033b3e8da066e9ca9c9f9dbef303f07af0d8e88061af790faae5822ba73867e",
+        "declarationPath": "packages/components-vue/dist/Popper.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PopperProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

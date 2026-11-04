@@ -1,0 +1,366 @@
+{
+  "componentId": "chat-thread",
+  "contractSource": "derived",
+  "digest": "sha256:8c52d9450e91caf9444b9eee1779b645a1e5b6634616b69b23441ce2a2403a7c",
+  "entryDigest": "sha256:7523c2ae92339de0fd5cb4f1ab67757b075ca8754c150b132d05bde17ddd4b5b",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "autoScroll": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "emptyLabel": {},
+          "label": {
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {},
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "user",
+                    "assistant",
+                    "system",
+                    "tool"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "error",
+                    "idle",
+                    "pending",
+                    "processing",
+                    "completed",
+                    "failed",
+                    "streaming",
+                    "sent"
+                  ]
+                }
+              },
+              "required": [
+                "content",
+                "id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "emptyLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "messages[].content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:deba37fedcc467ba7891e1d88f6041d6be43496aef85f0d991fe63f902fa5b87",
+        "declarationPath": "packages/components-angular/dist/ChatThread.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ChatThreadProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "emptyLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "emptyState",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "messages[].content",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "autoScroll": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "user",
+                    "assistant",
+                    "system",
+                    "tool"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "error",
+                    "idle",
+                    "pending",
+                    "processing",
+                    "completed",
+                    "failed",
+                    "streaming",
+                    "sent"
+                  ]
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ChatThreadProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "aria-label",
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ChatThreadMessage": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "user",
+                  "assistant",
+                  "system",
+                  "tool"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed"
+                ]
+              }
+            },
+            "required": [
+              "content",
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "autoScroll": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "messages": {
+            "description": "Data-driven messages (cross-framework parity with React/Vue). When\nprovided, each entry is rendered internally as a `ChatMessage`. The\ncanonical `children` slot still works; `messages` takes precedence when\nboth are supplied.",
+            "items": {
+              "$ref": "#/$defs/ChatThreadMessage"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        },
+        {
+          "name": "emptyState"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:d6be8f58acb8b88679d62487605051b8cb02ca5d95c4f36a560748ab23fe2f01",
+        "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ChatThreadProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "autoScroll": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "emptyLabel": {},
+          "label": {
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {},
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "user",
+                    "assistant",
+                    "system",
+                    "tool"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "error",
+                    "idle",
+                    "pending",
+                    "processing",
+                    "completed",
+                    "failed",
+                    "streaming",
+                    "sent"
+                  ]
+                }
+              },
+              "required": [
+                "content",
+                "id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "emptyLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "messages[].content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:48266f950a2196ff3f102bcbf5f97161350485b0b9f4e18ffa164273b8be2c9d",
+        "declarationPath": "packages/components-vue/dist/ChatThread.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ChatThreadProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}
