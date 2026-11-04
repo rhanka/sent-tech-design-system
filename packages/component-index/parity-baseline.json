@@ -1,0 +1,1755 @@
+{
+  "version": 2,
+  "baseCommit": "24f6f8e9c66d0755e7facea4d08ff181cb7de65c",
+  "note": "Measured parity and barrel-only inventory on the base commit (spec 6.3). The generator recomputes every list and fails on any deviation: a new gap, a resolved gap, or a barrel surface change without a same-commit baseline update all turn index:check red. Never edit this file to make a gate pass.",
+  "completeReason": "Present as a value export in all four component barrels (svelte, react, vue, angular). Applies to every expectedParity row not listed in gaps.",
+  "expectedParity": {
+    "button": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "copy-button": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "icon-button": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "link": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "checkbox": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "combobox": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "form": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "form-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "date-picker": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dropdown": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "file-uploader": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "input": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "multi-select": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "number-input": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "password-input": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "radio": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "search": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "select": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "slider": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "range-slider": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "switch": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "textarea": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "chat-composer": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "chat-message": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "chat-thread": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "message-status-badge": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "message-actions": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "streaming-message": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "toggle": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "breadcrumb": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "header": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "app-header": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "app-chrome": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "footer": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "overflow-menu": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "pagination-nav": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "content-switcher": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "menu": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "menu-trigger-button": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "pagination": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "side-nav": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tabs": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "nav-item": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "nav-section": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "drawer": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "menu-popover": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "modal": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "popover": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "toggletip": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tooltip": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "alert": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "empty-state": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "error-summary": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "inline-loading": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "loading-state": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "notification": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "progress-bar": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "progress-indicator": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "skeleton-text": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "toast": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "area-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "bar-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "line-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "sparkline": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "badge": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "data-table": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "table": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tag": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "url-sync": {
+      "svelte": "missing",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
+    "web-frame": {
+      "svelte": "missing",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
+    "time-series-line-chart": {
+      "svelte": "missing",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
+    "dataviz-score-card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dataviz-data-image": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dataviz-dashboard-grid": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "accordion": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "config-item-card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "field-card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "score-card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tile": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "skip-link": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "display-settings": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "media-content": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "embed": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "data-image": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "transcription": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "table-of-contents": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "back-to-top": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "quote": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "highlight": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "language-selector": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "language-toggle": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "ordered-list": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tree-view": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "donut-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "scatter-plot": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "priority-matrix": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "force-graph": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "geo-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "stacked-bar-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "kpi-card": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "combo-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "gauge-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "solid-gauge-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "state-timeline-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "status-history-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "event-feed-panel": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "vector-field-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "contour-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "wind-barb-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "renko-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "point-and-figure-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "waffle-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "color-swatch": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "color-scale-bar": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "timeline": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "ribbon-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "anomaly-swim-lane-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "flamegraph-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "trace-waterfall-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "decomposition-tree-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "density-2d-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "funnel-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "waterfall-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "treemap-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "word-cloud-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "organization-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "treegraph-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dashboard-grid": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "heatmap-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "histogram-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "box-plot-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "rose-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "item-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "variable-pie-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "venn-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "violin-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "lollipop-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "column-range-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "area-range-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "area-spline-range-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "column-pyramid-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "polygon-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tile-map-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dumbbell-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "error-bar-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "bell-curve-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "pareto-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "radar-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "sankey-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "sunburst-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "chord-diagram": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "dependency-wheel-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "arc-diagram-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "packed-bubbles-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "aspect-ratio": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "flex": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "grid": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "stack": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "inline": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "container": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "row": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "col": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "hidden": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "divider": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "avatar": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "avatar-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "button-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "checkbox-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "radio-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "typography": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "collapsible": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "stepper": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "rating": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "time-picker": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "calendar": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "slide-indicator": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "autosave": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "portal": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "popper": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "selectable-row": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "selectable-list": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "code-snippet": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "structured-list": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "tile-group": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "unordered-list": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "bullet-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "marimekko-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "parallel-coordinates-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "candlestick-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "ohlc-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "hlc-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "hollow-candlestick-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "heikin-ashi-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "timeline-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "gantt-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "streamgraph-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "calendar-heatmap-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "bump-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "step-line-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "divergent-bar-chart": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "filter-pill": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "filter-bar": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "selection-chip": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "overline": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "status-dot": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "nav-action-stack": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "icon": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "panel-section": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    },
+    "time-range-picker": {
+      "svelte": "source-of-truth",
+      "react": "match",
+      "vue": "match",
+      "angular": "match"
+    }
+  },
+  "gaps": [
+    {
+      "componentId": "url-sync",
+      "parity": {
+        "svelte": "missing",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "Documented dashboard URL-state helper; value-exported only from @sentropic/dataviz-svelte (lib/UrlSync.svelte); no component-package export."
+    },
+    {
+      "componentId": "web-frame",
+      "parity": {
+        "svelte": "missing",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "Documented embed frame; value-exported from dataviz svelte/react/vue (lib/ObjectLayers); absent from dataviz-angular and from all component packages."
+    },
+    {
+      "componentId": "time-series-line-chart",
+      "parity": {
+        "svelte": "missing",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "Documented chart; value-exported only from @sentropic/dataviz-react (lib/TimeSeriesLineChart); no component-package export."
+    }
+  ],
+  "barrelOnly": {
+    "svelte": [
+      "AppShell",
+      "ContextPanel",
+      "DEFAULT_TIME_RANGE_PRESETS",
+      "Dashboard",
+      "GraphLegend",
+      "ICONS",
+      "ICON_NAMES",
+      "IdentityButton",
+      "IdentityMenu",
+      "KanbanBoard",
+      "ListReportPage",
+      "MasterDetail",
+      "NavDrawer",
+      "NavRail",
+      "NavShell",
+      "ObjectPage",
+      "PANEL_STACK_MAX_SECTIONS",
+      "PanelStack",
+      "SHELL_TOKEN_CONTRACT",
+      "SITE_CONFIG_SCHEMA_VERSION",
+      "ThemeProvider",
+      "UtilityPanel",
+      "Wizard",
+      "composeAbsolute",
+      "deriveInitials",
+      "edgeDashArray",
+      "formatPresetLabel",
+      "formatTriggerLabel",
+      "identityInitial",
+      "nodeShapePath",
+      "parsePresetMs",
+      "resolveRelative",
+      "splitAbsolute"
+    ],
+    "react": [
+      "AppShell",
+      "ContextPanel",
+      "DEFAULT_TIME_RANGE_PRESETS",
+      "GraphLegend",
+      "ICONS",
+      "ICON_NAMES",
+      "IdentityMenu",
+      "NavDrawer",
+      "NavRail",
+      "NavShell",
+      "PANEL_STACK_MAX_SECTIONS",
+      "PanelStack",
+      "SelectableListContext",
+      "ThemeProvider",
+      "UtilityPanel",
+      "alignValue",
+      "composeAbsolute",
+      "computePosition",
+      "deriveInitials",
+      "edgeDashArray",
+      "formatPresetLabel",
+      "formatTriggerLabel",
+      "gridTemplateColumns",
+      "identityInitial",
+      "joinPlacement",
+      "justifyValue",
+      "nodeShapePath",
+      "offsetMargin",
+      "parsePresetMs",
+      "resolvePortalTarget",
+      "resolveRelative",
+      "spacingToken",
+      "spanBasis",
+      "splitAbsolute",
+      "splitPlacement"
+    ],
+    "vue": [
+      "AppShell",
+      "ContextPanel",
+      "DEFAULT_TIME_RANGE_PRESETS",
+      "Dashboard",
+      "GraphLegend",
+      "ICONS",
+      "ICON_NAMES",
+      "IdentityMenu",
+      "KanbanBoard",
+      "ListReportPage",
+      "MasterDetail",
+      "NavDrawer",
+      "NavRail",
+      "NavShell",
+      "ObjectPage",
+      "PANEL_STACK_MAX_SECTIONS",
+      "PanelStack",
+      "SELECTABLE_LIST_KEY",
+      "ThemeProvider",
+      "UtilityPanel",
+      "Wizard",
+      "alignValue",
+      "composeAbsolute",
+      "computePosition",
+      "deriveInitials",
+      "edgeDashArray",
+      "formatPresetLabel",
+      "formatTriggerLabel",
+      "gridTemplateColumns",
+      "identityInitial",
+      "joinPlacement",
+      "justifyValue",
+      "nodeShapePath",
+      "offsetMargin",
+      "parsePresetMs",
+      "resolveRelative",
+      "spacingToken",
+      "spanBasis",
+      "splitAbsolute",
+      "splitPlacement"
+    ],
+    "angular": [
+      "AppShell",
+      "ContextPanel",
+      "DEFAULT_TIME_RANGE_PRESETS",
+      "Dashboard",
+      "GraphLegend",
+      "ICON_NAMES",
+      "IdentityMenu",
+      "KanbanBoard",
+      "ListReportPage",
+      "MasterDetail",
+      "NavDrawer",
+      "NavRail",
+      "NavShell",
+      "ObjectPage",
+      "PANEL_STACK_MAX_SECTIONS",
+      "PanelStack",
+      "ThemeProvider",
+      "UtilityPanel",
+      "Wizard",
+      "alignValue",
+      "composeAbsolute",
+      "computePanelStackAutoCollapse",
+      "computePosition",
+      "deriveInitials",
+      "edgeDashArray",
+      "formatPresetLabel",
+      "formatTriggerLabel",
+      "gridTemplateColumns",
+      "identityInitial",
+      "joinPlacement",
+      "justifyValue",
+      "nodeShapePath",
+      "offsetMargin",
+      "parsePresetMs",
+      "resolvePanelStackPrimary",
+      "resolvePortalTarget",
+      "resolveRelative",
+      "spacingToken",
+      "spanBasis",
+      "splitAbsolute",
+      "splitPlacement"
+    ],
+    "dataviz-svelte": [
+      "AdvancedPivotDataTable",
+      "AnalyticsClusterPlot",
+      "AnimatedBubbleChart",
+      "BookmarkNavigator",
+      "CalculationEditor",
+      "ChartExport",
+      "ChordChart",
+      "ChoroplethMap",
+      "CorrelationMatrix",
+      "CrossfilteredBarChart",
+      "DEFAULT_RELATIVE_PRESETS",
+      "DEFAULT_URL_SYNC_PARAM",
+      "DashboardActiveFilters",
+      "DashboardFilterBar",
+      "DateHistogramChart",
+      "DateRangeFilter",
+      "DivergingBarChart",
+      "DrillBarChart",
+      "DrillBreadcrumb",
+      "DrillChart",
+      "ErrorBarsChart",
+      "ExportMenu",
+      "FieldPane",
+      "ForecastLineChart",
+      "FormatPanel",
+      "GeoClusterMap",
+      "GeoDensityMap",
+      "GeoFlowMap",
+      "GeoHexbinMap",
+      "GeoJsonMap",
+      "GeoPointMap",
+      "KpiCardGroup",
+      "MekkoChart",
+      "ObjectLayerPanel",
+      "PackedBubbleChart",
+      "PalettePicker",
+      "PercentileBandChart",
+      "PivotDataTable",
+      "QueryBar",
+      "RangeSliderFilter",
+      "RecordsTable",
+      "ReferenceLineChart",
+      "RelativeDateFilter",
+      "ScatterPlotMatrix",
+      "SelectionLegend",
+      "SmallMultiples",
+      "TopNFilter",
+      "TrendLineChart",
+      "ValueSlicer",
+      "applyStateToStore",
+      "dateRangeToSpec",
+      "downloadBlob",
+      "downloadPng",
+      "downloadSvg",
+      "drillDepth",
+      "drillLevel",
+      "numericDomain",
+      "onDrillSelect",
+      "printElement",
+      "queryToState",
+      "rangeBoundsToSpec",
+      "readLocationSearch",
+      "readStateFromUrl",
+      "relativeRangeToSpec",
+      "rowsToCsv",
+      "serializeSvg",
+      "stateToQuery",
+      "svgStringToBlob",
+      "svgStringToPngBlob",
+      "useUrlSync",
+      "writeStateToUrl"
+    ],
+    "dataviz-react": [
+      "AdvancedPivotDataTable",
+      "AnalyticsClusterPlot",
+      "AnimatedBubbleChart",
+      "BookmarkNavigator",
+      "CalculationEditor",
+      "ChartExport",
+      "ChordChart",
+      "ChoroplethMap",
+      "CorrelationMatrix",
+      "CrossfilteredBarChart",
+      "DEFAULT_RELATIVE_PRESETS",
+      "DEFAULT_URL_SYNC_PARAM",
+      "DashboardActiveFilters",
+      "DashboardFilterBar",
+      "DateHistogramChart",
+      "DateRangeFilter",
+      "DivergingBarChart",
+      "DrillBarChart",
+      "DrillBreadcrumb",
+      "DrillChart",
+      "ErrorBarsChart",
+      "ExportMenu",
+      "FieldPane",
+      "ForecastLineChart",
+      "FormatPanel",
+      "GeoClusterMap",
+      "GeoDensityMap",
+      "GeoFlowMap",
+      "GeoHexbinMap",
+      "GeoJsonMap",
+      "GeoPointMap",
+      "KpiCardGroup",
+      "MekkoChart",
+      "ObjectLayerPanel",
+      "PackedBubbleChart",
+      "PalettePicker",
+      "PercentileBandChart",
+      "PivotDataTable",
+      "QueryBar",
+      "RangeSliderFilter",
+      "RecordsTable",
+      "ReferenceLineChart",
+      "RelativeDateFilter",
+      "ScatterPlotMatrix",
+      "SelectionLegend",
+      "SmallMultiples",
+      "TopNFilter",
+      "TrendLineChart",
+      "ValueSlicer",
+      "applyStateToStore",
+      "dateRangeToSpec",
+      "downloadBlob",
+      "downloadPng",
+      "downloadSvg",
+      "drillDepth",
+      "drillLevel",
+      "numericDomain",
+      "onDrillSelect",
+      "printElement",
+      "queryToState",
+      "rangeBoundsToSpec",
+      "readLocationSearch",
+      "readStateFromUrl",
+      "relativeRangeToSpec",
+      "rowsToCsv",
+      "serializeSvg",
+      "stateToQuery",
+      "svgStringToBlob",
+      "svgStringToPngBlob",
+      "useUrlSync",
+      "writeStateToUrl"
+    ],
+    "dataviz-vue": [
+      "AdvancedPivotDataTable",
+      "AnalyticsClusterPlot",
+      "AnimatedBubbleChart",
+      "BookmarkNavigator",
+      "CalculationEditor",
+      "ChartExport",
+      "ChordChart",
+      "ChoroplethMap",
+      "CorrelationMatrix",
+      "CrossfilteredBarChart",
+      "DEFAULT_RELATIVE_PRESETS",
+      "DEFAULT_URL_SYNC_PARAM",
+      "DashboardActiveFilters",
+      "DashboardFilterBar",
+      "DateHistogramChart",
+      "DateRangeFilter",
+      "DivergingBarChart",
+      "DrillBarChart",
+      "DrillBreadcrumb",
+      "DrillChart",
+      "ErrorBarsChart",
+      "ExportMenu",
+      "FieldPane",
+      "ForecastLineChart",
+      "FormatPanel",
+      "GeoClusterMap",
+      "GeoDensityMap",
+      "GeoFlowMap",
+      "GeoHexbinMap",
+      "GeoJsonMap",
+      "GeoPointMap",
+      "KpiCardGroup",
+      "MekkoChart",
+      "ObjectLayerPanel",
+      "PackedBubbleChart",
+      "PalettePicker",
+      "PercentileBandChart",
+      "PivotDataTable",
+      "QueryBar",
+      "RangeSliderFilter",
+      "RecordsTable",
+      "ReferenceLineChart",
+      "RelativeDateFilter",
+      "ScatterPlotMatrix",
+      "SelectionLegend",
+      "SmallMultiples",
+      "TopNFilter",
+      "TrendLineChart",
+      "ValueSlicer",
+      "applyStateToStore",
+      "dateRangeToSpec",
+      "downloadBlob",
+      "downloadPng",
+      "downloadSvg",
+      "drillDepth",
+      "drillLevel",
+      "numericDomain",
+      "onDrillSelect",
+      "printElement",
+      "queryToState",
+      "rangeBoundsToSpec",
+      "readLocationSearch",
+      "readStateFromUrl",
+      "relativeRangeToSpec",
+      "rowsToCsv",
+      "serializeSvg",
+      "stateToQuery",
+      "svgStringToBlob",
+      "svgStringToPngBlob",
+      "useUrlSync",
+      "writeStateToUrl"
+    ],
+    "dataviz-angular": [
+      "AdvancedPivotDataTable",
+      "AnalyticsClusterPlot",
+      "AnimatedBubbleChart",
+      "BookmarkNavigator",
+      "CalculationEditor",
+      "ChordChart",
+      "ChoroplethMap",
+      "CorrelationMatrix",
+      "CrossfilteredBarChart",
+      "DASHBOARD_STORE",
+      "DEFAULT_RELATIVE_PRESETS",
+      "DashboardActiveFilters",
+      "DashboardFilterBar",
+      "DateHistogramChart",
+      "DateRangeFilter",
+      "DivergingBarChart",
+      "DrillBarChart",
+      "DrillBreadcrumb",
+      "DrillChart",
+      "ErrorBarsChart",
+      "ExportMenu",
+      "FieldPane",
+      "ForecastLineChart",
+      "FormatPanel",
+      "GeoClusterMap",
+      "GeoDensityMap",
+      "GeoFlowMap",
+      "GeoHexbinMap",
+      "GeoJsonMap",
+      "GeoPointMap",
+      "KpiCardGroup",
+      "MekkoChart",
+      "ObjectLayerPanel",
+      "PackedBubbleChart",
+      "PalettePicker",
+      "PercentileBandChart",
+      "PivotDataTable",
+      "QueryBar",
+      "RangeSliderFilter",
+      "RecordsTable",
+      "ReferenceLineChart",
+      "RelativeDateFilter",
+      "ScatterPlotMatrix",
+      "SelectionLegend",
+      "SmallMultiples",
+      "TopNFilter",
+      "TrendLineChart",
+      "ValueSlicer",
+      "createDashboard",
+      "dateRangeToSpec",
+      "injectDashboard",
+      "numericDomain",
+      "provideDashboard",
+      "rangeBoundsToSpec",
+      "relativeRangeToSpec",
+      "rowsToCsv",
+      "toSignalStore"
+    ]
+  },
+  "unresolvedStars": {
+    "svelte": [],
+    "react": [],
+    "vue": [],
+    "angular": [],
+    "dataviz-svelte": [
+      "./adapter.js"
+    ],
+    "dataviz-react": [
+      "./adapter.js"
+    ],
+    "dataviz-vue": [
+      "./adapter.js"
+    ],
+    "dataviz-angular": [
+      "./adapter.js"
+    ]
+  }
+}
