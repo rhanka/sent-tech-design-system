@@ -49,20 +49,17 @@ field or a `ds-dataviz` value.
 - `framework=js` (K2 list filter over the five build targets) matches an
   entry exactly when its `delivery[]` contains an `element` channel: today
   that is `bar-chart` (`st-bar-chart`) plus `bpmn-canvas` and
-  `decision-dossier` when those entries are emitted. Dataviz provenance
-  stays in `delivery[].package` (`@sentropic/dataviz-*`) and never adds a
-  framework value.
+  `decision-dossier` when those entries are emitted. The `js` target is
+  vanilla ESM plus Elements custom-element registration with no framework
+  runtime. Dataviz provenance stays in `delivery[].package`
+  (`@sentropic/dataviz-*`) and never adds a framework value.
 - `origin` (K2 list filter and output projection) is derived, never stored:
-  `producer` when `producerId` is not `sentropic-ds`; `ds-geo` only for
-  `geo-map`; `ds-elements` for entries with an `element` delivery and no
-  native `source` delivery; `ds-native` for everything else, including all
-  dataviz entries. The review sentence that dataviz "rides `origin:
-  ds-geo`" is `contested — pending sentropic/owner`: it is not adopted,
-  because `ds-geo` names the unrelated single-component geo adapter
-  package. The exact alternative, if a dedicated dataviz filter is
-  required, is a versioned K2-only `ds-dataviz` value (same
-  delivery-package predicate) — never a reuse of `ds-geo`, and still no
-  change to any DS entry or digest either way.
+  `producer` when `producerId` is not `sentropic-ds`; `ds-geo` is reserved
+  for `geo-map` from `packages/components-geo-svelte`;
+  `ds-elements` for entries with an `element` delivery and no native
+  `source` delivery; `ds-native` for everything else. All dataviz entries
+  take `origin: ds-native` with `doc-only`; their provenance lives in
+  `delivery[].package` (`@sentropic/dataviz-*`).
 
 ## Fail-closed rules
 

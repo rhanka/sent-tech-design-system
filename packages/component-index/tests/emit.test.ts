@@ -167,6 +167,111 @@ describe("emit on a miniature tree", () => {
     expect(log.exclusions.join("\n")).toMatch(/geo-map/);
   });
 
+  it("uses Elements no-counterpart roles in the baseline check (same set as catalogueEntry)", () => {
+    // A catalogue row present only in svelte with an Elements-declared
+    // intentional absence for the other frameworks must baseline as
+    // no-counterpart (not missing). Without the intentional set the baseline
+    // comparison would compute missing and throw.
+    const tree = scaffold();
+    mutate(
+      tree,
+      "apps/docs/src/lib/components-catalog.ts",
+      `${CATALOGUE.slice(0, -3)},
+  {
+    name: "Solo",
+    slug: "solo",
+    status: "documented",
+    category: "other",
+    description: { fr: "Solo.", en: "Solo." }
+  }
+];
+`,
+    );
+    mutate(
+      tree,
+      "packages/components-svelte/src/lib/index.ts",
+      'export { default as Widget } from "./Widget.svelte";\nexport { default as Solo } from "./Solo.svelte";\n',
+    );
+    mutate(tree, "packages/components-svelte/src/lib/Solo.svelte", "<div>solo</div>\n");
+    mutate(
+      tree,
+      "packages/elements/catalog.json",
+      JSON.stringify({
+        components: {
+          Solo: {
+            "x-sentropic": {
+              contract: "1.0",
+              element: "st-solo",
+              parity: {
+                react: { status: "no-counterpart" },
+                vue: { status: "no-counterpart" },
+                angular: { status: "no-counterpart" },
+              },
+            },
+          },
+        },
+      }),
+    );
+    mutate(
+      tree,
+      "packages/elements/schemas/Solo.v1.json",
+      JSON.stringify({ $id: "https://example.com/solo.json", title: "Solo" }),
+    );
+    mutatePkg(
+      tree,
+      "parity-baseline.json",
+      JSON.stringify({
+        version: 2,
+        expectedParity: {
+          widget: { svelte: "source-of-truth", react: "match", vue: "match", angular: "match" },
+          gadget: { svelte: "missing", react: "missing", vue: "missing", angular: "missing" },
+          solo: { svelte: "source-of-truth", react: "no-counterpart", vue: "no-counterpart", angular: "no-counterpart" },
+        },
+        gaps: [
+          {
+            componentId: "gadget",
+            parity: { svelte: "missing", react: "missing", vue: "missing", angular: "missing" },
+            reason: "mini-tree fixture: dataviz-only",
+          },
+          {
+            componentId: "solo",
+            parity: { svelte: "source-of-truth", react: "no-counterpart", vue: "no-counterpart", angular: "no-counterpart" },
+            reason: "mini-tree fixture: intentional absence",
+          },
+        ],
+        barrelOnly: {
+          svelte: [],
+          react: [],
+          vue: [],
+          angular: [],
+          "dataviz-svelte": [],
+          "dataviz-react": [],
+          "dataviz-vue": [],
+          "dataviz-angular": [],
+        },
+        unresolvedStars: {
+          svelte: [],
+          react: [],
+          vue: [],
+          angular: [],
+          "dataviz-svelte": [],
+          "dataviz-react": [],
+          "dataviz-vue": [],
+          "dataviz-angular": [],
+        },
+      }),
+    );
+    const { files } = buildArtifacts(tree.root, tree.pkg, { sourceCommit: "0".repeat(40) });
+    const solo = JSON.parse(files.find((f) => f.path.endsWith("solo.json"))?.text ?? "{}");
+    expect(solo.parity).toEqual({
+      svelte: "source-of-truth",
+      react: "no-counterpart",
+      vue: "no-counterpart",
+      angular: "no-counterpart",
+    });
+    expect(solo.frameworks).toEqual(["svelte"]);
+  });
+
   it("is byte-deterministic across two builds", () => {
     const tree = scaffold();
     const first = buildArtifacts(tree.root, tree.pkg, { sourceCommit: "0".repeat(40) });
