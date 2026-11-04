@@ -1,0 +1,368 @@
+{
+  "componentId": "bump-chart",
+  "contractSource": "derived",
+  "digest": "sha256:9e303da38c0fb0fa6982606a695bb38c7336380ce76bdff1f0662904176973d6",
+  "entryDigest": "sha256:e33f0e78899913af853e268c871a312f03406f36331355de536005998f546c12",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "BumpChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranks": {
+                "items": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "type": "array"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "ranks"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BumpChartSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c45f225c7a11786b20dce6c921c7af07910588684b6c0deed9fc306ded6957c5",
+        "declarationPath": "packages/components-angular/dist/BumpChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "BumpChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "BumpChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranks": {
+                "items": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "type": "array"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "ranks"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BumpChartSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bb5e83b0a47f0b17b6306e785d537c7daeb08c3dcb08d67f33c8f1ea8a3977da",
+        "declarationPath": "packages/components-react/dist/BumpChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "BumpChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "BumpChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranks": {
+                "items": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "type": "array"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "ranks"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BumpChartSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ed88150a915c6a68976495849fd1ac1b57ddd9d4ad6bd0d90b8679c95e9a7bc9",
+        "declarationPath": "packages/components-svelte/dist/BumpChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "BumpChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "BumpChartSeries": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "ranks": {
+                "items": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "type": "array"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "ranks"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/BumpChartSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:67c3b19276207d6d3afb53cd37807a39e5cc7d8442e08d2731075f14b68769b6",
+        "declarationPath": "packages/components-vue/dist/BumpChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "BumpChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

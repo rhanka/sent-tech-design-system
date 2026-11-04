@@ -1,0 +1,385 @@
+{
+  "componentId": "treemap-chart",
+  "contractSource": "derived",
+  "digest": "sha256:c757f57372c9f6e73c1a752b1f0fdf3c6b15b00dc5defe907613738a809bf73c",
+  "entryDigest": "sha256:5cebc0f947f9063c3162247b11ef842675315378e68fbf012bd3c971b67a61d2",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TreemapChartDatum": {
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreemapChartDatum"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TreemapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "showLabels": {
+            "type": "boolean"
+          },
+          "tiling": {
+            "const": "squarified"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e95b3429536ebe44547b6030721220b540762c3d244b3150b8d9efff21d20180",
+        "declarationPath": "packages/components-angular/dist/TreemapChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TreemapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TreemapChartDatum": {
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreemapChartDatum"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "description": "Données hiérarchiques : 1 ou 2 niveaux. Un nœud avec `children` est subdivisé.",
+            "items": {
+              "$ref": "#/$defs/TreemapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "description": "Affiche une légende sous le graphique.",
+            "type": "boolean"
+          },
+          "showLabels": {
+            "description": "Affiche les labels dans les rectangles suffisamment grands.",
+            "type": "boolean"
+          },
+          "tiling": {
+            "const": "squarified",
+            "description": "Algorithme de pavage (squarified uniquement pour l'instant)."
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:122f8efb602208290b44f956928aeae027d1f56d1fdc6a1256ab9f215aa38236",
+        "declarationPath": "packages/components-react/dist/TreemapChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TreemapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TreemapChartDatum": {
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreemapChartDatum"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "description": "Données hiérarchiques : 1 ou 2 niveaux. Un nœud avec `children` est subdivisé.",
+            "items": {
+              "$ref": "#/$defs/TreemapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "description": "Affiche une légende sous le graphique.",
+            "type": "boolean"
+          },
+          "showLabels": {
+            "description": "Affiche les labels dans les rectangles suffisamment grands.",
+            "type": "boolean"
+          },
+          "tiling": {
+            "const": "squarified",
+            "description": "Algorithme de pavage (squarified uniquement pour l'instant)."
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a8b9c3a6e5fc304aadd3d38892f03bce8d495126f1554b8c63c64b3c8a9f0bc6",
+        "declarationPath": "packages/components-svelte/dist/TreemapChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TreemapChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TreemapChartDatum": {
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreemapChartDatum"
+                },
+                "type": "array"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/TreemapChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "boolean"
+          },
+          "showLabels": {
+            "type": "boolean"
+          },
+          "tiling": {
+            "const": "squarified"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bb3891192ef5fcae03a64ad92417fc0cb35e5076eb134b85c77281bdac9a3cc8",
+        "declarationPath": "packages/components-vue/dist/TreemapChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TreemapChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,253 @@
+{
+  "componentId": "copy-button",
+  "contractSource": "derived",
+  "digest": "sha256:2ce8117470102cdf84bbafd8fa7e1461798911b48b433db9ab94763bddf35e8c",
+  "entryDigest": "sha256:4c9574523e0465d49ece1e85b3a7713a51947dcfda8f2c62ee5ef276ec791866",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f3e18a5e32163d9aa80fd7f835040c9ad3eaf8196e490d9569bec0113e116602",
+        "declarationPath": "packages/components-angular/dist/CopyButton.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CopyButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "copiedLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+        "omitted": [
+          "value"
+        ]
+      },
+      "props": {
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CopyButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onCopied",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onError",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLButtonAttributes",
+        "omitted": [
+          "class",
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "feedbackTimeoutMs": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:ece28e441cb00602161ec6c66792bdf7c1e1501c287f6dcc324009f7bf25f6e4",
+        "declarationPath": "packages/components-svelte/dist/CopyButton.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CopyButtonProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "click"
+        },
+        {
+          "name": "onClick",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "copiedLabel": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:7b51c8ae2905fa95bbb82cc039da8c7c4361406feefdc32c009fb22b1f50ff9f",
+        "declarationPath": "packages/components-vue/dist/CopyButton.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CopyButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": [
+        "emit \"click\": payload not in declaration",
+        "event pair: emits \"click\" and prop \"onClick\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

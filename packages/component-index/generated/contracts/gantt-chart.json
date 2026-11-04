@@ -1,0 +1,309 @@
+{
+  "componentId": "gantt-chart",
+  "contractSource": "derived",
+  "digest": "sha256:db2cf69ce7431855e82b679ec326d9e679c8d366df2a622b921fdff13dcb54dc",
+  "entryDigest": "sha256:ff7c71bc9c5398d25acb5f345b7b7bfe9c4bc5becdf4cab4886ce19dfd7e40de",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "GanttChartTask": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "task": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "task"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/GanttChartTask"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0d62d007fe079e9a6821479997163586495f967a97ed57108dffa8b95eadf060",
+        "declarationPath": "packages/components-angular/dist/GanttChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "GanttChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "GanttChartTask": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "task": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "task"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/GanttChartTask"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:94998624559b72b499232bd9bbb84e19f726786da729e28d7feea2faaf8737eb",
+        "declarationPath": "packages/components-react/dist/GanttChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "GanttChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "GanttChartTask": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "task": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "task"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/GanttChartTask"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5aeb89098976f8c31a037d7dc3d724b078df1fd5b1fdb6822b0d3ff7c9770cef",
+        "declarationPath": "packages/components-svelte/dist/GanttChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "GanttChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "GanttChartTask": {
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "task": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "task"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/GanttChartTask"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:43b01dcec776e38a00a44940f38b1a1a0128553591250e4d20092231772cf5e3",
+        "declarationPath": "packages/components-vue/dist/GanttChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "GanttChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

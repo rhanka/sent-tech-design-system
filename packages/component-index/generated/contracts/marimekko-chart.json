@@ -1,0 +1,405 @@
+{
+  "componentId": "marimekko-chart",
+  "contractSource": "derived",
+  "digest": "sha256:2f377f3d785fc0564b9536efa1f24b10a80dd080b14d01f2539e71a4cdc081e2",
+  "entryDigest": "sha256:afa6cb54ce3b94a2ff55f47c4610b46ab7b3f0ee128b7ae8ac5bc2b9b12bd126",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MarimekkoChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/MarimekkoChartSegment"
+                },
+                "type": "array"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "segments",
+              "width"
+            ],
+            "type": "object"
+          },
+          "MarimekkoChartSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/MarimekkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:254942c7d7392484a7e8e7716256b2180aa4507e5b29904d365fd1a69efb3798",
+        "declarationPath": "packages/components-angular/dist/MarimekkoChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "MarimekkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "MarimekkoChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/MarimekkoChartSegment"
+                },
+                "type": "array"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "segments",
+              "width"
+            ],
+            "type": "object"
+          },
+          "MarimekkoChartSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/MarimekkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bf9e208c3b01220f915631c87f2375fa8899bda3406d73f5ac888fa6a400421a",
+        "declarationPath": "packages/components-react/dist/MarimekkoChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "MarimekkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "MarimekkoChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/MarimekkoChartSegment"
+                },
+                "type": "array"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "segments",
+              "width"
+            ],
+            "type": "object"
+          },
+          "MarimekkoChartSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/MarimekkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:30051218ac4f518ee48bbdeba382ca00d5ea9af5218251a5c6c8eb7bfec78f71",
+        "declarationPath": "packages/components-svelte/dist/MarimekkoChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "MarimekkoChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "MarimekkoChartDatum": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/MarimekkoChartSegment"
+                },
+                "type": "array"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "segments",
+              "width"
+            ],
+            "type": "object"
+          },
+          "MarimekkoChartSegment": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/MarimekkoChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d7f322f36a315407881fed03622c3079460625e09863bad92243c7169f7e5c17",
+        "declarationPath": "packages/components-vue/dist/MarimekkoChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "MarimekkoChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

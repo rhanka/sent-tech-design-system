@@ -1,0 +1,260 @@
+{
+  "componentId": "button",
+  "contractSource": "derived",
+  "digest": "sha256:a97597756449aea9b1a981c2c90eb11384d7dd5f18600fd3514c7c147a98c339",
+  "entryDigest": "sha256:a9d17f9366c7a0eb42f09f01bd7a9592dd30383b0a0c6913453fa10425da45a3",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "properties": {
+          "aria-label": {
+            "type": "string"
+          },
+          "aria-pressed": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "const": false
+              },
+              {
+                "const": true
+              }
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "primary",
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:399a7f01001aa0b9e43bc5d89197f38a93583afa99d42721b6ea40f4279393a6",
+        "declarationPath": "packages/components-angular/dist/Button.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+        "omitted": [
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "primary",
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c6519915c8e322d51d4927a0c15eeb1377bea51efa56782764a53f596eea0395",
+        "declarationPath": "packages/components-react/dist/Button.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLButtonAttributes",
+        "omitted": [
+          "class",
+          "disabled",
+          "type"
+        ]
+      },
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "primary",
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "params": {
+            "items": false,
+            "prefixItems": [],
+            "type": "array"
+          }
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:540988b4a8ea7fed515ccb945c70e4866f34db184aab20e6cc8c0ac5875b6ac7",
+        "declarationPath": "packages/components-svelte/dist/Button.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ButtonProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "type": {
+            "enum": [
+              "button",
+              "submit",
+              "reset"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "primary",
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:99162332f338de33d267748a42e3e68ff92fd98b3efeebec0680539c55e90f26",
+        "declarationPath": "packages/components-vue/dist/Button.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

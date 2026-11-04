@@ -1,0 +1,256 @@
+{
+  "componentId": "ordered-list",
+  "contractSource": "derived",
+  "digest": "sha256:11e161ef4988c709b0828a5a223ccd9aada3fac74bf8a36f20557333cb196761",
+  "entryDigest": "sha256:00ee6d09bd935ccc0795c3cce4ef5e7e1034552b495c70f35b53b22a8a8a493c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "OrderedListItem": {
+            "properties": {
+              "children": {
+                "description": "Sous-items : chaînes ou objets (normalisés au rendu).",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/OrderedListItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "content": {}
+            },
+            "required": [
+              "content"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/OrderedListItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "nested": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "OrderedListItem.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:ee126c6cd82ee014365f9a34b88579a168d214dc6b6d56592737b6d633ea1c5c",
+        "declarationPath": "packages/components-angular/dist/OrderedList.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "OrderedListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "items[]",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.OlHTMLAttributes<HTMLOListElement>",
+        "omitted": []
+      },
+      "props": {
+        "properties": {
+          "nested": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "OrderedListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "snippet",
+          "name": "OrderedListItem.content",
+          "reason": "render-function surface has no JSON Schema form",
+          "sourceType": "Snippet<[]>"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLOListElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "OrderedListItem": {
+            "properties": {
+              "children": {
+                "description": "Sous-items : chaînes ou objets (normalisés au rendu).",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/OrderedListItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/OrderedListItem"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "nested": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:12ee8247a23f84c543160c4e2c1ce5aa0c138c9c01a40b421f852a8fcb5916be",
+        "declarationPath": "packages/components-svelte/dist/OrderedList.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "OrderedListProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "items": {
+            "items": {},
+            "type": "array"
+          },
+          "nested": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "items[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d4481f85e838c7c5bc62b3cad0fd19f269358249dfd52ec27232f7cc543d7d3e",
+        "declarationPath": "packages/components-vue/dist/OrderedList.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "OrderedListProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}
