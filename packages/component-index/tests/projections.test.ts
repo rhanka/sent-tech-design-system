@@ -152,6 +152,59 @@ describe("witness projections (no field loss)", () => {
     expect(entry.delivery.filter((delivery) => delivery.channel === "source")).toHaveLength(4);
   });
 
+  it("design-tokens pins the three token sources plus the three house theme CSS files", () => {
+    // Frozen §9.3: one tokens-channel delivery per committed source, with
+    // exact manifest pins and recomputed file digests. Measured-clone
+    // theme packages are never enumerated.
+    const entry = readEntry("design-tokens") as {
+      producerId: unknown;
+      displayName: unknown;
+      scope: unknown;
+      visibility: unknown;
+      dataClass: unknown;
+      parity: unknown;
+      frameworks: unknown;
+      renderable: unknown;
+      delivery: { channel: string; package: string; version: string; path: string; digest: string }[];
+    };
+    expect(entry.producerId).toBe("sentropic-ds");
+    expect(entry.displayName).toBe("DesignTokens");
+    expect(entry.scope).toBe("generic");
+    expect(entry.visibility).toBe("public");
+    expect(entry.dataClass).toBe("public-safe");
+    expect(entry.renderable).toBe("doc-only");
+    expect(entry.parity).toEqual({
+      svelte: "no-counterpart",
+      react: "no-counterpart",
+      vue: "no-counterpart",
+      angular: "no-counterpart",
+    });
+    expect(entry.frameworks).toEqual([]);
+
+    const tokensManifest = manifest("packages/tokens");
+    const themesManifest = manifest("packages/themes");
+    const expected: { path: string; package: string; version: string }[] = [
+      { path: "packages/tokens/src/foundation.ts", package: tokensManifest.name, version: tokensManifest.version },
+      { path: "packages/tokens/src/semantic.ts", package: tokensManifest.name, version: tokensManifest.version },
+      { path: "packages/tokens/src/component.ts", package: tokensManifest.name, version: tokensManifest.version },
+      { path: "packages/themes/css/sent-tech.css", package: themesManifest.name, version: themesManifest.version },
+      { path: "packages/themes/css/forge.css", package: themesManifest.name, version: themesManifest.version },
+      { path: "packages/themes/css/entropic.css", package: themesManifest.name, version: themesManifest.version },
+    ];
+    expect(entry.delivery).toHaveLength(6);
+    for (const [index, delivery] of entry.delivery.entries()) {
+      const pin = expected[index];
+      expect(pin).toBeDefined();
+      expect(delivery.channel).toBe("tokens");
+      expect(delivery.path).toBe(pin?.path);
+      expect(delivery.package).toBe(pin?.package);
+      expect(delivery.version).toBe(pin?.version);
+      expect(delivery.digest).toBe(fileDigest(pin?.path ?? ""));
+    }
+    const { digest, ...digestless } = entry as unknown as { digest: string };
+    expect(entryDigest(digestless)).toBe(digest);
+  });
+
   it("geo-chart is the documented static map; no geo-map alias is indexed", () => {
     // Catalogue GeoChart: ds-native prose only — no code asserts an origin field.
     const entry = readEntry("geo-chart") as {

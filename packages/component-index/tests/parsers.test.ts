@@ -153,6 +153,26 @@ describe("barrel metadata guard (D4.2)", () => {
     expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/category/);
   });
 
+  it("an exported const named category fails", () => {
+    const parsed = parseBarrelText('export const category = "action";\n', "fake.ts");
+    expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/category/);
+  });
+
+  it("an exported function named status fails", () => {
+    const parsed = parseBarrelText('export function status() { return "documented"; }\n', "fake.ts");
+    expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/status/);
+  });
+
+  it("an exported class named groupSlug fails", () => {
+    const parsed = parseBarrelText('export class groupSlug {}\n', "fake.ts");
+    expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/groupSlug/);
+  });
+
+  it("an exported const named description fails", () => {
+    const parsed = parseBarrelText('export const description = { fr: "x", en: "y" };\n', "fake.ts");
+    expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/description/);
+  });
+
   it("a value export named description fails", () => {
     const parsed = parseBarrelText('export { description } from "./x.js";\n', "fake.ts");
     expect(() => assertNoEditorialMetadata(parsed, "fake.ts")).toThrow(/description/);

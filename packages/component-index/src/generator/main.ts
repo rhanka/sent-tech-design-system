@@ -15,9 +15,9 @@
  * `--root` moves only where the committed artifacts are read and written;
  * generation always reads this package's schemas, overlay and baseline.
  */
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { mkdirSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { buildArtifacts } from "./emit.js";
@@ -53,19 +53,24 @@ function main(): number {
         stale.push(`${file.path}: missing (regenerate with "npm run index:generate")`);
         continue;
       }
-      if (readFileSync(path, "utf8") !== file.text) {
+      const committedText = readFileSync(path, "utf8");
+      if (committedText !== file.text) {
+        if (file.path === "generated/component-index.json" && isStampOnlyDifference(committedText, file.text)) {
+          continue;
+        }
         stale.push(`${file.path}: differs from the regeneration (out-of-band edit or stale artifact)`);
       }
     }
-    // A committed entry the regeneration does not produce is a gap, not a
-    // file to keep: catalogue-without-source drift must turn --check red.
-    const entriesDir = join(artifactsRoot, "generated", "entries");
-    if (existsSync(entriesDir)) {
-      for (const name of readdirSync(entriesDir).sort()) {
-        if (!name.endsWith(".json")) continue;
-        const relative = `generated/entries/${name}`;
-        if (!expectedPaths.has(relative)) {
-          stale.push(`${relative}: unexpected (no source produces it; remove it by regenerating)`);
+    // Any committed file the regeneration does not produce is a gap, not a
+    // file to keep: catalogue-without-source drift (or a leftover artifact)
+    // must turn --check red. The whole generated/ tree is walked
+    // recursively with no suffix filter, so a stray file directly under
+    // generated/ (or in any subdirectory) is refused.
+    const generatedDir = join(artifactsRoot, "generated");
+    if (existsSync(generatedDir)) {
+      for (const relativePath of listGeneratedFiles(artifactsRoot, generatedDir)) {
+        if (!expectedPaths.has(relativePath)) {
+          stale.push(`${relativePath}: unexpected (no source produces it; remove it by regenerating)`);
         }
       }
     }
@@ -86,6 +91,84 @@ function main(): number {
     console.log(`written: ${file.path}`);
   }
   return 0;
+}
+
+/**
+ * Stamp-only freshness for `generated/component-index.json` (frozen §5.4):
+ * `sourceCommit` lives outside the revision preimage, so a committed index
+ * whose only difference from the regeneration is the stamp is fresh. Every
+ * other byte of the index (and every other file) stays strictly compared.
+ *
+ * Returns true exactly when both documents parse, the committed
+ * `sourceCommit` matches `^[0-9a-f]{40}$`, and the two documents compare
+ * equal with `sourceCommit` removed from both (canonical, key-sorted
+ * comparison). Any parse failure, a non-hex committed stamp, or any other
+ * byte difference returns false (stale).
+ */
+function isStampOnlyDifference(committedText: string, regeneratedText: string): boolean {
+  let committed: unknown;
+  let regenerated: unknown;
+  try {
+    committed = JSON.parse(committedText);
+    regenerated = JSON.parse(regeneratedText);
+  } catch {
+    return false;
+  }
+  if (typeof committed !== "object" || committed === null || Array.isArray(committed)) return false;
+  if (typeof regenerated !== "object" || regenerated === null || Array.isArray(regenerated)) return false;
+  const committedRecord = committed as Record<string, unknown>;
+  const regeneratedRecord = regenerated as Record<string, unknown>;
+  if (typeof committedRecord["sourceCommit"] !== "string" || !/^[0-9a-f]{40}$/.test(committedRecord["sourceCommit"] as string)) {
+    return false;
+  }
+  const { sourceCommit: _committedStamp, ...committedRest } = committedRecord;
+  const { sourceCommit: _regeneratedStamp, ...regeneratedRest } = regeneratedRecord;
+  void _committedStamp;
+  void _regeneratedStamp;
+  return canonicalJson(committedRest) === canonicalJson(regeneratedRest);
+}
+
+function canonicalJson(value: unknown): string {
+  return JSON.stringify(sortJsonKeys(value));
+}
+
+function sortJsonKeys(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortJsonKeys);
+  if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.keys(value as Record<string, unknown>)
+        .sort()
+        .map((key) => [key, sortJsonKeys((value as Record<string, unknown>)[key])]),
+    );
+  }
+  return value;
+}
+
+/**
+ * Recursive file list under the generated/ tree, as posix relative paths
+ * from the artifacts root (for example `generated/component-index.json`).
+ * No suffix filter: any path not in the expected set turns --check red.
+ */
+function listGeneratedFiles(artifactsRoot: string, generatedDir: string): string[] {
+  const found: string[] = [];
+  const walk = (dir: string): void => {
+    for (const name of readdirSync(dir).sort()) {
+      const absolute = join(dir, name);
+      let stat;
+      try {
+        stat = statSync(absolute);
+      } catch {
+        continue;
+      }
+      if (stat.isDirectory()) {
+        walk(absolute);
+      } else if (stat.isFile()) {
+        found.push(relative(artifactsRoot, absolute).split(sep).join("/"));
+      }
+    }
+  };
+  walk(generatedDir);
+  return found;
 }
 
 process.exit(main());
