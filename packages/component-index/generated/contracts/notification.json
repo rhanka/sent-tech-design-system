@@ -1,0 +1,299 @@
+{
+  "componentId": "notification",
+  "contractSource": "derived",
+  "digest": "sha256:7f616adede6a50ab51f2888c8cb77ebe4b6112bb574b7704e7ba0d9b45c3620c",
+  "entryDigest": "sha256:8a4ae17d0b968429dd7dec77562884ae296c4cc45c000b2f090a4d700da761ac",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "dismiss"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:4d7a16d1c13bb18c16843eee66cef683a87619960620bfa3559e8b9186651200",
+        "declarationPath": "packages/components-angular/dist/Notification.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "NotificationProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onDismiss"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className",
+          "title"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:4549f2c151bef006a041d9e5a7026e52002d1ac194ec59896d9edd90301f92c0",
+        "declarationPath": "packages/components-react/dist/Notification.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "NotificationProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onDismiss"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:8fcf46948f32d50b1f119f587101ad7d60a982a5ff7c798f79769819ceb425bd",
+        "declarationPath": "packages/components-svelte/dist/Notification.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "NotificationProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "dismiss"
+        },
+        {
+          "name": "onDismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "dismissLabel": {
+            "type": "string"
+          },
+          "dismissible": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onDismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6804684010bff6cfcf903fe6911215d25f5a5ed1a769910467b01cda332f5bd8",
+        "declarationPath": "packages/components-vue/dist/Notification.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "NotificationProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"dismiss\": payload not in declaration",
+        "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

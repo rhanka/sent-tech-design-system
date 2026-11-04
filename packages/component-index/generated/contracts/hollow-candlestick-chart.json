@@ -1,0 +1,325 @@
+{
+  "componentId": "hollow-candlestick-chart",
+  "contractSource": "derived",
+  "digest": "sha256:1dfd0f6a8a4149b87c5fa3e95dfb79ed46b51f22e257df3f399ff69914d961ba",
+  "entryDigest": "sha256:42f8a7a681d0509ce5ab17f1297e7745753cff10cd898e3af1f4384bf99a31b3",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HollowCandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HollowCandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1c2effcd3ffa85f4018232f51f39cfae511750d6a6507a761445cbc90c7163ef",
+        "declarationPath": "packages/components-angular/dist/HollowCandlestickChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "HollowCandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "HollowCandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HollowCandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6652e919778e5f0226a152e6f906048901bb935130f0121a9545bcaab16f687b",
+        "declarationPath": "packages/components-react/dist/HollowCandlestickChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "HollowCandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "HollowCandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HollowCandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fdf80628ecf9b8ffd669ce7903d42f92cfb2a9f5205f5f0bfb5c60a4dcac449a",
+        "declarationPath": "packages/components-svelte/dist/HollowCandlestickChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "HollowCandlestickChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "HollowCandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/HollowCandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:50af3e2aa222b85ffc796a236d42fbbd0b87427e519d9c4d8a4348e21645d5d2",
+        "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "HollowCandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

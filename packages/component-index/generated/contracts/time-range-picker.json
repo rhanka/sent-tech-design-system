@@ -1,0 +1,777 @@
+{
+  "componentId": "time-range-picker",
+  "contractSource": "derived",
+  "digest": "sha256:8a9ebf279c62d3022dffb4039a6d69a1d34662a6c1d07c6ccf5ca515eacc0bca",
+  "entryDigest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "formatPresetLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(token: string, locale: string) => string"
+        },
+        {
+          "kind": "function",
+          "name": "formatRange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: TimeRange, locale: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        {
+          "name": "openChange",
+          "payload": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "valueChange",
+          "payload": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TimeRange": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
+                "type": "number"
+              },
+              "mode": {
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              "relative": {
+                "description": "Present ONLY for relative ranges — the resolved preset token (e.g. \"30m\").",
+                "type": "string"
+              },
+              "to": {
+                "description": "Epoch ms, inclusive upper bound.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "mode",
+              "to"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "calendarMonths": {
+            "enum": [
+              2,
+              1
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "$ref": "#/$defs/TimeRange"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "presets": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "timeFormat": {
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "timeStep": {
+            "type": "number"
+          },
+          "value": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "[slot=customExtra]"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:4fb8149d90a2b2b10b487fb16d438fa50f2e378bade281fb785998aff01f266e",
+        "declarationPath": "packages/components-angular/dist/TimeRangePicker.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TimeRangePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "ng-content selector recorded verbatim: [slot=customExtra]"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "customExtra",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "function",
+          "name": "formatPresetLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(token: string, locale: string) => string"
+        },
+        {
+          "kind": "function",
+          "name": "formatRange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: TimeRange, locale: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "defaultValue",
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TimeRange": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
+                "type": "number"
+              },
+              "mode": {
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              "relative": {
+                "description": "Present ONLY for relative ranges — the resolved preset token (e.g. \"30m\").",
+                "type": "string"
+              },
+              "to": {
+                "description": "Epoch ms, inclusive upper bound.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "mode",
+              "to"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "calendarMonths": {
+            "enum": [
+              2,
+              1
+            ]
+          },
+          "defaultValue": {
+            "$ref": "#/$defs/TimeRange",
+            "description": "Uncontrolled initial value. Defaults to a resolved \"30m\" relative range."
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "presets": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "timeFormat": {
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "timeStep": {
+            "type": "number"
+          },
+          "value": {
+            "$ref": "#/$defs/TimeRange",
+            "description": "Controlled value. Omit to let the component manage its own state."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b874e2f7f7ba89d27fee1e330fb2b8b32f53b553405cb5b7b6ae078ce98eb61e",
+        "declarationPath": "packages/components-react/dist/TimeRangePicker.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TimeRangePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "formatPresetLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(token: string, locale: string) => string"
+        },
+        {
+          "kind": "function",
+          "name": "formatRange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: TimeRange, locale: string) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TimeRange": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "number"
+              },
+              "mode": {
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              "relative": {
+                "type": "string"
+              },
+              "to": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "mode",
+              "to"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "calendarMonths": {
+            "enum": [
+              2,
+              1
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "$ref": "#/$defs/TimeRange"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "placement": {
+            "enum": [
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end"
+            ]
+          },
+          "presets": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "timeFormat": {
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "timeStep": {
+            "type": "number"
+          },
+          "value": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "customExtra"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5362240e97c55eb7ab90baa4811efb2684435fc08578d6a91472d3fb7c758ae6",
+        "declarationPath": "packages/components-svelte/dist/TimeRangePicker.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TimeRangePickerProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "modelValue"
+      ],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "formatPresetLabel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(token: string, locale: string) => string"
+        },
+        {
+          "kind": "function",
+          "name": "formatRange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: TimeRange, locale: string) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: TimeRange) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/TimeRange"
+          }
+        },
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "openChange"
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TimeRange": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "description": "Epoch ms, inclusive lower bound. Always <= `to`.",
+                "type": "number"
+              },
+              "mode": {
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              "relative": {
+                "description": "Present ONLY for relative ranges — the resolved preset token (e.g. \"30m\").",
+                "type": "string"
+              },
+              "to": {
+                "description": "Epoch ms, inclusive upper bound.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "mode",
+              "to"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center"
+            ]
+          },
+          "calendarMonths": {
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "$ref": "#/$defs/TimeRange"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "modelValue": {
+            "$ref": "#/$defs/TimeRange",
+            "description": "`v-model` value."
+          },
+          "placement": {
+            "enum": [
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end"
+            ]
+          },
+          "presets": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "timeFormat": {
+            "enum": [
+              "24",
+              "12"
+            ]
+          },
+          "timeStep": {
+            "type": "number"
+          },
+          "value": {
+            "$ref": "#/$defs/TimeRange",
+            "description": "Svelte/React-canonical alias for `modelValue`."
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onOpenChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:015b72fd46688015bbadb09e1e2c627c28d13303c40e4bd49846394c5b310fcc",
+        "declarationPath": "packages/components-vue/dist/TimeRangePicker.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TimeRangePickerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"openChange\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"openChange\" and prop \"onOpenChange\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

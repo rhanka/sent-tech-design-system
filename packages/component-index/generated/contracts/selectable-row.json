@@ -1,0 +1,318 @@
+{
+  "componentId": "selectable-row",
+  "contractSource": "derived",
+  "digest": "sha256:b4d008493f100f3d037d5bc09bd276d18dec1a70f0daff76fe748e33c0aa7a55",
+  "entryDigest": "sha256:8e8a13cec18e71b3446f9d921a5d649ce0848195a042eb8190c2ea01ab98c57d",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(selected: boolean) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "accentBar": {
+            "type": "boolean"
+          },
+          "caption": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "leading": {
+            "type": "boolean"
+          },
+          "role": {
+            "type": "string"
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "trailing": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "leading"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:9aab77cfe1c011199d0e34e0783ed437769be6e06c35610442a8c34d0ee2006b",
+        "declarationPath": "packages/components-angular/dist/SelectableRow.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SelectableRowProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "caption",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "leading",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "trailing",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "onSelect"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "accentBar": {
+            "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",
+            "type": "boolean"
+          },
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Non-interactive when true.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Native link target. When set on a standalone row, the row renders as an anchor.",
+            "type": "string"
+          },
+          "role": {
+            "description": "ARIA role for the standalone row. Defaults to \"button\" for standalone use —\n\"option\" is only valid inside a listbox and would be invalid without one.\nInside a SelectableList the role is always forced to \"option\".",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Selected state. Honoured when the row is used STANDALONE; inside a\n{@link SelectableList } the list is the source of truth and drives the\nselected styling, so this prop is ignored for managed rows.",
+            "type": "boolean"
+          },
+          "value": {
+            "description": "Stable value, surfaced as `data-value` and used by the list for `value`.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:41ce5d21fa3c67b7dcc537c5f5bb4711d2446488a5a4c881999157eebbfc2aa4",
+        "declarationPath": "packages/components-react/dist/SelectableRow.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SelectableRowProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "selected"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "accentBar": {
+            "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Non-interactive when true.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Native link target. When set on a standalone row, the row renders as an anchor.",
+            "type": "string"
+          },
+          "role": {
+            "description": "ARIA role for the standalone row. Defaults to \"button\" for standalone use —\n\"option\" is only valid inside a listbox and would be invalid without one.\nInside a SelectableList the role is always forced to \"option\".",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Selected state (bindable). Honoured when the row is used STANDALONE; inside\na {@link SelectableList } the list is the source of truth and drives the\nselected styling, so this prop is ignored for managed rows.",
+            "type": "boolean"
+          },
+          "value": {
+            "description": "Stable value, surfaced as `data-value` and used by the list for `value`.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "children"
+        },
+        {
+          "name": "leading"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:e9eb641c8516e03a34479c9add168511ba673ae285986f82a54b0b9b54730aa9",
+        "declarationPath": "packages/components-svelte/dist/SelectableRow.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SelectableRowProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(selected: boolean) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "accentBar": {
+            "description": "Opt-in left accent bar on the selected state. Off by default so the\nselected item is a calm tinted surface + accented text (two signals only).",
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Non-interactive when true.",
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Native link target. When set on a standalone row, the row renders as an anchor.",
+            "type": "string"
+          },
+          "role": {
+            "description": "ARIA role for the standalone row. Defaults to \"option\" so a lone row still\nreads as a selectable item. Inside a list the role is forced to \"option\".",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Selected state. Honoured when the row is used STANDALONE; inside a\n{@link SelectableList } the list is the source of truth, so this prop is\nignored for managed rows.",
+            "type": "boolean"
+          },
+          "value": {
+            "description": "Stable value, surfaced as `data-value` and used by the list for `value`.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:66f11d447728828d8317f671c7103712a3081f2079df2f13eceef51363094e23",
+        "declarationPath": "packages/components-vue/dist/SelectableRow.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SelectableRowProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

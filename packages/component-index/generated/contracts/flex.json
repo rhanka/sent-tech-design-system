@@ -1,0 +1,306 @@
+{
+  "componentId": "flex",
+  "contractSource": "derived",
+  "digest": "sha256:3b7a16fb4b8b7c984a78c80ab54c0a682dafee9f3f562b6cfea4d9c3c05ac8c5",
+  "entryDigest": "sha256:99a4451f6c8907e3aa57e050a4dea86559b7020f370edd2756f5100b84334e06",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "row",
+              "column",
+              "row-reverse",
+              "column-reverse"
+            ]
+          },
+          "gap": {
+            "type": "number"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:113aacfa49e611a6ea8dfb4485aedf401645ec8316d7613063a430d9b2585e7b",
+        "declarationPath": "packages/components-angular/dist/Flex.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FlexProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "row",
+              "column",
+              "row-reverse",
+              "column-reverse"
+            ]
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e19bf20ca0c65b859316f20d8909c88f25efc7eeb7153760c7ec9df38572b732",
+        "declarationPath": "packages/components-react/dist/Flex.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FlexProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "row",
+              "column",
+              "row-reverse",
+              "column-reverse"
+            ]
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:17b893df116e9e4e9b0690d30c84e2492128ab756db30d254395faae12503157",
+        "declarationPath": "packages/components-svelte/dist/Flex.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FlexProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "stretch",
+              "baseline"
+            ]
+          },
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "row",
+              "column",
+              "row-reverse",
+              "column-reverse"
+            ]
+          },
+          "gap": {
+            "description": "Spacing scale step (0..12) mapped to `--st-spacing-*`.",
+            "type": "number"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "justify": {
+            "enum": [
+              "start",
+              "end",
+              "center",
+              "between",
+              "around",
+              "evenly"
+            ]
+          },
+          "wrap": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bca532af6ff1dc7cf1466d57cafbd1855eef0083f7896ff3504e5981cc0636d0",
+        "declarationPath": "packages/components-vue/dist/Flex.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FlexProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

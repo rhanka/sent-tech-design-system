@@ -1,0 +1,3165 @@
+{
+ "version": 1,
+ "components": {
+  "accordion": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "alert": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "anomaly-swim-lane-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "app-chrome": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "app-header": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "arc-diagram-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "area-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "area-range-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "area-spline-range-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "aspect-ratio": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "autosave": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "avatar": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "avatar-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "back-to-top": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "badge": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "bell-curve-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "box-plot-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "breadcrumb": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "bullet-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "bump-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "button": {
+   "svelte": {
+    "status": "complete",
+    "props": [
+     "class",
+     "disabled",
+     "size",
+     "type",
+     "variant"
+    ],
+    "slots": [
+     "children"
+    ],
+    "events": [],
+    "bindable": []
+   },
+   "react": {
+    "status": "complete",
+    "props": [
+     "size",
+     "type",
+     "variant"
+    ],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "complete",
+    "props": [
+     "class",
+     "disabled",
+     "size",
+     "type",
+     "variant"
+    ],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "angular": {
+    "status": "complete",
+    "props": [
+     "aria-label",
+     "aria-pressed",
+     "class",
+     "disabled",
+     "size",
+     "type",
+     "variant"
+    ],
+    "slots": [
+     "default"
+    ],
+    "events": [],
+    "bindable": []
+   }
+  },
+  "button-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "calendar": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "calendar-heatmap-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "candlestick-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "chat-composer": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "chat-message": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "chat-thread": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "checkbox": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "checkbox-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "chord-diagram": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "code-snippet": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "col": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "collapsible": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "color-scale-bar": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "color-swatch": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "column-pyramid-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "column-range-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "combo-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "combobox": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "config-item-card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "container": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "content-switcher": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "contour-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "copy-button": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "dashboard-grid": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "data-image": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "data-table": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "caption",
+     "class",
+     "columns",
+     "decorations",
+     "emptyLabel",
+     "locale",
+     "nextLabel",
+     "page",
+     "pageSize",
+     "paginationLabel",
+     "previousLabel",
+     "rows",
+     "selectAllLabel",
+     "selectRowLabel",
+     "selectable",
+     "selectedIds",
+     "size",
+     "sortAscendingLabel",
+     "sortBy",
+     "sortDescendingLabel",
+     "sortNoneLabel",
+     "sortable"
+    ],
+    "slots": [],
+    "events": [
+     "onRowClick"
+    ],
+    "bindable": [
+     "page",
+     "selectedIds",
+     "sortBy"
+    ]
+   },
+   "react": {
+    "status": "partial",
+    "props": [
+     "className",
+     "columns",
+     "decorations",
+     "emptyLabel",
+     "locale",
+     "nextLabel",
+     "page",
+     "pageSize",
+     "paginationLabel",
+     "previousLabel",
+     "rows",
+     "selectAllLabel",
+     "selectRowLabel",
+     "selectable",
+     "selectedIds",
+     "size",
+     "sortAscendingLabel",
+     "sortBy",
+     "sortDescendingLabel",
+     "sortNoneLabel",
+     "sortable"
+    ],
+    "slots": [],
+    "events": [
+     "onPageChange",
+     "onRowClick",
+     "onSelectionChange",
+     "onSortChange"
+    ],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "class",
+     "columns",
+     "decorations",
+     "emptyLabel",
+     "locale",
+     "nextLabel",
+     "page",
+     "pageSize",
+     "paginationLabel",
+     "previousLabel",
+     "rows",
+     "selectAllLabel",
+     "selectRowLabel",
+     "selectable",
+     "selectedIds",
+     "size",
+     "sortAscendingLabel",
+     "sortBy",
+     "sortDescendingLabel",
+     "sortNoneLabel",
+     "sortable"
+    ],
+    "slots": [],
+    "events": [
+     "onPageChange",
+     "onRowClick",
+     "onSelectionChange",
+     "onSortChange"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "partial",
+    "props": [
+     "caption",
+     "class",
+     "columns",
+     "decorations",
+     "emptyLabel",
+     "locale",
+     "nextLabel",
+     "page",
+     "pageSize",
+     "paginationLabel",
+     "previousLabel",
+     "rows",
+     "selectAllLabel",
+     "selectRowLabel",
+     "selectable",
+     "selectedIds",
+     "size",
+     "sortAscendingLabel",
+     "sortBy",
+     "sortDescendingLabel",
+     "sortNoneLabel",
+     "sortable"
+    ],
+    "slots": [],
+    "events": [
+     "pageChange",
+     "selectionChange",
+     "sortChange"
+    ],
+    "bindable": []
+   }
+  },
+  "dataviz-dashboard-grid": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "dataviz-data-image": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "dataviz-score-card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "date-picker": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "decomposition-tree-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "density-2d-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "dependency-wheel-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "display-settings": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "divergent-bar-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "divider": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "donut-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "drawer": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "dropdown": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "dumbbell-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "embed": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "empty-state": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "error-bar-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "error-summary": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "event-feed-panel": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "field-card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "file-uploader": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "filter-bar": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "filter-pill": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "flamegraph-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "flex": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "footer": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "force-graph": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "form": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "form-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "funnel-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "gantt-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "gauge-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "geo-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "grid": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "header": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "heatmap-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "heikin-ashi-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "hidden": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "highlight": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "histogram-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "hlc-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "hollow-candlestick-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "icon": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "icon-button": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "inline": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "inline-loading": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "input": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "item-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "kpi-card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "language-selector": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "language-toggle": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "line-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "link": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "loading-state": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "lollipop-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "marimekko-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "media-content": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "menu": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "menu-popover": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "menu-trigger-button": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "message-actions": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "message-status-badge": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "modal": {
+   "svelte": {
+    "status": "complete",
+    "props": [
+     "class",
+     "closeLabel",
+     "description",
+     "dismissible",
+     "open",
+     "title",
+     "zIndex"
+    ],
+    "slots": [
+     "children",
+     "footer"
+    ],
+    "events": [
+     "onclose"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "partial",
+    "props": [
+     "closeLabel",
+     "open"
+    ],
+    "slots": [],
+    "events": [
+     "onClose"
+    ],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "class",
+     "closeLabel",
+     "description",
+     "open",
+     "title"
+    ],
+    "slots": [],
+    "events": [
+     "close",
+     "onClose"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "complete",
+    "props": [
+     "class",
+     "closeLabel",
+     "description",
+     "dismissible",
+     "open",
+     "size",
+     "title",
+     "zIndex"
+    ],
+    "slots": [
+     "default",
+     "footer"
+    ],
+    "events": [
+     "close"
+    ],
+    "bindable": []
+   }
+  },
+  "multi-select": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "nav-action-stack": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "nav-item": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "nav-section": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "notification": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "number-input": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "ohlc-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "ordered-list": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "organization-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "overflow-menu": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "overline": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "packed-bubbles-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "pagination": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "pagination-nav": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "panel-section": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "parallel-coordinates-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "pareto-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "password-input": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "point-and-figure-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "polygon-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "popover": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "popper": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "portal": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "priority-matrix": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "progress-bar": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "progress-indicator": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "quote": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "radar-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "radio": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "radio-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "range-slider": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "rating": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "renko-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "ribbon-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "rose-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "row": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "sankey-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "scatter-plot": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "score-card": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "search": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "select": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "selectable-list": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "selectable-row": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "selection-chip": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "side-nav": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "skeleton-text": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "skip-link": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "slide-indicator": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "slider": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "solid-gauge-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "sparkline": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "stack": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "stacked-bar-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "state-timeline-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "status-dot": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "status-history-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "step-line-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "stepper": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "streamgraph-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "streaming-message": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "structured-list": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "sunburst-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "switch": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "table": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "table-of-contents": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "tabs": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "tag": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "textarea": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "tile": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "tile-group": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "tile-map-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "time-picker": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "time-range-picker": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "time-series-line-chart": {
+   "svelte": {
+    "status": "none",
+    "reason": "absent: \"TimeSeriesLineChart\" is not exported from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts)"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"TimeSeriesLineChart\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"TimeSeriesLineChart\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
+  "timeline": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "timeline-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "toast": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "toggle": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "toggletip": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "tooltip": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "trace-waterfall-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "transcription": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "tree-view": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "treegraph-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "treemap-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "typography": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "unordered-list": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "url-sync": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"UrlSync\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
+  "variable-pie-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "vector-field-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "venn-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "violin-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "waffle-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "waterfall-chart": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "partial"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "partial"
+   }
+  },
+  "web-frame": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"WebFrame\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
+  "wind-barb-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  },
+  "word-cloud-chart": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "complete"
+   },
+   "vue": {
+    "status": "complete"
+   },
+   "angular": {
+    "status": "complete"
+   }
+  }
+ }
+}

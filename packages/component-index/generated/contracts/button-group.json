@@ -1,0 +1,247 @@
+{
+  "componentId": "button-group",
+  "contractSource": "derived",
+  "digest": "sha256:ead13aa484acb350eb885b97f87c17db4892dae25c51cb20c2bfd9c9925ebab5",
+  "entryDigest": "sha256:1f2501b3ecfea5b3da52d6fdbf7d710f986a7def9501a4da4a41e29cb9095be2",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "attached": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gap": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c421c262d8dec0c6c7d3bd2f7998dc424ff7f778b25ba5b97845a2198d0038f7",
+        "declarationPath": "packages/components-angular/dist/ButtonGroup.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ButtonGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "attached": {
+            "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",
+            "type": "boolean"
+          },
+          "className": {
+            "type": "string"
+          },
+          "gap": {
+            "description": "Espacement entre boutons (échelle spacing), ignoré quand `attached`.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "size": {
+            "description": "Taille indicative (transmise via data-attr pour styliser les enfants si besoin).",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a0e83e6be332c1a0aed645121d8bd5cb3d902c2876f2e060bd4867f58870a10d",
+        "declarationPath": "packages/components-react/dist/ButtonGroup.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ButtonGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "attached": {
+            "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gap": {
+            "description": "Espacement entre boutons (échelle spacing), ignoré quand `attached`.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "size": {
+            "description": "Taille indicative (transmise via data-attr pour styliser les enfants si besoin).",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c823d9b80725b1779d492199821be07dd74cc5d7d2b6f20223a9fc58fec68355",
+        "declarationPath": "packages/components-svelte/dist/ButtonGroup.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ButtonGroupProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "attached": {
+            "description": "Look segmenté joint (boutons collés, coins arrondis seulement aux extrémités).",
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "gap": {
+            "description": "Espacement entre boutons (échelle spacing), ignoré quand `attached`.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Étiquette a11y du groupe.",
+            "type": "string"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "size": {
+            "description": "Taille indicative (transmise via data-attr pour styliser les enfants si besoin).",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:337f0da11e8101437cca2acb444da80ecc848f93c19bd5ea5f015861a36e7919",
+        "declarationPath": "packages/components-vue/dist/ButtonGroup.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ButtonGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

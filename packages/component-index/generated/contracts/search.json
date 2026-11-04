@@ -1,0 +1,425 @@
+{
+  "componentId": "search",
+  "contractSource": "derived",
+  "digest": "sha256:f8a8ce1a43a624792f096eff30a1952096e1cb59b6b0c0c2735b2be40599ccc5",
+  "entryDigest": "sha256:fa871afb11e1a9ee4d8ad8b053eb842ca4f786be61befa28d98889d9a3b04334",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change",
+          "payload": {}
+        },
+        {
+          "name": "clear"
+        },
+        {
+          "name": "input",
+          "payload": {}
+        },
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "aria-describedby": {
+            "type": "string"
+          },
+          "aria-label": {
+            "type": "string"
+          },
+          "autocomplete": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "errorText": {},
+          "fluid": {
+            "type": "boolean"
+          },
+          "helperText": {},
+          "id": {
+            "type": "string"
+          },
+          "inputmode": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {},
+          "modelValue": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "readonly": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "errorText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:31eb790885225ceca80d910534261030c8256010010a75c33536505756514958",
+        "declarationPath": "packages/components-angular/dist/Search.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SearchProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "input.payload",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClear"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.InputHTMLAttributes<HTMLInputElement>",
+        "omitted": [
+          "size",
+          "type"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "clearLabel": {
+            "type": "string"
+          },
+          "fluid": {
+            "description": "Lift the field max-width cap so it fills a narrow drawer/rail (width 100%).",
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SearchProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLInputAttributes",
+        "omitted": [
+          "class",
+          "size",
+          "type",
+          "value"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "fluid": {
+            "description": "Lift the field max-width cap so it fills a narrow drawer/rail (width 100%).",
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:140d56ff1c212cdc68cfb59f987af85c534c236d82b5c9b9e0de1a3b13372a64",
+        "declarationPath": "packages/components-svelte/dist/Search.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SearchProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "modelValue"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "clear"
+        },
+        {
+          "name": "input"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onClear",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onInput",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "update:modelValue"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "clearLabel": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "fluid": {
+            "description": "Lift the field max-width cap so it fills a narrow drawer/rail (width 100%).",
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {},
+          "modelValue": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "value": {
+            "description": "Svelte/React-canonical alias for `modelValue`.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "onChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onClear.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onInput.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:66004b07a0dbc5a1e9de989785911011a292620e83c1e84f514d8a20982218e7",
+        "declarationPath": "packages/components-vue/dist/Search.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SearchProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "emit \"clear\": payload not in declaration",
+        "emit \"input\": payload not in declaration",
+        "emit \"update:modelValue\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"clear\" and prop \"onClear\" both listed verbatim",
+        "event pair: emits \"input\" and prop \"onInput\" both listed verbatim",
+        "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
+        "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

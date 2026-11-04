@@ -1,0 +1,490 @@
+{
+  "componentId": "donut-chart",
+  "contractSource": "derived",
+  "digest": "sha256:a66d33130343d8dc69226e99f68785746d8dede18e31bbba9dfdb82ce09c9eee",
+  "entryDigest": "sha256:914b6dc2fdd6aae5544a05f434b5b7d803f6ef0021bcabc45e8b50896fe3d6d3",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DonutChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "centerLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DonutChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "thickness": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4e92c01193057313f6f7d601ae19edfd3293ed69202896b18528cfbbdf7d85ae",
+        "declarationPath": "packages/components-angular/dist/DonutChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DonutChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DonutChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "centerLabel": {
+            "description": "Texte au centre (sinon le total). null pour masquer.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DonutChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-slice value labels. `false`/absent (default) → none. `true` → each\nslice's value with the default formatter. Object → `format(value)` and/or a\n`position` override (default `center` of the arc). Slices too thin to fit a\nlegible label are skipped. Labels are `aria-hidden` — the values already\nlive in the accessible ChartDataList."
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "thickness": {
+            "description": "Épaisseur de l'anneau.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:eabc8d7b6694e1abb662094932c6fec3207bab60e96c9c6399163f6165359643",
+        "declarationPath": "packages/components-react/dist/DonutChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DonutChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DonutChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "centerLabel": {
+            "description": "Texte au centre (sinon le total). null pour masquer.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DonutChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-slice value labels. `false`/absent (default) → none. `true` → each\nslice's value with the default formatter. Object → `format(value)` and/or a\n`position` override (default `center` of the arc). Slices too thin to fit a\nlegible label are skipped. Labels are `aria-hidden` — the values already\nlive in the accessible ChartDataList."
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "description": "Diamètre du SVG.",
+            "type": "number"
+          },
+          "thickness": {
+            "description": "Épaisseur de l'anneau.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b49beb89ddf1aa9697066ab7cf5295a03a7d775a18bd561f39a8c835e6a919ee",
+        "declarationPath": "packages/components-svelte/dist/DonutChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DonutChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DonutChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "centerLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DonutChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-slice value labels. `false`/absent (default) → none. `true` → each slice's\nvalue with the default formatter. Object → `format(value)` and/or a `position`\noverride (default `center` of the arc). Slices too thin to fit a legible label\nare skipped. Labels are `aria-hidden` — the values already live in the\naccessible ChartDataList."
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "thickness": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:f7004894f3483cf231c898173a59839e588b4e11239ddee6dff40f8d65659c48",
+        "declarationPath": "packages/components-vue/dist/DonutChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DonutChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

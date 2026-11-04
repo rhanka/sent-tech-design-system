@@ -1,0 +1,342 @@
+{
+  "componentId": "chat-message",
+  "contractSource": "derived",
+  "digest": "sha256:df7074fe0b163b28ace55799b944d0b448e3b3e814cc6d14759b0546eab68abf",
+  "entryDigest": "sha256:d4e20df080ca6c31ca238e74aca5b9de924c8dca0b10050edf610221253e3dac",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {},
+          "avatar": {},
+          "class": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "footer": {},
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system",
+              "tool"
+            ]
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "streaming",
+              "sent"
+            ]
+          },
+          "timestamp": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "actions",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "avatar",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "footer",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "timestamp",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:85a2b42b74d91ef4b6172e4ecc9e0fbf5189c94f87f7ece194cad54511c3a4b8",
+        "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ChatMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "actions",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "avatar",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "content",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "footer",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "timestamp",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "content",
+          "role"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system",
+              "tool"
+            ]
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "streaming",
+              "sent"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ChatMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class",
+          "role"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system",
+              "tool"
+            ]
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "streaming"
+            ]
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "avatar"
+        },
+        {
+          "name": "children"
+        },
+        {
+          "name": "footer"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b2237201811996cfa85e6cd0f77eb7246803673a8883c31c6b7b1346eb8c33e7",
+        "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ChatMessageProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {},
+          "avatar": {},
+          "class": {
+            "type": "string"
+          },
+          "content": {},
+          "footer": {},
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system",
+              "tool"
+            ]
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "streaming",
+              "sent"
+            ]
+          },
+          "timestamp": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "actions",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "avatar",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "footer",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "timestamp",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4d3faec3f8457e6b0a86cf0fca5f955e29911c8691be95b998335b221278c60c",
+        "declarationPath": "packages/components-vue/dist/ChatMessage.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ChatMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

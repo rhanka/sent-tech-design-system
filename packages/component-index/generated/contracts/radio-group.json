@@ -1,0 +1,420 @@
+{
+  "componentId": "radio-group",
+  "contractSource": "derived",
+  "digest": "sha256:bac5aa8e87bb4509b0a9edd0a88416510f19c9edff6b338d449426eaf105f9b9",
+  "entryDigest": "sha256:1f93abb63d4f41386ad9d9f2893714f17c7d87ad68a111f78e60477b67c71022",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "valueChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "RadioGroupOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/RadioGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b8897a3a91449ca901c95b00085f95ed1be119ffa08f24323af75587214cd3fc",
+        "declarationPath": "packages/components-angular/dist/RadioGroup.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RadioGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.FieldsetHTMLAttributes<HTMLFieldSetElement>",
+        "omitted": [
+          "className",
+          "onChange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "RadioGroupOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Désactive le groupe entier.",
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé garantissant l'exclusivité radio. Requis.",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/RadioGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeur sélectionnée (contrôlée).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "legend",
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:df9fadbb306c3e74ccc11cee0ad5480702a8d32f3fb8d691962dfcf4f1772182",
+        "declarationPath": "packages/components-react/dist/RadioGroup.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RadioGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onchange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLFieldSetElement>",
+        "omitted": [
+          "class",
+          "onchange"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "RadioGroupOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé garantissant l'exclusivité radio. Requis.",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/RadioGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeur sélectionnée (contrôlée).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "legend",
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:1cb20960ef369a0341d77284297d2561bfd50a9282fe8b69b91b585f2d15a7d7",
+        "declarationPath": "packages/components-svelte/dist/RadioGroup.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RadioGroupProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "RadioGroupOption": {
+            "additionalProperties": false,
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "helperText": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Désactive le groupe entier.",
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Nom partagé garantissant l'exclusivité radio. Requis.",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/$defs/RadioGroupOption"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "value": {
+            "description": "Valeur sélectionnée (contrôlée).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "legend",
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:cfc76bf7a647a64cd8abba83d2b244cd667ef3b10a25ae3cf215c25cf2b07e99",
+        "declarationPath": "packages/components-vue/dist/RadioGroup.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RadioGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

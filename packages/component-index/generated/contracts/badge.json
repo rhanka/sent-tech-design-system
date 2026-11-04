@@ -1,0 +1,236 @@
+{
+  "componentId": "badge",
+  "contractSource": "derived",
+  "digest": "sha256:ed96f7b550c20c175a9e0e9eaa5ba891b85c4b2ed707ac1ec5b297c3fc1d8cd1",
+  "entryDigest": "sha256:ac9099bcd6c94f764a37753b56dca2e7a4e28bc3e74e2ba6e24b648dc93bea41",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "label": {},
+          "shape": {
+            "enum": [
+              "circle",
+              "pill"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:76404a9e86b7ed2c357c5bbdc241be921f0fe00f52b2616a9acf6a09a6b3c678",
+        "declarationPath": "packages/components-angular/dist/Badge.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "BadgeProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLSpanElement>",
+        "omitted": []
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "shape": {
+            "enum": [
+              "circle",
+              "pill"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a73680059c2fe3501a72d6cff5e8920cc2f10aa1505ba35b57555066f8e2ed44",
+        "declarationPath": "packages/components-react/dist/Badge.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "BadgeProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "shape": {
+            "description": "Badge shape — `\"pill\"` (default) is the current render (radius 999px, width\ngrows with content). `\"circle\"` renders an equal-sided round bubble\n(`min-width === min-height`, equal inline/block padding, tabular-nums) — best\nfor ≤2-digit counts. 3+ digit content degrades GRACEFULLY to a rounded-rect\n(never clipped), so consumer counts reaching the 1000s stay legible.\nMirrors `Avatar`'s `shape`. Additive: with `shape` unset the badge renders\nbyte-identically to before.",
+            "enum": [
+              "circle",
+              "pill"
+            ]
+          },
+          "size": {
+            "description": "Density — `\"md\"` (default) is the current render. `\"sm\"` shrinks the\nfont-size (the rail-bubble scale). Additive: with `size` unset the badge\nrenders byte-identically to before.",
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:9da7ad30c25f270e5c03529a529e00ccd2c3a65a3c10ffadadb440609e98a4e8",
+        "declarationPath": "packages/components-svelte/dist/Badge.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "BadgeProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "shape": {
+            "enum": [
+              "circle",
+              "pill"
+            ]
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md"
+            ]
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b27c87f180f0d476cddbda0fc947481ab3686fe1ce0ab6faa9873854967d823d",
+        "declarationPath": "packages/components-vue/dist/Badge.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "BadgeProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

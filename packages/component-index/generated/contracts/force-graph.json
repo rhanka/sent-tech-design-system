@@ -1,0 +1,1378 @@
+{
+  "componentId": "force-graph",
+  "contractSource": "derived",
+  "digest": "sha256:9fa6d2aea620bbb5196b043595b336a89ba8986e1cceb9c8fd84cf2a53474673",
+  "entryDigest": "sha256:08b9b628de9ac513f5ae1774a206cd24a3dcc3bc0375c62b571200660c9f1b59",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onEdgeHover",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(edge: ForceGraphEdge) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMergeComplete",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(pair: { id: string; from: string; into: string; }) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onNodeHover",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(node: ForceGraphNode | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onOpenEntity",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ForceGraphEdge": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "emphasis": {
+                "description": "Emphasise the edge (e.g. a reconciliation/match relation) with a thicker,\nfully-opaque stroke. Defaults to false.",
+                "type": "boolean"
+              },
+              "relation": {
+                "description": "Optional relation label, surfaced in the tooltip on hover/focus.",
+                "type": "string"
+              },
+              "source": {
+                "description": "Source node id.",
+                "type": "string"
+              },
+              "target": {
+                "description": "Target node id.",
+                "type": "string"
+              },
+              "weak": {
+                "description": "When true the link renders as a dashed/faded \"weak\" link. Lets callers\nmap a confidence dimension onto link strength without extra props.\nEquivalent to `dash: \"dashed\"` plus a faded stroke (kept for back-compat).",
+                "type": "boolean"
+              },
+              "width": {
+                "description": "Explicit stroke width override in px. Takes precedence over `emphasis`.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "source",
+              "target"
+            ],
+            "type": "object"
+          },
+          "ForceGraphLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "label": {
+                "description": "Label shown in the legend.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Shape for this entry (node legend). Absent = line-style legend entry.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Tone for this entry. Defaults to category1.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weak": {
+                "description": "When true, renders as a dashed line (edge legend).",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "ForceGraphNode": {
+            "additionalProperties": false,
+            "properties": {
+              "fx": {
+                "description": "Pin the node to a fixed position (ignored by the simulation).",
+                "type": "number"
+              },
+              "fy": {
+                "type": "number"
+              },
+              "group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "description": "Grouping key (e.g. node type or community). Nodes sharing a group get\nthe same tone when `tone` is not set explicitly."
+              },
+              "id": {
+                "description": "Stable identifier; referenced by edges.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Visible label (falls back to id).",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Visual shape for the node. Defaults to 'dot' (circle).\nSupported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Explicit data-vis tone; overrides the group-derived tone.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weight": {
+                "description": "Relative node radius weight (defaults to 1).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "edgeCurve": {
+            "type": "number"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphEdge"
+            },
+            "type": "array"
+          },
+          "focusId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "iterations": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphLegendEntry"
+            },
+            "type": "array"
+          },
+          "legendLabel": {
+            "type": "string"
+          },
+          "mergePair": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "nodeRadius": {
+            "type": "number"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphNode"
+            },
+            "type": "array"
+          },
+          "repulsion": {
+            "type": "number"
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "showLabels": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:98a28833255692b95a24a0aa181ac1d3fd785543fe70c32fb3738b0e07eca2ee",
+        "declarationPath": "packages/components-angular/dist/ForceGraph.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ForceGraphProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onEdgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
+        },
+        {
+          "name": "onMergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onNodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onOpenEntity",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "ForceGraphEdge": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "emphasis": {
+                "description": "Emphasise the edge (e.g. a reconciliation/match relation) with a thicker,\nfully-opaque stroke. Defaults to false.",
+                "type": "boolean"
+              },
+              "relation": {
+                "description": "Optional relation label, surfaced in the tooltip on hover/focus.",
+                "type": "string"
+              },
+              "source": {
+                "description": "Source node id.",
+                "type": "string"
+              },
+              "target": {
+                "description": "Target node id.",
+                "type": "string"
+              },
+              "weak": {
+                "description": "When true the link renders as a dashed/faded \"weak\" link. Lets callers\nmap a confidence dimension onto link strength without extra props.\nEquivalent to `dash: \"dashed\"` plus a faded stroke (kept for back-compat).",
+                "type": "boolean"
+              },
+              "width": {
+                "description": "Explicit stroke width override in px. Takes precedence over `emphasis`.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "source",
+              "target"
+            ],
+            "type": "object"
+          },
+          "ForceGraphLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "label": {
+                "description": "Label shown in the legend.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Shape for this entry (node legend). Absent = line-style legend entry.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Tone for this entry. Defaults to category1.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weak": {
+                "description": "When true, renders as a dashed line (edge legend).",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "ForceGraphNode": {
+            "additionalProperties": false,
+            "properties": {
+              "fx": {
+                "description": "Pin the node to a fixed position (ignored by the simulation).",
+                "type": "number"
+              },
+              "fy": {
+                "type": "number"
+              },
+              "group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "description": "Grouping key (e.g. node type or community). Nodes sharing a group get\nthe same tone when `tone` is not set explicitly."
+              },
+              "id": {
+                "description": "Stable identifier; referenced by edges.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Visible label (falls back to id).",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Visual shape for the node. Defaults to 'dot' (circle).\nSupported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Explicit data-vis tone; overrides the group-derived tone.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weight": {
+                "description": "Relative node radius weight (defaults to 1).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "edgeCurve": {
+            "description": "Edge curvature, 0..1. 0 = straight <line> (back-compat). Larger values\nbow each edge into a quadratic <path>, offset perpendicular to the chord\nby `edgeCurve * dist * factor`. Defaults to a light 0.15.",
+            "type": "number"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphEdge"
+            },
+            "type": "array"
+          },
+          "focusId": {
+            "description": "ID of the node to focus/centre visually (ring highlight). Does not\nre-run the layout. Defaults to null.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "iterations": {
+            "description": "Number of cooling ticks. The simulation runs a synchronous warmup then\nanimates the remainder unless reduced motion is requested.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Accessible name for the figure (required).",
+            "type": "string"
+          },
+          "legend": {
+            "description": "Legend entries rendered as a corner overlay.\nEach entry has a label + optional shape (node) or weak (edge).",
+            "items": {
+              "$ref": "#/$defs/ForceGraphLegendEntry"
+            },
+            "type": "array"
+          },
+          "legendLabel": {
+            "description": "Accessible label for the legend overlay.",
+            "type": "string"
+          },
+          "mergePair": {
+            "additionalProperties": false,
+            "description": "Reconciliation merge animation (CLIENT-ONLY — driven by `useEffect`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "nodeRadius": {
+            "description": "Base node radius in px (scaled by node.weight).",
+            "type": "number"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphNode"
+            },
+            "type": "array"
+          },
+          "repulsion": {
+            "description": "Repulsion multiplier controlling how spread out the layout is.\n>1 = graphe plus aéré, <1 = plus compact ; multiplie la force de\nrépulsion sans toucher au fit-to-content. Defaults to 1. Clamped to\n[0.1, 10] internally to avoid layout explosions/collapses.",
+            "type": "number"
+          },
+          "resetViewLabel": {
+            "description": "Accessible label for the reset-view button (shown when zoomed/panned).",
+            "type": "string"
+          },
+          "selectedIds": {
+            "description": "IDs of currently selected nodes. Highlighted visually without\nre-running the layout. Defaults to [].",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "showLabels": {
+            "description": "Show text labels next to nodes.",
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "edges",
+          "label",
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ForceGraphProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onEdgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
+        },
+        {
+          "name": "onMergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onNodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onOpenEntity",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ForceGraphEdge": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "emphasis": {
+                "description": "Emphasise the edge (e.g. a reconciliation/match relation) with a thicker,\nfully-opaque stroke. Defaults to false.",
+                "type": "boolean"
+              },
+              "relation": {
+                "description": "Optional relation label, surfaced in the tooltip on hover/focus.",
+                "type": "string"
+              },
+              "source": {
+                "description": "Source node id.",
+                "type": "string"
+              },
+              "target": {
+                "description": "Target node id.",
+                "type": "string"
+              },
+              "weak": {
+                "description": "When true the link renders as a dashed/faded \"weak\" link. Lets callers\nmap a confidence dimension onto link strength without extra props.\nEquivalent to `dash: \"dashed\"` plus a faded stroke (kept for back-compat).",
+                "type": "boolean"
+              },
+              "width": {
+                "description": "Explicit stroke width override in px. Takes precedence over `emphasis`.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "source",
+              "target"
+            ],
+            "type": "object"
+          },
+          "ForceGraphLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "label": {
+                "description": "Label shown in the legend.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Shape for this entry (node legend). Absent = line-style legend entry.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Tone for this entry. Defaults to category1.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weak": {
+                "description": "When true, renders as a dashed line (edge legend).",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "ForceGraphNode": {
+            "additionalProperties": false,
+            "properties": {
+              "fx": {
+                "description": "Pin the node to a fixed position (ignored by the simulation).",
+                "type": "number"
+              },
+              "fy": {
+                "type": "number"
+              },
+              "group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "description": "Grouping key (e.g. node type or community). Nodes sharing a group get\nthe same tone when `tone` is not set explicitly."
+              },
+              "id": {
+                "description": "Stable identifier; referenced by edges.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Visible label (falls back to id).",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Visual shape for the node. Defaults to 'dot' (circle).\nSupported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Explicit data-vis tone; overrides the group-derived tone.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weight": {
+                "description": "Relative node radius weight (defaults to 1).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "edgeCurve": {
+            "description": "Edge curvature, 0..1. 0 = straight <line> (back-compat). Larger values\nbow each edge into a quadratic <path>, offset perpendicular to the chord\nby `edgeCurve * dist * factor`. Defaults to a light 0.15.",
+            "type": "number"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphEdge"
+            },
+            "type": "array"
+          },
+          "focusId": {
+            "description": "ID of the node to focus/centre visually (ring highlight). Does not\nre-run the layout. Defaults to null.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "iterations": {
+            "description": "Number of cooling ticks. The simulation runs a synchronous warmup then\nanimates the remainder unless reduced motion is requested.",
+            "type": "number"
+          },
+          "label": {
+            "description": "Accessible name for the figure (required).",
+            "type": "string"
+          },
+          "legend": {
+            "description": "Legend entries rendered as a corner overlay.\nEach entry has a label + optional shape (node) or weak (edge).",
+            "items": {
+              "$ref": "#/$defs/ForceGraphLegendEntry"
+            },
+            "type": "array"
+          },
+          "legendLabel": {
+            "description": "Accessible label for the legend overlay.",
+            "type": "string"
+          },
+          "mergePair": {
+            "additionalProperties": false,
+            "description": "Reconciliation merge animation (CLIENT-ONLY — driven by `$effect`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out\n(the node and its incident edges), then `onMergeComplete(pair)` fires\nexactly ONCE for that `id`. Purely visual — the component never mutates the\ndata; the consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the\nprop returns to null. Pass null (the default) for no merge in flight.",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "nodeRadius": {
+            "description": "Base node radius in px (scaled by node.weight).",
+            "type": "number"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphNode"
+            },
+            "type": "array"
+          },
+          "repulsion": {
+            "description": "Repulsion multiplier controlling how spread out the layout is.\n>1 = graphe plus aéré, <1 = plus compact ; multiplie la force de\nrépulsion sans toucher au fit-to-content. Defaults to 1. Clamped to\n[0.1, 10] internally to avoid layout explosions/collapses.",
+            "type": "number"
+          },
+          "resetViewLabel": {
+            "description": "Accessible label for the reset-view button (shown when zoomed/panned).",
+            "type": "string"
+          },
+          "selectedIds": {
+            "description": "IDs of currently selected nodes. Highlighted visually without\nre-running the layout. Defaults to [].",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "showLabels": {
+            "description": "Show text labels next to nodes.",
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "edges",
+          "label",
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:01dd4b6c6826dc5b58add2e2e593fdbb8331b6d7612eb3ab96835f00841274f0",
+        "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ForceGraphProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onEdgeHover",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(edge: ForceGraphEdge) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMergeComplete",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(pair: { id: string; from: string; into: string; }) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onNodeHover",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(node: ForceGraphNode | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onOpenEntity",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onEdgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
+        },
+        {
+          "name": "onMergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onNodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onOpenEntity",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ForceGraphEdge": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for the stroke. Independent of `weak`.\n\"solid\" = none, \"dashed\" = \"6 4\", \"dotted\" = \"1 4\", \"long-dash\" = \"12 6\".\nWhen omitted, falls back to the `weak` styling.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "emphasis": {
+                "description": "Emphasise the edge (e.g. a reconciliation/match relation) with a thicker,\nfully-opaque stroke. Defaults to false.",
+                "type": "boolean"
+              },
+              "relation": {
+                "description": "Optional relation label, surfaced in the tooltip on hover/focus.",
+                "type": "string"
+              },
+              "source": {
+                "description": "Source node id.",
+                "type": "string"
+              },
+              "target": {
+                "description": "Target node id.",
+                "type": "string"
+              },
+              "weak": {
+                "description": "When true the link renders as a dashed/faded \"weak\" link. Lets callers\nmap a confidence dimension onto link strength without extra props.\nEquivalent to `dash: \"dashed\"` plus a faded stroke (kept for back-compat).",
+                "type": "boolean"
+              },
+              "width": {
+                "description": "Explicit stroke width override in px. Takes precedence over `emphasis`.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "source",
+              "target"
+            ],
+            "type": "object"
+          },
+          "ForceGraphLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "dash": {
+                "description": "Typed dash pattern for an edge legend swatch. Independent of `weak`.\nWhen set, the swatch line uses the matching dash-array.",
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted",
+                  "long-dash"
+                ]
+              },
+              "label": {
+                "description": "Label shown in the legend.",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Shape for this entry (node legend). Absent = line-style legend entry.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Tone for this entry. Defaults to category1.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weak": {
+                "description": "When true, renders as a dashed line (edge legend).",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "type": "object"
+          },
+          "ForceGraphNode": {
+            "additionalProperties": false,
+            "properties": {
+              "fx": {
+                "description": "Pin the node to a fixed position (ignored by the simulation).",
+                "type": "number"
+              },
+              "fy": {
+                "type": "number"
+              },
+              "group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "description": "Grouping key (e.g. node type or community). Nodes sharing a group get\nthe same tone when `tone` is not set explicitly."
+              },
+              "id": {
+                "description": "Stable identifier; referenced by edges.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Visible label (falls back to id).",
+                "type": "string"
+              },
+              "shape": {
+                "description": "Visual shape for the node. Defaults to 'dot' (circle).\nSupported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.",
+                "enum": [
+                  "circle",
+                  "square",
+                  "diamond",
+                  "dot",
+                  "star",
+                  "hexagon",
+                  "box",
+                  "roundedbox",
+                  "triangle"
+                ]
+              },
+              "tone": {
+                "description": "Explicit data-vis tone; overrides the group-derived tone.",
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "weight": {
+                "description": "Relative node radius weight (defaults to 1).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "edgeCurve": {
+            "type": "number"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphEdge"
+            },
+            "type": "array"
+          },
+          "focusId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "iterations": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "legend": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphLegendEntry"
+            },
+            "type": "array"
+          },
+          "mergePair": {
+            "additionalProperties": false,
+            "description": "Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "nodeRadius": {
+            "type": "number"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/ForceGraphNode"
+            },
+            "type": "array"
+          },
+          "repulsion": {
+            "description": "Repulsion multiplier controlling how spread out the layout is.\n>1 = graphe plus aéré, <1 = plus compact. Defaults to 1, clamped to\n[0.1, 10] internally. Does not affect the fit-to-content framing.",
+            "type": "number"
+          },
+          "resetViewLabel": {
+            "description": "Accessible label for the \"reset view\" button (i18n).",
+            "type": "string"
+          },
+          "selectedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "showLabels": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "edges",
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4fe13417fdc41bb12f5ed7239d805563f3bee45d82e59910150b125fc7302de4",
+        "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ForceGraphProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

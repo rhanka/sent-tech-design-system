@@ -1,0 +1,329 @@
+{
+  "componentId": "tile",
+  "contractSource": "derived",
+  "digest": "sha256:82e66ef551be7ee7f688421cff60e421d23a67cfd05355525b0944ab668107cd",
+  "entryDigest": "sha256:77d27e4c1394338bebd85f55d2b21d815d314ff4f1b2c72e91af1af09ed4b3e7",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "select",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "description": {},
+          "disabled": {
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "title": {},
+          "variant": {
+            "enum": [
+              "selectable",
+              "clickable",
+              "static"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "description",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:894463c8f4da289c8386d7f2e41cacf0cbffe633958f6f2c3d1a807b1ebc54ec",
+        "declarationPath": "packages/components-angular/dist/Tile.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TileProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "description",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "title",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "onSelect"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Pour `selectable` : état coché.",
+            "type": "boolean"
+          },
+          "variant": {
+            "enum": [
+              "static",
+              "clickable",
+              "selectable"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TileProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "selected"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onclick",
+          "payload": {}
+        },
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class",
+          "title"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Pour `selectable` : état coché (bindable).",
+            "type": "boolean"
+          },
+          "title": {
+            "description": "Titre rapide (sinon utiliser le slot `children`).",
+            "type": "string"
+          },
+          "variant": {
+            "description": "`static` (présentation), `clickable` (lien/bouton), `selectable` (case unitaire).",
+            "enum": [
+              "static",
+              "clickable",
+              "selectable"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:621cd685a087c8ad844e29de6350fd9477acaae90f3a4520cffb78dc767f5dac",
+        "declarationPath": "packages/components-svelte/dist/Tile.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TileProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onclick.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "select"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "description": {},
+          "disabled": {
+            "type": "boolean"
+          },
+          "href": {
+            "description": "Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`.",
+            "type": "string"
+          },
+          "selected": {
+            "description": "Pour `selectable` : état coché.",
+            "type": "boolean"
+          },
+          "title": {},
+          "variant": {
+            "enum": [
+              "selectable",
+              "clickable",
+              "static"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "description",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "title",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3f7c039ea59bad00791090d2b4ec0f3019fd8c55bc24b2ea351caed9f3a9bc56",
+        "declarationPath": "packages/components-vue/dist/Tile.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TileProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

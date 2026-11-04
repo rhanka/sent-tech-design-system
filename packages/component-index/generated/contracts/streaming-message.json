@@ -1,0 +1,777 @@
+{
+  "componentId": "streaming-message",
+  "contractSource": "derived",
+  "digest": "sha256:9656c0e9faec26b1b4552b81164bbf6990bdf3437f833efe982a3e6fac77a076",
+  "entryDigest": "sha256:ec067126e32ba130fcf005894a08504031e3a28ebbe8e846d4d119719091c421",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StreamingMessageEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed",
+                  "streaming",
+                  "sent"
+                ]
+              },
+              "text": {}
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/$defs/StreamingMessageEvent"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "enum": [
+              "live",
+              "passive"
+            ]
+          },
+          "placeholder": {},
+          "streaming": {
+            "type": "boolean"
+          },
+          "text": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "StreamingMessageEvent.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StreamingMessageEvent.text",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "placeholder",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "text",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:fcb5843f4cdec00f16363ca9e6d07d4d5a3acab9dccc1f25f24910ef506bf9a0",
+        "declarationPath": "packages/components-angular/dist/StreamingMessage.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StreamingMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "StreamingMessageEvent.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "StreamingMessageEvent.text",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "placeholder",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "text",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "StreamingMessageEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed",
+                  "streaming",
+                  "sent"
+                ]
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/$defs/StreamingMessageEvent"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "enum": [
+              "live",
+              "passive"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StreamingMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "children",
+          "class",
+          "role"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StreamingMessageSimpleEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed"
+                ]
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "events": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "delta": {
+                          "type": "string"
+                        },
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "message.delta"
+                        }
+                      },
+                      "required": [
+                        "delta",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "message.completed"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "delta": {
+                          "type": "string"
+                        },
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "reasoning.delta"
+                        }
+                      },
+                      "required": [
+                        "delta",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "reasoning.completed"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "toolCallId": {
+                          "type": "string"
+                        },
+                        "toolName": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "tool.started"
+                        }
+                      },
+                      "required": [
+                        "toolCallId",
+                        "toolName",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "success",
+                            "error"
+                          ]
+                        },
+                        "toolCallId": {
+                          "type": "string"
+                        },
+                        "toolName": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "tool.completed"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "toolCallId",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "choices": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "toolCallId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "permission.requested"
+                        }
+                      },
+                      "required": [
+                        "choices",
+                        "toolCallId",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "checkpointId": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "messageId": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "checkpoint.requested"
+                        }
+                      },
+                      "required": [
+                        "checkpointId",
+                        "label",
+                        "type"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/$defs/StreamingMessageSimpleEvent"
+                },
+                "type": "array"
+              }
+            ]
+          },
+          "finalContent": {
+            "type": "string"
+          },
+          "initialEvents": {
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "delta": {
+                      "type": "string"
+                    },
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "message.delta"
+                    }
+                  },
+                  "required": [
+                    "delta",
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "message.completed"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "delta": {
+                      "type": "string"
+                    },
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "reasoning.delta"
+                    }
+                  },
+                  "required": [
+                    "delta",
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "reasoning.completed"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "toolCallId": {
+                      "type": "string"
+                    },
+                    "toolName": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "tool.started"
+                    }
+                  },
+                  "required": [
+                    "toolCallId",
+                    "toolName",
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "success",
+                        "error"
+                      ]
+                    },
+                    "toolCallId": {
+                      "type": "string"
+                    },
+                    "toolName": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "tool.completed"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "toolCallId",
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "choices": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "toolCallId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "permission.requested"
+                    }
+                  },
+                  "required": [
+                    "choices",
+                    "toolCallId",
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "checkpointId": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "messageId": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "checkpoint.requested"
+                    }
+                  },
+                  "required": [
+                    "checkpointId",
+                    "label",
+                    "type"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "mode": {
+            "enum": [
+              "live",
+              "passive"
+            ]
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system",
+              "tool"
+            ]
+          },
+          "showTrail": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ]
+          },
+          "streamId": {
+            "type": "string"
+          },
+          "text": {
+            "description": "Plain message body (cross-framework parity with React/Vue ports). When\nprovided, it is used as the rendered content (equivalent to\n`finalContent`). The canonical event-stream API still works.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "footer"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:dd9cf109a4681f5adb2df0332f4abab86119240d62a757e12ee7805e1208b900",
+        "declarationPath": "packages/components-svelte/dist/StreamingMessage.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StreamingMessageProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StreamingMessageEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {},
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed",
+                  "streaming",
+                  "sent"
+                ]
+              },
+              "text": {}
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/$defs/StreamingMessageEvent"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "enum": [
+              "live",
+              "passive"
+            ]
+          },
+          "placeholder": {},
+          "text": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "StreamingMessageEvent.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "StreamingMessageEvent.text",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "placeholder",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "text",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6cb4b109e63782297abe6258862f524061b4a4d1958855cb00d374dcb4258c67",
+        "declarationPath": "packages/components-vue/dist/StreamingMessage.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StreamingMessageProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

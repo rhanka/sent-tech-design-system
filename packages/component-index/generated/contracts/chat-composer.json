@@ -1,0 +1,337 @@
+{
+  "componentId": "chat-composer",
+  "contractSource": "derived",
+  "digest": "sha256:6bdcbbe61b607c761fdf553b905d3b7cc73a98f1d665bf3bc9aabff9d56814f0",
+  "entryDigest": "sha256:b6603a223ccdce827731fa81c2b0cf2cef4b22d7db208d7262df4d2eacdb2efd",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "modelValueChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "submit",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "maxLength": {
+            "type": "number"
+          },
+          "modelValue": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "submitLabel": {},
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "submitLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:a60db605bf41f6e83d34cf99fccd54fd38900b4152e156bb8df65bb21defe751",
+        "declarationPath": "packages/components-angular/dist/ChatComposer.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ChatComposerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "submitLabel",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSubmit",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.FormHTMLAttributes<HTMLFormElement>",
+        "omitted": [
+          "onSubmit"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "placeholder": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ChatComposerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "value"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onstop"
+        },
+        {
+          "name": "onsubmit",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "event": {},
+              "message": {
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "submit",
+                  "keyboard"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "source"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLFormAttributes",
+        "omitted": [
+          "class",
+          "onsubmit"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "autosize": {
+            "type": "boolean"
+          },
+          "busy": {
+            "type": "boolean"
+          },
+          "class": {
+            "type": "string"
+          },
+          "clearOnSubmit": {
+            "type": "boolean"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "inputAriaLabel": {
+            "type": "string"
+          },
+          "maxRows": {
+            "type": "number"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "sendAriaLabel": {
+            "type": "string"
+          },
+          "sendLabel": {
+            "type": "string"
+          },
+          "stopAriaLabel": {
+            "type": "string"
+          },
+          "stopLabel": {
+            "type": "string"
+          },
+          "stoppable": {
+            "type": "boolean"
+          },
+          "submitDisabled": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "actionsLeft"
+        },
+        {
+          "name": "actionsRight"
+        },
+        {
+          "name": "attachments"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b7070b6c2905633371c5d82fbf4dca5f139bdb2509a99af66aebfe44b3e9675e",
+        "declarationPath": "packages/components-svelte/dist/ChatComposer.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ChatComposerProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "payload.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "SubmitEvent"
+        },
+        {
+          "kind": "other",
+          "name": "payload.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "KeyboardEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onSubmit",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "submit"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "submitLabel": {},
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "onSubmit.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "submitLabel",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:624242afdecbc4af13f6ec641d972b67dd4810823de3757b6e6126ff53771765",
+        "declarationPath": "packages/components-vue/dist/ChatComposer.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ChatComposerProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"submit\": payload not in declaration",
+        "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

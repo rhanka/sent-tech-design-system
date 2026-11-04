@@ -1,0 +1,241 @@
+{
+  "componentId": "icon",
+  "contractSource": "derived",
+  "digest": "sha256:deae2c8cf170ee414f2db7b13f67d811c95263b4011b249b391f5e1197966163",
+  "entryDigest": "sha256:b76106c69523a6039021cf37cb99ce8f6d39bb259034356391212a062b38ab46",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Canonical DS icon name.",
+            "enum": [
+              "close",
+              "layers",
+              "settings",
+              "eye",
+              "eye-off",
+              "target",
+              "chevron-down",
+              "chevron-right"
+            ]
+          },
+          "size": {
+            "description": "Square size in px. Default 18 — the DS-standard inline glyph size.",
+            "type": "number"
+          },
+          "strokeWidth": {
+            "description": "Stroke width. When omitted, the theme token `--st-component-icon-strokeWidth`\napplies (default 2.25 — the DS's existing lucide usage). When set, it wins\nover the token; it is then marked `data-st-icon-stroke=\"prop\"` so the\nstyles.css token rule leaves it alone.",
+            "type": "number"
+          },
+          "title": {
+            "description": "Accessible name; when omitted the icon is decorative (`aria-hidden`).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9d5ea834a8082083be1f587a7a752c4c10f6e111baabb329a4f38b9651e7a331",
+        "declarationPath": "packages/components-angular/dist/Icon.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "IconProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.SVGAttributes<SVGSVGElement>",
+        "omitted": [
+          "name"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "description": "Canonical DS icon name.",
+            "enum": [
+              "target",
+              "settings",
+              "eye",
+              "eye-off",
+              "layers",
+              "close",
+              "chevron-down",
+              "chevron-right"
+            ]
+          },
+          "size": {
+            "description": "Square size in px. Default 18 — the DS-standard inline glyph size.",
+            "type": "number"
+          },
+          "strokeWidth": {
+            "description": "Stroke width. When omitted, the theme token `--st-component-icon-strokeWidth`\napplies (default 2.25 — the DS's existing lucide usage). When set, it wins\nover the token.",
+            "type": "number"
+          },
+          "title": {
+            "description": "Accessible name; when omitted the icon is decorative (`aria-hidden`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "IconProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "SVGAttributes<SVGElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Canonical DS icon name (see {@link IconName}).",
+            "enum": [
+              "target",
+              "settings",
+              "eye",
+              "eye-off",
+              "layers",
+              "close",
+              "chevron-down",
+              "chevron-right"
+            ]
+          },
+          "size": {
+            "description": "Square size in px. Default 18 — the DS-standard inline glyph size.",
+            "type": "number"
+          },
+          "strokeWidth": {
+            "description": "Stroke width. When omitted, the theme token\n`--st-component-icon-strokeWidth` applies (default 2.25 — the DS's\nexisting lucide usage). When set, it wins over the token.",
+            "type": "number"
+          },
+          "title": {
+            "description": "Accessible name. When set, the icon is exposed as an image with this\nlabel; when omitted, the icon is decorative (`aria-hidden`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a0f8381da4ba32add05e583a8e26427a019668724a05ed91e1048c88762831ca",
+        "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "IconProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "name": {
+            "enum": [
+              "close",
+              "layers",
+              "settings",
+              "eye",
+              "eye-off",
+              "target",
+              "chevron-down",
+              "chevron-right"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "strokeWidth": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:70ebfabb5bda0a50528a0cd9344fe74c640796f2056b99ab5e2740891eeff1f0",
+        "declarationPath": "packages/components-vue/dist/Icon.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "IconProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

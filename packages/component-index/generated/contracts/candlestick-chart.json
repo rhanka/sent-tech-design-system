@@ -1,0 +1,1298 @@
+{
+  "componentId": "candlestick-chart",
+  "contractSource": "derived",
+  "digest": "sha256:8d59df92de45897b3099317a2854fe11eec913bb0ec6d2bf1e0a020876bd7639",
+  "entryDigest": "sha256:1c2fdeafe266ff8be68cef186e4198a1825dbd013e9adb30b36414b47dbe9265",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:44c759c59a352aec79c45597c3d7ec08f95fd493190759de11f7f9a6fa78da5c",
+        "declarationPath": "packages/components-angular/dist/CandlestickChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "CandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "CandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "description": "Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it\nmatches a candle by its `label` (centre of band) and is ignored otherwise;\nthe y coordinate (and `value`/`from`/`to`) are price-axis numbers. Regions\nrender behind the candles, every other kind above. Useful for support /\nresistance lines (`line axis:y`), price zones (`region axis:y`), or events\n(`point`/`label`). Additive: absent ⇒ unchanged.",
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ],
+            "description": "Per-candle value labels. `false`/absent (default) → none. `true` → each\ncandle's `close` value with the chart's numeric formatter. Object →\n`format(value)` and/or a `position` override. Default position is above the\ncandle. Labels are `aria-hidden` — the values already live in the accessible\nChartDataList."
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "description": "CONTROLLED synchronised hover key (FR-3). A candle's key is its `label` (the\ndate/category). When provided (string or null), the crosshair + tooltip track\nthis key instead of the chart's internal pointer hover (null ⇒ nothing shown),\nletting a parent share one hover channel across several aligned charts. Absent\n(`undefined`) keeps the legacy uncontrolled behaviour.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "description": "FR-5 — keyboard navigation of the data points (roving tabindex). When `true`\n(or implied by wiring `onSelectKey`), a thin focusable overlay is rendered\nover the candles: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between\ncandles (data order), Home/End jump to the first/last, Enter/Space select the\nfocused candle (`onSelectKey`), Escape leaves the navigation. Each focused\ncandle announces its `label` + O/H/L/C. Absent ⇒ no overlay, unchanged.",
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:aa1b1c4647bf684f75abbf444d0ed47c8d0baf122f510ea0508fef1f80cb8806",
+        "declarationPath": "packages/components-react/dist/CandlestickChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "CandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "CandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "center",
+                      "inside",
+                      "outside",
+                      "top"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:127dd72bbb157a61d6b5e2599f821771d2cb04413d7e168fbaa25cea0fe2feed",
+        "declarationPath": "packages/components-svelte/dist/CandlestickChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "CandlestickChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "dataLabels.format",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onHoverKeyChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectKey",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: string | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onHoverKeyChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
+          "name": "onSelectKey",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CandlestickChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "close": {
+                "type": "number"
+              },
+              "high": {
+                "type": "number"
+              },
+              "label": {
+                "type": "string"
+              },
+              "low": {
+                "type": "number"
+              },
+              "open": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "close",
+              "high",
+              "label",
+              "low",
+              "open"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "items": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "point"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "marker": {
+                      "enum": [
+                        "circle",
+                        "square",
+                        "diamond"
+                      ]
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "anchor": {
+                      "enum": [
+                        "start",
+                        "end",
+                        "middle"
+                      ]
+                    },
+                    "kind": {
+                      "const": "label"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "kind": {
+                      "const": "line"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "kind",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axis": {
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "kind": {
+                      "const": "region"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "from",
+                    "kind",
+                    "to"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "shape"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "points": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "points"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/CandlestickChartDatum"
+            },
+            "type": "array"
+          },
+          "dataLabels": {
+            "anyOf": [
+              {
+                "const": false
+              },
+              {
+                "const": true
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "position": {
+                    "description": "Placement hint; each chart picks a sensible default when omitted.",
+                    "enum": [
+                      "auto",
+                      "inside",
+                      "outside",
+                      "top",
+                      "center"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "height": {
+            "type": "number"
+          },
+          "hoverKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "keyboardNav": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a0eeea6f5217ea4a2e329688744b259c647a7d96e097748f14c306a8c4d44090",
+        "declarationPath": "packages/components-vue/dist/CandlestickChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "CandlestickChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

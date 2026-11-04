@@ -1,0 +1,380 @@
+{
+  "componentId": "table",
+  "contractSource": "derived",
+  "digest": "sha256:5a72073a4f60ba9f1fb0456b44a1ec406fe753b0ed1c03aff1969695de264d1b",
+  "entryDigest": "sha256:662130ed7f5ad48ec2d3b77c9135c044de0b6a798e8245c8956a2392142bc34c",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TableColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "center",
+                  "left",
+                  "right"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "label": {}
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "TableRow": {
+            "additionalProperties": {},
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "caption": {},
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/TableColumn"
+            },
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/TableRow"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TableColumn.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "TableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "TableRow"
+        },
+        {
+          "name": "caption",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:587f88a17ab761e962c4c4405db3ca12cd5c22ff94cf4477563056b3ca611ad6",
+        "declarationPath": "packages/components-angular/dist/Table.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "TableColumn.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "node",
+          "name": "caption",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.TableHTMLAttributes<HTMLTableElement>",
+        "omitted": []
+      },
+      "props": {
+        "$defs": {
+          "TableColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center",
+                  "left",
+                  "right"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "type": "object"
+          },
+          "TableRow": {
+            "additionalProperties": {},
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/TableColumn"
+            },
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/TableRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "TableRow"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLTableAttributes",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TableColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "center",
+                  "left",
+                  "right"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "TableRow": {
+            "additionalProperties": {},
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "caption": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/TableColumn"
+            },
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/TableRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "TableRow"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:bc25c011063552e4626d668f5579a618e479509697fe89d9b079ef1e450994cd",
+        "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TableProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TableColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "align": {
+                "enum": [
+                  "start",
+                  "end",
+                  "center",
+                  "left",
+                  "right"
+                ]
+              },
+              "key": {
+                "type": "string"
+              },
+              "label": {}
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "TableRow": {
+            "additionalProperties": {},
+            "properties": {},
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "caption": {},
+          "class": {
+            "type": "string"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/$defs/TableColumn"
+            },
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/TableRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "columns",
+          "rows"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TableColumn.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "TableRow",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{}",
+          "sourceType": "TableRow"
+        },
+        {
+          "name": "caption",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:e998019276008faecf8985b33be9758cf3ada3ab14c73e0fea836ff372855d3d",
+        "declarationPath": "packages/components-vue/dist/Table.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TableProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

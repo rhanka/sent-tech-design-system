@@ -1,0 +1,974 @@
+{
+  "componentId": "app-chrome",
+  "contractSource": "derived",
+  "digest": "sha256:8b9dbb1146e73ec2a31d3b52b891bcc6fd5b213bb76c13ecc83bb8ec2016d19f",
+  "entryDigest": "sha256:676b4bf587e3faad62397d5200fc758ce8eca96268848287aabe4cf976c29a19",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AppChromeNavItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onColorModeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(mode: AppChromeColorMode) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onLocaleChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(locale: AppChromeLocale) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMobileMenuToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onThemeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AppChromeNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "active": {
+                "description": "Marqué actif (souligné, aria-current=page).",
+                "type": "boolean"
+              },
+              "ariaLabel": {
+                "type": "string"
+              },
+              "disabled": {
+                "description": "Coupe la navigation tout en gardant l'item visible/annoncé.",
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "rel": {
+                "type": "string"
+              },
+              "role": {
+                "description": "Alias pratique pour un seul rôle autorisé.",
+                "type": "string"
+              },
+              "roles": {
+                "description": "Roles autorisés à voir l'item. Vide/undefined = visible par tous.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          },
+          "AppChromeThemeOption": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "type": "string"
+          },
+          "brandLabel": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "colorMode": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "colorModeLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "auto": {
+                "type": "string"
+              },
+              "dark": {
+                "type": "string"
+              },
+              "light": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "auto",
+              "dark",
+              "light"
+            ],
+            "type": "object"
+          },
+          "githubHref": {
+            "type": "string"
+          },
+          "githubLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "localeLabel": {
+            "type": "string"
+          },
+          "logoAlt": {
+            "type": "string"
+          },
+          "logoSrc": {
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "mobileMenuOpen": {
+            "type": "boolean"
+          },
+          "nav": {
+            "items": {
+              "$ref": "#/$defs/AppChromeNavItem"
+            },
+            "type": "array"
+          },
+          "navLabel": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "themeLabel": {
+            "type": "string"
+          },
+          "themes": {
+            "items": {
+              "$ref": "#/$defs/AppChromeThemeOption"
+            },
+            "type": "array"
+          },
+          "userRoles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4176e66e657aaf59cb4ad3f34363c10a676205be59ac86dcf4c79df572743bfd",
+        "declarationPath": "packages/components-angular/dist/AppChrome.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AppChromeProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AppChromeNavItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<HTMLAnchorElement>"
+        },
+        {
+          "kind": "node",
+          "name": "extraSelectors",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "identity",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [
+        {
+          "name": "onColorModeChange",
+          "payload": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          }
+        },
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        },
+        {
+          "name": "onMobileMenuToggle"
+        },
+        {
+          "name": "onThemeChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AppChromeNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "active": {
+                "description": "Marqué actif (souligné, aria-current=page).",
+                "type": "boolean"
+              },
+              "ariaLabel": {
+                "type": "string"
+              },
+              "disabled": {
+                "description": "Coupe la navigation tout en gardant l'item visible/annoncé.",
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "rel": {
+                "type": "string"
+              },
+              "role": {
+                "description": "Alias pratique pour un seul rôle autorisé.",
+                "type": "string"
+              },
+              "roles": {
+                "description": "Roles autorisés à voir l'item. Vide/undefined = visible par tous.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "target": {
+                "anyOf": [
+                  {
+                    "const": "_self"
+                  },
+                  {
+                    "const": "_blank"
+                  },
+                  {
+                    "const": "_parent"
+                  },
+                  {
+                    "const": "_top"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          },
+          "AppChromeThemeOption": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "type": "string"
+          },
+          "brandLabel": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "colorMode": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "colorModeLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "auto": {
+                "type": "string"
+              },
+              "dark": {
+                "type": "string"
+              },
+              "light": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "auto",
+              "dark",
+              "light"
+            ],
+            "type": "object"
+          },
+          "githubHref": {
+            "type": "string"
+          },
+          "githubLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "localeLabel": {
+            "type": "string"
+          },
+          "logoAlt": {
+            "type": "string"
+          },
+          "logoSrc": {
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "mobileMenuOpen": {
+            "type": "boolean"
+          },
+          "nav": {
+            "items": {
+              "$ref": "#/$defs/AppChromeNavItem"
+            },
+            "type": "array"
+          },
+          "navLabel": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "themeLabel": {
+            "type": "string"
+          },
+          "themes": {
+            "items": {
+              "$ref": "#/$defs/AppChromeThemeOption"
+            },
+            "type": "array"
+          },
+          "userRoles": {
+            "description": "Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4dc02f55992c3bb3483f03535b583282166d7b7e1fd60ec0b7c43720b53d0d94",
+        "declarationPath": "packages/components-react/dist/AppChrome.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AppChromeProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AppChromeNavItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onColorModeChange",
+          "payload": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          }
+        },
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        },
+        {
+          "name": "onMobileMenuToggle"
+        },
+        {
+          "name": "onThemeChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AppChromeNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "active": {
+                "description": "Marqué actif (souligné, aria-current=page).",
+                "type": "boolean"
+              },
+              "ariaLabel": {
+                "type": "string"
+              },
+              "disabled": {
+                "description": "Coupe la navigation tout en gardant l'item visible/annoncé.",
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "rel": {
+                "type": "string"
+              },
+              "role": {
+                "description": "Alias pratique pour un seul rôle autorisé.",
+                "type": "string"
+              },
+              "roles": {
+                "description": "Roles autorisés à voir l'item. Vide/undefined = visible par tous.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          },
+          "AppChromeThemeOption": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "description": "Cible du lien de marque. Défaut `/`.",
+            "type": "string"
+          },
+          "brandLabel": {
+            "description": "aria-label du lien de marque (sinon dérivé de brandName + productName).",
+            "type": "string"
+          },
+          "brandName": {
+            "description": "Nom de marque (défaut « Sentropic »).",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "colorMode": {
+            "description": "Mode couleur actif. Undefined => le toggle est masqué.",
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "colorModeLabels": {
+            "additionalProperties": false,
+            "description": "Libellés accessibles des 3 modes (light/dark/auto).",
+            "properties": {
+              "auto": {
+                "type": "string"
+              },
+              "dark": {
+                "type": "string"
+              },
+              "light": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "auto",
+              "dark",
+              "light"
+            ],
+            "type": "object"
+          },
+          "githubHref": {
+            "description": "URL du dépôt. Undefined => le lien est masqué.",
+            "type": "string"
+          },
+          "githubLabel": {
+            "description": "aria-label du lien GitHub.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Langue active. Undefined => le sélecteur est masqué.",
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "localeLabel": {
+            "description": "aria-label du sélecteur de langue.",
+            "type": "string"
+          },
+          "logoAlt": {
+            "description": "Texte alternatif du logo (décoratif par défaut).",
+            "type": "string"
+          },
+          "logoSrc": {
+            "description": "Source du logo carré (ex. `/SENT-logo-squared.svg`).",
+            "type": "string"
+          },
+          "menuLabel": {
+            "description": "aria-label du bouton burger.",
+            "type": "string"
+          },
+          "mobileMenuOpen": {
+            "description": "État ouvert du tiroir mobile (contrôlé).",
+            "type": "boolean"
+          },
+          "nav": {
+            "description": "Liens de nav principaux (pills soulignées + état actif).",
+            "items": {
+              "$ref": "#/$defs/AppChromeNavItem"
+            },
+            "type": "array"
+          },
+          "navAlign": {
+            "description": "Alignement de la nav desktop, forwardé à AppHeader.",
+            "enum": [
+              "start",
+              "center"
+            ]
+          },
+          "navLabel": {
+            "description": "aria-label de la nav principale.",
+            "type": "string"
+          },
+          "productName": {
+            "description": "Sous-titre produit sous le nom (ex. « Design System », « dataviz »).",
+            "type": "string"
+          },
+          "theme": {
+            "description": "Id du thème actif.",
+            "type": "string"
+          },
+          "themeLabel": {
+            "description": "aria-label du sélecteur de thème.",
+            "type": "string"
+          },
+          "themes": {
+            "description": "Options de thème. Vide => le sélecteur est masqué.",
+            "items": {
+              "$ref": "#/$defs/AppChromeThemeOption"
+            },
+            "type": "array"
+          },
+          "userRoles": {
+            "description": "Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "extraSelectors"
+        },
+        {
+          "name": "identity"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:c8a7a160b02221a6619452d33de1d7ce022e792abe6a2985378d7a6cadd05b37",
+        "declarationPath": "packages/components-svelte/dist/AppChrome.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AppChromeProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "AppChromeNavItem.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onColorModeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(mode: AppChromeColorMode) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onLocaleChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(locale: AppChromeLocale) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onMobileMenuToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onThemeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onColorModeChange",
+          "payload": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          }
+        },
+        {
+          "name": "onLocaleChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
+        },
+        {
+          "name": "onMobileMenuToggle"
+        },
+        {
+          "name": "onThemeChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AppChromeNavItem": {
+            "additionalProperties": false,
+            "properties": {
+              "active": {
+                "description": "Marqué actif (souligné, aria-current=page).",
+                "type": "boolean"
+              },
+              "ariaLabel": {
+                "type": "string"
+              },
+              "disabled": {
+                "description": "Coupe la navigation tout en gardant l'item visible/annoncé.",
+                "type": "boolean"
+              },
+              "href": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "rel": {
+                "type": "string"
+              },
+              "role": {
+                "description": "Alias pratique pour un seul rôle autorisé.",
+                "type": "string"
+              },
+              "roles": {
+                "description": "Roles autorisés à voir l'item. Vide/undefined = visible par tous.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "target": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "href",
+              "label"
+            ],
+            "type": "object"
+          },
+          "AppChromeThemeOption": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "brandHref": {
+            "type": "string"
+          },
+          "brandLabel": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "colorMode": {
+            "enum": [
+              "light",
+              "dark",
+              "auto"
+            ]
+          },
+          "colorModeLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "auto": {
+                "type": "string"
+              },
+              "dark": {
+                "type": "string"
+              },
+              "light": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "auto",
+              "dark",
+              "light"
+            ],
+            "type": "object"
+          },
+          "githubHref": {
+            "type": "string"
+          },
+          "githubLabel": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          },
+          "localeLabel": {
+            "type": "string"
+          },
+          "logoAlt": {
+            "type": "string"
+          },
+          "logoSrc": {
+            "type": "string"
+          },
+          "menuLabel": {
+            "type": "string"
+          },
+          "mobileMenuOpen": {
+            "type": "boolean"
+          },
+          "nav": {
+            "items": {
+              "$ref": "#/$defs/AppChromeNavItem"
+            },
+            "type": "array"
+          },
+          "navLabel": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "string"
+          },
+          "themeLabel": {
+            "type": "string"
+          },
+          "themes": {
+            "items": {
+              "$ref": "#/$defs/AppChromeThemeOption"
+            },
+            "type": "array"
+          },
+          "userRoles": {
+            "description": "Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a56bf7e96bd3b4e70049b87bf5b8dbd6d43a45f401f8c76ea99e0c65e19de513",
+        "declarationPath": "packages/components-vue/dist/AppChrome.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AppChromeProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

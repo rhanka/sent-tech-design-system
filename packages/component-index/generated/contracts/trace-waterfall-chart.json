@@ -1,0 +1,378 @@
+{
+  "componentId": "trace-waterfall-chart",
+  "contractSource": "derived",
+  "digest": "sha256:8cbc8dacfe2676da764531fc8df74be85052941d4ebcaf79d1c2531d4732290c",
+  "entryDigest": "sha256:24c4b4cb10de2dfc1247d0a2402abc0fc4f7d9a167bf0f6faa1ade4efed4459e",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TraceSpan": {
+            "additionalProperties": false,
+            "properties": {
+              "duration": {
+                "type": "number"
+              },
+              "parentSpanId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "service": {
+                "type": "string"
+              },
+              "spanId": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "duration",
+              "service",
+              "spanId",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": false,
+            "properties": {
+              "spans": {
+                "items": {
+                  "$ref": "#/$defs/TraceSpan"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "spans"
+            ],
+            "type": "object"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c3b602328666a20206d2117f77d99a0698027d75d9b3eed341d825469ee7ae97",
+        "declarationPath": "packages/components-angular/dist/TraceWaterfallChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TraceWaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TraceSpan": {
+            "additionalProperties": false,
+            "properties": {
+              "duration": {
+                "type": "number"
+              },
+              "parentSpanId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "service": {
+                "type": "string"
+              },
+              "spanId": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "duration",
+              "service",
+              "spanId",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": false,
+            "properties": {
+              "spans": {
+                "items": {
+                  "$ref": "#/$defs/TraceSpan"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "spans"
+            ],
+            "type": "object"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:0a29bd1e5d88b183dce1184f707b43f333291fafd21e26f256c91eb1d3d3527f",
+        "declarationPath": "packages/components-react/dist/TraceWaterfallChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TraceWaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TraceSpan": {
+            "additionalProperties": false,
+            "properties": {
+              "duration": {
+                "type": "number"
+              },
+              "parentSpanId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "service": {
+                "type": "string"
+              },
+              "spanId": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "duration",
+              "service",
+              "spanId",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": false,
+            "properties": {
+              "spans": {
+                "items": {
+                  "$ref": "#/$defs/TraceSpan"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "spans"
+            ],
+            "type": "object"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c87a6d47c605ca958ac9bf0c4c6ea2ff4dc73d574f29bc5b6adae44ecbc08864",
+        "declarationPath": "packages/components-svelte/dist/TraceWaterfallChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TraceWaterfallChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TraceSpan": {
+            "additionalProperties": false,
+            "properties": {
+              "duration": {
+                "type": "number"
+              },
+              "parentSpanId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "service": {
+                "type": "string"
+              },
+              "spanId": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "duration",
+              "service",
+              "spanId",
+              "start"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": false,
+            "properties": {
+              "spans": {
+                "items": {
+                  "$ref": "#/$defs/TraceSpan"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "spans"
+            ],
+            "type": "object"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:20a130a2339f2c60b52489b702f3fb459e96dcd6b27d2d4e657fa25a255157e6",
+        "declarationPath": "packages/components-vue/dist/TraceWaterfallChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TraceWaterfallChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

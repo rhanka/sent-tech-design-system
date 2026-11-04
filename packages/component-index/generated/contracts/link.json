@@ -1,0 +1,265 @@
+{
+  "componentId": "link",
+  "contractSource": "derived",
+  "digest": "sha256:7c63be60c0e1074f645ece5db173259062bb666a980739c3d98a13a61573d13f",
+  "entryDigest": "sha256:ea6efe2487365127263d59b70fa83b765b1090306fec6dd7cd61e2e59221f119",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "rel": {
+            "type": "string"
+          },
+          "standalone": {
+            "type": "boolean"
+          },
+          "target": {
+            "type": "string"
+          },
+          "variant": {
+            "enum": [
+              "inline",
+              "standalone",
+              "muted"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:2948936bf9abf1babf7f1d4c973ac45f1ff763e565632dd2c0830f3e9d59fcfe",
+        "declarationPath": "packages/components-angular/dist/Link.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LinkProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.AnchorHTMLAttributes<HTMLAnchorElement>",
+        "omitted": []
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "external": {
+            "description": "Lien externe : pose target=\"_blank\" rel=\"noreferrer\" (sauf target/rel explicites).",
+            "type": "boolean"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "standalone": {
+            "type": "boolean"
+          },
+          "variant": {
+            "description": "Style du lien ; API canonique (alignée sur le canon Svelte).",
+            "enum": [
+              "inline",
+              "standalone",
+              "muted"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LinkProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onclick",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAnchorAttributes",
+        "omitted": [
+          "class",
+          "href",
+          "onclick",
+          "rel",
+          "target"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "rel": {
+            "type": "string"
+          },
+          "standalone": {
+            "type": "boolean"
+          },
+          "target": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "inline",
+              "standalone",
+              "muted"
+            ]
+          }
+        },
+        "required": [
+          "href"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:d9d11d3e2c956268020485b091270d70e7db2591d2fd1c5cc003db0c48195a8c",
+        "declarationPath": "packages/components-svelte/dist/Link.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LinkProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onclick.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "external": {
+            "description": "Lien externe : pose target=\"_blank\" rel=\"noreferrer\" (sauf target/rel explicites).",
+            "type": "boolean"
+          },
+          "href": {
+            "type": "string"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "standalone": {
+            "type": "boolean"
+          },
+          "variant": {
+            "description": "Style du lien ; API canonique (alignée sur le canon Svelte).",
+            "enum": [
+              "inline",
+              "standalone",
+              "muted"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:65edb6ae0e4a5066ea8bd6c7321dcde315b5676c935e7e6dbf3a0d19dfbb3d5b",
+        "declarationPath": "packages/components-vue/dist/Link.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LinkProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

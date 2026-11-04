@@ -55,7 +55,13 @@ function main(): number {
       }
       const committedText = readFileSync(path, "utf8");
       if (committedText !== file.text) {
-        if (file.path === "generated/component-index.json" && isStampOnlyDifference(committedText, file.text)) {
+        // K1b: the same stamp-only rule covers the contract index
+        // (sourceCommit lives outside the contractsRevision preimage).
+        if (
+          (file.path === "generated/component-index.json" ||
+            file.path === "generated/component-contract-index.json") &&
+          isStampOnlyDifference(committedText, file.text)
+        ) {
           continue;
         }
         stale.push(`${file.path}: differs from the regeneration (out-of-band edit or stale artifact)`);
@@ -94,7 +100,8 @@ function main(): number {
 }
 
 /**
- * Stamp-only freshness for `generated/component-index.json` (frozen §5.4):
+ * Stamp-only freshness for `generated/component-index.json` (frozen §5.4)
+ * and `generated/component-contract-index.json` (K1b §5.2, same rule):
  * `sourceCommit` lives outside the revision preimage, so a committed index
  * whose only difference from the regeneration is the stamp is fresh. Every
  * other byte of the index (and every other file) stays strictly compared.

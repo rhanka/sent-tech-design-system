@@ -1,0 +1,244 @@
+{
+  "componentId": "selection-chip",
+  "contractSource": "derived",
+  "digest": "sha256:83d0774cde606a864aecb5caab60631beee027083eaebf62ee45854f7cdd3b59",
+  "entryDigest": "sha256:714d35c9ece5634d07577a71cc0ed36e7007c4724067f8af653e7a48752a6d05",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClear",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "clear"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:212a79940a90cb30431977c32698a0980f95859d483ce9512f4b028ca1439c35",
+        "declarationPath": "packages/components-angular/dist/SelectionChip.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "SelectionChipProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClear"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre d'éléments sélectionnés — affiché \"(N)\" si fourni et Number.isFinite.",
+            "type": "number"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "description": "Libellé de la dimension sélectionnée.",
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "SelectionChipProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onClear"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre d'éléments sélectionnés — affiché \"(N)\" si fourni et Number.isFinite.",
+            "type": "number"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "description": "Libellé de la dimension sélectionnée.",
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:9241abe714a7c64cb022073865fc801646923838aa838bad373c64ff02d6216a",
+        "declarationPath": "packages/components-svelte/dist/SelectionChip.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "SelectionChipProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onClear",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onClear"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "count": {
+            "description": "Nombre d'éléments sélectionnés — affiché \"(N)\" si fourni et Number.isFinite.",
+            "type": "number"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "label": {
+            "description": "Libellé de la dimension sélectionnée.",
+            "type": "string"
+          },
+          "tone": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error",
+              "neutral"
+            ]
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dc66e8c8e56d87b438fc05a88e56acc746675f7411ea391ceaf36487c1a44470",
+        "declarationPath": "packages/components-vue/dist/SelectionChip.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "SelectionChipProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

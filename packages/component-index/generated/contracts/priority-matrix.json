@@ -1,0 +1,431 @@
+{
+  "componentId": "priority-matrix",
+  "contractSource": "derived",
+  "digest": "sha256:04626fde1cdbccaf3cd36dfded833e31b36754b2026b6ff611b108049efde6fc",
+  "entryDigest": "sha256:e977ef6e56ac6fc25f3b680c07278a09e731df13dd5d853bd831846bb94912ad",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "PriorityMatrixDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "Étiquette affichée (une ou deux lignes).",
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "description": "Complexité, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              },
+              "y": {
+                "description": "Valeur, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PriorityMatrixDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "xThreshold": {
+            "type": "number"
+          },
+          "yLabel": {
+            "type": "string"
+          },
+          "yThreshold": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a1af07cf46627150dd6d8c4cfafff2f772306ac9379e555aadedaa6b97e58152",
+        "declarationPath": "packages/components-angular/dist/PriorityMatrix.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "PriorityMatrixProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "PriorityMatrixDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "Étiquette affichée (une ou deux lignes).",
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "description": "Complexité, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              },
+              "y": {
+                "description": "Valeur, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PriorityMatrixDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "title": {
+            "description": "Titre visible au-dessus du cadre.",
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "xThreshold": {
+            "description": "Seuils de quadrants (0–100).",
+            "type": "number"
+          },
+          "yLabel": {
+            "type": "string"
+          },
+          "yThreshold": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:28af77d1494843d849b797a48b8a44aa4a4b14246dfea1e5de2ec09b7d6de935",
+        "declarationPath": "packages/components-react/dist/PriorityMatrix.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "PriorityMatrixProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "PriorityMatrixDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "Étiquette affichée (une ou deux lignes).",
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "description": "Complexité, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              },
+              "y": {
+                "description": "Valeur, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PriorityMatrixDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "title": {
+            "description": "Titre visible au-dessus du cadre.",
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "xThreshold": {
+            "description": "Seuils de quadrants (0–100).",
+            "type": "number"
+          },
+          "yLabel": {
+            "type": "string"
+          },
+          "yThreshold": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:3efa85951011bbb41a9306c57c26291ffd698c76bae013e21511ef9446e9d8cc",
+        "declarationPath": "packages/components-svelte/dist/PriorityMatrix.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "PriorityMatrixProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "PriorityMatrixDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "Étiquette affichée (une ou deux lignes).",
+                "type": "string"
+              },
+              "tone": {
+                "enum": [
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              },
+              "x": {
+                "description": "Complexité, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              },
+              "y": {
+                "description": "Valeur, 0–100 (bornée à l'affichage).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "label",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/PriorityMatrixDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "radius": {
+            "type": "number"
+          },
+          "title": {
+            "description": "Titre visible au-dessus du cadre.",
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "xLabel": {
+            "type": "string"
+          },
+          "xThreshold": {
+            "description": "Seuils de quadrants (0–100).",
+            "type": "number"
+          },
+          "yLabel": {
+            "type": "string"
+          },
+          "yThreshold": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:588749d1dce928dae6debf350feb7970f8e7a37d83823cb2da63e6435a6ed43d",
+        "declarationPath": "packages/components-vue/dist/PriorityMatrix.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "PriorityMatrixProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}
