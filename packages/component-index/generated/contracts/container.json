@@ -1,0 +1,210 @@
+{
+  "componentId": "container",
+  "contractSource": "derived",
+  "digest": "sha256:9606016247167a5d1b88bf88951917933456a7356b1498bbf6511376f6b37805",
+  "entryDigest": "sha256:3b33fed66d736ffa96c5b696e3da1869a96102a99eceb2af121876d8189b3d2e",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "padding": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl",
+              "full"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:4c03f74c78f998c5ff5391f9ade982382add67e125154a3ed078fff986fd952a",
+        "declarationPath": "packages/components-angular/dist/Container.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ContainerProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "className": {
+            "type": "string"
+          },
+          "padding": {
+            "description": "Apply horizontal padding using the spacing scale.",
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl",
+              "full"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b8ad4110cf9c85977db3283965811fbdc1b75c8395d5ad591fc7cc537ce13cb8",
+        "declarationPath": "packages/components-react/dist/Container.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ContainerProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "padding": {
+            "description": "Apply horizontal padding using the spacing scale.",
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "full",
+              "xl"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:24e37186edf395a55ef431e26f57666b32e5f8aedd1f0ccecaca7a28f9c64474",
+        "declarationPath": "packages/components-svelte/dist/Container.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ContainerProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "as": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "padding": {
+            "description": "Apply horizontal padding using the spacing scale.",
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg",
+              "xl",
+              "full"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:188e5a152eec4cd13ca6335f6e16ce7e2ddf66b761ca239396550037b4fe4bfa",
+        "declarationPath": "packages/components-vue/dist/Container.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ContainerProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

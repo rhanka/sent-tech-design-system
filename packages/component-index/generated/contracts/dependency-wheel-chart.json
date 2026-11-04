@@ -1,0 +1,352 @@
+{
+  "componentId": "dependency-wheel-chart",
+  "contractSource": "derived",
+  "digest": "sha256:eddad9a81ad71d80d6d761fe2e6481d1a09533d1f0bcc713e817b504edd7c5e0",
+  "entryDigest": "sha256:d7888a45f4e98e6089c5278933a666657bd17fda92cb0a2deb04b8a0bc19dece",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DependencyWheelChartLink": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "weight"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DependencyWheelChartLink"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c1e5f3f9749fb1fca10d77bae822183ed4918a5847a1b6c9a8b81e0a6fe14880",
+        "declarationPath": "packages/components-angular/dist/DependencyWheelChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DependencyWheelChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "DependencyWheelChartLink": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "weight"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DependencyWheelChartLink"
+            },
+            "type": "array"
+          },
+          "height": {
+            "description": "Hauteur du viewBox (défaut 240).",
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Libellés d'affichage par identifiant de nœud.",
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "description": "Largeur du viewBox (défaut 480).",
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:1d5a95924c592cbaecb399d58c59a0959f77f02b0a44ea37dfea663e05a0fd0c",
+        "declarationPath": "packages/components-react/dist/DependencyWheelChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DependencyWheelChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DependencyWheelChartLink": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "weight"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DependencyWheelChartLink"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:d9c0a89570c8b8ccdca415e43b60b7c82908f3199994a605b785ba6af6a85433",
+        "declarationPath": "packages/components-svelte/dist/DependencyWheelChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DependencyWheelChartProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DependencyWheelChartLink": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "weight"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/DependencyWheelChartLink"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "labels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:176c1b747ae51f14701b9e5d38727b2f8f7b89a89f51a6f5f95fd906666b9148",
+        "declarationPath": "packages/components-vue/dist/DependencyWheelChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DependencyWheelChartProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

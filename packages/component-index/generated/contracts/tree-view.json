@@ -1,0 +1,461 @@
+{
+  "componentId": "tree-view",
+  "contractSource": "derived",
+  "digest": "sha256:11af13c9bc93c784d77dde872ccc5133bd29c8e7724c136c762654a73c0ed57e",
+  "entryDigest": "sha256:032b0f3ea07c5b8b5f5bc830e6cc8e8226a51f453cfc92b3a39fd67762bb1ac8",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "selectedChange",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TreeNode": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreeNode"
+                },
+                "type": "array"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "defaultExpanded": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "defaultExpandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/TreeNode"
+            },
+            "type": "array"
+          },
+          "selected": {
+            "type": "string"
+          },
+          "selectedId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:367bf20edf2a2f2627d378d73737d7599e209143ed36905291f1f839d9ccec0c",
+        "declarationPath": "packages/components-angular/dist/TreeView.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TreeViewProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "TreeNode.label",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "onChange",
+          "onSelect"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "TreeNode": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreeNode"
+                },
+                "type": "array"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "defaultExpanded": {
+            "description": "Svelte-canonical alias of `defaultExpandedIds`.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "defaultExpandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Accessible name for the tree (parity with the Svelte `label`).\nAn explicit `aria-label` attribute takes precedence over this prop.",
+            "type": "string"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/TreeNode"
+            },
+            "type": "array"
+          },
+          "selected": {
+            "description": "Svelte-canonical alias of `selectedId`.",
+            "type": "string"
+          },
+          "selectedId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TreeViewProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [
+        "selected"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onselect",
+          "payload": {
+            "type": "string"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "TreeNode": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreeNode"
+                },
+                "type": "array"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "defaultExpanded": {
+            "description": "Ids dépliés au départ.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/TreeNode"
+            },
+            "type": "array"
+          },
+          "selected": {
+            "description": "Id du nœud sélectionné (bindable).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:978aca586c816e89214a5b9fe5a8c8dfd042824e5e9d576570d4a2861599e702",
+        "declarationPath": "packages/components-svelte/dist/TreeView.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TreeViewProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [
+        "selectedId"
+      ],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "onUpdate:selectedId",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
+          "name": "select"
+        },
+        {
+          "name": "update:selectedId"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "TreeNode": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "$ref": "#/$defs/TreeNode"
+                },
+                "type": "array"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "label": {}
+            },
+            "required": [
+              "id",
+              "label"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "defaultExpanded": {
+            "description": "Svelte-canonical alias of `defaultExpandedIds`.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "defaultExpandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expandedIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "label": {
+            "description": "Accessible name for the tree (parity with the Svelte `label`).\nAn explicit `aria-label` attribute takes precedence over this prop.",
+            "type": "string"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/$defs/TreeNode"
+            },
+            "type": "array"
+          },
+          "selected": {
+            "description": "Svelte-canonical alias of `selectedId`.",
+            "type": "string"
+          },
+          "selectedId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "TreeNode.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "onUpdate:selectedId.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:95d986f3d7aee90287a5f86fb5233216fcd3f0c9c252b52a8eeff2ffeb62f02f",
+        "declarationPath": "packages/components-vue/dist/TreeView.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TreeViewProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "emit \"update:selectedId\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"update:selectedId\" and prop \"onUpdate:selectedId\" both listed verbatim",
+        "two-way binding: prop \"selectedId\" paired with emit \"update:selectedId\""
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

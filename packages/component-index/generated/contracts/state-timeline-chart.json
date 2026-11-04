@@ -1,0 +1,462 @@
+{
+  "componentId": "state-timeline-chart",
+  "contractSource": "derived",
+  "digest": "sha256:8646c53eba0c31458fed1441459459f5ec26a31b2b4b9719897e10433883d264",
+  "entryDigest": "sha256:1e53acb0dd8d2c53c987338cced16b85dcdbf8240b0e0b6c61bf2fd64096cbef",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StateTimelineSegment": {
+            "additionalProperties": false,
+            "properties": {
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "state"
+            ],
+            "type": "object"
+          },
+          "StateTimelineSeries": {
+            "additionalProperties": false,
+            "properties": {
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StateTimelineSegment"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "segments",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StateTimelineSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:56ca89fbdd2f53ecf059a762cf6490ac1aa703eb7070a6ba9fb0077f54737e36",
+        "declarationPath": "packages/components-angular/dist/StateTimelineChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "StateTimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "StateTimelineSegment": {
+            "additionalProperties": false,
+            "properties": {
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "state"
+            ],
+            "type": "object"
+          },
+          "StateTimelineSeries": {
+            "additionalProperties": false,
+            "properties": {
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StateTimelineSegment"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "segments",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StateTimelineSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:aa22185528f8bbc9f2500d39639dd0eb5d7c5a863d9e1efc836c0cb9be5858c2",
+        "declarationPath": "packages/components-react/dist/StateTimelineChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "StateTimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "StateTimelineSegment": {
+            "additionalProperties": false,
+            "properties": {
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "state"
+            ],
+            "type": "object"
+          },
+          "StateTimelineSeries": {
+            "additionalProperties": false,
+            "properties": {
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StateTimelineSegment"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "segments",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StateTimelineSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:46b1c7e34db5a690e81713160d40a32387c1efd80824867920c52b22d76e3467",
+        "declarationPath": "packages/components-svelte/dist/StateTimelineChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "StateTimelineChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "StateTimelineSegment": {
+            "additionalProperties": false,
+            "properties": {
+              "end": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error",
+                  "category1",
+                  "category2",
+                  "category3",
+                  "category4",
+                  "category5",
+                  "category6",
+                  "category7",
+                  "category8",
+                  "neutral"
+                ]
+              }
+            },
+            "required": [
+              "end",
+              "start",
+              "state"
+            ],
+            "type": "object"
+          },
+          "StateTimelineSeries": {
+            "additionalProperties": false,
+            "properties": {
+              "segments": {
+                "items": {
+                  "$ref": "#/$defs/StateTimelineSegment"
+                },
+                "type": "array"
+              },
+              "series": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "segments",
+              "series"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/StateTimelineSeries"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6aa4c36e69494a3d2b5add9a4c5efcb7768ae83a133b5cee46e59dce2781c6cc",
+        "declarationPath": "packages/components-vue/dist/StateTimelineChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "StateTimelineChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

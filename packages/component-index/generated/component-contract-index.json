@@ -1,0 +1,2776 @@
+{
+  "contractsRevision": "sha256:6ea0a45a974c9178f507b437c19fe48068664a21eb88bd52ec38eb17770816b7",
+  "counts": {
+    "byFramework": {
+      "angular": {
+        "complete": 110,
+        "none": 3,
+        "partial": 96
+      },
+      "react": {
+        "complete": 116,
+        "none": 1,
+        "partial": 92
+      },
+      "svelte": {
+        "complete": 162,
+        "none": 1,
+        "partial": 46
+      },
+      "vue": {
+        "complete": 100,
+        "none": 2,
+        "partial": 107
+      }
+    },
+    "contracts": 209
+  },
+  "entries": [
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "accordion",
+      "contractDigest": "sha256:72623a1add06dfe57ace7a23ae425def0f4a78d45e5f813431a546751e5545bf",
+      "entryDigest": "sha256:eb295ad42fc2e1a53064105b283799fe6ed7c62f48a8a2fa2c776f675361e22c",
+      "path": "contracts/accordion.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "alert",
+      "contractDigest": "sha256:dc42b8be7173ff4702ea15eb3fd74e490ad8e871beb6cd507424a6dde20e7e86",
+      "entryDigest": "sha256:e41d13a78667fcb4fd40c8186a32119a44c1ff88592ef32adc8b180fd301aaea",
+      "path": "contracts/alert.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "anomaly-swim-lane-chart",
+      "contractDigest": "sha256:aa7158bf94c129a3811410cd9984ae780d1fdeed425e6bf9af8d43a36c01527d",
+      "entryDigest": "sha256:899f0c4a482f09edcba3306de2b4cef531a2879f6da7e2d1ad347e6c353ac9d0",
+      "path": "contracts/anomaly-swim-lane-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "app-chrome",
+      "contractDigest": "sha256:8b9dbb1146e73ec2a31d3b52b891bcc6fd5b213bb76c13ecc83bb8ec2016d19f",
+      "entryDigest": "sha256:676b4bf587e3faad62397d5200fc758ce8eca96268848287aabe4cf976c29a19",
+      "path": "contracts/app-chrome.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "app-header",
+      "contractDigest": "sha256:38bfd25ff99b0167a7f997878f3553a98c133fc2f389b9d13c436b976c271c3a",
+      "entryDigest": "sha256:5f1e019e3ca774e201494056f09052610ee2921cb26ea4944b9954876ca62e75",
+      "path": "contracts/app-header.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "arc-diagram-chart",
+      "contractDigest": "sha256:68695b7ac8404a8da1e4be9c6dd02b3763b62692e7be14727122235d84e43c72",
+      "entryDigest": "sha256:33ca43b79eb2f403ac96d1ffeeb9f6d105be762977ce7f3414461460f88f6d54",
+      "path": "contracts/arc-diagram-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "area-chart",
+      "contractDigest": "sha256:e3ae0f830c2726c4a2cc6a537c90ab0fae0705060019f86c21ce46f918f8caee",
+      "entryDigest": "sha256:68c3382c43d84fe4c7099c583b4b762574b0f9ca45488b4e553f2d6257c7c311",
+      "path": "contracts/area-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "area-range-chart",
+      "contractDigest": "sha256:43d7960fbd9a0147777efb921938b169f56aefb3f802187abfc0279222729887",
+      "entryDigest": "sha256:2caf40e0cd7a614a4a9fc61d8dc09f58566bb277f65f45d053e4a62069b7a1d2",
+      "path": "contracts/area-range-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "area-spline-range-chart",
+      "contractDigest": "sha256:59399ff53c5b144c821f9fec13f28ef57acb8babf261d5a7d2ead62016deba5b",
+      "entryDigest": "sha256:a3d819e7bad5ad689804d131d61cb2914c6112d4109569e4f8b5de99eb04ecb4",
+      "path": "contracts/area-spline-range-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "aspect-ratio",
+      "contractDigest": "sha256:c73ac924e97bb193f90a8113dad3a8df6847872dd93cfb157f66a30799c7816a",
+      "entryDigest": "sha256:e74fbf51ca7602e5f52d81233760b45787357490da85e0e6728cd65255a6fd5f",
+      "path": "contracts/aspect-ratio.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "autosave",
+      "contractDigest": "sha256:bc44e8564c9d46e82466d58b520dadb8950dd735a2ed83784341f02b03dd7bd6",
+      "entryDigest": "sha256:5f9e0dfdf03e12453241ea6cb6d84770d7d96d4829dacf7895d881d3d6e7f030",
+      "path": "contracts/autosave.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "avatar",
+      "contractDigest": "sha256:6a4be6466fd94274421d561b59fc1ede5e34b713934ae04fafaf8ba9e31acd4d",
+      "entryDigest": "sha256:bb80838eeec4e068dc1c650b887ac675f493f1605ec0a4cafefad67bf04d4a57",
+      "path": "contracts/avatar.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "avatar-group",
+      "contractDigest": "sha256:6da9ce4d708ccebdafb39c615ffd95f2c67eab8aa8d40488efecdb67c07cb1d8",
+      "entryDigest": "sha256:7a99197724e3d6c482584d04e9de99db642525e45c505cef9737036bf28c4fd3",
+      "path": "contracts/avatar-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "back-to-top",
+      "contractDigest": "sha256:0b88fdd2312027044602d7f75580d1a8d922290bdecf19aacc6c737dbd7f97c9",
+      "entryDigest": "sha256:a42952de4e04e901734008baef0b1fe0a272c30c0c63119f368a9d77650d8ed7",
+      "path": "contracts/back-to-top.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "badge",
+      "contractDigest": "sha256:ed96f7b550c20c175a9e0e9eaa5ba891b85c4b2ed707ac1ec5b297c3fc1d8cd1",
+      "entryDigest": "sha256:ac9099bcd6c94f764a37753b56dca2e7a4e28bc3e74e2ba6e24b648dc93bea41",
+      "path": "contracts/badge.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "bell-curve-chart",
+      "contractDigest": "sha256:f919290daf9de74100d02646fa90f2a3ca417794b5191432add2c0270befe40b",
+      "entryDigest": "sha256:816637abbdae8a6d57f280d863f2df1c35581c90dabc7c643ebd51a2749521ac",
+      "path": "contracts/bell-curve-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "box-plot-chart",
+      "contractDigest": "sha256:5d9b191e0f94fc2ec7f278715fd10a145e88336bfb700d1b797d05e5c2ade2f4",
+      "entryDigest": "sha256:265f1b942bc75db8e09b3bee1b0c262be5f8b620125ae562507b9bd1dd7f48c6",
+      "path": "contracts/box-plot-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "breadcrumb",
+      "contractDigest": "sha256:2471c7cc6ff07447d2787ef6898f77c63acb0e918cb3cfb0e90e6a7d069853f4",
+      "entryDigest": "sha256:cb1307c494e02925fa4cd31d47694cd2151e73841d371be178dee38d77f71d67",
+      "path": "contracts/breadcrumb.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "bullet-chart",
+      "contractDigest": "sha256:569cdd8c57621bf2a1bda20e5a797189a5363c4e1da70fe4df1ccfa7230c3518",
+      "entryDigest": "sha256:54549e859d183dba0c416a86c0db6b3c49cf92862c5d87752e6a491b6a44bbc5",
+      "path": "contracts/bullet-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "bump-chart",
+      "contractDigest": "sha256:76538c7bb0cb2c0fb8bff039a077d7d1cb5a1aea0416506f186b7e55b041eb55",
+      "entryDigest": "sha256:e33f0e78899913af853e268c871a312f03406f36331355de536005998f546c12",
+      "path": "contracts/bump-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "button",
+      "contractDigest": "sha256:4b4f3f8f73e3272ea5f363bc394de2b326af666fdeeaaf6a708700d7d1186f1e",
+      "entryDigest": "sha256:a9d17f9366c7a0eb42f09f01bd7a9592dd30383b0a0c6913453fa10425da45a3",
+      "path": "contracts/button.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "button-group",
+      "contractDigest": "sha256:ead13aa484acb350eb885b97f87c17db4892dae25c51cb20c2bfd9c9925ebab5",
+      "entryDigest": "sha256:1f2501b3ecfea5b3da52d6fdbf7d710f986a7def9501a4da4a41e29cb9095be2",
+      "path": "contracts/button-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "calendar",
+      "contractDigest": "sha256:84e79b6c7c4161483615de401c1618d391f382e6e8a5984d137bcec6a2b2bb5e",
+      "entryDigest": "sha256:134edd18db60a7f8e672629e2803de6654118e14d831054c614b358281149bc9",
+      "path": "contracts/calendar.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "calendar-heatmap-chart",
+      "contractDigest": "sha256:987beb2ec918bacc439ec580302fcda069bde4503954d8067a6224335af63a2d",
+      "entryDigest": "sha256:e751307184322eef12f4c32fe05a3636998f34cba4be980c2c0338807a1942a8",
+      "path": "contracts/calendar-heatmap-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "candlestick-chart",
+      "contractDigest": "sha256:8d59df92de45897b3099317a2854fe11eec913bb0ec6d2bf1e0a020876bd7639",
+      "entryDigest": "sha256:1c2fdeafe266ff8be68cef186e4198a1825dbd013e9adb30b36414b47dbe9265",
+      "path": "contracts/candlestick-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "card",
+      "contractDigest": "sha256:c4c03f97e606409f6ef0e4e2ffceec40be4c1a925a0dc0c24581bc31c90f6895",
+      "entryDigest": "sha256:5c8d2c3ca0da0926f3d9cf5fb406197b16562af99f3455db376bb10ef1bdfbac",
+      "path": "contracts/card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "chat-composer",
+      "contractDigest": "sha256:6bdcbbe61b607c761fdf553b905d3b7cc73a98f1d665bf3bc9aabff9d56814f0",
+      "entryDigest": "sha256:b6603a223ccdce827731fa81c2b0cf2cef4b22d7db208d7262df4d2eacdb2efd",
+      "path": "contracts/chat-composer.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "chat-message",
+      "contractDigest": "sha256:df7074fe0b163b28ace55799b944d0b448e3b3e814cc6d14759b0546eab68abf",
+      "entryDigest": "sha256:d4e20df080ca6c31ca238e74aca5b9de924c8dca0b10050edf610221253e3dac",
+      "path": "contracts/chat-message.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "chat-thread",
+      "contractDigest": "sha256:8c52d9450e91caf9444b9eee1779b645a1e5b6634616b69b23441ce2a2403a7c",
+      "entryDigest": "sha256:7523c2ae92339de0fd5cb4f1ab67757b075ca8754c150b132d05bde17ddd4b5b",
+      "path": "contracts/chat-thread.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "checkbox",
+      "contractDigest": "sha256:c27cf529f9bcb444325aa5bf9cae6257405aefb0460331dbe146a2a790781afe",
+      "entryDigest": "sha256:27d1a9796fa812cfe8b81f22a3ee0cd7cbfb8d7ef5755686c68aaef7c2fab7e7",
+      "path": "contracts/checkbox.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "checkbox-group",
+      "contractDigest": "sha256:427a4f7516061f5e13595c78f828c4d908b484f411aa4364cef5ffc23beb9686",
+      "entryDigest": "sha256:f8d67030e7f51f6ef3b765d6a9932ad068f0b15d0c5dccbb141f44407076f323",
+      "path": "contracts/checkbox-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "chord-diagram",
+      "contractDigest": "sha256:ed1b40b9494d5af567a0a7cb5b9b782313f52d8b465eaec0c816cd9e336d339b",
+      "entryDigest": "sha256:faec76301ef5b609cacac50207569f57b8b3081178a23080fdee0bc10a94f65d",
+      "path": "contracts/chord-diagram.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "code-snippet",
+      "contractDigest": "sha256:11aa0995a97b65ce8dd09d41cac35a65983f9f143ffc1af8f24ed1ea234c0657",
+      "entryDigest": "sha256:aa4215e5e411ddf8fd3f8bc20755afd891e17f338b7f37878fa9f9bb857d0825",
+      "path": "contracts/code-snippet.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "col",
+      "contractDigest": "sha256:f761f6f302b6c84ebb58a62780e3faa35b12cc97cd2befa0f2b7bb9776b9eeb3",
+      "entryDigest": "sha256:45618b840eb09dfff110ea7861ebfe3032b3ebe4a1813d5c2f6829e2df474b10",
+      "path": "contracts/col.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "collapsible",
+      "contractDigest": "sha256:9309aedc25ebd4ee102e7859371df353cf477360612727ef015490e03b45b9d9",
+      "entryDigest": "sha256:834dd2da14e075dbe56770cb40e2c4cd9849c741a15927b32b6a12f9794e96f5",
+      "path": "contracts/collapsible.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "color-scale-bar",
+      "contractDigest": "sha256:fa83e2bab5e2bdf74a42c1982c0f1a7ccdc3cdc7332bb9789cfc7ea1aa80ea81",
+      "entryDigest": "sha256:04cfac2d36a84089635cfaffaffcfe8ecc0e4abe8d8cc51101a932ecb4397b8a",
+      "path": "contracts/color-scale-bar.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "color-swatch",
+      "contractDigest": "sha256:20a668e4dc4b871739558ec9928f078a1472daccf01574b39a39d73775bd7d0b",
+      "entryDigest": "sha256:5110ce92d8089ab0145fffabf4eb3fc66c236a054e75785c62adb8674ddf12b1",
+      "path": "contracts/color-swatch.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "column-pyramid-chart",
+      "contractDigest": "sha256:d10fd56f5ba02d24035cc24af104d8e6a52efddc001f03e1061bce938841cb39",
+      "entryDigest": "sha256:4264b6ed887b58f8d60466bf0c695c5e3b9d4686bcfc05d2fa929070168e1551",
+      "path": "contracts/column-pyramid-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "column-range-chart",
+      "contractDigest": "sha256:8b1dc84b1909ad87a36bc666f6b3acfb231d1f0f3ed6537335fe486e2e5c36ab",
+      "entryDigest": "sha256:fa3565fad1f7f02676ba2d120573ff707e3ffd5b95a7ea6813da49c070842fb1",
+      "path": "contracts/column-range-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "combo-chart",
+      "contractDigest": "sha256:22eb473b808552bff54eee3c625efb3985c4230382969f6f07a533e093aa08c5",
+      "entryDigest": "sha256:0e29990eee6de9d0c21f7c0d3d68d69a1c995e47f08224665606511c967a095d",
+      "path": "contracts/combo-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "combobox",
+      "contractDigest": "sha256:e4bd7ccf9157c6b267ec2d59a732a514371f6a3a551358ffd196f943a72252ca",
+      "entryDigest": "sha256:18dd004d1afe3e075645b74ab730b5d07fddbc4b070301f53ff2dda73612878c",
+      "path": "contracts/combobox.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "config-item-card",
+      "contractDigest": "sha256:b51ceb03167a6d5b50ec6a1644b571e0dd2da855168ddabb221a08ab841cb995",
+      "entryDigest": "sha256:b73fa7459e903fe5217b98301748d227fff92241f9a31496ccf53084e2eacd6f",
+      "path": "contracts/config-item-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "container",
+      "contractDigest": "sha256:9606016247167a5d1b88bf88951917933456a7356b1498bbf6511376f6b37805",
+      "entryDigest": "sha256:3b33fed66d736ffa96c5b696e3da1869a96102a99eceb2af121876d8189b3d2e",
+      "path": "contracts/container.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "content-switcher",
+      "contractDigest": "sha256:abd24bb5dffcf17ce66bf4b7bcda6936a1270e6e006f40e36b42eb715bb26abe",
+      "entryDigest": "sha256:0641a3beef24e8f35479f1044e8de9e6f703eab841fdd0c0264b6a551a81d210",
+      "path": "contracts/content-switcher.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "contour-chart",
+      "contractDigest": "sha256:5d129cfd4e3dbe3b1fcce3f62beaea0df36906e1ef54a9359c0026570ee0cfe8",
+      "entryDigest": "sha256:690aad2cfb5abc50752baf4bf3a4e60de83dc5a082b061686d7d70984ff0c784",
+      "path": "contracts/contour-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "copy-button",
+      "contractDigest": "sha256:35ba9e0c57f362b615b110274ba68cbfcbbfab157902ea8e7d362c6dad0ca734",
+      "entryDigest": "sha256:4c9574523e0465d49ece1e85b3a7713a51947dcfda8f2c62ee5ef276ec791866",
+      "path": "contracts/copy-button.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "dashboard-grid",
+      "contractDigest": "sha256:96db5e5b9853fdd017739328408fd37236fc1b3b08c93dea7bc33e42d0a7e35b",
+      "entryDigest": "sha256:245b2f8579935411e264dcedc3e07eede3a6b7e8b65d6b86451780d3d9aa4790",
+      "path": "contracts/dashboard-grid.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "data-image",
+      "contractDigest": "sha256:f38ecc1931ca85efc86d7657930ec7238e2b920d511bde425a04460e5e9a8f5a",
+      "entryDigest": "sha256:648e25b039015702a7037ea48982e90b843a2356f4ba8c18e0e1da50d87652d7",
+      "path": "contracts/data-image.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "data-table",
+      "contractDigest": "sha256:b9227081620e8ae8bce60480d20e56ff1f1f952f84005ec8544145c5d9ec2fda",
+      "entryDigest": "sha256:3ebd6af94d8bb2f7f1a298d1d5a59bc0bc694db01a844682adf7687470f6099f",
+      "path": "contracts/data-table.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "dataviz-dashboard-grid",
+      "contractDigest": "sha256:f75e427ae4d9185e07c6099a2fe0aef9fbb1e8b1d620801ae34b4447a8f99ca1",
+      "entryDigest": "sha256:bc5a6cbb2a361d7582feef944aeeeb0348983065ba773d942d31cf2a5902f3ae",
+      "path": "contracts/dataviz-dashboard-grid.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "dataviz-data-image",
+      "contractDigest": "sha256:aade77a516e1d5453a233ce3ebf329f1c30fe8f1209509c26531d380efbb1878",
+      "entryDigest": "sha256:6c44a0a64cb6f3280510525194df99e7b5155bacfa508e80c49f8db093082a5a",
+      "path": "contracts/dataviz-data-image.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "dataviz-score-card",
+      "contractDigest": "sha256:421fd274384efb2e4de3a28315b9866bc21dc64a7b026d13fa7360abf45ba33b",
+      "entryDigest": "sha256:5e947904001ff93421cbc84c8b264f86e0adb725424827815260d310141ae424",
+      "path": "contracts/dataviz-score-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "date-picker",
+      "contractDigest": "sha256:09147c92b3eb463f977ac8b7798231508e582efe97c16450718bcc372172fe89",
+      "entryDigest": "sha256:174358bef5b8be8cf303808e416931c3a1ee3a91a07aefab55cc9dbb0f719c66",
+      "path": "contracts/date-picker.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "decomposition-tree-chart",
+      "contractDigest": "sha256:b31af47819663aeaf57a2201f2f45825e2254241093810a64373f2be16ce25bf",
+      "entryDigest": "sha256:f2513f9012f1d04083f59ad73fe223073db51a5956bc9dba6db5f1d1c33af7b9",
+      "path": "contracts/decomposition-tree-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "density-2d-chart",
+      "contractDigest": "sha256:542bb89474758577195bd3d4d9d8bfab6e43e90624361517ad3f12c19cea719f",
+      "entryDigest": "sha256:2c75ad2cbd8bd57891d724c9448348b2d9d97167fe20beb6bfba666ecbc3390c",
+      "path": "contracts/density-2d-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "dependency-wheel-chart",
+      "contractDigest": "sha256:eddad9a81ad71d80d6d761fe2e6481d1a09533d1f0bcc713e817b504edd7c5e0",
+      "entryDigest": "sha256:d7888a45f4e98e6089c5278933a666657bd17fda92cb0a2deb04b8a0bc19dece",
+      "path": "contracts/dependency-wheel-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "display-settings",
+      "contractDigest": "sha256:31c4532cfb33b4709d4817d04cb02ca0b12900793c7dc13d9a73cbda463a862f",
+      "entryDigest": "sha256:7c21f39982fdf0338d065ada408366470e8e340786107f87a5f63ec172703280",
+      "path": "contracts/display-settings.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "divergent-bar-chart",
+      "contractDigest": "sha256:17065185087ee73e66112825d5c30d8eb3e1e76b92ccf58718d23977668bcc2b",
+      "entryDigest": "sha256:bfa16322a694911ca8b0039f5133f02f9862afac226b52a0b942cf55ba50e12a",
+      "path": "contracts/divergent-bar-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "divider",
+      "contractDigest": "sha256:e42d945c59914b9f022366ae9fc52ec5c8a77a7065873a3f78590271bdcf9544",
+      "entryDigest": "sha256:8cc17088cdaec1f24158ae93075824d67c042c66e67f85f8920b0dd109e420f1",
+      "path": "contracts/divider.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "donut-chart",
+      "contractDigest": "sha256:a66d33130343d8dc69226e99f68785746d8dede18e31bbba9dfdb82ce09c9eee",
+      "entryDigest": "sha256:914b6dc2fdd6aae5544a05f434b5b7d803f6ef0021bcabc45e8b50896fe3d6d3",
+      "path": "contracts/donut-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "drawer",
+      "contractDigest": "sha256:31de3d7915f96bf2239e4f95b4bb84d0f4e47d08fd6cadc02669dac8bd8f01d5",
+      "entryDigest": "sha256:22e7ac6794de5112ac85f3a6f8c3dbf846cba16bb1ff5794f15c3d731efc9718",
+      "path": "contracts/drawer.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "dropdown",
+      "contractDigest": "sha256:3eae5d756f8095397ff98844105a10642c010a6c7f02c67a9b4041dcfceaa8ae",
+      "entryDigest": "sha256:f7de59d4c3ec9502b8d618e9082ab449361a6d445a93a0647a8d9afca79e90d6",
+      "path": "contracts/dropdown.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "dumbbell-chart",
+      "contractDigest": "sha256:12f4c89491887d71a241b84192dd640d27d37b8a47d5553940efcf61ed55bdfe",
+      "entryDigest": "sha256:c8c86e2027f990e9c4bf3fd9c9ac2999bfee542d221aaa14a0a9b5194308ffa1",
+      "path": "contracts/dumbbell-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "embed",
+      "contractDigest": "sha256:ac7d5cd38c43f87436031566aab3f13a0c3ee09500d71db25a62c04f1085bee9",
+      "entryDigest": "sha256:7667418a840bbbb7af4be5820058ef0ad5eee43c5c12c0e5ef5aaf660ce61e23",
+      "path": "contracts/embed.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "empty-state",
+      "contractDigest": "sha256:01d05f87cb555b8e8545e9f855f4c90fdd5de02224427e0f97c9baa40610b0ad",
+      "entryDigest": "sha256:5bd3d2ef006d3137510bf1fdf59c38a0c743f037bc26c90396aecafefd27b014",
+      "path": "contracts/empty-state.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "error-bar-chart",
+      "contractDigest": "sha256:50aea756ffb15fb2be6c341c49db02b2ba6019e4a491c7df2241d7310db3ff3a",
+      "entryDigest": "sha256:350003cb63962f4fe648bf6dcf5b68b8c23dd721e3fdd2632a31b09e8c5e603c",
+      "path": "contracts/error-bar-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "error-summary",
+      "contractDigest": "sha256:00c3195e92476fc9fab764bf71d8966f4da19808ff1a5f87c73e5445defb5af9",
+      "entryDigest": "sha256:4541cbfbcf8950b0b6301c607fcec7ed4b4340d41b0615385eee7bd4432cd5ab",
+      "path": "contracts/error-summary.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "event-feed-panel",
+      "contractDigest": "sha256:879f6a3d1cb69cfc52288dc75c3ed663728fc6dc1520173fd90d4502e2afdb6a",
+      "entryDigest": "sha256:1c221769cf70090a063cc640cc7235a9d0e514fc8b9bb01ac1700194cd0ebc22",
+      "path": "contracts/event-feed-panel.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "field-card",
+      "contractDigest": "sha256:b466b577b03e51ee02ccee16d3e031ccd196dba588665a45cb830ee71e6afa95",
+      "entryDigest": "sha256:431ded4c9bbb75fc660f0b7b2a5be48d25cad80727b1b3ac47bcfd1270526d16",
+      "path": "contracts/field-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "file-uploader",
+      "contractDigest": "sha256:bfb4b765ff7a2bbaa314857a3d77c923a6336077257f0b7ef3c9e5a6e93bab9c",
+      "entryDigest": "sha256:9e9c9eb40fa0fba19fb23bf79a5c1e7161c1ca237b5ba47490dafa1ae107df96",
+      "path": "contracts/file-uploader.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "filter-bar",
+      "contractDigest": "sha256:1fb8188f40415c9986dc5556c47d946a0252881e782cf044e58993df02a7399f",
+      "entryDigest": "sha256:5f8438688fc61567d873c1755da3fa5b21210b06fd2423e7643ded5dc8d8908d",
+      "path": "contracts/filter-bar.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "filter-pill",
+      "contractDigest": "sha256:b125b3aeaed35ab2b70d14cb9578d220ebd4217286c5477535d710b1057aaf6c",
+      "entryDigest": "sha256:b973bdc68172c5855c844257d951e6d27c0ffade8dcb12b68a749f0b8b17d718",
+      "path": "contracts/filter-pill.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "flamegraph-chart",
+      "contractDigest": "sha256:e534f02a85e6817ed64388833fd3252b3677cf2f1c8cef2c6c2db5f83f58b011",
+      "entryDigest": "sha256:172b0b5b04a7d9a0e9d15b773e98d3f1489446e8185f6822e466fc729e9d93a1",
+      "path": "contracts/flamegraph-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "flex",
+      "contractDigest": "sha256:3b7a16fb4b8b7c984a78c80ab54c0a682dafee9f3f562b6cfea4d9c3c05ac8c5",
+      "entryDigest": "sha256:99a4451f6c8907e3aa57e050a4dea86559b7020f370edd2756f5100b84334e06",
+      "path": "contracts/flex.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "footer",
+      "contractDigest": "sha256:1ac969ec297dbb9fd29a5155a2eb79f83233c8e3ce25d624638d551f3407def3",
+      "entryDigest": "sha256:8424903dfcb3589ab0a97ba0d04d4b68ce9708439e259ad7bb8dd8434b622925",
+      "path": "contracts/footer.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "force-graph",
+      "contractDigest": "sha256:9fa6d2aea620bbb5196b043595b336a89ba8986e1cceb9c8fd84cf2a53474673",
+      "entryDigest": "sha256:08b9b628de9ac513f5ae1774a206cd24a3dcc3bc0375c62b571200660c9f1b59",
+      "path": "contracts/force-graph.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "form",
+      "contractDigest": "sha256:91ddad51237443b213da0de71890afeccb3f55bf67a33a840d50913ade93c9b3",
+      "entryDigest": "sha256:d780e531f05402611a60fb1f0f583cf18e92599a2e1058f01a2a99d1eda83519",
+      "path": "contracts/form.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "form-group",
+      "contractDigest": "sha256:59c6a76a299be57b99c18ee876fbc73f4c317db5f26f3792d352e95a3d2185db",
+      "entryDigest": "sha256:c6aa98b87bd1eb3b29ad8260d5eeb071c553a8fc64206199c71903541c3cad31",
+      "path": "contracts/form-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "funnel-chart",
+      "contractDigest": "sha256:6c9b157c45744bf90389d1a9f3321dfc656dcfc0b901b8d4863798f63cfeacae",
+      "entryDigest": "sha256:d3352e298d44ff85d50e71e2cddc9051b1183ea4c6abab153e3b09572056dac5",
+      "path": "contracts/funnel-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "gantt-chart",
+      "contractDigest": "sha256:e490acba05cfb3638d253e033f28d8f9d0b557ffe1c4e8fc328604ce5bceae06",
+      "entryDigest": "sha256:ff7c71bc9c5398d25acb5f345b7b7bfe9c4bc5becdf4cab4886ce19dfd7e40de",
+      "path": "contracts/gantt-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "gauge-chart",
+      "contractDigest": "sha256:37bf2eee38cadb5944d93106eabce9014c7acaadae76f4de5562e0747573be24",
+      "entryDigest": "sha256:93bd0a1d02685e323984752e5f658087fc4a10c65c79bd9b248df1284cfbd8f3",
+      "path": "contracts/gauge-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "geo-chart",
+      "contractDigest": "sha256:4a7fc3b1afc9a4a46a752d36ffa171dfca7ed763ebad43a1c4fbc9be3bd0db93",
+      "entryDigest": "sha256:65b6f75a765d8b7c2986569bd2d6ded3efeecc8020a98fde520dd74674e2dc81",
+      "path": "contracts/geo-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "grid",
+      "contractDigest": "sha256:8b01aed01a9d3be50a1be0db586a6fc3ebd7bb1bc729b14fb285b287430d8e78",
+      "entryDigest": "sha256:fac42cd15de536c5081d2fce2d5e07136e94fb30dace449ec956e3f61377be72",
+      "path": "contracts/grid.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "header",
+      "contractDigest": "sha256:7987843397954b0ad410efa09ae985a72181a9e7c9083e6cf71b10af8804dfd3",
+      "entryDigest": "sha256:0b6b4c7cb9c056b51f57f64114327839ace324021d73c25800ef0a06380469eb",
+      "path": "contracts/header.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "heatmap-chart",
+      "contractDigest": "sha256:bb2045e6d90455bdbfaeba4a127429b6b904fee5dd13d423016915c50464f653",
+      "entryDigest": "sha256:d02c2136ddbba4a800ecc98c56321bbb10b00964b4c0cf50665b38862b1a8aee",
+      "path": "contracts/heatmap-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "heikin-ashi-chart",
+      "contractDigest": "sha256:456bd2502dc5665e498a9c8da1276911963bfaf9cc074a0c32d88abceafcb5b6",
+      "entryDigest": "sha256:cbef55548968d93a4f234585c075709346c220739ef5f3918bd28d847cd3d8a0",
+      "path": "contracts/heikin-ashi-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "hidden",
+      "contractDigest": "sha256:616a719d3eea72e2fd0744289656f2e4084fc8e26d2d31600d9a0703e03fbfbe",
+      "entryDigest": "sha256:d399d10b5a67085dc5efc01b7f2135ff1a3a11cab181555012d9f99bc20dbcd8",
+      "path": "contracts/hidden.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "highlight",
+      "contractDigest": "sha256:f009ab64c55179759a7e522838930d0b2743640a746225604a41a27181391354",
+      "entryDigest": "sha256:e9e3edeff13bd4a0c25dc01a161e31f3c0b7dc4ae0e461d4783a7cf665a40300",
+      "path": "contracts/highlight.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "histogram-chart",
+      "contractDigest": "sha256:977da79aa1e7f36535330218dfd3d11009d00f0a34f6ee20d40532329a941c31",
+      "entryDigest": "sha256:b5f09c0ea158a6ebf5976ebf08cfbbc0d9a65f6f2bfb524a760fcae42b225844",
+      "path": "contracts/histogram-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "hlc-chart",
+      "contractDigest": "sha256:2ecf11af9cd45ef9122e77e119dc1d48fc3e25e031f3c88db400fe732a0e16b7",
+      "entryDigest": "sha256:6df020965dccf57ffe9db50035fa9577b1e9c9c67677b57097cc0187f24fe01a",
+      "path": "contracts/hlc-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "hollow-candlestick-chart",
+      "contractDigest": "sha256:1dfd0f6a8a4149b87c5fa3e95dfb79ed46b51f22e257df3f399ff69914d961ba",
+      "entryDigest": "sha256:42f8a7a681d0509ce5ab17f1297e7745753cff10cd898e3af1f4384bf99a31b3",
+      "path": "contracts/hollow-candlestick-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "icon",
+      "contractDigest": "sha256:deae2c8cf170ee414f2db7b13f67d811c95263b4011b249b391f5e1197966163",
+      "entryDigest": "sha256:b76106c69523a6039021cf37cb99ce8f6d39bb259034356391212a062b38ab46",
+      "path": "contracts/icon.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "icon-button",
+      "contractDigest": "sha256:bbe10eeea1dca0ef3b86bb9ddd9fe617dda8bf0cc8a07ad713f2d2649b4c9f56",
+      "entryDigest": "sha256:2a1227a07ddf3dcf1f97e05beafb26247944020dc5388d95be00c9d4c47f07a1",
+      "path": "contracts/icon-button.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "inline",
+      "contractDigest": "sha256:7088bd46424979a2cc52e23f2c5f7b074919c93cfb7988dac65ce970c663d0b6",
+      "entryDigest": "sha256:7967df48e877aa6818a73e181b1b73a6cd9c2ef2be5bb0a56be51435fdd750c0",
+      "path": "contracts/inline.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "inline-loading",
+      "contractDigest": "sha256:a5783b093999da1127921b9a0a8a627ae6a4488fa211e16d05495fd3683a536c",
+      "entryDigest": "sha256:aa052f77aa5d520227a832f517229b502986ca0789b4d207d46cd938bed88025",
+      "path": "contracts/inline-loading.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "input",
+      "contractDigest": "sha256:3179374e9fb08d11e07259c9ddd55fd42851db6ddcf8535ee26ee253a59fcb81",
+      "entryDigest": "sha256:06a971195471042ab79c1cea2904fc2ec948f15436a46455ef0bf6e413281f2f",
+      "path": "contracts/input.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "item-chart",
+      "contractDigest": "sha256:5245aab8f98d9dd8572f2c8d76f741ee4d7d5a594b85275259fca95244c7de62",
+      "entryDigest": "sha256:547d0046156728e1167acbdc7a2f39b48cb222dafc02851da258d586d59ffecb",
+      "path": "contracts/item-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "kpi-card",
+      "contractDigest": "sha256:44a51dc3792381b06c1a1208edaf55c29c4156d2453376e933de08d1d6efd80a",
+      "entryDigest": "sha256:7ae3d3b1872aab411bd6daf13eaa0420d1055ca87df4969c525e2dcbc8189799",
+      "path": "contracts/kpi-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "language-selector",
+      "contractDigest": "sha256:5178f4be1b795cfcf5635a9bd047979f4205b20feb856d93f27cc0ec48f45bc6",
+      "entryDigest": "sha256:469e3e29d01ee5c50bc6b71ba1ff2888e9177c248d5ad10ae16ee49af78ab9e0",
+      "path": "contracts/language-selector.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "language-toggle",
+      "contractDigest": "sha256:6a49f291310af79f13a076537d17b88c41c334032536d10d4a7ba73cb7c5fa4d",
+      "entryDigest": "sha256:a692984363a1f3afae0dd0a019e698353c6dfe81253d9546bb77bcc6451a2c97",
+      "path": "contracts/language-toggle.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "line-chart",
+      "contractDigest": "sha256:6eb29f67d44b2cf80b5446563a459868d9ca1c1ffad85856ee59d2fb0ef1f22c",
+      "entryDigest": "sha256:b715fd5c49834d29962874fd5eb276e1a6651039e20930f94c1cf1ae8ca19876",
+      "path": "contracts/line-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "partial",
+        "vue": "complete"
+      },
+      "componentId": "link",
+      "contractDigest": "sha256:7c63be60c0e1074f645ece5db173259062bb666a980739c3d98a13a61573d13f",
+      "entryDigest": "sha256:ea6efe2487365127263d59b70fa83b765b1090306fec6dd7cd61e2e59221f119",
+      "path": "contracts/link.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "loading-state",
+      "contractDigest": "sha256:796b81edadab379873016704be09f564d5cd4abec1167786ff0773085d618055",
+      "entryDigest": "sha256:0d6df34c3ea41add26bec273b89ccf9100d5e0c8e30627142eb8ec34753aace2",
+      "path": "contracts/loading-state.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "lollipop-chart",
+      "contractDigest": "sha256:20a0f2028a01370cfa55d889594649150a04998b4ac872eb69f16ce7efbc7275",
+      "entryDigest": "sha256:91387d63112fa7f663f5083b12d4366dc3760da547d6d1053588991e77f2f37a",
+      "path": "contracts/lollipop-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "marimekko-chart",
+      "contractDigest": "sha256:608cc79296aa1a1cc4d6cca458a7a5f97d224caea640ebea2a5f3d55533a43b7",
+      "entryDigest": "sha256:afa6cb54ce3b94a2ff55f47c4610b46ab7b3f0ee128b7ae8ac5bc2b9b12bd126",
+      "path": "contracts/marimekko-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "media-content",
+      "contractDigest": "sha256:35575ffeeb18552f26417c54f72bd346aeddf4bef62935d399c37f2e843fe770",
+      "entryDigest": "sha256:e2fb8f6d0c8df5242e65fadbc2d26c5094f8411b0ff2d011af16b8b6c39a97c8",
+      "path": "contracts/media-content.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "menu",
+      "contractDigest": "sha256:f994ed7cd080e7bac958a5de6ea17e1721d017bc142d3499cf8077a01c60286c",
+      "entryDigest": "sha256:be9504a0586c0b809c7382e42009d4febb6a35ed624bfbe6ae4b4858b0aeff04",
+      "path": "contracts/menu.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "menu-popover",
+      "contractDigest": "sha256:24592e3b4370c2abe6657bc97621ca6c1bc085c32b6010313c16c139738da85f",
+      "entryDigest": "sha256:da0fc83dd256dcf7a4ffc04c0c2067a82f377a4382e14e6c79e7871d7b5520fc",
+      "path": "contracts/menu-popover.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "menu-trigger-button",
+      "contractDigest": "sha256:4b5521590f3c85834e8842f10afa2e95382fc5b38655661e65ae0aac611b5bc2",
+      "entryDigest": "sha256:6da4166f098c517cbcaa4cdac6b36fa618f14c29eac1dd0ebc797e3eaf2692a9",
+      "path": "contracts/menu-trigger-button.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "message-actions",
+      "contractDigest": "sha256:017e45fb8ca56d2a58ee7bfa4e3a421353d5a91ab46aecbe3f6e703de841047b",
+      "entryDigest": "sha256:7432309904c3b0068a5c6a6382077dea4d9dd58dd3f8a58b8f4d24050be79c64",
+      "path": "contracts/message-actions.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "message-status-badge",
+      "contractDigest": "sha256:0f3e9983cf92fab388b955cafb830e1f99dc8052d80f35da429bd3253506f353",
+      "entryDigest": "sha256:0f1fe1c814665152714c1c6e077a15d6bea360de80d689ae3ebc97aadd9536e7",
+      "path": "contracts/message-status-badge.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "modal",
+      "contractDigest": "sha256:e0bd675aa1c332f74742f08380762dc9fa8274e759b1a95b3a51186812cc813b",
+      "entryDigest": "sha256:9549775f37c719b242590a36d634e200481597c5009a0da89b816785868b0896",
+      "path": "contracts/modal.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "multi-select",
+      "contractDigest": "sha256:b1213e09129bb296661f33cdcc19abca82d2cae8fbbcf2f22b727394cb0fc28d",
+      "entryDigest": "sha256:7ab858b991c8b0af20fad5707a84d89f799d8db623ee52be83a808f3942c2620",
+      "path": "contracts/multi-select.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "nav-action-stack",
+      "contractDigest": "sha256:cd6a34e82eb02e29cfb2a12b6112765786bf11c6bc88235aa23f001a0f764f17",
+      "entryDigest": "sha256:d97509ada4f74e85081678561c0f5233a9e455e67891f70b725ed9bda2c01f01",
+      "path": "contracts/nav-action-stack.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "nav-item",
+      "contractDigest": "sha256:fb5ecc08171490bceca4e4ba709f7f290357abe0912aa9d9ae8cef22f89128a4",
+      "entryDigest": "sha256:a4e504f8c4179d927fb72af84a999dc8eab81f928680cc982b033c12c79ea45d",
+      "path": "contracts/nav-item.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "nav-section",
+      "contractDigest": "sha256:15ec8f3daaab0406c8cfe4476b65cf81f4e891a204474a428204024fbf9db4d4",
+      "entryDigest": "sha256:e09a33eb6eb9c40576ef6588e25514463816326007c9c8499a1ac07a321b87dd",
+      "path": "contracts/nav-section.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "notification",
+      "contractDigest": "sha256:7f616adede6a50ab51f2888c8cb77ebe4b6112bb574b7704e7ba0d9b45c3620c",
+      "entryDigest": "sha256:8a4ae17d0b968429dd7dec77562884ae296c4cc45c000b2f090a4d700da761ac",
+      "path": "contracts/notification.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "number-input",
+      "contractDigest": "sha256:bf521a579d285448ad3adaf819ae3b4f7250667e165582d544da140bee6d751f",
+      "entryDigest": "sha256:4542633be43d1cf00fd4938a63e2761d5b145c608a6cba196d951bff366e4665",
+      "path": "contracts/number-input.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "ohlc-chart",
+      "contractDigest": "sha256:0a26cd2cf3ffa2d4827b9a2e6c5c836fcb95bbcc0500dba4373281c8dbe7899d",
+      "entryDigest": "sha256:720325d3a04793706a8daed0e5e4131e379516140b2a4bf0777f1ffa2c0e4040",
+      "path": "contracts/ohlc-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "ordered-list",
+      "contractDigest": "sha256:b99d9a870668046a1134841bcc9c585d0297fb64479eaaae29b4e1b26e808d11",
+      "entryDigest": "sha256:00ee6d09bd935ccc0795c3cce4ef5e7e1034552b495c70f35b53b22a8a8a493c",
+      "path": "contracts/ordered-list.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "organization-chart",
+      "contractDigest": "sha256:0f3b1842acc53e02ecd5322020e78e44741fa441502aa9538626a7ec8f91859d",
+      "entryDigest": "sha256:a8dc59cf42c92caad5910622c5c3455bb03916af32a19393d53da534ab8ad74b",
+      "path": "contracts/organization-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "overflow-menu",
+      "contractDigest": "sha256:a7fe816c54d8fe805a1d90306bcd13b7fc8120c0a4fe5df1f0ce4aab4bc29de2",
+      "entryDigest": "sha256:f86d966c7f052ee24a25593d94a04ea59e7b8e4ac2d0ca4d99062c06d6c06eeb",
+      "path": "contracts/overflow-menu.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "overline",
+      "contractDigest": "sha256:765db40b10cc9828cd258284f6057ca17c3a8d45831750677c2d7e80c2b1d30d",
+      "entryDigest": "sha256:685f00b3a47fbaac4acf991f7380d231b641e665f1a48e0ade2a62a22975f823",
+      "path": "contracts/overline.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "packed-bubbles-chart",
+      "contractDigest": "sha256:899f94f46f5eeba79a4f78bb340a3e78dd87fb4e61175de9e95c02f78a3d393b",
+      "entryDigest": "sha256:640d0eae42d59337cb012ad2c3022c9eee09f2fde154c5bce537aef6047a6a4a",
+      "path": "contracts/packed-bubbles-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "pagination",
+      "contractDigest": "sha256:2a2d0f23b4bf98a0d8f7583cfa25ab3cf926b85f10caf608b66042c4f5763d75",
+      "entryDigest": "sha256:e9820d70fdca814cad6ff6a081bb85a6a6c4391b9e3c9248ef94770fd067d48d",
+      "path": "contracts/pagination.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "pagination-nav",
+      "contractDigest": "sha256:78b74bc8e3c28a291d95b7c21a1e974ba7469df4b826554c0362ce689e1b2e00",
+      "entryDigest": "sha256:1d59701ab4cafb95c3360ea8d6a8d7c242f5221a21c1beee573b1d2ccce6b7de",
+      "path": "contracts/pagination-nav.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "panel-section",
+      "contractDigest": "sha256:a88519ad4a5864099cd180f17cdc6a2c286beb00f563ba5e0f750b2d541cacc7",
+      "entryDigest": "sha256:62ea3a4f8692d9308b86c6f69db3f1a31b0417c91b036f6e5aad17518af74651",
+      "path": "contracts/panel-section.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "parallel-coordinates-chart",
+      "contractDigest": "sha256:1b3733231513659adfc1c503a5eec2cf3a49225ed3a291ad926f519c1a587ffc",
+      "entryDigest": "sha256:0eb9d87f7ba8abfe06d05a4f44dd088166b332f313d44ec43a085547e11198e2",
+      "path": "contracts/parallel-coordinates-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "pareto-chart",
+      "contractDigest": "sha256:da37aa70e7b5b65df9fb5ac87c2b9c0fade2f21d5825a3c73aa20cd668fffc0d",
+      "entryDigest": "sha256:851b2dca53faf3bd9acd5e87b9919445b2cf4daa8c8781f2fa859a74bda5efd4",
+      "path": "contracts/pareto-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "password-input",
+      "contractDigest": "sha256:7c2eaebc397948f0a0f55242c40abff02bd254f6f2e1e2d066b6e8df78edaff0",
+      "entryDigest": "sha256:064166404f14e2427937e5c6ff1c5a1a7123b66c45ddb8009aa3373700c2f1be",
+      "path": "contracts/password-input.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "point-and-figure-chart",
+      "contractDigest": "sha256:7a0ede1e641d532eb52726cba8fcb89308e07b9ff2e89cce3bcc077af6963eb3",
+      "entryDigest": "sha256:31380502a862c7f8f9ac2d60b92eb9b17a79156682425e874e0fa043db869781",
+      "path": "contracts/point-and-figure-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "polygon-chart",
+      "contractDigest": "sha256:cac75f658e8ba5323088c1b052b20a7ca42de96e2253079f72650f5aae813814",
+      "entryDigest": "sha256:234bcde24ef98ec6a34b8aa2e07d02323abf6631489d2c4b82e71c6d806b4f00",
+      "path": "contracts/polygon-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "popover",
+      "contractDigest": "sha256:e75e985d2ab6bdfce1a6751da17f8bd65278ba462f4e8e6dd1f2185c4d788828",
+      "entryDigest": "sha256:f24240f9442f737dfcc1962ef88371ad546d6e82774c37c762bd6d64f72ad803",
+      "path": "contracts/popover.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "popper",
+      "contractDigest": "sha256:4f15fdb7d2be596de08b22aefc6c99de823867712fe4d4ee518b0b882fa8a7ba",
+      "entryDigest": "sha256:15a17e81a2a7f8ce4eae0621f7bbcf8af6914ed5fd88caca383f29bdb1e8397a",
+      "path": "contracts/popper.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "portal",
+      "contractDigest": "sha256:8f61f1ad2ea738197043929d0623b0ef56ad9fa0deca554241c8708394ed0bc1",
+      "entryDigest": "sha256:db5b4634c706ed328a2533aac07c1f76485abca9f5d75d8c1b30e516c90c25dd",
+      "path": "contracts/portal.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "priority-matrix",
+      "contractDigest": "sha256:04626fde1cdbccaf3cd36dfded833e31b36754b2026b6ff611b108049efde6fc",
+      "entryDigest": "sha256:e977ef6e56ac6fc25f3b680c07278a09e731df13dd5d853bd831846bb94912ad",
+      "path": "contracts/priority-matrix.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "progress-bar",
+      "contractDigest": "sha256:658248c2d7e3e1a3dd38b67b4ddf99074dca2f7a2a282ff3f288ac1512f157fb",
+      "entryDigest": "sha256:71f9c2f348702e70adb8e876de3fb36e766d3f9e82f5c0cbdafa2165e728556c",
+      "path": "contracts/progress-bar.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "progress-indicator",
+      "contractDigest": "sha256:29533aa8aae4b5137381a7d2c78d585bd06252ebef54817077b04694ac4f0c77",
+      "entryDigest": "sha256:56747bb4a30acfdd02c12f1419fdebd6f7a89febc756a5d029a602fcc1182d7c",
+      "path": "contracts/progress-indicator.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "quote",
+      "contractDigest": "sha256:c718e8eea4e0bd665d77c0f8863bb95c3ac80ba56c5e591fca69e4f969bc608a",
+      "entryDigest": "sha256:48f4ded1fcd22b0b88f80b8e309443322b3c9e4e0412d37d3f6ab894b44ba5ae",
+      "path": "contracts/quote.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "radar-chart",
+      "contractDigest": "sha256:ee695c23e6fd333fb92f38972ad58df0d27064603115e0481a3e74c91e3df721",
+      "entryDigest": "sha256:9136b6e224c7d5a1ca51165ff33772e26231403c20c99cc7744c1b3608d3e61c",
+      "path": "contracts/radar-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "radio",
+      "contractDigest": "sha256:4b2761b8101112e8dff70431578d1ee5fd75dacfc3f592f7bc5cc69cfecf31d9",
+      "entryDigest": "sha256:f1389c235bc13c5e80155da92319ffabc95caa08ba58586e315259dfabc8d674",
+      "path": "contracts/radio.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "radio-group",
+      "contractDigest": "sha256:bac5aa8e87bb4509b0a9edd0a88416510f19c9edff6b338d449426eaf105f9b9",
+      "entryDigest": "sha256:1f93abb63d4f41386ad9d9f2893714f17c7d87ad68a111f78e60477b67c71022",
+      "path": "contracts/radio-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "range-slider",
+      "contractDigest": "sha256:837e07031c3d2d47494ee6ef54717cc702750e74ae4918265dc682dd9d5c9f0c",
+      "entryDigest": "sha256:73e0ad57b0d4c8db3484183f8780dfcdbbe6704ecc82c4b6a17bcc568ebfed2a",
+      "path": "contracts/range-slider.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "rating",
+      "contractDigest": "sha256:9e96dfd8ec73f3bd4f99e7a232e94ed11365c9d032c4a1e91191916fd0c8f543",
+      "entryDigest": "sha256:cc98127a56908e893515db24a24d49c0877f8fd9e9271d6a25e7c7542bd3ced1",
+      "path": "contracts/rating.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "renko-chart",
+      "contractDigest": "sha256:4355ac4045b32de532608cee2fb8bb9c5878131b1dda7463d80322f1cde5fca3",
+      "entryDigest": "sha256:aa23fc164c8d2c721bcaf1c05408b90f1b86355ebff66b4690226bc87063ff3c",
+      "path": "contracts/renko-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "ribbon-chart",
+      "contractDigest": "sha256:7ea5f6a10b77d94a1b6d9c240d699d8d6cc499958c44b026dcb34919d9f9bace",
+      "entryDigest": "sha256:085430d1e868d2074d1f1e97ad22e0b8e6d6b513a013656d753d25446398b99a",
+      "path": "contracts/ribbon-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "rose-chart",
+      "contractDigest": "sha256:f8f6fb35ab71c00dd870b6e0cf937077ccf5c3ffed2060d1fcc44f3b4b41038b",
+      "entryDigest": "sha256:961a97651832a30c9bc1ba30f0034797e3bcfb47b1aa0df5574b8ec7e2b6a30e",
+      "path": "contracts/rose-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "row",
+      "contractDigest": "sha256:a0cdca666a9ef7c18749beb8aa717c4a8f581ed615fe9c7209461d03d886b83e",
+      "entryDigest": "sha256:18fd55d7f8809794dadf8ebd8ac56d51751311564030568060029ac678fa4872",
+      "path": "contracts/row.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "sankey-chart",
+      "contractDigest": "sha256:acad7eaf3474db1558516d5f1c7a5f5a288feb97da811795415ecbd697ec02fb",
+      "entryDigest": "sha256:1c6e0104562b6fb7815654b2d4aa274f07baec826d49fec5c13883e962a7345a",
+      "path": "contracts/sankey-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "scatter-plot",
+      "contractDigest": "sha256:ce35ad566ab5a7ea6de456e41a494cae1df2f76e0a33becd4ba315119eefa74c",
+      "entryDigest": "sha256:0121dba0f4b645ee3f44dba76ccf797c3ccf3b2e9a07791e05801c7747076bbb",
+      "path": "contracts/scatter-plot.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "score-card",
+      "contractDigest": "sha256:49d088c259aaa3c33f845f44552fa3b516abbd8d2ec149a52e7972034e59f09c",
+      "entryDigest": "sha256:c0c7119df7b670fc001f4ac5fb48934fed72bc92d13b4bbf3919c64d0454cb27",
+      "path": "contracts/score-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "search",
+      "contractDigest": "sha256:f8a8ce1a43a624792f096eff30a1952096e1cb59b6b0c0c2735b2be40599ccc5",
+      "entryDigest": "sha256:fa871afb11e1a9ee4d8ad8b053eb842ca4f786be61befa28d98889d9a3b04334",
+      "path": "contracts/search.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "select",
+      "contractDigest": "sha256:44304a0dcdfae1bacf72d6fde7d174542912aac54452c4d34eb91c483e523b3b",
+      "entryDigest": "sha256:8957becbe3aab2c64eda85035a882e4498b2e2c02aa3f7430ca7ce8f1114f4f6",
+      "path": "contracts/select.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "selectable-list",
+      "contractDigest": "sha256:96f6a9931a4bc84d60f3284aab320e39f34a140524f20f2479466a4205d19423",
+      "entryDigest": "sha256:db9b8d243b38bcb86c5fe4fdeb059c71dd6b59bd05c48bda0cbdf55e46e9e1be",
+      "path": "contracts/selectable-list.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "selectable-row",
+      "contractDigest": "sha256:b4d008493f100f3d037d5bc09bd276d18dec1a70f0daff76fe748e33c0aa7a55",
+      "entryDigest": "sha256:8e8a13cec18e71b3446f9d921a5d649ce0848195a042eb8190c2ea01ab98c57d",
+      "path": "contracts/selectable-row.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "selection-chip",
+      "contractDigest": "sha256:83d0774cde606a864aecb5caab60631beee027083eaebf62ee45854f7cdd3b59",
+      "entryDigest": "sha256:714d35c9ece5634d07577a71cc0ed36e7007c4724067f8af653e7a48752a6d05",
+      "path": "contracts/selection-chip.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "side-nav",
+      "contractDigest": "sha256:1675ed31fa4b6407c03a42e34a145642562ce661ce06e7654dec1c7f7cb7f013",
+      "entryDigest": "sha256:9c2b6007dcb6a86a7a8cdfdfe1a237c5edbfdd354e026ec5b0923cf5970ce874",
+      "path": "contracts/side-nav.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "skeleton-text",
+      "contractDigest": "sha256:1e8c01adbd749388d24fa3ef1fe7a65a76a7d44afe8b85eebe90a12587646456",
+      "entryDigest": "sha256:0e09abd22c6605e857361d8d226d61a700c0f28412247b0cd467ef84285fae68",
+      "path": "contracts/skeleton-text.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "skip-link",
+      "contractDigest": "sha256:f7cadb6f13b74082c8febd11aef52a204b8ed72ee92b79dd910eb34f7c20695d",
+      "entryDigest": "sha256:9cd7ac0a26befdbce516e78809da7b1d6fd3a70432c8fc8e949b899dd771b8e0",
+      "path": "contracts/skip-link.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "slide-indicator",
+      "contractDigest": "sha256:2d44d63f88fe14f3b7265819409ff0dba976d393c8e5395517b1f4baa23bd6fd",
+      "entryDigest": "sha256:6ae208fd03b23c2b844f3925b6bec55e16f17514e294d2accdc166e1aa6e561f",
+      "path": "contracts/slide-indicator.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "slider",
+      "contractDigest": "sha256:35445dcf1e67712dcb0e5c385bddba876588833afc9c3f1b4cd2b44d69ea2d8f",
+      "entryDigest": "sha256:76b5a4d2d26f4ec49b9a7866e20d1321009a78e6496becafc9895c3543a1d039",
+      "path": "contracts/slider.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "solid-gauge-chart",
+      "contractDigest": "sha256:2f5d548025234c614e9c5041a546de445f04b0fe06441205efe1b44fbd7235c4",
+      "entryDigest": "sha256:876ffd820d54fbcae556bd45f41b90c30a8382ed5177100b78a0cc53de9a6004",
+      "path": "contracts/solid-gauge-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "sparkline",
+      "contractDigest": "sha256:ac14b7b5f169617603f426a45cb6ab94ea643bc387d3c6777ae8e0cf4fd14fbc",
+      "entryDigest": "sha256:21127a6b6092289ee23afa9dc5d54a2c6e3093d972adfcb1c6e79af49f4fed2e",
+      "path": "contracts/sparkline.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "stack",
+      "contractDigest": "sha256:79f1f63ff796e43ab1000274e89bf7179ccd0665458ffb2ed69365988eb34485",
+      "entryDigest": "sha256:0ab2be77315ba1af65fcbab441591839bb2094eaf3ceb8fc41be1314a8d1b74c",
+      "path": "contracts/stack.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "stacked-bar-chart",
+      "contractDigest": "sha256:10749b0f0fe97a991f60a3457218634205090fcd4854f1f34fd8ac1e29beb8e4",
+      "entryDigest": "sha256:e47668993a6646e6908e8f9aa79377b647fe2e4393d9435fa7a252fabaeb4703",
+      "path": "contracts/stacked-bar-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "state-timeline-chart",
+      "contractDigest": "sha256:8646c53eba0c31458fed1441459459f5ec26a31b2b4b9719897e10433883d264",
+      "entryDigest": "sha256:1e53acb0dd8d2c53c987338cced16b85dcdbf8240b0e0b6c61bf2fd64096cbef",
+      "path": "contracts/state-timeline-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "status-dot",
+      "contractDigest": "sha256:6859934c415b187e26abd34e109a5e6d87372b37aefb7515a92cdc4672430fca",
+      "entryDigest": "sha256:f239e7a801878c5c2c5bc876a830629d3ed9ac7bf4965622fab0d0133bd44576",
+      "path": "contracts/status-dot.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "status-history-chart",
+      "contractDigest": "sha256:a1867c8c4a1cc78067fbfc1edafb5b97ad179846ce596b96ed86c83d2fff6314",
+      "entryDigest": "sha256:846277d1a708752356e4560ec2f1cbf580436b0124466039055c2fbce1b56bb1",
+      "path": "contracts/status-history-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "step-line-chart",
+      "contractDigest": "sha256:76e5fb28198d36a387cd866ca00db6b32a588ab903acc6a90bc9bc6b7b892293",
+      "entryDigest": "sha256:1e8c6a1b7d8ad66fcadb0d52fa6b080cb0c463e617ff8ebcd2fa8b15cb6e5925",
+      "path": "contracts/step-line-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "stepper",
+      "contractDigest": "sha256:f140d42355e8c8d27f1f2ddd576c2335fd341d895ca5f059f95a9e3b7d56a328",
+      "entryDigest": "sha256:9a65386e7c1df9d31b41fee441b51026773fab16f630bdc5fbcca0feae311f2b",
+      "path": "contracts/stepper.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "streamgraph-chart",
+      "contractDigest": "sha256:f26f55b4dc9179f67e0183a4b6d619542013ad6f45229a992d2ecec021366552",
+      "entryDigest": "sha256:ad64b20ac32683f8fda4fe707be93cbdeb5db5ea4722cdb89143e2ce5fd5a479",
+      "path": "contracts/streamgraph-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "streaming-message",
+      "contractDigest": "sha256:9656c0e9faec26b1b4552b81164bbf6990bdf3437f833efe982a3e6fac77a076",
+      "entryDigest": "sha256:ec067126e32ba130fcf005894a08504031e3a28ebbe8e846d4d119719091c421",
+      "path": "contracts/streaming-message.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "structured-list",
+      "contractDigest": "sha256:36c8d4200703c08f49533b3e5a3fa3816f1725f8c1bfa852079af9c1178318be",
+      "entryDigest": "sha256:b779b54c9a95fbaac0dc1ae3b1ddfa32ba79d759a2096f7ba87766467907c032",
+      "path": "contracts/structured-list.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "sunburst-chart",
+      "contractDigest": "sha256:39fcabf4dafa01d5e5b809a88a0047659d3db0178d732720bd90ecd1aaa3af13",
+      "entryDigest": "sha256:857b41a34a632b9385d4b2a76e8e9634e69fd7e3ef51abe9d174aebf1249df89",
+      "path": "contracts/sunburst-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "switch",
+      "contractDigest": "sha256:99dcc69137d21d262587780e1b52c70fb04cedfeb63f448899ab768c3e82e7b3",
+      "entryDigest": "sha256:51d1abd92c802c42c2c21f1f8e45d621f78b0d0016f0d80f8c2097b5b7d39016",
+      "path": "contracts/switch.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "table",
+      "contractDigest": "sha256:5a72073a4f60ba9f1fb0456b44a1ec406fe753b0ed1c03aff1969695de264d1b",
+      "entryDigest": "sha256:662130ed7f5ad48ec2d3b77c9135c044de0b6a798e8245c8956a2392142bc34c",
+      "path": "contracts/table.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "table-of-contents",
+      "contractDigest": "sha256:702a4a3d6dd1869c9aa500d3bb49f937b751a12cfc95d8fdca0f044263e1ea5b",
+      "entryDigest": "sha256:02d35abe23d69dd7230a512391445ce546d4e6da14f678b1722a6c3688d542d8",
+      "path": "contracts/table-of-contents.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "tabs",
+      "contractDigest": "sha256:f7a10a9a00d7069fc0ab273ab5688c8a4c53835feb47766bccb6fd30eafe08dd",
+      "entryDigest": "sha256:ec517cf8756c26ceb20aac776e797ec926548f18096c353240e35575d6dd764a",
+      "path": "contracts/tabs.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "tag",
+      "contractDigest": "sha256:265ae4e9f6bb6e13703548f8ae6a8d6b5865c1ad039e8de37db0563782d715c8",
+      "entryDigest": "sha256:fc79a62986456916083e96f00ba293ec918288f14334be2472386d66e0bac205",
+      "path": "contracts/tag.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "textarea",
+      "contractDigest": "sha256:1866d8ca1352dba0136dd77f628ad65bf0589003063cb30c471f72e1c2b2a6b4",
+      "entryDigest": "sha256:3c360dcc6d17f2a5136ed64bf88d2e2943b897bdf21d5c12ea22dabbaad258f7",
+      "path": "contracts/textarea.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "tile",
+      "contractDigest": "sha256:82e66ef551be7ee7f688421cff60e421d23a67cfd05355525b0944ab668107cd",
+      "entryDigest": "sha256:77d27e4c1394338bebd85f55d2b21d815d314ff4f1b2c72e91af1af09ed4b3e7",
+      "path": "contracts/tile.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "tile-group",
+      "contractDigest": "sha256:a6e39ba6928cc67216073c7957abe8639d9a4528f7a8eba3cd264cc10ea2fc29",
+      "entryDigest": "sha256:5685f86f8d635328e191e4c0c71d51d1a54adf50d6e49b30e471971dd0ff73ef",
+      "path": "contracts/tile-group.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "tile-map-chart",
+      "contractDigest": "sha256:f4cf29611ebc9ef7913512762057668fd8bb0e9e69a1fbc07daa231c82eeb46a",
+      "entryDigest": "sha256:25bff267ac9b9bc0c6d7c61e2a60960fa82138c6e8ae3419a2b3c366e16198d7",
+      "path": "contracts/tile-map-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "time-picker",
+      "contractDigest": "sha256:6c11290565a5f7dd5077cab43fef8b2a9799566b0a4a665cf69a624e30f53212",
+      "entryDigest": "sha256:507f82adffc1273dcc72bc8e89602705ffd97c81a6ff408c06fb662bab5969d2",
+      "path": "contracts/time-picker.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "time-range-picker",
+      "contractDigest": "sha256:8a9ebf279c62d3022dffb4039a6d69a1d34662a6c1d07c6ccf5ca515eacc0bca",
+      "entryDigest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
+      "path": "contracts/time-range-picker.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "none",
+        "react": "partial",
+        "svelte": "none",
+        "vue": "none"
+      },
+      "componentId": "time-series-line-chart",
+      "contractDigest": "sha256:450f740628a015cfb3f646958f2526fa25cac801cacd03ae69d0b6b1d84c6d3b",
+      "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
+      "path": "contracts/time-series-line-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "timeline",
+      "contractDigest": "sha256:8cca6557ed2751379cb9e55a07bca4529854089d1af093e9666a988bd6caf4b7",
+      "entryDigest": "sha256:9ea7464ceb249bac25102d0b1f898e00ebcc256525eb1646bf356b5ff8618826",
+      "path": "contracts/timeline.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "timeline-chart",
+      "contractDigest": "sha256:e45191a39fd820f6d4cdc71461ad237be20a47bebe7b37426c74cf4863f771ef",
+      "entryDigest": "sha256:48b40207230edd789d5b31ed53ddf610fc7e9d472e912df0c80b6c1d0da13576",
+      "path": "contracts/timeline-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "toast",
+      "contractDigest": "sha256:ba008d8bb8b05670ae2661d2e3ec88ae37ddb223920d5b7ab2160175794f225a",
+      "entryDigest": "sha256:d3fa822102d0e3f77ff78713fe404936ac1106ae4f0ec88bf3497406d8828426",
+      "path": "contracts/toast.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "toggle",
+      "contractDigest": "sha256:bcc60bf396eb6699e3a5f10663603b711cfd6498d57bb3cf462a7a25dd029313",
+      "entryDigest": "sha256:6fc653bf4f975219070be00fc81fd0b08af0821df625ca19251473f68a60e537",
+      "path": "contracts/toggle.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "toggletip",
+      "contractDigest": "sha256:bc66aaad463ce81e1eb6a574076cc397d645eb9dc38b171659ac3d897d307dce",
+      "entryDigest": "sha256:9ff494ded5c4fb74cbfba4d5a1762ade0879eca4c89a88389879c588a6b21c11",
+      "path": "contracts/toggletip.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "tooltip",
+      "contractDigest": "sha256:e188436d39e73f3ab839e7d61223671805fe20bf5787d65c29cd13cf8cfce38d",
+      "entryDigest": "sha256:7b09b5f34962a59bdc11334ce7e9860a268cee41f2ac68773bd4ef47d5a9638e",
+      "path": "contracts/tooltip.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "trace-waterfall-chart",
+      "contractDigest": "sha256:8cbc8dacfe2676da764531fc8df74be85052941d4ebcaf79d1c2531d4732290c",
+      "entryDigest": "sha256:24c4b4cb10de2dfc1247d0a2402abc0fc4f7d9a167bf0f6faa1ade4efed4459e",
+      "path": "contracts/trace-waterfall-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "transcription",
+      "contractDigest": "sha256:0e1e3645fda825a1a148a70d93f6a79a1df4d02b5dcc0245b0a1f158db3ba58a",
+      "entryDigest": "sha256:455493888d9056d3e72e8f81f1c27dc23803b58ac37ae363a2a043549c07d7b4",
+      "path": "contracts/transcription.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "partial"
+      },
+      "componentId": "tree-view",
+      "contractDigest": "sha256:11af13c9bc93c784d77dde872ccc5133bd29c8e7724c136c762654a73c0ed57e",
+      "entryDigest": "sha256:032b0f3ea07c5b8b5f5bc830e6cc8e8226a51f453cfc92b3a39fd67762bb1ac8",
+      "path": "contracts/tree-view.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "treegraph-chart",
+      "contractDigest": "sha256:bfa7f5f9ccf90f75877d13d22125a4647f2cb0597fbe8cb0b0d0d4310ee5b61c",
+      "entryDigest": "sha256:45bf5249b5943967121381f72fb2dab25b183e6838f515aea8826c21e37fd6c4",
+      "path": "contracts/treegraph-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "treemap-chart",
+      "contractDigest": "sha256:e4565324ae2e7f9d17eaa2bb53f6aee139d7229f5c2065cd0107287257fafda9",
+      "entryDigest": "sha256:5cebc0f947f9063c3162247b11ef842675315378e68fbf012bd3c971b67a61d2",
+      "path": "contracts/treemap-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "partial",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "typography",
+      "contractDigest": "sha256:01f6a1c6a9561847304a84860b85559ed8df091b64d2b11fae1a388f719412c7",
+      "entryDigest": "sha256:d8ca9d9d13a33f6808dc41d764032e44f5099434c6ec82edc7de7e8a819a9616",
+      "path": "contracts/typography.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "unordered-list",
+      "contractDigest": "sha256:5b5fd25ccc59642d0f8604415bc17d7cda59eab5645e77ee5c8dd7959c441285",
+      "entryDigest": "sha256:94e3f2ff81799eb7085ee6ffb57c472048bd57c12c153e02b40ce08211d6b5b3",
+      "path": "contracts/unordered-list.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "none",
+        "react": "none",
+        "svelte": "partial",
+        "vue": "none"
+      },
+      "componentId": "url-sync",
+      "contractDigest": "sha256:3325fa3916c59a90f14c0ca6b061e68c9250dff32fe044e6f5f8a348a061cb64",
+      "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
+      "path": "contracts/url-sync.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "variable-pie-chart",
+      "contractDigest": "sha256:51650e5a0d3af76f0b3e89dff80578ab3b218a5d8b946fc574e108e0c3db8a10",
+      "entryDigest": "sha256:4576dc4a8bdc7712eb5dc28ef1ab9ee6d405cdee2f41e27ea55a9b7c91390273",
+      "path": "contracts/variable-pie-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "vector-field-chart",
+      "contractDigest": "sha256:854f083478d34dd0a8726b504c3ed6b11ee80aa35e501941ebb48844a31697c6",
+      "entryDigest": "sha256:b3c5cabc129dfd403262645e76c83efdcd02cfe21a8bdf4385e63a5b8ff64ced",
+      "path": "contracts/vector-field-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "venn-chart",
+      "contractDigest": "sha256:f2bcde58446a35c28f9126eea71ac7d6f20212af10a5d28a1236e2f2e17d289e",
+      "entryDigest": "sha256:fa9c7459ac9a774c4c3bfd1e2e57fc949d59f282669489259640514292a9ea23",
+      "path": "contracts/venn-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "violin-chart",
+      "contractDigest": "sha256:05d5edef6f11bb48425e12201479e0ef6632348d1ca75c760467d7420ac40b0b",
+      "entryDigest": "sha256:ff517ae2fd6d22e9d90f48782ab7695041c21092267729b09b18747c3f6741f2",
+      "path": "contracts/violin-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "waffle-chart",
+      "contractDigest": "sha256:98a8bbf09d21254c12c466098b766e80998c8d6b68fe88946af9d0708cab6f25",
+      "entryDigest": "sha256:4f0aa1657b8a96b96a155d58d4fb575e858851f70711a631bc7c02f3f9239d2e",
+      "path": "contracts/waffle-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "partial",
+        "react": "partial",
+        "svelte": "partial",
+        "vue": "partial"
+      },
+      "componentId": "waterfall-chart",
+      "contractDigest": "sha256:490af0fa2249906862964ba36d532d596cdc7a75caa460f6650144b4619ccd4d",
+      "entryDigest": "sha256:5ecc2f7fb580bba3c8f107ab337601392b11995ca67aad3281f404631dc90f70",
+      "path": "contracts/waterfall-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "none",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "web-frame",
+      "contractDigest": "sha256:bd5d333bbd6ae5a8253b7476c356c62a15d27c77d33ceaeef7d76acb0e4d94b4",
+      "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+      "path": "contracts/web-frame.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "wind-barb-chart",
+      "contractDigest": "sha256:96b848f216d3ab945cdf9fa1a778c0ab823d239b33d2ac0185618d84c016b095",
+      "entryDigest": "sha256:5e7025a9b347c14625733e320ca8a3ac918a78110814d426f7cfcb3fc529f868",
+      "path": "contracts/wind-barb-chart.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "complete",
+        "react": "complete",
+        "svelte": "complete",
+        "vue": "complete"
+      },
+      "componentId": "word-cloud-chart",
+      "contractDigest": "sha256:ee095abae444a6752c74448ad5c0875922282e5eb8025259a7fe13379a1b9af7",
+      "entryDigest": "sha256:63a9ab13df0bc8fe59da624b3d0155d77447db9eae1b748ede0efa14e273d718",
+      "path": "contracts/word-cloud-chart.json",
+      "producerId": "sentropic-ds"
+    }
+  ],
+  "excluded": [
+    {
+      "componentId": "bar-chart",
+      "reason": "published: the Elements BarChart contract is the declared truth; no derivation"
+    },
+    {
+      "componentId": "bpmn-canvas",
+      "reason": "published, entry pending FR source: no FR copy in-repo; entry omitted, logged at generation"
+    },
+    {
+      "componentId": "decision-dossier",
+      "reason": "published, entry pending FR source: no FR copy in-repo; entry omitted, logged at generation"
+    },
+    {
+      "componentId": "design-tokens",
+      "reason": "no-props: token packages expose no component props"
+    },
+    {
+      "componentId": "geo-map",
+      "reason": "missing source: branch feat/geo-adapter-svelte not landed; packages/components-geo-svelte absent"
+    }
+  ],
+  "format": "component-contract-index/v1",
+  "generatedBy": {
+    "generator": "@sentropic/design-system-component-index",
+    "version": "0.2.0"
+  },
+  "producerId": "sentropic-ds",
+  "sourceCommit": "e8e014828fa33e0f60173053b92b9cd2675b5d0d"
+}

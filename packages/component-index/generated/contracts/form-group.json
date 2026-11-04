@@ -1,0 +1,200 @@
+{
+  "componentId": "form-group",
+  "contractSource": "derived",
+  "digest": "sha256:59c6a76a299be57b99c18ee876fbc73f4c317db5f26f3792d352e95a3d2185db",
+  "entryDigest": "sha256:c6aa98b87bd1eb3b29ad8260d5eeb071c553a8fc64206199c71903541c3cad31",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {},
+          "legend": {}
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "legend",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:b04340943f02c09ccc0ea878a5a1d852f97e0473b261f12e3af6fcb72fce84a8",
+        "declarationPath": "packages/components-angular/dist/FormGroup.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "FormGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "helperText",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        },
+        {
+          "kind": "node",
+          "name": "legend",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.FieldsetHTMLAttributes<HTMLFieldSetElement>",
+        "omitted": []
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "FormGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLFieldsetAttributes",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "helperText": {
+            "type": "string"
+          },
+          "legend": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children",
+          "required": true
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:0711c06db0dda25dd5ebe083878011a27ff26d35372eac8d764f64e1310e2e4f",
+        "declarationPath": "packages/components-svelte/dist/FormGroup.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "FormGroupProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "helperText": {},
+          "legend": {}
+        },
+        "required": [
+          "legend"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "helperText",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
+          "name": "legend",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:65441387835a8c524ad1a3dc7c00b9999aa264bc5afa0a3b94cc0e3559cd7f61",
+        "declarationPath": "packages/components-vue/dist/FormGroup.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "FormGroupProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

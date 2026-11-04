@@ -1,0 +1,203 @@
+{
+  "componentId": "tooltip",
+  "contractSource": "derived",
+  "digest": "sha256:e188436d39e73f3ab839e7d61223671805fe20bf5787d65c29cd13cf8cfce38d",
+  "entryDigest": "sha256:7b09b5f34962a59bdc11334ce7e9860a268cee41f2ac68773bd4ef47d5a9638e",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "content": {},
+          "placement": {
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          },
+          "triggerLabel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:5154c338bdd6ca98ce162598dd1d0c85a1b185c11f948972df545526613b47ab",
+        "declarationPath": "packages/components-angular/dist/Tooltip.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "TooltipProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "content",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactNode"
+        }
+      ],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "content"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "placement": {
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "TooltipProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLSpanElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "placement": {
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:6a2a53bb5be092914132d441ae82b35ca3d4d92531afe3ed18254fa4dd45a4fd",
+        "declarationPath": "packages/components-svelte/dist/Tooltip.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "TooltipProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "content": {},
+          "placement": {
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c33f1afa82763ef2fbc308783678034d809e57c14eb38cb40ae26cf368917c0e",
+        "declarationPath": "packages/components-vue/dist/Tooltip.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "TooltipProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

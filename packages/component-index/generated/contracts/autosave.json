@@ -1,0 +1,404 @@
+{
+  "componentId": "autosave",
+  "contractSource": "derived",
+  "digest": "sha256:bc44e8564c9d46e82466d58b520dadb8950dd735a2ed83784341f02b03dd7bd6",
+  "entryDigest": "sha256:5f9e0dfdf03e12453241ea6cb6d84770d7d96d4829dacf7895d881d3d6e7f030",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onRetry",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "retry"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AutosaveLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "idle": {
+                "type": "string"
+              },
+              "saved": {
+                "type": "string"
+              },
+              "saving": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "labels": {
+            "$ref": "#/$defs/AutosaveLabels"
+          },
+          "lastSaved": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              }
+            ]
+          },
+          "locale": {
+            "type": "string"
+          },
+          "retryLabel": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "saving",
+              "saved"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "lastSaved",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4e614c57f0e3985f9c3ca76bf449f3b42dd9a0803d63c8dc35649ae6615a44c9",
+        "declarationPath": "packages/components-angular/dist/Autosave.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "AutosaveProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onRetry"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "AutosaveLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "idle": {
+                "type": "string"
+              },
+              "saved": {
+                "type": "string"
+              },
+              "saving": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "labels": {
+            "$ref": "#/$defs/AutosaveLabels",
+            "description": "Surcharge des libellés par statut."
+          },
+          "lastSaved": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              }
+            ],
+            "description": "Horodatage de la dernière sauvegarde réussie."
+          },
+          "locale": {
+            "type": "string"
+          },
+          "retryLabel": {
+            "description": "Étiquette du bouton de relance.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "saving",
+              "saved"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "lastSaved",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationPath": "packages/components-react/dist/catalog.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "AutosaveProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onRetry"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "class"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "AutosaveLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "idle": {
+                "type": "string"
+              },
+              "saved": {
+                "type": "string"
+              },
+              "saving": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "labels": {
+            "$ref": "#/$defs/AutosaveLabels",
+            "description": "Surcharge des libellés par statut."
+          },
+          "lastSaved": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              }
+            ],
+            "description": "Horodatage de la dernière sauvegarde réussie."
+          },
+          "locale": {
+            "type": "string"
+          },
+          "retryLabel": {
+            "description": "Étiquette du bouton de relance.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "saving",
+              "saved"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "lastSaved",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:2a1918623a809f10f91c3a25dbd46d71a90c163708ec3b18554ad75d6ff5f592",
+        "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "AutosaveProps",
+        "version": "0.36.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onRetry",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "onRetry"
+        },
+        {
+          "name": "retry"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AutosaveLabels": {
+            "additionalProperties": false,
+            "properties": {
+              "error": {
+                "type": "string"
+              },
+              "idle": {
+                "type": "string"
+              },
+              "saved": {
+                "type": "string"
+              },
+              "saving": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "labels": {
+            "$ref": "#/$defs/AutosaveLabels",
+            "description": "Surcharge des libellés par statut."
+          },
+          "lastSaved": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              }
+            ],
+            "description": "Horodatage de la dernière sauvegarde réussie."
+          },
+          "locale": {
+            "type": "string"
+          },
+          "retryLabel": {
+            "description": "Étiquette du bouton de relance.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "error",
+              "idle",
+              "saving",
+              "saved"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "lastSaved",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:53978f73f86e3b60f33676555a954468cc4458c7130531a3a5697278d030d046",
+        "declarationPath": "packages/components-vue/dist/Autosave.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "AutosaveProps",
+        "version": "0.38.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "emit \"retry\": payload not in declaration",
+        "event pair: emits \"retry\" and prop \"onRetry\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

@@ -1,0 +1,341 @@
+{
+  "componentId": "contour-chart",
+  "contractSource": "derived",
+  "digest": "sha256:5d129cfd4e3dbe3b1fcce3f62beaea0df36906e1ef54a9359c0026570ee0cfe8",
+  "entryDigest": "sha256:690aad2cfb5abc50752baf4bf3a4e60de83dc5a082b061686d7d70984ff0c784",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ContourChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ContourChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:60c11d8a8f4975911294bdf6c746003f3a6443c824425fb46e38e2d47bf2c309",
+        "declarationPath": "packages/components-angular/dist/ContourChart.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "ContourChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "passthrough": {
+        "base": "React.HTMLAttributes<HTMLDivElement>",
+        "omitted": [
+          "className"
+        ]
+      },
+      "props": {
+        "$defs": {
+          "ContourChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "description": "Valeur scalaire de la cellule : pilote la bande de couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "className": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ContourChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:5d44668e5a5ab9f466348e40e24368331b5322eb4b035619e93cd69e8aa56243",
+        "declarationPath": "packages/components-react/dist/ContourChart.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "ContourChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "ContourChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "description": "Valeur scalaire de la cellule : pilote la bande de couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ContourChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4879bd93677eb67cecbfe859c142fac6b5520a15b8ef050efc16e28e57e8e2b6",
+        "declarationPath": "packages/components-svelte/dist/ContourChart.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "ContourChartProps",
+        "version": "0.36.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "ContourChartDatum": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "description": "Valeur scalaire de la cellule : pilote la bande de couleur.",
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/$defs/ContourChartDatum"
+            },
+            "type": "array"
+          },
+          "height": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "levels": {
+            "type": "number"
+          },
+          "scale": {
+            "enum": [
+              "categorical",
+              "sequential"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:20a8a1b58c322afadf4ea7534ae3b36ce8bbf2a2184adc8343cbedf9c8d7d0d6",
+        "declarationPath": "packages/components-vue/dist/ContourChart.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "ContourChartProps",
+        "version": "0.38.0"
+      },
+      "status": "complete",
+      "unresolved": [],
+      "warnings": []
+    }
+  },
+  "producerId": "sentropic-ds"
+}

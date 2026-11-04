@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-system.sent-tech.ca/catalogs/components/v1/component-contract.json",
+  "title": "component-contract/v1",
+  "description": "One mechanically derived contract for one component-entry/v1 entry (K1b). Closed object. contractSource is always derived in this format's DS emission; completeness is per framework and any member-level loss is itemised, never silent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "producerId", "componentId", "entryDigest", "contractSource", "frameworks", "digest"],
+  "properties": {
+    "format": { "const": "component-contract/v1" },
+    "producerId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "componentId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "entryDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "contractSource": { "enum": ["published", "derived"] },
+    "frameworks": { "$ref": "#/$defs/frameworks" },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  },
+  "$defs": {
+    "frameworks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["svelte", "react", "vue", "angular"],
+      "properties": {
+        "svelte": { "$ref": "#/$defs/frameworkContract" },
+        "react": { "$ref": "#/$defs/frameworkContract" },
+        "vue": { "$ref": "#/$defs/frameworkContract" },
+        "angular": { "$ref": "#/$defs/frameworkContract" }
+      }
+    },
+    "frameworkContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source", "slots", "events", "bindable", "dropped", "replaced", "unresolved", "limitations", "warnings"],
+      "properties": {
+        "status": { "enum": ["complete", "partial", "none"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/$defs/source" },
+        "props": { "type": "object" },
+        "passthrough": { "$ref": "#/$defs/passthrough" },
+        "slots": { "type": "array", "items": { "$ref": "#/$defs/slot" } },
+        "events": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "bindable": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "dropped": { "type": "array", "items": { "$ref": "#/$defs/loss" } },
+        "replaced": { "type": "array", "items": { "$ref": "#/$defs/replacement" } },
+        "unresolved": { "type": "array", "items": { "$ref": "#/$defs/loss" } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "warnings": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "declarationPath", "declarationDigest", "propsType"],
+      "properties": {
+        "package": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+        "declarationPath": { "type": "string", "pattern": "^packages/[A-Za-z0-9._/-]+\\.d\\.ts$" },
+        "declarationDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "propsType": { "type": "string", "minLength": 1 }
+      }
+    },
+    "passthrough": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "omitted"],
+      "properties": {
+        "base": { "type": "string", "minLength": 1 },
+        "omitted": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "params": { "type": "object" },
+        "required": { "type": "boolean" }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "payload": { "type": "object" }
+      }
+    },
+    "loss": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "sourceType", "reason"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["function", "snippet", "node", "style-hook", "generic", "index-signature", "other"] },
+        "sourceType": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "replacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "sourceType", "replacement", "reason"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "sourceType": { "type": "string", "minLength": 1 },
+        "replacement": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
