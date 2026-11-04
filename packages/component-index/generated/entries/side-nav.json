@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "side-nav",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:204caa2824ee4e4fd8c770e3b37093551382e09022a71a9e28eca62694d71f7d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SideNav.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:3c6da0bb8fec23368d4b942299acfdf3c2fcf8c975f65d9d328df83ba6425b5f",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SideNav.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1d8ca1d483c166f68a62107b8e18cafc9627b2c603b495ca7671ac2dbd4998fa",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SideNav.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:61fd2bab5c5b3ea5b9a6b8125970fafdd9898a5c3a89ee44897a9dc7c265a124",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SideNav.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Vertical side navigation.",
+    "fr": "Navigation latérale verticale."
+  },
+  "digest": "sha256:9c2b6007dcb6a86a7a8cdfdfe1a237c5edbfdd354e026ec5b0923cf5970ce874",
+  "displayName": "SideNav",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "data-navigation",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

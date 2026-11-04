@@ -1,0 +1,64 @@
+{
+  "category": "navigation",
+  "componentId": "breadcrumb",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:54d55b7466fc7065c129fdbf8c96c280afbcd3d27fbb87e543b00841819d517b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Breadcrumb.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:d9ad8af3ac931f390e55bc6ecb0e9fd4a4be16371847ce4c23d70aa038823d42",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Breadcrumb.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:911e3dc615a0694dd9762f85ecb7e066728db05557384f3f5ff6e1b500d57728",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Breadcrumb.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:57e0f89b5793ef88f337742a5ed760989dc5a940d902b57d41bc389cd775ecff",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Breadcrumb.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Semantic breadcrumb trail.",
+    "fr": "Fil d’Ariane sémantique."
+  },
+  "digest": "sha256:cb1307c494e02925fa4cd31d47694cd2151e73841d371be178dee38d77f71d67",
+  "displayName": "Breadcrumb",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "breadcrumb",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "card",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a3e184dc7b6f800eb5bf260691f0641b4df1ea99774eb122e2177ad7f418625d",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Card.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:278de654af8a3eec543c7b798ffe7ae28c59f899475ac200e2a9e702e8bf5983",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Card.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1f689504bb5200e1993cffe2073f26c3194351e91eedf58ddf9294e3b3e2dfc8",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Card.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:189d713d9a50986ed32a8eb011d71d9f4c787db2fd25ea07465aab6ed73e917a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Card.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Surface container with border and padding.",
+    "fr": "Conteneur surface avec bordure et padding."
+  },
+  "digest": "sha256:5c8d2c3ca0da0926f3d9cf5fb406197b16562af99f3455db376bb10ef1bdfbac",
+  "displayName": "Card",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

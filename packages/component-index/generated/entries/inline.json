@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "inline",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ec738fe308d0fc33f525893adf521c8c84917353c95a94d098ae2840ffaf24cb",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Inline.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:164778b67095d27feae37855e0e8f44be7430152c1c24ae032dce0d20059864d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Inline.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:22cc6a32c1931824eda5ecd48b878f63953378d4e6c4cb0e7a05f155c4408c1b",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Inline.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:99270bb836f96ec8246d7f1f2f06b876694d06d6bdf1a33204ef01cb90dad4ed",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Inline.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Wrapping horizontal flow with uniform gap.",
+    "fr": "Flux horizontal qui passe à la ligne, gap homogène."
+  },
+  "digest": "sha256:7967df48e877aa6818a73e181b1b73a6cd9c2ef2be5bb0a56be51435fdd750c0",
+  "displayName": "Inline",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

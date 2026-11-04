@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "data-table",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:b132b5c593a87714ccee29322c22222e6f9c3fccf80694a3eec55a2551342e6e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/DataTable.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2021f8840ba7955590c940011588f01f0e506347b7f2d342f518430c20408da2",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/DataTable.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:61822ab7127f4dbe9a49e5c8f7526533459d26cd9d50c1f3c1ab089c4d7cda72",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DataTable.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a0e56db1a0f2862e332c3dafd1c9f027e260ec776a5c57c9dbcea12d2fadcaae",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/DataTable.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Advanced table: sorting, multi-row selection.",
+    "fr": "Table avancée: tri, sélection multi-lignes."
+  },
+  "digest": "sha256:3ebd6af94d8bb2f7f1a298d1d5a59bc0bc694db01a844682adf7687470f6099f",
+  "displayName": "DataTable",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

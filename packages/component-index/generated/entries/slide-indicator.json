@@ -1,0 +1,63 @@
+{
+  "category": "navigation",
+  "componentId": "slide-indicator",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:f4ae9c59f4543ce40a3e17e78cad3a301ba24112fabcc996b272abe0047da652",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/SlideIndicator.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:389491d4bed3c62ef6743ef11e474b92926212a03c94d7b40564ae0c72780dc3",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/SlideIndicator.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:a7d72a035a5fae12f619eeaf61ea4a86b4dd9b46449371dd4990b5171eeab2ba",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/SlideIndicator.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:fbd22b09f94be4f503aec3e920b0381d14f829474c22a977c870cdb5b124792f",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/SlideIndicator.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Dots or bars marking the current slide of a carousel.",
+    "fr": "Points ou barres signalant la diapositive courante d'un carrousel."
+  },
+  "digest": "sha256:6ae208fd03b23c2b844f3925b6bec55e16f17514e294d2accdc166e1aa6e561f",
+  "displayName": "SlideIndicator",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

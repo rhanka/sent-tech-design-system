@@ -1,0 +1,64 @@
+{
+  "category": "overlay",
+  "componentId": "popover",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a52833051d16e8352601604568f8370f9f51d0761f12f6a4ff68f4ba01379429",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Popover.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:0d54e590485ac44b718dff5103a7c4bbcbbeb886dcb134f00847dbf5f6e602c1",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Popover.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9379fea4221f9fe6066539f6e2c3630bfb16be182ffd3f643c7c65c7adfe7ff9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Popover.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:425f3f1d34be5290121d5ce38e1676af4edd1b167b05f9e1155125d025cbe906",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Popover.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Compact contextual content anchored to a trigger.",
+    "fr": "Contenu contextuel compact ancré à un déclencheur."
+  },
+  "digest": "sha256:f24240f9442f737dfcc1962ef88371ad546d6e82774c37c762bd6d64f72ad803",
+  "displayName": "Popover",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "popover",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

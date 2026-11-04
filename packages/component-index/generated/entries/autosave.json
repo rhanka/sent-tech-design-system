@@ -1,0 +1,63 @@
+{
+  "category": "feedback",
+  "componentId": "autosave",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:a03ba85a280ce20d14eaeefedcffb008d91a04c9b14c4ad32b06c64f5d7193ad",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Autosave.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5eecf2a8884a01133021bca94b295d8c6610a96c20f3c6d228571871ed2f920c",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Autosave.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ee580941d3bf0ce239c5edca69f821e926663d0456f5e86d933710c6d77de56c",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Autosave.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ab05760c58ac4f2ff4b4d173d3daa92c40b706302d2e98946bdbeba9b989bca0",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Autosave.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Autosave indicator: saving, saved, or failed states.",
+    "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
+  },
+  "digest": "sha256:5f9e0dfdf03e12453241ea6cb6d84770d7d96d4829dacf7895d881d3d6e7f030",
+  "displayName": "Autosave",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

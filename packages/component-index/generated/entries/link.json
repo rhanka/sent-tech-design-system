@@ -1,0 +1,64 @@
+{
+  "category": "action",
+  "componentId": "link",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:558fe8e8f6341f63b8ca713670c5bca8e2e848fb23ed2be59ae5de4f5e39950b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Link.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:94d6894885c2970e047351ee9671684d6eb75248fed88cf4377e10e8c96f6e9d",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Link.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2bb397e2690d0cad048df572bb45e64d714152b0d18cc6af72d038f9a9c03f97",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Link.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1692686cc23e8c955e7ed6aaba3300792b3d9cc5328807f6279d040b5fb9299d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Link.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Styled link consistent with the DS, disabled/external support.",
+    "fr": "Lien stylé cohérent avec le DS, support disabled/external."
+  },
+  "digest": "sha256:ea6efe2487365127263d59b70fa83b765b1090306fec6dd7cd61e2e59221f119",
+  "displayName": "Link",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "link",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "category": "data",
+  "componentId": "filter-pill",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:842344b0cc82be4ad594e00cc8c72d46c21c4c991ec2f92d50b382ee656c0706",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/FilterPill.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8a913ba5fa38792983d8eeb2350e5f382e8b2a27e4ca04d5d4a66b4883ccc741",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/FilterPill.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:33cf6dfe030dc2abea2579257b1ebd64a025b6bbff8c3e72dcced5d41d2eb7e5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/FilterPill.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9b135f3e773d963e72d82cc56508f5cc4b083076b625ef63efd585c7816c2e4d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/FilterPill.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Active filter pill: field, operator, value, and remove button.",
+    "fr": "Pilule de filtre actif : champ, opérateur, valeur et bouton de retrait."
+  },
+  "digest": "sha256:b973bdc68172c5855c844257d951e6d27c0ffade8dcb12b68a749f0b8b17d718",
+  "displayName": "FilterPill",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

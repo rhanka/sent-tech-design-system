@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "col",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:ae39292be40a66cc68c766744426743deaa2697f98b171b86dff5f158e0b9a4b",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Col.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:9a9bcbe446349f280f5f31b4e71527c70438ff115ab3c0ddfc2d4169c0b40d65",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Col.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:1c6a12e49406d5169e3e217132514ab6459444da46adde10a49d84df596522c4",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Col.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8c54acb9a5d8d52d51f3af355e5140af7477755ee2bc3082c0e2da7ad4f998cc",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Col.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Column of a 12-grid (span, offset, responsive overrides).",
+    "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
+  },
+  "digest": "sha256:45618b840eb09dfff110ea7861ebfe3032b3ebe4a1813d5c2f6829e2df474b10",
+  "displayName": "Col",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

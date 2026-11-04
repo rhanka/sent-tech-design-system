@@ -1,0 +1,63 @@
+{
+  "category": "layout",
+  "componentId": "hidden",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:45cab23ffb71e876a1434707bc78a69e427a36491d412b28d5af45c5bf190e6c",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/Hidden.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:073c7371b6c356ea2e2c77d2fecd1a870fa7cc219a131d0132dd12216abb4642",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/Hidden.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:859dc0e8b1ccbc72fc56dfc593779ffbe0d882f849a44feab5f9d74b3b2d42c5",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/Hidden.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:2b693d3d90cd77bfabe0dbcd8e714bb96d3b913e2aeaa8d49c9275c9931c6c6d",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/Hidden.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Hides its content above/below a breakpoint.",
+    "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
+  },
+  "digest": "sha256:d399d10b5a67085dc5efc01b7f2135ff1a3a11cab181555012d9f99bc20dbcd8",
+  "displayName": "Hidden",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

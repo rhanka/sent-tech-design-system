@@ -1,0 +1,78 @@
+{
+  "category": "data",
+  "componentId": "bar-chart",
+  "contract": {
+    "contractId": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/BarChart.json",
+    "contractSource": "published",
+    "schemaDigest": "sha256:1dbb9620e6d3a78322325209f412ef23bc8b4f91833ed002690728667c4ed12c",
+    "version": "1.0"
+  },
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:678b32b731318aaaf84101f1c8f4b46aca92a964115c44c74315f026e168e043",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/BarChart.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8104a16cffa801a6194f0c2f4da37c72ab1011077e13ff85822769a8a5e7bda4",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/BarChart.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:5774db72970e886e71c0d71c6af4b91864db42291ea104f6cf60188df3fd4e64",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/BarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:b369db97f2c357150fc45fe5baa8c48cf4768ceba8c2b40a680257db787415d7",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/BarChart.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "element",
+      "digest": "sha256:1dbb9620e6d3a78322325209f412ef23bc8b4f91833ed002690728667c4ed12c",
+      "element": "st-bar-chart",
+      "package": "@sentropic/design-system-elements",
+      "path": "packages/elements/schemas/BarChart.v1.json",
+      "version": "0.2.0"
+    }
+  ],
+  "description": {
+    "en": "Bar chart (vertical or horizontal) with categorical tones.",
+    "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
+  },
+  "digest": "sha256:b31a59083aec1f6eceed8ed7d22f5f74cc0a0a03995c60978082f9636ec1d3ef",
+  "displayName": "BarChart",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "groupSlug": "bar-chart",
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

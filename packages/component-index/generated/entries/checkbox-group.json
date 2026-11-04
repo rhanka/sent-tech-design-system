@@ -1,0 +1,63 @@
+{
+  "category": "form",
+  "componentId": "checkbox-group",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:5121707afdbf6e93a68d913a5d5ed3a4b3892a0169458499c4ce3c372de5fc33",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/CheckboxGroup.svelte",
+      "version": "0.36.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:f2b6d5a84b502dae2b84d5587c468e080376709ca6081e9be7981a6d8aaf8a26",
+      "framework": "react",
+      "package": "@sentropic/design-system-react",
+      "path": "packages/components-react/src/CheckboxGroup.tsx",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:4f1722e94f91bad91ab3b4ddbb07b4d81294ffae8d54916764424d8c51c2a0e7",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/CheckboxGroup.ts",
+      "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:07f50edb1589b81fbdff455a366b40644b1aadae9f0c08b46d37d3f1a45eed0a",
+      "framework": "angular",
+      "package": "@sentropic/design-system-angular",
+      "path": "packages/components-angular/src/CheckboxGroup.ts",
+      "version": "0.38.0"
+    }
+  ],
+  "description": {
+    "en": "Set of checkboxes with a legend and multiple values.",
+    "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
+  },
+  "digest": "sha256:f8d67030e7f51f6ef3b765d6a9932ad068f0b15d0c5dccbb141f44407076f323",
+  "displayName": "CheckboxGroup",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "parity": {
+    "angular": "match",
+    "react": "match",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
