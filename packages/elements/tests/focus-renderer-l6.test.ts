@@ -502,6 +502,28 @@ describe("F-R6 single annotation + F-R7 discreet badge (criteria 12, 13)", () =>
     }
   });
 
+  it("badges the recommended option on every committed L6 fixture (F-R7)", () => {
+    const cases = [
+      ["dossier-short2", "opt-a"],
+      ["dossier-short4", "opt-1"],
+      ["dossier-long", "opt-long-1"],
+      ["dossier-reco", "opt-r1"],
+      ["dossier-annotated", "opt-c1"],
+      ["dossier-diagram", "opt-d1"],
+    ] as const;
+    for (const [fixture, recommended] of cases) {
+      const { target, stop } = renderDoc(docOf(fixture));
+      try {
+        const badges = target.querySelectorAll(".st-dossier__badge");
+        expect(badges.length).toBe(1);
+        const card = target.querySelector(`[data-option-id="${recommended}"]`) as HTMLElement;
+        expect(card.querySelector(".st-dossier__badge")).not.toBeNull();
+      } finally {
+        afterEachCleanup(stop, target);
+      }
+    }
+  });
+
   it("renders the badge as display state that changes neither control nor selection", () => {
     const { target, emitted, stop } = renderDoc(docOf("dossier-reco"));
     try {
