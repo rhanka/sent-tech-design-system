@@ -1247,17 +1247,33 @@ async function shadowSvg(page, elementSelector) {
   await sleep(200);
   ok(`${label}: F-R1 whole card clickable — card vs select within 1 px on every short card, padding click emits`);
 
-  // F-R2 / criterion 8: no computed border-width above 1 px anywhere in the
-  // dossier subtrees (selects, fold controls, badges, chips, diagram frame).
+  // F-R2 / criterion 8: no VISIBLE computed stroke above 1 px anywhere in
+  // the dossier subtrees (selects, fold controls, badges, chips, diagram
+  // frame). Visibility-gated: the CSS initial outline-width is `medium`
+  // (Chromium computes it as 3px) with outline-style `none`, so an
+  // ungated width scan flags every unstyled element although nothing is
+  // drawn. Only a stroke whose style renders (not `none`/`hidden`) counts.
   const strokes = await page.evaluate(() => {
     const over = [];
+    const sides = [
+      ["borderTopWidth", "borderTopStyle"],
+      ["borderRightWidth", "borderRightStyle"],
+      ["borderBottomWidth", "borderBottomStyle"],
+      ["borderLeftWidth", "borderLeftStyle"],
+    ];
     for (const id of ["l6-short2", "l6-short4", "l6-long", "l6-reco", "l6-annotated", "l6-diagram"]) {
       const root = document.getElementById(id).shadowRoot;
       for (const node of root.querySelectorAll("*")) {
         const style = getComputedStyle(node);
-        for (const prop of ["borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth", "outlineWidth"]) {
+        for (const [prop, styleProp] of sides) {
           const value = Number.parseFloat(style[prop]);
-          if (Number.isFinite(value) && value > 1) over.push(`${id} ${node.className} ${prop}=${style[prop]}`);
+          const rendered = style[styleProp] !== "none" && style[styleProp] !== "hidden";
+          if (Number.isFinite(value) && value > 1 && rendered) over.push(`${id} ${node.className} ${prop}=${style[prop]}`);
+        }
+        const outlineValue = Number.parseFloat(style.outlineWidth);
+        const outlineRendered = style.outlineStyle !== "none" && style.outlineStyle !== "hidden";
+        if (Number.isFinite(outlineValue) && outlineValue > 1 && outlineRendered) {
+          over.push(`${id} ${node.className} outlineWidth=${style.outlineWidth}`);
         }
       }
     }
@@ -1286,7 +1302,12 @@ async function shadowSvg(page, elementSelector) {
         for (const rule of rules) {
           const text = rule.cssText || "";
           if (!text.includes("st-dossier")) continue;
-          for (const match of text.matchAll(/--st-[a-z0-9-]+/gi)) tokenNames.add(match[0].toLowerCase());
+          // Custom properties are case-sensitive and the badge tokens are
+      // camelCase (`--st-component-badge-infoBackground`); lowercasing the
+      // names breaks the probe `var()` below, so the token's resolved
+      // `color-mix()` value never enters the set and the badge background
+      // reports as unresolved although it resolves through the token.
+      for (const match of text.matchAll(/--st-[a-z0-9-]+/gi)) tokenNames.add(match[0]);
         }
       }
     }
@@ -1481,9 +1502,16 @@ async function shadowSvg(page, elementSelector) {
       foldInAnnotated: annotated.querySelectorAll("[data-option-fold]").length,
       dossierAnnotationControls: annotated.querySelectorAll("[data-annotation-control]").length,
       badges: Array.from(reco.querySelectorAll(".st-dossier__badge")).map((badge) => badge.closest("[data-option-id]").getAttribute("data-option-id")),
+      // F-R7: every committed L6 fixture carries a matched recommendation,
+      // so each one badges its recommended option — not only the reco
+      // fixture. Expected recommended ids per fixture envelope.
       otherBadges: ["l6-short2", "l6-short4", "l6-long", "l6-annotated", "l6-diagram"].map(
         (id) => document.getElementById(id).shadowRoot.querySelectorAll(".st-dossier__badge").length,
       ),
+      otherBadgeIds: ["l6-short2", "l6-short4", "l6-long", "l6-annotated", "l6-diagram"].map((id) => {
+        const badge = document.getElementById(id).shadowRoot.querySelector(".st-dossier__badge");
+        return badge ? badge.closest("[data-option-id]").getAttribute("data-option-id") : null;
+      }),
       badgeTag: reco.querySelector(".st-dossier__badge") ? reco.querySelector(".st-dossier__badge").tagName : null,
       badgeHead: Boolean(reco.querySelector(".st-dossier__badge")?.closest(".st-dossier__optionHead")),
       badgeInFold: Boolean(reco.querySelector(".st-dossier__badge")?.closest("[data-option-fold]")),
@@ -1507,7 +1535,12 @@ async function shadowSvg(page, elementSelector) {
   assert(annotations.foldInAnnotated === 0, `${label}: F-R6 no fold on short cards`, `${annotations.foldInAnnotated}`);
   assert(annotations.dossierAnnotationControls <= 1, `${label}: F-R6 single annotation at most`, `${annotations.dossierAnnotationControls}`);
   assert(annotations.badges.length === 1 && annotations.badges[0] === "opt-r1", `${label}: F-R7 discreet badge`, JSON.stringify(annotations.badges));
-  assert(annotations.otherBadges.every((count) => count === 0), `${label}: F-R7 badge nowhere else`, JSON.stringify(annotations.otherBadges));
+  assert(annotations.otherBadges.every((count) => count === 1), `${label}: F-R7 badge on each recommended fixture`, JSON.stringify(annotations.otherBadges));
+  assert(
+    JSON.stringify(annotations.otherBadgeIds) === JSON.stringify(["opt-a", "opt-1", "opt-long-1", "opt-c1", "opt-d1"]),
+    `${label}: F-R7 badge marks the recommended option`,
+    JSON.stringify(annotations.otherBadgeIds),
+  );
   assert(["SPAN", "P", "EM", "STRONG"].includes(annotations.badgeTag), `${label}: F-R7 badge is display state`, String(annotations.badgeTag));
   assert(annotations.badgeHead, `${label}: F-R7 badge shares the header row`, "badge not inside .st-dossier__optionHead");
   assert(!annotations.badgeInFold, `${label}: F-R7 badge outside the fold`, "badge inside the fold control");
