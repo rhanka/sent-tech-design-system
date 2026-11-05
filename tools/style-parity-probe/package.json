@@ -11,7 +11,7 @@
     "measure:shadow": "node probe/mermaid-shadow-probe.mjs"
   },
   "devDependencies": {
-    "mermaid": "11.17.2",
+    "mermaid": "12.3.0",
     "@iconify-json/logos": "^1.2.14"
   }
 }
