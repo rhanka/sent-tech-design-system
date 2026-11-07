@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PointAndFigureChart.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:31380502a862c7f8f9ac2d60b92eb9b17a79156682425e874e0fa043db869781",
+  "digest": "sha256:9e89618cd9d5cca1ff37360f5ccc40acd246c4ee3ba279949917f17957a7c41a",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [

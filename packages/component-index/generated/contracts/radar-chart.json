@@ -1,8 +1,8 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:ee695c23e6fd333fb92f38972ad58df0d27064603115e0481a3e74c91e3df721",
-  "entryDigest": "sha256:9136b6e224c7d5a1ca51165ff33772e26231403c20c99cc7744c1b3608d3e61c",
+  "digest": "sha256:b6bd3a37cf9ce0f3797570059b00e80f8c4d75441e3df6c955c735333f570144",
+  "entryDigest": "sha256:818cf1f0f7b477743e301a4f7d7baaa37407d74d33a5ef32261b96ed594d187a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -292,7 +292,7 @@
         "declarationPath": "packages/components-svelte/dist/RadarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadarChartProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],
