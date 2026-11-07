@@ -86,6 +86,7 @@ const HARNESS_APP = `
     page: pageKind,
     anchored: 0,
     blocks,
+    lastPointer: null,
     setHovered(key) { hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
     setSelected(key) { selected = key === null ? null : (blocks.find((b) => b.key === key) ?? null); }
   };
@@ -93,6 +94,7 @@ const HARNESS_APP = `
 
 <div data-st-theme={theme.id}>
   <div
+    role="document"
     data-st-shell="authored-page"
     style:background={pageBg}
     style:position="relative"
@@ -103,6 +105,7 @@ const HARNESS_APP = `
       const x = event.clientX - box.left;
       const y = event.clientY - box.top;
       const hit = blocks.find((b) => x >= b.rect.x && x <= b.rect.x + b.rect.width && y >= b.rect.y && y <= b.rect.y + b.rect.height);
+      window.__shell.lastPointer = { x, y, hit: hit ? hit.key : null };
       window.__shell.setHovered(hit ? hit.key : null);
     }}
   >
@@ -171,6 +174,34 @@ function assert(condition, label, message) {
   return Boolean(condition);
 }
 
+// waitForFunction wrapper: on failure, dump the page console, page errors and
+// the evaluated predicate inputs to stderr so the next CI failure explains
+// itself. `context` is the { consoleMessages, pageErrors } pair captured for
+// the page; `diagnostics` is evaluated in the page when the wait fails.
+function makeWaitFor(page, context) {
+  return async function waitFor(label, predicate, diagnostics, options = { timeout: 10000 }) {
+    try {
+      await page.waitForFunction(predicate, options);
+    } catch (error) {
+      console.error(`\n[diagnostic] ${label}: waitForFunction failed`);
+      console.error(`[diagnostic] predicate: ${predicate}`);
+      if (context.consoleMessages.length > 0) {
+        console.error("[diagnostic] page console:\n" + context.consoleMessages.map((m) => "  " + m).join("\n"));
+      }
+      if (context.pageErrors.length > 0) {
+        console.error("[diagnostic] page errors:\n" + context.pageErrors.map((m) => "  " + m).join("\n"));
+      }
+      try {
+        const inputs = await page.evaluate(diagnostics);
+        console.error("[diagnostic] predicate inputs: " + JSON.stringify(inputs, null, 2));
+      } catch (diagError) {
+        console.error("[diagnostic] input evaluation failed: " + String(diagError && diagError.message ? diagError.message : diagError));
+      }
+      throw error;
+    }
+  };
+}
+
 function writeHarnessFiles(work) {
   mkdirSync(join(work, "src"), { recursive: true });
   writeFileSync(join(work, "package.json"), JSON.stringify({ name: "shell-harness", private: true, type: "module" }));
@@ -229,16 +260,43 @@ async function runCell(browser, base, theme, pageKind) {
   const label = `B-1 ${theme}/${pageKind}`;
   const page = await browser.newPage();
   const pageErrors = [];
+  const consoleMessages = [];
   page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
+  page.on("console", (msg) => consoleMessages.push(`[${msg.type()}] ${msg.text()}`));
+  const waitFor = makeWaitFor(page, { consoleMessages, pageErrors });
+  const readyInputs = () => ({
+    url: location.href,
+    shellReady: window.__shellReady === true,
+    appChildren: document.getElementById("app")?.childElementCount ?? null
+  });
+  const rectInputs = () => ({
+    url: location.href,
+    shellReady: window.__shellReady === true,
+    lastPointer: window.__shell?.lastPointer ?? null,
+    pageBox: document.querySelector('[data-st-shell="authored-page"]')?.getBoundingClientRect().toJSON() ?? null,
+    blockRect: window.__shell?.blocks?.[0]?.rect ?? null,
+    overlayRoot: document.querySelector('[data-st-shell="block-highlight-overlay"]') !== null,
+    hoverRect: document.querySelector(".st-blockHighlightOverlay__rect--hover") !== null,
+    selectedRect: document.querySelector(".st-blockHighlightOverlay__rect--selected") !== null
+  });
   await page.goto(`${base}/?theme=${theme}&page=${pageKind}`, { waitUntil: "load", timeout: 30000 });
-  await page.waitForFunction("window.__shellReady === true", { timeout: 30000 });
+  await waitFor("shell ready", "window.__shellReady === true", readyInputs, { timeout: 30000 });
 
-  // hover treatment via the harness host hit layer (pointer move over the
-  // block rect on the authored page)
-  await page.mouse.move(200, 100);
-  await page.waitForFunction(
+  // hover treatment via the harness host hit layer: aim at the centre of the
+  // fixture block rect measured in the live page. A hardcoded viewport point
+  // can land outside the rect (the authored-page div is offset by the UA body
+  // margin), the hit layer then never sets `hovered` and the overlay renders
+  // nothing for the predicate below to find.
+  const aim = await page.evaluate(() => {
+    const box = document.querySelector('[data-st-shell="authored-page"]').getBoundingClientRect();
+    const rect = window.__shell.blocks[0].rect;
+    return { x: box.left + rect.x + rect.width / 2, y: box.top + rect.y + rect.height / 2 };
+  });
+  await page.mouse.move(aim.x, aim.y);
+  await waitFor(
+    "hover rect",
     "document.querySelector('.st-blockHighlightOverlay__rect--hover') !== null",
-    { timeout: 10000 }
+    rectInputs
   );
 
   const measured = await page.evaluate(() => {
@@ -291,9 +349,10 @@ async function runCell(browser, base, theme, pageKind) {
     window.__shell.setHovered(null);
     window.__shell.setSelected("sentinel-block-key-1");
   });
-  await page.waitForFunction(
+  await waitFor(
+    "selected rect (hover cleared)",
     "document.querySelector('.st-blockHighlightOverlay__rect--selected') !== null && document.querySelector('.st-blockHighlightOverlay__rect--hover') === null",
-    { timeout: 10000 }
+    rectInputs
   );
   const sel = await page.evaluate(() => {
     const rect = document.querySelector(".st-blockHighlightOverlay__rect--selected");
