@@ -139,10 +139,20 @@ describe("W-1.5 BlockHighlightOverlay (F-H1 / F-H2 / F-H3)", () => {
     expect(onAnchorHover).toHaveBeenCalledTimes(1);
 
     // the two treatments are distinguishable by class, and the compiled CSS
-    // gives the selected outline a heavier weight (≥ 2 px combined)
+    // gives the selected outline an increased WEIGHT (never colour alone):
+    // the dark stroke grows to the thick border-width token and the light
+    // stroke insets by that same width so it cannot occlude the increase
     expect(COMPILED_CSS).toContain(".st-blockHighlightOverlay__rect--selected");
     const selectedRule = COMPILED_CSS.slice(COMPILED_CSS.indexOf(".st-blockHighlightOverlay__rect--selected"));
-    expect(selectedRule).toMatch(/border-width:\s*2px/);
+    expect(selectedRule).toMatch(/border-width:\s*var\(--st-border-width-thick,\s*2px\)/);
+    expect(selectedRule).toMatch(/inset:\s*var\(--st-border-width-thick,\s*2px\)/);
+    // hover keeps the baseline dual outline at the thin weight
+    const hoverRule = COMPILED_CSS.slice(
+      COMPILED_CSS.indexOf(".st-blockHighlightOverlay__stroke--light"),
+      COMPILED_CSS.indexOf(".st-blockHighlightOverlay__fill")
+    );
+    expect(hoverRule).toMatch(/inset:\s*var\(--st-border-width-thin,\s*1px\)/);
+    expect(hoverRule).toMatch(/border-width:\s*var\(--st-border-width-thin,\s*1px\)/);
   });
 
   it("F-H3 both null: renders nothing (no overlay root, no rect)", () => {

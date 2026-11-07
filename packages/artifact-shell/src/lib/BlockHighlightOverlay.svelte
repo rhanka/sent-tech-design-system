@@ -86,7 +86,9 @@
   }
 
   /* dual-tone outline: dark stroke at the rect edge, light stroke inset by
-     1 px — combined >= 2 px against any authored page */
+     the dark stroke's own width — combined >= 2 px against any authored page.
+     The weights are the §2.5 fixed dual values, read through the foundation
+     border-width tokens with those values as fallbacks */
   .st-blockHighlightOverlay__stroke {
     position: absolute;
     border-style: solid;
@@ -95,13 +97,13 @@
 
   .st-blockHighlightOverlay__stroke--dark {
     inset: 0;
-    border-width: 1px;
+    border-width: var(--st-border-width-thin, 1px);
     border-color: var(--st-component-blockHighlight-outlineDark, var(--st-shell-outline-dark));
   }
 
   .st-blockHighlightOverlay__stroke--light {
-    inset: 1px;
-    border-width: 1px;
+    inset: var(--st-border-width-thin, 1px);
+    border-width: var(--st-border-width-thin, 1px);
     border-color: var(--st-component-blockHighlight-outlineLight, var(--st-shell-outline-light));
   }
 
@@ -116,13 +118,16 @@
   }
 
   /* selected treatment: heavier dual outline + stronger fill + modifier class
-     — distinguishable from hover without colour alone */
+     — distinguishable from hover by outline WEIGHT, never colour/alpha alone.
+     The light stroke insets by the increased dark width so it cannot occlude
+     the weight increase (hover 1+1 px, selected 2+1 px) */
   .st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__stroke--dark {
-    border-width: 2px;
+    border-width: var(--st-border-width-thick, 2px);
     border-color: var(--st-component-blockHighlight-selectedOutlineDark, var(--st-shell-outline-dark));
   }
 
   .st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__stroke--light {
+    inset: var(--st-border-width-thick, 2px);
     border-color: var(--st-component-blockHighlight-selectedOutlineLight, var(--st-shell-outline-light));
   }
 
@@ -138,12 +143,12 @@
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: 2px;
+    margin-top: calc(var(--st-spacing-1, 0.25rem) / 2);
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.125rem 0.5rem;
-    border: 1px solid var(--st-semantic-border-subtle);
+    gap: var(--st-spacing-1, 0.25rem);
+    padding: calc(var(--st-spacing-1, 0.25rem) / 2) var(--st-spacing-2, 0.5rem);
+    border: var(--st-border-width-thin, 1px) solid var(--st-semantic-border-subtle);
     border-radius: var(--st-radius-md, 0.375rem);
     background: var(--st-component-blockHighlight-chipBackground, var(--st-semantic-surface-raised));
     color: var(--st-component-blockHighlight-chipText, var(--st-semantic-text-primary));
@@ -153,7 +158,7 @@
   }
 
   .st-blockHighlightOverlay__chipCount {
-    font-weight: 600;
+    font-weight: var(--st-font-weight-semibold, 600);
   }
 
   @media (prefers-reduced-motion: reduce) {
