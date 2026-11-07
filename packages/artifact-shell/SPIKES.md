@@ -422,3 +422,150 @@ items) were not in the assigned fix list and stay open for the conductor.
 
 Gate re-run after this round: see section 5 (rows 3–4 re-run, test count
 updated).
+
+---
+
+# AS-1 lot record — comment mode (scope AC-8)
+
+Lot AS-1, branch `feat/as1-comment-mode`, executed 2026-11-07 (UTC) from the
+same frozen spec `scratchpad/artifact-shell/as01-spec-frozen.md` (sha256
+`8f7bb962…`, verified at start), on top of origin/main @ b4b4e0ff (AS-0, PR
+#252) plus the CA-L1 fold-in commit `0893e2ac`.
+
+## 9. Version re-measure (spec §2.2, at AS-1 start)
+
+| Package | AS-0 pin | Measured at AS-1 start | Used |
+| --- | --- | --- | --- |
+| @sentropic/design-system-tokens | 0.12.0 | 0.12.0 | 0.12.0 |
+| @sentropic/design-system-themes | 0.12.0 | 0.12.0 | 0.12.0 |
+| @sentropic/design-system-svelte | 0.37.0 | 0.37.0 | 0.37.0 (peer + dev) |
+
+No drift since AS-0; the measured train is unchanged.
+
+## 10. CA-L1 fold-in record (spec §4.1 conditional)
+
+CA-L1 had landed before AS-1 started (commit `0893e2ac` on this branch), so
+A1-1/A1-3/A1-3b/A1-4/A1-4b/A1-4c/A1-5 were already satisfied by it and A1-2 was
+replaced by the additive three-prop amendment to the landed
+`LabelledIconButton` (spec §5.0: `pressed`, `ariaKeyshortcuts`,
+`tooltipContent`), recorded here as the **CA-L1 amendment**: one glyph entry
+(`comment` -> `MessageSquare`) in `icons.ts`, one new component
+`LabelledIconButton.svelte` + barrel line in `packages/components-svelte`,
+the `**/*.browser.test.mjs` exclusion generalisation in
+`packages/components-svelte/vite.config.ts` (A1-5; the comment in that file
+still names the rich-text-editor browser harness so the RT-1 packaging
+witness keeps passing), `Icon.test.ts` catalogue extension, and the
+component-index registration of the new barrel entry (parity baseline
+`barrelOnly.svelte` + `LabelledIconButton`, regenerated `generated/**`,
+`index:check` green in the same commit). The amendment is additive only:
+no existing icon name, `IconButton` or `Tooltip` source was modified.
+
+## 11. RED witnesses W-1.1…W-1.10 (spec §6, §8.3)
+
+Each witness test was written first and observed failing with the component
+absent, then passing after the component landed. RED command per witness
+(exact, from the repository root, cache-prefixed), e.g. for W-1.1:
+
+    npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/CommentModeToggle.test.ts
+
+RED (component file temporarily absent; for W-1.1 the `.svelte` was moved out
+for the run and restored byte-identical, sha256 `eff518b2…` verified after
+restore) — exit 1 each:
+
+- W-1.1 `CommentModeToggle.test.ts` — `Failed to resolve import "./CommentModeToggle.svelte"`, `Test Files 1 failed (1)`
+- W-1.2/1.3/1.4/1.8/1.10 `CommentModeStatus.test.ts` — `Failed to resolve import "./BlockCandidateList.svelte"` (harness import), `Test Files 1 failed (1)`
+- W-1.5 `BlockHighlightOverlay.test.ts` — `Failed to resolve import "./BlockHighlightOverlay.svelte"`, `Test Files 1 failed (1)`
+- W-1.6 `LassoLayer.test.ts` — `Failed to resolve import "./LassoLayer.svelte"`, `Test Files 1 failed (1)`
+- W-1.7/1.9 `BlockCandidateList.test.ts` — `Failed to resolve import "./BlockCandidateList.svelte"`, `Test Files 1 failed (1)`
+
+GREEN — the targeted seven-file run (gate G-1 step 5, below) — exit 0:
+`Test Files 7 passed (7)`, `Tests 67 passed (67)`, gate prints
+`import-graph gate: examined 8 source files (floor 8)`; the per-witness file
+counts are CommentModeToggle 5, CommentModeStatus 11, BlockHighlightOverlay 7,
+LassoLayer 4, BlockCandidateList 12, import-graph 21, types 7.
+
+Witness coverage: W-1.1 toggle (F-T1/F-T2/F-X1/F-R1, sentinel shortcut
+round-trip proving no key literal is hard-coded, §7.1); W-1.2/1.3/1.4 status
+(F-S1…F-S4, F-S2 live-region discipline, F-K2 arrow scoping); W-1.5 overlay
+(F-H1 4 theme/page cells, F-H2 selected, F-H3 both-null, chip -> onAnchor,
+F-X1, F-R1); W-1.6 lasso (F-L1 band geometry, F-L2 HostHandler payload);
+W-1.7 list (F-C1…F-C4, list-stage Esc only); W-1.8 full keyboard trail
+(F-K1 §5.6 steps 1–7 with the adopted Q2 steps 4–5 — focus on
+`CommentModeStatus` after publish, `BlockCandidateList` row after Change
+block when the list is open — staged Esc list -> Armed -> Off, cancel focus,
+H-1 host-handler half); W-1.9 five-file source scan (no natural-language
+literal outside the allowlist); W-1.10 viewer-absence fixtures (F-A1).
+Reduced-motion proofs are the F-R1 compile half in jsdom (transition
+duration 0 under the reduced-motion media query) plus browser row B-3's
+`emulateMediaFeatures` half.
+
+## 12. Browser rows B-1…B-3 (spec §8.2)
+
+- `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` (B-1, A1-12: WCAG contrast >= 3:1 in the 4 theme/page cells, real hover chip) — **not run (host GPU)**
+- `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` (B-2, A1-17: real focus/active-descendant movement, selected cue) — **not run (host GPU)**
+- `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` (B-3, A1-18: real :hover/:focus tooltip on the toggle — the CA-L1 fold-in proof rides on this run per §5.0 — real focus trail, reduced-motion zero durations) — **not run (host GPU)**
+
+No local Chromium exists in this environment; the three commands are listed
+verbatim so CI runs them on the PR. No gate row is claimed green from jsdom
+evidence. The browser harness files assemble their vite-plugin specifier at
+runtime so the import-graph gate (which scans raw text) stays green.
+
+## 13. Split decision (spec §4.1 split trigger)
+
+**No split.** The full five-component set (CommentModeToggle,
+CommentModeStatus, BlockHighlightOverlay, LassoLayer, BlockCandidateList)
+plus the keyboard matrix (W-1.8 F-K1) was completed; the AS-1a-only fallback
+was not needed.
+
+## 14. Deferred spikes — status at AS-1 (spec §8.3, A1-22)
+
+- S-1 header fit: **FAIL (unmeasured)** (section 3). Per §8.3 the consequence
+  is AS-2-side; **AS-1 is unaffected** and built no header.
+- S-2 mention picker: **FAIL** for direct `Combobox` reuse (section 3); the
+  decision input stands for AS-3.
+- S-3 barrel import weight: **PASS** (section 3); AS-1 imports the Svelte
+  primitives through the barrel, no fallback fired.
+- S-4 avatar/toast route: **PASS** (section 3); no AS-1 dependency.
+
+## 15. Gate G-1 results (2026-11-07, exact commands in spec order, cache-prefixed, from the repository root)
+
+| # | Command | Exit |
+| --- | --- | --- |
+| 1 | `npm --workspace @sentropic/design-system-svelte run check` | 0 — svelte-check 0 errors, 0 warnings (both tsconfigs) |
+| 2 | `npm --workspace @sentropic/design-system-svelte exec -- vitest run src/lib/LabelledIconButton.test.ts src/lib/Icon.test.ts` | 0 — exactly the 2 named files, `Test Files 2 passed (2)`, `Tests 20 passed (20)` |
+| 3 | `npm --workspace @sentropic/design-system-svelte run build` | 0 — svelte-package `src/lib -> dist` |
+| 4 | `npm --workspace @sentropic/design-system-artifact-shell run check` | 0 — svelte-check 0 errors, 0 warnings |
+| 5 | `npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/CommentModeToggle.test.ts src/lib/CommentModeStatus.test.ts src/lib/BlockHighlightOverlay.test.ts src/lib/LassoLayer.test.ts src/lib/BlockCandidateList.test.ts src/lib/import-graph.test.ts src/lib/types.test.ts` | 0 — exactly the 7 named files, `Test Files 7 passed (7)`, `Tests 67 passed (67)`, gate `examined 8 source files (floor 8)` |
+| 6 | `npm --workspace @sentropic/design-system-artifact-shell run test` | 0 — same 7 files, 67 passed |
+| 7 | `npm --workspace @sentropic/design-system-artifact-shell run build` | 0 — svelte-package `src/lib -> dist` |
+| 8 | `npm --workspace @sentropic/design-system-svelte run test` | 0 — `Test Files 131 passed (131)`, `Tests 1895 passed (1895)` |
+| 9 | `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` | not run (host GPU) |
+| 10 | `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` | not run (host GPU) |
+| 11 | `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` | not run (host GPU) |
+| 12 | `npm run index:check -w @sentropic/design-system-component-index` | 0 — `component-index --check: 426 artifact(s) fresh.` |
+| 13 | `node scripts/run-script-guards.mjs` | 0 — 171 tests, 168 pass, 0 fail, 3 skipped |
+| 14 | `npm run licensing:check` | 0 — gate OK; artifact-shell skipped as `private: true` |
+| 15 | `npm run notices:generate` (user gate addition) | 0 — "21 paquets publiables", **no diff** afterwards |
+
+Environment precondition recorded: step 8 first failed on
+`src/AnatomyTokens.test.ts` resolving `@sentropic/design-system-theme-dsfr`
+whose dist was not built in this worktree (pre-existing, unrelated to AS-1);
+`npm --workspace @sentropic/design-system-theme-dsfr run build` (exit 0)
+then step 8 passed. Step 8 also first failed on the RT-1 packaging witness
+because A1-5's generalised exclusion dropped the literal `rich-text-editor`
+string from `vite.config.ts`; fixed by naming the rich-text-editor browser
+harness in the exclusion comment (the `[M]` set for shared files was
+respected — `packaging.test.ts` untouched), then step 8 passed.
+
+component-index note: the artifact-shell barrel gained the five component
+exports (A1-19), but the index's framework sources are the eight
+component/dataviz barrels only and artifact-shell is private, so no index row
+is produced for it; the components-svelte barrel change (CA-L1) was
+registered in `0893e2ac` (baseline + regenerated artifacts) and step 12 is
+green on the whole index.
+
+Import-graph floor: A1-21 raised `MIN_SOURCE_FILES` 3 -> 8 (types.ts,
+fixtures.ts, index.ts + the five components); the AS-0 `ScaffoldSmoke.*`
+files were deleted per the A0-12 executor choice (delete), and the
+`!dist/**/ScaffoldSmoke.*` tarball exclusion was removed with them, so the
+gate now prints `examined 8 source files (floor 8)`.
