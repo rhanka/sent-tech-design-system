@@ -16,7 +16,8 @@
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
     headerTextWidth: number;
-    /** Subtitle measure: frame width minus both inline insets. */
+    /** Subtitle measure: the layout's `subtitleWidth` —
+     *  `min(width, 460) − 26`, the single geometry source. */
     subtitleWidth: number;
     toggle?: { collapsed: boolean; label: string; onToggle?: () => void };
     /**
