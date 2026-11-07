@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../..",
+    "noEmit": true
+  },
+  "include": ["src/lib/diagram-card-parity/**/*.ts", "src/lib/diagram-zone-parity/**/*.ts"],
+  "exclude": []
+}

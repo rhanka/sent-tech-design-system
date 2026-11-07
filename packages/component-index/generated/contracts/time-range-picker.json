@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:8a9ebf279c62d3022dffb4039a6d69a1d34662a6c1d07c6ccf5ca515eacc0bca",
-  "entryDigest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
+  "digest": "sha256:8596e9430eef71c475ccd31f3d52eacd058d2f9bac9f60a447c7ea1496851711",
+  "entryDigest": "sha256:971c307bb07f9f88a8034620a17998c06e128e26c07684632719f091108784d2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -542,7 +542,7 @@
         "declarationPath": "packages/components-svelte/dist/TimeRangePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeRangePickerProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "partial",
       "unresolved": [],

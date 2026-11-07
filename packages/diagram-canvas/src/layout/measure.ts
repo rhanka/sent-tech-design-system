@@ -27,8 +27,11 @@ export const SUBTITLE_TO_RULE_GAP = 4;
 export const RULE_TO_FIRST_CHILD_GAP = 16;
 /** Last-child to bottom gap inside an expanded box. */
 export const LAST_CHILD_TO_BOTTOM_GAP = 16;
-/** Fold-control reservation reducing title/kicker width when `toggle`. */
-export const TOGGLE_ALLOCATION = 32;
+/** Fold-control reservation reducing title/kicker width when `toggle`.
+ *  66 px: the hrpn header's inline-end room for the +/− control
+ *  (tints.css `header { padding-right: 66px }`), shared with
+ *  `CARD_GEOMETRY.toggleAllocation` / `ZONE_GEOMETRY.toggleAllocation`. */
+export const TOGGLE_ALLOCATION = 66;
 /** Swatch reservation reducing a legend-key label width. */
 export const SWATCH_ALLOCATION = 32;
 /** Probing width for the unwrapped header width of §4.6.2 order (a). */

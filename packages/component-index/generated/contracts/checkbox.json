@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:c27cf529f9bcb444325aa5bf9cae6257405aefb0460331dbe146a2a790781afe",
-  "entryDigest": "sha256:27d1a9796fa812cfe8b81f22a3ee0cd7cbfb8d7ef5755686c68aaef7c2fab7e7",
+  "digest": "sha256:f024674b1d9d1c5be76bcab8cc2ce4052c0dbef6e304fbe7d3ebc9a759c70005",
+  "entryDigest": "sha256:3f2d769f4e4b4bc74030878e0d7fb0a78926682a8f2fa0440e8835f46ebd5683",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/Checkbox.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

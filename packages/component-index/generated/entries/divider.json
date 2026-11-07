@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Divider.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Horizontal/vertical separator, optionally with a label.",
     "fr": "Séparateur horizontal/vertical, optionnellement avec libellé."
   },
-  "digest": "sha256:8cc17088cdaec1f24158ae93075824d67c042c66e67f85f8920b0dd109e420f1",
+  "digest": "sha256:ac612cb098c188727c2f04db4705051d2898a0cdb917a74f71c0ee1cc2c95f05",
   "displayName": "Divider",
   "format": "component-entry/v1",
   "frameworks": [

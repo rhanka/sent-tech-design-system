@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:bfb4b765ff7a2bbaa314857a3d77c923a6336077257f0b7ef3c9e5a6e93bab9c",
-  "entryDigest": "sha256:9e9c9eb40fa0fba19fb23bf79a5c1e7161c1ca237b5ba47490dafa1ae107df96",
+  "digest": "sha256:0e87051727b7213ea5beba35b26af91dd4b3d641286608a9accf59c4af4361a9",
+  "entryDigest": "sha256:680381f864ae960f909a4d009a480fb71d47dc2ed04c4082fbce8ec863c8786c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -418,7 +418,7 @@
         "declarationPath": "packages/components-svelte/dist/FileUploader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FileUploaderProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "partial",
       "unresolved": [

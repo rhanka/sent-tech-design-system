@@ -24,7 +24,7 @@ import {
   type ViewDocument,
 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
-import { type LayoutHints, layoutDocument, layoutFolded } from "../../src/index.js";
+import { type LayoutHints, FIXED_CARD_WIDTH, innerWidthOf, layoutDocument, layoutFolded, TOGGLE_ALLOCATION } from "../../src/index.js";
 import { buildDocument, measure } from "./fixtures.js";
 import {
   asGeneric2Document,
@@ -858,14 +858,14 @@ describe("REV2 item 5 — toggle-bearing collapsed header wraps at the reduced w
     const reduced = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: 396,
+      availableWidth: innerWidthOf(FIXED_CARD_WIDTH) - TOGGLE_ALLOCATION,
       allocatedLines: 2,
       folded: true,
     });
     const full = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: 428,
+      availableWidth: innerWidthOf(FIXED_CARD_WIDTH),
       allocatedLines: 2,
       folded: true,
     });

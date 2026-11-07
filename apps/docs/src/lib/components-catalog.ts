@@ -882,6 +882,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DiagramCard",
+    slug: "diagram-card",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn.",
+      en: "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit."
+    }
+  },
+  {
+    name: "DiagramZone",
+    slug: "diagram-zone",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Carte enveloppante pliable de diagramme : repliée, la carte atomique 460×200 avec bouton « + » ; dépliée, cadre avec en-tête, filet et cartes enfants.",
+      en: "Foldable diagram wrapper card: collapsed, the 460×200 atomic card with a “+” button; expanded, frame with header, rule and child cards."
+    }
+  },
+  {
     name: "ConfigItemCard",
     slug: "config-item-card",
     status: "documented",

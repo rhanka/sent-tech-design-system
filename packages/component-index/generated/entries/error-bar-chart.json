@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ErrorBarChart.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval).",
     "fr": "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance)."
   },
-  "digest": "sha256:350003cb63962f4fe648bf6dcf5b68b8c23dd721e3fdd2632a31b09e8c5e603c",
+  "digest": "sha256:0ad9c5a89585718210551fe00a28009403129688c028c2432462f3b7b4a25b75",
   "displayName": "ErrorBarChart",
   "format": "component-entry/v1",
   "frameworks": [

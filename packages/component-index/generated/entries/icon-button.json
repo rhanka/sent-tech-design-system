@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/IconButton.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
     "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
   },
-  "digest": "sha256:2a1227a07ddf3dcf1f97e05beafb26247944020dc5388d95be00c9d4c47f07a1",
+  "digest": "sha256:2fa339e7deb11ae401aa9c76a0e47336b4b9df49128b1f776f37485bbbfa7023",
   "displayName": "IconButton",
   "format": "component-entry/v1",
   "frameworks": [

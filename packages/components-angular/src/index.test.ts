@@ -6,6 +6,25 @@ import "@angular/compiler";
 import * as angular from "../dist/index.js";
 
 const svelteIndex = readFileSync(resolve("../components-svelte/src/lib/index.ts"), "utf8");
+// Svelte-only catalogue rows are declared by the component-index parity
+// (parity-baseline gaps, e.g. diagram-card/diagram-zone in lot DC-1): the
+// generated index records their angular cell as missing/no-counterpart, so
+// they are excluded from the expected Angular surface via that recorded
+// parity, not via a name list in this test.
+const componentIndex = JSON.parse(
+  readFileSync(resolve("../component-index/generated/component-index.json"), "utf8"),
+);
+const absentFromAngular = new Set(
+  componentIndex.entries
+    .filter(
+      (entry: { parity?: Record<string, string> }) =>
+        entry.parity?.angular === "missing" || entry.parity?.angular === "no-counterpart",
+    )
+    .map(
+      (entry: { path: string }) =>
+        JSON.parse(readFileSync(resolve("../component-index/generated", entry.path), "utf8")).displayName,
+    ),
+);
 // Anchored to line start (with `m`) so a commented-out export line is not read
 // as a real one — an unanchored pattern matched inside `// export { default as
 // Foo }` and demanded an Angular component for a Svelte export that does not
@@ -17,7 +36,8 @@ const componentNames = [
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
   // replié dans design-system-svelte) ; pas de port Angular (parité différée tant
   // qu'aucun consommateur non-svelte ne le demande).
-  .filter((name) => name !== "AppShell" && name !== "IdentityButton");
+  .filter((name) => name !== "AppShell" && name !== "IdentityButton")
+  .filter((name) => !absentFromAngular.has(name));
 
 describe("Angular public surface", () => {
   it.each(componentNames)("exports standalone %s component", (name) => {

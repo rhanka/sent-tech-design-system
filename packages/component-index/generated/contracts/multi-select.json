@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:b1213e09129bb296661f33cdcc19abca82d2cae8fbbcf2f22b727394cb0fc28d",
-  "entryDigest": "sha256:7ab858b991c8b0af20fad5707a84d89f799d8db623ee52be83a808f3942c2620",
+  "digest": "sha256:a3ec695442928f7eb50d587f6c9b19012bccc56fe273c068eeadded8cd923d7a",
+  "entryDigest": "sha256:be42e2861da66eeaafc95014762c5308b7a465621108bf1f3bbc6c5df9becc82",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -431,7 +431,7 @@
         "declarationPath": "packages/components-svelte/dist/MultiSelect.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MultiSelectProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

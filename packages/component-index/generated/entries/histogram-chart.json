@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/HistogramChart.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Histogram for explicit or generated distribution bins.",
     "fr": "Histogramme pour afficher des classes explicites ou générées."
   },
-  "digest": "sha256:b5f09c0ea158a6ebf5976ebf08cfbbc0d9a65f6f2bfb524a760fcae42b225844",
+  "digest": "sha256:21369fc89e2de583caed7d287a50cd20ace39ec52140801ebce7c6c657429115",
   "displayName": "HistogramChart",
   "format": "component-entry/v1",
   "frameworks": [
