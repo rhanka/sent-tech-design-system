@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Notification.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline/actionable notification with info/success/warning/error tones.",
     "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
   },
-  "digest": "sha256:8a4ae17d0b968429dd7dec77562884ae296c4cc45c000b2f090a4d700da761ac",
+  "digest": "sha256:429c033ccc2623e8381f847029d27bada9f55f2b07faf647f6c9e22bb109dfea",
   "displayName": "Notification",
   "format": "component-entry/v1",
   "frameworks": [

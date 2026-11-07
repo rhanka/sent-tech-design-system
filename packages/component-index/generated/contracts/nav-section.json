@@ -1,8 +1,8 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:15ec8f3daaab0406c8cfe4476b65cf81f4e891a204474a428204024fbf9db4d4",
-  "entryDigest": "sha256:e09a33eb6eb9c40576ef6588e25514463816326007c9c8499a1ac07a321b87dd",
+  "digest": "sha256:ca3244b94014151b3613fac027cb417cb2513440b391e085e67df77b900e398b",
+  "entryDigest": "sha256:c1eba276a4cfecb41e037a2bb7de3b1a5ef2fb75861cf9b6580364093b031dd9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/NavSection.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavSectionProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],
