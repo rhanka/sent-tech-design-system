@@ -1,12 +1,14 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fireEvent, render } from "@testing-library/svelte";
-import { compile } from "svelte/compiler";
+import { ICON_NAMES } from "@sentropic/design-system-svelte";
+import { compileTheme } from "@sentropic/design-system-themes";
+import { compile, parse } from "svelte/compiler";
 import type { ComponentProps } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import BlockCandidateList from "./BlockCandidateList.svelte";
 import CommentModeStatus from "./CommentModeStatus.svelte";
-import { makeBlocks, modeLabels } from "./fixtures.js";
+import { makeBlocks, modeLabels, viewerThemes } from "./fixtures.js";
 import type { BlockCandidateListEvents } from "./types.js";
 
 // W-1.7 — BlockCandidateList witness (F-C1…F-C4), the list-focused staged-Esc
@@ -321,6 +323,124 @@ describe("W-1.9 source scan of the five AS-1 .svelte files", () => {
     return out;
   }
 
+  // --- template scan (spec §5.5 W-1.9: "no natural-language string literal in
+  // src/lib/*.svelte") -------------------------------------------------------
+  // The quoted-literal scan above cannot see unquoted template text nodes
+  // (<span>Select a block</span>) or single-word attribute strings
+  // (aria-label="close"). The template half therefore parses each component
+  // with svelte/compiler and walks the template AST (ast.html only — script
+  // and style are covered by the literal/colour scans):
+  //   - every Text node must be whitespace-only;
+  //   - every static attribute value must be in the explicit allowlist below
+  //     (class names, data-st-shell values, role values, aria-live, tabindex,
+  //     type, icon names from the DS catalogue);
+  //   - user-facing attributes (aria-label, title, placeholder, …) must bind
+  //     to an expression ({...}), never carry a string literal.
+  const USER_FACING_ATTRIBUTES = new Set([
+    "aria-label",
+    "aria-roledescription",
+    "aria-valuetext",
+    "title",
+    "placeholder",
+    "alt",
+    "label",
+    "tooltip"
+  ]);
+  const ICON_NAME_SET = new Set<string>(ICON_NAMES as string[]);
+  const STATIC_ATTRIBUTE_ALLOWLIST: Record<string, (value: string) => boolean> = {
+    class: (value) =>
+      value.split(/\s+/).filter(Boolean).every((token) => /^st-[a-zA-Z0-9_-]*$/.test(token)),
+    "data-st-shell": (value) => KEBAB_RE.test(value),
+    role: (value) => /^[a-z]+(-[a-z]+)*$/.test(value), // role values (spec allowlist)
+    "aria-live": (value) => value === "polite",
+    "aria-hidden": (value) => value === "true" || value === "false",
+    tabindex: (value) => value === "-1",
+    type: (value) => value === "button",
+    icon: (value) => ICON_NAME_SET.has(value)
+  };
+
+  function templateViolations(file: string, source: string): string[] {
+    const violations: string[] = [];
+    let ast: ReturnType<typeof parse>;
+    try {
+      ast = parse(source, { filename: file });
+    } catch (error) {
+      return [`${file}: svelte parse error: ${String(error)}`];
+    }
+    const visit = (node: unknown): void => {
+      if (node === null || typeof node !== "object") return;
+      if (Array.isArray(node)) {
+        node.forEach(visit);
+        return;
+      }
+      const n = node as Record<string, unknown>;
+      if (typeof n.type !== "string") return;
+      if (n.type === "Text") {
+        const data = String(n.data ?? "");
+        if (data.trim() !== "") {
+          violations.push(`${file}: template text node is not whitespace-only: ${JSON.stringify(data.trim().slice(0, 80))}`);
+        }
+        return;
+      }
+      if (n.type === "Attribute") {
+        const name = String(n.name);
+        const value = n.value;
+        if (value === true) return; // boolean attribute
+        if (Array.isArray(value)) {
+          const parts = value as Record<string, unknown>[];
+          const isStatic = parts.every((part) => part.type === "Text");
+          // svelte 5.x emits MustacheTag for {expr}; accept ExpressionTag too
+          const isExpression = (part: Record<string, unknown>) =>
+            part.type === "MustacheTag" || part.type === "ExpressionTag";
+          const hasExpression = parts.some(isExpression);
+          const staticText = parts
+            .filter((part) => part.type === "Text")
+            .map((part) => String(part.data ?? ""))
+            .join("");
+          if (isStatic) {
+            if (USER_FACING_ATTRIBUTES.has(name)) {
+              violations.push(`${file}: user-facing attribute "${name}" must bind to an expression, got static ${JSON.stringify(staticText)}`);
+            } else {
+              const allow = STATIC_ATTRIBUTE_ALLOWLIST[name];
+              if (!allow || !allow(staticText)) {
+                violations.push(`${file}: static attribute ${name}=${JSON.stringify(staticText)} is not in the allowlist`);
+              }
+            }
+          } else if (hasExpression) {
+            // mixed static fragment + expression (e.g. class="st-x st-x--{m}"):
+            // the static fragment must still be allowlisted
+            if (staticText.trim() !== "") {
+              const allow = STATIC_ATTRIBUTE_ALLOWLIST[name];
+              if (!allow || !allow(staticText)) {
+                violations.push(`${file}: static fragment of ${name}=${JSON.stringify(staticText)} is not in the allowlist`);
+              }
+            }
+          }
+          // recurse into the expression parts only (never into Text value
+          // parts — those are attribute text, not template text)
+          for (const part of parts) {
+            if (isExpression(part)) visit(part);
+          }
+          return;
+        }
+      }
+      if (n.type === "StyleDirective" || n.type === "EventHandler" || n.type === "Binding" || n.type === "SpreadAttribute") {
+        // directive values must be expressions, never static text
+        const value = n.value;
+        if (Array.isArray(value) && value.every((part) => (part as Record<string, unknown>).type === "Text")) {
+          violations.push(`${file}: ${n.type} "${String(n.name)}" carries a static value`);
+        }
+        return;
+      }
+      for (const key of Object.keys(n)) {
+        if (key === "loc" || key === "start" || key === "end") continue;
+        visit(n[key]);
+      }
+    };
+    visit(ast.html);
+    return violations;
+  }
+
   it("every quoted literal in the five components is a class/token name, a kebab identifier, an allowlisted specifier, or a keyword", () => {
     for (const file of SVELTE_FILES) {
       const source = readFileSync(resolve("src/lib", file), "utf8");
@@ -343,12 +463,80 @@ describe("W-1.9 source scan of the five AS-1 .svelte files", () => {
     }
   });
 
+  it("template scan: every text node in the five components is whitespace-only and every static attribute value is allowlisted", () => {
+    for (const file of SVELTE_FILES) {
+      const source = readFileSync(resolve("src/lib", file), "utf8");
+      expect(templateViolations(file, source), file).toEqual([]);
+    }
+  });
+
   it("no CSS content: rule carries quoted text in any component style block", () => {
     for (const file of SVELTE_FILES) {
       const source = readFileSync(resolve("src/lib", file), "utf8");
       const style = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)?.[1] ?? "";
       const withoutComments = style.replace(/\/\*[\s\S]*?\*\//g, "");
       expect(withoutComments.includes("content:"), `${file}: content rule with quoted text`).toBe(false);
+    }
+  });
+
+  // Planted-failure cases for the template half (in-memory synthetic sources,
+  // never written to src/): each proves the scan fails on the shape it must
+  // catch. The one-time real injection into a component file is recorded in
+  // SPIKES.md (AS-1 review reconciliation).
+  it("planted failure: a natural-language template text node fails the scan", () => {
+    const source = [
+      '<script lang="ts">let n = $state(0);</script>',
+      '<div class="st-plant">{n}</div>',
+      "<span>Select a block</span>"
+    ].join("\n");
+    const violations = templateViolations("zz-plant.svelte", source);
+    expect(violations.some((v) => v.includes("text node is not whitespace-only") && v.includes("Select a block"))).toBe(true);
+  });
+
+  it("planted failure: a single-word user-facing attribute string fails the scan", () => {
+    const source = [
+      '<script lang="ts">let n = $state(0);</script>',
+      '<button type="button" class="st-plant" aria-label="close">{n}</button>'
+    ].join("\n");
+    const violations = templateViolations("zz-plant2.svelte", source);
+    expect(violations.some((v) => v.includes('user-facing attribute "aria-label"') && v.includes("close"))).toBe(true);
+  });
+
+  it("planted failure: a static non-allowlisted attribute value fails the scan", () => {
+    const source = [
+      '<script lang="ts">let n = $state(0);</script>',
+      '<div class="st-plant" data-st-shell="plant" data-note="hello there">{n}</div>'
+    ].join("\n");
+    const violations = templateViolations("zz-plant3.svelte", source);
+    expect(violations.some((v) => v.includes("data-note") && v.includes("not in the allowlist"))).toBe(true);
+  });
+});
+
+describe("§5.4 fixture matrix — light and dark viewer themes", () => {
+  it("the list renders in every viewer theme with the compiled theme variables scoped to the theme root", () => {
+    const labels = modeLabels();
+    for (const theme of Object.values(viewerThemes)) {
+      const themeRoot = document.createElement("div");
+      themeRoot.setAttribute("data-st-theme", theme.id);
+      const style = document.createElement("style");
+      style.textContent = compileTheme(theme);
+      themeRoot.appendChild(style);
+      document.body.appendChild(themeRoot);
+      expect(style.textContent, theme.id).toContain("--st-semantic-surface-raised");
+
+      const mounted = render(BlockCandidateList, {
+        target: themeRoot,
+        props: { ...listProps(labels), ...listEvents() }
+      });
+      const root = themeRoot.querySelector('[data-st-shell="block-candidate-list"]');
+      expect(root, `theme ${theme.id}`).not.toBeNull();
+      // the root element itself carries the listbox role
+      expect(root?.getAttribute("role"), `theme ${theme.id}`).toBe("listbox");
+      expect(root?.querySelectorAll('[role="option"]').length, `theme ${theme.id}`).toBe(3);
+
+      mounted.unmount();
+      expect(themeRoot.querySelector('[data-st-shell="block-candidate-list"]')).toBeNull();
+      themeRoot.remove();
     }
   });
 });
