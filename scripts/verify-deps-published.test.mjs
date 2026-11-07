@@ -6,9 +6,10 @@
 // npm cannot resolve. The gate must fail closed on that exact pin, and pass
 // only when every exact @sentropic/* pin of the manifest resolves on the
 // registry to the same version. The registry probe is stubbed in-process; the
-// workflow wiring (core-publish.yml publishes tokens then themes on `core-v*`,
-// svelte-publish.yml runs this gate before `npm publish`) is asserted against
-// the real workflow files.
+// workflow wiring (npm-publish.yml — the trusted publisher bound to tokens
+// and themes in docs/release.md — publishes tokens then themes on `core-v*`
+// without svelte, and on `v*` in lockstep; svelte-publish.yml runs this gate
+// before `npm publish`) is asserted against the real workflow files.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
@@ -17,7 +18,7 @@ import { collectSentropicDeps, main, verifyDeps } from "./verify-deps-published.
 const svelteManifest = JSON.parse(
   readFileSync(new URL("../packages/components-svelte/package.json", import.meta.url), "utf8"),
 );
-const coreWorkflow = readFileSync(new URL("../.github/workflows/core-publish.yml", import.meta.url), "utf8");
+const npmWorkflow = readFileSync(new URL("../.github/workflows/npm-publish.yml", import.meta.url), "utf8");
 const svelteWorkflow = readFileSync(new URL("../.github/workflows/svelte-publish.yml", import.meta.url), "utf8");
 
 const PINNED_SHA = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*@[0-9a-f]{40}$/;
@@ -67,21 +68,32 @@ test("main passes when every pinned @sentropic/* version is on npm", () => {
   assert.equal(main(["--workspace", "packages/components-svelte"], view), 0);
 });
 
-test("core-publish.yml publishes tokens then themes on the core-v tag, OIDC only, pinned SHAs", () => {
-  assert.match(coreWorkflow, /tags:\s*\["core-v\*"\]/, "trigger must be the core-v* tag");
-  assert.match(coreWorkflow, /id-token:\s*write/, "publish job must keep OIDC id-token: write");
-  assert.match(coreWorkflow, /merge-base --is-ancestor/, "release-guard must keep the tag-is-ancestor guard");
-  assert.match(coreWorkflow, /^permissions:\n {2}contents: read$/m, "least-privilege top-level permissions");
-  assert.ok(!/NPM_TOKEN|NODE_AUTH_TOKEN|secrets\.NPM/.test(coreWorkflow), "no token secret: OIDC only");
-  const usesRefs = [...coreWorkflow.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
+test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v lockstep), OIDC only, pinned SHAs", () => {
+  // The core-v* tag is handled by the SAME workflow that is bound to tokens
+  // and themes as npm trusted publisher (docs/release.md) — no second
+  // publishing workflow with a different OIDC identity.
+  assert.match(npmWorkflow, /tags:\s*\["v\[0-9\]\*",\s*"core-v\*"\]/, "trigger must be the v* lockstep and core-v* tags");
+  assert.match(npmWorkflow, /id-token:\s*write/, "publish job must keep OIDC id-token: write");
+  assert.match(npmWorkflow, /merge-base --is-ancestor/, "release-guard must keep the tag-is-ancestor guard");
+  assert.match(npmWorkflow, /^permissions:\n {2}contents: read$/m, "least-privilege top-level permissions");
+  assert.ok(!/NPM_TOKEN|NODE_AUTH_TOKEN|secrets\.NPM/.test(npmWorkflow), "no token secret: OIDC only");
+  const usesRefs = [...npmWorkflow.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
   assert.ok(usesRefs.length >= 3, "expected checkout + setup-node steps");
   for (const ref of usesRefs) assert.match(ref, PINNED_SHA, `uses: must be pinned to a 40-hex SHA, got ${ref}`);
-  const tokensAt = coreWorkflow.indexOf("npm publish --workspace @sentropic/design-system-tokens --access public");
-  const themesAt = coreWorkflow.indexOf("npm publish --workspace @sentropic/design-system-themes --access public");
+  const tokensAt = npmWorkflow.indexOf("npm publish --workspace @sentropic/design-system-tokens --access public");
+  const themesAt = npmWorkflow.indexOf("npm publish --workspace @sentropic/design-system-themes --access public");
   assert.ok(tokensAt >= 0 && themesAt > tokensAt, "tokens must be published before themes (themes depends on tokens)");
-  // release-guard pins both manifests to the tag version
-  assert.match(coreWorkflow, /packages\/tokens\/package\.json/);
-  assert.match(coreWorkflow, /packages\/themes\/package\.json/);
+  // On a core-v tag only the core pair publishes: the svelte publish line is
+  // guarded by the lockstep condition, so design-system-svelte never has to
+  // share the core version.
+  const lockstepGuardAt = npmWorkflow.indexOf('if [ "$IS_LOCKSTEP" = "true" ]');
+  const svelteAt = npmWorkflow.indexOf("npm publish --workspace @sentropic/design-system-svelte --access public");
+  assert.ok(lockstepGuardAt >= 0, "the svelte publish must be conditional on the v lockstep tag");
+  assert.ok(svelteAt > lockstepGuardAt, "svelte publishes only on the v<version> lockstep tag, not on core-v");
+  // release-guard pins both core manifests to the core-v tag version
+  assert.match(npmWorkflow, /packages\/tokens\/package\.json/);
+  assert.match(npmWorkflow, /packages\/themes\/package\.json/);
+  assert.match(npmWorkflow, /core-v/, "the core-v prefix must be handled (version extraction)");
 });
 
 test("svelte-publish.yml runs the fail-closed dep gate after checkout and before npm publish", () => {
