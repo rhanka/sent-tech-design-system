@@ -1,7 +1,7 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:b42596fa62418c0213f3639b200bc29a88dee92eaaabca0f9db9784c15a7eec1",
+  "digest": "sha256:97b8158fff1320e5da4a212d64784d26a674001df2cc90c7da325636baf7e9c3",
   "entryDigest": "sha256:76c5674ec72faff7c78ce795f8bd8add1fba4d93399c1742e54be9f3c49138ad",
   "format": "component-contract/v1",
   "frameworks": {
@@ -148,7 +148,8 @@
               "layers",
               "close",
               "chevron-down",
-              "chevron-right"
+              "chevron-right",
+              "comment"
             ]
           },
           "size": {
