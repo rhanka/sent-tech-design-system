@@ -26,7 +26,9 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
-    "!dist/**/*Fixture.d.ts"
+    "!dist/**/*Fixture.d.ts",
+    "!dist/**/fixtures.*",
+    "!dist/**/ScaffoldSmoke.*"
   ],
   "scripts": {
     "build": "svelte-package",
