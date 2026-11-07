@@ -24,8 +24,27 @@ const { join } = path;
 const VITE_PLUGIN_SPECIFIER = ["@sveltejs", "vite-plugin-svelte"].join("/");
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const PACKAGE_DIR = path.resolve(HERE, "..", "..", "..");
-const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
+// packages/artifact-shell — two levels up from src/lib
+const PACKAGE_DIR = path.resolve(HERE, "..", "..");
+// The repository root is the nearest ancestor whose package.json declares
+// npm workspaces; the worktree may live anywhere on disk, so it is found by
+// walking up, never by a fixed number of ".." segments.
+function findRepoRoot(start) {
+  let dir = start;
+  for (;;) {
+    try {
+      const manifest = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+      if (manifest.workspaces !== undefined) return dir;
+    } catch {
+      /* not a package root — keep walking up */
+    }
+    const parent = path.resolve(dir, "..");
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error("no package.json with workspaces found above " + start);
+}
+const WORKTREE_ROOT = findRepoRoot(HERE);
 
 const HARNESS_APP = `
 <script>
@@ -65,32 +84,69 @@ const HARNESS_APP = `
   }));
 
   // minimal host shim: owns mode state and moves focus as the viewer would
+  // (§5.6). All five components are mounted with live state; the hooks on
+  // window.__shell are the only way the driver steers them.
   let mode = $state("off");
   let activeKey = $state(null);
   let selectedKey = $state(null);
   let listOpen = $state(false);
+  let hovered = $state(null);
+  let lassoActive = $state(false);
+  let lassoRect = $state(null);
   let announcement = $state("");
   let cycleStep = $state(0);
+  // §5.6 steps 5/7 remember which stub button returned to Selected; the flags
+  // decide whether that button also opens the list, so both branches of
+  // "when open, else …" are driven.
+  let via = null;
+  let changeOpensList = true;
+  let cancelOpensList = true;
 
-  window.__shell = {
-    labels,
-    get mode() { return mode; },
-    get activeKey() { return activeKey; },
-    focusStatus() {
-      document.querySelector('[data-st-shell="comment-mode-status"]')?.focus();
-    }
-  };
+  const toggleButtonEl = () => document.querySelector('[data-st-shell="comment-mode-toggle"] button');
+  const statusRootEl = () => document.querySelector('[data-st-shell="comment-mode-status"]');
+  const composerFieldEl = () => document.getElementById("composer-stub-field");
+
+  function syncFocus() {
+    queueMicrotask(() => {
+      if (mode === "armed") statusRootEl()?.focus();
+      else if (mode === "composing") composerFieldEl()?.focus();
+      else if (mode === "selected") {
+        if (listOpen && selectedKey !== null) {
+          const row = document.querySelector('[role="option"][data-block-key="' + selectedKey + '"]');
+          if (row) row.focus();
+          else statusRootEl()?.focus();
+        } else if (via === "change") statusRootEl()?.focus(); // §5.6 step 5 fallback
+        else toggleButtonEl()?.focus(); // §5.6 step 7 fallback
+      } else toggleButtonEl()?.focus();
+    });
+  }
 
   function toggle() {
     mode = mode === "off" ? "armed" : "off";
+    via = null;
     if (mode === "armed") {
       activeKey = null;
       announcement = labels.announcementText;
-      queueMicrotask(() => document.querySelector('[data-st-shell="comment-mode-status"]')?.focus());
-    } else {
-      queueMicrotask(() => document.querySelector('[data-st-shell="comment-mode-toggle"] button')?.focus());
     }
+    syncFocus();
   }
+
+  window.__shell = {
+    labels,
+    blocks,
+    get mode() { return mode; },
+    get activeKey() { return activeKey; },
+    get selectedKey() { return selectedKey; },
+    get listOpen() { return listOpen; },
+    setHovered(key) { hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
+    setSelected(key) { selectedKey = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
+    setLasso(active, rect) { lassoActive = active; lassoRect = rect; },
+    openList() { listOpen = true; },
+    closeList() { listOpen = false; },
+    focusStatus() { statusRootEl()?.focus(); },
+    setChangeOpensList(value) { changeOpensList = value; },
+    setCancelOpensList(value) { cancelOpensList = value; }
+  };
 </script>
 
 <div data-st-theme="sent-tech">
@@ -109,26 +165,34 @@ const HARNESS_APP = `
     hintText={labels.hintText}
     candidates={blocks}
     {activeKey}
-    onExitRequest={() => { mode = "off"; queueMicrotask(() => document.querySelector('[data-st-shell="comment-mode-toggle"] button')?.focus()); }}
+    onExitRequest={() => { mode = "off"; via = null; syncFocus(); }}
     onCycleBlock={(key) => { activeKey = key; cycleStep += 1; announcement = labels.announcementText + " " + cycleStep; }}
-    onAnchor={() => { mode = "composing"; queueMicrotask(() => document.getElementById("composer-stub-field")?.focus()); }}
+    onAnchor={() => { mode = "composing"; syncFocus(); }}
   />
-  <BlockHighlightOverlay hovered={null} selected={null} chipLabel={labels.chipLabel} onAnchor={() => { mode = "composing"; }} />
-  <LassoLayer active={false} rect={null} />
+  <BlockHighlightOverlay
+    {hovered}
+    selected={selectedKey === null ? null : (blocks.find((b) => b.key === selectedKey) ?? null)}
+    chipLabel={labels.chipLabel}
+    onAnchor={() => { mode = "composing"; syncFocus(); }}
+  />
+  <LassoLayer active={lassoActive} rect={lassoRect} />
   <BlockCandidateList
     open={listOpen}
     candidates={blocks}
     {activeKey}
     {selectedKey}
     headingLabel={labels.headingLabel}
-    onPickBlock={(key) => { selectedKey = key; mode = "composing"; }}
+    onPickBlock={(key) => { selectedKey = key; mode = "composing"; syncFocus(); }}
     onActiveKeyChange={(key) => { activeKey = key; }}
-    onAnchor={(key) => { selectedKey = key; mode = "composing"; }}
-    onClose={() => { listOpen = false; mode = "armed"; queueMicrotask(() => window.__shell.focusStatus()); }}
+    onAnchor={(key) => { selectedKey = key; mode = "composing"; syncFocus(); }}
+    onClose={() => { listOpen = false; mode = "armed"; syncFocus(); }}
   />
   {#if mode === "composing"}
     <div data-st-shell="composer-stub">
       <label>{labels.composerLabel}<textarea id="composer-stub-field"></textarea></label>
+      <button id="composer-stub-publish" onclick={() => { mode = "armed"; via = null; announcement = labels.announcementText; syncFocus(); }}>{labels.publishLabel}</button>
+      <button id="composer-stub-change" onclick={() => { mode = "selected"; via = "change"; selectedKey = activeKey; listOpen = changeOpensList; syncFocus(); }}>{labels.changeBlockLabel}</button>
+      <button id="composer-stub-cancel" onclick={() => { mode = "selected"; via = "cancel"; listOpen = cancelOpensList; syncFocus(); }}>{labels.cancelLabel}</button>
     </div>
   {/if}
 </div>
@@ -290,13 +354,15 @@ async function main() {
     );
     assert(true, "B-3 real :focus shows the tooltip (focus-within)", "");
 
-    // --- real focus trail (§5.6 steps 1–3, 6) ---
+    // --- real focus trail (§5.6 steps 1–7, both branches of steps 5 and 7) ---
+    // step 1: toggle activated -> Armed, focus on the status root
     await page.click('[data-st-shell="comment-mode-toggle"] button');
     await page.waitForFunction(
       `${activeElementShell} === 'comment-mode-status'`,
       { timeout: 10000 }
     );
     assert(true, "B-3 step 1: after toggle activation focus is on the status root", "");
+    // step 2: ArrowDown cycles; focus stays on the status, announcement updates
     await page.keyboard.press("ArrowDown");
     await page.waitForFunction(
       "document.querySelector('[aria-live=polite]').textContent === 'SENTINEL-ANNOUNCEMENT-TEXT 1'",
@@ -304,43 +370,138 @@ async function main() {
     );
     const focusAfterCycle = await page.evaluate(activeElementShell);
     assert(focusAfterCycle === "comment-mode-status", "B-3 step 2: focus stays on the status while cycling", focusAfterCycle);
+    // step 3: Enter anchors -> focus on the composer field
     await page.keyboard.press("Enter");
     await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
     assert(true, "B-3 step 3: Enter anchors, focus moves to the composer field", "");
-    // back to armed via a synthetic publish (harness button absent here —
-    // drive the status directly): Esc in the status exits to Off
-    await page.evaluate(() => window.__shell.focusStatus());
+    // step 4: publish -> Armed, focus back on the status root
+    await page.click("#composer-stub-publish");
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    assert(true, "B-3 step 4: publish returns to Armed with focus on the status root", "");
+    // step 5 (list open): re-enter composing, then "Change block" -> Selected
+    // with the list open, focus on the selected block's candidate row
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await page.click("#composer-stub-change");
+    await page.waitForFunction(
+      "document.activeElement && document.activeElement.getAttribute('role') === 'option' && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
+      { timeout: 10000 }
+    );
+    assert(true, "B-3 step 5 (list open): focus on the selected block's candidate row", "");
+    // step 6 staged Esc: the list stage unwinds first (mode stays Armed,
+    // focus back on the status root)…
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    const afterListEsc = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
+    assert(afterListEsc.mode === "armed" && afterListEsc.listOpen === false, "B-3 step 6a: first Esc closes only the list stage", JSON.stringify(afterListEsc));
+    // …then the status stage exits to Off and focus returns to the toggle
     await page.keyboard.press("Escape");
     await page.waitForFunction(
       `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
       { timeout: 10000 }
     );
-    assert(true, "B-3 step 6: final Esc exits to Off and focus returns to the toggle", "");
+    assert(true, "B-3 step 6b: final Esc exits to Off and focus returns to the toggle", "");
+    // step 7 (list open): toggle on, cycle, anchor, Cancel -> focus on the row
+    await page.click('[data-st-shell="comment-mode-toggle"] button');
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await page.click("#composer-stub-cancel");
+    await page.waitForFunction(
+      "document.activeElement && document.activeElement.getAttribute('role') === 'option'",
+      { timeout: 10000 }
+    );
+    assert(true, "B-3 step 7 (list open): cancel focuses the candidate row", "");
+    // step 5 fallback (list closed): "Change block" with the list closed ->
+    // focus on the status root
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await page.evaluate(() => window.__shell.setChangeOpensList(false));
+    await page.click("#composer-stub-change");
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    const fallback5 = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
+    assert(fallback5.mode === "selected" && fallback5.listOpen === false, "B-3 step 5 fallback (list closed): focus on the status root", JSON.stringify(fallback5));
+    // step 7 fallback (list closed): Cancel with the list closed -> focus on
+    // the toggle
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(
+      `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
+      { timeout: 10000 }
+    );
+    await page.click('[data-st-shell="comment-mode-toggle"] button');
+    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await page.evaluate(() => window.__shell.setCancelOpensList(false));
+    await page.click("#composer-stub-cancel");
+    await page.waitForFunction(
+      `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
+      { timeout: 10000 }
+    );
+    const fallback7 = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
+    assert(fallback7.mode === "selected" && fallback7.listOpen === false, "B-3 step 7 fallback (list closed): focus on the toggle", JSON.stringify(fallback7));
 
     // --- reduced-motion emulation: zero animation on all five components ---
     await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+    // mount every component in its visible state: toggle pressed (armed),
+    // status visible, overlay selected, lasso active, list open. The trail
+    // above left mode=selected, so the first click exits to Off, the second
+    // re-enters Armed.
+    await page.click('[data-st-shell="comment-mode-toggle"] button');
+    await page.waitForFunction("window.__shell.mode === 'off'", { timeout: 10000 });
     await page.click('[data-st-shell="comment-mode-toggle"] button');
     await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
-    await page.evaluate(() => window.__shell.setSelected?.("sentinel-block-key-1"));
+    await page.evaluate(() => {
+      window.__shell.setSelected("sentinel-block-key-1");
+      window.__shell.setLasso(true, { x: 8, y: 16, width: 120, height: 24 });
+      window.__shell.openList();
+    });
+    await page.waitForFunction(
+      "document.querySelector('[data-st-shell=\"block-highlight-overlay\"]') !== null && document.querySelector('.st-lassoLayer__band') !== null && document.querySelector('[data-st-shell=\"block-candidate-list\"]') !== null",
+      { timeout: 10000 }
+    );
+    // R1 coverage: all five AS-1 shell roots are in the DOM at once
+    const mounted = await page.evaluate(() => ({
+      toggle: document.querySelector('[data-st-shell="comment-mode-toggle"]') !== null,
+      status: document.querySelector('[data-st-shell="comment-mode-status"]') !== null,
+      overlay: document.querySelector('[data-st-shell="block-highlight-overlay"]') !== null,
+      lasso: document.querySelector('[data-st-shell="lasso-layer"]') !== null,
+      list: document.querySelector('[data-st-shell="block-candidate-list"]') !== null
+    }));
+    for (const [name, ok] of Object.entries(mounted)) {
+      assert(ok, `B-3 all five components mounted (${name})`, "shell root missing");
+    }
     const durations = await page.evaluate(() => {
       const read = (selector) => {
         const el = document.querySelector(selector);
-        return el ? getComputedStyle(el).transitionDuration : null;
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return cs.transitionDuration + " / " + cs.animationDuration;
       };
       return {
         toggle: read('[data-st-shell="comment-mode-toggle"]'),
+        toggleButton: read('[data-st-shell="comment-mode-toggle"] button'),
+        tooltip: read('.st-tooltip__content'),
         status: read('[data-st-shell="comment-mode-status"]'),
         overlay: read('[data-st-shell="block-highlight-overlay"]'),
-        lasso: read('[data-st-shell="lasso-layer"]'),
+        lassoBand: read('.st-lassoLayer__band'),
+        lassoFill: read('.st-lassoLayer__fill'),
         list: read('[data-st-shell="block-candidate-list"]')
       };
     });
-    // overlay/lasso/list render only in their states; mount them via the
-    // harness by opening the list and hovering through props is covered by
-    // the jsdom half — here assert the mounted ones are zeroed
+    // no `continue` skips: every queried node must exist and be zeroed
     for (const [name, value] of Object.entries(durations)) {
-      if (value === null) continue;
-      assert(value === "0s", `B-3 reduced-motion ${name} transition-duration 0s`, value);
+      assert(value !== null, `B-3 reduced-motion ${name} node present`, "selector matched nothing");
+      if (value !== null) {
+        const allZero = value.split("/").every((part) => part.split(",").every((v) => v.trim() === "0s"));
+        assert(allZero, `B-3 reduced-motion ${name} zero durations`, value);
+      }
     }
 
     assert(pageErrors.length === 0, "B-3 page errors", pageErrors.slice(0, 3).join(" | "));
@@ -352,7 +513,7 @@ async function main() {
     console.error(`\n${failures.length} browser assertion(s) failed`);
     process.exit(1);
   }
-  console.log("B-3 pass: real hover/focus tooltip, real focus trail, reduced-motion zero durations");
+  console.log("B-3 pass: real hover/focus tooltip, full §5.6 focus trail (steps 1–7 incl. both 5/7 branches), all five components mounted, reduced-motion zero durations");
 }
 
 main().catch((error) => {
