@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NavSection.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Group header for a rail/drawer: small-caps label, count, section action, and a collapsible (disclosure) mode.",
     "fr": "En-tête de groupe d'un rail/drawer : libellé small-caps, compteur, action de section et mode repliable (disclosure)."
   },
-  "digest": "sha256:e09a33eb6eb9c40576ef6588e25514463816326007c9c8499a1ac07a321b87dd",
+  "digest": "sha256:c1eba276a4cfecb41e037a2bb7de3b1a5ef2fb75861cf9b6580364093b031dd9",
   "displayName": "NavSection",
   "format": "component-entry/v1",
   "frameworks": [

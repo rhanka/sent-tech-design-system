@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CodeSnippet.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:aa4215e5e411ddf8fd3f8bc20755afd891e17f338b7f37878fa9f9bb857d0825",
+  "digest": "sha256:89205fae33ef456dd3d270b4f0260a3d01a8c28ad972140ab9f5ad999c840c03",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

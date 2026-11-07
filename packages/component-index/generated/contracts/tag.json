@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:265ae4e9f6bb6e13703548f8ae6a8d6b5865c1ad039e8de37db0563782d715c8",
-  "entryDigest": "sha256:fc79a62986456916083e96f00ba293ec918288f14334be2472386d66e0bac205",
+  "digest": "sha256:89107ec1798903cd78b9ee940638da1eebeac96798196d9e87c5f50152ae2120",
+  "entryDigest": "sha256:d38ef9bb80ce6ead624370bae087936ddca66ad8cc0b3ce7af5d467c9d80961e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/Tag.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TagProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "partial",
       "unresolved": [

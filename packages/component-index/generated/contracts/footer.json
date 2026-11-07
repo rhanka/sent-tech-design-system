@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:1ac969ec297dbb9fd29a5155a2eb79f83233c8e3ce25d624638d551f3407def3",
-  "entryDigest": "sha256:8424903dfcb3589ab0a97ba0d04d4b68ce9708439e259ad7bb8dd8434b622925",
+  "digest": "sha256:7e2ddc23068d9663e1ad4910391ac756d23ccc1e05eec592079c7800398fb0c3",
+  "entryDigest": "sha256:cb9f4246b0c16032e45a4c006cb2d15c3904df03214a002534515c16da11a93b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "partial",
       "unresolved": [],

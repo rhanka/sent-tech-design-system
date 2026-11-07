@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:7ea5f6a10b77d94a1b6d9c240d699d8d6cc499958c44b026dcb34919d9f9bace",
-  "entryDigest": "sha256:085430d1e868d2074d1f1e97ad22e0b8e6d6b513a013656d753d25446398b99a",
+  "digest": "sha256:2532a6e4b81a105cfa678522604db00069360a04b33b686e86f4c320eb30dc59",
+  "entryDigest": "sha256:72016724f40934eaba6f41161e1b538e12b460d00b602288a38d669c481dc074",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/RibbonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RibbonChartProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

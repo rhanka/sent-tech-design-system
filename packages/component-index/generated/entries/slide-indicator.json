@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SlideIndicator.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Dots or bars marking the current slide of a carousel.",
     "fr": "Points ou barres signalant la diapositive courante d'un carrousel."
   },
-  "digest": "sha256:6ae208fd03b23c2b844f3925b6bec55e16f17514e294d2accdc166e1aa6e561f",
+  "digest": "sha256:11931eeb77988263d2e398532a2314a0b6475621c15d9f64e1f8d62d331ab8aa",
   "displayName": "SlideIndicator",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:01d05f87cb555b8e8545e9f855f4c90fdd5de02224427e0f97c9baa40610b0ad",
-  "entryDigest": "sha256:5bd3d2ef006d3137510bf1fdf59c38a0c743f037bc26c90396aecafefd27b014",
+  "digest": "sha256:938f638e1da10ba16be28f61ab1cb04337a2bdeaac8c40ce0df3db15060c040c",
+  "entryDigest": "sha256:cba3af6fa1f7bc0e0e34d6b07698af0fba5d5ba7237371cb3eeea7459c303c2d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

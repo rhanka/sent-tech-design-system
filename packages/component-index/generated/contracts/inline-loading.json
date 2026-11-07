@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:a5783b093999da1127921b9a0a8a627ae6a4488fa211e16d05495fd3683a536c",
-  "entryDigest": "sha256:aa052f77aa5d520227a832f517229b502986ca0789b4d207d46cd938bed88025",
+  "digest": "sha256:82c75445a1083fdc4e0561ba4a8ecda9254c5c527dacc3ad99fd712937b03115",
+  "entryDigest": "sha256:9ee75e8e6a82ddf5c993e01eee2a137c558b09eec6afbf4d637e08af01aa4b38",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -144,7 +144,7 @@
         "declarationPath": "packages/components-svelte/dist/InlineLoading.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineLoadingProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],
