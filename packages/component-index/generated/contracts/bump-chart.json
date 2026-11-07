@@ -1,8 +1,8 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:76538c7bb0cb2c0fb8bff039a077d7d1cb5a1aea0416506f186b7e55b041eb55",
-  "entryDigest": "sha256:e33f0e78899913af853e268c871a312f03406f36331355de536005998f546c12",
+  "digest": "sha256:28dfbee883e4a4529642194bbac26b4b938cb91189e064358c35ac400f326aec",
+  "entryDigest": "sha256:d247731aab44bf3ced22f6d9c9713f62f718b1dfacbd45957b0b66cb10f9bc49",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/BumpChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BumpChartProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

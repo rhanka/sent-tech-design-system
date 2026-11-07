@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:8cbc8dacfe2676da764531fc8df74be85052941d4ebcaf79d1c2531d4732290c",
-  "entryDigest": "sha256:24c4b4cb10de2dfc1247d0a2402abc0fc4f7d9a167bf0f6faa1ade4efed4459e",
+  "digest": "sha256:8ec61a77ce5f1969104c5c4f6f0f93621d9ffa30540b5c9466120eb484984dac",
+  "entryDigest": "sha256:6503d983f06a64ec8c724a765cd5623cf5a9da277031df53699a6c909d33ce46",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/TraceWaterfallChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],
