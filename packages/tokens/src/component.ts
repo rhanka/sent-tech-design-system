@@ -1746,6 +1746,103 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       community2: semantic.data.category2,
       community3: semantic.data.category3,
       community4: semantic.data.category4
+    },
+    // DC-1 — atomic diagram card (spec SPEC_EVOL_DS_DIAGRAM_CARDS §5.3,
+    // Appendix A). Every value is frozen: the geometry never moves to fit
+    // text (DC-D4 zero-ellipsis). Colours alias the semantic layer only;
+    // per-tone accent/fill resolution arrives with the L-R17 tone tokens
+    // (DC-2); `tone` is carried as a `data-tone` attribute until then.
+    diagramCard: {
+      width: "460px",
+      height: "200px",
+      radius: "0",
+      borderWidth: "2px",
+      accentWidth: "8px",
+      padding: "8px",
+      headerInset: "16px",
+      iconSize: "70px",
+      iconTextGap: "6px",
+      kickerFontSize: "22px",
+      kickerFontWeight: "400",
+      kickerLineHeight: "1.3",
+      kickerLetterSpacing: "0.04em",
+      kickerTextTransform: "uppercase",
+      titleFontSize: "32px",
+      titleFontWeight: "700",
+      titleLineHeight: "1.3",
+      gap: "6px",
+      bodyFontSize: "24px",
+      bodyFontWeight: "400",
+      bodyLineHeight: "1.3",
+      bodyInsetFromBar: "14px",
+      ruleHeight: "1px",
+      ruleMargin: "4px",
+      ruleInsetStart: "16px",
+      ruleInsetEnd: "10px",
+      footerFontSize: "24px",
+      footerFontWeight: "700",
+      footerLineHeight: "1.3",
+      footerBottomInset: "9.25px",
+      fontFamily: "var(--st-font-sans)",
+      border: semantic.border.strong,
+      accent: semantic.data.category1,
+      surface: semantic.surface.raised,
+      text: semantic.text.primary,
+      secondaryText: semantic.text.secondary,
+      rule: semantic.border.subtle
+    },
+    // DC-1 — wrapping diagram card (spec §6.4, Appendix A). Kicker/title
+    // leaves alias the atomic card tokens so the "same typography"
+    // requirement holds by construction. Collapsed zones reuse the atomic
+    // card box (DC-D13: 460 × 200, no second size).
+    diagramZone: {
+      radius: "0",
+      borderWidth: "1.5px",
+      headerInset: "16px",
+      iconSize: "70px",
+      iconTextGap: "6px",
+      kickerFontSize: "var(--st-component-diagramCard-kickerFontSize)",
+      kickerFontWeight: "var(--st-component-diagramCard-kickerFontWeight)",
+      kickerLineHeight: "var(--st-component-diagramCard-kickerLineHeight)",
+      kickerLetterSpacing: "var(--st-component-diagramCard-kickerLetterSpacing)",
+      kickerTextTransform: "var(--st-component-diagramCard-kickerTextTransform)",
+      titleFontSize: "var(--st-component-diagramCard-titleFontSize)",
+      titleFontWeight: "var(--st-component-diagramCard-titleFontWeight)",
+      titleLineHeight: "var(--st-component-diagramCard-titleLineHeight)",
+      subtitleFontSize: "24px",
+      subtitleFontWeight: "400",
+      subtitleLineHeight: "1.3",
+      subtitleGap: "var(--st-component-diagramCard-gap)",
+      headerRuleGap: "4px",
+      contentInsetTop: "16px",
+      contentInsetBottom: "16px",
+      contentInsetInline: "16px",
+      collapsedWidth: "460px",
+      collapsedHeight: "200px",
+      collapsedInset: "16px",
+      collapsedSubtitleMarginInline: "16px",
+      border: semantic.border.strong,
+      surface: semantic.surface.raised,
+      text: semantic.text.primary,
+      secondaryText: semantic.text.secondary,
+      rule: semantic.border.subtle
+    },
+    // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
+    // resolve through the semantic feedback-info and surface tokens; no
+    // per-glyph colour, no raw hex in the asset. Stroke weights are in
+    // 64-unit space and scale with the icon box.
+    diagramIcon: {
+      viewBox: "0 0 64 64",
+      basePath: "M8 53L32 44L56 53L32 62Z",
+      faceStrokeWidth: "1.5",
+      lineStrokeWidth: "2.5",
+      baseFill:
+        "color-mix(in srgb, var(--st-semantic-feedback-info) 18%, var(--st-semantic-surface-raised))",
+      faceFill:
+        "color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised))",
+      faceStroke: "var(--st-semantic-feedback-info)",
+      lineStroke: "var(--st-semantic-surface-raised)",
+      lineDarkStroke: "var(--st-semantic-feedback-info)"
     }
   } as const;
 }
