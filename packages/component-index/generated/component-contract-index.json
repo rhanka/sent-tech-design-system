@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:3cf8b9a429aafb906b6280c3293774be7b06e6958393747254485429e443feed",
+  "contractsRevision": "sha256:c3b15f4dd391eec303b31781fa5f4bb59f289f07dc1c29470508a6cbfa1ce4d1",
   "counts": {
     "byFramework": {
       "angular": {
@@ -762,8 +762,8 @@
         "vue": "none"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:8c1e56358d2f95c81d1cfeebcf03246511e8afce2d71db39f2f0b753b552f16a",
-      "entryDigest": "sha256:714292e7fab3f0bfa61debde171a60183c4bc74f5adae529a2fc53f0002ce633",
+      "contractDigest": "sha256:0910f73235ae35ef194e965000afcaa2a52cd2e75d00404041a3fbdf697e2001",
+      "entryDigest": "sha256:d2c8867f836fc59865315c7e96754c5317f99ca3e1040dee1cca5384414723e6",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
     },
@@ -775,8 +775,8 @@
         "vue": "none"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:33f234e8ffc5c1c6ecaaaafcc7a1139dff90b5bd6d19b28e01fb2db473bc0d9b",
-      "entryDigest": "sha256:e47d67213e532e968fa3f75314192c1f2ebcb01c4245cc572ec4f6f4bc292b7f",
+      "contractDigest": "sha256:a17c25fd60c2dd87461738894a3cbf67fd9059a1f0c468862b765883f44867af",
+      "entryDigest": "sha256:234de6eb84b0d60f427c897b36e886c82808785559a8571350b6c703f2b73851",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
     },
@@ -2798,5 +2798,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "e5cbc8f694a2a73ca50248a37bb731c04dd6c906"
+  "sourceCommit": "432c74c1a5cda20c19b117dcbe7357d308e09fa0"
 }

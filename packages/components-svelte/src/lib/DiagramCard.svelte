@@ -19,10 +19,12 @@
    * original slot text. An icon name with no glyph data raises
    * `card-icon-unknown` and the slot collapses (DIF-14).
    *
-   * The rule stays 1 screen px at every zoom: the host publishes the current
-   * camera zoom as `--st-diagram-zoom` on the canvas viewport and the rule
-   * height is divided by it (inverse-zoom compensation, frozen requirement
-   * §rule), the HTML twin of the SVG `vector-effect="non-scaling-stroke"`.
+   * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
+   * host publishes the current camera zoom as `--st-diagram-zoom` on the
+   * canvas viewport, the rule's layout box keeps a constant 1 px footprint,
+   * and only its painted stroke is counter-scaled by `scaleY(1/zoom)`
+   * (review pass 2, item 5) — the HTML twin of the SVG
+   * `vector-effect="non-scaling-stroke"`.
    *
    * The pictogram path data arrives via the `iconGlyph` prop (resolved by
    * the host from the `diagram-icons` subpath, e.g. `getDiagramGlyph`, or by
@@ -137,6 +139,7 @@
     iconName={icon}
     iconGlyph={iconGlyph}
     headerTextWidth={layout.headerTextWidth}
+    headerBlockHeight={layout.headerBlockHeight}
     toggle={toggle}
   />
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
@@ -243,14 +246,18 @@
   .st-diagramCard-rule {
     display: block;
     flex: 0 0 auto;
-    /* 1 screen px at every zoom: the host publishes the camera zoom as
-       --st-diagram-zoom on the canvas viewport; dividing the rule height by
-       it counter-scales the host transform (inverse-zoom compensation,
-       frozen requirement §rule) — the HTML twin of the SVG
-       vector-effect="non-scaling-stroke". */
-    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
+    /* 1 screen px at every zoom, with a constant LAYOUT footprint (review
+       pass 2, item 5): the box height never reads --st-diagram-zoom, so at
+       overview zoom 0.25 the rule still occupies exactly 1 px of layout and
+       the pinned footer never moves. Only the painted stroke is
+       counter-scaled: the host scales the viewport by --st-diagram-zoom, so
+       scaleY(1/zoom) on the fixed 1 px box paints exactly 1 screen px — the
+       HTML twin of the SVG vector-effect="non-scaling-stroke". */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
     margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;
     background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
   }
   .st-diagramCard-footer {
     /* Pinned footer: text-box bottom at (height − border − inset); the flex
