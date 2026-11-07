@@ -1,3 +1,4 @@
+import { foundation } from "@sentropic/design-system-tokens";
 import { describe, expect, it } from "vitest";
 import type {
   BlockCandidateListEvents,
@@ -34,18 +35,40 @@ const badTone: DsTone = "critical";
 const neutralTone: DsTone = "neutral";
 
 // SA-1: candidates and activeKey are required on CommentModeStatusProps.
-// @ts-expect-error missing required candidates and activeKey
-const missingStatusFields: CommentModeStatusProps = {
+// Each field is witnessed by its own @ts-expect-error so the witness fails if
+// either field alone becomes optional or is removed (§6 W-0.2: assigning a
+// props object without either field errors).
+// @ts-expect-error missing required candidates (activeKey present)
+const missingCandidates: CommentModeStatusProps = {
   visible: true,
   statusText: "s",
-  announcementText: "a"
+  announcementText: "a",
+  activeKey: null
+};
+// @ts-expect-error missing required activeKey (candidates present)
+const missingActiveKey: CommentModeStatusProps = {
+  visible: true,
+  statusText: "s",
+  announcementText: "a",
+  candidates: []
 };
 
 // Event ownership (H-1): BlockHighlightOverlay declares only onAnchor; hover
 // and click live in the separate host-handler type wired by the AC-9 host.
+// onAnchor is present in each rejected object so the ONLY possible compile
+// error is the extra host-handler member — the witness fails if one is added
+// to the events type.
 const overlayEvents: BlockHighlightOverlayEvents = { onAnchor: () => {} };
-// @ts-expect-error the overlay emits only onAnchor, never onHoverBlock
-const overlayHoverEvent: BlockHighlightOverlayEvents = { onHoverBlock: (_key: OpaqueKey | null) => {} };
+const overlayHoverEvent: BlockHighlightOverlayEvents = {
+  onAnchor: () => {},
+  // @ts-expect-error the overlay emits only onAnchor, never onHoverBlock (§3.3 H-1)
+  onHoverBlock: (_key: OpaqueKey | null) => {}
+};
+const overlayClickEvent: BlockHighlightOverlayEvents = {
+  onAnchor: () => {},
+  // @ts-expect-error the overlay emits only onAnchor, never onBlockClick (§3.3 H-1)
+  onBlockClick: (_key: OpaqueKey) => {}
+};
 const overlayHostHandlers: BlockHighlightOverlayHostHandlers = {
   onHoverBlock: (_key: OpaqueKey | null) => {},
   onBlockClick: (_key: OpaqueKey) => {}
@@ -137,15 +160,15 @@ describe("W-0.2 display-model types and fixture factories", () => {
     expect(block.rect).toEqual({ x: 1, y: 2, width: 3, height: 4 });
   });
 
-  it("makeBlocks(n) returns n blocks in reading order with distinct keys", () => {
+  it("makeBlocks(n) returns n blocks in reading order with distinct keys and labels", () => {
     const blocks = makeBlocks(3);
     expect(blocks).toHaveLength(3);
     expect(new Set(blocks.map((b) => b.key)).size).toBe(3);
-    expect(blocks.map((b) => b.label)).toEqual([
-      blocks[0].label,
-      blocks[1].label,
-      blocks[2].label
-    ]);
+    // distinct labels — a factory that collapses labels fails here
+    expect(new Set(blocks.map((b) => b.label)).size).toBe(3);
+    // reading order (§5.4 F-1): rect.y strictly increasing across blocks
+    expect(blocks[0].rect.y).toBeLessThan(blocks[1].rect.y);
+    expect(blocks[1].rect.y).toBeLessThan(blocks[2].rect.y);
     for (const b of blocks) {
       expect(Object.keys(b.rect).sort()).toEqual(["height", "width", "x", "y"]);
     }
@@ -170,9 +193,10 @@ describe("W-0.2 display-model types and fixture factories", () => {
     expect(overridden.toggleLabel).toBe(labels.toggleLabel);
   });
 
-  it("pageBackgrounds exposes the light-page and dark-page fixture backgrounds", () => {
-    expect(typeof pageBackgrounds.pageLight.background).toBe("string");
-    expect(typeof pageBackgrounds.pageDark.background).toBe("string");
+  it("pageBackgrounds exposes the light-page and dark-page backgrounds from the foundation token table", () => {
+    // pinned to the token table values (§11: no raw colour literal outside it)
+    expect(pageBackgrounds.pageLight.background).toBe(foundation.color.slate[10]);
+    expect(pageBackgrounds.pageDark.background).toBe(foundation.color.slate[90]);
     expect(pageBackgrounds.pageLight.background).not.toBe(pageBackgrounds.pageDark.background);
   });
 });
