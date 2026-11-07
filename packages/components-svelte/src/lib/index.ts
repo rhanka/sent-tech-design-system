@@ -281,7 +281,10 @@ export type {
   SiteNavItem,
   ThemeOption,
   ColorMode,
-  ActionMode
+  ActionMode,
+  SiteHeaderBackground,
+  SiteHeaderBackgroundMode,
+  SiteMobileMenu
 } from "./site-config.js";
 export { SITE_CONFIG_SCHEMA_VERSION, SHELL_TOKEN_CONTRACT } from "./site-config.js";
 export { default as Textarea } from "./Textarea.svelte";

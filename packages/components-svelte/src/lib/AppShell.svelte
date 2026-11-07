@@ -72,8 +72,9 @@
   import IconButton from "./IconButton.svelte";
   import MenuPopover from "./MenuPopover.svelte";
   import Menu from "./Menu.svelte";
-  import { Boxes, ChevronDown, Globe, Moon, Palette, Search as SearchIcon, Sun } from "@lucide/svelte";
+  import { Boxes, ChevronDown, Globe, Menu as MenuIcon, Moon, Palette, Search as SearchIcon, Sun } from "@lucide/svelte";
   import IdentityButton from "./IdentityButton.svelte";
+  import NavDrawer from "./NavDrawer.svelte";
 
   // CSS custom property each resizable panel is sized by (see the
   // `.st-appShell` base rule in the style block below) — setting it inline
@@ -269,7 +270,39 @@
   const brand = $derived(siteConfig.brand ?? { name: "Sentropic" });
   const nav = $derived(Array.isArray(siteConfig.nav) ? siteConfig.nav : []);
   const t = $derived(siteConfig.theming ?? { themes: [], theme: "" });
-  const siteClasses = $derived(["st-shell", className].filter(Boolean).join(" "));
+  // ── Header : fond (`headerBackground`) et burger mobile (`mobileMenu`) ────────
+  // Additifs v1 : sans ces clés, aucune classe/écouteur n'est ajouté (rendu inchangé).
+  const headerBackgroundMode = $derived(siteConfig.headerBackground?.mode === "hero-transparent" ? "hero-transparent" : "solid");
+  const heroTransparent = $derived(mode === "site" && headerBackgroundMode === "hero-transparent");
+  const mobileMenuEnabled = $derived(siteConfig.mobileMenu?.enabled === true);
+  const mobileMenuLabel = $derived(siteConfig.mobileMenu?.label ?? "Menu");
+  let scrolled = $state(false);
+  let mobileMenuOpen = $state(false);
+
+  $effect(() => {
+    if (!heroTransparent || typeof window === "undefined") return;
+    const raw = siteConfig.headerBackground?.scrollThreshold;
+    const threshold = typeof raw === "number" && Number.isFinite(raw) ? raw : 50;
+    const update = () => {
+      scrolled = window.scrollY > threshold;
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  });
+
+  const overHero = $derived(heroTransparent && !scrolled);
+  const siteClasses = $derived(
+    [
+      "st-shell",
+      heroTransparent && "st-shell--heroTransparent",
+      overHero && "st-shell--overHero",
+      mobileMenuEnabled && "st-shell--mobileMenu",
+      className
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
   const workspaceClasses = $derived(["st-appShell", "st-appShell--workspace", className].filter(Boolean).join(" "));
 
   const isActive = (item: { href: string; active?: boolean }) =>
@@ -375,6 +408,21 @@
         onSignOut={() => siteConfig.identity?.onSignOut?.()}
         menu={siteConfig.identity.menu ?? []}
       />
+    {/if}
+
+    {#if mobileMenuEnabled}
+      <!-- Burger mobile : TOUJOURS à droite (dernier élément de la zone droite). -->
+      <IconButton
+        size="sm"
+        variant="ghost"
+        class="st-shell__burger"
+        aria-label={mobileMenuLabel}
+        aria-haspopup="dialog"
+        aria-expanded={mobileMenuOpen}
+        onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
+      >
+        <MenuIcon size={20} aria-hidden="true" />
+      </IconButton>
     {/if}
   </div>
 {/snippet}
@@ -583,7 +631,51 @@
     {/if}
   </div>
 {:else}
-  <Header class={siteClasses} label={siteConfig.brand?.label ?? "Navigation"} logo={logo} navigation={navigation} actions={actions} />
+  <Header
+    class={siteClasses}
+    label={siteConfig.brand?.label ?? "Navigation"}
+    data-st-header-background={heroTransparent ? headerBackgroundMode : undefined}
+    data-st-header-over-hero={heroTransparent ? String(overHero) : undefined}
+    logo={logo}
+    navigation={navigation}
+    actions={actions}
+  />
+  {#if mobileMenuEnabled}
+    <!-- Hors du <header> : un ancêtre à backdrop-filter piégerait le tiroir fixe. -->
+    <NavDrawer
+      bind:open={mobileMenuOpen}
+      side="right"
+      title={siteConfig.mobileMenu?.title ?? mobileMenuLabel}
+      label={siteConfig.navLabel ?? "Navigation"}
+      class="st-shell__drawer"
+    >
+      <nav class="st-shell__drawerNav" aria-label={siteConfig.navLabel ?? "Navigation"}>
+        {#each nav as item (item.href)}
+          <a
+            class="st-shell__drawerLink"
+            href={item.href}
+            aria-current={isActive(item) ? "page" : undefined}
+            onclick={() => (mobileMenuOpen = false)}
+          >{item.label}</a>
+        {/each}
+      </nav>
+      {#if siteConfig.locale && localeItems.length}
+        <div class="st-shell__drawerLocale" role="group" aria-label={siteConfig.locale.label ?? "Langue"}>
+          {#each localeItems as option (option.value)}
+            <Button
+              size="sm"
+              variant={option.value === siteConfig.locale.current ? "primary" : "secondary"}
+              aria-pressed={option.value === siteConfig.locale.current}
+              onclick={() => {
+                siteConfig.locale?.onChange?.(option.value);
+                mobileMenuOpen = false;
+              }}
+            >{option.label}</Button>
+          {/each}
+        </div>
+      {/if}
+    </NavDrawer>
+  {/if}
 {/if}
 
 <style>
@@ -612,7 +704,9 @@
   :global(.st-shell .st-button svg),
   :global(.st-shell .st-iconButton svg) { flex-shrink: 0; }
   .st-shell__brand { align-items: center; color: var(--st-semantic-text-primary); display: inline-flex; flex: 0 0 auto; gap: var(--st-spacing-3, 0.75rem); text-decoration: none; }
-  .st-shell__brandMark { width: 2rem; height: 2rem; }
+  /* Hauteur fixe, largeur intrinsèque : un logo carré rend 2rem×2rem comme avant,
+     un wordmark garde ses proportions (contrat « Intégrité visuelle du logo »). */
+  .st-shell__brandMark { height: 2rem; width: auto; max-width: 12rem; }
   .st-shell__brandCopy { display: flex; flex-direction: column; gap: 0.08rem; line-height: 1; }
   .st-shell__brandName { font-weight: 760; font-size: 1rem; }
   .st-shell__brandProduct { font-weight: 650; font-size: 0.75rem; color: var(--st-semantic-text-secondary); }
@@ -622,6 +716,89 @@
   .st-shell__actions { display: flex; align-items: center; gap: var(--st-spacing-2, 0.5rem); }
   .st-shell__menuWrap { display: inline-flex; }
   .st-shell__kbd { border: 1px solid var(--st-semantic-border-subtle); border-radius: 0.25rem; font-size: 0.6875rem; padding: 0 0.3rem; color: var(--st-semantic-text-secondary); }
+
+  /* ── headerBackground = "hero-transparent" ─────────────────────────────────
+     Header FIXE (le hero passe dessous). Défilé : surface ~95 % + flou + ombre
+     medium. Au-dessus du hero : transparent, logo passé en blanc, texte et
+     contrôles en `text-inverse`. Mêmes typo/layout dans les deux états. */
+  :global(.st-shell.st-header.st-shell--heroTransparent) {
+    inset-block-start: 0;
+    inset-inline: 0;
+    position: fixed;
+    transition:
+      background-color var(--st-motion-normal, 200ms) ease,
+      border-color var(--st-motion-normal, 200ms) ease,
+      box-shadow var(--st-motion-normal, 200ms) ease;
+  }
+  :global(.st-shell.st-header.st-shell--heroTransparent:not(.st-shell--overHero)) {
+    -webkit-backdrop-filter: blur(var(--st-component-header-backdropBlur, 12px));
+    backdrop-filter: blur(var(--st-component-header-backdropBlur, 12px));
+    background: var(
+      --st-component-header-scrolledBackground,
+      color-mix(in srgb, var(--st-semantic-surface-default, #ffffff) 95%, transparent)
+    );
+    box-shadow: var(--st-component-header-scrolledShadow, var(--st-shadow-medium, 0 8px 24px rgb(15 23 42 / 0.12)));
+  }
+  :global(.st-shell.st-header.st-shell--overHero) {
+    background: transparent;
+    border-bottom-color: transparent;
+    box-shadow: none;
+    color: var(--st-semantic-text-inverse, #ffffff);
+  }
+  :global(.st-shell--overHero .st-shell__brandMark) { filter: brightness(0) invert(1); }
+  :global(.st-shell--overHero .st-shell__brandName),
+  :global(.st-shell--overHero .st-shell__brandProduct),
+  :global(.st-shell--overHero .st-shell__navLink),
+  :global(.st-shell--overHero .st-shell__navLink[aria-current="page"]) {
+    color: var(--st-semantic-text-inverse, #ffffff);
+  }
+  :global(.st-shell--overHero .st-shell__navLink:hover) {
+    background: color-mix(in srgb, var(--st-semantic-text-inverse, #ffffff) 12%, transparent);
+  }
+  :global(.st-shell.st-shell--overHero .st-button),
+  :global(.st-shell.st-shell--overHero .st-iconButton) {
+    background: transparent;
+    border-color: transparent;
+    color: var(--st-semantic-text-inverse, #ffffff);
+  }
+  :global(.st-shell.st-shell--overHero .st-button:hover),
+  :global(.st-shell.st-shell--overHero .st-iconButton:hover) {
+    background: color-mix(in srgb, var(--st-semantic-text-inverse, #ffffff) 12%, transparent);
+  }
+
+  /* ── mobileMenu ───────────────────────────────────────────────────────────
+     ≥ 48rem : burger masqué, rendu inchangé. < 48rem : nav + utilitaires repliés
+     dans le tiroir, seul le burger (à droite) reste dans la barre. */
+  :global(.st-shell .st-iconButton.st-shell__burger) { display: none; }
+  @media (max-width: 48rem) {
+    :global(.st-shell.st-header.st-shell--mobileMenu) { padding-inline: var(--st-spacing-4, 1rem); }
+    :global(.st-shell--mobileMenu .st-header__navigation) { display: none; }
+    :global(.st-shell--mobileMenu .st-shell__actions > :not(.st-shell__burger)) { display: none; }
+    :global(.st-shell.st-shell--mobileMenu .st-iconButton.st-shell__burger) { display: inline-flex; }
+  }
+  .st-shell__drawerNav { display: flex; flex-direction: column; }
+  .st-shell__drawerLink {
+    border-radius: 0;
+    color: var(--st-semantic-text-primary);
+    font-size: 1rem;
+    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+    text-decoration: none;
+  }
+  .st-shell__drawerLink:hover { background: var(--st-semantic-surface-subtle); }
+  .st-shell__drawerLink:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: -2px;
+  }
+  .st-shell__drawerLink[aria-current="page"] {
+    box-shadow: inset 2px 0 0 var(--st-semantic-action-primary);
+    font-weight: 650;
+  }
+  .st-shell__drawerLocale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--st-spacing-2, 0.5rem);
+    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+  }
 
   .st-appShell {
     --st-appShell-rail-width: var(--st-component-appShell-railWidth, 4.5rem);

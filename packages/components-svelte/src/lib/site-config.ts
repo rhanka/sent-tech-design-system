@@ -41,6 +41,30 @@ export interface ThemeOption {
 
 export type ColorMode = "light" | "dark" | "auto";
 
+/** Fond du header (contrat « Variations de fond »).
+ *  - `solid` (défaut) : fond surface opaque, header sticky — rendu historique.
+ *  - `hero-transparent` : header FIXE, transparent avec logo/liens inversés tant
+ *    que la page n'a pas défilé au-delà de `scrollThreshold`, puis fond surface
+ *    ~95 % + flou d'arrière-plan + ombre medium. Réservé aux pages marketing. */
+export type SiteHeaderBackgroundMode = "solid" | "hero-transparent";
+
+export interface SiteHeaderBackground {
+  mode: SiteHeaderBackgroundMode;
+  /** Défilement (px) au-delà duquel `hero-transparent` bascule en fond plein. Défaut 50. */
+  scrollThreshold?: number;
+}
+
+/** Burger mobile (contrat « Burger mobile : toujours à droite »). Sous 48rem, la
+ *  nav et les utilitaires se replient ; le burger (à droite) ouvre un NavDrawer
+ *  `side="right"` contenant la nav puis le sélecteur de langue. */
+export interface SiteMobileMenu {
+  enabled: boolean;
+  /** aria-label du burger (localisé). Défaut "Menu". */
+  label?: string;
+  /** Titre du tiroir. Défaut = `label`. */
+  title?: string;
+}
+
 export interface SiteConfig {
   /** Version de schéma du contrat (info ; le shell ne throw jamais sur écart). */
   schemaVersion?: number;
@@ -116,6 +140,13 @@ export interface SiteConfig {
   // ── Liens utilitaires ────────────────────────────────────────────────────────
   links?: { github?: string };
 
+  // ── Header : fond et burger mobile (additif v1, docs/header-alignment-contract.md) ──
+  /** Couche de fond du header (« Variations de fond »). Absent ⇒ `solid`. */
+  headerBackground?: SiteHeaderBackground;
+  /** Burger mobile À DROITE ouvrant un tiroir latéral droit (nav + langue).
+   *  Absent ou `enabled: false` ⇒ rendu actuel inchangé. */
+  mobileMenu?: SiteMobileMenu;
+
   // ── Soupapes contrôlées (slots nommés) — HORS garantie pixel-perfect ─────────
   // À utiliser avec parcimonie : tout DOM injecté par l'hôte échappe au shell.
   slots?: {
@@ -136,4 +167,7 @@ export const SHELL_TOKEN_CONTRACT = [
   "--st-spacing-4",
   "--st-spacing-6",
   "--st-shadow-lg",
+  // headerBackground="hero-transparent" (additif)
+  "--st-semantic-text-inverse",
+  "--st-shadow-medium",
 ] as const;
