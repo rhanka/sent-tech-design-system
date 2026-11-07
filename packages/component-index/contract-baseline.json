@@ -1430,6 +1430,23 @@
     "status": "complete"
    }
   },
+  "hero": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"Hero\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"Hero\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"Hero\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
   "hidden": {
    "svelte": {
     "status": "complete"
@@ -2446,6 +2463,23 @@
    },
    "angular": {
     "status": "partial"
+   }
+  },
+  "section": {
+   "svelte": {
+    "status": "complete"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"Section\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"Section\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"Section\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
    }
   },
   "select": {

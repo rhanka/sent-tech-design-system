@@ -994,6 +994,18 @@
       "vue": "match",
       "angular": "match"
     },
+    "hero": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
+    "section": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
     "row": {
       "svelte": "source-of-truth",
       "react": "match",
@@ -1407,6 +1419,26 @@
         "angular": "missing"
       },
       "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "hero",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "Svelte-first site marketing primitive (owner decision 2026-11-06): value-exported only from @sentropic/design-system-svelte (lib/Hero.svelte); React/Vue/Angular ports are follow-up track items."
+    },
+    {
+      "componentId": "section",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "Svelte-first site marketing primitive (owner decision 2026-11-06): value-exported only from @sentropic/design-system-svelte (lib/Section.svelte); React/Vue/Angular ports are follow-up track items."
     }
   ],
   "barrelOnly": {
