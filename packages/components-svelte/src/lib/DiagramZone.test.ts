@@ -7,6 +7,7 @@ import {
   COLLAPSED_SUBTITLE_MEASURE,
   defaultCardMeasure,
   layoutZone,
+  lineBoxHeight,
   projectZoneProps,
   ZONE_GEOMETRY,
   type DiagramZoneProps,
@@ -221,6 +222,80 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     expect(header.toggleBox).toEqual({ x: 444, y: 10, size: 32 });
     // subtitle wraps under the icon from the left inset.
     expect(header.subtitle[0]?.x).toBe(16);
+  });
+
+  it("expanded subtitle measure comes from the layout: min(width, 460) − 26", () => {
+    const props = baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0 });
+    const layout = layoutZone(props, defaultCardMeasure);
+    const header = layout.header;
+    if (header === undefined) throw new Error("fixture-error");
+    // 492 → capped at 460 → 460 − 16 − 10 = 434, the same rule as
+    // layoutZone / renderZoneSvg (single geometry source).
+    expect(header.subtitleWidth).toBe(434);
+    // A wider frame keeps the 460 px cap (GCP at 1860 wraps at 434 too).
+    const wide = layoutZone(baseProps({ collapsed: false, width: 1860, height: 400, x: 0, y: 0 }), defaultCardMeasure);
+    expect(wide.header?.subtitleWidth).toBe(434);
+    // The Svelte header consumes the layout value, no local arithmetic.
+    const { container } = render(DiagramZone, { props: { ...props, measure: defaultCardMeasure } });
+    const subtitleBox = container.querySelector(".st-diagramZoneHeader-subtitle") as HTMLElement | null;
+    expect(subtitleBox?.getAttribute("style") ?? "").toMatch(/width:\s*434px/);
+  });
+
+  it("header text width reserves the icon/toggle room only when present (kit rule)", () => {
+    const both = layoutZone(baseProps({ collapsed: false, width: 492, x: 0, y: 0 }), defaultCardMeasure).header;
+    if (both === undefined) throw new Error("fixture-error");
+    expect(both.headerTextX).toBe(92);
+    expect(both.headerTextWidth).toBe(492 - 178);
+    const noToggle = layoutZone(
+      baseProps({ collapsed: false, width: 492, x: 0, y: 0, toggleLabel: undefined }),
+      defaultCardMeasure,
+    ).header;
+    if (noToggle === undefined) throw new Error("fixture-error");
+    expect(noToggle.headerTextWidth).toBe(492 - 92 - 16);
+    const noIcon = layoutZone(
+      baseProps({ collapsed: false, width: 492, x: 0, y: 0, icon: undefined, iconGlyph: undefined }),
+      defaultCardMeasure,
+    ).header;
+    if (noIcon === undefined) throw new Error("fixture-error");
+    expect(noIcon.headerTextX).toBe(16);
+    expect(noIcon.headerTextWidth).toBe(492 - 16 - 86);
+    const neither = layoutZone(
+      baseProps({
+        collapsed: false,
+        width: 492,
+        x: 0,
+        y: 0,
+        icon: undefined,
+        iconGlyph: undefined,
+        toggleLabel: undefined,
+      }),
+      defaultCardMeasure,
+    ).header;
+    if (neither === undefined) throw new Error("fixture-error");
+    expect(neither.headerTextWidth).toBe(492 - 32);
+  });
+
+  it("expanded auto-height reserves the footer below the children", () => {
+    const child = {
+      kind: "card" as const,
+      x: 16,
+      y: 216,
+      card: { entityId: "entity:child", title: "Child card", body: [] },
+    };
+    const props = baseProps({ collapsed: false, width: 492, x: 0, y: 0 });
+    const layout = layoutZone(props, defaultCardMeasure, [child]);
+    const header = layout.header;
+    if (header === undefined) throw new Error("fixture-error");
+    const childrenBottom = 216 + 200;
+    const footerReserve =
+      lineBoxHeight(ZONE_GEOMETRY.footer.size) +
+      ZONE_GEOMETRY.ruleHeight +
+      2 * ZONE_GEOMETRY.ruleMargin +
+      ZONE_GEOMETRY.footerBottomInset;
+    expect(layout.box.height).toBe(childrenBottom + ZONE_GEOMETRY.contentInsetBottom + footerReserve);
+    // The footer rule clears the children plus the bottom content inset.
+    expect(header.footerRuleY).toBeGreaterThanOrEqual(childrenBottom + ZONE_GEOMETRY.contentInsetBottom);
+    expect(header.footer.length).toBeGreaterThan(0);
   });
 
   it("expanded keeps and renders the footer; folding never changes it (finding 4)", () => {

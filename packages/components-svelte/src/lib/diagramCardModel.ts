@@ -529,6 +529,64 @@ export function defaultCardMeasure(
   return { lines, tooWide, lineWidths: lines.map(measureString) };
 }
 
+/**
+ * Structural twin of the `diagram-canvas` `MeasureRequest` (no import —
+ * this module stays dependency-free): every canvas `TextRole` is listed,
+ * so a `(request: CardMeasureRequest) => CardLineLayout` function is
+ * assignable to the canvas `LineMeasurer` without a cast.
+ */
+export interface CardMeasureRequest {
+  readonly text: string;
+  readonly role: "kicker" | "title" | "body" | "footer" | "subtitle" | "detail" | "legend-label" | "edge-label";
+  readonly availableWidth: number;
+  readonly allocatedLines: number;
+  readonly folded?: boolean;
+}
+
+/** Structural twin of the `diagram-canvas` `LineLayout`. */
+export interface CardLineLayout {
+  readonly lines: readonly string[];
+  readonly width: number;
+  readonly height: number;
+  readonly overflow: boolean;
+}
+
+/**
+ * Bridge from the card measurer to the canvas `LineMeasurer` shape: a host
+ * pairing `diagram-canvas` with these renderers passes `cardLineMeasurer()`
+ * straight as the injected `LineMeasurer` — no adapter, no role cast.
+ * Every canvas role maps onto the card role with the same font size
+ * (subtitle, detail, legend-label and edge-label measure as body),
+ * `width` is the widest emitted line, `height` the line count at the
+ * role's line box, and `overflow` reports a too-wide line or a line-count
+ * overflow.
+ */
+export function cardLineMeasurer(
+  measure: CardLineMeasure = defaultCardMeasure,
+): (request: CardMeasureRequest) => CardLineLayout {
+  return (request) => {
+    const role: "kicker" | "title" | "body" | "footer" =
+      request.role === "kicker" || request.role === "title" || request.role === "footer"
+        ? request.role
+        : "body";
+    const measured = measure(request.text, role, request.availableWidth, request.allocatedLines);
+    const size =
+      role === "kicker"
+        ? CARD_GEOMETRY.kicker.size
+        : role === "title"
+          ? CARD_GEOMETRY.title.size
+          : CARD_GEOMETRY.body.size;
+    const widest =
+      measured.lineWidths === undefined ? request.availableWidth : Math.max(...measured.lineWidths);
+    return {
+      lines: measured.lines,
+      width: widest,
+      height: measured.lines.length * lineBoxHeight(size),
+      overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
+    };
+  };
+}
+
 export interface LaidOutLine {
   readonly text: string;
   /** Anchor x: start edge for `"start"`, centre for `"middle"` (align variant). */
@@ -962,6 +1020,9 @@ export interface ZoneLayout {
     readonly title: readonly LaidOutLine[];
     readonly headerBlockHeight: number;
     readonly subtitle: readonly LaidOutLine[];
+    /** Subtitle wrap width: `min(width, 460) − 26` — the single geometry
+     *  source shared with `renderZoneSvg` and the Svelte header. */
+    readonly subtitleWidth: number;
     readonly subtitleBottom: number;
     readonly ruleY: number;
     readonly contentTop: number;
@@ -1019,10 +1080,16 @@ export function layoutZone(
   const contentRight = x + width - g.contentInsetInline;
   const hasIcon = props.icon !== undefined && props.iconGlyph !== undefined;
   const headerTextX = hasIcon ? x + g.headerInset + g.iconSize + g.iconTextGap : x + g.headerInset;
-  // Kit header rule: kicker/title wrap at `width − 178` (314 px at the
-  // PEOPLE width 492), whatever the icon slot — the toggle room and the
-  // right inset are inside the 178.
-  const headerTextWidth = width - g.headerTextInset;
+  // Kit header rule: with the icon and the toggle room both present,
+  // kicker/title wrap at `width − 178` (314 px at the PEOPLE width 492).
+  // Without the icon the text starts at the 16 px inset; without the
+  // toggle there is no inline-end reservation — the 178 applies only when
+  // icon and toggle are both there.
+  const rightHeaderReserve =
+    props.toggleLabel === undefined
+      ? g.headerInset
+      : g.headerTextInset - (g.headerInset + g.iconSize + g.iconTextGap);
+  const headerTextWidth = Math.max(0, x + width - headerTextX - rightHeaderReserve);
   const align = props.align ?? "left";
   const headerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
   const headerLineX = align === "center" ? headerTextX + headerTextWidth / 2 : headerTextX;
@@ -1157,13 +1224,34 @@ export function layoutZone(
       : headerTop + headerBlockHeight + g.headerRuleGap;
   const contentTop = ruleY + g.contentInsetTop;
 
-  // Frame height: the supplied box, or content + bottom inset when the
+  // Footer, expanded state too (§6.1: folding never changes the footer):
+  // wrapped as measured, pinned bottom-up at the frame bottom like the
+  // card, with its own rule ruleMargin above the footer block. Measured
+  // before the default height so an auto-sized frame reserves the footer.
+  const footerHeight = lineBoxHeight(g.footer.size);
+  const footerX = x + g.contentInsetInline;
+  const footerWidth = x + width - g.contentInsetInline - footerX;
+  const footerMeasured =
+    props.footer === undefined ? undefined : measure(props.footer, "footer", footerWidth, g.allocatedLines.footer);
+  const footerTexts = footerMeasured === undefined ? [] : [...footerMeasured.lines];
+  if (footerMeasured !== undefined && (footerTexts.length > g.allocatedLines.footer || footerMeasured.tooWide)) {
+    pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth);
+  }
+  const footerBlockHeight = footerTexts.length * footerHeight;
+
+  // Frame height: the supplied box, or content + bottom inset + the footer
+  // reserve (footer block + rule + both rule gaps + bottom inset) when the
   // host lets the zone size itself around its children.
   const childrenBottom = children.reduce(
     (bottom, child) => Math.max(bottom, child.y + (child.kind === "card" ? CARD_GEOMETRY.height : (child.zone?.height ?? ZONE_GEOMETRY.collapsedHeight))),
     y,
   );
-  const height = props.height ?? Math.max(g.collapsedHeight, childrenBottom + g.contentInsetBottom - y);
+  const footerReserve =
+    footerTexts.length === 0
+      ? 0
+      : footerBlockHeight + g.ruleHeight + 2 * g.ruleMargin + g.footerBottomInset;
+  const height =
+    props.height ?? Math.max(g.collapsedHeight, childrenBottom + g.contentInsetBottom - y + footerReserve);
 
   // Toggle slot: the frozen SVG places every expanded-zone toggle at
   // y + 10 (the header band itself starts at y + 16).
@@ -1172,24 +1260,12 @@ export function layoutZone(
       ? undefined
       : { x: contentRight - g.toggleBoxSize, y: y + g.toggleTopInset, size: g.toggleBoxSize };
 
-  // Footer, expanded state too (§6.1: folding never changes the footer):
-  // wrapped as measured, pinned bottom-up at the frame bottom like the
-  // card, with its own rule ruleMargin above the footer block.
-  const footerHeight = lineBoxHeight(g.footer.size);
   const footerBottom = y + height - g.borderWidth - g.footerBottomInset;
-  const footerX = x + g.contentInsetInline;
-  const footerWidth = x + width - g.contentInsetInline - footerX;
   let footer: LaidOutLine[] = [];
   let footerRuleY: number | undefined;
-  if (props.footer !== undefined) {
-    const footerMeasured = measure(props.footer, "footer", footerWidth, g.allocatedLines.footer);
-    const footerTexts = [...footerMeasured.lines];
-    if (footerTexts.length > g.allocatedLines.footer || footerMeasured.tooWide) {
-      pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth);
-    }
+  if (footerMeasured !== undefined) {
     const footerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
     const footerLineX = footerAnchor === "middle" ? footerX + footerWidth / 2 : footerX;
-    const footerBlockHeight = footerTexts.length * footerHeight;
     footer = footerTexts.map((text, index) => ({
       text,
       x: footerLineX,
@@ -1213,6 +1289,7 @@ export function layoutZone(
       title,
       headerBlockHeight,
       subtitle,
+      subtitleWidth,
       subtitleBottom,
       ruleY,
       contentTop,

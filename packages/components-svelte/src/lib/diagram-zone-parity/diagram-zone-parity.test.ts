@@ -9,6 +9,7 @@ import { renderZoneSvg, renderZoneSvgFromPresentation } from "../diagram-render/
 import {
   COLLAPSED_SUBTITLE_MEASURE,
   ZONE_GEOMETRY,
+  cardLineMeasurer,
   defaultCardMeasure,
   projectZoneProps,
   type DiagramZoneProps,
@@ -281,25 +282,13 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(componentDark.diagramZone.surface).not.toBe("#fff");
   });
 
-  it("one measurement source: the canvas LineMeasurer adapter delegates to the model measurer", () => {
+  it("one measurement source: the exported LineMeasurer bridge delegates to the model measurer", () => {
     // The diagram-canvas engine speaks LineMeasurer; the renderers and the
     // Svelte components speak CardLineMeasure. Both must be the SAME
-    // measurement: the adapter below is a pure re-shaping, and every
-    // corpus string measured through it agrees with the model measurer.
-    const adapter: LineMeasurer = (request: MeasureRequest) => {
-      const role = request.role as "kicker" | "title" | "body" | "footer";
-      const measured = defaultCardMeasure(request.text, role, request.availableWidth);
-      const widest =
-        measured.lineWidths === undefined
-          ? request.availableWidth
-          : Math.max(...measured.lineWidths);
-      return {
-        lines: measured.lines,
-        width: widest,
-        height: measured.lines.length * 24 * 1.3,
-        overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
-      };
-    };
+    // measurement: the exported cardLineMeasurer bridge (production code,
+    // no role cast) is a pure re-shaping, and every corpus string measured
+    // through it agrees with the model measurer.
+    const adapter: LineMeasurer = cardLineMeasurer();
     const samples: Array<[string, "kicker" | "title" | "body" | "footer", number, number]> = [
       [EXPANDED_PEOPLE.kicker, "kicker", 314, 1],
       [EXPANDED_PEOPLE.title, "title", 314, 2],

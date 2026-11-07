@@ -108,7 +108,10 @@
   );
 
   const header = $derived(layout.header);
-  const subtitleWidth = $derived(layout.box.width - 2 * ZONE_GEOMETRY.contentInsetInline);
+  // Expanded subtitle measure: the layout's own `subtitleWidth`
+  // (min(width, 460) − 26) — the single geometry source shared with
+  // `renderZoneSvg`, no local arithmetic here.
+  const subtitleWidth = $derived(header?.subtitleWidth ?? 0);
 
   $effect(() => {
     if (onDiagnostic === undefined) return;
@@ -252,15 +255,20 @@
     display: block;
     height: var(--st-component-diagramCard-ruleHeight, 1px);
     flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    /* 4 px above (headerRuleGap) and 4 px below the rule, same inline
+       insets as the header rule; the footer text follows the gap. */
     margin: var(--st-component-diagramZone-headerRuleGap, 4px)
-      var(--st-component-diagramCard-ruleInsetEnd, 10px) 0
+      var(--st-component-diagramCard-ruleInsetEnd, 10px)
+      var(--st-component-diagramZone-headerRuleGap, 4px)
       var(--st-component-diagramCard-ruleInsetStart, 16px);
     background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
   }
   .st-diagramZone-footer {
     flex: 0 0 auto;
-    /* Pinned at the frame bottom like the card footer: text-box bottom at
+    /* 16 px horizontal inset, same as the layout's footerX; pinned at the
+       frame bottom like the card footer: text-box bottom at
        (height − border − inset). */
+    margin-inline: var(--st-component-diagramZone-contentInsetInline, 16px);
     margin-bottom: calc(
       var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px)) -
         var(--st-component-diagramZone-borderWidth, 1.5px)
