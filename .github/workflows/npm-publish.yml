@@ -1,8 +1,15 @@
 name: NPM Publish
 
+# Publie les paquets DS via npm Trusted Publishing (OIDC) — c'est le
+# trusted publisher déclaré côté npm pour tokens, themes et svelte
+# (docs/release.md, §One-Time Npm Setup) :
+# - tag `v<version>` : lockstep, tokens + themes + svelte partagent la version ;
+# - tag `core-v<version>` : uniquement les paquets coeur (tokens puis themes)
+#   sur leur propre ligne de version, indépendante de design-system-svelte.
+
 on:
   push:
-    tags: ["v[0-9]*"]
+    tags: ["v[0-9]*", "core-v*"]
   workflow_dispatch:
 
 permissions:
@@ -32,7 +39,7 @@ jobs:
   release-guard:
     needs: verify
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/core-v')
     env:
       RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
       TAG_VERSION: ${{ github.ref_name }}
@@ -52,21 +59,30 @@ jobs:
 
       - name: Verify package versions match tag
         env:
-          EXPECTED_VERSION: ${{ github.ref_name }}
+          TAG_VERSION: ${{ github.ref_name }}
         run: |
-          EXPECTED_VERSION="${EXPECTED_VERSION#v}"
-          EXPECTED_VERSION="$EXPECTED_VERSION" node --input-type=module <<'NODE'
+          node --input-type=module <<'NODE'
           import { readFileSync } from "node:fs";
 
-          const expected = process.env.EXPECTED_VERSION;
+          const tag = process.env.TAG_VERSION;
+          // `v<version>` publishes tokens+themes+svelte in lockstep;
+          // `core-v<version>` publishes only the core pair, at their own
+          // version, without requiring design-system-svelte to share it.
+          const core = tag.startsWith("core-v");
+          const expected = core ? tag.slice("core-v".length) : tag.slice(1);
           // Publishable design-system packages only. The design-audit engine
           // (packages/skills) is intentionally excluded from npm releases;
           // it will be productized under an on-brand name after WP8.
-          const publishable = [
-            "packages/tokens/package.json",
-            "packages/themes/package.json",
-            "packages/components-svelte/package.json",
-          ];
+          const publishable = core
+            ? [
+                "packages/tokens/package.json",
+                "packages/themes/package.json",
+              ]
+            : [
+                "packages/tokens/package.json",
+                "packages/themes/package.json",
+                "packages/components-svelte/package.json",
+              ];
           const failures = [];
 
           for (const manifestPath of publishable) {
@@ -77,18 +93,22 @@ jobs:
           }
 
           if (failures.length > 0) {
-            console.error(`Tag version ${expected} does not match package versions:`);
+            console.error(`Tag ${tag} expects version ${expected} but:`);
             for (const failure of failures) console.error(`- ${failure}`);
             process.exit(1);
           }
 
-          console.log(`All publishable package versions match ${expected}`);
+          console.log(`Package versions match ${expected} (${core ? "core-v tag: tokens+themes only" : "v lockstep tag"})`);
           NODE
 
   publish:
     needs: release-guard
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/core-v')
+    env:
+      # `v<version>` lockstep: svelte shares the tag version. `core-v<version>`:
+      # only the core pair publishes, at its own version.
+      IS_LOCKSTEP: ${{ startsWith(github.ref, 'refs/tags/v') }}
     permissions:
       contents: read
       id-token: write
@@ -120,14 +140,19 @@ jobs:
           # an on-brand rename. Do not add it back without an explicit decision.
           npm publish --workspace @sentropic/design-system-tokens --access public
           npm publish --workspace @sentropic/design-system-themes --access public
-          npm publish --workspace @sentropic/design-system-svelte --access public
+          # design-system-svelte shares only the `v<version>` lockstep line;
+          # on a `core-v<version>` tag the core pair publishes alone.
+          if [ "$IS_LOCKSTEP" = "true" ]; then
+            npm publish --workspace @sentropic/design-system-svelte --access public
+          fi
 
   post-publish-check:
     needs: publish
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/core-v')
     env:
       TAG_VERSION: ${{ github.ref_name }}
+      IS_LOCKSTEP: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
     steps:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -137,11 +162,14 @@ jobs:
       - name: Wait for npm propagation
         run: |
           VERSION="${TAG_VERSION#v}"
+          VERSION="${VERSION#core-v}"
           PACKAGES=(
             "@sentropic/design-system-tokens"
             "@sentropic/design-system-themes"
-            "@sentropic/design-system-svelte"
           )
+          if [ "$IS_LOCKSTEP" = "true" ]; then
+            PACKAGES+=("@sentropic/design-system-svelte")
+          fi
 
           for attempt in {1..20}; do
             missing=()
@@ -153,7 +181,7 @@ jobs:
             done
 
             if [ "${#missing[@]}" -eq 0 ]; then
-              echo "All packages are available from npm."
+              echo "All published packages are available from npm."
               exit 0
             fi
 
@@ -167,16 +195,25 @@ jobs:
       - name: Install published packages
         run: |
           VERSION="${TAG_VERSION#v}"
+          VERSION="${VERSION#core-v}"
           mkdir /tmp/sent-tech-post-publish
           cd /tmp/sent-tech-post-publish
           npm init -y --silent
-          npm install \
-            "@sentropic/design-system-tokens@${VERSION}" \
-            "@sentropic/design-system-themes@${VERSION}" \
-            "@sentropic/design-system-svelte@${VERSION}" \
-            "svelte@^5.53.2"
+          INSTALL_ARGS=(
+            "@sentropic/design-system-tokens@${VERSION}"
+            "@sentropic/design-system-themes@${VERSION}"
+          )
+          if [ "$IS_LOCKSTEP" = "true" ]; then
+            INSTALL_ARGS+=(
+              "@sentropic/design-system-svelte@${VERSION}"
+              "svelte@^5.53.2"
+            )
+          fi
+          npm install "${INSTALL_ARGS[@]}"
 
       - name: Verify published package imports
+        env:
+          IS_LOCKSTEP: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
           cd /tmp/sent-tech-post-publish
           node --input-type=module <<'NODE'
@@ -193,12 +230,14 @@ jobs:
             throw new Error("@sentropic/design-system-themes missing compileTheme export");
           }
 
-          const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");
-          const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
+          if (process.env.IS_LOCKSTEP === "true") {
+            const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");
+            const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
 
-          for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
-            if (!componentIndex.includes("as " + exportName)) {
-              throw new Error("@sentropic/design-system-svelte missing " + exportName + " export");
+            for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
+              if (!componentIndex.includes("as " + exportName)) {
+                throw new Error("@sentropic/design-system-svelte missing " + exportName + " export");
+              }
             }
           }
 
