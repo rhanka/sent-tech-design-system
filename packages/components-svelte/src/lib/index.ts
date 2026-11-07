@@ -84,6 +84,17 @@ export { default as DataImage } from "./DataImage.svelte";
 export { default as DataTable } from "./DataTable.svelte";
 export { default as DashboardGrid } from "./DashboardGrid.svelte";
 export { default as DatePicker } from "./DatePicker.svelte";
+export { default as DiagramCard } from "./DiagramCard.svelte";
+export type { DiagramCardProps } from "./DiagramCard.svelte";
+export { default as DiagramZone } from "./DiagramZone.svelte";
+export type { DiagramZoneProps } from "./DiagramZone.svelte";
+export type {
+  DiagramCardToggle,
+  DiagramGlyphPaths,
+  DiagramZoneToggle,
+  ZoneDiagnostic,
+  ZoneChildSpec,
+} from "./diagramCardModel.js";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";
