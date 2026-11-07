@@ -27,8 +27,27 @@ const { join } = path;
 const VITE_PLUGIN_SPECIFIER = ["@sveltejs", "vite-plugin-svelte"].join("/");
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const PACKAGE_DIR = path.resolve(HERE, "..", "..", "..");
-const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
+// packages/artifact-shell — two levels up from src/lib
+const PACKAGE_DIR = path.resolve(HERE, "..", "..");
+// The repository root is the nearest ancestor whose package.json declares
+// npm workspaces; the worktree may live anywhere on disk, so it is found by
+// walking up, never by a fixed number of ".." segments.
+function findRepoRoot(start) {
+  let dir = start;
+  for (;;) {
+    try {
+      const manifest = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+      if (manifest.workspaces !== undefined) return dir;
+    } catch {
+      /* not a package root — keep walking up */
+    }
+    const parent = path.resolve(dir, "..");
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error("no package.json with workspaces found above " + start);
+}
+const WORKTREE_ROOT = findRepoRoot(HERE);
 
 // Placeholders look like relative specifiers so the import-graph gate reads
 // them as in-src relative paths; they are replaced with absolute source
@@ -266,6 +285,50 @@ async function runCell(browser, base, theme, pageKind) {
   const anchored = await page.evaluate(() => window.__shell.anchored);
   assert(anchored === 1, `${label} chip click -> onAnchor`, `anchored=${anchored}`);
 
+  // --- selected treatment (§5.3a): distinguished from hover by outline
+  // WEIGHT (dual outline at increased weight), never colour/alpha alone ---
+  await page.evaluate(() => {
+    window.__shell.setHovered(null);
+    window.__shell.setSelected("sentinel-block-key-1");
+  });
+  await page.waitForFunction(
+    "document.querySelector('.st-blockHighlightOverlay__rect--selected') !== null && document.querySelector('.st-blockHighlightOverlay__rect--hover') === null",
+    { timeout: 10000 }
+  );
+  const sel = await page.evaluate(() => {
+    const rect = document.querySelector(".st-blockHighlightOverlay__rect--selected");
+    const dark = rect.querySelector(".st-blockHighlightOverlay__stroke--dark");
+    const light = rect.querySelector(".st-blockHighlightOverlay__stroke--light");
+    const chip = rect.querySelector(".st-blockHighlightOverlay__chip");
+    const cs = (el, prop) => getComputedStyle(el).getPropertyValue(prop);
+    return {
+      darkBorder: cs(dark, "border-top-color"),
+      darkWidth: cs(dark, "border-top-width"),
+      lightInsetTop: cs(light, "top"),
+      lightWidth: cs(light, "border-top-width"),
+      chipText: chip.textContent,
+      chipVisible: chip.getBoundingClientRect().width > 0 && chip.getBoundingClientRect().height > 0
+    };
+  });
+  const selDark = widthPx(sel.darkWidth);
+  const selLightInset = widthPx(sel.lightInsetTop);
+  const selLight = widthPx(sel.lightWidth);
+  const hoverCombined = widthPx(measured.darkWidth) + widthPx(measured.lightWidth);
+  const selectedCombined = selDark + selLight;
+  // increased weight on the outer stroke; the inner stroke insets by that
+  // same increased width so it cannot occlude the weight increase
+  assert(selDark === 2, `${label} selected outer stroke is 2px`, sel.darkWidth);
+  assert(selLightInset === 2, `${label} selected inner stroke inset 2px (no occlusion)`, sel.lightInsetTop);
+  assert(selectedCombined > hoverCombined, `${label} selected outline heavier than hover`, `${selectedCombined}px vs hover ${hoverCombined}px`);
+  // the selected outline still holds >= 3:1 against the page
+  const selDarkRatio = contrast(parseColour(sel.darkBorder), pageColour);
+  assert(selDarkRatio >= 3, `${label} selected outline contrast`, `${selDarkRatio.toFixed(2)} vs ${pageKind}, need >= 3:1`);
+  // selected chip renders with label + count and anchors on click
+  assert(sel.chipVisible, `${label} selected chip visible`, "chip has no layout box");
+  assert(sel.chipText.includes("SENTINEL-CHIP-LABEL") && sel.chipText.includes("2"), `${label} selected chip label+count`, sel.chipText);
+  await page.click(".st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__chip");
+  const anchoredSelected = await page.evaluate(() => window.__shell.anchored);
+  assert(anchoredSelected === 2, `${label} selected chip click -> onAnchor`, `anchored=${anchoredSelected}`);
   assert(pageErrors.length === 0, `${label} page errors`, pageErrors.slice(0, 3).join(" | "));
   await page.close();
 }
@@ -312,7 +375,7 @@ async function main() {
     console.error(`\n${failures.length} browser assertion(s) failed`);
     process.exit(1);
   }
-  console.log("B-1 pass: outline contrast >= 3:1 in all 4 cells, real hover shows the chip, chip click -> onAnchor");
+  console.log("B-1 pass: outline contrast >= 3:1 in all 4 cells, hover + selected chips anchor, selected distinguished by outline weight (§5.3a)");
 }
 
 main().catch((error) => {
