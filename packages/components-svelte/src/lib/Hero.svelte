@@ -188,6 +188,11 @@
   }
 
   .st-hero__intro {
+    /* A DS Link in the intro (back link, eyebrow) reads on the overlay: it
+       takes the hero text colour instead of the theme link colour. */
+    --st-component-link-text: currentColor;
+    --st-component-link-hoverText: currentColor;
+    --st-component-link-anatomy-states-hover-text: currentColor;
     display: flex;
     flex-direction: column;
   }

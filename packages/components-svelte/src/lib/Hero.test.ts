@@ -92,3 +92,12 @@ describe("Hero", () => {
     expect(rawColours).toEqual([]);
   });
 });
+
+describe("Hero — links on the overlay", () => {
+  it("re-points the DS Link colour tokens to the hero text colour inside the intro", () => {
+    const intro = source.slice(source.indexOf(".st-hero__intro {"));
+    const block = intro.slice(0, intro.indexOf("}"));
+    expect(block).toContain("--st-component-link-text: currentColor;");
+    expect(block).toContain("--st-component-link-hoverText: currentColor;");
+  });
+});
