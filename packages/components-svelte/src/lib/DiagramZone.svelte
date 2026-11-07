@@ -124,6 +124,48 @@
   // `renderZoneSvg`, no local arithmetic here.
   const subtitleWidth = $derived(header?.subtitleWidth ?? 0);
 
+  // Review pass 4 (blocking): the expanded frame positions its header,
+  // rules, content and footer from the shared layout (`layout.header` /
+  // `layout.box`) — never from an independent CSS stack of border +
+  // padding + line boxes. Layout coordinates are frame-edge based, while
+  // an absolutely positioned child resolves against the frame's PADDING
+  // box, so the CSS border is subtracted exactly once, through the border
+  // token, in every frame-edge offset below. The footer is pinned the
+  // other way round: the model's `footerBottom = frame bottom − border −
+  // inset` is already measured from the inner border edge, so from the
+  // padding box the whole offset is the inset itself (9.25 px) — no
+  // border subtraction in the value.
+  const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
+  const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
+  const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
+  // Header band: frame top + headerInset, spanning the header/content
+  // inline insets, as tall as the layout's header block + subtitle.
+  const headerStyle = $derived(
+    header === undefined
+      ? undefined
+      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
+  );
+  const ruleStyle = $derived(
+    header === undefined
+      ? undefined
+      : `top:${frameTop(header.ruleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`,
+  );
+  const contentStyle = $derived(
+    header === undefined
+      ? undefined
+      : `top:${frameTop(header.contentTop)};left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(ZONE_GEOMETRY.contentInsetBottom)}`,
+  );
+  const footerRuleStyle = $derived(
+    header?.footerRuleY === undefined
+      ? undefined
+      : `top:${frameTop(header.footerRuleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`,
+  );
+  const footerStyle = $derived(
+    header === undefined
+      ? undefined
+      : `left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
+  );
+
   $effect(() => {
     if (onDiagnostic === undefined) return;
     for (const diagnostic of layout.diagnostics) onDiagnostic(diagnostic);
@@ -190,7 +232,10 @@
       onclick={() => onSelect?.({ entityId })}
     >
       {#if header !== undefined}
-        <div class="st-diagramZone-header">
+        <!-- Every part below is absolutely positioned from the shared
+             layout's inline offsets (review pass 4): the CSS border is
+             accounted exactly once in those calc offsets. -->
+        <div class="st-diagramZone-header" style={headerStyle}>
           <DiagramZoneHeader
             kicker={header.kicker}
             title={header.title}
@@ -210,19 +255,22 @@
             toggleTopInset={ZONE_GEOMETRY.toggleTopInset}
           />
         </div>
-        <div class="st-diagramZone-rule" aria-hidden="true"></div>
-        <div class="st-diagramZone-content">
+        <div class="st-diagramZone-rule" style={ruleStyle} aria-hidden="true"></div>
+        <div class="st-diagramZone-content" style={contentStyle}>
           {#if children !== undefined}
             {@render children()}
           {/if}
         </div>
         {#if header.footer.length > 0}
           <!-- The footer is identical in both states (§6.1): folding never
-               changes it. Pinned at the frame bottom like the card footer. -->
+               changes it. Pinned at the frame bottom like the card footer:
+               from the padding box the whole bottom offset is the
+               footerBottomInset (9.25 px), the border already accounted by
+               the containing block. -->
           {#if header.footerRuleY !== undefined}
-            <div class="st-diagramZone-footerRule" aria-hidden="true"></div>
+            <div class="st-diagramZone-footerRule" style={footerRuleStyle} aria-hidden="true"></div>
           {/if}
-          <div class="st-diagramZone-footer">
+          <div class="st-diagramZone-footer" style={footerStyle}>
             {#each header.footer as line, footerIndex (footerIndex)}
               <span class="st-diagramZone-footerLine">{line.text}</span>
             {/each}
@@ -240,14 +288,17 @@
     position: absolute;
   }
   .st-diagramZone {
+    /* Expanded frame: the containing block of every part below. The parts
+       are absolutely positioned from the shared layout's inline offsets
+       (review pass 4), so the frame is a plain bordered box — no flex
+       stack of border + padding + line boxes. */
+    position: relative;
     box-sizing: border-box;
     border: var(--st-component-diagramZone-borderWidth, 1.5px) solid
       var(--st-component-diagramZone-border, var(--st-semantic-border-strong));
     border-radius: var(--st-component-diagramZone-radius, 0);
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
-    display: flex;
-    flex-direction: column;
     text-align: left;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
   }
@@ -267,65 +318,52 @@
     background: transparent;
   }
   .st-diagramZone-header {
-    /* headerInset 16: frame edge → icon left edge. */
-    padding: var(--st-component-diagramZone-headerInset, 16px)
-      var(--st-component-diagramZone-contentInsetInline, 16px) 0
-      var(--st-component-diagramZone-headerInset, 16px);
+    /* top/left/right/height come from the shared layout inline; the CSS
+       border is already accounted exactly once in those calc offsets
+       (frame-edge layout coordinate − border token). */
+    position: absolute;
     min-width: 0;
-    flex: 0 0 auto;
   }
   .st-diagramZone-rule {
+    position: absolute;
     display: block;
     /* 1 screen px at every zoom with a constant LAYOUT footprint (review
-       pass 2, item 5): the box keeps a fixed 1 px height/flex-basis and only
-       the painted stroke is counter-scaled by scaleY(1/zoom), same contract
-       as the card rule — the zone footer never moves at overview zoom. */
+       pass 2, item 5): the box keeps a fixed 1 px height and only the
+       painted stroke is counter-scaled by scaleY(1/zoom), same contract
+       as the card rule — the zone footer never moves at overview zoom.
+       The rule's top/left/right come from the shared layout inline
+       (ruleY and the rule insets). */
     height: var(--st-component-diagramCard-ruleHeight, 1px);
-    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
     transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
     transform-origin: center;
-    /* headerRuleGap 4 above; contentInsetTop 16 below; the rule insets are
-       the card's (same rule, §6.2). */
-    margin: var(--st-component-diagramZone-headerRuleGap, 4px)
-      var(--st-component-diagramCard-ruleInsetEnd, 10px) 0
-      var(--st-component-diagramCard-ruleInsetStart, 16px);
     background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
   }
   .st-diagramZone-content {
-    flex: 1 1 auto;
+    /* top/left/right/bottom from the shared layout inline (contentTop and
+       the content insets); still the positioning context for the
+       host-rendered children. */
+    position: absolute;
     min-height: 0;
-    position: relative;
-    margin: var(--st-component-diagramZone-contentInsetTop, 16px)
-      var(--st-component-diagramZone-contentInsetInline, 16px)
-      var(--st-component-diagramZone-contentInsetBottom, 16px);
   }
   .st-diagramZone-footerRule {
+    position: absolute;
     display: block;
-    /* Same constant-footprint rule contract as the card and the header rule
-       (review pass 2, item 5): fixed 1 px layout box, paint-only
-       counter-scale. */
+    /* Same constant-footprint rule contract as the card and the header
+       rule (review pass 2, item 5): fixed 1 px layout box, paint-only
+       counter-scale. Top/left/right come from the shared layout inline
+       (footerRuleY and the rule insets). */
     height: var(--st-component-diagramCard-ruleHeight, 1px);
-    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
     transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
     transform-origin: center;
-    /* 4 px above (headerRuleGap) and 4 px below the rule, same inline
-       insets as the header rule; the footer text follows the gap. */
-    margin: var(--st-component-diagramZone-headerRuleGap, 4px)
-      var(--st-component-diagramCard-ruleInsetEnd, 10px)
-      var(--st-component-diagramZone-headerRuleGap, 4px)
-      var(--st-component-diagramCard-ruleInsetStart, 16px);
     background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
   }
   .st-diagramZone-footer {
-    flex: 0 0 auto;
-    /* 16 px horizontal inset, same as the layout's footerX; pinned at the
-       frame bottom like the card footer: text-box bottom at
-       (height − border − inset). */
-    margin-inline: var(--st-component-diagramZone-contentInsetInline, 16px);
-    margin-bottom: calc(
-      var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px)) -
-        var(--st-component-diagramZone-borderWidth, 1.5px)
-    );
+    position: absolute;
+    /* Pinned at the frame bottom like the card footer: the model pins
+       footerBottom at (frame bottom − border − inset), and the padding
+       box already sits inside the border, so the whole bottom offset is
+       the footerBottomInset token (9.25 px) — no border subtraction in
+       the value (review pass 4). Inline insets: the layout's footerX. */
     font-size: var(--st-component-diagramZone-footerFontSize, var(--st-component-diagramCard-footerFontSize, 24px));
     font-weight: var(--st-component-diagramZone-footerFontWeight, var(--st-component-diagramCard-footerFontWeight, 700));
     line-height: var(--st-component-diagramZone-footerLineHeight, var(--st-component-diagramCard-footerLineHeight, 1.3));
