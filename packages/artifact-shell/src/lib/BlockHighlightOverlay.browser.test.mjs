@@ -75,6 +75,7 @@ const HARNESS_APP = `
   ];
 
   let hovered = $state(null);
+  let hoveredKey = null;
   let selected = $state(null);
 
   // page background value comes from the foundation token table at runtime —
@@ -87,7 +88,7 @@ const HARNESS_APP = `
     anchored: 0,
     blocks,
     lastPointer: null,
-    setHovered(key) { hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
+    setHovered(key) { hoveredKey = key; hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
     setSelected(key) { selected = key === null ? null : (blocks.find((b) => b.key === key) ?? null); }
   };
 </script>
@@ -106,7 +107,12 @@ const HARNESS_APP = `
       const y = event.clientY - box.top;
       const hit = blocks.find((b) => x >= b.rect.x && x <= b.rect.x + b.rect.width && y >= b.rect.y && y <= b.rect.y + b.rect.height);
       window.__shell.lastPointer = { x, y, hit: hit ? hit.key : null };
-      window.__shell.setHovered(hit ? hit.key : null);
+      // The chip renders just outside the block rect (top: 100%) and is the
+      // overlay's only pointer target: while the pointer is over it the block
+      // stays hovered — the AC-9 host hit layer owns this in the real viewer.
+      // Without it the chip unmounts on approach and its click never lands.
+      const overOverlay = event.target instanceof Element && event.target.closest('[data-st-shell="block-highlight-overlay"]') !== null;
+      window.__shell.setHovered(hit ? hit.key : overOverlay ? hoveredKey : null);
     }}
   >
     <BlockHighlightOverlay
@@ -338,10 +344,12 @@ async function runCell(browser, base, theme, pageKind) {
   assert(measured.chipText.includes("SENTINEL-CHIP-LABEL"), `${label} chip label`, measured.chipText);
   assert(measured.chipText.includes("2"), `${label} chip count`, measured.chipText);
 
-  // chip activation emits onAnchor
+  // chip activation emits onAnchor. The counter is cumulative within a cell,
+  // so each click is compared as a delta against the value read just before it.
+  const anchoredBefore = await page.evaluate(() => window.__shell.anchored);
   await page.click(".st-blockHighlightOverlay__chip");
   const anchored = await page.evaluate(() => window.__shell.anchored);
-  assert(anchored === 1, `${label} chip click -> onAnchor`, `anchored=${anchored}`);
+  assert(anchored === anchoredBefore + 1, `${label} chip click -> onAnchor`, `anchored=${anchored} (was ${anchoredBefore})`);
 
   // --- selected treatment (§5.3a): distinguished from hover by outline
   // WEIGHT (dual outline at increased weight), never colour/alpha alone ---
@@ -365,6 +373,7 @@ async function runCell(browser, base, theme, pageKind) {
       darkWidth: cs(dark, "border-top-width"),
       lightInsetTop: cs(light, "top"),
       lightWidth: cs(light, "border-top-width"),
+      lightBorder: cs(light, "border-top-color"),
       chipText: chip.textContent,
       chipVisible: chip.getBoundingClientRect().width > 0 && chip.getBoundingClientRect().height > 0
     };
@@ -379,15 +388,27 @@ async function runCell(browser, base, theme, pageKind) {
   assert(selDark === 2, `${label} selected outer stroke is 2px`, sel.darkWidth);
   assert(selLightInset === 2, `${label} selected inner stroke inset 2px (no occlusion)`, sel.lightInsetTop);
   assert(selectedCombined > hoverCombined, `${label} selected outline heavier than hover`, `${selectedCombined}px vs hover ${hoverCombined}px`);
-  // the selected outline still holds >= 3:1 against the page
+  // the selected outline still holds >= 3:1 against the page. The outline is
+  // the DUAL pair (§2.5/§5.3a): the outer stroke reads
+  // --st-component-blockHighlight-selectedOutlineDark (fallback
+  // --st-shell-outline-dark, slate[90]) and contrasts LIGHT pages; the inner
+  // stroke reads --st-component-blockHighlight-selectedOutlineLight (fallback
+  // --st-shell-outline-light, slate[0]) and contrasts DARK pages. One fixed
+  // colour cannot hold 3:1 against an unknown authored page, so the pair is
+  // the guarantee — measured exactly like the hover row above.
   const selDarkRatio = contrast(parseColour(sel.darkBorder), pageColour);
-  assert(selDarkRatio >= 3, `${label} selected outline contrast`, `${selDarkRatio.toFixed(2)} vs ${pageKind}, need >= 3:1`);
+  const selLightRatio = contrast(parseColour(sel.lightBorder), pageColour);
+  assert(Math.max(selDarkRatio, selLightRatio) >= 3, `${label} selected outline contrast`, `${selDarkRatio.toFixed(2)} (dark stroke) / ${selLightRatio.toFixed(2)} (light stroke) vs ${pageKind}, need >= 3:1`);
+  // the page-appropriate stroke of the dual pair carries the contrast
+  const pageStrokeRatio = pageKind === "pageDark" ? selLightRatio : selDarkRatio;
+  assert(pageStrokeRatio >= 3, `${label} selected ${pageKind === "pageDark" ? "light" : "dark"} stroke contrasts ${pageKind}`, `${pageStrokeRatio.toFixed(2)} vs ${pageKind}, need >= 3:1`);
   // selected chip renders with label + count and anchors on click
   assert(sel.chipVisible, `${label} selected chip visible`, "chip has no layout box");
   assert(sel.chipText.includes("SENTINEL-CHIP-LABEL") && sel.chipText.includes("2"), `${label} selected chip label+count`, sel.chipText);
+  const anchoredBeforeSelected = await page.evaluate(() => window.__shell.anchored);
   await page.click(".st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__chip");
   const anchoredSelected = await page.evaluate(() => window.__shell.anchored);
-  assert(anchoredSelected === 2, `${label} selected chip click -> onAnchor`, `anchored=${anchoredSelected}`);
+  assert(anchoredSelected === anchoredBeforeSelected + 1, `${label} selected chip click -> onAnchor`, `anchored=${anchoredSelected} (was ${anchoredBeforeSelected})`);
   assert(pageErrors.length === 0, `${label} page errors`, pageErrors.slice(0, 3).join(" | "));
   await page.close();
 }
