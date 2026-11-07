@@ -373,7 +373,13 @@ const deepVerify = {
     // RT-1: @sentropic/design-system-rich-text joins the closure for the same
     // reason at an as-yet unpublished 0.1.0 - the svelte tarball's dependency
     // resolves to the candidate local tarball, never to the registry.
-    closure: ["@sentropic/graph", "@sentropic/design-system-rich-text"],
+    //
+    // Same rule for @sentropic/design-system-themes: the svelte tarball's
+    // `dependencies` pin it at the workspace version (0.12.0 while
+    // unpublished), so the install must resolve it to the local tarball -
+    // the registry has no such version yet (ETARGET otherwise). themes'
+    // own closure pulls tokens in the same walk.
+    closure: ["@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-themes"],
     peers: [
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
@@ -754,8 +760,26 @@ try {
       }
     }
     strictPeers.set("jsdom", rootManifest.devDependencies.jsdom);
+    // Same closure rule as the deep installs above: the strict install
+    // resolves the tarballs' own `dependencies` for real, and the svelte
+    // tarball pins themes/tokens at the workspace version (unpublished
+    // until release), so those must arrive as local tarballs too.
+    const strictTarballs = [svelteTarball, richTextTarball];
+    const strictNames = new Set(["@sentropic/design-system-svelte", "@sentropic/design-system-rich-text"]);
+    const strictPending = ["@sentropic/design-system-svelte", "@sentropic/design-system-rich-text"];
+    while (strictPending.length > 0) {
+      const name = strictPending.shift();
+      for (const closureName of deepVerify[name]?.closure ?? []) {
+        if (strictNames.has(closureName)) continue;
+        const depPkg = packages.find((candidate) => candidate.name === closureName);
+        assert(depPkg, `closure dependency ${closureName} is not a smoke-pack package`);
+        strictTarballs.push(ensureTarball(depPkg));
+        strictNames.add(closureName);
+        strictPending.push(closureName);
+      }
+    }
     const strictDir = installProject(
-      [svelteTarball, richTextTarball],
+      strictTarballs,
       strictPeers,
       { strict: true, dirName: "install-strict" },
     );
