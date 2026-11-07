@@ -142,6 +142,34 @@ function assert(condition, label, message) {
   return Boolean(condition);
 }
 
+// waitForFunction wrapper: on failure, dump the page console, page errors and
+// the evaluated predicate inputs to stderr so the next CI failure explains
+// itself. `context` is the { consoleMessages, pageErrors } pair captured for
+// the page; `diagnostics` is evaluated in the page when the wait fails.
+function makeWaitFor(page, context) {
+  return async function waitFor(label, predicate, diagnostics, options = { timeout: 10000 }) {
+    try {
+      await page.waitForFunction(predicate, options);
+    } catch (error) {
+      console.error(`\n[diagnostic] ${label}: waitForFunction failed`);
+      console.error(`[diagnostic] predicate: ${predicate}`);
+      if (context.consoleMessages.length > 0) {
+        console.error("[diagnostic] page console:\n" + context.consoleMessages.map((m) => "  " + m).join("\n"));
+      }
+      if (context.pageErrors.length > 0) {
+        console.error("[diagnostic] page errors:\n" + context.pageErrors.map((m) => "  " + m).join("\n"));
+      }
+      try {
+        const inputs = await page.evaluate(diagnostics);
+        console.error("[diagnostic] predicate inputs: " + JSON.stringify(inputs, null, 2));
+      } catch (diagError) {
+        console.error("[diagnostic] input evaluation failed: " + String(diagError && diagError.message ? diagError.message : diagError));
+      }
+      throw error;
+    }
+  };
+}
+
 function writeHarnessFiles(work) {
   mkdirSync(join(work, "src"), { recursive: true });
   writeFileSync(join(work, "package.json"), JSON.stringify({ name: "shell-harness", private: true, type: "module" }));
@@ -207,17 +235,32 @@ async function main() {
 
     const page = await browser.newPage();
     const pageErrors = [];
+    const consoleMessages = [];
     page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
+    page.on("console", (msg) => consoleMessages.push(`[${msg.type()}] ${msg.text()}`));
+    const waitFor = makeWaitFor(page, { consoleMessages, pageErrors });
+    const listInputs = () => ({
+      url: location.href,
+      shellReady: window.__shellReady === true,
+      activeElement: document.activeElement
+        ? (document.activeElement.getAttribute("data-st-shell") || document.activeElement.id || document.activeElement.tagName)
+        : null,
+      activeElementKey: document.activeElement?.getAttribute("data-block-key") ?? null,
+      listboxPresent: document.querySelector('[role="listbox"]') !== null,
+      rows: [...document.querySelectorAll('[role="option"]')].map((r) => r.getAttribute("data-block-key")),
+      events: window.__shell?.events ?? null
+    });
     await page.goto(`${base}/`, { waitUntil: "load", timeout: 30000 });
-    await page.waitForFunction("window.__shellReady === true", { timeout: 30000 });
+    await waitFor("shell ready", "window.__shellReady === true", listInputs, { timeout: 30000 });
 
     // real focus movement: focus the listbox root, then arrow down — the
     // active row must receive focus (focus follows the controlled activeKey)
     await page.focus('[role="listbox"]');
     await page.keyboard.press("ArrowDown");
-    await page.waitForFunction(
+    await waitFor(
+      "ArrowDown focuses row 1",
       "document.activeElement && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
-      { timeout: 10000 }
+      listInputs
     );
     assert(true, "B-2 ArrowDown moves focus to the first row", "");
     let state = await page.evaluate(() => ({
@@ -230,19 +273,22 @@ async function main() {
     assert(state.tabIndex === "0", "B-2 roving tabIndex 0 on the active row", state.tabIndex);
 
     await page.keyboard.press("ArrowDown");
-    await page.waitForFunction(
+    await waitFor(
+      "ArrowDown focuses row 2",
       "document.activeElement && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-2'",
-      { timeout: 10000 }
+      listInputs
     );
     await page.keyboard.press("End");
-    await page.waitForFunction(
+    await waitFor(
+      "End focuses row 3",
       "document.activeElement && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-3'",
-      { timeout: 10000 }
+      listInputs
     );
     await page.keyboard.press("Home");
-    await page.waitForFunction(
+    await waitFor(
+      "Home focuses row 1",
       "document.activeElement && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
-      { timeout: 10000 }
+      listInputs
     );
     assert(true, "B-2 ArrowDown/End/Home move focus along the rows", "");
 

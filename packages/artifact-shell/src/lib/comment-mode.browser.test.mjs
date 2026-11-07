@@ -253,6 +253,34 @@ function assert(condition, label, message) {
   return Boolean(condition);
 }
 
+// waitForFunction wrapper: on failure, dump the page console, page errors and
+// the evaluated predicate inputs to stderr so the next CI failure explains
+// itself. `context` is the { consoleMessages, pageErrors } pair captured for
+// the page; `diagnostics` is evaluated in the page when the wait fails.
+function makeWaitFor(page, context) {
+  return async function waitFor(label, predicate, diagnostics, options = { timeout: 10000 }) {
+    try {
+      await page.waitForFunction(predicate, options);
+    } catch (error) {
+      console.error(`\n[diagnostic] ${label}: waitForFunction failed`);
+      console.error(`[diagnostic] predicate: ${predicate}`);
+      if (context.consoleMessages.length > 0) {
+        console.error("[diagnostic] page console:\n" + context.consoleMessages.map((m) => "  " + m).join("\n"));
+      }
+      if (context.pageErrors.length > 0) {
+        console.error("[diagnostic] page errors:\n" + context.pageErrors.map((m) => "  " + m).join("\n"));
+      }
+      try {
+        const inputs = await page.evaluate(diagnostics);
+        console.error("[diagnostic] predicate inputs: " + JSON.stringify(inputs, null, 2));
+      } catch (diagError) {
+        console.error("[diagnostic] input evaluation failed: " + String(diagError && diagError.message ? diagError.message : diagError));
+      }
+      throw error;
+    }
+  };
+}
+
 function writeHarnessFiles(work) {
   mkdirSync(join(work, "src"), { recursive: true });
   writeFileSync(join(work, "package.json"), JSON.stringify({ name: "shell-harness", private: true, type: "module" }));
@@ -325,124 +353,152 @@ async function main() {
 
     const page = await browser.newPage();
     const pageErrors = [];
+    const consoleMessages = [];
     page.on("pageerror", (error) => pageErrors.push(String(error && error.message ? error.message : error)));
+    page.on("console", (msg) => consoleMessages.push(`[${msg.type()}] ${msg.text()}`));
+    const waitFor = makeWaitFor(page, { consoleMessages, pageErrors });
+    const modeInputs = () => ({
+      url: location.href,
+      shellReady: window.__shellReady === true,
+      mode: window.__shell?.mode ?? null,
+      listOpen: window.__shell?.listOpen ?? null,
+      activeElement: document.activeElement
+        ? (document.activeElement.getAttribute("data-st-shell") || document.activeElement.id || document.activeElement.tagName)
+        : null,
+      activeElementRole: document.activeElement?.getAttribute("role") ?? null,
+      activeElementKey: document.activeElement?.getAttribute("data-block-key") ?? null,
+      tooltipOpacity: (() => {
+        const el = document.querySelector("[role=tooltip]");
+        return el ? getComputedStyle(el).opacity : null;
+      })(),
+      announcement: document.querySelector("[aria-live=polite]")?.textContent ?? null,
+      overlay: document.querySelector('[data-st-shell="block-highlight-overlay"]') !== null,
+      lassoBand: document.querySelector(".st-lassoLayer__band") !== null,
+      list: document.querySelector('[data-st-shell="block-candidate-list"]') !== null
+    });
     await page.goto(`${base}/`, { waitUntil: "load", timeout: 30000 });
-    await page.waitForFunction("window.__shellReady === true", { timeout: 30000 });
+    await waitFor("shell ready", "window.__shellReady === true", modeInputs, { timeout: 30000 });
 
     // --- real :hover tooltip visibility on the toggle (fold-in proof) ---
     const toggleBox = await (await page.$('[data-st-shell="comment-mode-toggle"] button')).boundingBox();
     await page.mouse.move(toggleBox.x + toggleBox.width / 2, toggleBox.y + toggleBox.height / 2);
-    await page.waitForFunction(
+    await waitFor(
+      "hover shows the tooltip",
       "getComputedStyle(document.querySelector('[role=tooltip]')).opacity === '1'",
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 real :hover shows the tooltip (opacity 1)", "");
     const tooltipText = await page.evaluate(() => document.querySelector('[role="tooltip"]').textContent);
     assert(tooltipText === "SENTINEL-TOOLTIP (SENTINEL-SHORTCUT+Alt+Z)", "B-3 tooltip text is labels.tooltip verbatim", tooltipText);
     await page.mouse.move(5, 5);
-    await page.waitForFunction(
+    await waitFor(
+      "pointer leave hides the tooltip",
       "getComputedStyle(document.querySelector('[role=tooltip]')).opacity === '0'",
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 tooltip hides when the pointer leaves", "");
 
     // --- real :focus tooltip visibility ---
     await page.focus('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction(
+    await waitFor(
+      "focus shows the tooltip",
       "getComputedStyle(document.querySelector('[role=tooltip]')).opacity === '1'",
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 real :focus shows the tooltip (focus-within)", "");
 
     // --- real focus trail (§5.6 steps 1–7, both branches of steps 5 and 7) ---
     // step 1: toggle activated -> Armed, focus on the status root
     await page.click('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction(
-      `${activeElementShell} === 'comment-mode-status'`,
-      { timeout: 10000 }
-    );
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     assert(true, "B-3 step 1: after toggle activation focus is on the status root", "");
     // step 2: ArrowDown cycles; focus stays on the status, announcement updates
     await page.keyboard.press("ArrowDown");
-    await page.waitForFunction(
+    await waitFor(
+      "cycle announcement",
       "document.querySelector('[aria-live=polite]').textContent === 'SENTINEL-ANNOUNCEMENT-TEXT 1'",
-      { timeout: 10000 }
+      modeInputs
     );
     const focusAfterCycle = await page.evaluate(activeElementShell);
     assert(focusAfterCycle === "comment-mode-status", "B-3 step 2: focus stays on the status while cycling", focusAfterCycle);
     // step 3: Enter anchors -> focus on the composer field
     await page.keyboard.press("Enter");
-    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     assert(true, "B-3 step 3: Enter anchors, focus moves to the composer field", "");
     // step 4: publish -> Armed, focus back on the status root
     await page.click("#composer-stub-publish");
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     assert(true, "B-3 step 4: publish returns to Armed with focus on the status root", "");
     // step 5 (list open): re-enter composing, then "Change block" -> Selected
     // with the list open, focus on the selected block's candidate row
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.click("#composer-stub-change");
-    await page.waitForFunction(
+    await waitFor(
+      "step 5: focus on the selected row",
       "document.activeElement && document.activeElement.getAttribute('role') === 'option' && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 step 5 (list open): focus on the selected block's candidate row", "");
     // step 6 staged Esc: the list stage unwinds first (mode stays Armed,
     // focus back on the status root)…
     await page.keyboard.press("Escape");
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     const afterListEsc = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
     assert(afterListEsc.mode === "armed" && afterListEsc.listOpen === false, "B-3 step 6a: first Esc closes only the list stage", JSON.stringify(afterListEsc));
     // …then the status stage exits to Off and focus returns to the toggle
     await page.keyboard.press("Escape");
-    await page.waitForFunction(
+    await waitFor(
+      "focus returns to the toggle button",
       `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 step 6b: final Esc exits to Off and focus returns to the toggle", "");
     // step 7 (list open): toggle on, cycle, anchor, Cancel -> focus on the row
     await page.click('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.click("#composer-stub-cancel");
-    await page.waitForFunction(
+    await waitFor(
+      "step 7: cancel focuses a candidate row",
       "document.activeElement && document.activeElement.getAttribute('role') === 'option'",
-      { timeout: 10000 }
+      modeInputs
     );
     assert(true, "B-3 step 7 (list open): cancel focuses the candidate row", "");
     // step 5 fallback (list closed): "Change block" with the list closed ->
     // focus on the status root
     await page.keyboard.press("Escape");
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.evaluate(() => window.__shell.setChangeOpensList(false));
     await page.click("#composer-stub-change");
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     const fallback5 = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
     assert(fallback5.mode === "selected" && fallback5.listOpen === false, "B-3 step 5 fallback (list closed): focus on the status root", JSON.stringify(fallback5));
     // step 7 fallback (list closed): Cancel with the list closed -> focus on
     // the toggle
     await page.keyboard.press("Escape");
-    await page.waitForFunction(
+    await waitFor(
+      "focus returns to the toggle button",
       `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
-      { timeout: 10000 }
+      modeInputs
     );
     await page.click('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await page.waitForFunction(`${activeElementShell} === 'composer-stub-field'`, { timeout: 10000 });
+    await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.evaluate(() => window.__shell.setCancelOpensList(false));
     await page.click("#composer-stub-cancel");
-    await page.waitForFunction(
+    await waitFor(
+      "focus returns to the toggle button",
       `${activeElementShell} === 'BUTTON' && document.activeElement.closest('[data-st-shell="comment-mode-toggle"]') !== null`,
-      { timeout: 10000 }
+      modeInputs
     );
     const fallback7 = await page.evaluate(() => ({ mode: window.__shell.mode, listOpen: window.__shell.listOpen }));
     assert(fallback7.mode === "selected" && fallback7.listOpen === false, "B-3 step 7 fallback (list closed): focus on the toggle", JSON.stringify(fallback7));
@@ -454,17 +510,18 @@ async function main() {
     // above left mode=selected, so the first click exits to Off, the second
     // re-enters Armed.
     await page.click('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction("window.__shell.mode === 'off'", { timeout: 10000 });
+    await waitFor("mode back to off", "window.__shell.mode === 'off'", modeInputs);
     await page.click('[data-st-shell="comment-mode-toggle"] button');
-    await page.waitForFunction(`${activeElementShell} === 'comment-mode-status'`, { timeout: 10000 });
+    await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     await page.evaluate(() => {
       window.__shell.setSelected("sentinel-block-key-1");
       window.__shell.setLasso(true, { x: 8, y: 16, width: 120, height: 24 });
       window.__shell.openList();
     });
-    await page.waitForFunction(
+    await waitFor(
+      "all five shell roots mounted",
       "document.querySelector('[data-st-shell=\"block-highlight-overlay\"]') !== null && document.querySelector('.st-lassoLayer__band') !== null && document.querySelector('[data-st-shell=\"block-candidate-list\"]') !== null",
-      { timeout: 10000 }
+      modeInputs
     );
     // R1 coverage: all five AS-1 shell roots are in the DOM at once
     const mounted = await page.evaluate(() => ({
