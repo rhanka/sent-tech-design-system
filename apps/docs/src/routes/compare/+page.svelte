@@ -505,9 +505,9 @@
     font-family: system-ui, sans-serif;
   }
   .cmp-head h1 { margin: 0 0 0.5rem; }
-  .cmp-head p { max-width: 70ch; color: #475569; }
+  .cmp-head p { max-width: 70ch; color: var(--st-semantic-text-secondary, #475569); }
   .cmp-theme {
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
     border-radius: 8px;
     padding: 1.5rem;
     display: grid;
@@ -534,7 +534,7 @@
   .cmp-theme__ver {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #64748b;
+    color: var(--st-semantic-text-muted, #64748b);
   }
   /* G4 : grille propre : 3 colonnes fixes (libellé · nous · réf). Les deux
      cellules de comparaison ont EXACTEMENT la même largeur (1fr/1fr) et la même
@@ -544,7 +544,7 @@
     grid-template-columns: 12rem minmax(0, 1fr) minmax(0, 1fr);
     gap: 1rem;
     align-items: stretch;
-    border-top: 1px solid #eef2f7;
+    border-top: 1px solid var(--st-semantic-border-subtle, #eef2f7);
     padding-top: 1rem;
   }
   /* Libellé aligné en haut, sur la même ligne que le tag « Sentropic → » des
@@ -553,7 +553,7 @@
     font-weight: 700;
     font-size: 0.9375rem;
     line-height: 1.3;
-    color: #1e293b;
+    color: var(--st-semantic-text-primary, #1e293b);
   }
   .cmp-cell {
     display: flex;
@@ -561,11 +561,11 @@
     gap: 0.5rem;
     align-items: stretch;
     padding: 0.75rem;
-    border: 1px dashed #cbd5e1;
+    border: 1px dashed var(--st-semantic-border-strong, #cbd5e1);
     border-radius: 6px;
     min-width: 0;
   }
-  .cmp-cell--ref { background: #fbfcfe; }
+  .cmp-cell--ref { background: var(--st-semantic-surface-subtle, #fbfcfe); }
   /* G4 : corps de cellule : MÊME origine des deux côtés. Le contenu démarre en
      haut-gauche (flex-start/flex-start) de façon identique à l'iframe, qui rend
      son markup à partir de son coin haut-gauche → libellés et boîtes alignés. */
@@ -609,7 +609,7 @@
     font-size: 0.6875rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #64748b;
+    color: var(--st-semantic-text-muted, #64748b);
   }
   .cmp-frame {
     /* Largeur fixée en ligne (BENCH_WIDTH + 2×padding) pour rendre la zone de
@@ -620,6 +620,6 @@
     width: 100%;
     max-width: 100%;
     border: 0;
-    background: #fff;
+    background: var(--st-semantic-surface-default, #fff);
   }
 </style>
