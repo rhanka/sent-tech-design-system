@@ -2,8 +2,7 @@
 
 Sent Tech Design System publishes twenty-one public npm packages from this private workspace root:
 
-- `@sentropic/design-system-tokens`
-- `@sentropic/design-system-themes`
+- `@sentropic/design-system-tokens`, `@sentropic/design-system-themes` (tag `core-v<version>`, published tokens first, then themes, via `core-publish.yml`)
 - `@sentropic/design-system-svelte`
 - `@sentropic/design-system-skills`
 - `@sentropic/design-system-react`
@@ -185,7 +184,7 @@ Measured consequence: **no publishable workspace currently matches its published
 Commit `7c731257` records the failure that produces: base packages were bumped ahead of their tags, and the publish smoke test broke with `No matching version theme-carbon@0.2.3`, because dependents had those versions in `dependencies` at runtime. Every dependent still pins the **published** base version exactly (`@sentropic/design-system-tokens` and `-themes` at `0.11.0` in `themes`, `theme-dsfr`, `theme-canada` and the four component packages). So a bump only becomes safe for the dependents once the base version it names exists on npm, and the train has to run one step at a time:
 
 1. `graph` 0.3.0 — exists on npm at 0.2.0, needs only its tag. It gates `design-system-svelte`, whose manifest pins `@sentropic/graph: 0.3.0`: publishing svelte first would ship a dependency npm cannot resolve.
-2. `design-system-tokens`, then `design-system-themes` — bump, tag, publish; only then move the pins in the packages that name them.
+2. `design-system-tokens`, then `design-system-themes` — bump, tag `core-v<version>`, publish via `core-publish.yml` (tokens first, then themes); only then move the pins in the packages that name them. `svelte-publish.yml` fails closed on any `@sentropic/*` pin that is not yet on npm (`scripts/verify-deps-published.mjs`), so svelte can only be tagged after this step is visible on the registry.
 3. `design-system-theme-dsfr` and `-theme-canada` — bump after their base pins move; `-theme-quebec` and `-theme-latex` take the bootstrap path above instead, being first publishes.
 4. `design-system-svelte`, `-react`, `-vue` — bump after step 2 is on npm (svelte also needs step 1); `design-system-angular` is already at 0.37.1 and needs only its tag.
 5. `dataviz-core`, `-svelte`, `-react`, `-vue` — already at 0.5.0, tags pending; `dataviz-angular` is a first publish, bootstrap path.
@@ -209,6 +208,21 @@ npm publish --workspace @sentropic/design-system-themes --access public
 npm publish --workspace @sentropic/design-system-svelte --access public
 npm publish --workspace @sentropic/design-system-skills --access public
 ```
+
+Publish the core packages (tokens, then themes) on their own line, without svelte, by pushing the `core-v<version>` tag. Both manifests must carry that exact version; `core-publish.yml` publishes tokens first, then themes, and its `post-publish-check` waits until both are visible on npm:
+
+```bash
+git push origin main
+git tag core-v0.12.0
+git push origin core-v0.12.0
+```
+
+Conductor tag order for a core bump that svelte already pins (current state: tokens/themes `0.12.0`, svelte `0.37.0`):
+
+1. Push `main`, then `git tag core-v0.12.0 && git push origin core-v0.12.0`. Wait for `core-publish.yml` to go green — its `post-publish-check` only passes once `npm view @sentropic/design-system-tokens@0.12.0` and `@sentropic/design-system-themes@0.12.0` both resolve.
+2. Only then `git tag svelte-v0.37.0 && git push origin svelte-v0.37.0`. Its publish job runs `node scripts/verify-deps-published.mjs --workspace packages/components-svelte` after checkout and before `npm publish`, failing closed unless every pinned `@sentropic/*` version (themes `0.12.0`, rich-text `0.1.0`, graph `0.3.0`, theme-dsfr `0.2.2`) is already on npm — so pushing the svelte tag before the core tag can never publish a broken dependency.
+
+The `v<version>` lockstep workflow (`npm-publish.yml`) is unchanged and still requires tokens, themes, svelte and skills to share one version; use `core-v<version>` whenever the core line moves ahead of the component lines.
 
 Publish the graph family by pushing the `graph-v<version>` tag:
 
