@@ -1,0 +1,267 @@
+{
+  "componentId": "diagram-zone",
+  "contractSource": "derived",
+  "digest": "sha256:1f6ed3a7e8d529700397c84dd35bef41ed17c3d92a4442553af07eb37c7bdf57",
+  "entryDigest": "sha256:a665376b3b7a0ee92ab215aa02dd31b984daf94360546a5305e20e4ec356b79b",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "DiagramZoneProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationPath": "packages/components-react/dist/DiagramZone.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "DiagramZoneProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-react/src/index.ts), not a declaration"
+      ]
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "measure",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CardLineMeasure"
+        }
+      ],
+      "events": [
+        {
+          "name": "onDiagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onToggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DiagramGlyphPaths": {
+            "additionalProperties": false,
+            "properties": {
+              "darkLine": {
+                "const": true
+              },
+              "face": {
+                "type": "string"
+              },
+              "line": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "face"
+            ],
+            "type": "object"
+          },
+          "ZoneDiagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "allocatedPx": {
+                "type": "number"
+              },
+              "code": {
+                "enum": [
+                  "zone-overflow",
+                  "zone-icon-unknown"
+                ]
+              },
+              "entityId": {
+                "type": "string"
+              },
+              "neededPx": {
+                "type": "number"
+              },
+              "slot": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "allocatedPx",
+              "code",
+              "entityId",
+              "neededPx",
+              "slot"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "description": "Owner variant: `\"center\"` centres every text slot, both states.",
+            "enum": [
+              "center",
+              "left"
+            ]
+          },
+          "collapsed": {
+            "type": "boolean"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "footer": {
+            "description": "Collapsed card only (§6.1): rule + pinned footer as a leaf card.",
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "iconGlyph": {
+            "$ref": "#/$defs/DiagramGlyphPaths"
+          },
+          "kicker": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "tone": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "x": {
+            "description": "Occurrence box supplied by the host layout (§6.1: the component paints\naround the box it is given). Collapsed, the box is the frozen\n460 × 200 card; expanded, `width`/`height` size the frame.",
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "collapsed",
+          "entityId",
+          "title"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [
+        {
+          "name": "children"
+        }
+      ],
+      "source": {
+        "declarationDigest": "sha256:1ae5324d7e0797cd08caa2b6b90cc7b2228eb6433ab13ce8df11367f979d2893",
+        "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "DiagramZoneProps",
+        "version": "0.37.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationPath": "packages/components-vue/dist/DiagramZone.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "DiagramZoneProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}
