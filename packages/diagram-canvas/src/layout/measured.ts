@@ -644,7 +644,10 @@ export function layoutMeasured(
     let widestChild = 0;
     for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
     const grouping = groupingOuterWidth(ordered);
-    const headerDriven = unwrappedHeaderWidth(id) + 2 * 16 + 32;
+    // Header-driven width reserves the full toggle allocation (measure.ts
+    // TOGGLE_ALLOCATION), so Step 3 measures the header at exactly its
+    // unwrapped width — no wrap, no false zone-overflow.
+    const headerDriven = unwrappedHeaderWidth(id) + 2 * CONTENT_INSET + TOGGLE_ALLOCATION;
     const content = grouping ?? widestChild;
     const outer = Math.max(FIXED_CARD_WIDTH, headerDriven, content + (ordered.length > 0 ? 2 * 16 : 0));
     outerWidths.set(id, outer);
