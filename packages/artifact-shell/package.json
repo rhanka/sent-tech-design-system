@@ -1,0 +1,55 @@
+{
+  "name": "@sentropic/design-system-artifact-shell",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/artifact-shell"
+  },
+  "sideEffects": ["**/*.css"],
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "svelte": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.js",
+    "!dist/**/*.test.mjs",
+    "!dist/**/*.test.d.ts",
+    "!dist/**/*.test.d.ts.map",
+    "!dist/**/*Fixture.svelte",
+    "!dist/**/*Fixture.d.ts"
+  ],
+  "scripts": {
+    "build": "svelte-package",
+    "check": "svelte-check --tsconfig tsconfig.json",
+    "test": "vitest run src"
+  },
+  "dependencies": {
+    "@sentropic/design-system-themes": "0.12.0",
+    "@sentropic/design-system-tokens": "0.12.0"
+  },
+  "peerDependencies": {
+    "@sentropic/design-system-svelte": "0.37.0",
+    "svelte": "^5.53.2"
+  },
+  "devDependencies": {
+    "@sentropic/design-system-svelte": "0.37.0",
+    "@sentropic/design-system-themes": "0.12.0",
+    "@sentropic/design-system-tokens": "0.12.0",
+    "@sveltejs/package": "^2.5.0",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@testing-library/svelte": "^5.2.8",
+    "svelte": "^5.53.2",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.11"
+  }
+}
