@@ -140,44 +140,50 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
-    max-height: 16rem;
+    max-height: calc(var(--st-spacing-16, 4rem) * 4);
     overflow-y: auto;
     background: var(--st-component-blockCandidateList-background, var(--st-semantic-surface-raised));
-    border: 1px solid var(--st-component-blockCandidateList-border, var(--st-semantic-border-subtle));
+    border: var(--st-border-width-thin, 1px) solid var(--st-component-blockCandidateList-border, var(--st-semantic-border-subtle));
     border-radius: var(--st-radius-md, 0.375rem);
     color: var(--st-semantic-text-primary);
   }
 
+  /* foundation focus primitive on the focusable list root, same as the rows */
+  .st-blockCandidateList:focus-visible {
+    outline: var(--st-focus-width, 2px) solid var(--st-semantic-border-interactive);
+    outline-offset: var(--st-focus-offset, 2px);
+  }
+
   .st-blockCandidateList__heading {
-    padding: 0.25rem 0.75rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--st-semantic-border-subtle);
+    padding: var(--st-spacing-1, 0.25rem) var(--st-spacing-3, 0.75rem);
+    font-weight: var(--st-font-weight-semibold, 600);
+    border-bottom: var(--st-border-width-thin, 1px) solid var(--st-semantic-border-subtle);
   }
 
   .st-blockCandidateList__row {
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
+    gap: var(--st-spacing-2, 0.5rem);
+    padding: var(--st-spacing-1, 0.25rem) var(--st-spacing-3, 0.75rem);
     cursor: pointer;
   }
 
   /* active row: background token AND a non-colour cue (inset bar) */
   .st-blockCandidateList__row--active {
     background: var(--st-component-blockCandidateList-rowActiveBackground, var(--st-semantic-surface-subtle));
-    box-shadow: inset 2px 0 0 var(--st-semantic-border-interactive);
+    box-shadow: inset var(--st-border-width-thick, 2px) 0 0 var(--st-semantic-border-interactive);
   }
 
   /* selected row: background token AND a non-colour cue (weight) plus
      aria-selected — never colour alone */
   .st-blockCandidateList__row--selected {
     background: var(--st-component-blockCandidateList-rowSelectedBackground, var(--st-semantic-surface-subtle));
-    font-weight: 600;
+    font-weight: var(--st-font-weight-semibold, 600);
   }
 
   .st-blockCandidateList__row:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: -2px;
+    outline: var(--st-focus-width, 2px) solid var(--st-semantic-border-interactive);
+    outline-offset: var(--st-focus-offset, 2px);
   }
 
   .st-blockCandidateList__kind,

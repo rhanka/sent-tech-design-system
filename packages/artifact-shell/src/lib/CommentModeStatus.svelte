@@ -83,11 +83,11 @@
     z-index: 3;
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
+    gap: var(--st-spacing-2, 0.5rem);
+    padding: var(--st-spacing-1, 0.25rem) var(--st-spacing-3, 0.75rem);
     background: var(--st-component-commentModeStatus-background, var(--st-semantic-surface-raised));
     color: var(--st-component-commentModeStatus-text, var(--st-semantic-text-primary));
-    border-bottom: 1px solid var(--st-component-commentModeStatus-border, var(--st-semantic-border-subtle));
+    border-bottom: var(--st-border-width-thin, 1px) solid var(--st-component-commentModeStatus-border, var(--st-semantic-border-subtle));
     transition:
       background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
       color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
@@ -96,12 +96,12 @@
   /* foundation focus primitive: 2 px outline, 2 px offset, interactive border
      token — no shell-specific ring */
   .st-commentModeStatus:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: 2px;
+    outline: var(--st-focus-width, 2px) solid var(--st-semantic-border-interactive);
+    outline-offset: var(--st-focus-offset, 2px);
   }
 
   .st-commentModeStatus__status {
-    font-weight: 600;
+    font-weight: var(--st-font-weight-semibold, 600);
   }
 
   .st-commentModeStatus__hint {
