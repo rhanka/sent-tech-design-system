@@ -1,6 +1,7 @@
 // Fixture factories for the AS-1 fixture matrix (spec §5.4). Factories return
 // plain display models — no component imports. All sentinel strings are
 // non-real so witnesses prove nothing is hard-coded in components.
+import { foundation } from "@sentropic/design-system-tokens";
 import type { BlockDisplay, RectDisplay } from "./types.js";
 
 const SENTINEL = "SENTINEL";
@@ -60,8 +61,10 @@ export function makeBlocks(n: number, overrides: Partial<BlockDisplay> = {}): Bl
 
 /** Authored-page background fixtures for highlight contrast (F-H1 cells):
  *  a light authored page and a dark authored page, as fixture wrapper
- *  backgrounds. */
+ *  backgrounds. Values come from the foundation token table — spec §11 bars
+ *  any raw colour literal outside the token table, so no hex is written here
+ *  (the import-graph gate scans for them). */
 export const pageBackgrounds = {
-  pageLight: { background: "#f8fafc" },
-  pageDark: { background: "#0f172a" }
+  pageLight: { background: foundation.color.slate[10] },
+  pageDark: { background: foundation.color.slate[90] }
 } as const;
