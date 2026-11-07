@@ -22,7 +22,9 @@
       style:top="{rect.y}px"
       style:width="{rect.width}px"
       style:height="{rect.height}px"
-    ></div>
+    >
+      <div class="st-lassoLayer__fill" aria-hidden="true"></div>
+    </div>
   </div>
 {/if}
 
@@ -35,16 +37,26 @@
     z-index: 1;
   }
 
+  /* the border stays at full opacity: the translucent fill lives on a child
+     element at a LOWER alpha than blockHighlight.fill (0.16), per §2.5 */
   .st-lassoLayer__band {
     position: absolute;
-    border: 1px solid var(--st-component-lasso-border, var(--st-semantic-border-interactive));
+    border: var(--st-border-width-thin, 1px) solid var(--st-component-lasso-border, var(--st-semantic-border-interactive));
+    border-radius: var(--st-radius-sm, 0.25rem);
+  }
+
+  .st-lassoLayer__fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
     background: var(--st-component-lasso-fill, var(--st-semantic-feedback-info));
-    opacity: 0.24;
-    border-radius: 2px;
+    opacity: 0.1;
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .st-lassoLayer__band {
+    .st-lassoLayer__band,
+    .st-lassoLayer__fill {
       animation-duration: 0s;
       transition-duration: 0s;
     }
