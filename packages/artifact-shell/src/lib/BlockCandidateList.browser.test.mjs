@@ -21,8 +21,27 @@ const { join } = path;
 const VITE_PLUGIN_SPECIFIER = ["@sveltejs", "vite-plugin-svelte"].join("/");
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const PACKAGE_DIR = path.resolve(HERE, "..", "..", "..");
-const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
+// packages/artifact-shell — two levels up from src/lib
+const PACKAGE_DIR = path.resolve(HERE, "..", "..");
+// The repository root is the nearest ancestor whose package.json declares
+// npm workspaces; the worktree may live anywhere on disk, so it is found by
+// walking up, never by a fixed number of ".." segments.
+function findRepoRoot(start) {
+  let dir = start;
+  for (;;) {
+    try {
+      const manifest = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+      if (manifest.workspaces !== undefined) return dir;
+    } catch {
+      /* not a package root — keep walking up */
+    }
+    const parent = path.resolve(dir, "..");
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error("no package.json with workspaces found above " + start);
+}
+const WORKTREE_ROOT = findRepoRoot(HERE);
 
 const HARNESS_APP = `
 <script>
@@ -239,14 +258,16 @@ async function main() {
         selectedKey: selected?.getAttribute("data-block-key") ?? null,
         selectedWeight: selected ? getComputedStyle(selected).fontWeight : null,
         activeWeight: active ? getComputedStyle(active).fontWeight : null,
-        selectedShadow: selected ? getComputedStyle(selected).boxShadow : null,
+        // the inset bar is the ACTIVE row's cue — read it from the active row
+        activeShadow: active ? getComputedStyle(active).boxShadow : null,
         selectedClass: selected?.classList.contains("st-blockCandidateList__row--selected") ?? false
       };
     });
     assert(cue.selectedKey === "sentinel-block-key-2", "B-2 aria-selected on the selected row", JSON.stringify(cue));
     assert(cue.selectedClass, "B-2 selected modifier class", "");
     assert(Number(cue.selectedWeight) > Number(cue.activeWeight), "B-2 selected cue weight differs from active", `${cue.selectedWeight} vs ${cue.activeWeight}`);
-    assert(cue.selectedShadow !== "none" || true, "B-2 active inset bar present", cue.selectedShadow ?? "");
+    assert(Number(cue.selectedWeight) >= 600, "B-2 selected cue is semibold (>= 600)", String(cue.selectedWeight));
+    assert(cue.activeShadow !== null && cue.activeShadow !== "none" && cue.activeShadow !== "", "B-2 active row carries the inset bar", cue.activeShadow ?? "");
 
     // Enter anchors the active key; Escape closes the list stage
     await page.keyboard.press("Enter");
