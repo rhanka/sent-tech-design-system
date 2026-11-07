@@ -432,3 +432,33 @@ describe("DiagramCard — optional-slot header geometry applied by the Svelte he
     }
   });
 });
+
+describe("DiagramCard — pass 3 item 11: icon offset matches the Svelte header centring (dual renderer)", () => {
+  it("the reviewer's case: icon, kicker K, toggled two-line title, no footer — Svelte icon top = model iconBox.y", () => {
+    const props = {
+      entityId: "entity:icon-offset",
+      kicker: "K",
+      title: "Users and operators",
+      body: ["Body"],
+      icon: "people",
+      iconGlyph: getDiagramGlyph("people"),
+      toggle: { collapsed: true, label: "Déplier" },
+    };
+    const { container } = render(DiagramCard, { props: { ...props, measure: defaultCardMeasure } });
+    const layout = layoutCard(props, defaultCardMeasure);
+    expect(layout.diagnostics).toEqual([]);
+    expect(layout.headerBlockHeight).toBe(111.78125);
+    // The Svelte header row is exactly headerBlockHeight tall with
+    // align-items:center, so the icon top = contentTop + (block − 70)/2.
+    const header = container.querySelector(".st-diagramCardHeader") as HTMLElement | null;
+    expect(header).not.toBeNull();
+    const rowHeight = Number(/height:\s*([\d.]+)px/.exec(header?.getAttribute("style") ?? "")?.[1]);
+    expect(rowHeight).toBe(111.78125);
+    const icon = header?.querySelector("svg[data-diagram-icon]") as SVGElement | null;
+    expect(icon).not.toBeNull();
+    const svelteIconTop = layout.contentTop + (rowHeight - 70) / 2;
+    expect(svelteIconTop).toBe(30.890625);
+    // The model's iconBox — what renderCardSvg paints — is the same point.
+    expect(layout.iconBox).toEqual({ x: 16, y: 30.890625, size: 70 });
+  });
+});

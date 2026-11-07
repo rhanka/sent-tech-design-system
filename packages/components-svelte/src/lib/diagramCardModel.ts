@@ -767,7 +767,6 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     }
   };
 
-  const iconBox = hasIcon ? { x: g.headerInset, y: contentTop, size: g.iconSize } : undefined;
   if (props.icon !== undefined && props.iconGlyph === undefined) {
     diagnostics.push({
       code: "card-icon-unknown",
@@ -778,31 +777,39 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     });
   }
 
-  const kickerHeight = lineBoxHeight(g.kicker.size);
-  const titleHeight = lineBoxHeight(g.title.size);
   const kickerResult =
     props.kicker === undefined
       ? undefined
       : measure(props.kicker, "kicker", headerTextWidth, g.allocatedLines.kicker);
   const kickerTexts = kickerResult === undefined ? [] : [...kickerResult.lines];
-  if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
-    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
-  }
   const titleMeasured = measure(props.title, "title", headerTextWidth, g.allocatedLines.title);
   const titleTexts = [...titleMeasured.lines];
-  if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
-    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
-  }
   // Optional slots (review pass 2, item 10): one shared derivation — the
   // 70 px icon floor applies only when the icon is present, and the text
   // band is centred in the block exactly like the Svelte header row.
+  // Pass 3: the kicker/title line heights and the icon offset come from the
+  // same derivation too — no header geometry is recomputed outside it.
   const headerGeo = headerSlotGeometry({
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
   });
+  const kickerHeight = headerGeo.kickerHeight;
+  const titleHeight = headerGeo.titleHeight;
+  if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
+    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
+  }
+  if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
+    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
+  }
   const headerBlockHeight = headerGeo.blockHeight;
   const textTop = contentTop + headerGeo.textTopOffset;
+  // Pass 3, item 11: the icon is centred in the header block exactly like
+  // the Svelte header row (align-items: center), so both renderers place it
+  // at contentTop + iconTopOffset.
+  const iconBox = hasIcon
+    ? { x: g.headerInset, y: contentTop + headerGeo.iconTopOffset, size: g.iconSize }
+    : undefined;
 
   const bodyHeight = lineBoxHeight(g.body.size);
   const bodyY = contentTop + headerBlockHeight + g.gap;
@@ -917,7 +924,10 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     secondary: true,
     anchor: headerAnchor,
   }));
-  const titleTop = textTop + (props.kicker === undefined ? 0 : kickerHeight);
+  // Pass 3, item 10: title placement follows the MEASURED kicker-line
+  // presence — an empty or whitespace-only kicker measures zero lines and
+  // reserves no line, exactly like the shared header derivation above.
+  const titleTop = textTop + (kickerTexts.length > 0 ? kickerHeight : 0);
   const title: LaidOutLine[] = titleTexts.map((text, index) => ({
     text,
     x: headerLineX,
@@ -1147,6 +1157,19 @@ export interface ZoneLayout {
 }
 
 /**
+ * Layout height of one child spec (review pass 3, item 9): a card child is
+ * the frozen 460 × 200; a zone child is laid out through `layoutZone` —
+ * recursively, so an auto-sized child contributes its own computed header +
+ * children + footer height, and an explicit or collapsed child its own box.
+ * A parent never assumes a 200 px child.
+ */
+function childLayoutHeight(child: ZoneChildSpec, measure: CardLineMeasure): number {
+  if (child.kind === "card") return CARD_GEOMETRY.height;
+  if (child.zone === undefined) return ZONE_GEOMETRY.collapsedHeight;
+  return layoutZone(child.zone, measure, child.children ?? []).box.height;
+}
+
+/**
  * Lay out one zone. Collapsed, the zone IS the atomic card (§6.2): the
  * subtitle wraps at the frozen 396 px measure and centres in the card body
  * area (`bodyMode: "subtitle"`), the footer pins the rule, and the toggle
@@ -1248,8 +1271,6 @@ export function layoutZone(
     });
   }
 
-  const kickerHeight = lineBoxHeight(g.kicker.size);
-  const titleHeight = lineBoxHeight(g.title.size);
   // The kit stacks the 24 px subtitle at the raw 24 × 1.3 = 31.2 (not the
   // floored 1/64 grid) and ends its block 8 px under the last baseline.
   const subtitleLineHeight = g.subtitle.size * g.subtitle.lineHeight;
@@ -1258,23 +1279,26 @@ export function layoutZone(
       ? undefined
       : measure(props.kicker, "kicker", headerTextWidth, g.allocatedLines.kicker);
   const kickerTexts = kickerResult === undefined ? [] : [...kickerResult.lines];
-  if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
-    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
-  }
   const titleMeasured = measure(props.title, "title", headerTextWidth, g.allocatedLines.title);
   const titleTexts = [...titleMeasured.lines];
-  if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
-    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
-  }
   // Optional slots (review pass 2, item 10): the same shared derivation as
   // the card — the 70 px icon floor applies only with the icon, and the
   // text band is centred in the block exactly like the Svelte header row
-  // (align-items: center), so both renderers place it identically.
+  // (align-items: center), so both renderers place it identically. Pass 3:
+  // the kicker/title line heights come from the same derivation too.
   const headerGeo = headerSlotGeometry({
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
   });
+  const kickerHeight = headerGeo.kickerHeight;
+  const titleHeight = headerGeo.titleHeight;
+  if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
+    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
+  }
+  if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
+    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
+  }
   const headerBlockHeight = headerGeo.blockHeight;
   const headerTop = y + g.headerInset;
   const textTop = headerTop + headerGeo.textTopOffset;
@@ -1292,7 +1316,10 @@ export function layoutZone(
     secondary: true,
     anchor: headerAnchor,
   }));
-  const titleTop = textTop + (props.kicker === undefined ? 0 : kickerHeight);
+  // Pass 3, item 10: title placement follows the MEASURED kicker-line
+  // presence — an empty or whitespace-only kicker measures zero lines and
+  // reserves no line, exactly like the shared header derivation above.
+  const titleTop = textTop + (kickerTexts.length > 0 ? kickerHeight : 0);
   const title: LaidOutLine[] = titleTexts.map((text, index) => ({
     text,
     x: headerLineX,
@@ -1357,14 +1384,17 @@ export function layoutZone(
   }
   const footerBlockHeight = footerTexts.length * footerHeight;
 
-  // Frame height (review pass 2, item 9): the supplied box, or — when the
-  // host lets the zone size itself — the full vertical requirement:
-  // header + rule (contentTop) or children, whichever is lower, plus the
-  // bottom content inset and the footer reserve (footer block + rule + both
-  // rule gaps + bottom inset). The old formula ignored the header, so a
-  // tall header silently overflowed an auto-sized 200 px frame.
+  // Frame height (review pass 2, item 9; pass 3, item 9): the supplied box,
+  // or — when the host lets the zone size itself — the full vertical
+  // requirement: header + rule (contentTop) or children, whichever is
+  // lower, plus the bottom content inset and the footer reserve (footer
+  // block + rule + both rule gaps + bottom inset). Children contribute
+  // their own recursively computed layout height (never an assumed 200 px),
+  // so a nested auto-sized child is fully inside the frame. The old
+  // formula ignored the header, so a tall header silently overflowed an
+  // auto-sized 200 px frame.
   const childrenBottom = children.reduce(
-    (bottom, child) => Math.max(bottom, child.y + (child.kind === "card" ? CARD_GEOMETRY.height : (child.zone?.height ?? ZONE_GEOMETRY.collapsedHeight))),
+    (bottom, child) => Math.max(bottom, child.y + childLayoutHeight(child, measure)),
     y,
   );
   const footerReserve =

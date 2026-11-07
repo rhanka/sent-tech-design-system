@@ -346,9 +346,11 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
       expect(svg.dataEntity).toBe(`grp.${zone.id}`);
       expect(svg.dataTone).toBe(zone.tone);
 
-      // Icon 70 at the card's content inset, canonical scale 70/64.
+      // Icon 70 at the card's content inset, centred in the header block
+      // (pass 3, item 11: iconTopOffset — kicker 28.59375 + title 41.59375
+      // = 70.1875 block, so y = 10 + 0.09375), canonical scale 70/64.
       expect(svg.icon.name).toBe(zone.icon);
-      expect(svg.icon.transform).toBe("translate(16 10) scale(1.09375)");
+      expect(svg.icon.transform).toBe("translate(16 10.09375) scale(1.09375)");
 
       // Header text at the 92 px inset (icon 16 + 70 + gap 6).
       const kicker = svg.texts.filter((t) => t.className === "st-diagramCard-kicker");
