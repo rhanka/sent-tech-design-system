@@ -73,7 +73,8 @@ exactly the three named files:
 GREEN (after `types.ts` / `fixtures.ts` / `index.ts` / `ScaffoldSmoke.svelte`
 landed) — exit 0: `Test Files 3 passed (3)`, `Tests 14 passed (14)`, gate
 printed `import-graph gate: examined 4 source files (floor 3)`. After the
-review round (section 7) the same run is `Tests 23 passed (23)` — the gate
+first review round (section 7) the same run was `Tests 23 passed (23)`; after
+the second review round (section 8) it is `Tests 30 passed (30)` — the gate
 additionally carries permanent planted-failure tests (below).
 
 W-0.3 failure-mode plants (temporary, removed, never committed):
@@ -114,15 +115,31 @@ proven falsifiable by temporary plants in `types.ts` (adding `onHoverBlock` to
   border.
 - Threshold: one row, height ≤ 48 px incl. border, at 320 and 390 px; title
   truncates first.
-- Observed: fixed chrome = 4×32 + 24 + 96 + 6×4 + 16 = 288 px; the title gets
-  32 px at 320 px, 102 px at 390 px, 992 px at 1280 px -> one row at every
-  measured width; row height = 32 + 2 = 34 px ≤ 48 px.
-- Verdict: **PASS** (static token arithmetic; the pixel-exact layout measurement
-  stays an AS-2 browser row at 320/390/1280 px, lot plan §3.6). The 44 px
-  touch-target exception is recorded alongside (lot plan §1.3 item 9): header
-  and pins keep dense sizes, pins gain enlarged hit areas in AS-2, and the
-  44 px rule is not claimed for the artefact header or the pin layer.
+- Observed (model only — no layout engine ran in this environment): fixed
+  chrome = 4×32 + 24 + 96 + 6×4 + 16 = 288 px; the title gets 32 px at 320 px,
+  102 px at 390 px, 992 px at 1280 px; static row height = 32 + 2 = 34 px.
+  No row height was observed in a real render, so per spec §8.3 this spike has
+  no observed value.
+- Assumptions the static model omitted, recorded per the second review: the
+  vertical header padding was not counted — the model counted 16 px of
+  horizontal padding but computed the row height as 32 + 2 = 34 px; with the
+  same spacing-2 (8 px) padding applied vertically the row would be
+  32 + 16 + 2 = 50 px, over the 48 px threshold. The unread badge on the
+  comments button was not counted either. The title getting only 32 px at
+  320 px is unusable.
+- Verdict: **FAIL (unmeasured)** — spec §8.3: "a spike without an observed
+  value is FAIL (unmeasured)". The static arithmetic above is the model, not
+  an observed value; the PASS recorded before the second review is relabelled.
+- Consequence per spec §8.3 (S-1 on FAIL): AS-1 is unaffected; AS-2 preparation
+  reopens the header inventory with Sentropic, and the pixel-exact row
+  measurement moves to a CI-run harness in AS-2 (browser rows at
+  320/390/1280 px — the same `node <file>` commands run on the PR per §8.2,
+  lot plan §3.6). The 44 px touch-target exception stays recorded alongside
+  (lot plan §1.3 item 9): header and pins keep dense sizes, pins gain enlarged
+  hit areas in AS-2, and the 44 px rule is not claimed for the artefact header
+  or the pin layer.
 - Decision: recorded for AS-2; no header is built in AS-0.
+- Date: 2026-11-07 (UTC).
 
 ### S-2 — mention-picker route (AS-3 input)
 
@@ -143,6 +160,7 @@ proven falsifiable by temporary plants in `types.ts` (adding `onHoverBlock` to
   current source). Decision input for AS-3: build the picker on the Combobox
   pattern and tokens (new component) or extend `Combobox` additively; the AS-3
   gate states which.
+- Date: 2026-11-07 (UTC).
 
 ### S-3 — barrel import weight
 
@@ -162,10 +180,27 @@ proven falsifiable by temporary plants in `types.ts` (adding `onHoverBlock` to
   (the package barrel `src/lib/index.js` alone); `entry-imports.ts` = scaffold
   + `import { Icon, IconButton, Tooltip } from "@sentropic/design-system-svelte"`;
   `entry-primitives.ts` = the three primitives only (P).
+- Baseline P build route (second review): the original record did not state how
+  `entry-primitives.ts` imported the primitives; treated as barrel-dependent
+  (then P ≈ W − E by construction and the budget test cannot fail), the spike
+  was re-measured on 2026-11-07 with P built from DIRECT SOURCE-PATH imports:
+  `entry-primitives-direct.ts` imports
+  `../../components-svelte/src/lib/{Icon,IconButton,Tooltip}.svelte` by
+  relative path, bypassing the barrel entirely (same throwaway config and
+  commands, `out-primitives-direct`).
 - Threshold: added bytes `W − E` ≤ budget = primitives' own size `P` × 1.20,
   and 0 hits for unrelated component code in the with-imports bundle.
-- Observed (2026-11-07): E = 448 B; W = 40 767 B (+ 4 739 B CSS asset);
-  P = 40 257 B (+ 4 739 B CSS asset); W − E = 40 319 B ≤ budget 48 308 B.
+- Observed (2026-11-07, original barrel-baseline run): E = 448 B;
+  W = 40 767 B (+ 4 739 B CSS asset); P = 40 257 B (+ 4 739 B CSS asset);
+  W − E = 40 319 B ≤ budget 48 308 B.
+- Observed (2026-11-07, re-measurement with the independent direct-source-path
+  baseline P): E = 83 B; W = 40 257 B (+ 4 739 B CSS asset);
+  P = 40 264 B (+ 4 738 B CSS asset); W − E = 40 174 B ≤ budget
+  ⌊P × 1.20⌋ = 48 316 B. Grep of both `out-imports/bundle.js` and
+  `out-primitives-direct/bundle.js` for `st-accordion`, `st-alert`, `st-toast`,
+  `st-combobox`, `st-avatar`, `st-appShell`, `st-forceGraph`, `st-richText`,
+  `st-header`, `st-dialog`, `st-tabs`, `st-badge` = 0 hits; the only component
+  classes present are `st-icon`, `st-iconButton`, `st-tooltip`.
   Grep of `out-imports/bundle.js` for `st-accordion`, `st-alert`, `st-toast`,
   `st-combobox`, `st-avatar`, `st-appShell`, `st-forceGraph`, `st-richText`,
   `st-header`, `st-dialog`, `st-tabs`, `st-badge` = 0 hits; the only component
@@ -176,7 +211,9 @@ proven falsifiable by temporary plants in `types.ts` (adding `onHoverBlock` to
   files, 0 `ScaffoldSmoke.*` (the `files` exclusions `!dist/**/fixtures.*` and
   `!dist/**/ScaffoldSmoke.*` were added in this lot; before them the listing
   shipped `dist/fixtures.*` and `dist/ScaffoldSmoke.*`).
-- Verdict: **PASS** (40 319 B ≤ 48 308 B budget; 0 unrelated component code).
+- Verdict: **PASS** — re-measured with the independent direct-source-path
+  baseline: 40 174 B ≤ 48 316 B budget, 0 unrelated component code (the
+  original barrel-baseline numbers, 40 319 B ≤ 48 308 B, also hold).
   Note: the first measurement recorded for this spike (svelte-package `dist`
   bytes + grep of `dist`) was vacuous — `dist` never bundles externals, so the
   barrel import stayed a single external import statement — and is superseded
@@ -202,17 +239,23 @@ proven falsifiable by temporary plants in `types.ts` (adding `onHoverBlock` to
 - Threshold: 100% of the AS-2/AS-4 avatar fixture cases whose intended initials
   differ from the derivation enumerated with an explicit override decision,
   and the toast route decided (reuse `Toast` tokens; no shell toast visual).
-- Observed: the AS-2/AS-4 fixture cases needing an `initials` override beyond
-  the derivation are exactly: (1) hyphenated single-token names
-  (`"Anne-Marie"` -> `AN`, not `AM`); (2) particle-style multi-word names
-  (`"Charles de Gaulle"` -> first+last = `CG`, not `CDG`); (3) non-Latin
-  single-token names where a specific rendering is wanted (`"王小明"` ->
-  `王小`); (4) empty/whitespace-only names (`"?"`). Plain two-word Latin names
+- Observed: `deriveInitials` (`Header.svelte`) already covers the non-Latin
+  single-token case (`"王小明"` -> first 2 characters = `王小`) and the
+  empty/whitespace-only case (`"?"`), so those need NO override — the second
+  review's items (3) and (4) are dropped as override cases. The AS-2/AS-4
+  fixture cases needing an `initials` override beyond the derivation are
+  exactly: (1) hyphenated single-token names where the wanted initials differ
+  from the first-2-characters derivation (`"Anne-Marie"` derives `AN`; `AM`
+  needs an override); (2) particle-style multi-word names where the wanted
+  initials differ from first+last (`"Charles de Gaulle"` derives `CG`; `CDG`
+  needs an override). Intended target of (1) and (2): the AS-2 header account
+  avatar and the AS-4 comment-author avatars, via the additive `initials` prop
+  proposed in the owning lot. Plain two-word Latin names
   (`"Marie Dupont"` -> `MD`) need no override. Toast route: reuse `Toast`
   tokens with an items alignment on the Svelte side in AS-4; no shell toast
   visual.
-- Verdict: **PASS** (recording complete: all four override cases enumerated,
-  toast route decided).
+- Verdict: **PASS** (recording complete: both override cases enumerated with
+  their target, the derivation-covered cases stated, toast route decided).
 - Decision: an additive `initials` prop on `Avatar` is proposed in the owning
   lot (AS-2 header account avatar, AS-4 comment-author avatars) for exactly
   those cases — never a workaround inside the shell.
@@ -225,14 +268,14 @@ programme (AS-1 B-1…B-3 when they exist) is recorded **`not run (host GPU)`** 
 this environment; the CI run of the same `node <file>` commands on the PR is the
 evidence (spec §8.2). No gate row is claimed green from jsdom evidence.
 
-## 5. Gate G-0 results (2026-11-07, exact commands, cache-prefixed, from the repository root; re-run after the review round, same date)
+## 5. Gate G-0 results (2026-11-07, exact commands, cache-prefixed, from the repository root; re-run after each review round, same date)
 
 | # | Command | Exit |
 | --- | --- | --- |
 | 1 | `npm install` | 0 (added 767 packages, audited 939; re-run after the review round: no lockfile change) |
 | 2 | `npm --workspace @sentropic/design-system-artifact-shell run check` | 0 (svelte-check: 0 errors, 0 warnings) |
-| 3 | `npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/ScaffoldSmoke.test.ts src/lib/types.test.ts src/lib/import-graph.test.ts` | 0 — output lists exactly the 3 named files, `Test Files 3 passed (3)`, `Tests 23 passed (23)`, gate prints `examined 4 source files (floor 3)` |
-| 4 | `npm --workspace @sentropic/design-system-artifact-shell run test` | 0 — same 3 files, 23 passed |
+| 3 | `npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/ScaffoldSmoke.test.ts src/lib/types.test.ts src/lib/import-graph.test.ts` | 0 — output lists exactly the 3 named files, `Test Files 3 passed (3)`, `Tests 30 passed (30)` (re-run after the second review round, section 8; 23 after the first), gate prints `examined 4 source files (floor 3)` |
+| 4 | `npm --workspace @sentropic/design-system-artifact-shell run test` | 0 — same 3 files, 30 passed |
 | 5 | `npm --workspace @sentropic/design-system-artifact-shell run build` | 0 (svelte-package: src/lib -> dist) |
 | 6 | `npm run licensing:check` | 0 — "Licensing gate OK: 21 publishable packages…"; the new package is skipped as `private: true` |
 | 7 | `node scripts/run-script-guards.mjs` | 0 — 171 tests, 168 pass, 0 fail, 3 skipped (see the environment note in §1 for the initial pre-existing failure and its stash verification) |
@@ -315,3 +358,67 @@ subtree and that the injected theme stylesheet defines the exact custom
 properties the component reads (`--st-semantic-surface-raised`,
 `--st-semantic-text-primary`, `--st-spacing-2`, `--st-spacing-3`) — W-0.1
 "themed smoke … token variable resolves".
+
+## 8. Second review round (2026-11-07) — dispositions against the frozen spec
+
+Input: the independent AS-0 second review output
+`scratchpad/rev/as0-rev2-sonnet.out` (verdict NOT MERGEABLE: 1 blocking +
+non-blocking findings). Each finding was checked against the frozen spec
+first; the assigned items 1–7 are dispositioned below. The review's remaining
+non-blocking observations (client-name blocklist widening, W-0.1 component
+coupling, `mode`-prop witnesses, notices regeneration at the AS-R flip, minor
+items) were not in the assigned fix list and stay open for the conductor.
+
+1. S-1 PASS did not meet §8.3 (blocking) — **fixed**. S-1 is relabelled
+   **FAIL (unmeasured)** (section 3): the vertical-padding assumption (with
+   spacing-2 vertical padding the row would be 50 px, over the 48 px
+   threshold), the 32 px title result at 320 px and the uncounted unread badge
+   are recorded, and per §8.3 the consequence is stated — AS-1 unaffected;
+   AS-2 preparation reopens the header inventory with Sentropic and the
+   pixel-exact measurement moves to a CI-run harness (browser rows) in AS-2.
+2. Missing `Date:` lines on S-1/S-2 — **fixed** (section 3; S-3/S-4 already
+   carried one).
+3. S-3 baseline P build route — **fixed**. The original record did not state
+   the route; the spike was re-measured with P built from direct source-path
+   imports (section 3): E = 83 B, W = 40 257 B, P = 40 264 B, W − E = 40 174 B
+   ≤ budget 48 316 B, 0 unrelated component markers. Verdict stays PASS on the
+   independent baseline.
+4. S-4 items (3)/(4) — **fixed**. `deriveInitials` already returns `王小` for
+   `王小明` and `?` for an empty name (`Header.svelte`), so both are dropped
+   as override cases; the intended target of (1)/(2) (AS-2 header account
+   avatar, AS-4 comment-author avatars) is stated (section 3).
+5. Import-graph gate bypasses — **fixed** in `import-graph.test.ts`:
+   template-literal `import(\`…\`)` / `` from `…` `` / `require(\`…\`)` are
+   extracted (a `${…}` interpolation is unverifiable and always a violation);
+   block comments between the keyword and the specifier
+   (`import(/* c */ "x")`, `from /* c */ "x"`) are tolerated by the patterns;
+   `@import` in `.css` files and in the `<style>` blocks of `.svelte` files is
+   extracted (quoted and `url(…)` forms) and classified by the same allowlist;
+   subpaths of allowed `@sentropic/` packages are restricted to the documented
+   set `ALLOWED_DS_SPECIFIERS` (bare package names only in AS-0/AS-1 — AS-1
+   imports the primitives through the barrel per S-3; a fallback subpath would
+   be added to the set in the same change that first uses it). Each case has
+   an in-memory planted-failure test.
+6. `node:*` / `puppeteer-core` for AS-1 test files — **fixed** by allowing
+   them (the preferred option): `node:*` builtins and `puppeteer-core` are
+   allowlisted in test files only — `*.test.{ts,js,mjs}`, which includes
+   `*.browser.test.mjs` (the browser witnesses run with `node <file>` through
+   the repository puppeteer-core harness, and the W-1.9 source scan of
+   `.svelte` files needs `node:fs`). Planted tests prove a non-test file
+   importing either still fails.
+7. Colour-gate gaps and the tokens.css exemption — **fixed**: the scan now
+   also detects CSS named colours used as a value token (including
+   `transparent`), `color-mix(`, `hwb(`, `lab(`, `lch(`, `color(` and
+   `light-dark(` (a lookbehind keeps `background-color(` from matching
+   `color(`). The `tokens.css` exemption is kept and anchored: the gate asserts
+   the token table exists and it remains the only exempted file, and the full
+   `--st-component-<name>-<leaf>` name set is now listed in `tokens.css`.
+   Dual-stroke literal sourcing, recorded now per the review: components source
+   fallback values from the allowlisted `@sentropic/design-system-tokens`
+   foundation table (as `fixtures.ts` already does with
+   `foundation.color.slate[…]`), never as raw literals — so no component file
+   ever needs the exemption and §11 holds without a
+   `var(--st-component-…, <literal>)` loophole.
+
+Gate re-run after this round: see section 5 (rows 3–4 re-run, test count
+updated).
