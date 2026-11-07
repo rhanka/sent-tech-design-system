@@ -18,7 +18,7 @@ import {
   type SemanticDocument,
 } from "@sentropic/diagram-core";
 
-import { layoutDocument } from "../../src/index.js";
+import { FIXED_CARD_WIDTH, innerWidthOf, layoutDocument } from "../../src/index.js";
 import { TOGGLE_ALLOCATION } from "../../src/index.js";
 import { measure } from "./fixtures.js";
 import {
@@ -203,7 +203,7 @@ describe("layout lines and emitted measurements share one result", () => {
 });
 
 describe("toggle-bearing headers wrap at the reduced width", () => {
-  it("wraps a collapsed toggle title differently at 396 versus 428 px", async () => {
+  it("wraps a collapsed toggle title differently at the toggle-reduced versus full inner width", async () => {
     const entities: Record<string, Entity> = {};
     const relations: Record<string, Relation> = {};
     for (const local of ["C", "a", "b"] as const) {
@@ -265,14 +265,14 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     const reduced = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: 396,
+      availableWidth: innerWidthOf(FIXED_CARD_WIDTH) - TOGGLE_ALLOCATION,
       allocatedLines: 2,
       folded: true,
     });
     const full = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: 428,
+      availableWidth: innerWidthOf(FIXED_CARD_WIDTH),
       allocatedLines: 2,
       folded: true,
     });

@@ -58,6 +58,7 @@ import {
 } from "./hints.js";
 import { placeEdgeLabels } from "./labels.js";
 import {
+  CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   FIXED_CARD_HEIGHT,
   FIXED_CARD_WIDTH,
@@ -67,6 +68,7 @@ import {
   LEGEND_KEY_HEIGHT,
   measureHeader,
   SWATCH_ALLOCATION,
+  TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
   type EntityMeasurementInput,
   type HeaderMeasurement,
@@ -753,7 +755,7 @@ export function layoutMeasured(
     let widestChild = 0;
     for (const child of ordered) widestChild = Math.max(widestChild, outerWidths.get(child) ?? 0);
     const grouping = groupingOuterWidth(ordered);
-    const headerDriven = unwrappedHeaderWidth(id) + 2 * 16 + 32;
+    const headerDriven = unwrappedHeaderWidth(id) + 2 * CONTENT_INSET + TOGGLE_ALLOCATION;
     const content = grouping ?? widestChild;
     const computed = Math.max(FIXED_CARD_WIDTH, headerDriven, content + (ordered.length > 0 ? 2 * 16 : 0));
     const current = outerWidths.get(id) ?? 0;
