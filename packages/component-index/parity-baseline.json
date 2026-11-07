@@ -460,6 +460,18 @@
       "vue": "match",
       "angular": "match"
     },
+    "diagram-card": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
+    "diagram-zone": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
     "config-item-card": {
       "svelte": "source-of-truth",
       "react": "match",
@@ -1295,6 +1307,26 @@
         "angular": "missing"
       },
       "reason": "Documented chart; value-exported only from @sentropic/dataviz-react (lib/TimeSeriesLineChart); no component-package export."
+    },
+    {
+      "componentId": "diagram-card",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "DC-1 atomic diagram card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+    },
+    {
+      "componentId": "diagram-zone",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "DC-2 static half, folded wrapping card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
     }
   ],
   "barrelOnly": {

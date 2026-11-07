@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ChatThread.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scrollable message list with auto-scroll and empty-state.",
     "fr": "Liste de messages scrollable avec auto-scroll et état vide."
   },
-  "digest": "sha256:7523c2ae92339de0fd5cb4f1ab67757b075ca8754c150b132d05bde17ddd4b5b",
+  "digest": "sha256:f60797416a2d568b981254c7fac43d7f61aeea956a0d7106f98e35e03ca73ade",
   "displayName": "ChatThread",
   "format": "component-entry/v1",
   "frameworks": [

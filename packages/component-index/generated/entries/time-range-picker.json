@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimeRangePicker.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time-range selector: relative presets or an absolute range.",
     "fr": "Sélecteur de plage temporelle : presets relatifs ou plage absolue."
   },
-  "digest": "sha256:c8e2c04fa21e7035787e83378697db057ae8b65c4dad3e4e6e278631cbdc39e8",
+  "digest": "sha256:971c307bb07f9f88a8034620a17998c06e128e26c07684632719f091108784d2",
   "displayName": "TimeRangePicker",
   "format": "component-entry/v1",
   "frameworks": [

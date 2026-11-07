@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:ce35ad566ab5a7ea6de456e41a494cae1df2f76e0a33becd4ba315119eefa74c",
-  "entryDigest": "sha256:0121dba0f4b645ee3f44dba76ccf797c3ccf3b2e9a07791e05801c7747076bbb",
+  "digest": "sha256:f84c8984f1677440e62038a7f1c2a7a1215dfee00e257447709b5154da935417",
+  "entryDigest": "sha256:c96dc6d3fc82c2deea5fcc87d3a639345a6bedb219687c3d82abe6e50cf6d11e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1120,7 +1120,7 @@
         "declarationPath": "packages/components-svelte/dist/ScatterPlot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScatterPlotProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "partial",
       "unresolved": [],
