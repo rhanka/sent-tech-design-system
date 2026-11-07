@@ -168,6 +168,8 @@ export { default as Icon } from "./Icon.svelte";
 export { ICONS, ICON_NAMES } from "./icons.js";
 export type { IconName } from "./icons.js";
 export { default as IconButton } from "./IconButton.svelte";
+export { default as LabelledIconButton } from "./LabelledIconButton.svelte";
+export type { LabelledIconButtonProps } from "./LabelledIconButton.svelte";
 export { default as Inline } from "./Inline.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
