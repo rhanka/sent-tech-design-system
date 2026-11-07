@@ -16,6 +16,14 @@
     iconGlyph?: DiagramGlyphPaths;
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
+    /**
+     * Header row height from the shared model (`headerSlotGeometry`, review
+     * pass 2 item 10): `max(icon 70, kicker+title)` with an icon, the bare
+     * kicker+title line boxes without one. Applied here as the row height so
+     * the Svelte header places the body exactly where `layoutCard` /
+     * `layoutZone` and the SVG renderers place it.
+     */
+    headerBlockHeight: number;
     toggle?: { collapsed: boolean; label: string; onToggle?: () => void };
     /**
      * Extra px the toggle slot is pulled up (zone expanded: the toggle sits
@@ -30,12 +38,13 @@
     iconName,
     iconGlyph,
     headerTextWidth,
+    headerBlockHeight,
     toggle,
     toggleTopOffset,
   }: DiagramCardHeaderProps = $props();
 </script>
 
-<div class="st-diagramCardHeader">
+<div class="st-diagramCardHeader" style={`height:${headerBlockHeight}px`}>
   {#if iconName !== undefined && iconGlyph !== undefined}
     <svg
       class="st-diagramCardHeader-icon"

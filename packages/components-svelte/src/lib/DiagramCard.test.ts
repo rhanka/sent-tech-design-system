@@ -301,19 +301,80 @@ describe("DiagramCard — folded subtitle centring and shared rule/footer geomet
     }
   });
 
-  it("item 5: the HTML rule is 1 screen px at every zoom (inverse-zoom compensation)", () => {
+  it("item 5: the rule keeps a constant 1 px layout footprint at every zoom; only its painted stroke is counter-scaled", () => {
     const source = readFileSync(resolve(HERE, "DiagramCard.svelte"), "utf8");
     const rule = cssBlock(source, ".st-diagramCard-rule {");
-    // The host-published camera zoom is divided out of the rule height.
-    expect(rule).toContain(
-      "calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1))",
-    );
-    // Rule and footer are positioned together: the wrapper carries the
-    // automatic top margin, the footer block does not.
+    // LAYOUT properties never read the zoom: at overview zoom 0.25 the rule
+    // still occupies exactly 1 px of layout, so the pinned footer does not
+    // move (the reviewer's case: 183 px of non-shrinking children at zoom
+    // 0.25 versus 180 px at zoom 1).
+    for (const prop of ["height", "flex", "margin", "padding", "border-width"]) {
+      const decl = rule.match(new RegExp(`(?:^|;)\\s*${prop}\\s*:\\s*([^;]+)`, "m"))?.[1] ?? "";
+      expect(decl.includes("--st-diagram-zoom"), `${prop}: ${decl}`).toBe(false);
+    }
+    expect(rule).toContain("height: var(--st-component-diagramCard-ruleHeight, 1px)");
+    // Only the painted stroke is counter-scaled, via a paint-only property.
+    expect(rule).toContain("transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)))");
+    // Footer position at zoom 0.25 and 1: the foot wrapper stays pinned to
+    // the bottom and neither it nor the footer reads the zoom in layout.
     const foot = cssBlock(source, ".st-diagramCard-foot {");
     expect(foot).toContain("margin-top: auto");
     const footer = cssBlock(source, ".st-diagramCard-footer {");
+    expect(footer).not.toContain("--st-diagram-zoom");
     expect(footer).not.toContain("margin-top");
+    // Evaluate the rule's layout footprint and painted stroke at the
+    // overview zoom and at zoom 1: the footprint is the constant 1 px box,
+    // the stroke is exactly 1 screen px both times (footprint × scaleY ×
+    // host zoom).
+    const evalPx = (expr: string, zoom: number): number => {
+      const substituted = expr
+        .replaceAll("var(--st-component-diagramCard-ruleHeight, 1px)", "1px")
+        .replaceAll("var(--st-diagram-zoom, 1)", String(zoom));
+      const body = substituted.match(/calc\(([^)]+)\)/)?.[1] ?? substituted;
+      const tokens = body.replaceAll("px", "").match(/\d*\.?\d+|[()+\-*/]/g) ?? [];
+      let acc = Number(tokens[0]);
+      for (let i = 1; i + 1 < tokens.length; i += 2) {
+        const op = tokens[i];
+        const operand = Number(tokens[i + 1]);
+        acc = op === "+" ? acc + operand : op === "-" ? acc - operand : op === "*" ? acc * operand : acc / operand;
+      }
+      return acc;
+    };
+    const heightDecl = rule.match(/(?:^|;)\s*height\s*:\s*([^;]+)/m)?.[1] ?? "";
+    const scaleDecl = rule.match(/transform\s*:\s*scaleY\((.*)\)/)?.[1] ?? "";
+    for (const zoom of [0.25, 1]) {
+      const footprint = evalPx(heightDecl, zoom);
+      expect(footprint, `rule layout footprint at zoom ${zoom}`).toBe(1);
+      expect(footprint * evalPx(scaleDecl, zoom) * zoom, `painted stroke at zoom ${zoom}`).toBe(1);
+    }
+    // The canonical card's inner height is 180 px; with the constant
+    // footprint the children still require exactly 180 px at zoom 0.25, so
+    // the footer stays at its pinned position (model is zoom-independent).
+    const layout = layoutCard(
+      {
+        entityId: "entity:zoom",
+        kicker: "K",
+        title: "People",
+        body: ["ligne une", "ligne deux"],
+        footer: "service: demo",
+      },
+      defaultCardMeasure,
+    );
+    expect(layout.footerBottom).toBe(200 - 2 - 9.25);
+    expect(layout.ruleY).toBe(152.5625);
+  });
+
+  it("item 5: the zone rules keep the same constant footprint at every zoom", () => {
+    const zoneSource = readFileSync(resolve(HERE, "DiagramZone.svelte"), "utf8");
+    for (const selector of [".st-diagramZone-rule {", ".st-diagramZone-footerRule {"]) {
+      const block = cssBlock(zoneSource, selector);
+      for (const prop of ["height", "flex", "margin"]) {
+        const decl = block.match(new RegExp(`(?:^|;)\\s*${prop}\\s*:\\s*([^;]+)`, "m"))?.[1] ?? "";
+        expect(decl.includes("--st-diagram-zoom"), `${selector} ${prop}: ${decl}`).toBe(false);
+      }
+      expect(block).toContain("height: var(--st-component-diagramCard-ruleHeight, 1px)");
+      expect(block).toContain("transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)))");
+    }
   });
 });
 
@@ -333,5 +394,41 @@ describe("DiagramCard — proposed status (finding 1)", () => {
     const root = container.querySelector(".st-diagramCard") as HTMLElement;
     expect(root.getAttribute("data-proposed")).toBeNull();
     expect(root.classList.contains("st-diagramCard--proposed")).toBe(false);
+  });
+});
+
+describe("DiagramCard — optional-slot header geometry applied by the Svelte header (item 10)", () => {
+  const KICKER_H = 28.59375; // lineBoxHeight(22)
+  const TITLE_H = 41.59375; // lineBoxHeight(32)
+  const COMBOS = [
+    { name: "icon+kicker", icon: true, kicker: true, block: Math.max(70, KICKER_H + TITLE_H) },
+    { name: "icon only", icon: true, kicker: false, block: 70 },
+    { name: "kicker only", icon: false, kicker: true, block: KICKER_H + TITLE_H },
+    { name: "neither", icon: false, kicker: false, block: TITLE_H },
+  ] as const;
+
+  it("the header row height is the model's headerBlockHeight for every icon/kicker combination", () => {
+    for (const combo of COMBOS) {
+      const props = {
+        entityId: `entity:hdr-${combo.name}`,
+        title: "People",
+        body: ["ligne une"],
+        footer: "service: demo",
+        ...(combo.kicker ? { kicker: "K" } : {}),
+        ...(combo.icon ? { icon: "people", iconGlyph: getDiagramGlyph("people") } : {}),
+      };
+      const { container } = render(DiagramCard, { props: { ...props, measure: defaultCardMeasure } });
+      const layout = layoutCard(props, defaultCardMeasure);
+      expect(layout.headerBlockHeight, combo.name).toBe(combo.block);
+      const header = container.querySelector(".st-diagramCardHeader") as HTMLElement | null;
+      expect(header, combo.name).not.toBeNull();
+      // The Svelte header applies the model geometry explicitly: the row is
+      // exactly headerBlockHeight tall — no 70 px floor without an icon.
+      const rowHeight = Number(/height:\s*([\d.]+)px/.exec(header?.getAttribute("style") ?? "")?.[1]);
+      expect(rowHeight, combo.name).toBe(combo.block);
+      expect(header?.querySelector("svg[data-diagram-icon]") !== null, combo.name).toBe(combo.icon);
+      // The body starts right after the model's header block + gap.
+      expect(layout.bodyArea.top, combo.name).toBe(10 + combo.block + 6);
+    }
   });
 });

@@ -483,3 +483,70 @@ describe("DiagramZone — projection (§4.2/§6.1)", () => {
     expect(projectZoneProps(undefined, { entityId: "e", collapsed: false })).toEqual({ kind: "label" });
   });
 });
+
+describe("DiagramZone — expanded vertical overflow (item 9)", () => {
+  function reviewerProps(overrides: Partial<DiagramZoneProps> = {}): DiagramZoneProps {
+    return {
+      entityId: "grp.review9",
+      kicker: "K",
+      title: "Users and operators",
+      subtitle: "Employees HR · Developers admin · HR content owners",
+      footer: "F",
+      icon: "people",
+      iconGlyph: getDiagramGlyph("people"),
+      collapsed: false,
+      toggleLabel: "Toggle",
+      x: 0,
+      y: 0,
+      width: 492,
+      ...overrides,
+    };
+  }
+
+  it("no height: the Svelte frame auto-sizes to header + content + footer (280.41875), no refusal", () => {
+    const props = reviewerProps();
+    const { container } = render(DiagramZone, { props: { ...props, measure: defaultCardMeasure } });
+    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(pos.getAttribute("data-zone-refused")).toBeNull();
+    const frame = container.querySelector(".st-diagramZone--expanded") as HTMLElement;
+    expect(frame).not.toBeNull();
+    expect(/height:\s*280\.41875px/.test(frame.getAttribute("style") ?? "")).toBe(true);
+    const layout = layoutZone(props, defaultCardMeasure);
+    expect(layout.header?.contentTop).toBe(214.98125);
+    expect(layout.diagnostics).toEqual([]);
+  });
+
+  it("explicit undersized height 200: refused with data-zone-refused=frame and the diagnostic", () => {
+    const seen: ZoneDiagnostic[] = [];
+    const props = reviewerProps({ height: 200 });
+    const { container } = render(DiagramZone, {
+      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
+    });
+    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(pos.getAttribute("data-zone-refused")).toBe("frame");
+    expect(pos.getAttribute("data-zone-overflow")).toBe("frame");
+    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
+    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
+    expect(seen).toContainEqual(
+      expect.objectContaining({
+        code: "zone-overflow",
+        slot: "frame",
+        entityId: "grp.review9",
+        neededPx: 280.41875,
+        allocatedPx: 200,
+      }),
+    );
+  });
+
+  it("the Svelte expanded header row applies the model's headerBlockHeight (item 10)", () => {
+    const props = baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0 });
+    const { container } = render(DiagramZone, { props: { ...props, measure: defaultCardMeasure } });
+    const layout = layoutZone(props, defaultCardMeasure);
+    const header = layout.header;
+    if (header === undefined) throw new Error("fixture-error");
+    const row = container.querySelector(".st-diagramCardHeader") as HTMLElement | null;
+    expect(row).not.toBeNull();
+    const rowHeight = Number(/height:\s*([\d.]+)px/.exec(row?.getAttribute("style") ?? "")?.[1]);
+    expect(rowHeight).toBe(header.headerBlockHeight);
+  });
+});
