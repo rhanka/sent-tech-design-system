@@ -64,3 +64,27 @@ describe("Badge — a11y / passthrough", () => {
     expect(badge(container).getAttribute("aria-label")).toBe("128 entities");
   });
 });
+
+describe("Badge — icon chip (additive tone brand, shape square, size lg)", () => {
+  it('tone="brand" shape="square" size="lg" sets the three modifiers', () => {
+    const { container } = render(Badge, {
+      props: { tone: "brand", shape: "square", size: "lg", "aria-hidden": "true", children: count("x") }
+    });
+    const el = badge(container);
+    expect(el.classList.contains("st-badge--brand")).toBe(true);
+    expect(el.classList.contains("st-badge--square")).toBe(true);
+    expect(el.classList.contains("st-badge--lg")).toBe(true);
+    expect(el.classList.contains("st-badge--pill")).toBe(false);
+    expect(el.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("the chip reads the brand gradient token and lets a nested Icon follow its colour", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { resolve } = await import("node:path");
+    const source = readFileSync(resolve("src/lib/Badge.svelte"), "utf8");
+    expect(source).toContain("--st-component-badge-brandBackground,");
+    expect(source).toContain("var(--st-semantic-gradient-accent, var(--st-semantic-action-primary))");
+    expect(source).toContain("--st-component-icon-color: currentColor;");
+    expect(source).toContain("--st-component-badge-lg-size, 3rem");
+  });
+});

@@ -3,7 +3,13 @@
   import type { HTMLAttributes } from "svelte/elements";
 
   type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "class"> & {
-    tone?: "neutral" | "success" | "warning" | "error" | "info";
+    /**
+     * `"brand"` (additive) is the marketing icon-chip tone: brand gradient
+     * background (`--st-component-badge-brandBackground`, falling back to
+     * `--st-semantic-gradient-accent` then `action-primary`) with inverse text;
+     * a nested Icon follows the text colour.
+     */
+    tone?: "neutral" | "success" | "warning" | "error" | "info" | "brand";
     /**
      * Badge shape — `"pill"` (default) is the current render (radius 999px, width
      * grows with content). `"circle"` renders an equal-sided round bubble
@@ -11,15 +17,17 @@
      * for ≤2-digit counts. 3+ digit content degrades GRACEFULLY to a rounded-rect
      * (never clipped), so consumer counts reaching the 1000s stay legible.
      * Mirrors `Avatar`'s `shape`. Additive: with `shape` unset the badge renders
-     * byte-identically to before.
+     * byte-identically to before. `"square"` (additive) is an equal-sided tile
+     * with the large radius (2.5rem, 3rem at `size="lg"`), meant for an icon chip.
      */
-    shape?: "pill" | "circle";
+    shape?: "pill" | "circle" | "square";
     /**
      * Density — `"md"` (default) is the current render. `"sm"` shrinks the
      * font-size (the rail-bubble scale). Additive: with `size` unset the badge
-     * renders byte-identically to before.
+     * renders byte-identically to before. `"lg"` (additive) is the icon-chip
+     * scale: a `circle` or `square` badge becomes a 3rem tile for a 24px Icon.
      */
-    size?: "sm" | "md";
+    size?: "sm" | "md" | "lg";
     class?: string;
     /**
      * The number / text. Stays content-driven (no `value` prop). For SR users a
@@ -96,6 +104,38 @@
      reuses the Tag `sm` scale for cross-house consistency. */
   .st-badge--sm {
     font-size: var(--st-component-badge-sm-fontSize, 0.6875rem);
+  }
+
+  /* Icon-chip variants (additive, site marketing). `--square` is an
+     equal-sided tile with the large radius; `--lg` scales circle/square to 3rem
+     for a 24px Icon. A pill or md badge never reads these rules. */
+  .st-badge--square {
+    border-radius: var(--st-component-badge-square-radius, var(--st-radius-lg, 0.5rem));
+    box-sizing: border-box;
+    justify-content: center;
+    min-height: var(--st-component-badge-square-size, 2.5rem);
+    min-width: var(--st-component-badge-square-size, 2.5rem);
+    padding: var(--st-component-badge-square-padding, 0.5rem);
+  }
+
+  .st-badge--lg {
+    font-size: var(--st-component-badge-lg-fontSize, 1rem);
+  }
+
+  .st-badge--lg.st-badge--square,
+  .st-badge--lg.st-badge--circle {
+    min-height: var(--st-component-badge-lg-size, 3rem);
+    min-width: var(--st-component-badge-lg-size, 3rem);
+  }
+
+  .st-badge--brand {
+    /* A nested Icon takes the chip text colour, whatever the theme icon colour. */
+    --st-component-icon-color: currentColor;
+    background: var(
+      --st-component-badge-brandBackground,
+      var(--st-semantic-gradient-accent, var(--st-semantic-action-primary))
+    );
+    color: var(--st-component-badge-brandText, var(--st-semantic-text-inverse, #ffffff));
   }
 
   .st-badge--neutral {
