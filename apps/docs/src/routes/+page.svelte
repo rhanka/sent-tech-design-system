@@ -212,6 +212,7 @@
     color: var(--st-semantic-text-secondary, #475569);
     font-size: 0.95rem;
     margin: 0;
+    max-width: 65ch;
   }
 
   .docs-catalog-group {
@@ -244,7 +245,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #ffffff;
+    background: var(--st-semantic-surface-default, #ffffff);
     border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
     border-radius: 0.75rem !important; /* Premium rounded corner styling */
     padding: 1.5rem;
@@ -382,7 +383,7 @@
   }
 
   :global(.st-card.docs-cli-card:hover) .docs-cli-command {
-    color: #ffffff;
+    color: var(--st-semantic-text-inverse, #ffffff);
     background-color: var(--st-semantic-text-accent, #2563eb);
     border-color: var(--st-semantic-text-accent, #2563eb);
     transform: scale(1.03);

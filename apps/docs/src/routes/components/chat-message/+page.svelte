@@ -573,6 +573,7 @@
     margin: 0.5rem 0;
   }
 
+  /* Thème sombre pour le bloc de code généré — palette éditeur intentionnelle, pas de token DS équivalent */
   .playground-code-section {
     background: #1e1e1e;
     border-radius: var(--st-radius-md, 0.5rem);
