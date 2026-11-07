@@ -18,7 +18,75 @@
     "chevron-down": { fr: "Déplier vers le bas.", en: "Expand downwards." },
     "chevron-right": { fr: "Déplier / naviguer vers la droite.", en: "Expand / navigate rightwards." },
     comment: { fr: "Commenter, ajouter une remarque.", en: "Comment, add a remark." },
-    "circle-dashed": { fr: "Non classé, état indéterminé ou en attente.", en: "Unclassified, indeterminate or pending state." }
+    "circle-dashed": { fr: "Non classé, état indéterminé ou en attente.", en: "Unclassified, indeterminate or pending state." },
+    // Site marketing set (Svelte registry only; React/Vue/Angular keep the 10 names above).
+    "alert-triangle": { fr: "Avertissement, risque.", en: "Warning, risk." },
+    "arrow-left": { fr: "Retour, précédent.", en: "Back, previous." },
+    "arrow-up-right": { fr: "Lien sortant, ouvrir.", en: "Outbound link, open." },
+    award: { fr: "Distinction, reconnaissance.", en: "Award, recognition." },
+    "book-open": { fr: "Lecture, documentation.", en: "Reading, documentation." },
+    "brain-circuit": { fr: "Intelligence artificielle.", en: "Artificial intelligence." },
+    briefcase: { fr: "Mission, offre professionnelle.", en: "Engagement, professional offer." },
+    "building-2": { fr: "Organisation, entreprise.", en: "Organisation, company." },
+    calculator: { fr: "Calcul, comptabilité.", en: "Calculation, accounting." },
+    calendar: { fr: "Date, échéance.", en: "Date, deadline." },
+    camera: { fr: "Image, capture.", en: "Image, capture." },
+    car: { fr: "Automobile, mobilité.", en: "Automotive, mobility." },
+    "check-circle-2": { fr: "Validé, inclus.", en: "Validated, included." },
+    clock: { fr: "Durée, temps de lecture.", en: "Duration, reading time." },
+    cloud: { fr: "Infonuagique.", en: "Cloud." },
+    code: { fr: "Code, développement.", en: "Code, development." },
+    cog: { fr: "Mécanique, automatisation.", en: "Mechanics, automation." },
+    compass: { fr: "Orientation, stratégie.", en: "Direction, strategy." },
+    "dollar-sign": { fr: "Prix, finance.", en: "Price, finance." },
+    "external-link": { fr: "Ouvre un site externe.", en: "Opens an external site." },
+    factory: { fr: "Industrie, production.", en: "Industry, manufacturing." },
+    "file-check": { fr: "Conformité, document validé.", en: "Compliance, validated document." },
+    "file-text": { fr: "Document, article.", en: "Document, article." },
+    "file-user": { fr: "CV, dossier de personne.", en: "Résumé, person file." },
+    "flask-conical": { fr: "Expérimentation, PoC.", en: "Experiment, PoC." },
+    github: { fr: "GitHub (marque, dépréciée dans lucide).", en: "GitHub (brand, deprecated in lucide)." },
+    globe: { fr: "International, langue.", en: "International, language." },
+    "graduation-cap": { fr: "Formation, éducation.", en: "Training, education." },
+    handshake: { fr: "Partenariat, accord.", en: "Partnership, agreement." },
+    heart: { fr: "Valeurs, santé.", en: "Values, health." },
+    landmark: { fr: "Secteur public, institution.", en: "Public sector, institution." },
+    "layout-grid": { fr: "Catalogue, vue en grille.", en: "Catalogue, grid view." },
+    lightbulb: { fr: "Idée, innovation.", en: "Idea, innovation." },
+    linkedin: { fr: "LinkedIn (marque, dépréciée dans lucide).", en: "LinkedIn (brand, deprecated in lucide)." },
+    mail: { fr: "Courriel, contact.", en: "Email, contact." },
+    map: { fr: "Carte, géographie.", en: "Map, geography." },
+    "map-pin": { fr: "Adresse, localisation.", en: "Address, location." },
+    menu: { fr: "Ouvrir le menu (burger).", en: "Open the menu (burger)." },
+    "message-square": { fr: "Message, conversation.", en: "Message, conversation." },
+    network: { fr: "Réseau, architecture.", en: "Network, architecture." },
+    newspaper: { fr: "Actualités, blogue.", en: "News, blog." },
+    package: { fr: "Produit, livrable.", en: "Product, deliverable." },
+    palette: { fr: "Design, thème.", en: "Design, theme." },
+    phone: { fr: "Téléphone, appel.", en: "Phone, call." },
+    receipt: { fr: "Facture, reçu.", en: "Invoice, receipt." },
+    rocket: { fr: "Lancement, mise en production.", en: "Launch, go-live." },
+    scale: { fr: "Juridique, équilibre.", en: "Legal, balance." },
+    "scan-search": { fr: "Détection, analyse.", en: "Detection, analysis." },
+    search: { fr: "Recherche.", en: "Search." },
+    shield: { fr: "Sécurité, protection.", en: "Security, protection." },
+    "shield-check": { fr: "Sécurité vérifiée.", en: "Verified security." },
+    ship: { fr: "Maritime, logistique.", en: "Maritime, logistics." },
+    siren: { fr: "Urgence, alerte.", en: "Emergency, alert." },
+    sparkles: { fr: "Nouveauté, IA générative.", en: "New, generative AI." },
+    terminal: { fr: "Ligne de commande, outillage.", en: "Command line, tooling." },
+    "trending-up": { fr: "Croissance, performance.", en: "Growth, performance." },
+    unlock: { fr: "Ouvert, accès libre.", en: "Unlocked, open access." },
+    "user-round": { fr: "Personne, profil.", en: "Person, profile." },
+    users: { fr: "Équipe, utilisateurs.", en: "Team, users." },
+    workflow: { fr: "Processus, flux.", en: "Process, flow." },
+    wrench: { fr: "Maintenance, outil.", en: "Maintenance, tool." },
+    zap: { fr: "Rapidité, énergie.", en: "Speed, energy." }
+  };
+
+  const SITE_SET_NOTE = {
+    fr: "Ce registre ne porte que les 10 premiers noms ; le jeu « site marketing » est propre à Svelte (écart de parité inscrit).",
+    en: "This registry carries the first 10 names only; the site marketing set is Svelte-only (recorded parity gap)."
   };
 
   const cell = (name: IconName): NodeSpec => ({
@@ -158,6 +226,11 @@
     </p>
     <TabbedExample
       nodes={setDemo}
+      notes={{
+        react: SITE_SET_NOTE[locale.value === "fr" ? "fr" : "en"],
+        vue: SITE_SET_NOTE[locale.value === "fr" ? "fr" : "en"],
+        angular: SITE_SET_NOTE[locale.value === "fr" ? "fr" : "en"]
+      }}
       title={locale.value === "fr"
         ? `Les ${ICON_NAMES.length} noms gelés`
         : `The ${ICON_NAMES.length} frozen names`}

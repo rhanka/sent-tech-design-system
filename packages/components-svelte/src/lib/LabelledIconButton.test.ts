@@ -42,7 +42,9 @@ const PRE_EXISTING: Array<[IconName, unknown]> = [
 
 describe("W-1.0 LabelledIconButton (CA-L1 fold-in)", () => {
   it("the icon catalogue keeps the eight pre-existing mappings and adds comment -> MessageSquare and circle-dashed -> CircleDashed", () => {
-    expect(ICON_NAMES).toHaveLength(10);
+    // Ten catalogue names, then the 62-name site marketing set appended after them.
+    expect(ICON_NAMES).toHaveLength(72);
+    expect(ICON_NAMES.slice(0, 10)).toContain("comment");
     for (const [name, glyph] of PRE_EXISTING) {
       expect(ICONS[name], `mapping for "${name}" changed`).toBe(glyph);
     }

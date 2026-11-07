@@ -145,8 +145,10 @@ describe("Icon — canonical DS icon set", () => {
 // added, mapping to lucide MessageSquare (nine names total). The other seven
 // CA names land with their own CA lots, not here.
 describe("W-1.0 icon catalogue — CA-L1 fold-in (comment) and circle-dashed", () => {
-  it("ICON_NAMES carries exactly the eight pre-existing names plus comment and circle-dashed", () => {
-    expect(ICON_NAMES).toEqual([
+  it("ICON_NAMES starts with the eight pre-existing names plus comment and circle-dashed", () => {
+    // Prefix, not the whole list: the site marketing set is appended after
+    // these ten names (see the "site marketing set" suite below).
+    expect(ICON_NAMES.slice(0, 10)).toEqual([
       "settings",
       "eye",
       "eye-off",
@@ -240,5 +242,38 @@ describe("Icon — glyph prop (any lucide icon)", () => {
       props: {} as unknown as ComponentProps<typeof Icon>,
     });
     expect(container.querySelector("svg")).toBeNull();
+  });
+});
+
+describe("Icon — site marketing set (additive)", () => {
+  const SITE_SET = [
+    "alert-triangle", "arrow-left", "arrow-up-right", "award", "book-open", "brain-circuit",
+    "briefcase", "building-2", "calculator", "calendar", "camera", "car", "check-circle-2",
+    "clock", "cloud", "code", "cog", "compass", "dollar-sign", "external-link", "factory",
+    "file-check", "file-text", "file-user", "flask-conical", "github", "globe", "graduation-cap",
+    "handshake", "heart", "landmark", "layout-grid", "lightbulb", "linkedin", "mail", "map",
+    "map-pin", "menu", "message-square", "network", "newspaper", "package", "palette", "phone",
+    "receipt", "rocket", "scale", "scan-search", "search", "shield", "shield-check", "ship",
+    "siren", "sparkles", "terminal", "trending-up", "unlock", "user-round", "users", "workflow",
+    "wrench", "zap"
+  ];
+
+  it("keeps the ten earlier names first and unchanged, then appends the site set in order", () => {
+    expect(ICON_NAMES.slice(0, 10)).toEqual([
+      "settings", "eye", "eye-off", "layers", "target", "close", "chevron-down", "chevron-right",
+      "comment", "circle-dashed"
+    ]);
+    expect(ICON_NAMES.slice(10)).toEqual(SITE_SET);
+    expect([...SITE_SET].sort()).toEqual(SITE_SET);
+  });
+
+  it("maps legacy lucide aliases to their canonical glyphs", async () => {
+    const lucide = await import("@lucide/svelte");
+    expect(ICONS["alert-triangle"]).toBe(lucide.TriangleAlert);
+    expect(ICONS["check-circle-2"]).toBe(lucide.CircleCheck);
+    expect(ICONS.unlock).toBe(lucide.LockOpen);
+    expect(ICONS.map).toBe(lucide.Map);
+    expect(ICONS.close).toBe(lucide.X);
+    expect(ICONS["message-square"]).toBe(lucide.MessageSquare);
   });
 });
