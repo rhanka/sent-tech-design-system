@@ -444,21 +444,30 @@ No drift since AS-0; the measured train is unchanged.
 
 ## 10. CA-L1 fold-in record (spec §4.1 conditional)
 
-CA-L1 had landed before AS-1 started (commit `0893e2ac` on this branch), so
-A1-1/A1-3/A1-3b/A1-4/A1-4b/A1-4c/A1-5 were already satisfied by it and A1-2 was
-replaced by the additive three-prop amendment to the landed
-`LabelledIconButton` (spec §5.0: `pressed`, `ariaKeyshortcuts`,
-`tooltipContent`), recorded here as the **CA-L1 amendment**: one glyph entry
-(`comment` -> `MessageSquare`) in `icons.ts`, one new component
-`LabelledIconButton.svelte` + barrel line in `packages/components-svelte`,
-the `**/*.browser.test.mjs` exclusion generalisation in
+Corrected at the PR #254 review reconciliation (see §16): `0893e2ac` is the
+AS-1 fold-in commit itself ("AS-1 folds in the two CA-L1 pieces it needs on
+day one"), on this branch — it did not land before AS-1 started. The
+**CA-L1 amendment** it carries is: one glyph entry (`comment` ->
+`MessageSquare`) in `icons.ts`, one new component `LabelledIconButton.svelte`
++ barrel line in `packages/components-svelte` (spec §5.0 additive props
+`pressed`, `ariaKeyshortcuts`, `tooltipContent`), the
+`**/*.browser.test.mjs` exclusion generalisation in
 `packages/components-svelte/vite.config.ts` (A1-5; the comment in that file
 still names the rich-text-editor browser harness so the RT-1 packaging
-witness keeps passing), `Icon.test.ts` catalogue extension, and the
-component-index registration of the new barrel entry (parity baseline
-`barrelOnly.svelte` + `LabelledIconButton`, regenerated `generated/**`,
-`index:check` green in the same commit). The amendment is additive only:
-no existing icon name, `IconButton` or `Tooltip` source was modified.
+witness keeps passing), and the `Icon.test.ts` catalogue extension. The
+amendment is additive only: no existing icon name, `IconButton` or
+`Tooltip` source was modified.
+
+Registration of the new barrel entry is **not** `barrelOnly.svelte`
+(that list holds other barrel-only exports; `labelled-icon-button` is not
+in it). The real parity baseline, landed in `c24408f3`
+("index LabelledIconButton (213 rows, svelte-only parity)"):
+`parity-baseline.json` `expectedParity["labelled-icon-button"]` = svelte
+`source-of-truth`, react/vue/angular `missing` (line 25), a `gaps` row with
+`componentId: "labelled-icon-button"` (line 1338), `contract-baseline.json`
+line 1580, and `generated/contracts/labelled-icon-button.json`.
+Docs catalogue: `apps/docs/src/lib/components-catalog.ts:103-106`,
+`status: "documented"`, `groupSlug: "icon-button"` (commit `2cc7fcc4`).
 
 ## 11. RED witnesses W-1.1…W-1.10 (spec §6, §8.3)
 
@@ -479,10 +488,11 @@ restore) — exit 1 each:
 - W-1.7/1.9 `BlockCandidateList.test.ts` — `Failed to resolve import "./BlockCandidateList.svelte"`, `Test Files 1 failed (1)`
 
 GREEN — the targeted seven-file run (gate G-1 step 5, below) — exit 0:
-`Test Files 7 passed (7)`, `Tests 67 passed (67)`, gate prints
+`Test Files 7 passed (7)`, `Tests 76 passed (76)` (67 at the first review
+round, 76 after the PR #254 reconciliation — see §16), gate prints
 `import-graph gate: examined 8 source files (floor 8)`; the per-witness file
-counts are CommentModeToggle 5, CommentModeStatus 11, BlockHighlightOverlay 7,
-LassoLayer 4, BlockCandidateList 12, import-graph 21, types 7.
+counts are CommentModeToggle 6, CommentModeStatus 13, BlockHighlightOverlay 7,
+LassoLayer 5, BlockCandidateList 17, import-graph 21, types 7.
 
 Witness coverage: W-1.1 toggle (F-T1/F-T2/F-X1/F-R1, sentinel shortcut
 round-trip proving no key literal is hard-coded, §7.1); W-1.2/1.3/1.4 status
@@ -492,23 +502,37 @@ F-X1, F-R1); W-1.6 lasso (F-L1 band geometry, F-L2 HostHandler payload);
 W-1.7 list (F-C1…F-C4, list-stage Esc only); W-1.8 full keyboard trail
 (F-K1 §5.6 steps 1–7 with the adopted Q2 steps 4–5 — focus on
 `CommentModeStatus` after publish, `BlockCandidateList` row after Change
-block when the list is open — staged Esc list -> Armed -> Off, cancel focus,
-H-1 host-handler half); W-1.9 five-file source scan (no natural-language
-literal outside the allowlist); W-1.10 viewer-absence fixtures (F-A1).
-Reduced-motion proofs are the F-R1 compile half in jsdom (transition
-duration 0 under the reduced-motion media query) plus browser row B-3's
-`emulateMediaFeatures` half.
+block when the list is open, else the status root; after Cancel the row
+when open, else the toggle — both branches of steps 5/7 driven — staged
+Esc list -> Armed -> Off, H-1 host-handler half); W-1.9 five-file source
+scan (no natural-language literal outside the allowlist, now including a
+svelte/compiler template-AST walk of text nodes and attribute strings);
+W-1.10 viewer-absence fixtures (F-A1, falsifiable: presence half mounts all
+five components first). Each of toggle/status/lasso/list also carries the
+§5.4 light/dark viewer-theme matrix row. Reduced-motion proofs are the
+F-R1 compile half in jsdom (transition duration 0 under the
+reduced-motion media query) plus browser row B-3's `emulateMediaFeatures`
+half.
 
 ## 12. Browser rows B-1…B-3 (spec §8.2)
 
-- `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` (B-1, A1-12: WCAG contrast >= 3:1 in the 4 theme/page cells, real hover chip) — **not run (host GPU)**
-- `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` (B-2, A1-17: real focus/active-descendant movement, selected cue) — **not run (host GPU)**
-- `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` (B-3, A1-18: real :hover/:focus tooltip on the toggle — the CA-L1 fold-in proof rides on this run per §5.0 — real focus trail, reduced-motion zero durations) — **not run (host GPU)**
+- `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` (B-1, A1-12: WCAG contrast >= 3:1 in the 4 theme/page cells, real hover chip, and since the PR #254 reconciliation the selected treatment per §5.3a — heavier outline weight, never colour/alpha alone) — **not run (host GPU)** locally; **CI runs it verbatim** (see below)
+- `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` (B-2, A1-17: real focus/active-descendant movement, selected cue read from the correct nodes, no tautological assertions) — **not run (host GPU)** locally; **CI runs it verbatim**
+- `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` (B-3, A1-18: real :hover/:focus tooltip on the toggle — the CA-L1 fold-in proof rides on this run per §5.0 — the full §5.6 focus trail incl. both fallback branches of steps 5/7, all five components mounted, reduced-motion zero durations on every mounted node) — **not run (host GPU)** locally; **CI runs it verbatim**
 
-No local Chromium exists in this environment; the three commands are listed
-verbatim so CI runs them on the PR. No gate row is claimed green from jsdom
-evidence. The browser harness files assemble their vite-plugin specifier at
-runtime so the import-graph gate (which scans raw text) stays green.
+No local Chromium run is performed in this environment (host GPU limit,
+§8.2); the three commands are listed verbatim and **wired into CI**:
+`.github/workflows/verify.yml`, `verify` job, steps "Set up Chrome for
+browser witnesses" (`browser-actions/setup-chrome`, stable) + "Browser
+witnesses B-1..B-3 (artifact-shell)", gated on
+`matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-artifact-shell')`,
+with `CHROME_BIN` from the setup step — so the artifact-shell test shard
+runs the exact `node <file>` commands on a real Chromium and the PR run is
+the §8.2 evidence. No gate row is claimed green from jsdom evidence. The
+browser harness files assemble their vite-plugin specifier at runtime so
+the import-graph gate (which scans raw text) stays green, and resolve the
+repository root by walking up to the package.json that declares workspaces
+(the worktree path is not fixed).
 
 ## 13. Split decision (spec §4.1 split trigger)
 
@@ -535,13 +559,13 @@ was not needed.
 | 2 | `npm --workspace @sentropic/design-system-svelte exec -- vitest run src/lib/LabelledIconButton.test.ts src/lib/Icon.test.ts` | 0 — exactly the 2 named files, `Test Files 2 passed (2)`, `Tests 20 passed (20)` |
 | 3 | `npm --workspace @sentropic/design-system-svelte run build` | 0 — svelte-package `src/lib -> dist` |
 | 4 | `npm --workspace @sentropic/design-system-artifact-shell run check` | 0 — svelte-check 0 errors, 0 warnings |
-| 5 | `npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/CommentModeToggle.test.ts src/lib/CommentModeStatus.test.ts src/lib/BlockHighlightOverlay.test.ts src/lib/LassoLayer.test.ts src/lib/BlockCandidateList.test.ts src/lib/import-graph.test.ts src/lib/types.test.ts` | 0 — exactly the 7 named files, `Test Files 7 passed (7)`, `Tests 67 passed (67)`, gate `examined 8 source files (floor 8)` |
-| 6 | `npm --workspace @sentropic/design-system-artifact-shell run test` | 0 — same 7 files, 67 passed |
+| 5 | `npm --workspace @sentropic/design-system-artifact-shell exec -- vitest run src/lib/CommentModeToggle.test.ts src/lib/CommentModeStatus.test.ts src/lib/BlockHighlightOverlay.test.ts src/lib/LassoLayer.test.ts src/lib/BlockCandidateList.test.ts src/lib/import-graph.test.ts src/lib/types.test.ts` | 0 — exactly the 7 named files, `Test Files 7 passed (7)`, `Tests 76 passed (76)` (re-measured after the PR #254 reconciliation; 67 at the first review round), gate `examined 8 source files (floor 8)` |
+| 6 | `npm --workspace @sentropic/design-system-artifact-shell run test` | 0 — same 7 files, 76 passed |
 | 7 | `npm --workspace @sentropic/design-system-artifact-shell run build` | 0 — svelte-package `src/lib -> dist` |
 | 8 | `npm --workspace @sentropic/design-system-svelte run test` | 0 — `Test Files 131 passed (131)`, `Tests 1895 passed (1895)` |
-| 9 | `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` | not run (host GPU) |
-| 10 | `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` | not run (host GPU) |
-| 11 | `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` | not run (host GPU) |
+| 9 | `node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs` | not run (host GPU) locally — run verbatim by CI in the `verify` job's "Browser witnesses B-1..B-3 (artifact-shell)" step (see §12) |
+| 10 | `node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs` | not run (host GPU) locally — run verbatim by CI (same step) |
+| 11 | `node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs` | not run (host GPU) locally — run verbatim by CI (same step) |
 | 12 | `npm run index:check -w @sentropic/design-system-component-index` | 0 — `component-index --check: 426 artifact(s) fresh.` |
 | 13 | `node scripts/run-script-guards.mjs` | 0 — 171 tests, 168 pass, 0 fail, 3 skipped |
 | 14 | `npm run licensing:check` | 0 — gate OK; artifact-shell skipped as `private: true` |
@@ -569,3 +593,163 @@ fixtures.ts, index.ts + the five components); the AS-0 `ScaffoldSmoke.*`
 files were deleted per the A0-12 executor choice (delete), and the
 `!dist/**/ScaffoldSmoke.*` tarball exclusion was removed with them, so the
 gate now prints `examined 8 source files (floor 8)`.
+
+## 16. AS-1 review reconciliation (PR #254)
+
+Two independent reviews (Argon `scratchpad/rev/as1-rev-argon.out`, Opus
+`scratchpad/rev/as1-rev-opus.md`, both NOT MERGEABLE) were reconciled in
+`scratchpad/rev/as1-review-dossier.md`. Work was done on top of `c24408f3`
+— no rebase, no merge of main, no force-push, no stash (conductor
+instruction). The frozen spec `scratchpad/artifact-shell/as01-spec-frozen.md`
+wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
+`bfa032e9`, `d3f0d57c`, `e2f54ad9`, `d89f9b0f` (head at reconciliation:
+`d89f9b0f`; this SPIKES commit is the final one on top).
+
+### Accepted items R1–R6 (applied)
+
+- **R1** — browser witnesses are real and CI-wired. All three
+  `*.browser.test.mjs` now resolve the repository root by walking up to the
+  package.json that declares workspaces instead of a fixed `../..` count
+  (`findRepoRoot`, e.g. `BlockHighlightOverlay.browser.test.mjs:35-50`,
+  same in the other two), cover all five components through real hooks on
+  `window.__shell` (`setHovered`/`setSelected`/`setLasso`/`openList`/
+  `closeList`/`setChangeOpensList`/`setCancelOpensList`,
+  `comment-mode.browser.test.mjs:140-150`), query the nodes that carry the
+  styles (`.st-lassoLayer__band`/`__fill`, the active row's inset bar —
+  `BlockCandidateList.browser.test.mjs:262-270`), and contain no
+  `|| true` tautology. CI: `.github/workflows/verify.yml:187-211` adds
+  "Set up Chrome for browser witnesses" + "Browser witnesses B-1..B-3
+  (artifact-shell)" to the `verify` job, gated on
+  `matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-artifact-shell')`,
+  running the three `node <file>` commands verbatim with `CHROME_BIN` from
+  `browser-actions/setup-chrome` — the §8.2/§8.5 CI evidence. Locally still
+  `not run (host GPU)`; the harness build (vite + svelte compile of the
+  embedded app) was validated locally without launching a browser.
+- **R2** — selected ≠ hover by outline weight only (§5.3a).
+  `BlockHighlightOverlay.svelte:124-132`: selected dark stroke
+  `border-width: var(--st-border-width-thick, 2px)`, selected light stroke
+  `inset: var(--st-border-width-thick, 2px)` so the inner stroke cannot
+  occlude the weight increase (hover 1+1px, selected 2+1px). B-1 exercises
+  `selected` in all 4 cells (`BlockHighlightOverlay.browser.test.mjs:288-323`:
+  2px outer, 2px inset, combined selected > combined hover, selected outline
+  still >= 3:1, selected chip anchors); the jsdom half asserts the same
+  rules in `BlockHighlightOverlay.test.ts`.
+- **R3** — no hard-coded spacing/radius/border/focus outside `--st-*` tokens
+  (§5), all with fallbacks as AS-0 did: `CommentModeStatus.svelte:86-92+`
+  (spacing, border-bottom, focus-visible via `--st-focus-width`/
+  `--st-focus-offset`), `BlockCandidateList.svelte:143-153+` (max-height,
+  border, radius, paddings, active inset bar, row focus primitive with the
+  §5 2px offset), `CommentModeToggle.svelte:40-53` (border, pressed thick
+  border) and `LassoLayer.svelte:44` (border), plus the overlay chip
+  spacing/radius/border in `BlockHighlightOverlay.svelte`. The toggle's
+  reduced-motion block also zeroes the inner icon-button and tooltip
+  transitions (`CommentModeToggle.svelte:61+`), which do not inherit
+  `transition-duration`.
+- **R4** — W-1.9 now scans template text nodes and attribute strings.
+  `BlockCandidateList.test.ts:338-431` adds a `svelte/compiler` AST walk
+  (`templateViolations`, line 362): Text nodes must be whitespace-only,
+  static attribute values must be in the explicit allowlist (st-* classes,
+  kebab `data-st-shell`/`role`, `aria-live`, `tabindex`, `type`, catalogue
+  icon names from `ICON_NAMES`), user-facing attributes (`aria-label`,
+  `title`, …) must bind to expressions. In-memory planted-failure tests at
+  lines 486/496/505 prove each violation shape fails. Real injection proof:
+  `<span>Select a block</span>` was temporarily added to
+  `LassoLayer.svelte`, the scan failed with
+  `LassoLayer.svelte: template text node is not whitespace-only: "Select a block"`
+  (1 failed / 16 passed), the injection was removed, and the file re-ran
+  green (17 passed). The injection was never committed.
+- **R5** — every §5.6 branch is covered in W-1.8 and B-3, including the
+  step 7 fallback. jsdom harness: `CommentModeStatus.test.ts:310-313` adds
+  `via` + `openListOnChange`/`openListOnCancel`, the change/cancel buttons
+  set them (lines ~446-460), `sync()` focus implements the §5.6 cells
+  (row when open; status root when `via === "change"`; toggle button
+  otherwise), and a dedicated test at line 605 drives both closed-list
+  fallbacks. B-3 drives the same branches in real Chromium
+  (`comment-mode.browser.test.mjs:417-448`).
+- **R6** — this record: §10 CA-L1 corrected (the fold-in is `0893e2ac` on
+  this branch; registration is `parity-baseline.json` `expectedParity` +
+  `gaps` row + `contract-baseline.json` + `generated/contracts/labelled-icon-button.json`
+  in `c24408f3`, docs catalogue `components-catalog.ts:103-106` in
+  `2cc7fcc4` — NOT `barrelOnly.svelte`), §11/§12/§15 re-measured at the
+  reconciliation head (76 tests, browser rows CI-wired).
+
+### Verify-then-apply (spec-backed — applied)
+
+- **Argon 4** (§2.5): lasso fill was 0.24 element opacity, above
+  `blockHighlight.fill` 0.16 and dimming the border. Applied:
+  `LassoLayer.svelte:44-59` — opaque band border (fallback
+  `--st-semantic-border-interactive`), translucent fill on a child element
+  at opacity 0.1 (below 0.16, same translucent family). Commit `12c97b6f`.
+- **Argon 7** (§5.4 "every row renders in light and dark viewer themes"):
+  added a `§5.4 fixture matrix` describe to all four remaining test files —
+  `CommentModeToggle.test.ts:129`, `CommentModeStatus.test.ts:747`,
+  `LassoLayer.test.ts:99`, `BlockCandidateList.test.ts:515` — each iterates
+  `Object.values(viewerThemes)`, injects `compileTheme(theme)` under
+  `data-st-theme`, asserts the root renders, unmounts and removes.
+  (BlockHighlightOverlay already had the 4-cell matrix.) Commit `d3f0d57c`/`bfa032e9`.
+- **Opus N-3** (§6 W-1.10 / F-A1 falsifiability): W-1.10 was tautological.
+  Rewritten at `CommentModeStatus.test.ts:674-720`: presence half mounts all
+  five components and asserts each `[data-st-shell=…]` root, then unmounts
+  all and asserts each absent from the theme root and the document.
+- **Opus N-5** (§0.3 falsifiability): removed the no-op
+  `expect(bad).toBeUndefined;` in `LassoLayer.test.ts:75-76` (kept the
+  `@ts-expect-error` compile-time line, now `void bad;`).
+- **Opus N-11** (§8.3 RED attribution): re-observed RED at the
+  reconciliation head — with `CommentModeStatus.svelte` temporarily absent,
+  `vitest run src/lib/CommentModeStatus.test.ts` fails with
+  `Failed to resolve import "./CommentModeStatus.svelte" from "src/lib/CommentModeStatus.test.ts"`
+  (`Test Files 1 failed (1)`); the file was restored byte-identical
+  afterwards. The §11 RED list above remains accurate.
+
+### Rejected (one line, spec section)
+
+- **Argon 9a** ("branch reverts 7 unrelated files"): artefact of the
+  conductor's two-dot diff `origin/main..HEAD`, not a branch change —
+  rejected per §0.1/§8.5; no rebase performed (conductor-owned, Step 0).
+
+### Deferred (non-blocking follow-ups, logged per dossier)
+
+- **Argon 10 / Opus N-14** — import-graph gate scans comments and can be
+  bypassed via `.join("/")` dynamic specifiers (the browser harnesses use
+  that pattern deliberately); hardening the scanner is a gate-owner task.
+- **Argon 11** — `LabelledIconButton` defaults `size` to `"md"` while CA
+  §5.2 notes `"sm"` for dense item contexts; a components-svelte API
+  decision, not an AS-1 defect.
+- **Opus N-1** — rebase onto origin/main is conductor-owned (Step 0 forbids
+  it here).
+- **Opus N-6** — exit-announcement-while-visible vs `{#if visible}` spec
+  tension; routed to the spec owner per §8.5 (scope amendment route), the
+  current prop-driven rendering stands.
+- **Opus N-7** — list heading inside the listbox + module-level id counter.
+- **Opus N-8** — overlay fill layering / stacked chips.
+- **Opus N-10** — pressed-state border-width layout shift (2px vs 1px).
+- **Opus N-13** — catalogue route deviation from A1-4b (recorded in §10).
+- **Opus N-15** — peer pin 0.37.0 AS-R obligation (see §6).
+- **Opus N-16** — packaging witness passes on comment text.
+
+### CI item (separate commit, per dossier)
+
+- `d89f9b0f` — `test(diagram-core): explicit 20s testTimeout for migration
+  tests under full CI scan`: `packages/diagram-core/vitest.config.ts:16`
+  adds `testTimeout: 20000` to the existing `test` block (Opus extra check 7:
+  `tests/m1e-migrations.test.ts` timeouts under a full CI scan).
+
+### Scoped verification at the reconciliation head (all exit 0)
+
+- `npm test -w @sentropic/design-system-artifact-shell` — `Test Files 7
+  passed (7)`, `Tests 76 passed (76)`, gate `examined 8 source files
+  (floor 8)` (per-file: toggle 6, status 13, overlay 7, lasso 5, list 17,
+  import-graph 21, types 7)
+- `npx vitest run src/lib/LabelledIconButton.test.ts src/lib/Icon.test.ts`
+  in `packages/components-svelte` — `Tests 20 passed (20)`
+- `npm test -w @sentropic/design-system-component-index` — `Test Files 15
+  passed (15)`, `Tests 136 passed (136)`; `node --test
+  scripts/component-index.test.mjs` — 13 pass, 0 fail
+- `node --test scripts/verify-workflow-invariants.test.mjs` — 21 pass, 0
+  fail (verify.yml still parses with the new steps)
+- `npm --workspace @sentropic/design-system-docs run check` — svelte-check
+  0 errors (227 pre-existing warnings)
+- Browser witnesses B-1..B-3: **not run locally (host GPU, §8.2)** — the
+  `verify` job runs them on CI; the harness build itself (path resolution,
+  vite + svelte compile of the embedded apps) was exercised locally without
+  launching a browser.
