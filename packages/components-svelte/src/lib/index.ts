@@ -78,6 +78,9 @@ export { default as Col } from "./Col.svelte";
 export { default as Combobox } from "./Combobox.svelte";
 export { default as ComboChart } from "./ComboChart.svelte";
 export { default as Container } from "./Container.svelte";
+// Site marketing primitives (Svelte-first; React/Vue/Angular = recorded parity gaps).
+export { default as Hero } from "./Hero.svelte";
+export type { HeroProps, HeroSize, HeroAlign } from "./Hero.svelte";
 export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
 export { default as DataImage } from "./DataImage.svelte";

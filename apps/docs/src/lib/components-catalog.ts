@@ -1807,6 +1807,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Hero",
+    slug: "hero",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Bandeau plein bord : image de fond, voile dégradé tokenisé, titre centré, indicateur de défilement.",
+      en: "Full-bleed banner: background image, tokenised gradient overlay, centered title, scroll cue."
+    }
+  },
+  {
     name: "Row",
     slug: "row",
     status: "documented",
