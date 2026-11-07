@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:a6e39ba6928cc67216073c7957abe8639d9a4528f7a8eba3cd264cc10ea2fc29",
-  "entryDigest": "sha256:5685f86f8d635328e191e4c0c71d51d1a54adf50d6e49b30e471971dd0ff73ef",
+  "digest": "sha256:be6cf6ef4d3413a2782586625f982b944c2e874cd62ea6c55b997de9c3abefc0",
+  "entryDigest": "sha256:2fedb2ced207b059f3cb6af66a78c6fcf9e19af193c55f00a867034bc0e7abe7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -296,7 +296,7 @@
         "declarationPath": "packages/components-svelte/dist/TileGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileGroupProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

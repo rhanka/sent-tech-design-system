@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:f919290daf9de74100d02646fa90f2a3ca417794b5191432add2c0270befe40b",
-  "entryDigest": "sha256:816637abbdae8a6d57f280d863f2df1c35581c90dabc7c643ebd51a2749521ac",
+  "digest": "sha256:2d3568fdce3429fabe969c10dba7e00eb9f98862a87c62ec94f894219ee84934",
+  "entryDigest": "sha256:4b0a7360beb1627303be2c124c8bd56cf481f910f8a218a572eced5c969c320e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/BellCurveChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BellCurveChartProps",
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       "status": "complete",
       "unresolved": [],

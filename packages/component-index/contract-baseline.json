@@ -409,6 +409,40 @@
     "status": "complete"
    }
   },
+  "diagram-card": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
+  "diagram-zone": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
   "chat-composer": {
    "svelte": {
     "status": "partial"

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectableRow.svelte",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
     "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
   },
-  "digest": "sha256:8e8a13cec18e71b3446f9d921a5d649ce0848195a042eb8190c2ea01ab98c57d",
+  "digest": "sha256:b38d47df0cfde64a9ab785837a69351a418ff4219350dff86b45ff9486f679c1",
   "displayName": "SelectableRow",
   "format": "component-entry/v1",
   "frameworks": [
