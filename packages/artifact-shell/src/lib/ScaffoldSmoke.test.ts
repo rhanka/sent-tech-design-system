@@ -20,15 +20,26 @@ describe("W-0.1 scaffold smoke", () => {
     const themed = container.querySelector("[data-st-theme]");
     expect(themed).toBeTruthy();
 
+    // The smoke element renders INSIDE the themed subtree, not outside it.
+    const smoke = container.querySelector(".st-scaffoldSmoke");
+    expect(smoke).toBeTruthy();
+    expect(themed?.querySelector(".st-scaffoldSmoke")).toBe(smoke);
+
     // Token resolution: ThemeProvider injects the compiled theme stylesheet
-    // defining the --st-* custom properties the smoke element reads.
+    // defining the --st-* custom properties the smoke element reads (each with
+    // an inline fallback in the component, spec §2.5 / A0-17).
     const style = document.head.querySelector("style[data-st-theme-provider]");
     expect(style).toBeTruthy();
-    expect(style?.textContent ?? "").toContain("--st-");
-
-    // The smoke element carries its token-read class (jsdom allows class and
-    // custom-property presence, not computed layout).
-    expect(container.querySelector(".st-scaffoldSmoke")).toBeTruthy();
+    const css = style?.textContent ?? "";
+    expect(css).toContain("--st-");
+    for (const name of [
+      "--st-semantic-surface-raised",
+      "--st-semantic-text-primary",
+      "--st-spacing-2",
+      "--st-spacing-3"
+    ]) {
+      expect(css).toContain(name);
+    }
   });
 
   it("the barrel exports no component yet (types only, erased at runtime)", () => {
