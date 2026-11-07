@@ -519,6 +519,96 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
   });
 });
 
+describe("pass-4 blocking — expanded Svelte parts positioned from the shared layout (frozen values, no DS functions)", () => {
+  // Expected values below are frozen literals (or plain arithmetic on
+  // frozen literals): no layoutZone / renderZoneSvg call derives them.
+  function peopleDom(overrides: Partial<DiagramZoneProps> = {}) {
+    const props: DiagramZoneProps = {
+      entityId: "grp.PEOPLE",
+      kicker: EXPANDED_PEOPLE.kicker,
+      title: EXPANDED_PEOPLE.title,
+      subtitle: EXPANDED_PEOPLE.subtitle,
+      footer: "group: people",
+      icon: EXPANDED_PEOPLE.icon,
+      iconGlyph: getDiagramGlyph(EXPANDED_PEOPLE.icon),
+      tone: EXPANDED_PEOPLE.tone,
+      collapsed: false,
+      toggleLabel: "Replier People",
+      x: 0,
+      y: 0,
+      width: EXPANDED_PEOPLE.width,
+      height: EXPANDED_PEOPLE.height,
+      ...overrides,
+    };
+    const { container } = render(DiagramZone, { props: { ...props, measure: defaultCardMeasure } });
+    const zone = container.querySelector(".st-diagramZone--expanded") as HTMLElement | null;
+    const styleOf = (selector: string): string =>
+      (zone?.querySelector(selector) as HTMLElement | null)?.getAttribute("style") ?? "";
+    return { container, zone, styleOf };
+  }
+
+  it("expanded PEOPLE: frozen rule y 198.98125, content start 214.98125, footer inset 9.25 in the Svelte DOM", () => {
+    const { zone, styleOf } = peopleDom();
+    expect(zone).not.toBeNull();
+    // Frame box from the layout.
+    expect(zone?.getAttribute("style") ?? "").toContain("width: 492px");
+    expect(zone?.getAttribute("style") ?? "").toContain("height: 974.98125px");
+    // Header band: top = headerInset 16 (frame-edge), height =
+    // ruleY − headerRuleGap − headerTop = 198.98125 − 4 − 16.
+    expect(styleOf(".st-diagramZone-header")).toContain("calc(16px");
+    expect(styleOf(".st-diagramZone-header")).toContain("height: 178.98125px");
+    // Frozen PEOPLE rule y 198.98125 (frame-edge coordinate); the CSS
+    // border is subtracted exactly once, through the border token.
+    const rule = styleOf(".st-diagramZone-rule");
+    expect(rule).toContain("calc(198.98125px");
+    expect(rule).toContain("var(--st-component-diagramZone-borderWidth, 1.5px)");
+    // Frozen content start 214.98125 = rule y + contentInsetTop 16.
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
+    // Footer rule: footerBottom − footer line box − rule − ruleMargin,
+    // footerBottom = 974.98125 − 1.5 (border) − 9.25 (inset).
+    const footerRuleY = 974.98125 - 1.5 - 9.25 - 31.1875 - 1 - 4;
+    expect(footerRuleY).toBe(928.04375);
+    expect(styleOf(".st-diagramZone-footerRule")).toContain(`calc(${footerRuleY}px`);
+    // Footer pinned at the frame bottom with the 9.25 px inset — no border
+    // subtraction in the value (the padding box already sits inside the
+    // border, so the inset is the whole bottom offset).
+    const footer = styleOf(".st-diagramZone-footer");
+    expect(footer).toContain("bottom: var(--st-component-diagramZone-footerBottomInset");
+    expect(footer).toContain("9.25px");
+    expect(footer).not.toContain("7.75");
+  });
+
+  it("reviewer case: two-line title/subtitle + footer F at automatic height 280.41875, footer at its pinned position", () => {
+    const { container, zone, styleOf } = peopleDom({
+      entityId: "grp.review4",
+      kicker: "K",
+      footer: "F",
+      height: undefined,
+    });
+    expect(zone).not.toBeNull();
+    // Automatic height: header + content inset + footer reserve = 280.41875.
+    expect(zone?.getAttribute("style") ?? "").toContain("height: 280.41875px");
+    // Not refused at the automatic height.
+    expect(container.querySelector(".st-diagramZone-pos")?.getAttribute("data-zone-refused")).toBeNull();
+    // Same two-line title + two-line subtitle header as PEOPLE: rule
+    // 198.98125, content start 214.98125.
+    expect(styleOf(".st-diagramZone-rule")).toContain("calc(198.98125px");
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
+    // The footer stays pinned inside the 280.41875 px frame: footerBottom =
+    // 280.41875 − 1.5 (border) − 9.25 (inset) = 269.66875, so the footer rule
+    // sits at 269.66875 − 31.1875 (line box) − 1 (rule) − 4 (margin).
+    const footerBottom = 280.41875 - 1.5 - 9.25;
+    expect(footerBottom).toBe(269.66875);
+    const footerRuleY = footerBottom - 31.1875 - 1 - 4;
+    expect(footerRuleY).toBe(233.48125);
+    expect(styleOf(".st-diagramZone-footerRule")).toContain(`calc(${footerRuleY}px`);
+    const footer = styleOf(".st-diagramZone-footer");
+    expect(footer).toContain("9.25px");
+    expect(footer).not.toContain("7.75");
+    expect(zone?.querySelector(".st-diagramZone-footerLine")?.textContent).toBe("F");
+  });
+});
+
 describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
   for (const zone of COLLAPSED_ZONES) {
     it(`collapsed ${zone.id}: same texts, toggle state and diagnostics`, () => {
@@ -546,6 +636,14 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
       expect(card.getAttribute("data-card-overflow")).toBe(
         svg.dataZoneOverflow === null ? null : svg.dataZoneOverflow,
       );
+      // Positions, not only texts: the Svelte positioning wrapper sits
+      // exactly where the SVG group translates.
+      const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+      const translate = /^translate\(([-0-9.]+) ([-0-9.]+)\)$/.exec(svg.transform ?? "");
+      expect(translate).not.toBeNull();
+      const posStyle = pos.getAttribute("style") ?? "";
+      expect(posStyle).toContain(`left: ${translate?.[1]}px`);
+      expect(posStyle).toContain(`top: ${translate?.[2]}px`);
     });
   }
 
@@ -588,6 +686,18 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     );
     expect(zone.querySelectorAll(".st-diagramZone-rule")).toHaveLength(1);
     expect(svg.rules).toHaveLength(1);
+    // Positions, not only texts and counts: the Svelte frame box and rule
+    // sit exactly at the SVG frame box and rule y; the content starts 16 px
+    // under the rule in both renderers.
+    const frameStyle = zone.getAttribute("style") ?? "";
+    expect(frameStyle).toContain(`width: ${svg.frame?.width}px`);
+    expect(frameStyle).toContain(`height: ${svg.frame?.height}px`);
+    const ruleEl = zone.querySelector(".st-diagramZone-rule") as HTMLElement;
+    expect(ruleEl.getAttribute("style") ?? "").toContain(`calc(${svg.rules[0]?.y1}px`);
+    const contentEl = zone.querySelector(".st-diagramZone-content") as HTMLElement;
+    expect(contentEl.getAttribute("style") ?? "").toContain(
+      `calc(${Number(svg.rules[0]?.y1) + 16}px`,
+    );
     const button = zone.querySelector(".st-diagramCard-toggle button");
     expect(button?.getAttribute("aria-expanded")).toBe("true");
     expect(svg.toggle.collapsed).toBe("false");
@@ -628,6 +738,16 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     expect(
       [...zoneEl.querySelectorAll(".st-diagramZone-footerLine")].map((el) => el.textContent ?? ""),
     ).toEqual(["group: footed"]);
+    // Positions, not only texts: the Svelte footer rule sits at the SVG
+    // footer rule's y, the frame box matches, and the Svelte footer is
+    // pinned with the 9.25 px inset (no border subtraction).
+    const domFooterRule = zoneEl.querySelector(".st-diagramZone-footerRule") as HTMLElement;
+    expect(domFooterRule.getAttribute("style") ?? "").toContain(`calc(${footerRule[0]?.y1}px`);
+    expect(zoneEl.getAttribute("style") ?? "").toContain(`height: ${expandedSvg.frame?.height}px`);
+    const domFooter = zoneEl.querySelector(".st-diagramZone-footer") as HTMLElement;
+    const domFooterStyle = domFooter.getAttribute("style") ?? "";
+    expect(domFooterStyle).toContain("9.25px");
+    expect(domFooterStyle).not.toContain("7.75");
     // Collapsed: the very same footer through the card content.
     const collapsed = renderZoneSvg({ ...base, collapsed: true }, { measure: defaultCardMeasure });
     const collapsedSvg = parseZoneSvg(svgOf(collapsed));
