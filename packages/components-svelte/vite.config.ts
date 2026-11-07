@@ -8,8 +8,9 @@ export default defineConfig({
     environment: "jsdom",
     testTimeout: 20000,
     // test.exclude keeps the real-browser harness out of the jsdom run
-    // (spec §11): *.browser.test.mjs files run through node directly, never
-    // through `vitest run src`.
+    // (spec §11): *.browser.test.mjs files — starting with the
+    // rich-text-editor ones — run through node directly, never through
+    // `vitest run src`.
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
