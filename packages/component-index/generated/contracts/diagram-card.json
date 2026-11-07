@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:b20e65fa13affaac8f07fd87e9210efbf7d1704a6b01b6400876334646a95995",
-  "entryDigest": "sha256:1f0064958e2eaf4527600da3e2416347c0eaa80b81e1ab64f880cc034de38fa5",
+  "digest": "sha256:5c328679ee3ede68aac99241fc0be87cdff379d11c60a6e66f79298b09764ff3",
+  "entryDigest": "sha256:6b9e1bb731dd8193677b7e0cb3d7483f60c6182db6d4e91f345093b880d3b6e5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,6 +204,10 @@
           },
           "kicker": {
             "type": "string"
+          },
+          "proposed": {
+            "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
+            "type": "boolean"
           },
           "title": {
             "type": "string"
