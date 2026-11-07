@@ -31,15 +31,16 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      # Build the full local @sentropic dependency closure of the five dataviz
+      # packages, in topological order. The closure covers dataviz-core, the
+      # four component packages (dataviz-svelte pulls in design-system-svelte,
+      # which needs rich-text, graph, theme-dsfr, themes, tokens) — the old
+      # hand-written list missed rich-text/graph/theme-dsfr and broke
+      # svelte-check inside design-system-svelte. ensure-theme-dists derives
+      # the closure from the workspace graph, so a new local dependency needs
+      # no edit here.
       - name: Build Dataviz dependencies
-        run: |
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/design-system-themes run build
-          npm --workspace @sentropic/dataviz-core run build
-          npm --workspace @sentropic/design-system-svelte run build
-          npm --workspace @sentropic/design-system-react run build
-          npm --workspace @sentropic/design-system-vue run build
-          npm --workspace @sentropic/design-system-angular run build
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
       - name: Verify Dataviz packages
         run: |
           npm --workspace @sentropic/dataviz-core run build
@@ -141,15 +142,11 @@ jobs:
       - name: Install and build
         run: |
           npm ci
-          npm --workspace @sentropic/dataviz-core run build
-          npm --workspace @sentropic/design-system-svelte run build
-          npm --workspace @sentropic/design-system-react run build
-          npm --workspace @sentropic/design-system-vue run build
-          npm --workspace @sentropic/design-system-angular run build
-          npm --workspace @sentropic/dataviz-svelte run build
-          npm --workspace @sentropic/dataviz-react run build
-          npm --workspace @sentropic/dataviz-vue run build
-          npm --workspace @sentropic/dataviz-angular run build
+          # Same dependency closure as the verify job, in topological order.
+          # --no-hash leaves no dist/.srchash marker: npm pack includes
+          # dotfiles inside `files` directories, so the marker would otherwise
+          # ship inside the published tarballs.
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
