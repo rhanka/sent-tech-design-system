@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -27,6 +27,15 @@
       "types": "./dist/presence-badge/index.d.ts",
       "import": "./dist/presence-badge/index.js"
     },
+    "./diagram-icons": {
+      "svelte": "./dist/diagram-icons/index.js",
+      "types": "./dist/diagram-icons/index.d.ts",
+      "import": "./dist/diagram-icons/index.js"
+    },
+    "./diagram-render": {
+      "types": "./dist/diagram-render/index.d.ts",
+      "import": "./dist/diagram-render/index.js"
+    },
     "./rich-text-editor": {
       "svelte": "./dist/rich-text-editor/index.js",
       "types": "./dist/rich-text-editor/index.d.ts",
@@ -41,7 +50,13 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
-    "!dist/**/*Fixture.d.ts"
+    "!dist/**/*Fixture.d.ts",
+    "!dist/**/diagram-card-corpus.js",
+    "!dist/**/diagram-card-corpus.d.ts",
+    "!dist/**/diagram-card-corpus.d.ts.map",
+    "!dist/**/diagram-zone-corpus.js",
+    "!dist/**/diagram-zone-corpus.d.ts",
+    "!dist/**/diagram-zone-corpus.d.ts.map"
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
