@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fireEvent, render, screen } from "@testing-library/svelte";
+import { compileTheme } from "@sentropic/design-system-themes";
 import { compile } from "svelte/compiler";
 import type { ComponentProps } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import CommentModeToggle from "./CommentModeToggle.svelte";
-import { modeLabels } from "./fixtures.js";
+import { modeLabels, viewerThemes } from "./fixtures.js";
 
 // W-1.1 — CommentModeToggle witness (F-T1 unpressed, F-T2 pressed/narrow,
 // F-X1 label swap, F-R1 reduced-motion compile half). Sentinels are non-real:
@@ -122,5 +123,33 @@ describe("W-1.1 CommentModeToggle (F-T1 / F-T2)", () => {
     expect(media).toContain("@media (prefers-reduced-motion: reduce)");
     expect(media).toContain("transition-duration: 0s");
     expect(media).toContain("animation-duration: 0s");
+  });
+});
+
+describe("§5.4 fixture matrix — light and dark viewer themes", () => {
+  it("the toggle renders in every viewer theme with the compiled theme variables scoped to the theme root", () => {
+    const labels = modeLabels();
+    for (const theme of Object.values(viewerThemes)) {
+      const themeRoot = document.createElement("div");
+      themeRoot.setAttribute("data-st-theme", theme.id);
+      const style = document.createElement("style");
+      style.textContent = compileTheme(theme);
+      themeRoot.appendChild(style);
+      document.body.appendChild(themeRoot);
+      // the theme root really carries the compiled token table
+      expect(style.textContent, theme.id).toContain("--st-semantic-surface-raised");
+
+      const mounted = render(CommentModeToggle, {
+        target: themeRoot,
+        props: { ...toggleProps(labels, true), onToggle: vi.fn() }
+      });
+      const root = themeRoot.querySelector('[data-st-shell="comment-mode-toggle"]');
+      expect(root, `theme ${theme.id}`).not.toBeNull();
+      expect(root?.querySelector("button")).not.toBeNull();
+
+      mounted.unmount();
+      expect(themeRoot.querySelector('[data-st-shell="comment-mode-toggle"]')).toBeNull();
+      themeRoot.remove();
+    }
   });
 });

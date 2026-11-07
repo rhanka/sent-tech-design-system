@@ -1,10 +1,12 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fireEvent, render } from "@testing-library/svelte";
+import { compileTheme } from "@sentropic/design-system-themes";
 import { compile } from "svelte/compiler";
 import type { ComponentProps } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import LassoLayer from "./LassoLayer.svelte";
+import { viewerThemes } from "./fixtures.js";
 import type { LassoLayerEvents, LassoLayerHostHandlers, RectDisplay } from "./types.js";
 
 // W-1.6 — LassoLayer witness (F-L1 band geometry / inactive renders nothing,
@@ -71,7 +73,7 @@ describe("W-1.6 LassoLayer (F-L1 / F-L2)", () => {
     // events type admits no member (enforced by svelte-check on this file).
     // @ts-expect-error — LassoLayerEvents is Record<string, never>
     const bad: LassoLayerEvents = { onLassoEnd: () => {} };
-    expect(bad).toBeUndefined;
+    void bad;
 
     // runtime: rendering with no event props and firing pointer/keyboard
     // events on the band emits nothing and throws nothing
@@ -91,5 +93,30 @@ describe("W-1.6 LassoLayer (F-L1 / F-L2)", () => {
     expect(media).toContain("@media (prefers-reduced-motion: reduce)");
     expect(media).toContain("transition-duration: 0s");
     expect(media).toContain("animation-duration: 0s");
+  });
+});
+
+describe("§5.4 fixture matrix — light and dark viewer themes", () => {
+  it("the lasso renders in every viewer theme with the compiled theme variables scoped to the theme root", () => {
+    const rect: RectDisplay = { x: 4, y: 8, width: 60, height: 24 };
+    for (const theme of Object.values(viewerThemes)) {
+      const themeRoot = document.createElement("div");
+      themeRoot.setAttribute("data-st-theme", theme.id);
+      const style = document.createElement("style");
+      style.textContent = compileTheme(theme);
+      themeRoot.appendChild(style);
+      document.body.appendChild(themeRoot);
+      expect(style.textContent, theme.id).toContain("--st-semantic-surface-raised");
+
+      const mounted = render(LassoLayer, { target: themeRoot, props: { active: true, rect } });
+      const root = themeRoot.querySelector('[data-st-shell="lasso-layer"]');
+      expect(root, `theme ${theme.id}`).not.toBeNull();
+      expect(root?.querySelector(".st-lassoLayer__band")).not.toBeNull();
+      expect(root?.querySelector(".st-lassoLayer__fill")).not.toBeNull();
+
+      mounted.unmount();
+      expect(themeRoot.querySelector('[data-st-shell="lasso-layer"]')).toBeNull();
+      themeRoot.remove();
+    }
   });
 });

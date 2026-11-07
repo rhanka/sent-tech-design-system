@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fireEvent, render } from "@testing-library/svelte";
+import { compileTheme } from "@sentropic/design-system-themes";
 import { compile } from "svelte/compiler";
 import type { ComponentProps } from "svelte";
 import { describe, expect, it, vi } from "vitest";
@@ -9,7 +10,7 @@ import BlockHighlightOverlay from "./BlockHighlightOverlay.svelte";
 import CommentModeStatus from "./CommentModeStatus.svelte";
 import CommentModeToggle from "./CommentModeToggle.svelte";
 import LassoLayer from "./LassoLayer.svelte";
-import { makeBlocks, modeLabels } from "./fixtures.js";
+import { makeBlocks, modeLabels, viewerThemes } from "./fixtures.js";
 import type {
   BlockDisplay,
   BlockHighlightOverlayHostHandlers,
@@ -303,6 +304,12 @@ function buildHarness() {
     activeKey: null as OpaqueKey | null,
     selectedKey: null as OpaqueKey | null,
     listOpen: false,
+    // §5.6 steps 5/7 record which stub button returned to Selected, and the
+    // harness flags decide whether that button also opens the list — the
+    // "when open, else …" branches are exercised both ways.
+    via: null as "change" | "cancel" | null,
+    openListOnChange: true,
+    openListOnCancel: true,
     hovered: null as BlockDisplay | null,
     announcement: "",
     cycleStep: 0
@@ -311,6 +318,7 @@ function buildHarness() {
   const events = {
     toggle: vi.fn(() => {
       state.mode = state.mode === "off" ? "armed" : "off";
+      state.via = null;
       if (state.mode === "armed") {
         state.activeKey = null;
         state.announcement = labels.announcementText;
@@ -432,16 +440,22 @@ function buildHarness() {
   themeRoot.appendChild(composer);
   publishBtn.addEventListener("click", () => {
     state.mode = "armed";
+    state.via = null;
     state.announcement = labels.announcementText;
   });
   changeBtn.addEventListener("click", () => {
+    // §5.6 step 5: "Change block" returns to Selected; the list opens only
+    // when the harness flag says so (both branches asserted below)
     state.mode = "selected";
+    state.via = "change";
     state.selectedKey = state.activeKey;
-    state.listOpen = true;
+    state.listOpen = state.openListOnChange;
   });
   cancelBtn.addEventListener("click", () => {
+    // §5.6 step 7: Cancel returns to Selected; same open/closed branching
     state.mode = "selected";
-    state.listOpen = true;
+    state.via = "cancel";
+    state.listOpen = state.openListOnCancel;
   });
 
   const selectedBlock = () =>
@@ -465,11 +479,17 @@ function buildHarness() {
       textarea.focus();
     } else if (state.mode === "selected") {
       if (state.listOpen && state.selectedKey !== null) {
+        // §5.6 steps 5/7 open branch: focus on the candidate-list row of the
+        // selected block
         const row = themeRoot.querySelector(`[role="option"][data-block-key="${state.selectedKey}"]`);
         if (row) (row as HTMLElement).focus();
         else statusRoot?.focus();
-      } else {
+      } else if (state.via === "change") {
+        // §5.6 step 5 closed-list fallback: CommentModeStatus root
         statusRoot?.focus();
+      } else {
+        // §5.6 step 7 closed-list fallback (scope F7): the toggle button
+        (themeRoot.querySelector('[data-st-shell="comment-mode-toggle"] button') as HTMLElement | null)?.focus();
       }
     } else {
       (themeRoot.querySelector('[data-st-shell="comment-mode-toggle"] button') as HTMLElement | null)?.focus();
@@ -582,6 +602,43 @@ describe("W-1.8 harness (F-K1) — full keyboard trail §5.6 steps 1–7", () =>
     expect(document.activeElement).toBe(h.els.row(h.blocks[0].key));
   });
 
+  it("steps 5/7 closed-list fallbacks: \"Change block\" with the list closed focuses the status root; Cancel with the list closed focuses the toggle (§5.6)", async () => {
+    const h = buildHarness();
+    await h.sync();
+
+    // drive to Composing via the keyboard trail (steps 1–3)
+    await fireEvent.click(h.els.toggleButton());
+    await h.sync();
+    await fireEvent.keyDown(h.els.statusRoot() as HTMLElement, { key: "ArrowDown" });
+    await h.sync();
+    await fireEvent.keyDown(h.els.statusRoot() as HTMLElement, { key: "Enter" });
+    await h.sync();
+    expect(h.state.mode).toBe("composing");
+    expect(document.activeElement).toBe(h.textarea);
+
+    // step 5 fallback: "Change block" with openListOnChange=false → Selected,
+    // list closed, focus on the CommentModeStatus root
+    h.state.openListOnChange = false;
+    await fireEvent.click(h.changeBtn);
+    await h.sync();
+    expect(h.state.mode).toBe("selected");
+    expect(h.state.listOpen).toBe(false);
+    expect(h.state.selectedKey).toBe(h.blocks[0].key);
+    expect(document.activeElement).toBe(h.els.statusRoot());
+
+    // back to Composing, then step 7 fallback: Cancel with
+    // openListOnCancel=false → Selected, list closed, focus on the toggle
+    h.state.mode = "composing";
+    h.state.openListOnCancel = false;
+    await h.sync();
+    expect(document.activeElement).toBe(h.textarea);
+    await fireEvent.click(h.cancelBtn);
+    await h.sync();
+    expect(h.state.mode).toBe("selected");
+    expect(h.state.listOpen).toBe(false);
+    expect(document.activeElement).toBe(h.els.toggleButton());
+  });
+
   it("H-1 host-handler half: the harness hit layer invokes onBlockClick directly → Selected; chip click → onAnchor → Composing; the overlay emits only onAnchor (rect clicks emit nothing)", async () => {
     const h = buildHarness();
     await h.sync();
@@ -614,20 +671,102 @@ describe("W-1.8 harness (F-K1) — full keyboard trail §5.6 steps 1–7", () =>
   });
 });
 
-describe("W-1.10 absence (F-A1)", () => {
-  it("host mounts nothing for canComment=false: no toggle/status/overlay/lasso/list in the DOM", () => {
+describe("W-1.10 absence (F-A1) — falsifiable: presence first, then absence", () => {
+  const SHELL_SELECTORS = [
+    '[data-st-shell="comment-mode-toggle"]',
+    '[data-st-shell="comment-mode-status"]',
+    '[data-st-shell="block-highlight-overlay"]',
+    '[data-st-shell="lasso-layer"]',
+    '[data-st-shell="block-candidate-list"]'
+  ] as const;
+
+  it("canComment=true mounts all five components; canComment=false mounts nothing — the absence half fails if any component renders", () => {
+    const labels = modeLabels();
+    const blocks = makeBlocks(3);
     const themeRoot = document.createElement("div");
     themeRoot.setAttribute("data-st-theme", "sent-tech");
     document.body.appendChild(themeRoot);
-    // the host mounts nothing — the five components are simply absent
-    expect(themeRoot.querySelector('[data-st-shell="comment-mode-toggle"]')).toBeNull();
-    expect(themeRoot.querySelector('[data-st-shell="comment-mode-status"]')).toBeNull();
-    expect(themeRoot.querySelector('[data-st-shell="block-highlight-overlay"]')).toBeNull();
-    expect(themeRoot.querySelector('[data-st-shell="lasso-layer"]')).toBeNull();
-    expect(themeRoot.querySelector('[data-st-shell="block-candidate-list"]')).toBeNull();
+
+    // canComment=true analogue: the host mounts all five components
+    const mounted = [
+      render(CommentModeToggle, {
+        target: themeRoot,
+        props: {
+          pressed: true,
+          label: labels.toggleLabel,
+          shortcutLabel: labels.shortcutLabel,
+          ariaKeyshortcuts: labels.ariaKeyshortcuts,
+          labels: { tooltip: labels.tooltip },
+          onToggle: vi.fn()
+        }
+      }),
+      render(CommentModeStatus, {
+        target: themeRoot,
+        props: { ...statusProps(labels, { candidates: blocks }), ...statusEvents() }
+      }),
+      render(BlockHighlightOverlay, {
+        target: themeRoot,
+        props: { hovered: blocks[0], selected: null, chipLabel: labels.chipLabel, onAnchor: vi.fn() }
+      }),
+      render(LassoLayer, { target: themeRoot, props: { active: true, rect: { x: 0, y: 0, width: 10, height: 10 } } }),
+      render(BlockCandidateList, {
+        target: themeRoot,
+        props: {
+          open: true,
+          candidates: blocks,
+          activeKey: null,
+          selectedKey: null,
+          headingLabel: labels.headingLabel,
+          onPickBlock: vi.fn(),
+          onActiveKeyChange: vi.fn(),
+          onAnchor: vi.fn(),
+          onClose: vi.fn()
+        }
+      })
+    ];
+    // presence half: every shell root is in the DOM (this half proves the
+    // selectors match real renders, so the absence half below is falsifiable)
+    for (const selector of SHELL_SELECTORS) {
+      expect(themeRoot.querySelector(selector), `present: ${selector}`).not.toBeNull();
+    }
+    expect(themeRoot.querySelector('[role="listbox"]')).not.toBeNull();
+
+    // canComment=false analogue: the host unmounts everything
+    for (const m of mounted) m.unmount();
+    for (const selector of SHELL_SELECTORS) {
+      expect(themeRoot.querySelector(selector), `absent: ${selector}`).toBeNull();
+      expect(document.querySelector(selector), `absent document-wide: ${selector}`).toBeNull();
+    }
     expect(themeRoot.querySelector('[role="listbox"]')).toBeNull();
     expect(themeRoot.querySelector("button")).toBeNull();
-    expect(document.querySelector('[data-st-shell="comment-mode-toggle"]')).toBeNull();
-    expect(document.querySelector('[data-st-shell="comment-mode-status"]')).toBeNull();
+    expect(themeRoot.childElementCount).toBe(0);
+    themeRoot.remove();
+  });
+});
+
+describe("§5.4 fixture matrix — light and dark viewer themes", () => {
+  it("the status renders in every viewer theme with the compiled theme variables scoped to the theme root", () => {
+    const labels = modeLabels();
+    for (const theme of Object.values(viewerThemes)) {
+      const themeRoot = document.createElement("div");
+      themeRoot.setAttribute("data-st-theme", theme.id);
+      const style = document.createElement("style");
+      style.textContent = compileTheme(theme);
+      themeRoot.appendChild(style);
+      document.body.appendChild(themeRoot);
+      expect(style.textContent, theme.id).toContain("--st-semantic-surface-raised");
+
+      const mounted = render(CommentModeStatus, {
+        target: themeRoot,
+        props: { ...statusProps(labels), ...statusEvents() }
+      });
+      const root = themeRoot.querySelector('[data-st-shell="comment-mode-status"]');
+      expect(root, `theme ${theme.id}`).not.toBeNull();
+      expect(root?.querySelector('[aria-live="polite"]')).not.toBeNull();
+
+      mounted.unmount();
+      expect(themeRoot.querySelector('[data-st-shell="comment-mode-status"]')).toBeNull();
+      themeRoot.remove();
+    }
   });
 });
