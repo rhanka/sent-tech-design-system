@@ -43,4 +43,26 @@
  * stacking context; inside it the order is highlight/lasso < candidate list <
  * (later lots: composer, popovers). No global z token changes; foundation z
  * (header 50, toast 60, overlay 80, modal 100) is untouched.
+ *
+ * Complete name set (each read as var(--st-component-<name>-<leaf>, <fallback>)
+ * with an inline fallback in the component, per A0-17):
+ *   --st-component-blockHighlight-outlineDark
+ *   --st-component-blockHighlight-outlineLight
+ *   --st-component-blockHighlight-fill
+ *   --st-component-blockHighlight-selectedOutlineDark
+ *   --st-component-blockHighlight-selectedOutlineLight
+ *   --st-component-blockHighlight-selectedFill
+ *   --st-component-blockHighlight-chipBackground
+ *   --st-component-blockHighlight-chipText
+ *   --st-component-lasso-border
+ *   --st-component-lasso-fill
+ *   --st-component-commentModeStatus-background
+ *   --st-component-commentModeStatus-text
+ *   --st-component-commentModeStatus-border
+ *   --st-component-blockCandidateList-background
+ *   --st-component-blockCandidateList-border
+ *   --st-component-blockCandidateList-rowActiveBackground
+ *   --st-component-blockCandidateList-rowSelectedBackground
+ *   (commentModeToggle has no leaf of its own — it inherits IconButton +
+ *    Tooltip tokens through the CA-L1 LabelledIconButton composition)
  */
