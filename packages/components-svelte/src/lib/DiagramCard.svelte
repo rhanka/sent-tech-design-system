@@ -44,6 +44,7 @@
     icon,
     iconGlyph,
     tone,
+    proposed,
     toggle,
     align,
     bodyMode,
@@ -64,6 +65,7 @@
         ...(icon === undefined ? {} : { icon }),
         ...(iconGlyph === undefined ? {} : { iconGlyph }),
         ...(tone === undefined ? {} : { tone }),
+        ...(proposed === undefined ? {} : { proposed }),
         ...(toggle === undefined ? {} : { toggle }),
         ...(align === undefined ? {} : { align }),
         ...(bodyMode === undefined ? {} : { bodyMode }),
@@ -91,9 +93,10 @@
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
 <div
-  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}"
+  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}"
   data-entity={entityId}
   data-tone={tone}
+  data-proposed={proposed === true ? "true" : undefined}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
@@ -120,8 +123,12 @@
   {#if layout.ruleY !== undefined}
     <div class="st-diagramCard-rule" aria-hidden="true"></div>
   {/if}
-  {#if layout.footerLine !== undefined}
-    <div class="st-diagramCard-footer">{layout.footerLine.text}</div>
+  {#if layout.footerLines.length > 0}
+    <div class="st-diagramCard-footer">
+      {#each layout.footerLines as line, footerIndex (footerIndex)}
+        <span class="st-diagramCard-footerLine">{line.text}</span>
+      {/each}
+    </div>
   {/if}
 </div>
 
@@ -146,6 +153,11 @@
   .st-diagramCard--center {
     /* Owner variant: every text slot centred inside its allocation. */
     text-align: center;
+  }
+  /* Neutral status prop: a proposed card is always drawn dashed,
+     independently of the tint (owner criterion 5). */
+  .st-diagramCard--proposed {
+    border-style: dashed;
   }
   .st-diagramCard-gap {
     display: block;
@@ -175,6 +187,10 @@
   .st-diagramCard-detail {
     display: block;
     min-width: 0;
+    /* No mid-word break: an over-long word overflows and is diagnosed
+       (Astra J4), never silently broken or cut. */
+    overflow-wrap: normal;
+    word-break: normal;
   }
   .st-diagramCard-detail {
     color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
@@ -198,5 +214,11 @@
     font-size: var(--st-component-diagramCard-footerFontSize, 24px);
     font-weight: var(--st-component-diagramCard-footerFontWeight, 700);
     line-height: var(--st-component-diagramCard-footerLineHeight, 1.3);
+  }
+  .st-diagramCard-footerLine {
+    display: block;
+    min-width: 0;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 </style>
