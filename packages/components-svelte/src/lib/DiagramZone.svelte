@@ -198,6 +198,7 @@
             iconName={icon}
             iconGlyph={iconGlyph}
             headerTextWidth={header.headerTextWidth}
+            headerBlockHeight={header.headerBlockHeight}
             subtitleWidth={subtitleWidth}
             toggle={toggleLabel === undefined
               ? undefined
@@ -275,10 +276,14 @@
   }
   .st-diagramZone-rule {
     display: block;
-    /* 1 screen px at every zoom: the host-published camera zoom
-       (--st-diagram-zoom) is divided out, same contract as the card rule. */
-    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
-    flex: 0 0 calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
+    /* 1 screen px at every zoom with a constant LAYOUT footprint (review
+       pass 2, item 5): the box keeps a fixed 1 px height/flex-basis and only
+       the painted stroke is counter-scaled by scaleY(1/zoom), same contract
+       as the card rule — the zone footer never moves at overview zoom. */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
     /* headerRuleGap 4 above; contentInsetTop 16 below; the rule insets are
        the card's (same rule, §6.2). */
     margin: var(--st-component-diagramZone-headerRuleGap, 4px)
@@ -296,8 +301,13 @@
   }
   .st-diagramZone-footerRule {
     display: block;
-    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
-    flex: 0 0 calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
+    /* Same constant-footprint rule contract as the card and the header rule
+       (review pass 2, item 5): fixed 1 px layout box, paint-only
+       counter-scale. */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
     /* 4 px above (headerRuleGap) and 4 px below the rule, same inline
        insets as the header rule; the footer text follows the gap. */
     margin: var(--st-component-diagramZone-headerRuleGap, 4px)
