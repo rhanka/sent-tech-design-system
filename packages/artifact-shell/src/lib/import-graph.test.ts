@@ -55,10 +55,11 @@ const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const srcRoot = join(pkgRoot, "src");
 const GATE_FILE = "import-graph.test.ts";
 
-// AS-0 floor: types.ts, fixtures.ts, index.ts (ScaffoldSmoke.svelte raises the
-// count to 4). AS-1 raises this constant in the same commit that adds the
-// components.
-const MIN_SOURCE_FILES = 3;
+// AS-0 floor was 3 (types.ts, fixtures.ts, index.ts; the AS-0 ScaffoldSmoke
+// raised the examined count to 4 until AS-1 removed it per A0-12). AS-1 sets
+// the floor to the eight sources that must exist: types.ts, fixtures.ts,
+// index.ts and the five AS-1 components.
+const MIN_SOURCE_FILES = 8;
 
 // Documented allowlist of @sentropic/ specifiers (spec §2.6 item 1). Only the
 // exact strings below are allowed: the bare package names. A subpath of an
