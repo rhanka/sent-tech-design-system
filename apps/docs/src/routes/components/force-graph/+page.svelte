@@ -245,6 +245,7 @@
 
 <style>
   .docs-graph-box { max-width: 36rem; }
+  .docs-demo-context { max-width: 68ch; }
 
   .docs-selection-status {
     align-items: flex-start;
