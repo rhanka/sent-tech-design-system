@@ -110,8 +110,10 @@ export function zoneContent(
   const height = layout.box.height;
 
   // Frame (expanded only; collapsed is the card border, §6.4).
+  // A proposed zone is always drawn dashed, independently of the tint
+  // (owner criterion 5); the dash pattern is the kit's `4 5`.
   parts.push(
-    `<rect class="st-diagramZone-frame" x="0" y="0" width="${width}" height="${height}" rx="${g.radius}" fill="var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramZone-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"/>`,
+    `<rect class="st-diagramZone-frame" x="0" y="0" width="${width}" height="${height}" rx="${g.radius}" fill="var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramZone-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramZone-proposedDashArray, 4 5)"` : ""}/>`,
   );
   if (header.iconBox !== undefined && props.icon !== undefined) {
     parts.push(
@@ -161,6 +163,23 @@ export function zoneContent(
       ),
     );
   }
+  // Expanded footer (§6.1: folding never changes the footer) — the same
+  // pinned block as the collapsed card, with its own rule above it.
+  if (header.footer.length > 0) {
+    if (header.footerRuleY !== undefined) {
+      parts.push(
+        `<line class="st-diagramZone-footerRule" x1="${g.ruleInsetStart}" x2="${width - g.ruleInsetEnd}" y1="${header.footerRuleY - y}" y2="${header.footerRuleY - y}" stroke="var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle))" stroke-width="${g.ruleHeight}" vector-effect="non-scaling-stroke"/>`,
+      );
+    }
+    parts.push(
+      textLines(
+        header.footer.map((line) => ({ ...line, x: line.x - x, baseline: line.baseline - y })),
+        "st-diagramZone-footer",
+        "var(--st-component-diagramZone-text, var(--st-semantic-text-primary))",
+        "",
+      ),
+    );
+  }
   for (const child of children) {
     const rendered = childContent(child, measure);
     parts.push(
@@ -192,7 +211,7 @@ export function renderZoneSvg(
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramZoneSvg" width="${x + width}" height="${y + height}" viewBox="0 0 ${x + width} ${y + height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
     `<title>${escapeXml(props.title)}</title>` +
-    `<g class="st-diagramZone${layout.collapsed ? " st-diagramZone--collapsed" : " st-diagramZone--expanded"}" data-entity="${escapeXml(props.entityId)}" data-collapsed="${layout.collapsed ? "true" : "false"}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${firstOverflow === undefined ? "" : ` data-zone-overflow="${firstOverflow}"`}${unknownIcon ? ` data-zone-icon-unknown=""` : ""} transform="translate(${x} ${y})">` +
+    `<g class="st-diagramZone${layout.collapsed ? " st-diagramZone--collapsed" : " st-diagramZone--expanded"}" data-entity="${escapeXml(props.entityId)}" data-collapsed="${layout.collapsed ? "true" : "false"}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-zone-overflow="${firstOverflow}"`}${unknownIcon ? ` data-zone-icon-unknown=""` : ""} transform="translate(${x} ${y})">` +
     content +
     `</g>` +
     `</svg>`;

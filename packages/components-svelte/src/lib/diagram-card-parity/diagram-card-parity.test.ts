@@ -238,6 +238,22 @@ describe("reference inputs — pinned integrity", () => {
     const source = readFileSync(file, "utf8");
     expect(source).toContain(REFERENCE.basePath);
   });
+
+  it("corpus strings trace to the pinned i18n map (fr keys → en values)", () => {
+    const blob = readPinned(SENTROPIC_REPO, "4138a0ec", "docs/governance/kit/src/i18n-en.json");
+    if (blob === null) {
+      sourceGap("sentropic checkout");
+      return;
+    }
+    const i18n = JSON.parse(blob.toString("utf8")) as Record<string, string>;
+    for (const node of CORPUS_NODES) {
+      for (const field of ["kicker", "title", "fn", "detail"] as const) {
+        expect(i18n[node.fr[field]], `${node.id} ${field}`).toBe(node.en[field]);
+      }
+      // Service footer labels are not translated: identical in both langs.
+      expect(node.fr.footer, `${node.id} footer`).toBe(node.en.footer);
+    }
+  });
 });
 
 describe("diagram-presentation@1 — consumed pin recorded", () => {
@@ -257,8 +273,12 @@ describe("one geometry source — token, canvas and renderer agree", () => {
     expect(component.diagramCard.headerInset).toBe("16px");
     expect(RULE_GAP).toBe(4);
     expect(component.diagramCard.ruleMargin).toBe("4px");
-    expect(TOGGLE_ALLOCATION).toBe(32);
-    expect(CARD_GEOMETRY.toggleAllocation).toBe(32);
+    expect(TOGGLE_ALLOCATION).toBe(66);
+    expect(CARD_GEOMETRY.toggleAllocation).toBe(66);
+    expect(component.diagramCard.toggleAllocation).toBe("66px");
+    expect(component.diagramCard.toggleBoxSize).toBe("32px");
+    expect(component.diagramCard.foldedHeaderTextWidth).toBe("290px");
+    expect(component.diagramCard.proposedDashArray).toBe("4 5");
     // Zone collapsed box reuses the atomic box (DC-D13): no second size.
     expect(component.diagramZone.collapsedWidth).toBe("460px");
     expect(component.diagramZone.collapsedHeight).toBe("200px");
@@ -365,14 +385,16 @@ describe("canonical geometry — exact frozen numbers", () => {
     expect(Math.abs((layout.ruleY as number) - REFERENCE.ruleYCanonical)).toBeLessThan(1);
   });
 
-  it("toggle reserves exactly 32 px of title width on the same box", () => {
+  it("toggle reserves exactly 66 px; folded title width is the frozen 290", () => {
     const plain = layoutCard(corpusProps(CORPUS_NODES[0], "fr"), defaultCardMeasure);
     const toggled = layoutCard(
       corpusProps(CORPUS_NODES[0], "fr", { collapsed: true, label: "Collapse" }),
       defaultCardMeasure,
     );
     expect(plain.headerTextWidth).toBe(358);
-    expect(toggled.headerTextWidth).toBe(326);
+    // With an icon, the folded header text width is the kit's folded-title
+    // constant 290 (356 − 66 px toggle allocation), not 358 − 66.
+    expect(toggled.headerTextWidth).toBe(290);
     // Top-right slot with the card's own top margin (hrpn folded-card
     // placement): y = content top = 10 at the frozen values.
     expect(toggled.toggleBox).toEqual({ x: 418, y: 10, size: 32 });
@@ -415,7 +437,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
             ["title", layout.title, fields.title],
             ["body", layout.body.filter((line) => !line.secondary), fields.fn],
             ["detail", layout.body.filter((line) => line.secondary), fields.detail],
-            ["footer", layout.footerLine === undefined ? [] : [layout.footerLine], fields.footer],
+            ["footer", layout.footerLines, fields.footer],
           ];
           for (const [slot, lines, full] of laidOut) {
             expect(lines.map((line) => line.text).join(" "), `${id} ${slot}`).toBe(full);
@@ -447,14 +469,15 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
           expect(svg.title, id).toBe(fields.title);
           expect(card.hasRule, id).toBe(true);
           expect(svg.rules, id).toHaveLength(1);
-          expect(svg.rules[0], id).toEqual({
-            x1: "16",
-            x2: "450",
-            y1: String(layoutCard(props, defaultCardMeasure).ruleY),
-            y2: String(layoutCard(props, defaultCardMeasure).ruleY),
-            vectorEffect: "non-scaling-stroke",
-            strokeWidth: "1",
-          });
+          // Pinned against the reference value (hrpn frozen rule formula,
+          // DIF-04 comparison point), not against the DS layout function.
+          const ruleY = Number(svg.rules[0].y1);
+          expect(svg.rules[0].x1, id).toBe("16");
+          expect(svg.rules[0].x2, id).toBe("450");
+          expect(svg.rules[0].vectorEffect, id).toBe("non-scaling-stroke");
+          expect(svg.rules[0].strokeWidth, id).toBe("1");
+          expect(Math.abs(ruleY - REFERENCE.ruleYCanonical), id).toBeLessThan(1);
+          expect(svg.rules[0].y2, id).toBe(svg.rules[0].y1);
           expect(svg.iconName, id).toBe(node.icon);
           expect(card.iconName, id).toBe(node.icon);
           expect(svg.iconPaths, id).toBeGreaterThanOrEqual(2);
@@ -499,7 +522,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
 });
 
 describe("slot mechanics — both renderers", () => {
-  function both(props: DiagramCardProps): { svg: ParsedSvg; card: ParsedCard; diagnostics: CardDiagnostic[] } {
+  function both(props: DiagramCardProps): { svg: ParsedSvg; card: ParsedCard; diagnostics: readonly CardDiagnostic[] } {
     const rendered = renderCardSvg(props, defaultCardMeasure);
     const seen: CardDiagnostic[] = [];
     const { container } = render(DiagramCard, {
@@ -566,6 +589,57 @@ describe("slot mechanics — both renderers", () => {
     expect(diagnostics).toContainEqual(
       expect.objectContaining({ code: "card-overflow", slot: "title" }),
     );
+  });
+
+  it("J4 long token: every line measured, neededPx > allocatedPx (Astra J4)", () => {
+    const token = "Charge @sentropic/architecture-governance-multiagent-coordination";
+    const props: DiagramCardProps = {
+      entityId: "entity:j4",
+      title: "Jeton J4",
+      body: ["ligne une", token],
+      footer: "service: demo",
+    };
+    const { svg, card, diagnostics } = both(props);
+    const overflow = diagnostics.filter((d) => d.code === "card-overflow");
+    expect(overflow.length).toBeGreaterThan(0);
+    for (const diagnostic of overflow) {
+      expect(diagnostic.neededPx, `${diagnostic.slot}`).toBeGreaterThan(diagnostic.allocatedPx);
+    }
+    // Both renderers still emit the full token (no truncation, DC-D4).
+    expect(svg.texts.map((t) => t.text).join(" ")).toContain(token);
+    expect(card.texts.map((t) => t.text).join(" ")).toContain(token);
+  });
+
+  it("proposed: dashed border independent of tone, in both renderers", () => {
+    for (const tone of [undefined, "identity", "proposal", "neutral"] as const) {
+      const props: DiagramCardProps = {
+        entityId: "entity:proposed",
+        kicker: "PROPOSITION",
+        title: "Carte proposée",
+        body: ["fonction"],
+        footer: "service: demo",
+        icon: "server",
+        iconGlyph: getDiagramGlyph("server"),
+        ...(tone === undefined ? {} : { tone }),
+        proposed: true,
+      };
+      const rendered = renderCardSvg(props, defaultCardMeasure);
+      expect(rendered.svg, `tone ${tone}`).toContain('data-proposed="true"');
+      expect(rendered.svg, `tone ${tone}`).toContain(
+        'stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"',
+      );
+      const { container } = render(DiagramCard, {
+        props: { ...props, measure: defaultCardMeasure },
+      });
+      const root = container.querySelector(".st-diagramCard") as HTMLElement;
+      expect(root.getAttribute("data-proposed"), `tone ${tone}`).toBe("true");
+      expect(root.classList.contains("st-diagramCard--proposed"), `tone ${tone}`).toBe(true);
+      expect(root.getAttribute("data-tone"), `tone ${tone}`).toBe(tone ?? null);
+      // Not proposed: no dash, no attribute, whatever the tone.
+      const plain = renderCardSvg({ ...props, proposed: undefined }, defaultCardMeasure);
+      expect(plain.svg, `plain tone ${tone}`).not.toContain("data-proposed");
+      expect(plain.svg, `plain tone ${tone}`).not.toContain("stroke-dasharray");
+    }
   });
 
   it("unknown icon: both raise, collapse the slot, draw no glyph (DIF-14)", () => {
