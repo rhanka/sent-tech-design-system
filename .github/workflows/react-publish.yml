@@ -25,12 +25,14 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      # Build the selected workspaces and their full local @sentropic
+      # dependency closure, in topological order (the closure of
+      # design-system-svelte covers rich-text, graph, theme-dsfr, themes and
+      # tokens — the old hand-written list missed rich-text/graph/theme-dsfr).
+      # ensure-theme-dists derives the closure from the workspace graph, so a
+      # new local dependency needs no edit here.
       - name: Build React dependencies
-        run: |
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/design-system-themes run build
-          npm --workspace @sentropic/design-system-svelte run build
-          npm --workspace @sentropic/design-system-skills run build
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-react,@sentropic/design-system-svelte,@sentropic/design-system-skills
       - name: Verify React package
         run: |
           npm --workspace @sentropic/design-system-react run build

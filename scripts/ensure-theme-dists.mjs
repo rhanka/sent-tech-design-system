@@ -13,8 +13,13 @@
 //    `actions/cache` restore — restored files get fresh mtimes that would fool
 //    an mtime check, but their content hash is unchanged, so cached dists are
 //    correctly skipped and only genuinely-changed packages rebuild.
+//
+// --no-hash: always rebuild the selected packages and leave NO dist/.srchash
+// marker behind (a stale marker is removed). Publish workflows use this: npm
+// pack includes dotfiles inside an included `files` directory, so a marker
+// written here would ship inside the published tarball.
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -115,6 +120,7 @@ const workspacesArg = process.argv.find((value) => value.startsWith("--workspace
 const selectedNames = workspacesArg
   ? new Set(workspacesArg.slice("--workspaces=".length).split(",").map((value) => value.trim()).filter(Boolean))
   : null;
+const noHash = process.argv.includes("--no-hash");
 
 // 2) Build only packages whose source hash changed (or that have no dist), in
 //    dependency order. With --workspaces, include local dependencies of the
@@ -134,13 +140,15 @@ let skipped = 0;
 for (const w of targets) {
   const hash = sourceHash(w.dir);
   const distDir = join(w.dir, "dist");
-  if (existsSync(distDir) && storedHash(w.dir) === hash) {
+  const marker = join(distDir, ".srchash");
+  if (!noHash && existsSync(distDir) && storedHash(w.dir) === hash) {
     skipped += 1;
     continue;
   }
   console.log(`[ensure-theme-dists] build ${w.name}`);
   run("npm", ["run", "build"], w.dir);
-  writeFileSync(join(w.dir, "dist", ".srchash"), hash + "\n");
+  if (noHash) rmSync(marker, { force: true });
+  else writeFileSync(marker, hash + "\n");
   built += 1;
 }
 

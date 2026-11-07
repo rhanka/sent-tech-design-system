@@ -27,17 +27,23 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      # @sentropic/graph is a runtime dependency since #113 (ForceGraph delegates
-      # its layout to @sentropic/graph/processing). npm ci links it to the
-      # packages/graph workspace, whose exports point at dist/ — so it must be
-      # built before svelte-check / svelte-package, or the subpath does not
-      # resolve ("Cannot find module '@sentropic/graph/processing'").
+      # Build the full local @sentropic dependency closure of
+      # packages/components-svelte, in topological order. npm ci symlinks the
+      # workspace deps of components-svelte (rich-text, themes, graph,
+      # theme-dsfr, tokens) into node_modules, and their exports point at
+      # dist/ — svelte-check / svelte-package fail with "Cannot find module
+      # '@sentropic/design-system-rich-text'" when any of them is unbuilt
+      # (that is exactly how the svelte-v0.37.0 verify run failed: this step
+      # built tokens/graph/themes/theme-dsfr but never rich-text).
+      # @sentropic/diagram-canvas is seeded too because tsconfig.parity.json
+      # reaches ../diagram-canvas/src, whose sources import
+      # @sentropic/diagram-core by name (another root workspace symlink whose
+      # exports point at dist/). ensure-theme-dists derives each closure from
+      # the workspace graph, so a new local dependency needs no edit here;
+      # scripts/verify-svelte-publish-deps.test.mjs fails if a closure member
+      # is no longer built before this package.
       - name: Build Svelte dependencies
-        run: |
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/graph run build
-          npm --workspace @sentropic/design-system-themes run build
-          npm --workspace @sentropic/design-system-theme-dsfr run build
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-svelte,@sentropic/diagram-canvas
       - name: Verify Svelte package
         run: |
           npm --workspace @sentropic/design-system-svelte run build
@@ -94,10 +100,12 @@ jobs:
       - name: Install and build
         run: |
           npm ci
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/design-system-themes run build
-          npm --workspace @sentropic/graph run build
-          npm --workspace @sentropic/design-system-svelte run build
+          # Same dependency closure as the verify job (including the
+          # diagram-canvas seed the parity tsconfig needs), built in
+          # topological order. --no-hash leaves no dist/.srchash marker: npm
+          # pack includes dotfiles inside `files` directories, so the marker
+          # would otherwise ship inside the published tarball.
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-svelte,@sentropic/diagram-canvas
       # Fail closed (lot DC-1, review item 7): every exact @sentropic/* version
       # the svelte manifest pins (themes 0.12.0, rich-text 0.1.0, graph 0.3.0,
       # theme-dsfr 0.2.2) must already exist on the npm registry before this
