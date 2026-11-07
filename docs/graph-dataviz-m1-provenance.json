@@ -1886,8 +1886,8 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "72f717b98edfc701b99a097e43592901935670269c14ab60ec5230de92a28f79",
-      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release"
+      "destinationSha256": "e9ba58d04d7601fbc62e8da141c06078ce86ec62e76b1899e17da78079da7206",
+      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
@@ -2044,7 +2044,8 @@
       "gitBlob": "546b6243e5eff9d9bec2a03c1b96c4cc2ce25441",
       "sha256": "a44c704dbcacbcf93081f4f488c5b285de14f469cdc9459768fb246a29553800",
       "status": "adapted-packaging-only",
-      "destinationSha256": "3542dd14ce6766d9ff9efe591e11f8d91c2b90964ef6c2080f7299dce0ddfcd8"
+      "destinationSha256": "abf3ac3b874f60f2cc2152b9c2de21f09c56523a4d44a2dc4a4b2bde01e3def1",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
@@ -3592,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "addf3bef97b7bb38c5092c3bee7f9c7c9d76d576c16cc852cb8a5812e987e3e4",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42"
+      "destinationSha256": "61994c7bc4bc66b5b0542a26e33dcee5e4b2b836a6a7b29a54a49df513b1b5ff",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
@@ -5159,7 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "a669a57fbb76adf4ae353aa1446e1a0ee02ce0b50a1fafcc4d5109fca7b82e09"
+      "destinationSha256": "6587418b48baf0388f1e7394d9a3550ccf585d9e40da39461577ad7adecc998c",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
