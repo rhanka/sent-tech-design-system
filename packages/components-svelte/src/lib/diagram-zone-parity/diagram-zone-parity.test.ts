@@ -5,7 +5,7 @@ import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import DiagramZone from "../DiagramZone.svelte";
 import { getDiagramGlyph } from "../diagram-icons/registry.js";
-import { renderZoneSvg, renderZoneSvgFromPresentation } from "../diagram-render/renderZoneSvg.js";
+import { renderZoneSvg, renderZoneSvgFromPresentation, type ZoneSvgResult } from "../diagram-render/renderZoneSvg.js";
 import {
   COLLAPSED_SUBTITLE_MEASURE,
   ZONE_GEOMETRY,
@@ -70,6 +70,13 @@ import {
  */
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+
+/** Unwrap a zone render result that must be rendered (not refused). */
+function svgOf(result: ZoneSvgResult): string {
+  expect(result.kind).toBe("rendered");
+  if (result.kind !== "rendered") throw new Error("fixture-error: expected a rendered result");
+  return result.svg;
+}
 
 function zoneProps(zone: (typeof COLLAPSED_ZONES)[number], collapsed: boolean): DiagramZoneProps {
   return {
@@ -329,7 +336,7 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
   for (const zone of COLLAPSED_ZONES) {
     it(`collapsed ${zone.id}: 460x200 card at (${zone.x}, ${zone.y}), top-right toggle, centred 396 subtitle`, () => {
       const rendered = renderZoneSvg(zoneProps(zone, true), { measure: defaultCardMeasure });
-      const svg = parseZoneSvg(rendered.svg);
+      const svg = parseZoneSvg(svgOf(rendered));
 
       // The zone occurrence box: the card at (x, y), 460 x 200 (DC-D13).
       expect(svg.transform).toBe(`translate(${zone.x} ${zone.y})`);
@@ -394,7 +401,7 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
     // measurer is the frozen advance table and must reproduce all seven.
     for (const zone of COLLAPSED_ZONES) {
       const rendered = renderZoneSvg(zoneProps(zone, true), { measure: defaultCardMeasure });
-      const svg = parseZoneSvg(rendered.svg);
+      const svg = parseZoneSvg(svgOf(rendered));
       const body = svg.texts
         .filter((t) => t.className === "st-diagramCard-body")
         .map((t) => t.text);
@@ -426,7 +433,7 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
 
   it("frame, header, rule and toggle against the frozen SVG numbers (pinned, not self-compared)", () => {
     const rendered = renderZoneSvg(peopleProps(), { measure: defaultCardMeasure });
-    const svg = parseZoneSvg(rendered.svg);
+    const svg = parseZoneSvg(svgOf(rendered));
     expect(svg.dataCollapsed).toBe("false");
     // Frame: same box as the frozen group rect; rx 0 (DIF-03: kit rx 6),
     // 1.5 px border (measured-code), DS container tokens for fill/border.
@@ -501,7 +508,7 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
       measure: defaultCardMeasure,
       children: [child],
     });
-    const doc = new DOMParser().parseFromString(rendered.svg, "image/svg+xml");
+    const doc = new DOMParser().parseFromString(svgOf(rendered), "image/svg+xml");
     const childGroup = doc.querySelector("g.st-diagramZone-child");
     expect(childGroup).not.toBeNull();
     expect(childGroup?.getAttribute("transform")).toBe("translate(16 16)");
@@ -515,7 +522,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     it(`collapsed ${zone.id}: same texts, toggle state and diagnostics`, () => {
       const props = zoneProps(zone, true);
       const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-      const svg = parseZoneSvg(rendered.svg);
+      const svg = parseZoneSvg(svgOf(rendered));
       const seen: ZoneDiagnostic[] = [];
       const { container } = render(DiagramZone, {
         props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
@@ -557,7 +564,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
       height: EXPANDED_PEOPLE.height,
     };
     const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-    const svg = parseZoneSvg(rendered.svg);
+    const svg = parseZoneSvg(svgOf(rendered));
     const seen: ZoneDiagnostic[] = [];
     const { container } = render(DiagramZone, {
       props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
@@ -604,7 +611,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     };
     // Expanded: footer + footer rule in the SVG, footer block in Svelte.
     const expanded = renderZoneSvg({ ...base, collapsed: false }, { measure: defaultCardMeasure });
-    const expandedSvg = parseZoneSvg(expanded.svg);
+    const expandedSvg = parseZoneSvg(svgOf(expanded));
     const footerTexts = expandedSvg.texts.filter((t) => t.className === "st-diagramZone-footer");
     expect(footerTexts.map((t) => t.text)).toEqual(["group: footed"]);
     const footerRule = expandedSvg.rules.filter((r) => r.className === "st-diagramZone-footerRule");
@@ -621,7 +628,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     ).toEqual(["group: footed"]);
     // Collapsed: the very same footer through the card content.
     const collapsed = renderZoneSvg({ ...base, collapsed: true }, { measure: defaultCardMeasure });
-    const collapsedSvg = parseZoneSvg(collapsed.svg);
+    const collapsedSvg = parseZoneSvg(svgOf(collapsed));
     const collapsedFooter = collapsedSvg.texts.filter((t) => t.className === "st-diagramCard-footer");
     expect(collapsedFooter.map((t) => t.text)).toEqual(["group: footed"]);
     const { container: collapsedDom } = render(DiagramZone, {
@@ -654,11 +661,11 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
           ...(collapsed ? {} : { width: 492, height: 400 }),
         };
         const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-        const svg = parseZoneSvg(rendered.svg);
+        const svg = parseZoneSvg(svgOf(rendered));
         expect(svg.dataProposed, `${collapsed} ${tone}`).toBe("true");
         if (collapsed) {
           // Collapsed: the card border carries the dash.
-          expect(rendered.svg).toContain(
+          expect(svgOf(rendered)).toContain(
             'stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"',
           );
         } else {
@@ -675,13 +682,13 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
         expect(root.classList.contains(collapsed ? "st-diagramCard--proposed" : "st-diagramZone--proposed"), `${collapsed} ${tone}`).toBe(true);
         // Not proposed: no dash anywhere.
         const plain = renderZoneSvg({ ...props, proposed: undefined }, { measure: defaultCardMeasure });
-        expect(plain.svg).not.toContain("data-proposed");
-        expect(plain.svg).not.toContain("stroke-dasharray");
+        expect(svgOf(plain)).not.toContain("data-proposed");
+        expect(svgOf(plain)).not.toContain("stroke-dasharray");
       }
     }
   });
 
-  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, rendered in full", () => {
+  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, refused in both renderers", () => {
     const token = "@sentropic/architecture-governance-multiagent-coordination";
     const props: DiagramZoneProps = {
       entityId: "grp.j4",
@@ -701,9 +708,21 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     for (const diagnostic of overflow) {
       expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
     }
-    expect(rendered.svg).toContain(token);
-    const svg = parseZoneSvg(rendered.svg);
-    expect(svg.dataZoneOverflow).toBe(overflow[0]?.slot ?? null);
+    // Overflow = refusal: no normal zone SVG; the original subtitle text
+    // survives in the diagnostic data, never truncated.
+    expect(rendered.kind).toBe("refused");
+    expect(overflow.some((d) => d.text === `Charge ${token}`)).toBe(true);
+    const seen: ZoneDiagnostic[] = [];
+    const { container } = render(DiagramZone, {
+      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
+    });
+    expect(seen).toEqual(rendered.diagnostics);
+    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(pos.getAttribute("data-zone-refused")).toBe(overflow[0]?.slot ?? null);
+    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
+    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
+    expect(container.textContent ?? "").not.toContain(token);
+    expect(container.textContent ?? "").not.toContain("…");
   });
 
   it('align="center": every text slot anchored middle in the SVG, class on the Svelte root, both states', () => {
@@ -724,7 +743,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
         ...(collapsed ? {} : { width: 492, height: 400 }),
       };
       const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-      const svg = parseZoneSvg(rendered.svg);
+      const svg = parseZoneSvg(svgOf(rendered));
       const textSlots = svg.texts.filter((t) => t.className.startsWith("st-diagram"));
       expect(textSlots.length).toBeGreaterThan(0);
       for (const line of textSlots) {
@@ -749,7 +768,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     );
     expect(zone.kind).toBe("zone");
     if (zone.kind !== "zone") throw new Error("fixture-error");
-    expect(parseZoneSvg(zone.svg).dataEntity).toBe("grp.people");
+    expect(parseZoneSvg(svgOf(zone.result)).dataEntity).toBe("grp.people");
     expect(
       renderZoneSvgFromPresentation({ form: "card", text: { title: "T" } }, { entityId: "e", collapsed: false }),
     ).toEqual({ kind: "label" });
