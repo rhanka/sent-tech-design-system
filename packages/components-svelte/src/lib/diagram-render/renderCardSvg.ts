@@ -100,8 +100,10 @@ export function renderCardContent(
   const layout = layoutCard(props, measure);
   const parts: string[] = [];
   // Border, then the accent bar over the left stroke (border-left look).
+  // A proposed card is always drawn dashed, independently of the tint
+  // (owner criterion 5); the dash pattern is the kit's `4 5`.
   parts.push(
-    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"/>`,
+    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
   );
   parts.push(
     `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-accent, var(--st-semantic-data-category1))"/>`,
@@ -160,10 +162,10 @@ export function renderCardContent(
       `<line class="st-diagramCard-rule" x1="${layout.ruleX1}" x2="${layout.ruleX2}" y1="${layout.ruleY}" y2="${layout.ruleY}" stroke="var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle))" stroke-width="${g.ruleHeight}" vector-effect="non-scaling-stroke"/>`,
     );
   }
-  if (layout.footerLine !== undefined) {
+  if (layout.footerLines.length > 0) {
     parts.push(
       textLines(
-        [layout.footerLine],
+        layout.footerLines,
         "st-diagramCard-footer",
         "var(--st-component-diagramCard-text, var(--st-semantic-text-primary))",
         "",
@@ -208,7 +210,7 @@ export function renderCardSvg(
   );
   const firstOverflow = overflowSlots.length === 0 ? undefined : overflowSlots[0];
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
     `<title>${escapeXml(props.title)}</title>` +
     content +
     `</svg>`;

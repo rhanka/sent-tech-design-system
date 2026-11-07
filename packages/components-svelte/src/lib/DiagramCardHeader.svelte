@@ -17,6 +17,11 @@
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
     toggle?: { collapsed: boolean; label: string; onToggle?: () => void };
+    /**
+     * Extra px the toggle slot is pulled up (zone expanded: the toggle sits
+     * at frame top + 10 while the header band starts at + 16, so −6).
+     */
+    toggleTopOffset?: number;
   }
 
   let {
@@ -26,6 +31,7 @@
     iconGlyph,
     headerTextWidth,
     toggle,
+    toggleTopOffset,
   }: DiagramCardHeaderProps = $props();
 </script>
 
@@ -84,7 +90,10 @@
     {/each}
   </div>
   {#if toggle !== undefined}
-    <div class="st-diagramCard-toggle">
+    <div
+      class="st-diagramCard-toggle"
+      style={toggleTopOffset === undefined ? undefined : `margin-top:${toggleTopOffset}px`}
+    >
       <IconButton
         size="sm"
         variant="ghost"
@@ -131,6 +140,9 @@
     letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing, 0.04em);
     text-transform: var(--st-component-diagramCard-kickerTextTransform, uppercase);
     color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
+    /* No mid-word break: an over-long word is diagnosed, never broken. */
+    overflow-wrap: normal;
+    word-break: normal;
   }
   .st-diagramCard-title {
     display: block;
@@ -139,6 +151,8 @@
     font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
     line-height: var(--st-component-diagramCard-titleLineHeight, 1.3);
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
+    overflow-wrap: normal;
+    word-break: normal;
   }
   .st-diagramCard-toggle {
     flex: 0 0 auto;
