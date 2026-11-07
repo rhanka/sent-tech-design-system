@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:1f6ed3a7e8d529700397c84dd35bef41ed17c3d92a4442553af07eb37c7bdf57",
-  "entryDigest": "sha256:a665376b3b7a0ee92ab215aa02dd31b984daf94360546a5305e20e4ec356b79b",
+  "digest": "sha256:57929ea94e595371302adf7fb839710139d8fc1f4b759932ddbe47191942a7be",
+  "entryDigest": "sha256:8b3572c5324c2680c2cbccedfdfac2339ef574d46e4003becc442bb9647ecb23",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -177,7 +177,7 @@
             "type": "string"
           },
           "footer": {
-            "description": "Collapsed card only (§6.1): rule + pinned footer as a leaf card.",
+            "description": "Zone footer, both states (§6.1): folding never changes the footer —\ncollapsed it pins the card rule, expanded it pins at the frame bottom.",
             "type": "string"
           },
           "height": {
@@ -191,6 +191,10 @@
           },
           "kicker": {
             "type": "string"
+          },
+          "proposed": {
+            "description": "Neutral status prop: dashed border in both states, independent of tint.",
+            "type": "boolean"
           },
           "subtitle": {
             "type": "string"
