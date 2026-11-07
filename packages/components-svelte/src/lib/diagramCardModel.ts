@@ -577,7 +577,9 @@ export function cardLineMeasurer(
           ? CARD_GEOMETRY.title.size
           : CARD_GEOMETRY.body.size;
     const widest =
-      measured.lineWidths === undefined ? request.availableWidth : Math.max(...measured.lineWidths);
+      measured.lineWidths === undefined
+        ? request.availableWidth
+        : Math.max(0, ...measured.lineWidths);
     return {
       lines: measured.lines,
       width: widest,
@@ -604,6 +606,24 @@ export interface CardDiagnostic {
   readonly entityId: string;
   readonly neededPx: number;
   readonly allocatedPx: number;
+  /**
+   * Original, unwrapped slot text. Overflow is refused, never shortened
+   * (owner criterion: overflow = refusal, never a truncation), so the
+   * diagnostic carries the source string the host must shorten.
+   */
+  readonly text?: string;
+}
+
+/**
+ * Overflow = refusal (owner criterion, DC-1 review): the first overflow
+ * diagnostic of a layout, or `undefined` when the content fits. Both
+ * renderers (pure SVG and Svelte) refuse on exactly this predicate, so the
+ * two contracts cannot diverge.
+ */
+export function firstOverflowDiagnostic<D extends { readonly code: string }>(
+  diagnostics: readonly D[],
+): D | undefined {
+  return diagnostics.find((diagnostic) => diagnostic.code === "card-overflow" || diagnostic.code === "zone-overflow");
 }
 
 export interface CardLayout {
@@ -637,9 +657,13 @@ export interface CardLayout {
 /**
  * Lay out one card: wrap every slot against its frozen allocation, position
  * every line, pin the footer, emit diagnostics. Never truncates or clips
- * (DC-D4): over-long slots render completely, keep the 460 × 200 box, and
- * raise `card-overflow`; an icon name with no glyph data raises
- * `card-icon-unknown` and the slot collapses.
+ * (DC-D4): the layout always describes the complete content inside the
+ * fixed 460 × 200 box. Any overflow — a too-wide line, a line-count
+ * overflow, or a combined header+body height that does not fit the space
+ * above the pinned rule — raises `card-overflow` carrying the original slot
+ * text, and both renderers refuse on it (overflow = refusal, owner
+ * criterion): no normal card is emitted until the content fits. An icon
+ * name with no glyph data raises `card-icon-unknown` and the slot collapses.
  */
 export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
   const g = CARD_GEOMETRY;
@@ -667,22 +691,26 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // Overflow diagnostic (Astra J4): a too-wide line reports horizontal dims
   // (neededPx = widest measured line, allocatedPx = availableWidth, so
   // neededPx > allocatedPx always); a line-count overflow reports line dims.
+  // `text` carries the original slot string: overflow is refused, never
+  // shortened, so the diagnostic preserves what the host must shorten.
   const pushOverflow = (
     slot: string,
     measured: CardMeasuredText,
     lineHeight: number,
     allocatedLines: number,
     availableWidth: number,
+    text: string,
   ): void => {
     if (measured.tooWide) {
       const widest =
-        measured.lineWidths === undefined ? availableWidth + 1 : Math.max(...measured.lineWidths);
+        measured.lineWidths === undefined ? availableWidth + 1 : Math.max(0, ...measured.lineWidths);
       diagnostics.push({
         code: "card-overflow",
         slot,
         entityId: props.entityId,
         neededPx: widest,
         allocatedPx: availableWidth,
+        text,
       });
     } else {
       diagnostics.push({
@@ -691,6 +719,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
         entityId: props.entityId,
         neededPx: measured.lines.length * lineHeight,
         allocatedPx: allocatedLines * lineHeight,
+        text,
       });
     }
   };
@@ -714,12 +743,12 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
       : measure(props.kicker, "kicker", headerTextWidth, g.allocatedLines.kicker);
   const kickerTexts = kickerResult === undefined ? [] : [...kickerResult.lines];
   if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
-    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth);
+    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
   }
   const titleMeasured = measure(props.title, "title", headerTextWidth, g.allocatedLines.title);
   const titleTexts = [...titleMeasured.lines];
   if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
-    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth);
+    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
   }
   const headerContentHeight =
     (props.kicker === undefined ? 0 : kickerHeight) + titleTexts.length * titleHeight;
@@ -750,14 +779,19 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     bodyLineWidths.push(...(measured.lineWidths ?? []));
     bodyTooWide = bodyTooWide || measured.tooWide;
   }
+  const bodySlot = subtitleMode ? "collapsed-subtitle" : "body";
+  const bodySourceText = props.body.join("\n");
+  let bodyOverflowPushed = false;
   if (wrappedBody.length > g.allocatedLines.body || bodyTooWide) {
     pushOverflow(
-      subtitleMode ? "collapsed-subtitle" : "body",
+      bodySlot,
       { lines: wrappedBody, tooWide: bodyTooWide, lineWidths: bodyLineWidths },
       bodyHeight,
       g.allocatedLines.body,
       bodyWidth,
+      bodySourceText,
     );
+    bodyOverflowPushed = true;
   }
   const footerHeight = lineBoxHeight(g.footer.size);
   const footerBottom = g.height - g.borderWidth - g.footerBottomInset;
@@ -771,7 +805,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     const footerMeasured = measure(props.footer, "footer", footerWidth, g.allocatedLines.footer);
     const footerTexts = [...footerMeasured.lines];
     if (footerTexts.length > g.allocatedLines.footer || footerMeasured.tooWide) {
-      pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth);
+      pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth, props.footer ?? "");
     }
     const footerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
     const footerLineX = footerAnchor === "middle" ? g.headerInset + footerWidth / 2 : g.headerInset;
@@ -789,6 +823,25 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   }
   const bodyAreaBottom =
     ruleY === undefined ? g.height - g.borderWidth - g.padding : ruleY - g.ruleMargin;
+  // Vertical overflow (second review, blocking): the combined header + body
+  // height must fit the actual space above the pinned rule. The body starts
+  // at bodyY (derived from the header block), and the rule is pinned to the
+  // footer, so the body allocation is bodyAreaBottom − bodyY — a two-line
+  // title already leaves less than one body line above the rule, and the
+  // second body baseline would cross the footer baseline. Diagnosed here and
+  // refused by both renderers (overflow = refusal), never silently overlapped.
+  const bodyBlockHeight = wrappedBody.length * bodyHeight;
+  const bodyAreaHeight = bodyAreaBottom - bodyY;
+  if (!bodyOverflowPushed && wrappedBody.length > 0 && bodyBlockHeight > bodyAreaHeight) {
+    diagnostics.push({
+      code: "card-overflow",
+      slot: bodySlot,
+      entityId: props.entityId,
+      neededPx: bodyBlockHeight,
+      allocatedPx: bodyAreaHeight,
+      text: bodySourceText,
+    });
+  }
   // Subtitle mode centres the line block vertically inside the body area
   // (§6.2.1); leaf lines stay top-aligned (§5.2).
   const bodyBlockTop = subtitleMode
@@ -990,11 +1043,18 @@ export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProp
 }
 
 export interface ZoneDiagnostic {
-  readonly code: "zone-overflow" | "zone-icon-unknown";
+  /**
+   * `zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant
+   * card or nested zone keeps its own `card-overflow` / `card-icon-unknown`
+   * code with its own `entityId` when `renderZoneSvg` aggregates them.
+   */
+  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-overflow" | "card-icon-unknown";
   readonly slot: string;
   readonly entityId: string;
   readonly neededPx: number;
   readonly allocatedPx: number;
+  /** Original, unwrapped slot text (overflow = refusal keeps the source). */
+  readonly text?: string;
 }
 
 export interface ZoneChildSpec {
@@ -1065,6 +1125,7 @@ export function layoutZone(
         entityId: diagnostic.entityId,
         neededPx: diagnostic.neededPx,
         allocatedPx: diagnostic.allocatedPx,
+        ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
       });
     }
     return {
@@ -1103,16 +1164,18 @@ export function layoutZone(
     lineHeight: number,
     allocatedLines: number,
     availableWidth: number,
+    text: string,
   ): void => {
     if (measured.tooWide) {
       const widest =
-        measured.lineWidths === undefined ? availableWidth + 1 : Math.max(...measured.lineWidths);
+        measured.lineWidths === undefined ? availableWidth + 1 : Math.max(0, ...measured.lineWidths);
       diagnostics.push({
         code: "zone-overflow",
         slot,
         entityId: props.entityId,
         neededPx: widest,
         allocatedPx: availableWidth,
+        text,
       });
     } else {
       diagnostics.push({
@@ -1121,6 +1184,7 @@ export function layoutZone(
         entityId: props.entityId,
         neededPx: measured.lines.length * lineHeight,
         allocatedPx: allocatedLines * lineHeight,
+        text,
       });
     }
   };
@@ -1146,12 +1210,12 @@ export function layoutZone(
       : measure(props.kicker, "kicker", headerTextWidth, g.allocatedLines.kicker);
   const kickerTexts = kickerResult === undefined ? [] : [...kickerResult.lines];
   if (kickerResult !== undefined && (kickerTexts.length > g.allocatedLines.kicker || kickerResult.tooWide)) {
-    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth);
+    pushOverflow("kicker", kickerResult, kickerHeight, g.allocatedLines.kicker, headerTextWidth, props.kicker ?? "");
   }
   const titleMeasured = measure(props.title, "title", headerTextWidth, g.allocatedLines.title);
   const titleTexts = [...titleMeasured.lines];
   if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
-    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth);
+    pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
   }
   const headerContentHeight =
     (props.kicker === undefined ? 0 : kickerHeight) + titleTexts.length * titleHeight;
@@ -1198,7 +1262,7 @@ export function layoutZone(
       : measure(props.subtitle, "body", subtitleWidth, g.allocatedLines.subtitle);
   const subtitleTexts = [...subtitleMeasured.lines];
   if (subtitleTexts.length > g.allocatedLines.subtitle || subtitleMeasured.tooWide) {
-    pushOverflow("subtitle", subtitleMeasured, subtitleLineHeight, g.allocatedLines.subtitle, subtitleWidth);
+    pushOverflow("subtitle", subtitleMeasured, subtitleLineHeight, g.allocatedLines.subtitle, subtitleWidth, props.subtitle ?? "");
   }
   const subtitleTop = headerTop + headerBlockHeight + g.subtitleGap;
   const subtitle: LaidOutLine[] = subtitleTexts.map((text, index) => ({
@@ -1235,7 +1299,7 @@ export function layoutZone(
     props.footer === undefined ? undefined : measure(props.footer, "footer", footerWidth, g.allocatedLines.footer);
   const footerTexts = footerMeasured === undefined ? [] : [...footerMeasured.lines];
   if (footerMeasured !== undefined && (footerTexts.length > g.allocatedLines.footer || footerMeasured.tooWide)) {
-    pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth);
+    pushOverflow("footer", footerMeasured, footerHeight, g.allocatedLines.footer, footerWidth, props.footer ?? "");
   }
   const footerBlockHeight = footerTexts.length * footerHeight;
 

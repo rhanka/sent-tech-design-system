@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:ef19070c10265e87870965064268e33876d09f5535a5a03a72e90be9e7c96d52",
-  "entryDigest": "sha256:e837837d30373013bb76341c6857578af16e700eae79d2734c8028f3231efcde",
+  "digest": "sha256:33f234e8ffc5c1c6ecaaaafcc7a1139dff90b5bd6d19b28e01fb2db473bc0d9b",
+  "entryDigest": "sha256:e47d67213e532e968fa3f75314192c1f2ebcb01c4245cc572ec4f6f4bc292b7f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -136,7 +136,10 @@
                 "type": "number"
               },
               "code": {
+                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.",
                 "enum": [
+                  "card-overflow",
+                  "card-icon-unknown",
                   "zone-overflow",
                   "zone-icon-unknown"
                 ]
@@ -148,6 +151,10 @@
                 "type": "number"
               },
               "slot": {
+                "type": "string"
+              },
+              "text": {
+                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
                 "type": "string"
               }
             },
@@ -233,7 +240,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:1ae5324d7e0797cd08caa2b6b90cc7b2228eb6433ab13ce8df11367f979d2893",
+        "declarationDigest": "sha256:0214d1605488f469a357bc82e145c21a605c01e2184c67214779a2154e2114aa",
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",

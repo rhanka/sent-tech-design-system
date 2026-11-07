@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:5c328679ee3ede68aac99241fc0be87cdff379d11c60a6e66f79298b09764ff3",
-  "entryDigest": "sha256:6b9e1bb731dd8193677b7e0cb3d7483f60c6182db6d4e91f345093b880d3b6e5",
+  "digest": "sha256:8c1e56358d2f95c81d1cfeebcf03246511e8afce2d71db39f2f0b753b552f16a",
+  "entryDigest": "sha256:714292e7fab3f0bfa61debde171a60183c4bc74f5adae529a2fc53f0002ce633",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -114,6 +114,10 @@
                 "type": "number"
               },
               "slot": {
+                "type": "string"
+              },
+              "text": {
+                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
                 "type": "string"
               }
             },
@@ -229,7 +233,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:bd69b4b978a171d9989ff205e0fc370db9aca7d4550206602207a73f68a80178",
+        "declarationDigest": "sha256:6d1f856b9a1fc4a580b0a55dec6f5ea402fb49a92fd77004b14503d8fde47486",
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",

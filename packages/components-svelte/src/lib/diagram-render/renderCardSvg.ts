@@ -9,15 +9,17 @@
  *
  * Exactly one rule element, drawn non-scaling (§5.4, DIF-07, DH-04); fixed
  * 460 × 200 box; square corners; footer pinned at 9.25; no shortening —
- * over-long slots render completely and are reported through the returned
- * diagnostics (DC-D4).
+ * over-long slots are reported through the returned diagnostics (DC-D4) and
+ * the result is refused (no `svg`): overflow = refusal, never a truncation.
  */
 import {
   CARD_GEOMETRY,
   defaultCardMeasure,
+  firstOverflowDiagnostic,
   layoutCard,
   projectCardProps,
   type CardDiagnostic,
+  type CardLayout,
   type CardLineMeasure,
   type CardPresentationInput,
   type DiagramCardProps,
@@ -30,6 +32,7 @@ import {
 
 export type {
   CardDiagnostic,
+  CardLayout,
   CardLineMeasure,
   CardPresentationInput,
   DiagramCardProps,
@@ -192,16 +195,44 @@ export function toggleGlyph(
 }
 
 /**
+ * The card render result. Overflow = refusal (owner criterion): when the
+ * layout raises `card-overflow` — a too-wide line, a line-count overflow, or
+ * a header+body height that does not fit above the pinned rule — the result
+ * is `{ kind: "refused" }` with NO `svg`: no normal card is emitted until the
+ * content fits. The diagnostics carry the original slot text so the host
+ * knows what to shorten. The Svelte `DiagramCard` renders the matching
+ * refusal state (`data-card-refused`) on the same predicate — one contract,
+ * both renderers.
+ */
+export type CardSvgResult =
+  | {
+      readonly kind: "rendered";
+      readonly svg: string;
+      readonly diagnostics: readonly CardDiagnostic[];
+      readonly layout: CardLayout;
+    }
+  | {
+      readonly kind: "refused";
+      readonly diagnostics: readonly CardDiagnostic[];
+      readonly layout: CardLayout;
+    };
+
+/**
  * Render one atomic card as a standalone SVG string. `measure` defaults to
  * the deterministic greedy wrapper; production hosts pass their measured
- * `LineMeasurer` adapter.
+ * `LineMeasurer` adapter. Returns a refused result (no `svg`) when the
+ * content overflows its frozen allocation.
  */
 export function renderCardSvg(
   props: DiagramCardProps,
   measure: CardLineMeasure = defaultCardMeasure,
-): { readonly svg: string; readonly diagnostics: readonly CardDiagnostic[] } {
+): CardSvgResult {
   const g = CARD_GEOMETRY;
   const { content, layout } = renderCardContent(props, measure);
+  const refused = firstOverflowDiagnostic(layout.diagnostics);
+  if (refused !== undefined) {
+    return { kind: "refused", diagnostics: layout.diagnostics, layout };
+  }
   const overflowSlots = layout.diagnostics
     .filter((diagnostic) => diagnostic.code === "card-overflow")
     .map((diagnostic) => diagnostic.slot);
@@ -215,26 +246,29 @@ export function renderCardSvg(
     content +
     `</svg>`;
   return {
+    kind: "rendered",
     svg,
     diagnostics: layout.diagnostics,
+    layout,
   };
 }
 
 /**
  * Convenience: project an `EntityPresentation` then render it. Returns
  * `{ kind: "label" }` when the view carries no card presentation for the
- * entity — the host renders a simple label node and no card.
+ * entity — the host renders a simple label node and no card — and
+ * `{ kind: "card", result }` otherwise, where `result` is the refused or
+ * rendered `CardSvgResult`.
  */
 export function renderCardSvgFromPresentation(
   presentation: CardPresentationInput | undefined,
   opts: { entityId: string; toggle?: DiagramCardProps["toggle"]; measure?: CardLineMeasure },
-): { kind: "card"; svg: string; diagnostics: readonly CardDiagnostic[] } | { kind: "label" } {
+): { kind: "card"; result: CardSvgResult } | { kind: "label" } {
   const resolved = projectCardProps(presentation, {
     entityId: opts.entityId,
     ...(opts.toggle === undefined ? {} : { toggle: opts.toggle }),
     resolveGlyph: getDiagramGlyph,
   });
   if (resolved.kind !== "card") return { kind: "label" };
-  const rendered = renderCardSvg(resolved.props, opts.measure);
-  return { kind: "card", svg: rendered.svg, diagnostics: rendered.diagnostics };
+  return { kind: "card", result: renderCardSvg(resolved.props, opts.measure) };
 }

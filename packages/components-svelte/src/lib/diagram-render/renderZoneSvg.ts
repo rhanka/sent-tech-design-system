@@ -19,9 +19,11 @@ import {
   CARD_GEOMETRY,
   ZONE_GEOMETRY,
   defaultCardMeasure,
+  firstOverflowDiagnostic,
   layoutZone,
   projectZoneProps,
   zoneCollapsedCardProps,
+  type CardDiagnostic,
   type CardLineMeasure,
   type DiagramZoneProps,
   type DiagramGlyphPaths,
@@ -34,6 +36,7 @@ import { getDiagramGlyph } from "../diagram-icons/registry.js";
 import { iconGroupFor, renderCardContent, toggleGlyph } from "./renderCardSvg.js";
 
 export type {
+  CardDiagnostic,
   CardLineMeasure,
   DiagramGlyphPaths,
   DiagramZoneProps,
@@ -73,8 +76,19 @@ function childContent(
 ): { content: string; diagnostics: readonly ZoneDiagnostic[] } {
   if (child.kind === "card") {
     if (child.card === undefined) throw new Error("fixture-error: card child without card props");
-    const { content } = renderCardContent(child.card, measure);
-    return { content, diagnostics: [] };
+    // The child's own diagnostics are kept with the child's entity id (and
+    // its original slot text): an overflowing child is aggregated by the
+    // zone, not silently dropped.
+    const { content, layout } = renderCardContent(child.card, measure);
+    const diagnostics: ZoneDiagnostic[] = layout.diagnostics.map((diagnostic) => ({
+      code: diagnostic.code,
+      slot: diagnostic.slot,
+      entityId: diagnostic.entityId,
+      neededPx: diagnostic.neededPx,
+      allocatedPx: diagnostic.allocatedPx,
+      ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
+    }));
+    return { content, diagnostics };
   }
   if (child.zone === undefined) throw new Error("fixture-error: zone child without zone props");
   const rendered = zoneContent(child.zone, child.children ?? [], measure);
@@ -84,7 +98,10 @@ function childContent(
 /**
  * Zone-local content (no outer `<svg>`): collapsed, the translated card
  * content; expanded, frame + header + rule + children. Coordinates are
- * zone-local (the caller wraps in `translate(x y)`).
+ * zone-local (the caller wraps in `translate(x y)`). The returned
+ * `diagnostics` aggregate the zone's own diagnostics with every descendant
+ * card/zone diagnostic, each keeping its own `entityId` and original slot
+ * text — a nested overflow is never lost inside a zone.
  */
 export function zoneContent(
   props: DiagramZoneProps,
@@ -96,6 +113,7 @@ export function zoneContent(
   const x = layout.box.x;
   const y = layout.box.y;
   const parts: string[] = [];
+  const descendantDiagnostics: ZoneDiagnostic[] = [];
 
   if (layout.collapsed) {
     const cardProps = zoneCollapsedCardProps(props);
@@ -182,26 +200,57 @@ export function zoneContent(
   }
   for (const child of children) {
     const rendered = childContent(child, measure);
+    descendantDiagnostics.push(...rendered.diagnostics);
     parts.push(
       `<g class="st-diagramZone-child" data-child-kind="${child.kind}" transform="translate(${child.x - x} ${child.y - y})">${rendered.content}</g>`,
     );
   }
-  return { content: parts.join(""), layout, diagnostics: layout.diagnostics };
+  return {
+    content: parts.join(""),
+    layout,
+    diagnostics: [...layout.diagnostics, ...descendantDiagnostics],
+  };
 }
+
+/**
+ * The zone render result. Overflow = refusal (owner criterion): when the
+ * zone's own layout or any descendant card/zone overflows, the result is
+ * `{ kind: "refused" }` with NO `svg` — the aggregated diagnostics carry each
+ * offender's `entityId` and original slot text. The Svelte `DiagramZone`
+ * renders the matching refusal state (`data-zone-refused`) on the same
+ * predicate — one contract, both renderers.
+ */
+export type ZoneSvgResult =
+  | {
+      readonly kind: "rendered";
+      readonly svg: string;
+      readonly diagnostics: readonly ZoneDiagnostic[];
+      readonly layout: ZoneLayout;
+    }
+  | {
+      readonly kind: "refused";
+      readonly diagnostics: readonly ZoneDiagnostic[];
+      readonly layout: ZoneLayout;
+    };
 
 /**
  * Render one zone as a standalone SVG string. Collapsed: the atomic card
  * at the zone occurrence (460 × 200, plus the "+" toggle slot). Expanded:
  * the frame with header, rule and children. `measure` defaults to the
- * deterministic greedy wrapper.
+ * deterministic greedy wrapper. Returns a refused result (no `svg`) when
+ * the zone or any descendant overflows; descendant diagnostics are
+ * aggregated with their entity ids.
  */
 export function renderZoneSvg(
   props: DiagramZoneProps,
   opts: { children?: readonly ZoneChildSpec[]; measure?: CardLineMeasure } = {},
-): { readonly svg: string; readonly diagnostics: readonly ZoneDiagnostic[]; readonly layout: ZoneLayout } {
+): ZoneSvgResult {
   const measure = opts.measure ?? defaultCardMeasure;
   const children = opts.children ?? [];
   const { content, layout, diagnostics } = zoneContent(props, children, measure);
+  if (firstOverflowDiagnostic(diagnostics) !== undefined) {
+    return { kind: "refused", diagnostics, layout };
+  }
   const { x, y, width, height } = layout.box;
   const overflowSlots = diagnostics
     .filter((diagnostic) => diagnostic.code === "zone-overflow")
@@ -215,13 +264,14 @@ export function renderZoneSvg(
     content +
     `</g>` +
     `</svg>`;
-  return { svg, diagnostics, layout };
+  return { kind: "rendered", svg, diagnostics, layout };
 }
 
 /**
  * Convenience: project an `EntityPresentation` then render the zone.
  * Returns `{ kind: "label" }` when the view carries no zone presentation
- * for the entity (L-R12).
+ * for the entity (L-R12), and `{ kind: "zone", result }` otherwise, where
+ * `result` is the refused or rendered `ZoneSvgResult`.
  */
 export function renderZoneSvgFromPresentation(
   presentation: ZonePresentationInput | undefined,
@@ -237,7 +287,7 @@ export function renderZoneSvgFromPresentation(
     children?: readonly ZoneChildSpec[];
     measure?: CardLineMeasure;
   },
-): { kind: "zone"; svg: string; diagnostics: readonly ZoneDiagnostic[] } | { kind: "label" } {
+): { kind: "zone"; result: ZoneSvgResult } | { kind: "label" } {
   const resolved = projectZoneProps(presentation, {
     entityId: opts.entityId,
     collapsed: opts.collapsed,
@@ -250,11 +300,13 @@ export function renderZoneSvgFromPresentation(
     resolveGlyph: getDiagramGlyph,
   });
   if (resolved.kind !== "zone") return { kind: "label" };
-  const rendered = renderZoneSvg(resolved.props, {
-    children: opts.children,
-    measure: opts.measure,
-  });
-  return { kind: "zone", svg: rendered.svg, diagnostics: rendered.diagnostics };
+  return {
+    kind: "zone",
+    result: renderZoneSvg(resolved.props, {
+      children: opts.children,
+      measure: opts.measure,
+    }),
+  };
 }
 
 // Re-exported for the zone parity corpus: the card geometry the collapsed
