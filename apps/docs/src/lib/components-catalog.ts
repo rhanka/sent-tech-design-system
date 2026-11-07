@@ -1817,6 +1817,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Section",
+    slug: "section",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Bande de page pleine largeur : fond tokenisé (neutre, léger, inversé, dégradé), rythme vertical, titre et chapeau.",
+      en: "Full-width page band: tokenised background (default, subtle, inverse, gradient), vertical rhythm, title and lead."
+    }
+  },
+  {
     name: "Row",
     slug: "row",
     status: "documented",

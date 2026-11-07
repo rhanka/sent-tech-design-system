@@ -81,6 +81,8 @@ export { default as Container } from "./Container.svelte";
 // Site marketing primitives (Svelte-first; React/Vue/Angular = recorded parity gaps).
 export { default as Hero } from "./Hero.svelte";
 export type { HeroProps, HeroSize, HeroAlign } from "./Hero.svelte";
+export { default as Section } from "./Section.svelte";
+export type { SectionProps, SectionTone, SectionSpacing, SectionAlign } from "./Section.svelte";
 export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
 export { default as DataImage } from "./DataImage.svelte";
