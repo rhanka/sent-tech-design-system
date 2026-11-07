@@ -49,6 +49,7 @@
     icon,
     iconGlyph,
     tone,
+    proposed,
     collapsed,
     toggleLabel,
     align,
@@ -72,6 +73,7 @@
     ...(icon === undefined ? {} : { icon }),
     ...(iconGlyph === undefined ? {} : { iconGlyph }),
     ...(tone === undefined ? {} : { tone }),
+    ...(proposed === undefined ? {} : { proposed }),
     collapsed,
     ...(toggleLabel === undefined ? {} : { toggleLabel }),
     ...(align === undefined ? {} : { align }),
@@ -143,11 +145,12 @@
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
-    class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}"
+    class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}"
     style={`position:absolute;left:${x}px;top:${y}px;width:${layout.box.width}px;height:${layout.box.height}px`}
     data-entity={entityId}
     data-collapsed="false"
     data-tone={tone}
+    data-proposed={proposed === true ? "true" : undefined}
     data-zone-overflow={overflowSlot}
     data-zone-icon-unknown={unknownIcon ? "" : undefined}
     role="group"
@@ -171,6 +174,7 @@
                 label: toggleLabel,
                 onToggle: () => onToggle?.({ entityId, collapsed: false }),
               }}
+          toggleTopInset={ZONE_GEOMETRY.toggleTopInset}
         />
       </div>
       <div class="st-diagramZone-rule" aria-hidden="true"></div>
@@ -179,6 +183,18 @@
           {@render children()}
         {/if}
       </div>
+      {#if header.footer.length > 0}
+        <!-- The footer is identical in both states (§6.1): folding never
+             changes it. Pinned at the frame bottom like the card footer. -->
+        {#if header.footerRuleY !== undefined}
+          <div class="st-diagramZone-footerRule" aria-hidden="true"></div>
+        {/if}
+        <div class="st-diagramZone-footer">
+          {#each header.footer as line, footerIndex (footerIndex)}
+            <span class="st-diagramZone-footerLine">{line.text}</span>
+          {/each}
+        </div>
+      {/if}
     {/if}
   </div>
 {/if}
@@ -199,6 +215,11 @@
   .st-diagramZone--center {
     /* Owner variant: every text slot centred inside its allocation. */
     text-align: center;
+  }
+  /* Neutral status prop: a proposed zone is always drawn dashed,
+     independently of the tint (owner criterion 5). */
+  .st-diagramZone--proposed {
+    border-style: dashed;
   }
   .st-diagramZone-header {
     /* headerInset 16: frame edge → icon left edge. */
@@ -226,5 +247,33 @@
     margin: var(--st-component-diagramZone-contentInsetTop, 16px)
       var(--st-component-diagramZone-contentInsetInline, 16px)
       var(--st-component-diagramZone-contentInsetBottom, 16px);
+  }
+  .st-diagramZone-footerRule {
+    display: block;
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    margin: var(--st-component-diagramZone-headerRuleGap, 4px)
+      var(--st-component-diagramCard-ruleInsetEnd, 10px) 0
+      var(--st-component-diagramCard-ruleInsetStart, 16px);
+    background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
+  }
+  .st-diagramZone-footer {
+    flex: 0 0 auto;
+    /* Pinned at the frame bottom like the card footer: text-box bottom at
+       (height − border − inset). */
+    margin-bottom: calc(
+      var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px)) -
+        var(--st-component-diagramZone-borderWidth, 1.5px)
+    );
+    font-size: var(--st-component-diagramZone-footerFontSize, var(--st-component-diagramCard-footerFontSize, 24px));
+    font-weight: var(--st-component-diagramZone-footerFontWeight, var(--st-component-diagramCard-footerFontWeight, 700));
+    line-height: var(--st-component-diagramZone-footerLineHeight, var(--st-component-diagramCard-footerLineHeight, 1.3));
+    color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
+  }
+  .st-diagramZone-footerLine {
+    display: block;
+    min-width: 0;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 </style>

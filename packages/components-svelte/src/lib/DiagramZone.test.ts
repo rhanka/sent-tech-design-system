@@ -68,7 +68,10 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
     const parsed = parseZoneDom(container);
     expect(parsed.card).not.toBeNull();
     expect(parsed.zone).toBeNull();
-    expect(parsed.headerTexts).toEqual(["PPL", "Users and operators"]);
+    // The folded header text width is the frozen 290 px (toggle reserves
+    // 66), so the title wraps exactly like the reference at that width.
+    expect(parsed.headerTexts).toEqual(["PPL", "Users and", "operators"]);
+    expect(parsed.headerTexts.join(" ")).toBe("PPL Users and operators");
     // Subtitle wrapped at the frozen 396 px measure, one body line per
     // wrapped line, no detail re-roling (DH-08 does not exist). The wrap
     // is lossless: the lines join back to the full subtitle string.
@@ -214,10 +217,81 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     });
     // header text at x + 92.
     expect(header.headerTextX).toBe(92);
-    // toggle slot top right of the content box.
-    expect(header.toggleBox).toEqual({ x: 444, y: 16, size: 32 });
+    // toggle slot at y + 10 exactly as the hrpn frozen SVG (finding 7).
+    expect(header.toggleBox).toEqual({ x: 444, y: 10, size: 32 });
     // subtitle wraps under the icon from the left inset.
     expect(header.subtitle[0]?.x).toBe(16);
+  });
+
+  it("expanded keeps and renders the footer; folding never changes it (finding 4)", () => {
+    const expandedProps = baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0 });
+    const { container: expandedDom } = render(DiagramZone, {
+      props: { ...expandedProps, measure: defaultCardMeasure },
+    });
+    const zone = expandedDom.querySelector(".st-diagramZone") as HTMLElement;
+    expect(zone.querySelector(".st-diagramZone-footerRule")).not.toBeNull();
+    expect(
+      [...zone.querySelectorAll(".st-diagramZone-footerLine")].map((el) => el.textContent ?? ""),
+    ).toEqual(["group: people"]);
+    const layout = layoutZone(expandedProps, defaultCardMeasure);
+    const header = layout.header;
+    if (header === undefined) throw new Error("fixture-error");
+    expect(header.footer.map((line) => line.text)).toEqual(["group: people"]);
+    expect(header.footerRuleY).toBeDefined();
+    // Collapsed: the same footer through the card.
+    const { container: collapsedDom } = render(DiagramZone, {
+      props: { ...baseProps(), measure: defaultCardMeasure },
+    });
+    const card = collapsedDom.querySelector(".st-diagramCard") as HTMLElement;
+    expect(
+      [...card.querySelectorAll(".st-diagramCard-footerLine")].map((el) => el.textContent ?? ""),
+    ).toEqual(["group: people"]);
+    expect(layoutZone(baseProps(), defaultCardMeasure).card?.footerLines.map((l) => l.text)).toEqual([
+      "group: people",
+    ]);
+  });
+
+  it("proposed zone: dashed in the expanded state, whatever the tone (finding 1)", () => {
+    for (const tone of [undefined, "neutral", "proposal"] as const) {
+      const { container } = render(DiagramZone, {
+        props: {
+          ...baseProps({ collapsed: false, width: 492, height: 400, ...(tone === undefined ? {} : { tone }), proposed: true }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const zone = container.querySelector(".st-diagramZone") as HTMLElement;
+      expect(zone.getAttribute("data-proposed")).toBe("true");
+      expect(zone.classList.contains("st-diagramZone--proposed")).toBe(true);
+      // Collapsed: the dashed border is on the card.
+      const { container: collapsedDom } = render(DiagramZone, {
+        props: {
+          ...baseProps({ ...(tone === undefined ? {} : { tone }), proposed: true }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const card = collapsedDom.querySelector(".st-diagramCard") as HTMLElement;
+      expect(card.getAttribute("data-proposed")).toBe("true");
+      expect(card.classList.contains("st-diagramCard--proposed")).toBe(true);
+    }
+  });
+
+  it("J4 long word in the subtitle: neededPx > allocatedPx, full text rendered (finding 5)", () => {
+    const token = "@sentropic/architecture-governance-multiagent-coordination";
+    const seen: ZoneDiagnostic[] = [];
+    const { container } = render(DiagramZone, {
+      props: {
+        ...baseProps({ collapsed: false, width: 492, height: 400, subtitle: `Charge ${token}` }),
+        measure: defaultCardMeasure,
+        onDiagnostic: (d) => seen.push(d),
+      },
+    });
+    const overflow = seen.filter((d) => d.code === "zone-overflow");
+    expect(overflow.length).toBeGreaterThan(0);
+    for (const diagnostic of overflow) {
+      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
+    }
+    expect(container.textContent ?? "").toContain(token);
+    expect(container.textContent ?? "").not.toContain("…");
   });
 
   it("no subtitle: rule sits 4 px under the header block", () => {
@@ -233,7 +307,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     const collapsed = layoutZone(baseProps({ align: "center" }), defaultCardMeasure);
     expect(collapsed.card?.kicker.every((line) => line.anchor === "middle")).toBe(true);
     expect(collapsed.card?.title.every((line) => line.anchor === "middle")).toBe(true);
-    expect(collapsed.card?.footerLine?.anchor).toBe("middle");
+    expect(collapsed.card?.footerLines[0]?.anchor).toBe("middle");
     expect(collapsed.card?.body.every((line) => line.anchor === "middle")).toBe(true);
 
     const expanded = layoutZone(

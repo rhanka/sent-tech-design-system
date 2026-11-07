@@ -10,7 +10,6 @@ import {
   COLLAPSED_SUBTITLE_MEASURE,
   ZONE_GEOMETRY,
   defaultCardMeasure,
-  layoutZone,
   projectZoneProps,
   type DiagramZoneProps,
   type ZoneDiagnostic,
@@ -40,6 +39,8 @@ import {
   RULE_TO_FIRST_CHILD_GAP,
   SUBTITLE_TO_RULE_GAP,
   TOGGLE_ALLOCATION,
+  type LineMeasurer,
+  type MeasureRequest,
 } from "../../../../diagram-canvas/src/layout/measure.js";
 
 /**
@@ -92,9 +93,10 @@ interface ParsedZoneSvg {
   dataEntity: string | null;
   dataCollapsed: string | null;
   dataTone: string | null;
+  dataProposed: string | null;
   dataZoneOverflow: string | null;
   dataZoneIconUnknown: boolean;
-  texts: Array<{ className: string; text: string; x: string | null; anchor: string | null }>;
+  texts: Array<{ className: string; text: string; x: string | null; y: string | null; anchor: string | null }>;
   rules: Array<Record<string, string | null>>;
   frame: Record<string, string | null> | null;
   icon: { name: string | null; transform: string | null };
@@ -111,9 +113,10 @@ function parseZoneSvg(svg: string): ParsedZoneSvg {
     className: element.getAttribute("class") ?? "",
     text: element.textContent ?? "",
     x: element.getAttribute("x"),
+    y: element.getAttribute("y"),
     anchor: element.getAttribute("text-anchor"),
   }));
-  const rules = [...zone.querySelectorAll("line.st-diagramZone-rule, line.st-diagramCard-rule")].map(
+  const rules = [...zone.querySelectorAll("line.st-diagramZone-rule, line.st-diagramZone-footerRule, line.st-diagramCard-rule")].map(
     (element) => ({
       className: element.getAttribute("class"),
       x1: element.getAttribute("x1"),
@@ -131,6 +134,7 @@ function parseZoneSvg(svg: string): ParsedZoneSvg {
     dataEntity: zone.getAttribute("data-entity"),
     dataCollapsed: zone.getAttribute("data-collapsed"),
     dataTone: zone.getAttribute("data-tone"),
+    dataProposed: zone.getAttribute("data-proposed"),
     dataZoneOverflow: zone.getAttribute("data-zone-overflow"),
     dataZoneIconUnknown: zone.hasAttribute("data-zone-icon-unknown"),
     texts,
@@ -142,6 +146,7 @@ function parseZoneSvg(svg: string): ParsedZoneSvg {
       height: frame.getAttribute("height"),
       rx: frame.getAttribute("rx"),
       strokeWidth: frame.getAttribute("stroke-width"),
+      strokeDasharray: frame.getAttribute("stroke-dasharray"),
     },
     icon: {
       name: icon?.getAttribute("data-diagram-icon") ?? null,
@@ -240,8 +245,20 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(ZONE_GEOMETRY.headerRuleGap).toBe(SUBTITLE_TO_RULE_GAP);
     expect(component.diagramZone.headerRuleGap).toBe("4px");
 
-    expect(TOGGLE_ALLOCATION).toBe(32);
+    expect(TOGGLE_ALLOCATION).toBe(66);
     expect(ZONE_GEOMETRY.toggleAllocation).toBe(TOGGLE_ALLOCATION);
+    expect(ZONE_GEOMETRY.toggleBoxSize).toBe(32);
+    expect(ZONE_GEOMETRY.headerTextInset).toBe(178);
+    expect(ZONE_GEOMETRY.toggleTopInset).toBe(10);
+    // Shared allocation roles: one table for card and zone.
+    expect(ZONE_GEOMETRY.allocatedLines).toEqual({ kicker: 1, title: 2, subtitle: 2, footer: 1 });
+    // Tokens carry the same numbers (zone leaves alias the card's).
+    expect(component.diagramZone.toggleAllocation).toBe("var(--st-component-diagramCard-toggleAllocation)");
+    expect(component.diagramZone.toggleBoxSize).toBe("var(--st-component-diagramCard-toggleBoxSize)");
+    expect(component.diagramZone.headerTextInset).toBe("178px");
+    expect(component.diagramZone.toggleTopInset).toBe("10px");
+    expect(component.diagramZone.footerBottomInset).toBe("var(--st-component-diagramCard-footerBottomInset)");
+    expect(component.diagramZone.proposedDashArray).toBe("4 5");
 
     expect(ZONE_GEOMETRY.collapsedInset).toBe(16);
     expect(ZONE_GEOMETRY.collapsedSubtitleMarginInline).toBe(16);
@@ -262,6 +279,60 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
   it("dark layer derives from the same builder (DIF-09)", () => {
     expect(componentDark.diagramZone.surface).not.toBe("#ffffff");
     expect(componentDark.diagramZone.surface).not.toBe("#fff");
+  });
+
+  it("one measurement source: the canvas LineMeasurer adapter delegates to the model measurer", () => {
+    // The diagram-canvas engine speaks LineMeasurer; the renderers and the
+    // Svelte components speak CardLineMeasure. Both must be the SAME
+    // measurement: the adapter below is a pure re-shaping, and every
+    // corpus string measured through it agrees with the model measurer.
+    const adapter: LineMeasurer = (request: MeasureRequest) => {
+      const role = request.role as "kicker" | "title" | "body" | "footer";
+      const measured = defaultCardMeasure(request.text, role, request.availableWidth);
+      const widest =
+        measured.lineWidths === undefined
+          ? request.availableWidth
+          : Math.max(...measured.lineWidths);
+      return {
+        lines: measured.lines,
+        width: widest,
+        height: measured.lines.length * 24 * 1.3,
+        overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
+      };
+    };
+    const samples: Array<[string, "kicker" | "title" | "body" | "footer", number, number]> = [
+      [EXPANDED_PEOPLE.kicker, "kicker", 314, 1],
+      [EXPANDED_PEOPLE.title, "title", 314, 2],
+      [EXPANDED_PEOPLE.subtitle, "body", 434, 2],
+      ...COLLAPSED_ZONES.map(
+        (zone): [string, "body", number, number] => [zone.subtitle, "body", 396, 2],
+      ),
+      ...COLLAPSED_ZONES.map(
+        (zone): [string, "footer", number, number] => [zone.footer, "footer", 436, 1],
+      ),
+      ["Charge @sentropic/architecture-governance-multiagent-coordination", "body", 436, 2],
+    ];
+    for (const [text, role, availableWidth, allocatedLines] of samples) {
+      const request: MeasureRequest = { text, role, availableWidth, allocatedLines, folded: false };
+      const viaAdapter = adapter(request);
+      const direct = defaultCardMeasure(text, role, availableWidth);
+      expect(viaAdapter.lines, text).toEqual([...direct.lines]);
+      expect(viaAdapter.overflow, text).toBe(
+        direct.tooWide || direct.lines.length > allocatedLines,
+      );
+    }
+    // The pinned reference wraps: expanded PEOPLE title at 314 and the
+    // frozen collapsed subtitle lines at 396.
+    expect(adapter({ text: EXPANDED_PEOPLE.title, role: "title", availableWidth: 314, allocatedLines: 2, folded: false }).lines)
+      .toEqual([...EXPANDED_PEOPLE.titleLines]);
+    expect(adapter({ text: EXPANDED_PEOPLE.subtitle, role: "body", availableWidth: 434, allocatedLines: 2, folded: false }).lines)
+      .toEqual([...EXPANDED_PEOPLE.subtitleLines]);
+    for (const zone of COLLAPSED_ZONES) {
+      expect(
+        adapter({ text: zone.subtitle, role: "body", availableWidth: 396, allocatedLines: 2, folded: true }).lines,
+        zone.id,
+      ).toEqual([...zone.frozenLines]);
+    }
   });
 });
 
@@ -329,22 +400,18 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
     });
   }
 
-  it("collapsed subtitle re-wrap matches the frozen lines where the frozen measurer agrees", () => {
-    // The frozen SVG pins its own wrap; the DS measurer is the frozen
-    // advance table. Six of seven zones re-wrap identically; the drift on
-    // one word boundary is reported, not hidden.
-    let identical = 0;
+  it("collapsed subtitle re-wrap matches the frozen lines for every zone", () => {
+    // The frozen SVG pins its own wrap at the 396 px measure; the DS
+    // measurer is the frozen advance table and must reproduce all seven.
     for (const zone of COLLAPSED_ZONES) {
       const rendered = renderZoneSvg(zoneProps(zone, true), { measure: defaultCardMeasure });
       const svg = parseZoneSvg(rendered.svg);
       const body = svg.texts
         .filter((t) => t.className === "st-diagramCard-body")
         .map((t) => t.text);
-      if (body.length === zone.frozenLines.length && body.every((line, i) => line === zone.frozenLines[i])) {
-        identical += 1;
-      }
+      expect(body, zone.id).toEqual([...zone.frozenLines]);
     }
-    expect(identical).toBeGreaterThanOrEqual(6);
+    expect(COLLAPSED_ZONES.length).toBe(7);
   });
 });
 
@@ -368,7 +435,7 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
     };
   }
 
-  it("frame, header, rule and 4/16/16 rhythm against the frozen numbers", () => {
+  it("frame, header, rule and toggle against the frozen SVG numbers (pinned, not self-compared)", () => {
     const rendered = renderZoneSvg(peopleProps(), { measure: defaultCardMeasure });
     const svg = parseZoneSvg(rendered.svg);
     expect(svg.dataCollapsed).toBe("false");
@@ -377,54 +444,54 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
     expect(svg.frame).toMatchObject({
       x: "0",
       y: "0",
-      width: "492",
-      height: "974.98125",
+      width: String(EXPANDED_PEOPLE.width),
+      height: String(EXPANDED_PEOPLE.height),
       rx: "0",
       strokeWidth: "1.5",
     });
-    // Icon 70 at the 16 px inset, centred in the header block. The frozen
-    // iconY 36.890625 corresponds to the kit's two-line title wrap at the
-    // kit's narrower header width; the DS header text width (352 px) fits
-    // "Users and operators" on one line, so the DS header block is shorter
-    // — reported measurer drift, the icon stays centred in the block.
-    const layout = layoutZone(peopleProps(), defaultCardMeasure);
-    const header = layout.header;
-    if (header === undefined) throw new Error("fixture-error");
+    // Icon 70 at the 16 px inset, centred in the header block: the frozen
+    // iconY 36.890625 (two-line title wrap at the kit's width − 178).
     expect(svg.icon.transform).toBe(
-      `translate(${header.iconBox?.x} ${header.iconBox?.y}) scale(1.09375)`,
+      `translate(${EXPANDED_PEOPLE.iconX} ${EXPANDED_PEOPLE.iconY}) scale(${EXPANDED_PEOPLE.iconScale})`,
     );
-    expect(header.iconBox?.x).toBe(EXPANDED_PEOPLE.iconX);
-    expect(header.iconBox?.y).toBe(16 + (header.headerBlockHeight - 70) / 2);
-    // Header text at x + 92; kicker/title lossless.
+    // Kicker/title at x + 92 with the frozen baselines: kicker y = 38,
+    // title first line y = 76.59375, wrapped exactly like the frozen SVG.
     const kicker = svg.texts.filter((t) => t.className === "st-diagramZone-kicker");
     const title = svg.texts.filter((t) => t.className === "st-diagramZone-title");
     const subtitle = svg.texts.filter((t) => t.className === "st-diagramZone-subtitle");
     expect(kicker.map((t) => t.text)).toEqual([EXPANDED_PEOPLE.kicker]);
     expect(kicker[0]?.x).toBe(String(EXPANDED_PEOPLE.kickerX));
-    expect(title.map((t) => t.text).join(" ")).toBe(EXPANDED_PEOPLE.title);
+    expect(Number(kicker[0]?.y)).toBeCloseTo(EXPANDED_PEOPLE.kickerY, 9);
+    expect(title.map((t) => t.text)).toEqual([...EXPANDED_PEOPLE.titleLines]);
     expect(title[0]?.x).toBe(String(EXPANDED_PEOPLE.titleX));
-    expect(subtitle.map((t) => t.text).join(" ")).toBe(EXPANDED_PEOPLE.subtitle);
+    expect(Number(title[0]?.y)).toBeCloseTo(EXPANDED_PEOPLE.titleY, 9);
+    // Subtitle from the left inset, frozen wrap and baselines (raw 31.2 dy).
+    expect(subtitle.map((t) => t.text)).toEqual([...EXPANDED_PEOPLE.subtitleLines]);
     expect(subtitle[0]?.x).toBe(String(EXPANDED_PEOPLE.subtitleX));
-    // Header rule: same insets as the frozen rule (16 / width - 10), 1 px
-    // non-scaling, at the DS-computed y (zone-local; y = 0 here). The frozen
-    // ruleY 198.98125 sits under the kit's two-line title; the DS one-line
-    // title shortens the header block — same drift as the icon above.
+    expect(Number(subtitle[0]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY, 9);
+    expect(Number(subtitle[1]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY + 31.2, 9);
+    // Header rule: frozen insets and the frozen ruleY 198.98125.
     expect(svg.rules).toHaveLength(1);
     expect(svg.rules[0]).toMatchObject({
       className: "st-diagramZone-rule",
       x1: String(EXPANDED_PEOPLE.ruleX1),
       x2: String(EXPANDED_PEOPLE.ruleX2),
-      y1: String(header.ruleY),
-      y2: String(header.ruleY),
       vectorEffect: "non-scaling-stroke",
     });
-    // 4/16/16 exactly on the DS fixture (§6.2).
-    expect(header.ruleY - header.subtitleBottom).toBe(4);
-    expect(header.contentTop - header.ruleY).toBe(16);
-    // Toggle slot top right of the content box (kit foreignObject at
-    // (434.656, 10) is the DH-13 hack this replaces).
+    expect(Number(svg.rules[0]?.y1)).toBeCloseTo(EXPANDED_PEOPLE.ruleY, 9);
+    expect(svg.rules[0]?.y2).toBe(svg.rules[0]?.y1);
+    // 4/16/16 rhythm: rule 4 px under the subtitle block, content 16 under
+    // the rule (derived from the pinned baselines, not from the layout).
+    const subtitleBottom = EXPANDED_PEOPLE.subtitleY + 31.2 + 8;
+    expect(EXPANDED_PEOPLE.ruleY - subtitleBottom).toBeCloseTo(4, 9);
+    // Toggle slot: y = box.y + 10 exactly as the frozen SVG (finding 7);
+    // x is the DS 32 px slot at the 16 px right inset (DH-13: the kit's
+    // flush-right foreignObject is the replaced hack).
     expect(svg.toggle.collapsed).toBe("false");
-    expect(svg.toggle.transform).toBe(`translate(${header.toggleBox?.x} ${header.toggleBox?.y})`);
+    const toggleMatch = /^translate\(([-0-9.]+) ([-0-9.]+)\)$/.exec(svg.toggle.transform ?? "");
+    expect(toggleMatch).not.toBeNull();
+    expect(Number(toggleMatch?.[1])).toBe(EXPANDED_PEOPLE.width - 16 - 32);
+    expect(Number(toggleMatch?.[2])).toBe(EXPANDED_PEOPLE.toggleY);
     expect(rendered.diagnostics).toEqual([]);
   });
 
@@ -527,6 +594,127 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     expect(button?.getAttribute("aria-expanded")).toBe("true");
     expect(svg.toggle.collapsed).toBe("false");
     expect(seen).toEqual(rendered.diagnostics);
+  });
+
+  it("expanded zone keeps and renders the footer; folding never changes it (finding 4)", () => {
+    const base: DiagramZoneProps = {
+      entityId: "grp.footed",
+      kicker: "K",
+      title: "Footed zone",
+      subtitle: "A subtitle line",
+      footer: "group: footed",
+      icon: "people",
+      iconGlyph: getDiagramGlyph("people"),
+      tone: "neutral",
+      collapsed: false,
+      toggleLabel: "Toggle footed",
+      x: 0,
+      y: 0,
+      width: 492,
+      height: 400,
+    };
+    // Expanded: footer + footer rule in the SVG, footer block in Svelte.
+    const expanded = renderZoneSvg({ ...base, collapsed: false }, { measure: defaultCardMeasure });
+    const expandedSvg = parseZoneSvg(expanded.svg);
+    const footerTexts = expandedSvg.texts.filter((t) => t.className === "st-diagramZone-footer");
+    expect(footerTexts.map((t) => t.text)).toEqual(["group: footed"]);
+    const footerRule = expandedSvg.rules.filter((r) => r.className === "st-diagramZone-footerRule");
+    expect(footerRule).toHaveLength(1);
+    expect(footerRule[0]).toMatchObject({ x1: "16", x2: "482", vectorEffect: "non-scaling-stroke" });
+    const seenExpanded: ZoneDiagnostic[] = [];
+    const { container: expandedDom } = render(DiagramZone, {
+      props: { ...base, collapsed: false, measure: defaultCardMeasure, onDiagnostic: (d) => seenExpanded.push(d) },
+    });
+    const zoneEl = expandedDom.querySelector(".st-diagramZone") as HTMLElement;
+    expect(zoneEl.querySelector(".st-diagramZone-footerRule")).not.toBeNull();
+    expect(
+      [...zoneEl.querySelectorAll(".st-diagramZone-footerLine")].map((el) => el.textContent ?? ""),
+    ).toEqual(["group: footed"]);
+    // Collapsed: the very same footer through the card content.
+    const collapsed = renderZoneSvg({ ...base, collapsed: true }, { measure: defaultCardMeasure });
+    const collapsedSvg = parseZoneSvg(collapsed.svg);
+    const collapsedFooter = collapsedSvg.texts.filter((t) => t.className === "st-diagramCard-footer");
+    expect(collapsedFooter.map((t) => t.text)).toEqual(["group: footed"]);
+    const { container: collapsedDom } = render(DiagramZone, {
+      props: { ...base, collapsed: true, measure: defaultCardMeasure, onDiagnostic: (d) => seenExpanded.push(d) },
+    });
+    const cardEl = collapsedDom.querySelector(".st-diagramCard") as HTMLElement;
+    expect(cardEl.querySelector(".st-diagramCard-footer")?.textContent ?? null).toBe("group: footed");
+    // Same footer text and same (empty) diagnostics in both states.
+    expect(expanded.diagnostics).toEqual([]);
+    expect(collapsed.diagnostics).toEqual([]);
+  });
+
+  it("proposed zone: dashed frame independent of tone, collapsed and expanded, both renderers", () => {
+    for (const collapsed of [true, false]) {
+      for (const tone of [undefined, "neutral", "proposal"] as const) {
+        const props: DiagramZoneProps = {
+          entityId: "grp.proposed",
+          kicker: "K",
+          title: "Proposed zone",
+          subtitle: "A subtitle line",
+          footer: "group: proposed",
+          icon: "people",
+          iconGlyph: getDiagramGlyph("people"),
+          ...(tone === undefined ? {} : { tone }),
+          proposed: true,
+          collapsed,
+          toggleLabel: "Toggle proposed",
+          x: 0,
+          y: 0,
+          ...(collapsed ? {} : { width: 492, height: 400 }),
+        };
+        const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
+        const svg = parseZoneSvg(rendered.svg);
+        expect(svg.dataProposed, `${collapsed} ${tone}`).toBe("true");
+        if (collapsed) {
+          // Collapsed: the card border carries the dash.
+          expect(rendered.svg).toContain(
+            'stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"',
+          );
+        } else {
+          expect(svg.frame?.strokeDasharray, `${collapsed} ${tone}`).toBe(
+            "var(--st-component-diagramZone-proposedDashArray, 4 5)",
+          );
+        }
+        const { container } = render(DiagramZone, {
+          props: { ...props, measure: defaultCardMeasure },
+        });
+        const root = (container.querySelector(".st-diagramZone") ??
+          container.querySelector(".st-diagramCard")) as HTMLElement;
+        expect(root.getAttribute("data-proposed"), `${collapsed} ${tone}`).toBe("true");
+        expect(root.classList.contains(collapsed ? "st-diagramCard--proposed" : "st-diagramZone--proposed"), `${collapsed} ${tone}`).toBe(true);
+        // Not proposed: no dash anywhere.
+        const plain = renderZoneSvg({ ...props, proposed: undefined }, { measure: defaultCardMeasure });
+        expect(plain.svg).not.toContain("data-proposed");
+        expect(plain.svg).not.toContain("stroke-dasharray");
+      }
+    }
+  });
+
+  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, rendered in full", () => {
+    const token = "@sentropic/architecture-governance-multiagent-coordination";
+    const props: DiagramZoneProps = {
+      entityId: "grp.j4",
+      kicker: "K",
+      title: "J4 zone",
+      subtitle: `Charge ${token}`,
+      collapsed: false,
+      toggleLabel: "Toggle j4",
+      x: 0,
+      y: 0,
+      width: 492,
+      height: 400,
+    };
+    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
+    const overflow = rendered.diagnostics.filter((d) => d.code === "zone-overflow");
+    expect(overflow.length).toBeGreaterThan(0);
+    for (const diagnostic of overflow) {
+      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
+    }
+    expect(rendered.svg).toContain(token);
+    const svg = parseZoneSvg(rendered.svg);
+    expect(svg.dataZoneOverflow).toBe(overflow[0]?.slot ?? null);
   });
 
   it('align="center": every text slot anchored middle in the SVG, class on the Svelte root, both states', () => {

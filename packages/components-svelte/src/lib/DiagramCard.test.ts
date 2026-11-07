@@ -141,4 +141,73 @@ describe("DiagramCard — diagnostics", () => {
     render(DiagramCard, { props: { ...BASE, onDiagnostic } });
     expect(onDiagnostic).not.toHaveBeenCalled();
   });
+
+  it("J4: a single long unbreakable word is measured, neededPx > allocatedPx (finding 5)", () => {
+    const token = "@sentropic/architecture-governance-multiagent-coordination";
+    const seen: Array<{ code: string; slot: string; neededPx: number; allocatedPx: number }> = [];
+    const { container } = render(DiagramCard, {
+      props: {
+        entityId: "entity:j4",
+        title: "Jeton J4",
+        body: ["ligne une", token],
+        footer: "service: demo",
+        measure: defaultCardMeasure,
+        onDiagnostic: (d) =>
+          seen.push({ code: d.code, slot: d.slot, neededPx: d.neededPx, allocatedPx: d.allocatedPx }),
+      },
+    });
+    const overflow = seen.filter((d) => d.code === "card-overflow");
+    expect(overflow.length).toBeGreaterThan(0);
+    for (const diagnostic of overflow) {
+      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
+    }
+    const text = container.querySelector(".st-diagramCard")?.textContent ?? "";
+    expect(text).toContain(token);
+    expect(text).not.toContain("…");
+  });
+
+  it("long unbreakable words in kicker, title and footer diagnose too", () => {
+    const word = `supercalifragilisticexpialidocious-${"x".repeat(60)}`;
+    for (const slot of ["kicker", "title", "footer"] as const) {
+      const seen: Array<{ code: string; slot: string; neededPx: number; allocatedPx: number }> = [];
+      const props =
+        slot === "kicker"
+          ? { entityId: "e", kicker: word, title: "T", body: [] }
+          : slot === "title"
+            ? { entityId: "e", title: word, body: [] }
+            : { entityId: "e", title: "T", body: [], footer: word };
+      render(DiagramCard, {
+        props: {
+          ...props,
+          measure: defaultCardMeasure,
+          onDiagnostic: (d) =>
+            seen.push({ code: d.code, slot: d.slot, neededPx: d.neededPx, allocatedPx: d.allocatedPx }),
+        },
+      });
+      const overflow = seen.filter((d) => d.code === "card-overflow" && d.slot === slot);
+      expect(overflow.length, slot).toBeGreaterThan(0);
+      for (const diagnostic of overflow) {
+        expect(diagnostic.neededPx, slot).toBeGreaterThan(diagnostic.allocatedPx);
+      }
+    }
+  });
+});
+
+describe("DiagramCard — proposed status (finding 1)", () => {
+  it("dashed border independent of tone; absent when not proposed", () => {
+    for (const tone of [undefined, "identity", "proposal", "neutral"] as const) {
+      const { container } = render(DiagramCard, {
+        props: { ...BASE, ...(tone === undefined ? {} : { tone }), proposed: true },
+      });
+      const root = container.querySelector(".st-diagramCard") as HTMLElement;
+      expect(root.getAttribute("data-proposed")).toBe("true");
+      expect(root.classList.contains("st-diagramCard--proposed")).toBe(true);
+      // The dash does not depend on the tone: whatever the tint, same class.
+      expect(root.dataset.tone).toBe(tone ?? "identity");
+    }
+    const { container } = render(DiagramCard, { props: { ...BASE } });
+    const root = container.querySelector(".st-diagramCard") as HTMLElement;
+    expect(root.getAttribute("data-proposed")).toBeNull();
+    expect(root.classList.contains("st-diagramCard--proposed")).toBe(false);
+  });
 });

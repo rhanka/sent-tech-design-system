@@ -1,6 +1,6 @@
 <script lang="ts">
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
+  import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
 
   /**
    * Internal zone header (DC-D1, spec §6.2): the shared `DiagramCardHeader`
@@ -19,6 +19,12 @@
     /** Subtitle measure: frame width minus both inline insets. */
     subtitleWidth: number;
     toggle?: { collapsed: boolean; label: string; onToggle?: () => void };
+    /**
+     * Frame-top inset of the toggle (10 px in the frozen SVG) while the
+     * header band starts at the 16 px headerInset: forwarded as the toggle
+     * slot's top offset.
+     */
+    toggleTopInset?: number;
   }
 
   let {
@@ -30,6 +36,7 @@
     headerTextWidth,
     subtitleWidth,
     toggle,
+    toggleTopInset,
   }: DiagramZoneHeaderProps = $props();
 </script>
 
@@ -41,6 +48,9 @@
     {iconGlyph}
     {headerTextWidth}
     {toggle}
+    toggleTopOffset={toggleTopInset === undefined
+      ? undefined
+      : toggleTopInset - ZONE_GEOMETRY.headerInset}
   />
   {#if subtitle.length > 0}
     <div class="st-diagramZoneHeader-subtitle" style={`width:${subtitleWidth}px`}>
@@ -70,5 +80,9 @@
     font-weight: var(--st-component-diagramZone-subtitleFontWeight, 400);
     line-height: var(--st-component-diagramZone-subtitleLineHeight, 1.3);
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
+    /* No mid-word break: an over-long word overflows and is diagnosed
+       (Astra J4), never silently broken or cut. */
+    overflow-wrap: normal;
+    word-break: normal;
   }
 </style>
