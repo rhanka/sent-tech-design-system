@@ -16,6 +16,12 @@
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
     headerTextWidth: number;
+    /**
+     * Header row height from the shared model (`headerSlotGeometry`, review
+     * pass 2 item 10) — forwarded to `DiagramCardHeader` so the zone header
+     * row is exactly as tall as `layoutZone` computed.
+     */
+    headerBlockHeight: number;
     /** Subtitle measure: the layout's `subtitleWidth` —
      *  `min(width, 460) − 26`, the single geometry source. */
     subtitleWidth: number;
@@ -35,6 +41,7 @@
     iconName,
     iconGlyph,
     headerTextWidth,
+    headerBlockHeight,
     subtitleWidth,
     toggle,
     toggleTopInset,
@@ -48,6 +55,7 @@
     {iconName}
     {iconGlyph}
     {headerTextWidth}
+    {headerBlockHeight}
     {toggle}
     toggleTopOffset={toggleTopInset === undefined
       ? undefined

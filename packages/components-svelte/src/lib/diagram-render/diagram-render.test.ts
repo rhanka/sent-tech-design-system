@@ -3,7 +3,9 @@ import { getDiagramGlyph } from "../diagram-icons/registry.js";
 import {
   defaultCardMeasure,
   firstOverflowDiagnostic,
+  headerSlotGeometry,
   layoutCard,
+  layoutZone,
   type DiagramCardProps,
   type DiagramZoneProps,
   type ZoneChildSpec,
@@ -254,5 +256,183 @@ describe("item 8 — cardLineMeasurer through diagram-render, empty input clampe
     const wide = measurer({ text: "W".repeat(50), role: "title", availableWidth: 434, allocatedLines: 2, folded: false });
     expect(wide.overflow).toBe(true);
     expect(wide.width).toBeGreaterThan(434);
+  });
+});
+
+/**
+ * Review pass 2, item 10: the optional-slot header geometry (omitted icon
+ * and/or kicker) is derived ONCE in the model (`headerSlotGeometry`) and
+ * applied identically by `layoutCard`, `layoutZone`, `renderCardSvg` and
+ * `renderZoneSvg` — all four icon/kicker combinations.
+ */
+describe("item 10 — optional-slot header geometry derived once, applied by every renderer", () => {
+  const KICKER_H = 28.59375; // lineBoxHeight(22)
+  const TITLE_H = 41.59375; // lineBoxHeight(32)
+  const COMBOS = [
+    { name: "icon+kicker", icon: true, kicker: true, content: KICKER_H + TITLE_H, block: Math.max(70, KICKER_H + TITLE_H) },
+    { name: "icon only", icon: true, kicker: false, content: TITLE_H, block: 70 },
+    { name: "kicker only", icon: false, kicker: true, content: KICKER_H + TITLE_H, block: KICKER_H + TITLE_H },
+    { name: "neither", icon: false, kicker: false, content: TITLE_H, block: TITLE_H },
+  ] as const;
+
+  function cardProps(combo: (typeof COMBOS)[number]): DiagramCardProps {
+    return {
+      entityId: `entity:hdr-${combo.name}`,
+      title: "People",
+      body: ["ligne une"],
+      footer: "service: demo",
+      ...(combo.kicker ? { kicker: "K" } : {}),
+      ...(combo.icon ? { icon: "people", iconGlyph: getDiagramGlyph("people") } : {}),
+    };
+  }
+
+  function zoneProps(combo: (typeof COMBOS)[number]): DiagramZoneProps {
+    return {
+      entityId: `grp:hdr-${combo.name}`,
+      title: "People",
+      collapsed: false,
+      toggleLabel: "Toggle",
+      x: 0,
+      y: 0,
+      width: 492,
+      ...(combo.kicker ? { kicker: "K" } : {}),
+      ...(combo.icon ? { icon: "people", iconGlyph: getDiagramGlyph("people") } : {}),
+    };
+  }
+
+  it("headerSlotGeometry is the single derivation for all four combinations", () => {
+    for (const combo of COMBOS) {
+      const geo = headerSlotGeometry({
+        hasIcon: combo.icon,
+        kickerLines: combo.kicker ? 1 : 0,
+        titleLines: 1,
+      });
+      expect(geo.contentHeight, combo.name).toBe(combo.content);
+      expect(geo.blockHeight, combo.name).toBe(combo.block);
+      expect(geo.textTopOffset, combo.name).toBe((combo.block - combo.content) / 2);
+      expect(geo.iconTopOffset, combo.name).toBe(combo.icon ? (combo.block - 70) / 2 : 0);
+    }
+  });
+
+  it("layoutCard applies it: header block, centred text band, body start", () => {
+    for (const combo of COMBOS) {
+      const layout = layoutCard(cardProps(combo), defaultCardMeasure);
+      expect(layout.headerBlockHeight, combo.name).toBe(combo.block);
+      const textTop = 10 + (combo.block - combo.content) / 2;
+      if (combo.kicker) expect(layout.kicker[0]?.baseline, combo.name).toBe(textTop + 22);
+      expect(layout.title[0]?.baseline, combo.name).toBe(textTop + (combo.kicker ? KICKER_H : 0) + 32);
+      // No icon: no 70 px floor — the body starts right after the text block.
+      expect(layout.bodyArea.top, combo.name).toBe(10 + combo.block + 6);
+      expect(layout.iconBox, combo.name).toEqual(
+        combo.icon ? { x: 16, y: 10, size: 70 } : undefined,
+      );
+    }
+  });
+
+  it("renderCardSvg paints the same geometry (icon presence, body line y)", () => {
+    for (const combo of COMBOS) {
+      const rendered = renderCardSvg(cardProps(combo), defaultCardMeasure);
+      expect(rendered.kind, combo.name).toBe("rendered");
+      if (rendered.kind !== "rendered") continue;
+      expect(rendered.svg.includes('data-diagram-icon="people"'), combo.name).toBe(combo.icon);
+      const bodyY = 10 + combo.block + 6;
+      expect(rendered.svg.includes(`y="${bodyY + 22}"`), combo.name).toBe(true);
+    }
+  });
+
+  it("layoutZone / renderZoneSvg apply the same derivation in the expanded frame", () => {
+    for (const combo of COMBOS) {
+      const layout = layoutZone(zoneProps(combo), defaultCardMeasure, []);
+      const header = layout.header;
+      if (header === undefined) throw new Error("fixture-error");
+      expect(header.headerBlockHeight, combo.name).toBe(combo.block);
+      const textTop = 16 + (combo.block - combo.content) / 2;
+      expect(header.title[0]?.baseline, combo.name).toBe(textTop + (combo.kicker ? KICKER_H : 0) + 32);
+      expect(header.iconBox, combo.name).toEqual(
+        combo.icon ? { x: 16, y: 16 + (combo.block - 70) / 2, size: 70 } : undefined,
+      );
+      // No subtitle: the header rule sits 4 px under the header block.
+      expect(header.ruleY, combo.name).toBe(16 + combo.block + 4);
+      const rendered = renderZoneSvg(zoneProps(combo), { measure: defaultCardMeasure });
+      expect(rendered.kind, combo.name).toBe("rendered");
+      if (rendered.kind !== "rendered") continue;
+      expect(rendered.svg.includes('data-diagram-icon="people"'), combo.name).toBe(combo.icon);
+    }
+  });
+});
+
+/**
+ * Review pass 2, item 9: expanded-zone vertical overflow. Automatic height
+ * includes the header + content + footer requirements; an explicitly
+ * undersized frame is refused with a zone-overflow diagnostic. The
+ * reviewer's exact case: width 492, icon people, kicker K, title
+ * "Users and operators", subtitle "Employees HR · Developers admin · HR
+ * content owners", footer F, no height.
+ */
+describe("item 9 — expanded-zone vertical overflow: auto height covers header+content+footer, undersized frames refuse", () => {
+  function reviewerZone(): DiagramZoneProps {
+    return {
+      entityId: "grp.review9",
+      kicker: "K",
+      title: "Users and operators",
+      subtitle: "Employees HR · Developers admin · HR content owners",
+      footer: "F",
+      icon: "people",
+      iconGlyph: getDiagramGlyph("people"),
+      collapsed: false,
+      toggleLabel: "Toggle",
+      x: 0,
+      y: 0,
+      width: 492,
+    };
+  }
+
+  it("no height: the frame grows past the 200 px floor to fit header + rule + footer", () => {
+    const layout = layoutZone(reviewerZone(), defaultCardMeasure, []);
+    const header = layout.header;
+    if (header === undefined) throw new Error("fixture-error");
+    // The reviewer's measured content start: 214.98125 (header 111.78125 +
+    // subtitle 2 lines + rule + 16), beyond the old auto-sized 200 px frame.
+    expect(header.contentTop).toBe(214.98125);
+    expect(layout.diagnostics).toEqual([]);
+    // Auto height = contentTop + bottom inset + footer reserve (49.4375).
+    expect(layout.box.height).toBe(214.98125 + 16 + 49.4375);
+    // The footer rule clears the content top: nothing overlaps.
+    expect(header.footerRuleY).toBeGreaterThanOrEqual(header.contentTop);
+    expect(header.footer[0]?.baseline).toBe(260.48125);
+    const rendered = renderZoneSvg(reviewerZone(), { measure: defaultCardMeasure });
+    expect(rendered.kind).toBe("rendered");
+    if (rendered.kind === "rendered") {
+      expect(rendered.diagnostics).toEqual([]);
+      expect(rendered.svg).toContain('height="280.41875"');
+    }
+  });
+
+  it("explicit undersized height 200: zone-overflow on the frame slot, refused with no svg", () => {
+    const props: DiagramZoneProps = { ...reviewerZone(), height: 200 };
+    const layout = layoutZone(props, defaultCardMeasure, []);
+    expect(layout.diagnostics).toContainEqual(
+      expect.objectContaining({
+        code: "zone-overflow",
+        slot: "frame",
+        entityId: "grp.review9",
+        neededPx: 280.41875,
+        allocatedPx: 200,
+      }),
+    );
+    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
+    expect(rendered.kind).toBe("refused");
+    if (rendered.kind === "refused") {
+      expect("svg" in rendered).toBe(false);
+      expect(firstOverflowDiagnostic(rendered.diagnostics)?.slot).toBe("frame");
+    }
+  });
+
+  it("a fitting explicit height is accepted (no frame diagnostic)", () => {
+    const props: DiagramZoneProps = { ...reviewerZone(), height: 400 };
+    const layout = layoutZone(props, defaultCardMeasure, []);
+    expect(layout.diagnostics).toEqual([]);
+    expect(layout.box.height).toBe(400);
+    expect(renderZoneSvg(props, { measure: defaultCardMeasure }).kind).toBe("rendered");
   });
 });

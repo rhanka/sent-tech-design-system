@@ -626,6 +626,49 @@ export function firstOverflowDiagnostic<D extends { readonly code: string }>(
   return diagnostics.find((diagnostic) => diagnostic.code === "card-overflow" || diagnostic.code === "zone-overflow");
 }
 
+/**
+ * Optional-slot header geometry, derived ONCE here and applied identically
+ * by `layoutCard`, `layoutZone`, `renderCardSvg`/`renderZoneSvg` and the
+ * Svelte header row (review pass 2, item 10). The 70 px icon floor applies
+ * only when the icon slot is present: without an icon the header row is
+ * exactly the kicker + title line boxes, so the body/subtitle start no
+ * longer jumps by ~28 px between the model and the Svelte header. With an
+ * icon, both the icon and the text band are centred in the block — the same
+ * `align-items: center` the Svelte header row paints.
+ */
+export interface HeaderSlotGeometry {
+  readonly kickerHeight: number;
+  readonly titleHeight: number;
+  /** Kicker + title line-box height (0 when both slots are omitted). */
+  readonly contentHeight: number;
+  /** Header row height: `max(icon 70, content)` with icon, `content` without. */
+  readonly blockHeight: number;
+  /** Text band top, relative to the block top: centred in the block. */
+  readonly textTopOffset: number;
+  /** Icon top, relative to the block top: centred in the block (0 without icon). */
+  readonly iconTopOffset: number;
+}
+
+export function headerSlotGeometry(opts: {
+  readonly hasIcon: boolean;
+  readonly kickerLines: number;
+  readonly titleLines: number;
+}): HeaderSlotGeometry {
+  const g = CARD_GEOMETRY;
+  const kickerHeight = lineBoxHeight(g.kicker.size);
+  const titleHeight = lineBoxHeight(g.title.size);
+  const contentHeight = (opts.kickerLines > 0 ? kickerHeight : 0) + opts.titleLines * titleHeight;
+  const blockHeight = opts.hasIcon ? Math.max(g.iconSize, contentHeight) : contentHeight;
+  return {
+    kickerHeight,
+    titleHeight,
+    contentHeight,
+    blockHeight,
+    textTopOffset: (blockHeight - contentHeight) / 2,
+    iconTopOffset: opts.hasIcon ? (blockHeight - g.iconSize) / 2 : 0,
+  };
+}
+
 export interface CardLayout {
   readonly box: { readonly width: number; readonly height: number };
   readonly contentTop: number;
@@ -750,10 +793,16 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
     pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
   }
-  const headerContentHeight =
-    (props.kicker === undefined ? 0 : kickerHeight) + titleTexts.length * titleHeight;
-  const headerBlockHeight = Math.max(g.iconSize, headerContentHeight);
-  const textTop = contentTop + (headerBlockHeight - headerContentHeight) / 2;
+  // Optional slots (review pass 2, item 10): one shared derivation — the
+  // 70 px icon floor applies only when the icon is present, and the text
+  // band is centred in the block exactly like the Svelte header row.
+  const headerGeo = headerSlotGeometry({
+    hasIcon,
+    kickerLines: kickerTexts.length,
+    titleLines: titleTexts.length,
+  });
+  const headerBlockHeight = headerGeo.blockHeight;
+  const textTop = contentTop + headerGeo.textTopOffset;
 
   const bodyHeight = lineBoxHeight(g.body.size);
   const bodyY = contentTop + headerBlockHeight + g.gap;
@@ -1217,16 +1266,21 @@ export function layoutZone(
   if (titleTexts.length > g.allocatedLines.title || titleMeasured.tooWide) {
     pushOverflow("title", titleMeasured, titleHeight, g.allocatedLines.title, headerTextWidth, props.title);
   }
-  const headerContentHeight =
-    (props.kicker === undefined ? 0 : kickerHeight) + titleTexts.length * titleHeight;
-  const headerBlockHeight = Math.max(g.iconSize, headerContentHeight);
+  // Optional slots (review pass 2, item 10): the same shared derivation as
+  // the card — the 70 px icon floor applies only with the icon, and the
+  // text band is centred in the block exactly like the Svelte header row
+  // (align-items: center), so both renderers place it identically.
+  const headerGeo = headerSlotGeometry({
+    hasIcon,
+    kickerLines: kickerTexts.length,
+    titleLines: titleTexts.length,
+  });
+  const headerBlockHeight = headerGeo.blockHeight;
   const headerTop = y + g.headerInset;
-  // Kit header model: the text band starts at headerTop (headerY + 16);
-  // only the icon is centred inside the header block.
-  const textTop = headerTop;
+  const textTop = headerTop + headerGeo.textTopOffset;
 
   const iconBox = hasIcon
-    ? { x: x + g.headerInset, y: headerTop + (headerBlockHeight - g.iconSize) / 2, size: g.iconSize }
+    ? { x: x + g.headerInset, y: headerTop + headerGeo.iconTopOffset, size: g.iconSize }
     : undefined;
 
   const kicker: LaidOutLine[] = kickerTexts.map((text, index) => ({
@@ -1303,9 +1357,12 @@ export function layoutZone(
   }
   const footerBlockHeight = footerTexts.length * footerHeight;
 
-  // Frame height: the supplied box, or content + bottom inset + the footer
-  // reserve (footer block + rule + both rule gaps + bottom inset) when the
-  // host lets the zone size itself around its children.
+  // Frame height (review pass 2, item 9): the supplied box, or — when the
+  // host lets the zone size itself — the full vertical requirement:
+  // header + rule (contentTop) or children, whichever is lower, plus the
+  // bottom content inset and the footer reserve (footer block + rule + both
+  // rule gaps + bottom inset). The old formula ignored the header, so a
+  // tall header silently overflowed an auto-sized 200 px frame.
   const childrenBottom = children.reduce(
     (bottom, child) => Math.max(bottom, child.y + (child.kind === "card" ? CARD_GEOMETRY.height : (child.zone?.height ?? ZONE_GEOMETRY.collapsedHeight))),
     y,
@@ -1314,8 +1371,21 @@ export function layoutZone(
     footerTexts.length === 0
       ? 0
       : footerBlockHeight + g.ruleHeight + 2 * g.ruleMargin + g.footerBottomInset;
-  const height =
-    props.height ?? Math.max(g.collapsedHeight, childrenBottom + g.contentInsetBottom - y + footerReserve);
+  const requiredHeight = Math.max(childrenBottom, contentTop) + g.contentInsetBottom - y + footerReserve;
+  const height = props.height ?? Math.max(g.collapsedHeight, requiredHeight);
+  // An explicitly undersized frame is refused (overflow = refusal): the
+  // header + content + footer requirement does not fit, diagnosed as a
+  // zone-overflow on the frame slot, and both renderers refuse on it.
+  if (props.height !== undefined && requiredHeight > props.height) {
+    diagnostics.push({
+      code: "zone-overflow",
+      slot: "frame",
+      entityId: props.entityId,
+      neededPx: requiredHeight,
+      allocatedPx: props.height,
+      text: props.title,
+    });
+  }
 
   // Toggle slot: the frozen SVG places every expanded-zone toggle at
   // y + 10 (the header band itself starts at y + 16).
