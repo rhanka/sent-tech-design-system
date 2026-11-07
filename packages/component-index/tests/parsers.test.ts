@@ -16,11 +16,11 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..")
 const cataloguePath = join(repoRoot, "apps", "docs", "src", "lib", "components-catalog.ts");
 
 describe("catalogue parsing via the TypeScript compiler API", () => {
-  it("parses all 212 documented rows from the real catalogue file", () => {
-    // Reviewed population: 210 rows, plus diagram-card and diagram-zone from lot DC-1.
+  it("parses all 213 documented rows from the real catalogue file", () => {
+    // Reviewed population: 212 rows, plus labelled-icon-button from lot CA-L1.
     const rows = parseCatalogueFile(cataloguePath);
-    expect(rows).toHaveLength(212);
-    expect(new Set(rows.map((r) => r.slug)).size).toBe(212);
+    expect(rows).toHaveLength(213);
+    expect(new Set(rows.map((r) => r.slug)).size).toBe(213);
     expect(rows.every((r) => r.status === "documented")).toBe(true);
   });
 
