@@ -50,6 +50,10 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     footerFontWeight: "700",
     footerLineHeight: "1.3",
     footerBottomInset: "9.25px",
+    toggleAllocation: "66px",
+    toggleBoxSize: "32px",
+    foldedHeaderTextWidth: "290px",
+    proposedDashArray: "4 5",
     fontFamily: "var(--st-font-sans)",
   },
   diagramZone: {
@@ -78,6 +82,12 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     collapsedHeight: "200px",
     collapsedInset: "16px",
     collapsedSubtitleMarginInline: "16px",
+    toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
+    toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
+    headerTextInset: "178px",
+    toggleTopInset: "10px",
+    footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
+    proposedDashArray: "4 5",
   },
   diagramIcon: {
     viewBox: "0 0 64 64",
