@@ -2,11 +2,14 @@
 // plain display models — no component imports. All sentinel strings are
 // non-real so witnesses prove nothing is hard-coded in components.
 import { foundation } from "@sentropic/design-system-tokens";
+import { sentTechTheme, type TenantTheme } from "@sentropic/design-system-themes";
 import type { BlockDisplay, RectDisplay } from "./types.js";
 
 const SENTINEL = "SENTINEL";
 
-/** The label set every mode fixture swaps as a whole (witness F-X1). */
+/** The label set every mode fixture swaps as a whole (witness F-X1). The
+ *  composer/action labels feed the F-K1 harness composer stub (test-owned,
+ *  never shipped). */
 export type FixtureLabels = {
   toggleLabel: string;
   shortcutLabel: string;
@@ -17,6 +20,10 @@ export type FixtureLabels = {
   hintText: string;
   chipLabel: string;
   headingLabel: string;
+  composerLabel: string;
+  publishLabel: string;
+  changeBlockLabel: string;
+  cancelLabel: string;
 };
 
 export function modeLabels(overrides: Partial<FixtureLabels> = {}): FixtureLabels {
@@ -32,7 +39,11 @@ export function modeLabels(overrides: Partial<FixtureLabels> = {}): FixtureLabel
     announcementText: overrides.announcementText ?? `${SENTINEL}-ANNOUNCEMENT-TEXT`,
     hintText: overrides.hintText ?? `${SENTINEL}-HINT-TEXT`,
     chipLabel: overrides.chipLabel ?? `${SENTINEL}-CHIP-LABEL`,
-    headingLabel: overrides.headingLabel ?? `${SENTINEL}-HEADING-LABEL`
+    headingLabel: overrides.headingLabel ?? `${SENTINEL}-HEADING-LABEL`,
+    composerLabel: overrides.composerLabel ?? `${SENTINEL}-COMPOSER-LABEL`,
+    publishLabel: overrides.publishLabel ?? `${SENTINEL}-PUBLISH-LABEL`,
+    changeBlockLabel: overrides.changeBlockLabel ?? `${SENTINEL}-CHANGE-BLOCK-LABEL`,
+    cancelLabel: overrides.cancelLabel ?? `${SENTINEL}-CANCEL-LABEL`
   };
 }
 
@@ -68,3 +79,12 @@ export const pageBackgrounds = {
   pageLight: { background: foundation.color.slate[10] },
   pageDark: { background: foundation.color.slate[90] }
 } as const;
+
+/** The light and dark viewer-theme fixtures (§5.4: every row renders in
+ *  light and dark viewer themes). The dark cell reuses the base theme's own
+ *  dark token table under a distinct theme id, so ThemeProvider scoping is
+ *  exercised per cell. */
+export const viewerThemes: { light: TenantTheme; dark: TenantTheme } = {
+  light: sentTechTheme,
+  dark: { ...sentTechTheme, id: "sent-tech-dark", mode: "dark", tokens: sentTechTheme.tokensDark ?? sentTechTheme.tokens }
+};

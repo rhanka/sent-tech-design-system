@@ -179,9 +179,13 @@ describe("W-0.2 display-model types and fixture factories", () => {
     expect(Object.keys(labels).sort()).toEqual([
       "announcementText",
       "ariaKeyshortcuts",
+      "cancelLabel",
+      "changeBlockLabel",
       "chipLabel",
+      "composerLabel",
       "headingLabel",
       "hintText",
+      "publishLabel",
       "shortcutLabel",
       "statusText",
       "toggleLabel",
