@@ -37,7 +37,7 @@
   /* commentModeToggle owns no token of its own (§2.5): it inherits IconButton
      + Tooltip tokens through the LabelledIconButton composition. */
   .st-commentModeToggle {
-    border: 1px solid var(--st-semantic-border-subtle);
+    border: var(--st-border-width-thin, 1px) solid var(--st-semantic-border-subtle);
     border-radius: var(--st-component-iconButton-radius, 0.375rem);
     display: inline-flex;
     transition:
@@ -50,11 +50,16 @@
   .st-commentModeToggle--pressed {
     background: var(--st-semantic-surface-subtle);
     border-color: var(--st-semantic-border-interactive);
-    border-width: 2px;
+    border-width: var(--st-border-width-thick, 2px);
   }
 
+  /* §5.1: reduced motion inherits the primitive transitions (IconButton,
+     Tooltip) and zeroes them under the media query — transition-duration is
+     not inherited in CSS, so the inner primitives are targeted explicitly. */
   @media (prefers-reduced-motion: reduce) {
-    .st-commentModeToggle {
+    .st-commentModeToggle,
+    .st-commentModeToggle :global(.st-iconButton),
+    .st-commentModeToggle :global(.st-tooltip__content) {
       animation-duration: 0s;
       transition-duration: 0s;
     }
