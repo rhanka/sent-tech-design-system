@@ -18,7 +18,7 @@ function baseProps(overrides: Partial<DiagramZoneProps> = {}): DiagramZoneProps 
   return {
     entityId: "grp.people",
     kicker: "PPL",
-    title: "Users and operators",
+    title: "People",
     subtitle: "Employees HR · Developers admin · HR content owners",
     footer: "group: people",
     icon: "people",
@@ -33,7 +33,9 @@ function baseProps(overrides: Partial<DiagramZoneProps> = {}): DiagramZoneProps 
 }
 
 function parseZoneDom(container: HTMLElement) {
-  const zone = container.querySelector(".st-diagramZone") as HTMLElement | null;
+  // The positioning wrapper is present in BOTH states (item 6).
+  const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement | null;
+  const zone = container.querySelector(".st-diagramZone--expanded") as HTMLElement | null;
   const card = container.querySelector(".st-diagramCard") as HTMLElement | null;
   const texts = (root: Element | null, selector: string) =>
     root === null
@@ -41,6 +43,7 @@ function parseZoneDom(container: HTMLElement) {
       : [...root.querySelectorAll(selector)].map((element) => element.textContent ?? "");
   const toggle = (card ?? zone)?.querySelector(".st-diagramCard-toggle button");
   return {
+    pos,
     zone,
     card,
     headerTexts: texts(zone ?? card, ".st-diagramCard-kicker,.st-diagramCard-title"),
@@ -54,9 +57,12 @@ function parseZoneDom(container: HTMLElement) {
     content: zone?.querySelector(".st-diagramZone-content")?.textContent ?? null,
     toggleExpanded: toggle?.getAttribute("aria-expanded") ?? null,
     toggleLabel: toggle?.getAttribute("aria-label") ?? null,
-    dataCollapsed: zone?.getAttribute("data-collapsed") ?? null,
-    dataOverflow: (zone ?? card)?.getAttribute("data-zone-overflow") ??
+    dataCollapsed: pos?.getAttribute("data-collapsed") ?? null,
+    dataOverflow: pos?.getAttribute("data-zone-overflow") ??
       card?.getAttribute("data-card-overflow") ??
+      null,
+    dataRefused: pos?.getAttribute("data-zone-refused") ??
+      card?.getAttribute("data-card-refused") ??
       null,
   };
 }
@@ -71,8 +77,8 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
     expect(parsed.zone).toBeNull();
     // The folded header text width is the frozen 290 px (toggle reserves
     // 66), so the title wraps exactly like the reference at that width.
-    expect(parsed.headerTexts).toEqual(["PPL", "Users and", "operators"]);
-    expect(parsed.headerTexts.join(" ")).toBe("PPL Users and operators");
+    expect(parsed.headerTexts).toEqual(["PPL", "People"]);
+    expect(parsed.headerTexts.join(" ")).toBe("PPL People");
     // Subtitle wrapped at the frozen 396 px measure, one body line per
     // wrapped line, no detail re-roling (DH-08 does not exist). The wrap
     // is lossless: the lines join back to the full subtitle string.
@@ -114,7 +120,7 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
     expect(container.querySelector(".st-diagramCard-toggle button")).toBeNull();
   });
 
-  it("subtitle overflow raises zone-overflow / collapsed-subtitle, renders fully", () => {
+  it("subtitle overflow refuses the zone: data-zone-refused, original text in the diagnostic", () => {
     const seen: ZoneDiagnostic[] = [];
     const longSubtitle = `${"mot ".repeat(40).trim()}`;
     const { container } = render(DiagramZone, {
@@ -125,16 +131,55 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
       },
     });
     const parsed = parseZoneDom(container);
-    expect(seen).toContainEqual(
-      expect.objectContaining({ code: "zone-overflow", slot: "collapsed-subtitle" }),
-    );
+    // Overflow = refusal: the wrapper carries the host-visible refusal
+    // state; no normal card or frame is rendered.
+    expect(parsed.dataRefused).toBe("collapsed-subtitle");
     expect(parsed.dataOverflow).toBe("collapsed-subtitle");
-    // No shortening: every word renders.
-    for (const word of ["mot"]) {
-      expect(parsed.bodyTexts.join(" ")).toContain(word);
-    }
+    expect(parsed.card).toBeNull();
+    expect(parsed.zone).toBeNull();
+    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
+    expect(seen).toContainEqual(
+      expect.objectContaining({
+        code: "zone-overflow",
+        slot: "collapsed-subtitle",
+        text: longSubtitle,
+      }),
+    );
+    expect(container.textContent ?? "").not.toContain("…");
     // Box unchanged.
     expect(layoutZone(baseProps({ subtitle: longSubtitle }), defaultCardMeasure).box.height).toBe(200);
+  });
+
+  it("item 6: one positioning wrapper carries x/y in collapsed AND expanded states (cycle at 700, 426.5625)", async () => {
+    const props = { ...baseProps(), measure: defaultCardMeasure };
+    const { container, rerender } = render(DiagramZone, { props });
+    const collapsedPos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(collapsedPos).not.toBeNull();
+    expect(collapsedPos.getAttribute("style") ?? "").toMatch(/left:\s*700px/);
+    expect(collapsedPos.getAttribute("style") ?? "").toMatch(/top:\s*426\.5625px/);
+    expect(collapsedPos.getAttribute("data-collapsed")).toBe("true");
+    expect(collapsedPos.getAttribute("data-entity")).toBe("grp.people");
+    expect(container.querySelector(".st-diagramCard")).not.toBeNull();
+
+    await rerender({ ...props, collapsed: false, width: 492, height: 400 });
+    const expandedPos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(expandedPos).not.toBeNull();
+    expect(expandedPos.getAttribute("style") ?? "").toMatch(/left:\s*700px/);
+    expect(expandedPos.getAttribute("style") ?? "").toMatch(/top:\s*426\.5625px/);
+    expect(expandedPos.getAttribute("data-collapsed")).toBe("false");
+    const frame = container.querySelector(".st-diagramZone--expanded") as HTMLElement;
+    expect(frame).not.toBeNull();
+    // The frame itself no longer positions: only the shared wrapper does.
+    expect(frame.getAttribute("style") ?? "").not.toContain("left:");
+    expect(frame.getAttribute("style") ?? "").not.toContain("position");
+
+    await rerender({ ...props, collapsed: true });
+    const backPos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(backPos.getAttribute("style") ?? "").toMatch(/left:\s*700px/);
+    expect(backPos.getAttribute("style") ?? "").toMatch(/top:\s*426\.5625px/);
+    expect(backPos.getAttribute("data-collapsed")).toBe("true");
+    expect(container.querySelector(".st-diagramCard")).not.toBeNull();
+    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
   });
 
   it("unknown icon raises zone-icon-unknown and collapses the slot", () => {
@@ -350,7 +395,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     }
   });
 
-  it("J4 long word in the subtitle: neededPx > allocatedPx, full text rendered (finding 5)", () => {
+  it("J4 long word in the subtitle: neededPx > allocatedPx and the zone is refused with the original text", () => {
     const token = "@sentropic/architecture-governance-multiagent-coordination";
     const seen: ZoneDiagnostic[] = [];
     const { container } = render(DiagramZone, {
@@ -365,7 +410,14 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     for (const diagnostic of overflow) {
       expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
     }
-    expect(container.textContent ?? "").toContain(token);
+    // Overflow = refusal: no normal frame; the original subtitle survives
+    // in the diagnostic data, never truncated in the DOM.
+    expect(overflow.some((d) => d.text === `Charge ${token}`)).toBe(true);
+    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
+    expect(pos.getAttribute("data-zone-refused")).toBe("subtitle");
+    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
+    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
+    expect(container.textContent ?? "").not.toContain(token);
     expect(container.textContent ?? "").not.toContain("…");
   });
 

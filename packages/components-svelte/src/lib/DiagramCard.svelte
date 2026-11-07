@@ -1,6 +1,6 @@
 <script lang="ts">
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import { defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
+  import { defaultCardMeasure, firstOverflowDiagnostic, layoutCard } from "./diagramCardModel.js";
   import type {
     CardDiagnostic,
     CardLineMeasure,
@@ -11,9 +11,18 @@
    * `DiagramCard` — the atomic diagram card (DC-1).
    *
    * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5. Fixed 460 × 200 box, square
-   * corners, footer pinned at 9.25, one 1 px rule, no shortening: over-long
-   * slots render completely and raise `card-overflow`; an icon name with no
-   * glyph data raises `card-icon-unknown` and the slot collapses (DIF-14).
+   * corners, footer pinned at 9.25, one 1 px rule, no shortening. Overflow
+   * = refusal (owner criterion): any `card-overflow` — a too-wide line, a
+   * line-count overflow, or a header+body height that does not fit above the
+   * pinned rule — renders NO normal card; the root carries the host-visible
+   * refusal state `data-card-refused="<slot>"` and the diagnostics keep the
+   * original slot text. An icon name with no glyph data raises
+   * `card-icon-unknown` and the slot collapses (DIF-14).
+   *
+   * The rule stays 1 screen px at every zoom: the host publishes the current
+   * camera zoom as `--st-diagram-zoom` on the canvas viewport and the rule
+   * height is divided by it (inverse-zoom compensation, frozen requirement
+   * §rule), the HTML twin of the SVG `vector-effect="non-scaling-stroke"`.
    *
    * The pictogram path data arrives via the `iconGlyph` prop (resolved by
    * the host from the `diagram-icons` subpath, e.g. `getDiagramGlyph`, or by
@@ -80,6 +89,9 @@
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"),
   );
+  // Overflow = refusal: the same predicate as the pure renderer
+  // (`firstOverflowDiagnostic`), so both renderers refuse together.
+  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
 
   $effect(() => {
     if (onDiagnostic === undefined) return;
@@ -92,6 +104,22 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
+{#if refused !== undefined}
+  <!-- Overflow = refusal: no normal card is rendered for refused content.
+       The host sees the refusal state on the root (data-card-refused) and
+       gets the original slot text through onDiagnostic. -->
+  <div
+    class="st-diagramCard st-diagramCard--refused"
+    data-entity={entityId}
+    data-tone={tone}
+    data-proposed={proposed === true ? "true" : undefined}
+    data-card-refused={refused.slot}
+    data-card-overflow={refused.slot}
+    role="group"
+    aria-label={title}
+    onclick={() => onSelect?.({ entityId })}
+  ></div>
+{:else}
 <div
   class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}"
   data-entity={entityId}
@@ -114,23 +142,31 @@
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div
     class="st-diagramCard-body"
-    style={`margin-left:${layout.bodyX - 16}px`}
+    style={`margin-left:${layout.bodyX - 16}px;width:${layout.bodyWidth}px`}
   >
     {#each layout.body as line, bodyIndex (bodyIndex)}
       <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"}>{line.text}</span>
     {/each}
   </div>
-  {#if layout.ruleY !== undefined}
-    <div class="st-diagramCard-rule" aria-hidden="true"></div>
-  {/if}
-  {#if layout.footerLines.length > 0}
-    <div class="st-diagramCard-footer">
-      {#each layout.footerLines as line, footerIndex (footerIndex)}
-        <span class="st-diagramCard-footerLine">{line.text}</span>
-      {/each}
-    </div>
-  {/if}
+  <!-- The rule and the footer are positioned together from the shared
+       geometry: the foot wrapper is pinned to the bottom (margin-top:auto),
+       the rule keeps its 4 px margins inside it, so the rule→footer gap is
+       the frozen 4 px at every body line count, exactly as the SVG pins
+       ruleY from the footer. -->
+  <div class="st-diagramCard-foot">
+    {#if layout.ruleY !== undefined}
+      <div class="st-diagramCard-rule" aria-hidden="true"></div>
+    {/if}
+    {#if layout.footerLines.length > 0}
+      <div class="st-diagramCard-footer">
+        {#each layout.footerLines as line, footerIndex (footerIndex)}
+          <span class="st-diagramCard-footerLine">{line.text}</span>
+        {/each}
+      </div>
+    {/if}
+  </div>
 </div>
+{/if}
 
 <style>
   .st-diagramCard {
@@ -165,9 +201,11 @@
     flex: 0 0 var(--st-component-diagramCard-gap, 6px);
   }
   .st-diagramCard-body {
-    /* margin-left comes from the shared layout (bodyX − headerInset):
-       −2 px for leaf bodies (bodyInsetFromBar 14 vs headerInset 16),
-       +16 px for the centred collapsed-subtitle measure (396 px). */
+    /* margin-left and width both come from the shared layout: the body box
+       is exactly layout.bodyWidth wide at layout.bodyX — −2 px / 436 px for
+       leaf bodies (bodyInsetFromBar 14 vs headerInset 16), 16 px / 396 px
+       for the centred collapsed-subtitle measure (§6.2.1: the subtitle is
+       centred at 32 + 396/2 = 230, not over the wider content box). */
     min-width: 0;
     flex: 0 0 auto;
     font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
@@ -195,18 +233,31 @@
   .st-diagramCard-detail {
     color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
   }
+  /* Rule and footer share one pinned wrapper (`.st-diagramCard-foot`):
+     the wrapper takes the automatic top margin, so spare body space grows
+     above the rule and the rule→footer gap stays the frozen 4 px. */
+  .st-diagramCard-foot {
+    margin-top: auto;
+    flex: 0 0 auto;
+  }
   .st-diagramCard-rule {
     display: block;
-    height: var(--st-component-diagramCard-ruleHeight, 1px);
-    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    flex: 0 0 auto;
+    /* 1 screen px at every zoom: the host publishes the camera zoom as
+       --st-diagram-zoom on the canvas viewport; dividing the rule height by
+       it counter-scales the host transform (inverse-zoom compensation,
+       frozen requirement §rule) — the HTML twin of the SVG
+       vector-effect="non-scaling-stroke". */
+    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
     margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;
     background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));
   }
   .st-diagramCard-footer {
-    margin-top: auto;
     /* Pinned footer: text-box bottom at (height − border − inset); the flex
        content bottom sits at (height − padding − border), so the margin is
-       (inset − padding) = 1.25 px at the frozen values. */
+       (inset − padding) = 1.25 px at the frozen values. No margin-top:auto
+       here: the rule and the footer are positioned together by the shared
+       foot wrapper. */
     margin-bottom: calc(
       var(--st-component-diagramCard-footerBottomInset, 9.25px) -
         var(--st-component-diagramCard-padding, 8px)

@@ -7,10 +7,11 @@ import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import DiagramCard from "../DiagramCard.svelte";
 import { getDiagramGlyph, DIAGRAM_GLYPHS, DIAGRAM_GLYPH_NAMES } from "../diagram-icons/registry.js";
-import { renderCardSvg, renderCardSvgFromPresentation } from "../diagram-render/renderCardSvg.js";
+import { renderCardSvg, renderCardSvgFromPresentation, type CardSvgResult } from "../diagram-render/renderCardSvg.js";
 import {
   CARD_GEOMETRY,
   defaultCardMeasure,
+  firstOverflowDiagnostic,
   layoutCard,
   projectCardProps,
   type CardDiagnostic,
@@ -416,12 +417,30 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
         it(`parity ${id}`, () => {
           const props = corpusProps(node, lang, mode.toggle);
           const rendered = renderCardSvg(props, defaultCardMeasure);
-          const svg = parseSvg(rendered.svg);
           const seen: CardDiagnostic[] = [];
           const { container } = render(DiagramCard, {
             props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
           });
           const card = parseCardDom(container);
+
+          // Same diagnostics in both renderers, whatever the outcome.
+          expect(seen, id).toEqual(rendered.diagnostics);
+          if (rendered.kind === "refused") {
+            // Overflow = refusal (owner criterion): no normal SVG and no
+            // normal card; the first overflow diagnostic carries the
+            // original slot text so the host knows what to shorten.
+            const refusal = firstOverflowDiagnostic(rendered.diagnostics);
+            expect(refusal, id).toBeDefined();
+            expect(refusal?.text, id).toBeDefined();
+            expect(card.dataRefused, id).toBe(refusal?.slot);
+            expect(card.texts, id).toEqual([]);
+            expect(card.hasRule, id).toBe(false);
+            expect(card.footer, id).toBeNull();
+            expect(card.iconName, id).toBeNull();
+            expect(container.textContent ?? "", id).not.toContain("…");
+            return;
+          }
+          const svg = parseSvg(rendered.svg);
 
           // Same box.
           expect(svg.width).toBe("460");
@@ -492,18 +511,13 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
             expect(card.toggleExpanded, id).toBe(mode.toggle.collapsed ? "false" : "true");
             expect(svg.toggle, id).toBe(mode.toggle.collapsed ? "true" : "false");
           }
-          // Same diagnostics in both renderers. Plain-mode corpus content
-          // fits (no diagnostics); a reserved toggle slot can push a long
-          // title past its allocation (mcp-tools), which both renderers
-          // diagnose identically while rendering completely.
-          expect(seen, id).toEqual(rendered.diagnostics);
-          if (mode.name === "plain") expect(rendered.diagnostics, id).toEqual([]);
+          // Same diagnostics in both renderers (asserted above, before the
+          // refusal branch). A rendered result carries no overflow: the
+          // reserved toggle slot can push a long title past its allocation
+          // (mcp-tools), which both renderers refuse identically.
           expect(card.dataOverflow, id).toBe(svg.dataOverflow);
           expect(card.dataIconUnknown, id).toBe(svg.dataIconUnknown);
-          if (mode.name === "plain") {
-            expect(card.dataOverflow, id).toBeNull();
-            expect(card.dataIconUnknown, id).toBe(false);
-          }
+          expect(card.dataOverflow, id).toBeNull();
           // Same resolved styles: the SVG carries the token references inline;
           // the Svelte styles live in the component stylesheet (jsdom applies
           // no author styles), so the Svelte side is tied by source reference
@@ -522,23 +536,30 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
 });
 
 describe("slot mechanics — both renderers", () => {
-  function both(props: DiagramCardProps): { svg: ParsedSvg; card: ParsedCard; diagnostics: readonly CardDiagnostic[] } {
+  function svgOf(result: CardSvgResult): string {
+    expect(result.kind).toBe("rendered");
+    if (result.kind !== "rendered") throw new Error("fixture-error: expected a rendered result");
+    return result.svg;
+  }
+
+  function both(props: DiagramCardProps): { rendered: CardSvgResult; card: ParsedCard; diagnostics: readonly CardDiagnostic[] } {
     const rendered = renderCardSvg(props, defaultCardMeasure);
     const seen: CardDiagnostic[] = [];
     const { container } = render(DiagramCard, {
       props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
     });
-    return { svg: parseSvg(rendered.svg), card: parseCardDom(container), diagnostics: rendered.diagnostics };
+    return { rendered, card: parseCardDom(container), diagnostics: rendered.diagnostics };
   }
 
   it("no footer: no rule in either renderer (DH-04)", () => {
-    const { svg, card } = both({
+    const { rendered, card } = both({
       entityId: "entity:no-footer",
       title: "Carte sans pied",
       body: ["fonction"],
       icon: "server",
       iconGlyph: getDiagramGlyph("server"),
     });
+    const svg = parseSvg(svgOf(rendered));
     expect(svg.rules).toHaveLength(0);
     expect(card.hasRule).toBe(false);
     expect(card.footer).toBeNull();
@@ -561,37 +582,40 @@ describe("slot mechanics — both renderers", () => {
     }
   });
 
-  it("overflow renders completely, keeps the box, and diagnoses (DC-D4)", () => {
+  it("overflow = refusal in both renderers: no SVG, no card content, same diagnostics with the original text (DC-D4)", () => {
     const props: DiagramCardProps = {
       entityId: "entity:overflow",
       title: `${"mot ".repeat(40).trim()}`,
       body: ["ligne une", "ligne deux", "ligne trois"],
       footer: "service: demo",
     };
-    const { svg, card, diagnostics } = both(props);
+    const { rendered, card, diagnostics } = both(props);
+    expect(rendered.kind).toBe("refused");
     expect(diagnostics.map((d) => d.code)).toContain("card-overflow");
-    expect(card.dataOverflow).toBe("title");
-    expect(svg.dataOverflow).toBe("title");
-    expect(svg.width).toBe("460");
-    expect(card.footer).toBe("service: demo");
-    for (const word of ["mot", "ligne une", "ligne deux", "ligne trois"]) {
-      expect(card.texts.map((t) => t.text).join(" ")).toContain(word);
-    }
+    const refusal = firstOverflowDiagnostic(diagnostics);
+    expect(refusal?.slot).toBe("title");
+    // The original, unwrapped title survives in the diagnostic data.
+    expect(refusal?.text).toBe(props.title);
+    expect(card.dataRefused).toBe("title");
+    expect(card.texts).toEqual([]);
+    expect(card.footer).toBeNull();
+    expect(card.hasRule).toBe(false);
   });
 
-  it("unbreakable word wider than the allocation diagnoses too", () => {
+  it("unbreakable word wider than the allocation diagnoses and refuses too", () => {
     const props: DiagramCardProps = {
       entityId: "entity:wide-word",
       title: `supercalifragilisticexpialidocious-${"x".repeat(60)}`,
       body: [],
     };
-    const { diagnostics } = both(props);
+    const { rendered, diagnostics } = both(props);
+    expect(rendered.kind).toBe("refused");
     expect(diagnostics).toContainEqual(
-      expect.objectContaining({ code: "card-overflow", slot: "title" }),
+      expect.objectContaining({ code: "card-overflow", slot: "title", text: props.title }),
     );
   });
 
-  it("J4 long token: every line measured, neededPx > allocatedPx (Astra J4)", () => {
+  it("J4 long token: measured, neededPx > allocatedPx, refused with the original text in both renderers (Astra J4)", () => {
     const token = "Charge @sentropic/architecture-governance-multiagent-coordination";
     const props: DiagramCardProps = {
       entityId: "entity:j4",
@@ -599,15 +623,58 @@ describe("slot mechanics — both renderers", () => {
       body: ["ligne une", token],
       footer: "service: demo",
     };
-    const { svg, card, diagnostics } = both(props);
+    const { rendered, card, diagnostics } = both(props);
+    expect(rendered.kind).toBe("refused");
     const overflow = diagnostics.filter((d) => d.code === "card-overflow");
     expect(overflow.length).toBeGreaterThan(0);
     for (const diagnostic of overflow) {
       expect(diagnostic.neededPx, `${diagnostic.slot}`).toBeGreaterThan(diagnostic.allocatedPx);
     }
-    // Both renderers still emit the full token (no truncation, DC-D4).
-    expect(svg.texts.map((t) => t.text).join(" ")).toContain(token);
-    expect(card.texts.map((t) => t.text).join(" ")).toContain(token);
+    // No truncation anywhere: the full token is in the diagnostic data,
+    // and neither renderer emits a normal card.
+    expect(overflow.some((d) => d.text === `ligne une\n${token}`)).toBe(true);
+    expect(card.dataRefused).toBe("body");
+    expect(card.texts).toEqual([]);
+  });
+
+  it("item 4: folded subtitle box is the model's 396 px at the 16 px inset, centred at 230 — pinned in both renderers", () => {
+    const props: DiagramCardProps = {
+      entityId: "entity:subtitle",
+      kicker: "PPL",
+      title: "People",
+      body: ["Employees HR · Developers admin · HR content owners"],
+      bodyMode: "subtitle",
+      footer: "group: people",
+      icon: "people",
+      iconGlyph: getDiagramGlyph("people"),
+      toggle: { collapsed: true, label: "Déplier" },
+    };
+    const layout = layoutCard(props, defaultCardMeasure);
+    // The frozen allocation: body box at x = 32, width 396 — not the wider
+    // content box (32…450, width 418) that centred at 241.
+    expect(layout.bodyX).toBe(32);
+    expect(layout.bodyWidth).toBe(396);
+    expect(layout.bodyX + layout.bodyWidth / 2).toBe(230);
+    // SVG renderer: every subtitle line anchored middle at x = 230.
+    const rendered = renderCardSvg(props, defaultCardMeasure);
+    const svgText = svgOf(rendered);
+    const bodyLines = [...svgText.matchAll(/<text class="st-diagramCard-body" x="([\d.]+)"[^>]*text-anchor="(\w+)"/g)];
+    expect(bodyLines.length).toBeGreaterThan(0);
+    for (const match of bodyLines) {
+      expect(match[1]).toBe("230");
+      expect(match[2]).toBe("middle");
+    }
+    // Svelte renderer: the body div carries the model width and inset.
+    const { container } = render(DiagramCard, { props: { ...props, measure: defaultCardMeasure } });
+    const body = container.querySelector(".st-diagramCard-body") as HTMLElement;
+    const style = body.getAttribute("style") ?? "";
+    const marginLeft = Number(/margin-left:\s*([\d.]+)px/.exec(style)?.[1]);
+    const width = Number(/width:\s*([\d.]+)px/.exec(style)?.[1]);
+    expect(marginLeft).toBe(16);
+    expect(width).toBe(396);
+    // Pinned geometry asserted independently: content origin 16 (accent 8
+    // + padding 8) + margin-left + width/2 = 230.
+    expect(16 + marginLeft + width / 2).toBe(230);
   });
 
   it("proposed: dashed border independent of tone, in both renderers", () => {
@@ -624,8 +691,9 @@ describe("slot mechanics — both renderers", () => {
         proposed: true,
       };
       const rendered = renderCardSvg(props, defaultCardMeasure);
-      expect(rendered.svg, `tone ${tone}`).toContain('data-proposed="true"');
-      expect(rendered.svg, `tone ${tone}`).toContain(
+      const renderedSvg = svgOf(rendered);
+      expect(renderedSvg, `tone ${tone}`).toContain('data-proposed="true"');
+      expect(renderedSvg, `tone ${tone}`).toContain(
         'stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"',
       );
       const { container } = render(DiagramCard, {
@@ -637,8 +705,9 @@ describe("slot mechanics — both renderers", () => {
       expect(root.getAttribute("data-tone"), `tone ${tone}`).toBe(tone ?? null);
       // Not proposed: no dash, no attribute, whatever the tone.
       const plain = renderCardSvg({ ...props, proposed: undefined }, defaultCardMeasure);
-      expect(plain.svg, `plain tone ${tone}`).not.toContain("data-proposed");
-      expect(plain.svg, `plain tone ${tone}`).not.toContain("stroke-dasharray");
+      const plainSvg = svgOf(plain);
+      expect(plainSvg, `plain tone ${tone}`).not.toContain("data-proposed");
+      expect(plainSvg, `plain tone ${tone}`).not.toContain("stroke-dasharray");
     }
   });
 
@@ -650,7 +719,8 @@ describe("slot mechanics — both renderers", () => {
       body: ["fonction"],
       icon: "no-such-glyph",
     };
-    const { svg, card, diagnostics } = both(props);
+    const { rendered, card, diagnostics } = both(props);
+    const svg = parseSvg(svgOf(rendered));
     expect(diagnostics).toContainEqual(expect.objectContaining({ code: "card-icon-unknown", slot: "icon" }));
     expect(card.dataIconUnknown).toBe(true);
     expect(svg.dataIconUnknown).toBe(true);
@@ -820,6 +890,7 @@ interface ParsedCard {
   toggleExpanded: string | null;
   dataTone: string | null;
   dataOverflow: string | null;
+  dataRefused: string | null;
   dataIconUnknown: boolean;
 }
 
@@ -841,6 +912,7 @@ function parseCardDom(container: HTMLElement): ParsedCard {
     toggleExpanded: toggleButton?.getAttribute("aria-expanded") ?? null,
     dataTone: root.getAttribute("data-tone"),
     dataOverflow: root.getAttribute("data-card-overflow"),
+    dataRefused: root.getAttribute("data-card-refused"),
     dataIconUnknown: root.hasAttribute("data-card-icon-unknown"),
   };
 }

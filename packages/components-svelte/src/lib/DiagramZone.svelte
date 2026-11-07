@@ -5,6 +5,7 @@
   import {
     ZONE_GEOMETRY,
     defaultCardMeasure,
+    firstOverflowDiagnostic,
     layoutZone,
     zoneCollapsedCardProps,
     type CardLineMeasure,
@@ -23,6 +24,13 @@
    * the occurrence box it is given (`x`/`y`/`width`/`height`); children are
    * host-rendered content and are positioned by the host layout, never by
    * the zone (§6.1).
+   *
+   * Both states render inside the SAME positioning wrapper
+   * (`.st-diagramZone-pos`, absolute at `x`/`y`): folding never moves the
+   * zone occurrence. Overflow = refusal (owner criterion): a `zone-overflow`
+   * renders no normal zone — the wrapper carries the host-visible refusal
+   * state `data-zone-refused="<slot>"`, matching the pure renderer's refused
+   * result.
    *
    * The component owns no view state: `collapsed` is a prop (§4.3) and
    * activating the toggle emits the §7.2 intent through `onToggle`.
@@ -106,6 +114,9 @@
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"),
   );
+  // Overflow = refusal: the same predicate as the pure renderer
+  // (`firstOverflowDiagnostic`), so both renderers refuse together.
+  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
 
   const header = $derived(layout.header);
   // Expanded subtitle measure: the layout's own `subtitleWidth`
@@ -124,6 +135,7 @@
     entityId: string;
     neededPx: number;
     allocatedPx: number;
+    text?: string;
   }): void {
     if (onDiagnostic === undefined) return;
     onDiagnostic({
@@ -132,77 +144,100 @@
       entityId: diagnostic.entityId,
       neededPx: diagnostic.neededPx,
       allocatedPx: diagnostic.allocatedPx,
+      ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
     });
   }
 </script>
 
-{#if collapsed}
-  <DiagramCard
-    {...cardProps}
-    measure={measure}
-    onSelect={onSelect === undefined ? undefined : (event) => onSelect(event)}
-    onDiagnostic={onDiagnostic === undefined ? undefined : remapDiagnostic}
-  />
-{:else}
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}"
-    style={`position:absolute;left:${x}px;top:${y}px;width:${layout.box.width}px;height:${layout.box.height}px`}
-    data-entity={entityId}
-    data-collapsed="false"
-    data-tone={tone}
-    data-proposed={proposed === true ? "true" : undefined}
-    data-zone-overflow={overflowSlot}
-    data-zone-icon-unknown={unknownIcon ? "" : undefined}
-    role="group"
-    aria-label={title}
-    onclick={() => onSelect?.({ entityId })}
-  >
-    {#if header !== undefined}
-      <div class="st-diagramZone-header">
-        <DiagramZoneHeader
-          kicker={header.kicker}
-          title={header.title}
-          subtitle={header.subtitle}
-          iconName={icon}
-          iconGlyph={iconGlyph}
-          headerTextWidth={header.headerTextWidth}
-          subtitleWidth={subtitleWidth}
-          toggle={toggleLabel === undefined
-            ? undefined
-            : {
-                collapsed: false,
-                label: toggleLabel,
-                onToggle: () => onToggle?.({ entityId, collapsed: false }),
-              }}
-          toggleTopInset={ZONE_GEOMETRY.toggleTopInset}
-        />
-      </div>
-      <div class="st-diagramZone-rule" aria-hidden="true"></div>
-      <div class="st-diagramZone-content">
-        {#if children !== undefined}
-          {@render children()}
-        {/if}
-      </div>
-      {#if header.footer.length > 0}
-        <!-- The footer is identical in both states (§6.1): folding never
-             changes it. Pinned at the frame bottom like the card footer. -->
-        {#if header.footerRuleY !== undefined}
-          <div class="st-diagramZone-footerRule" aria-hidden="true"></div>
-        {/if}
-        <div class="st-diagramZone-footer">
-          {#each header.footer as line, footerIndex (footerIndex)}
-            <span class="st-diagramZone-footerLine">{line.text}</span>
-          {/each}
+<!-- One positioning wrapper in BOTH states (second review, blocking): the
+     occurrence never moves on fold/unfold — only the inner rendering
+     changes. Overflow = refusal: a refused zone renders no normal frame
+     or card, the wrapper carries data-zone-refused for the host. -->
+<div
+  class="st-diagramZone-pos"
+  style={`left:${x}px;top:${y}px`}
+  data-entity={entityId}
+  data-collapsed={collapsed ? "true" : "false"}
+  data-zone-refused={refused === undefined ? undefined : refused.slot}
+  data-zone-overflow={overflowSlot}
+  data-zone-icon-unknown={unknownIcon ? "" : undefined}
+>
+  {#if refused !== undefined}
+    <div
+      class="st-diagramZone st-diagramZone--refused"
+      style={`width:${layout.box.width}px;height:${layout.box.height}px`}
+      role="group"
+      aria-label={title}
+    ></div>
+  {:else if collapsed}
+    <DiagramCard
+      {...cardProps}
+      measure={measure}
+      onSelect={onSelect === undefined ? undefined : (event) => onSelect(event)}
+      onDiagnostic={onDiagnostic === undefined ? undefined : remapDiagnostic}
+    />
+  {:else}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div
+      class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}"
+      style={`width:${layout.box.width}px;height:${layout.box.height}px`}
+      data-tone={tone}
+      data-proposed={proposed === true ? "true" : undefined}
+      role="group"
+      aria-label={title}
+      onclick={() => onSelect?.({ entityId })}
+    >
+      {#if header !== undefined}
+        <div class="st-diagramZone-header">
+          <DiagramZoneHeader
+            kicker={header.kicker}
+            title={header.title}
+            subtitle={header.subtitle}
+            iconName={icon}
+            iconGlyph={iconGlyph}
+            headerTextWidth={header.headerTextWidth}
+            subtitleWidth={subtitleWidth}
+            toggle={toggleLabel === undefined
+              ? undefined
+              : {
+                  collapsed: false,
+                  label: toggleLabel,
+                  onToggle: () => onToggle?.({ entityId, collapsed: false }),
+                }}
+            toggleTopInset={ZONE_GEOMETRY.toggleTopInset}
+          />
         </div>
+        <div class="st-diagramZone-rule" aria-hidden="true"></div>
+        <div class="st-diagramZone-content">
+          {#if children !== undefined}
+            {@render children()}
+          {/if}
+        </div>
+        {#if header.footer.length > 0}
+          <!-- The footer is identical in both states (§6.1): folding never
+               changes it. Pinned at the frame bottom like the card footer. -->
+          {#if header.footerRuleY !== undefined}
+            <div class="st-diagramZone-footerRule" aria-hidden="true"></div>
+          {/if}
+          <div class="st-diagramZone-footer">
+            {#each header.footer as line, footerIndex (footerIndex)}
+              <span class="st-diagramZone-footerLine">{line.text}</span>
+            {/each}
+          </div>
+        {/if}
       {/if}
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
+</div>
 
 <style>
+  /* The positioning wrapper, present in collapsed AND expanded states:
+     folding never moves the occurrence (second review, blocking). */
+  .st-diagramZone-pos {
+    position: absolute;
+  }
   .st-diagramZone {
     box-sizing: border-box;
     border: var(--st-component-diagramZone-borderWidth, 1.5px) solid
@@ -224,6 +259,12 @@
   .st-diagramZone--proposed {
     border-style: dashed;
   }
+  /* Refusal state (overflow = refusal): no normal frame, a dashed
+     placeholder the host can see via data-zone-refused on the wrapper. */
+  .st-diagramZone--refused {
+    border-style: dashed;
+    background: transparent;
+  }
   .st-diagramZone-header {
     /* headerInset 16: frame edge → icon left edge. */
     padding: var(--st-component-diagramZone-headerInset, 16px)
@@ -234,8 +275,10 @@
   }
   .st-diagramZone-rule {
     display: block;
-    height: var(--st-component-diagramCard-ruleHeight, 1px);
-    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    /* 1 screen px at every zoom: the host-published camera zoom
+       (--st-diagram-zoom) is divided out, same contract as the card rule. */
+    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
+    flex: 0 0 calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
     /* headerRuleGap 4 above; contentInsetTop 16 below; the rule insets are
        the card's (same rule, §6.2). */
     margin: var(--st-component-diagramZone-headerRuleGap, 4px)
@@ -253,8 +296,8 @@
   }
   .st-diagramZone-footerRule {
     display: block;
-    height: var(--st-component-diagramCard-ruleHeight, 1px);
-    flex: 0 0 var(--st-component-diagramCard-ruleHeight, 1px);
+    height: calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
+    flex: 0 0 calc(var(--st-component-diagramCard-ruleHeight, 1px) / var(--st-diagram-zoom, 1));
     /* 4 px above (headerRuleGap) and 4 px below the rule, same inline
        insets as the header rule; the footer text follows the gap. */
     margin: var(--st-component-diagramZone-headerRuleGap, 4px)
