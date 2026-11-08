@@ -1,0 +1,92 @@
+{
+  "schema": "ds.fixture-pins/1",
+  "pins": [
+    {
+      "id": "s2-target-raw",
+      "root": {
+        "kind": "env-dir",
+        "env": "DL_HRPN_ROOT"
+      },
+      "path": "docs/architecture/hrpn/ds-fixtures/S2-target.json",
+      "sha256": "28a7271dd0bec89fa9ad435174a614ab4a40b346b10724da95736f9c55b574d9",
+      "bytes": 39878,
+      "confidentiality": "confidential-raw"
+    },
+    {
+      "id": "s2-target-folds-raw",
+      "root": {
+        "kind": "env-dir",
+        "env": "DL_HRPN_ROOT"
+      },
+      "path": "docs/ard/decision/focus/governance-kit/hrpn/defaults.js",
+      "sha256": "cff42f4227cb0b206ff61036a0be8ecfea0fd2bac1d6b5ea1b058db553b5c671",
+      "bytes": 1138,
+      "confidentiality": "confidential-raw"
+    },
+    {
+      "id": "s2-target-scenes-raw",
+      "root": {
+        "kind": "env-dir",
+        "env": "DL_HRPN_ROOT"
+      },
+      "path": "docs/architecture/hrpn/SCENES.md",
+      "sha256": "224bcaac70e397e771d88273219483eea808c0aa31cdcdc6d61d47f645d94853",
+      "bytes": 21162,
+      "confidentiality": "confidential-raw"
+    },
+    {
+      "id": "s2-target-engram-semantic-raw",
+      "root": {
+        "kind": "env-dir",
+        "env": "DL_HRPN_ROOT"
+      },
+      "path": "docs/architecture/hrpn/engram/S2-target.semantic.json",
+      "sha256": "46f64154bb6592d49ccda5633b2c4d4205fb1c6752ef218be31d6757923ecf91",
+      "bytes": 63446,
+      "confidentiality": "confidential-raw"
+    },
+    {
+      "id": "s2-target-engram-view-raw",
+      "root": {
+        "kind": "env-dir",
+        "env": "DL_HRPN_ROOT"
+      },
+      "path": "docs/architecture/hrpn/engram/S2-target.view.json",
+      "sha256": "82930614efe070bdb8e5acce3aecea29dfdb2d1ab625b7d376507f97fb6f8b50",
+      "bytes": 23837,
+      "confidentiality": "confidential-raw"
+    },
+    {
+      "id": "central-711-source",
+      "root": {
+        "kind": "env-git",
+        "env": "DL_SENTROPIC_ROOT",
+        "commit": "4138a0ecba9c5b37409abb5ac00f732d02b7dc8d"
+      },
+      "path": "docs/governance/kit/src/governance-central.js",
+      "sha256": "8648b0935735a386afa843e7221234406c1c61fbe48fa5bc7c4172743b0c3f1c",
+      "bytes": 14781,
+      "confidentiality": "public"
+    },
+    {
+      "id": "tiny",
+      "root": {
+        "kind": "repo"
+      },
+      "path": "packages/diagram-bijection/fixtures/structures/tiny.structure.json",
+      "sha256": "052e551b5d7443196087fca5aacb9c6eca119ee2fb3a3c2995aaeb3c800cb8c5",
+      "bytes": 1502,
+      "confidentiality": "public"
+    },
+    {
+      "id": "s2-target-anon",
+      "root": {
+        "kind": "repo"
+      },
+      "path": "packages/diagram-bijection/fixtures/structures/s2-target-anon.structure.json",
+      "sha256": "cb438acd6264c72145449293bcc4c9969c33c8e643562251617273cb69dedafc",
+      "bytes": 12743,
+      "confidentiality": "public"
+    }
+  ]
+}

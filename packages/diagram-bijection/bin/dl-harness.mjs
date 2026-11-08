@@ -8,4 +8,5 @@ if (!existsSync(entry)) {
   console.error("dl-harness: dist/ is not built; run `npm run build -w @sentropic/diagram-bijection` first.");
   process.exit(1);
 }
-await import(entry);
+const mod = await import(entry);
+process.exit(await mod.main(process.argv));

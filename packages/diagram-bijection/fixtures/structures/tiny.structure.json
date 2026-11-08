@@ -1,0 +1,60 @@
+{
+  "schema": "ds.scene-structure/1",
+  "sceneId": "tiny",
+  "language": "fr",
+  "evidence": "ds:tiny (synthetic fixture)",
+  "zones": [
+    {
+      "id": "z01",
+      "parent": null,
+      "name": "Zone racine",
+      "role": "Rôle de la zone racine",
+      "lifecycle": "current",
+      "category": "teinte-a"
+    },
+    {
+      "id": "z02",
+      "parent": "z01",
+      "name": "Zone imbriquée",
+      "role": "Rôle de la zone imbriquée",
+      "lifecycle": "current"
+    }
+  ],
+  "cards": [
+    {
+      "id": "c01",
+      "parent": "z01",
+      "name": "Carte une",
+      "role": "Rôle de la carte une",
+      "lifecycle": "current",
+      "category": "teinte-a"
+    },
+    {
+      "id": "c02",
+      "parent": "z02",
+      "name": "Carte deux",
+      "role": "Rôle de la carte deux",
+      "lifecycle": "current",
+      "category": "teinte-b"
+    },
+    {
+      "id": "c03",
+      "parent": "z02",
+      "name": "Carte trois",
+      "role": "Rôle de la carte trois",
+      "lifecycle": "proposed"
+    }
+  ],
+  "relations": [
+    { "id": "r01", "from": "c01", "to": "c02", "label": "flux un", "lifecycle": "current" },
+    { "id": "r02", "from": "c02", "to": "c03", "label": "flux deux", "lifecycle": "proposed" }
+  ],
+  "expanded": ["z01"],
+  "legend": {
+    "title": "Teintes",
+    "keys": [
+      { "category": "teinte-a", "name": "Teinte A", "token": "st-semantic-data-category1" },
+      { "category": "teinte-b", "name": "Teinte B", "token": "st-semantic-data-category2" }
+    ]
+  }
+}
