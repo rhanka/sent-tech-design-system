@@ -205,12 +205,18 @@ export function countStructure(s: SceneStructure): StructureCounts {
   const notCurrentEntities = [...s.zones, ...s.cards].filter((e) => e.lifecycle !== "current").length;
   const notCurrentRelations = s.relations.filter((r) => r.lifecycle !== "current").length;
 
+  // Depth arrays are dense: a hole would not survive RFC 8785 canonicalisation.
+  const dense = (a: number[]): number[] => {
+    for (let i = 0; i < a.length; i += 1) if (!(i in a)) a[i] = 0;
+    return a;
+  };
+
   return {
     zones: s.zones.length,
     cards: s.cards.length,
     relations: s.relations.length,
-    zonesByDepth,
-    cardsByDepth,
+    zonesByDepth: dense(zonesByDepth),
+    cardsByDepth: dense(cardsByDepth),
     zoneContent: { cardsOnly, zonesOnly, both, empty },
     maxChildren,
     categorised,
