@@ -3,7 +3,7 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { isAbsolute, join } from "node:path";
+import { dirname, isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export type PinRoot =
@@ -46,8 +46,30 @@ function pinProblem(pin: unknown): string | undefined {
   return "pin root kind invalid";
 }
 
+/**
+ * The package root, found by walking up from this module to the package.json
+ * named @sentropic/diagram-bijection. A path relative to import.meta.url would
+ * move with the outDir (tsc emits to dist/src/, so ../../fixtures would land
+ * in dist/fixtures); the walk-up resolves the same root from src/ (vitest) and
+ * from dist/src/ (the built CLI), whatever the cwd.
+ */
+function packageRoot(): string {
+  let dir = dirname(fileURLToPath(import.meta.url));
+  for (;;) {
+    try {
+      const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8")) as { name?: string };
+      if (pkg.name === "@sentropic/diagram-bijection") return dir;
+    } catch {
+      /* keep walking */
+    }
+    const parent = dirname(dir);
+    if (parent === dir) throw new Error("package root not found");
+    dir = parent;
+  }
+}
+
 /** The package's own pins file, used when `file` is omitted (§2.4). */
-export const DEFAULT_PINS_FILE = fileURLToPath(new URL("../../fixtures/pins.json", import.meta.url));
+export const DEFAULT_PINS_FILE = join(packageRoot(), "fixtures", "pins.json");
 
 export function readFixturePins(file?: string): FixturePinFile {
   const parsed = JSON.parse(readFileSync(file ?? DEFAULT_PINS_FILE, "utf8")) as unknown;
