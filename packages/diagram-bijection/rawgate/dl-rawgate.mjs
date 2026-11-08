@@ -246,13 +246,16 @@ export function scanTree(input) {
     }
     if (isBinary(buf)) continue;
     files++;
+    // §2.7 item 6: one hit per path, line and digest — the dedupe key carries
+    // the line, so a token occurring on several lines is reported per line.
     const seen = new Set();
     for (const item of tokenise(buf.toString("utf8"), rule)) {
       const cls = item.kind === "id" ? "id" : "text";
       const d = digest(key, cls, item.token);
       if (!wanted.has(d) || allowed.has(d)) continue;
-      if (seen.has(d)) continue;
-      seen.add(d);
+      const key_ = `${item.line}\u0000${d}`;
+      if (seen.has(key_)) continue;
+      seen.add(key_);
       hits.push({ file: rel, line: item.line, kind: item.kind, digestPrefix: d.slice(0, 8) });
     }
   }
@@ -311,13 +314,15 @@ export function scanCommitMessages(input) {
     const message = parts[i + 1];
     if (sha.length === 0) continue;
     commits++;
+    // One hit per commit, line and digest (§2.7 item 6).
     const seen = new Set();
     for (const item of tokenise(message, rule)) {
       const cls = item.kind === "id" ? "id" : "text";
       const d = digest(key, cls, item.token);
       if (!wanted.has(d) || allowed.has(d)) continue;
-      if (seen.has(d)) continue;
-      seen.add(d);
+      const key_ = `${item.line}\u0000${d}`;
+      if (seen.has(key_)) continue;
+      seen.add(key_);
       hits.push({ file: sha, line: item.line, kind: "commit-message", digestPrefix: d.slice(0, 8) });
     }
   }
@@ -332,9 +337,38 @@ function validateDigestFile(file) {
   if (file.minWordLength !== 4 || file.minIdLength !== 2) return "rule constants differ from dl-rawgate/1";
   if (!Array.isArray(file.ngramSizes) || file.ngramSizes.some((n) => typeof n !== "number" || n < 1)) return "bad ngramSizes";
   if (!Array.isArray(file.digests) || file.digests.some((d) => typeof d !== "string" || !/^[0-9a-f]{32}$/.test(d))) return "bad digests";
+  // §2.7: digests are ascending and unique.
+  for (let i = 1; i < file.digests.length; i++) {
+    if (file.digests[i - 1] >= file.digests[i]) return "digests are not ascending and unique";
+  }
   if (file.count !== file.digests.length) return "count != digests.length";
-  if (!Array.isArray(file.allow) || file.allow.some((a) => typeof a?.digest !== "string" || typeof a?.reason !== "string"))
+  if (
+    !Array.isArray(file.allow) ||
+    file.allow.some((a) => typeof a?.digest !== "string" || !/^[0-9a-f]{32}$/.test(a.digest) || typeof a?.reason !== "string" || a.reason.length === 0)
+  )
     return "bad allow";
+  return null;
+}
+
+/**
+ * §2.7: « The `reason` text must not digest to the allowed digest. » With the
+ * key in hand, tokenise every allow reason and refuse when any of its tokens
+ * digests to the entry's own digest or to any digest of the file — a reason
+ * that carries a raw token would write that token into the repository.
+ * Returns a problem description, or null when every reason is clean.
+ */
+export function validateAllowReasons(key, file) {
+  const rule = ruleOf(file);
+  const wanted = new Set(file.digests);
+  for (const a of file.allow) {
+    for (const item of tokenise(a.reason, rule)) {
+      const cls = item.kind === "id" ? "id" : "text";
+      const d = digest(key, cls, item.token);
+      if (d === a.digest || wanted.has(d)) {
+        return `allow entry ${a.digest.slice(0, 8)}: its reason text digests to a guarded digest (line ${item.line})`;
+      }
+    }
+  }
   return null;
 }
 
@@ -382,6 +416,11 @@ async function main(argv) {
   }
   if (keyId(key) !== file.keyId) {
     process.stderr.write("dl-rawgate: key-id mismatch (the key does not match the committed digests)\n");
+    return 1;
+  }
+  const allowProblem = validateAllowReasons(key, file);
+  if (allowProblem !== null) {
+    process.stderr.write(`dl-rawgate: ${allowProblem}\n`);
     return 1;
   }
 

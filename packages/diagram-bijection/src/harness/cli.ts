@@ -3,7 +3,7 @@
 // committed structure fixtures; no report is committed (§2.3).
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalBytes, sha256Hex } from "@sentropic/diagram-core";
 import { runHarness } from "./run.js";
@@ -74,22 +74,27 @@ interface StructureFixture {
 
 async function loadStructureFixtures(pkgRoot: string, root: string, env: NodeJS.ProcessEnv): Promise<StructureFixture[]> {
   const fixturesRoot = join(pkgRoot, "fixtures");
-  const pinsFile = readFixturePins(join(fixturesRoot, "pins.json"));
-  const structuresDir = join(fixturesRoot, "structures");
+  const pinsFile = readFixturePins();
+  // §1/§2.2: the committed structures live in fixtures/structures/, the
+  // synthetic one in fixtures/synthetic/; both are run by `run --all`.
+  const structureDirs = [join(fixturesRoot, "structures"), join(fixturesRoot, "synthetic")];
   const out: StructureFixture[] = [];
-  if (!existsSync(structuresDir)) return out;
-  for (const name of readdirSync(structuresDir).filter((n) => n.endsWith(".structure.json")).sort()) {
-    const relToRepo = `packages/diagram-bijection/fixtures/structures/${name}`;
-    const pin = pinsFile.pins.find((p) => p.root.kind === "repo" && p.path === relToRepo);
-    if (pin === undefined) throw new Error(`no repo pin for ${relToRepo}`);
-    const bytesOr = await readPinBytes(pin, root, env);
-    if ("unavailable" in bytesOr) throw new Error(`fixture unavailable: ${relToRepo}`);
-    const bytes = bytesOr as Uint8Array;
-    const bytesText = new TextDecoder().decode(bytes);
-    if (sha256Hex(bytesText) !== pin.sha256 || bytes.length !== pin.bytes) throw new Error(`pin mismatch: ${relToRepo}`);
-    const loaded = loadStructureFixture(bytes);
-    if (!loaded.ok) throw new Error(`fixture does not load: ${relToRepo}: ${loaded.diagnostics.map((d) => d.code).join(",")}`);
-    out.push({ pin, bytes, loaded: loaded.value });
+  for (const structuresDir of structureDirs) {
+    if (!existsSync(structuresDir)) continue;
+    for (const name of readdirSync(structuresDir).filter((n) => n.endsWith(".structure.json")).sort()) {
+      const abs = join(structuresDir, name);
+      const relToRepo = relative(root, abs);
+      const pin = pinsFile.pins.find((p) => p.root.kind === "repo" && p.path === relToRepo);
+      if (pin === undefined) throw new Error(`no repo pin for ${relToRepo}`);
+      const bytesOr = await readPinBytes(pin, root, env);
+      if ("unavailable" in bytesOr) throw new Error(`fixture unavailable: ${relToRepo}`);
+      const bytes = bytesOr as Uint8Array;
+      const bytesText = new TextDecoder().decode(bytes);
+      if (sha256Hex(bytesText) !== pin.sha256 || bytes.length !== pin.bytes) throw new Error(`pin mismatch: ${relToRepo}`);
+      const loaded = loadStructureFixture(bytes);
+      if (!loaded.ok) throw new Error(`fixture does not load: ${relToRepo}: ${loaded.diagnostics.map((d) => d.code).join(",")}`);
+      out.push({ pin, bytes, loaded: loaded.value });
+    }
   }
   return out;
 }
@@ -154,7 +159,7 @@ async function cmdRun(args: string[], env: NodeJS.ProcessEnv): Promise<number> {
       readFixture: async () => fixture.bytes,
     };
     const report = await runHarness(run, io);
-    const written = writeReport(outDir, report);
+    const written = await writeReport(report, outDir);
     process.stdout.write(
       `${fixture.pin.id}: verdict=${report.verdict} foldStates=${report.foldStates} x1=${report.x1.pass}/${report.x1.fail} x2=${report.x2.pass}/${report.x2.fail} S5=${report.steps.S5.status}${report.steps.S5.status === "not-run" ? ` (${report.steps.S5.reason ?? ""})` : ""} S6=${report.steps.S6.status} -> ${written.jsonPath} + ${written.mdPath}\n`,
     );

@@ -38,10 +38,15 @@ const DEFAULT_NS = `<definitions xmlns="${BPMN_MODEL_NS}" xmlns:di="${BPMN_DI_NS
   <di:BPMNDiagram id="d1"/><di:BPMNDiagram id="d2"/><di:BPMNDiagram id="d3"/>
 </definitions>`;
 
-const COMMENT_CDATA = `<definitions xmlns="${BPMN_MODEL_NS}" xmlns:di="${BPMN_DI_NS}">
-  <!-- <participant id="fake" processRef="x"/> <messageFlow id="fm"/> -->
+const COMMENT_VECTOR = `<definitions xmlns="${BPMN_MODEL_NS}" xmlns:di="${BPMN_DI_NS}">
+  <!-- <participant id="fake" processRef="x"/> <messageFlow id="fm"/> <subProcess id="fake2"/> -->
   <process id="x"><task id="t1"/></process>
-  <![CDATA[ <subProcess id="fake2"/> <di:BPMNDiagram id="fake3"/> ]]>
+  <di:BPMNDiagram id="real1"/>
+</definitions>`;
+
+const CDATA_VECTOR = `<definitions xmlns="${BPMN_MODEL_NS}" xmlns:di="${BPMN_DI_NS}">
+  <process id="x"><task id="t1"/></process>
+  <![CDATA[ <participant id="fake" processRef="x"/> <di:BPMNDiagram id="fake3"/> <subProcess id="fake2"/> ]]>
   <di:BPMNDiagram id="real1"/>
 </definitions>`;
 
@@ -71,12 +76,22 @@ describe("W-DL0.13 countBpmn vectors", () => {
     expect(r.counts.flowNodes).toBe(2); // task + transaction
   });
 
-  it("tags inside comments and CDATA are not counted", () => {
-    const r = countBpmn(COMMENT_CDATA);
+  it("a tag inside a comment is not counted", () => {
+    const r = countBpmn(COMMENT_VECTOR);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.counts.pools).toBe(0);
     expect(r.counts.messageFlows).toBe(0);
+    expect(r.counts.subProcesses).toBe(0);
+    expect(r.counts.diagrams).toBe(1);
+    expect(r.counts.flowNodes).toBe(1);
+  });
+
+  it("a tag inside CDATA is not counted", () => {
+    const r = countBpmn(CDATA_VECTOR);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.counts.pools).toBe(0);
     expect(r.counts.subProcesses).toBe(0);
     expect(r.counts.diagrams).toBe(1);
     expect(r.counts.flowNodes).toBe(1);
@@ -90,6 +105,12 @@ describe("W-DL0.13 countBpmn vectors", () => {
 
   it("malformed XML is unreadable", () => {
     const r = countBpmn("<definitions><process></definitions>");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("bpmn-xml-unreadable");
+  });
+
+  it("a stray '/' inside a tag (no progress in the attribute scan) is unreadable, not an infinite loop", () => {
+    const r = countBpmn(`<definitions xmlns="${BPMN_MODEL_NS}"><process><x b/2></process></definitions>`);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("bpmn-xml-unreadable");
   });
@@ -146,5 +167,31 @@ describe("W-DL0.13 bpmn-selection.json", () => {
     const atMax = eligible.filter((c) => c.counts.flowNodes === maxFlow);
     const maxDia = Math.max(...atMax.map((c) => c.counts.diagrams));
     expect(selected.counts.diagrams).toBe(maxDia);
+  });
+});
+
+describe("W-DL0.13 selectBpmnFixture tie-break on synthetic candidates", () => {
+  const cand = (path: string, flowNodes: number, diagrams = 2, eligible = true): BpmnCandidate => ({
+    path,
+    sha256: "0".repeat(64),
+    bytes: 1,
+    counts: { pools: 2, messageFlows: 1, subProcesses: 1, diagrams, flowNodes },
+    criteria: eligible ? { c1: true, c2: true, c3: true, c4: true } : { c1: false, c2: true, c3: true, c4: true },
+  });
+
+  it("most flow nodes wins, then most diagrams, then path bytes ascending", () => {
+    // flowNodes decide first
+    expect(selectBpmnFixture([cand("a.bpmn", 5), cand("z.bpmn", 9), cand("m.bpmn", 7)]).selected?.path).toBe("z.bpmn");
+    // diagrams break a flowNodes tie
+    expect(selectBpmnFixture([cand("a.bpmn", 5, 2), cand("z.bpmn", 5, 3)]).selected?.path).toBe("z.bpmn");
+    // path bytes ascending break a full tie ('Z' = 0x5A < 'a' = 0x61, unlike locale order)
+    expect(selectBpmnFixture([cand("a.bpmn", 5, 2), cand("Z.bpmn", 5, 2)]).selected?.path).toBe("Z.bpmn");
+  });
+
+  it("ineligible candidates never win, and an empty eligible set is the source-gap", () => {
+    const r = selectBpmnFixture([cand("a.bpmn", 99, 9, false), cand("b.bpmn", 1, 1, false)]);
+    expect(r.selected).toBeNull();
+    expect(r.gap).toBe("no-file-meets-all-criteria");
+    expect(selectBpmnFixture([cand("a.bpmn", 99, 9, false), cand("b.bpmn", 1, 2, true)]).selected?.path).toBe("b.bpmn");
   });
 });

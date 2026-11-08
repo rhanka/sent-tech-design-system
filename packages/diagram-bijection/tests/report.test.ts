@@ -58,10 +58,11 @@ describe("W-DL0.4 report vectors", () => {
 
 describe("W-DL0.6 generated Markdown", () => {
   const report = load("valid-per-fold-state.json") as BijectionReport;
+  const source = { jsonPath: "/tmp/x/tiny.report.json", jsonSha256: "a".repeat(64) } as const;
 
-  it("renderReportMarkdown twice gives the same bytes, LF only, stamp first", () => {
-    const a = renderReportMarkdown(report, "/tmp/x/tiny.report.json", "a".repeat(64));
-    const b = renderReportMarkdown(report, "/tmp/x/tiny.report.json", "a".repeat(64));
+  it("renderReportMarkdown twice gives the same bytes, LF only, stamp first (§2.3 source object)", () => {
+    const a = renderReportMarkdown(report, source);
+    const b = renderReportMarkdown(report, source);
     expect(a).toBe(b);
     expect(a).not.toContain("\r");
     expect(a.split("\n", 1)[0]).toBe(
@@ -69,38 +70,93 @@ describe("W-DL0.6 generated Markdown", () => {
     );
   });
 
-  it("checkGeneratedReports passes on a fresh writeReport pair", () => {
+  it("writeReport(report, outDir) is async and returns { jsonPath, mdPath } (§2.3)", async () => {
     const dir = tempDir();
-    writeReport(dir, report);
-    expect(checkGeneratedReports(dir)).toEqual({ ok: true });
+    const written = await writeReport(report, dir);
+    expect(Object.keys(written).sort()).toEqual(["jsonPath", "mdPath"]);
+    expect(existsSync(written.jsonPath)).toBe(true);
+    expect(existsSync(written.mdPath)).toBe(true);
   });
 
-  it("checkGeneratedReports fails report-md-hand-edited on a hand-edited copy", () => {
+  it("checkGeneratedReports passes on a fresh writeReport pair as Outcome<{ checked }> (§2.3)", async () => {
     const dir = tempDir();
-    const { mdPath } = writeReport(dir, report);
+    await writeReport(report, dir);
+    expect(checkGeneratedReports(dir)).toEqual({ ok: true, value: { checked: 1 } });
+  });
+
+  it("checkGeneratedReports fails report-md-hand-edited on a hand-edited copy", async () => {
+    const dir = tempDir();
+    const { mdPath } = await writeReport(report, dir);
     const md = readFileSync(mdPath, "utf8");
     writeFileSync(mdPath, md.replace("## Summary", "## Summary (edited)"));
     const result = checkGeneratedReports(dir);
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.failures[0]?.code).toBe("report-md-hand-edited");
+    if (!result.ok) expect(result.diagnostics[0]?.code).toBe("report-md-hand-edited");
   });
 
-  it("checkGeneratedReports fails report-md-orphan when the sibling JSON is missing", () => {
+  it("checkGeneratedReports fails report-md-orphan when the sibling JSON is missing", async () => {
     const dir = tempDir();
-    const { jsonPath } = writeReport(dir, report);
+    const { jsonPath } = await writeReport(report, dir);
     rmSync(jsonPath);
     const result = checkGeneratedReports(dir);
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.failures[0]?.code).toBe("report-md-orphan");
+    if (!result.ok) expect(result.diagnostics[0]?.code).toBe("report-md-orphan");
   });
 
-  it("a stamp digest mismatch is a hand edit", () => {
+  it("a stamp digest mismatch is a hand edit", async () => {
     const dir = tempDir();
-    const { mdPath } = writeReport(dir, report);
+    const { mdPath } = await writeReport(report, dir);
     const md = readFileSync(mdPath, "utf8");
     writeFileSync(mdPath, md.replace(/sha256 [0-9a-f]{64}/, `sha256 ${"b".repeat(64)}`));
     const result = checkGeneratedReports(dir);
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.failures[0]?.code).toBe("report-md-hand-edited");
+    if (!result.ok) expect(result.diagnostics[0]?.code).toBe("report-md-hand-edited");
+  });
+});
+
+describe("§2.3 semantic validation beyond the schema (Argon 4 / spec:382, 219-220)", () => {
+  const report = load("valid-per-fold-state.json") as BijectionReport;
+
+  it("rejects a zero X1 tally when S2 ran and passed (foldStates 5, x1 0/0)", () => {
+    const tampered: BijectionReport = { ...report, x1: { pass: 0, fail: 0 } };
+    const result = validateReport(tampered);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.diagnostics.map((d) => d.message).join(";")).toContain("x1 tally");
+  });
+
+  it("rejects a zero X2 tally when S3 ran and passed", () => {
+    const tampered: BijectionReport = { ...report, x2: { pass: 0, fail: 0 } };
+    expect(validateReport(tampered).ok).toBe(false);
+  });
+
+  it("still accepts a vacuous S2/S3 failure with zero tallies (W-DL0.2 all-states-fail shape)", () => {
+    const vacuous: BijectionReport = {
+      ...report,
+      steps: {
+        ...report.steps,
+        S2: { status: "fail", pass: 0, fail: 1, codes: ["harness-vacuous"] },
+        S3: { status: "fail", pass: 0, fail: 1, codes: ["harness-vacuous"] },
+      },
+      x1: { pass: 0, fail: 0 },
+      x2: { pass: 0, fail: 0 },
+      verdict: "not demonstrated",
+    };
+    const result = validateReport(vacuous);
+    expect(result.ok, result.ok ? "" : result.diagnostics.map((d) => d.message).join(";")).toBe(true);
+  });
+
+  it("rejects verdict demonstrated with x1.fail + x2.fail > 0 (spec:219-220)", () => {
+    const tampered: BijectionReport = { ...report, x1: { pass: 4, fail: 1 } };
+    // tally still equals foldStates (5), but the verdict rule must fire
+    const result = validateReport(tampered);
+    expect(result.ok).toBe(false);
+  });
+
+  it("rejects verdict demonstrated with an incomplete edit fraction (spec:219-220)", () => {
+    const tampered: BijectionReport = {
+      ...report,
+      editSubset: { ...report.editSubset, allowedMapped: { done: 0, of: 1 } },
+    };
+    expect(validateReport(tampered).ok).toBe(false);
   });
 });

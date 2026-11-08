@@ -135,7 +135,7 @@ export async function runHarness(run: HarnessRun, io: HarnessIo): Promise<Biject
     }
   }
   steps.S3 =
-    exported.size === 0
+    imported.size === 0
       ? { status: "fail", pass: 0, fail: 1, codes: ["harness-vacuous"] }
       : { status: x2Fail > 0 ? "fail" : "pass", pass: x2Pass, fail: x2Fail, codes: [...new Set(s3Codes)] };
 
@@ -237,6 +237,10 @@ export async function runHarness(run: HarnessRun, io: HarnessIo): Promise<Biject
     steps.S6 = { status: "not-run", reason: "dependency lot missing" };
   } else if (states.length === 0) {
     steps.S6 = { status: "fail", pass: 0, fail: 1, codes: ["harness-vacuous"] };
+  } else if (imported.size === 0) {
+    // S1/S2 produced no imported model: there is no I.model to render, so S6
+    // cannot run its pass rule (§2.1) — never compare M against itself.
+    steps.S6 = { status: "not-run", reason: "prerequisite failed" };
   } else {
     let rPass = 0;
     let rFail = 0;
@@ -245,7 +249,14 @@ export async function runHarness(run: HarnessRun, io: HarnessIo): Promise<Biject
     for (const state of states) {
       const imp = imported.get(state);
       const a = run.renderer.render(M, state);
-      const b = imp === undefined ? a : run.renderer.render(imp.model, imp.fold);
+      if (imp === undefined) {
+        // No imported model for this state (S2 failed for it): equivalence is
+        // not demonstrated for it.
+        rFail += 1;
+        rCodes.push("harness-render-mismatch");
+        continue;
+      }
+      const b = run.renderer.render(imp.model, imp.fold);
       if (!a.ok || !b.ok) {
         rFail += 1;
         rCodes.push("harness-render-refused");

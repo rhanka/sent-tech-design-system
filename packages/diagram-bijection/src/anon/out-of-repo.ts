@@ -67,21 +67,28 @@ function gitSaysInsideWorkTree(ancestor: string): boolean {
   }
 }
 
-/** Group/other permission bits on any existing directory of the home chain (home and below). */
+/** Group/other permission bits on any existing directory of the home chain (home and below), and on the target itself. */
 function homeChainPermissionProblem(home: string, target: string): string | undefined {
   const from = resolve(home);
   const to = resolve(target);
+  const problemAt = (dir: string): string | undefined => {
+    if (existsSync(dir) && statSync(dir).isDirectory()) {
+      const mode = statSync(dir).mode & 0o777;
+      if ((mode & 0o077) !== 0) return dir;
+    }
+    return undefined;
+  };
   let current = from;
   for (;;) {
-    if (existsSync(current) && statSync(current).isDirectory()) {
-      const mode = statSync(current).mode & 0o777;
-      if ((mode & 0o077) !== 0) return current;
-    }
+    const bad = problemAt(current);
+    if (bad !== undefined) return bad;
     if (current === to || !to.startsWith(current + "/")) break;
     const next = join(current, to.slice(current.length + 1).split("/")[0] as string);
     if (next === current) break;
     current = next;
   }
+  // The target itself is checked even when it lies outside the home chain.
+  if (to !== from) return problemAt(to);
   return undefined;
 }
 
@@ -103,7 +110,8 @@ export function assertOutsideGitWorkTrees(
   if (holdsGitEntry(real)) {
     return { ok: false, code: "anon-path-in-git-work-tree", message: "the path or an ancestor holds a .git entry" };
   }
-  if (gitSaysInsideWorkTree(nearestExistingAncestor(path))) {
+  // Step 4 runs on the real path of step 3, so a link into a work tree is caught.
+  if (gitSaysInsideWorkTree(real)) {
     return { ok: false, code: "anon-path-in-git-work-tree", message: "git reports the path inside a work tree" };
   }
   const home = resolveAnonHome(env);
@@ -122,7 +130,7 @@ export function assertOutsideGitWorkTreesAfterCreate(path: string): OutOfRepoChe
   if (holdsGitEntry(real)) {
     return { ok: false, code: "anon-path-in-git-work-tree", message: "the created path or an ancestor holds a .git entry" };
   }
-  if (gitSaysInsideWorkTree(path)) {
+  if (gitSaysInsideWorkTree(real)) {
     return { ok: false, code: "anon-path-in-git-work-tree", message: "git reports the created path inside a work tree" };
   }
   return { ok: true, realPath: real };

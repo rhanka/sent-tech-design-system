@@ -73,7 +73,7 @@
       "root": {
         "kind": "repo"
       },
-      "path": "packages/diagram-bijection/fixtures/structures/tiny.structure.json",
+      "path": "packages/diagram-bijection/fixtures/synthetic/tiny.structure.json",
       "sha256": "052e551b5d7443196087fca5aacb9c6eca119ee2fb3a3c2995aaeb3c800cb8c5",
       "bytes": 1502,
       "confidentiality": "public"

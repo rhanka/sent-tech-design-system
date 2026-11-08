@@ -110,7 +110,7 @@ async function cmdGenerate(args: string[], env: NodeJS.ProcessEnv): Promise<numb
   const pkgRoot = packageRoot();
   const root = repoRoot(pkgRoot);
   const fixturesRoot = join(pkgRoot, "fixtures");
-  const pinsFile = readFixturePins(join(fixturesRoot, "pins.json"));
+  const pinsFile = readFixturePins();
   const pinById = new Map(pinsFile.pins.map((p) => [p.id, p]));
   const opt = (name: string): string | undefined => {
     const i = args.indexOf(name);
@@ -248,7 +248,9 @@ async function cmdGenerate(args: string[], env: NodeJS.ProcessEnv): Promise<numb
       sceneId: out.structure.sceneId,
       counts: countStructure(out.structure),
       folds: provenance.folds,
-      unresolvedFoldIds: out.unresolvedFoldIds.length,
+      // §2.5: the raw values of the unresolved fold ids go to run.json only
+      // (run.json lives under the enforced out-of-repo home, like mapping.json).
+      unresolvedFoldIds: out.unresolvedFoldIds,
       runAt: new Date().toISOString(),
     })}\n`,
   );
@@ -282,7 +284,7 @@ async function cmdVerify(env: NodeJS.ProcessEnv): Promise<number> {
   const pkgRoot = packageRoot();
   const root = repoRoot(pkgRoot);
   const fixturesRoot = join(pkgRoot, "fixtures");
-  const pinsFile = readFixturePins(join(fixturesRoot, "pins.json"));
+  const pinsFile = readFixturePins();
   const fp = pinsFile.pins.find((p) => p.id === "s2-target-raw");
   const gp = pinsFile.pins.find((p) => p.id === "s2-target-folds-raw");
   if (fp === undefined || gp === undefined) {

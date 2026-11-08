@@ -109,6 +109,23 @@ describe("W-DL0.9 assertOutsideGitWorkTrees", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.code).toBe("anon-home-permissions");
   });
+
+  it("refuses a group/other-accessible target directory itself, even outside the home", () => {
+    const home = join(tempDir(), "anon");
+    const outside = join(tempDir(), "loose-target");
+    mkdirSync(outside, { recursive: true, mode: 0o755 });
+    const result = assertOutsideGitWorkTrees(outside, envWithHome(home));
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.code).toBe("anon-home-permissions");
+  });
+
+  it("accepts an existing 0700 target directory outside the home", () => {
+    const home = join(tempDir(), "anon");
+    const outside = join(tempDir(), "tight-target");
+    mkdirSync(outside, { recursive: true, mode: 0o700 });
+    const result = assertOutsideGitWorkTrees(outside, envWithHome(home));
+    expect(result.ok).toBe(true);
+  });
 });
 
 describe("W-DL0.9 makePrivateDir / writePrivateFile", () => {

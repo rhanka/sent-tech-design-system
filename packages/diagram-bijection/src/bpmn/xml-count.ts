@@ -63,6 +63,7 @@ function parseTag(xml: string, start: number): { readonly end: number; readonly 
     // attribute name
     const attrStart = i;
     while (i < xml.length && !/[\s=/>]/.test(xml[i] as string)) i += 1;
+    if (i === attrStart) return null; // stray character (e.g. '/' not followed by '>'): no progress, malformed
     const attrName = xml.slice(attrStart, i);
     while (i < xml.length && /\s/.test(xml[i] as string)) i += 1;
     if (xml[i] !== "=") {

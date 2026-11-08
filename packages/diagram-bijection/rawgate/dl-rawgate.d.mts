@@ -50,3 +50,5 @@ export function scanCommitMessages(input: {
   readonly repoRoot: string;
   readonly range: string;
 }): { readonly hits: readonly RawgateHit[]; readonly commits: number; readonly notice?: string | null };
+// §2.7 allow rule: returns a problem string when any allow `reason` text digests to a guarded digest, else null.
+export function validateAllowReasons(key: Uint8Array, file: RawgateDigestFile): string | null;

@@ -7,11 +7,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { canonicalBytes } from "@sentropic/diagram-core";
 import { runHarness } from "../src/harness/run.js";
 import { enumerateFoldStates } from "../src/harness/fold-states.js";
 import { computeVerdict } from "../src/harness/verdict.js";
 import { fixtureGoldenStore } from "../src/harness/goldens.js";
-import type { HarnessRun, LoadedFixture, FormatCodec, FoldContext, StepId } from "../src/harness/types.js";
+import type { EditProbe, HarnessRun, LoadedFixture, FormatCodec, FoldContext, ProbeExpectation, StepId } from "../src/harness/types.js";
 import { loadStructureFixture, stubCardsRenderer, stubJsonCodec } from "../src/formats/stub-json.js";
 import { readFixturePins, type FixturePin } from "../src/pins/fixture-pins.js";
 import { validateReport } from "../src/report/validate.js";
@@ -19,7 +20,7 @@ import type { BijectionReport, StepResult } from "../src/report/schema.js";
 
 const pkgRoot = fileURLToPath(new URL("..", import.meta.url));
 const fixturesRoot = join(pkgRoot, "fixtures");
-const pins = readFixturePins(join(fixturesRoot, "pins.json"));
+const pins = readFixturePins();
 const repoPin = (id: string): FixturePin => {
   const pin = pins.pins.find((p) => p.id === id);
   if (pin === undefined) throw new Error(`pin ${id} missing`);
@@ -145,6 +146,99 @@ describe("W-DL0.2 three broken stub codecs", () => {
     expect(report.steps.S4.status).toBe("fail");
     expect(report.steps.S4.codes).toContain("harness-probe-unexpected");
   });
+
+  it("S6 never passes when S1/S2 produced no imported model (no self-comparison)", async () => {
+    const { run } = makeRun("tiny", (base) => ({
+      ...base,
+      exportFile(model, fold) {
+        const result = base.exportFile(model, fold);
+        if (!result.ok) return result;
+        const bytes = new Uint8Array(result.value.bytes.length + 1);
+        bytes.set(result.value.bytes, 0);
+        bytes[result.value.bytes.length] = 0x20;
+        return { ok: true, value: { ...result.value, bytes } };
+      },
+    }));
+    const bytes = loadFixtureBytes(run.fixture);
+    const report = await runHarness(run, io(run.fixture, bytes));
+    expect(report.verdict).toBe("not demonstrated");
+    expect(report.steps.S1.status).toBe("fail");
+    // §2.1 S6 renders M and I.model for each fold state: with no I.model at
+    // all, S6 is not-run (prerequisite failed), never pass with pass=states.
+    expect(report.steps.S6.status).toBe("not-run");
+    expect(report.steps.S6.reason).toBe("prerequisite failed");
+  });
+});
+
+/** An allowed probe that edits the exported stub file, with its model patch. */
+function reExportProbe(id: string, mutate: (payload: Record<string, unknown>) => void, expect: ProbeExpectation): EditProbe {
+  return {
+    id,
+    kind: "allowed",
+    what: id,
+    apply(file) {
+      const text = new TextDecoder().decode(file.bytes);
+      const payload = JSON.parse(text.slice(0, -1)) as Record<string, unknown>;
+      mutate(payload);
+      return { bytes: new TextEncoder().encode(`${canonicalBytes(payload)}\n`), mediaType: file.mediaType };
+    },
+    expect,
+  };
+}
+
+describe("S4 edit probes (RFC 6902 patches, no cross-probe mutation)", () => {
+  it("two allowed probes on the same record both map (records are not mutated across probes)", async () => {
+    const { run } = makeRun("tiny", (base) => ({
+      ...base,
+      probes: [
+        ...base.probes,
+        reExportProbe(
+          "rename-second-card",
+          (p) => {
+            const structure = (p.records as Record<string, unknown>)["structure.json"] as { cards: { name: string }[] };
+            structure.cards[1]!.name = "Deuxième renommée";
+          },
+          { kind: "model", record: "structure.json", patch: [{ op: "replace", path: "/cards/1/name", value: "Deuxième renommée" }] },
+        ),
+      ],
+    }));
+    const bytes = loadFixtureBytes(run.fixture);
+    const report = await runHarness(run, io(run.fixture, bytes));
+    expect(report.steps.S4.status).toBe("pass");
+    expect(report.editSubset.allowedMapped).toEqual({ done: 2, of: 2 });
+    expect(report.verdict).toBe("demonstrated");
+  });
+
+  it("array patches follow RFC 6902: remove splices, add on \"-\" appends", async () => {
+    const extraCard = { id: "c99", parent: "z01", name: "Carte ajoutée", role: "Rôle ajouté", lifecycle: "current" };
+    const { run } = makeRun("tiny", (base) => ({
+      ...base,
+      probes: [
+        ...base.probes,
+        reExportProbe(
+          "drop-first-card",
+          (p) => {
+            const structure = (p.records as Record<string, unknown>)["structure.json"] as { cards: unknown[] };
+            structure.cards.shift();
+          },
+          { kind: "model", record: "structure.json", patch: [{ op: "remove", path: "/cards/0" }] },
+        ),
+        reExportProbe(
+          "append-card",
+          (p) => {
+            const structure = (p.records as Record<string, unknown>)["structure.json"] as { cards: unknown[] };
+            structure.cards.push(extraCard);
+          },
+          { kind: "model", record: "structure.json", patch: [{ op: "add", path: "/cards/-", value: extraCard }] },
+        ),
+      ],
+    }));
+    const bytes = loadFixtureBytes(run.fixture);
+    const report = await runHarness(run, io(run.fixture, bytes));
+    expect(report.steps.S4.status).toBe("pass");
+    expect(report.editSubset.allowedMapped).toEqual({ done: 3, of: 3 });
+    expect(report.verdict).toBe("demonstrated");
+  });
 });
 
 describe("W-DL0.3 enumerateFoldStates", () => {
@@ -168,20 +262,27 @@ describe("W-DL0.3 enumerateFoldStates", () => {
     }
   });
 
-  it("gives 13 states for a context of 10 containers (central-711 shape)", () => {
-    const ctx: FoldContext = {
-      view: "view:main",
-      containers: Array.from({ length: 10 }, (_, i) => `z${String(i + 1).padStart(2, "0")}`),
-      defaultCollapsed: ["z01", "z02"],
-    };
+  it("gives 13 states for a context of 10 containers without exception (central-711 shape)", () => {
+    const containers = Array.from({ length: 10 }, (_, i) => `z${String(i + 1).padStart(2, "0")}`);
+    // §2.9 W-DL0.3: "a context of 10 containers without exception" — every
+    // container collapsed by default, so default equals all-folded (§2.1).
+    const ctx: FoldContext = { view: "view:main", containers, defaultCollapsed: containers };
     const states = enumerateFoldStates(ctx);
     expect(states.length).toBe(13);
     expect(states.map((s) => s.id)).toEqual([
       "default",
       "all-expanded",
       "all-folded",
-      ...ctx.containers.map((c) => `toggle:${c}`),
+      ...containers.map((c) => `toggle:${c}`),
     ]);
+    expect([...(states[0]?.collapsed ?? [])].sort()).toEqual([...(states[2]?.collapsed ?? [])].sort());
+    // Each toggle differs from default by exactly one container: itself.
+    const def = new Set(states[0]?.collapsed ?? []);
+    for (const t of states.slice(3)) {
+      const cur = new Set(t.collapsed);
+      const diff = containers.filter((c) => def.has(c) !== cur.has(c));
+      expect(diff, `toggle ${t.id} differs by exactly one container`).toEqual([(t.id as string).slice("toggle:".length)]);
+    }
   });
 });
 

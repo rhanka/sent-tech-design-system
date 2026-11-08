@@ -5,7 +5,7 @@
 import Ajv2020 from "ajv/dist/2020.js";
 import { computeVerdict } from "../harness/verdict.js";
 import type { Outcome } from "../harness/types.js";
-import { REPORT_SCHEMA, type BijectionReport } from "./schema.js";
+import { REPORT_SCHEMA, type BijectionReport, type StepResult } from "./schema.js";
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 const validateSchema = ajv.compile(REPORT_SCHEMA);
@@ -34,13 +34,32 @@ export function validateReport(value: unknown): Outcome<BijectionReport> {
     problems.push("unverified differs from computeVerdict(...)");
   }
 
-  const s2 = report.steps.S2;
-  if (s2.status !== "not-run" && report.x1.pass + report.x1.fail > 0) {
-    if (report.x1.pass + report.x1.fail !== report.foldStates) problems.push("x1 tally != foldStates");
+  // §2.1 verdict rules on the tallies: x1.fail + x2.fail > 0 is never
+  // demonstrated; demonstrated requires x1.pass >= 1, x2.pass >= 1 and both
+  // edit fractions complete with of >= 1.
+  if (report.x1.fail + report.x2.fail > 0 && report.verdict !== "not demonstrated") {
+    problems.push("x1.fail + x2.fail > 0 but verdict is not \"not demonstrated\"");
   }
-  const s3 = report.steps.S3;
-  if (s3.status !== "not-run" && report.x2.pass + report.x2.fail > 0) {
-    if (report.x2.pass + report.x2.fail !== report.foldStates) problems.push("x2 tally != foldStates");
+  if (report.verdict === "demonstrated") {
+    if (report.x1.pass < 1 || report.x2.pass < 1) problems.push("demonstrated requires x1.pass >= 1 and x2.pass >= 1");
+    if (!(allowedMapped.done === allowedMapped.of && allowedMapped.of >= 1)) {
+      problems.push("demonstrated requires allowedMapped done = of >= 1");
+    }
+    if (!(forbiddenRefused.done === forbiddenRefused.of && forbiddenRefused.of >= 1)) {
+      problems.push("demonstrated requires forbiddenRefused done = of >= 1");
+    }
+  }
+
+  // §2.3: when S2 ran, x1.pass + x1.fail equals foldStates (same for S3 and
+  // x2). A vacuous step (no state exported) did not run its comparison, so a
+  // zero tally is only admissible together with harness-vacuous.
+  const ranComparison = (s: StepResult): boolean =>
+    s.status === "pass" || (s.status === "fail" && !(s.codes ?? []).includes("harness-vacuous"));
+  if (ranComparison(report.steps.S2) && report.x1.pass + report.x1.fail !== report.foldStates) {
+    problems.push("x1 tally != foldStates when S2 ran");
+  }
+  if (ranComparison(report.steps.S3) && report.x2.pass + report.x2.fail !== report.foldStates) {
+    problems.push("x2 tally != foldStates when S3 ran");
   }
 
   const refusedCodes = new Set(

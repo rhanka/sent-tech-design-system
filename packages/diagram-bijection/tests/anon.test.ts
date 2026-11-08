@@ -37,15 +37,24 @@ function pinFor(relPath: string): { pin: FixturePin; bytes: Uint8Array } {
 const RAW = "packages/diagram-bijection/fixtures/synthetic/hrpn-shaped.raw.json";
 const FOLDS = "packages/diagram-bijection/fixtures/synthetic/hrpn-shaped.defaults.txt";
 
-function synthInput(override?: (raw: Record<string, unknown>) => Record<string, unknown>): AnonymiseInput {
-  const raw = pinFor(RAW);
-  const folds = pinFor(FOLDS);
-  const parsed = JSON.parse(new TextDecoder().decode(raw.bytes)) as Record<string, unknown>;
+function synthInput(): AnonymiseInput {
   return {
     sceneId: "s2-target-anon",
     language: "fr",
-    fixture: { pin: raw.pin, bytes: new Uint8Array(readFileSync(join(repoRoot, RAW))) },
-    folds: { pin: folds.pin, bytes: new Uint8Array(readFileSync(join(repoRoot, FOLDS))) },
+    fixture: pinFor(RAW),
+    folds: pinFor(FOLDS),
+  };
+}
+
+/** Re-pin the synthetic fixture after a mutation of its parsed JSON. */
+function mutatedInput(mutate: (raw: Record<string, unknown>) => void): AnonymiseInput {
+  const input = synthInput();
+  const raw = JSON.parse(new TextDecoder().decode(input.fixture.bytes)) as Record<string, unknown>;
+  mutate(raw);
+  const bytes = new TextEncoder().encode(JSON.stringify(raw));
+  return {
+    ...input,
+    fixture: { pin: { ...input.fixture.pin, sha256: createHash("sha256").update(bytes).digest("hex"), bytes: bytes.length }, bytes },
   };
 }
 
@@ -166,6 +175,75 @@ describe("W-DL0.8 generator on the synthetic hrpn-shaped fixture", () => {
       process.stderr.write = orig;
     }
     expect(errors.join("")).toContain("anon-ci-refused");
+  });
+
+  it("the CLI verify also refuses with anon-ci-refused when CI=true (exit 1)", async () => {
+    const errors: string[] = [];
+    const orig = process.stderr.write.bind(process.stderr);
+    process.stderr.write = ((chunk: unknown) => {
+      errors.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write;
+    try {
+      const code = await anonMain(["node", "dl-anon.mjs", "verify"], { CI: "true" });
+      expect(code).toBe(1);
+    } finally {
+      process.stderr.write = orig;
+    }
+    expect(errors.join("")).toContain("anon-ci-refused");
+  });
+
+  it("dropped raw fields are still type-checked, fail closed (anon-value-invalid)", () => {
+    const cases: { name: string; mutate: (raw: Record<string, unknown>) => void }[] = [
+      { name: "scene.title", mutate: (raw) => ((raw.scene as Record<string, unknown>).title = 123) },
+      { name: "scene.caption", mutate: (raw) => ((raw.scene as Record<string, unknown>).caption = 5) },
+      { name: "scene.legendPassages", mutate: (raw) => ((raw.scene as Record<string, unknown>).legendPassages = "x") },
+      { name: "zone detail", mutate: (raw) => ((raw.entities as Record<string, unknown>[])[0]!.detail = 1) },
+      { name: "zone footer", mutate: (raw) => ((raw.entities as Record<string, unknown>[])[0]!.footer = []) },
+      { name: "card name", mutate: (raw) => ((raw.entities as Record<string, unknown>[])[3]!.name = 7) },
+      { name: "card role", mutate: (raw) => ((raw.entities as Record<string, unknown>[])[3]!.role = 5) },
+      { name: "card store", mutate: (raw) => ((raw.entities as Record<string, unknown>[])[3]!.store = null) },
+      {
+        name: "zoneHierarchy node label",
+        mutate: (raw) => {
+          const zh = raw.zoneHierarchy as Record<string, unknown>;
+          ((zh.zones as Record<string, unknown>[])[0] as Record<string, unknown>).label = 7;
+        },
+      },
+    ];
+    for (const c of cases) {
+      const result = anonymiseHrpnFixture(mutatedInput(c.mutate));
+      expect(result.ok, c.name).toBe(false);
+      if (!result.ok) expect(result.refusal, c.name).toBe("anon-value-invalid");
+    }
+  });
+
+  it("a dangling entity parent is refused (anon-structure-invalid), not silently re-rooted", () => {
+    const result = anonymiseHrpnFixture(mutatedInput((raw) => ((raw.entities as Record<string, unknown>[])[1]!.parent = "ZONE_NOPE")));
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.refusal).toBe("anon-structure-invalid");
+  });
+
+  it("an entity parent cycle is refused (anon-structure-invalid)", () => {
+    const result = anonymiseHrpnFixture(
+      mutatedInput((raw) => {
+        const entities = raw.entities as Record<string, unknown>[];
+        entities[0]!.parent = "ZONE_BETA";
+        entities[1]!.parent = "ZONE_ALPHA";
+      }),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.refusal).toBe("anon-structure-invalid");
+  });
+
+  it("provenance counts are the raw-measured counts and match the committed structure", () => {
+    const result = anonymiseHrpnFixture(synthInput());
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.provenance.counts).toEqual(countStructure(result.value.structure));
+    expect(result.value.provenance.counts.zones).toBe(3);
+    expect(result.value.provenance.counts.cards).toBe(4);
+    expect(result.value.provenance.counts.relations).toBe(3);
   });
 });
 

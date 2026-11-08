@@ -25,13 +25,19 @@ export function modelsEqual(
   return { equal: true };
 }
 
-/** Apply RFC 6901 JSON patch ops to a value (the subset S4 probes use). */
+/**
+ * Apply RFC 6901/6902 JSON patch ops to a value (the subset S4 probes use).
+ * Pure: the input is deep-cloned first, so applying several probes in a row
+ * never lets one probe's expectation see another's mutation. Array targets
+ * follow RFC 6902 (`remove` splices, `add` inserts at the index or appends on
+ * "-", `replace` overwrites the index).
+ */
 export function applyJsonPatch(value: unknown, ops: readonly { op: string; path: string; value?: unknown }[]): unknown {
-  let current: unknown = value;
+  let current: unknown = structuredClone(value);
   for (const op of ops) {
     const segments = op.path.split("/").filter((s) => s.length > 0).map((s) => s.replace(/~1/g, "/").replace(/~0/g, "~"));
     if (segments.length === 0) {
-      if (op.op === "replace" || op.op === "add") current = op.value;
+      if (op.op === "replace" || op.op === "add") current = structuredClone(op.value);
       continue;
     }
     // Walk to the parent of the last segment.
@@ -41,11 +47,24 @@ export function applyJsonPatch(value: unknown, ops: readonly { op: string; path:
       parent = (parent as Record<string, unknown>)[seg];
     }
     const last = segments[segments.length - 1] as string;
+    if (Array.isArray(parent)) {
+      const idx = last === "-" ? parent.length : Number(last);
+      if (!Number.isInteger(idx) || idx < 0) throw new Error(`patch path not traversable: ${op.path}`);
+      if (op.op === "remove") {
+        if (idx >= parent.length) throw new Error(`patch index out of range: ${op.path}`);
+        parent.splice(idx, 1);
+      } else if (op.op === "add") {
+        parent.splice(idx, 0, structuredClone(op.value));
+      } else {
+        if (idx >= parent.length) throw new Error(`patch index out of range: ${op.path}`);
+        parent[idx] = structuredClone(op.value);
+      }
+      continue;
+    }
     if (typeof parent !== "object" || parent === null) throw new Error(`patch path not traversable: ${op.path}`);
     const record = parent as Record<string, unknown>;
     if (op.op === "remove") delete record[last];
-    else record[last] = op.value;
-    // Arrays: numeric last segment mutates in place through the record view above.
+    else record[last] = structuredClone(op.value);
   }
   return current;
 }

@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export type PinRoot =
   | { readonly kind: "repo" }
@@ -26,6 +27,9 @@ function pinProblem(pin: unknown): string | undefined {
   const p = pin as Record<string, unknown>;
   if (typeof p.id !== "string" || !/^[a-z][a-z0-9-]*$/.test(p.id)) return "pin id invalid";
   if (typeof p.path !== "string" || p.path.length === 0) return "pin path invalid";
+  // §2.4: the pin path is POSIX, relative to the root — no absolute path, no
+  // backslash, no "." or ".." segment.
+  if (p.path.startsWith("/") || p.path.includes("\\")) return "pin path is not POSIX relative";
   if (p.path.split("/").some((seg) => seg === "." || seg === "..")) return "pin path has . or .. segment";
   if (typeof p.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(p.sha256)) return "pin sha256 invalid";
   if (typeof p.bytes !== "number" || !Number.isInteger(p.bytes) || p.bytes < 0) return "pin bytes invalid";
@@ -42,8 +46,11 @@ function pinProblem(pin: unknown): string | undefined {
   return "pin root kind invalid";
 }
 
-export function readFixturePins(file: string): FixturePinFile {
-  const parsed = JSON.parse(readFileSync(file, "utf8")) as unknown;
+/** The package's own pins file, used when `file` is omitted (§2.4). */
+export const DEFAULT_PINS_FILE = fileURLToPath(new URL("../../fixtures/pins.json", import.meta.url));
+
+export function readFixturePins(file?: string): FixturePinFile {
+  const parsed = JSON.parse(readFileSync(file ?? DEFAULT_PINS_FILE, "utf8")) as unknown;
   if (typeof parsed !== "object" || parsed === null) throw new Error("pins file is not an object");
   const file_ = parsed as Record<string, unknown>;
   if (file_.schema !== PINS_SCHEMA) throw new Error(`pins file schema must be ${PINS_SCHEMA}`);

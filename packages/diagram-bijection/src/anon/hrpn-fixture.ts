@@ -119,6 +119,12 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
   for (const key of Object.keys(scene)) if (!SCENE_KEYS.has(key)) return refuse("anon-field-unknown", "unknown scene key");
   if (typeof scene.id !== "string" || scene.id.length === 0) return refuse("anon-value-invalid", "scene.id invalid");
   const sceneId = scene.id as string;
+  // Dropped scene fields (§2.5 table): the value is never kept, but its type
+  // is still checked — the raw-field handling is fail-closed on value types.
+  if (scene.title !== undefined && typeof scene.title !== "string") return refuse("anon-value-invalid", "scene.title invalid");
+  if (scene.caption !== undefined && typeof scene.caption !== "string") return refuse("anon-value-invalid", "scene.caption invalid");
+  if (scene.legendPassages !== undefined && (!Array.isArray(scene.legendPassages) || scene.legendPassages.some((p) => typeof p !== "string")))
+    return refuse("anon-value-invalid", "scene.legendPassages invalid");
 
   // Entities, fail-closed on keys and value types.
   if (!Array.isArray(raw.entities) || !Array.isArray(raw.relations) || !isRecord(raw.zoneHierarchy))
@@ -135,6 +141,12 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
     if (typeof entry.label !== "string") return refuse("anon-value-invalid", "entity label invalid");
     if (entry.tint !== null && typeof entry.tint !== "string") return refuse("anon-value-invalid", "entity tint invalid");
     if (entry.code !== undefined && typeof entry.code !== "string") return refuse("anon-value-invalid", "entity code invalid");
+    // Dropped entity fields (kit faces): value type still checked, fail-closed.
+    if (entry.detail !== undefined && typeof entry.detail !== "string") return refuse("anon-value-invalid", "entity detail invalid");
+    if (entry.footer !== undefined && typeof entry.footer !== "string") return refuse("anon-value-invalid", "entity footer invalid");
+    if (entry.name !== undefined && typeof entry.name !== "string") return refuse("anon-value-invalid", "card name invalid");
+    if (entry.role !== undefined && typeof entry.role !== "string") return refuse("anon-value-invalid", "card role invalid");
+    if (entry.store !== undefined && typeof entry.store !== "string") return refuse("anon-value-invalid", "card store invalid");
     entities.set(entry.id, {
       id: entry.id,
       kind: entry.kind,
@@ -143,6 +155,20 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
       tint: entry.tint as string | null,
       ...(typeof entry.code === "string" ? { code: entry.code } : {}),
     });
+  }
+  // Every non-null parent must name a known entity and the ancestor chain
+  // must terminate (a dangling or cyclic parent would otherwise be mapped
+  // silently, or loop the depth walk of the counts).
+  for (const e of entities.values()) {
+    if (e.parent === null) continue;
+    if (!entities.has(e.parent)) return refuse("anon-structure-invalid", "entity parent unknown");
+    const seen = new Set<string>([e.id]);
+    let cursor: string | null = e.parent;
+    while (cursor !== null) {
+      if (seen.has(cursor)) return refuse("anon-structure-invalid", "entity parent cycle");
+      seen.add(cursor);
+      cursor = entities.get(cursor)?.parent ?? null;
+    }
   }
   const relations: RawRelation[] = [];
   for (const entry of raw.relations) {
@@ -163,7 +189,7 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
   const parseNode = (node: unknown): { node?: ZoneNode; problem?: AnonResult } => {
     if (!isRecord(node)) return { problem: refuse("anon-value-invalid", "zone node is not an object") };
     for (const key of Object.keys(node)) if (!ZH_NODE_KEYS.has(key)) return { problem: refuse("anon-field-unknown", "unknown zone node key") };
-    if (typeof node.id !== "string" || !Array.isArray(node.cards) || !Array.isArray(node.zones))
+    if (typeof node.id !== "string" || typeof node.label !== "string" || !Array.isArray(node.cards) || !Array.isArray(node.zones))
       return { problem: refuse("anon-value-invalid", "zone node invalid") };
     if (node.cards.some((c) => typeof c !== "string")) return { problem: refuse("anon-value-invalid", "zone node cards invalid") };
     const children: ZoneNode[] = [];
@@ -246,11 +272,14 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
   const inner = idsMatch?.[1] ?? "";
   const foldRawIds = [...inner.matchAll(/'([A-Z0-9_]+)'/g)].map((m) => m[1] as string);
   const resolved: string[] = [];
+  const resolvedRaw: string[] = [];
   const unresolved: string[] = [];
   for (const rawId of foldRawIds) {
     const anon = idMap.get(rawId);
-    if (anon !== undefined && entities.get(rawId)?.kind === "zone") resolved.push(anon);
-    else unresolved.push(rawId);
+    if (anon !== undefined && entities.get(rawId)?.kind === "zone") {
+      resolved.push(anon);
+      resolvedRaw.push(rawId);
+    } else unresolved.push(rawId);
   }
   const collapsed = [...new Set(resolved)].sort();
   const expanded = zoneOrder.map((id) => idMap.get(id) as string).filter((anon) => !collapsed.includes(anon)).sort();
@@ -262,7 +291,7 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
     const nn = anon.slice(1);
     const base = {
       id: anon,
-      parent: e.parent === null ? null : (idMap.get(e.parent) ?? null),
+      parent: e.parent === null ? null : (idMap.get(e.parent) as string),
       name: kind === "zone" ? `Zone ${nn}` : `Carte ${nn}`,
       role: kind === "zone" ? `Rôle de la zone ${nn}` : `Rôle de la carte ${nn}`,
       lifecycle: "current" as const,
@@ -302,6 +331,41 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
   };
   const structureCheck = validateStructure(structure);
   if (!structureCheck.ok) return refuse("anon-structure-invalid", "generated structure failed validation");
+
+  // §2.5 provenance: `counts` are measured on the raw input, not on the
+  // anonymised output. Count the raw-id view of the same scene and refuse if
+  // the anonymisation changed the shape; the raw counts are what is committed.
+  const rawEntityOf = (rawId: string): StructureEntity => {
+    const e = entities.get(rawId) as RawEntity;
+    return {
+      id: rawId,
+      parent: e.parent,
+      name: e.label,
+      role: "",
+      lifecycle: "current",
+      ...(e.tint !== null ? { category: e.tint } : {}),
+    };
+  };
+  const foldedRaw = new Set(resolvedRaw);
+  const rawStructure: SceneStructure = {
+    schema: "ds.scene-structure/1",
+    sceneId,
+    language: input.language,
+    evidence: `raw scene ${sceneId}`,
+    zones: zoneOrder.map(rawEntityOf),
+    cards: cardOrder.map(rawEntityOf),
+    relations: relations.map((r) => ({
+      id: r.id,
+      from: r.from,
+      to: r.to,
+      label: r.label,
+      lifecycle: (r.style === "solid" ? "current" : "proposed") as "current" | "proposed",
+    })),
+    expanded: zoneOrder.filter((id) => !foldedRaw.has(id)).sort(),
+  };
+  const rawCounts = countStructure(rawStructure);
+  if (JSON.stringify(rawCounts) !== JSON.stringify(countStructure(structure)))
+    return refuse("anon-structure-invalid", "raw and anonymised counts differ");
 
   // Mapping (out of repo only) and raw token sources (out of repo only).
   const entries: { field: AnonField; raw: string; anon: string }[] = [];
@@ -347,7 +411,7 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
       { pinId: input.folds.pin.id, sha256: input.folds.pin.sha256 },
     ],
     generator: { name: "@sentropic/diagram-bijection", version: PACKAGE_VERSION, dsCommit: "unknown" },
-    counts: countStructure(structure),
+    counts: rawCounts,
     folds: { sourceIds: foldRawIds.length, resolved: resolved.length, unresolved: unresolved.length },
   };
 

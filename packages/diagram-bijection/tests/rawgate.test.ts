@@ -259,3 +259,90 @@ describe("W-DL0.10 CLI exit codes", () => {
     expect(required.status).toBe(1);
   });
 });
+
+describe("W-DL0.10 review findings: per-(line,digest) dedupe, allow-reason gate, digest-file validation", () => {
+  it("GLM 3: the same canary word on two lines of one file yields one hit per line; repeated on one line it is deduped", () => {
+    const key = rawgate.newKey();
+    const c = canaries();
+    const { file } = buildFile(key, c);
+    const repo = makeRepo(
+      {
+        "dup.txt": [
+          `the ${c.word} and ${c.word} again`, // same digest twice on line 1 -> one hit
+          "clean middle line",
+          `the ${c.word} token`, // line 3 -> second hit
+        ].join("\n") + "\n",
+      },
+      ["clean message"],
+    );
+    const r = rawgate.scanTree({ key, file, repoRoot: repo.dir });
+    const words = r.hits.filter((h) => h.kind === "word");
+    expect(words.map((h) => h.line)).toEqual([1, 3]);
+    expect(words.every((h) => h.file === "dup.txt")).toBe(true);
+    expect(r.hits.filter((h) => h.kind !== "word")).toEqual([]);
+  });
+
+  it("Argon 6 / GLM 4a: an allow reason that digests to a guarded digest is refused by validateAllowReasons and by the CLI (exit 1)", () => {
+    const key = rawgate.newKey();
+    const c = canaries();
+    const built = buildFile(key, c);
+    const canaryDigest = rawgate.digest(key, "text", c.word);
+    const file: rawgate.RawgateDigestFile = {
+      ...built.file,
+      allow: [{ digest: canaryDigest, reason: `cleared because of ${c.word}` }],
+    };
+    // the reason carries the raw token: its own digest is guarded
+    expect(rawgate.validateAllowReasons(key, file)).toBeTruthy();
+    // a clean reason passes
+    const cleanFile: rawgate.RawgateDigestFile = {
+      ...built.file,
+      allow: [{ digest: canaryDigest, reason: "operator-cleared token (test)" }],
+    };
+    expect(rawgate.validateAllowReasons(key, cleanFile)).toBeNull();
+
+    const dir = tempDir();
+    const digestsPath = writeDigests(dir, file);
+    const repo = makeRepo({ "plain.txt": "ordinary\n" }, ["clean message"]);
+    const run = scanCli(["scan", "--tree", "--repo", repo.dir, "--digests", digestsPath], {
+      PATH: process.env.PATH ?? "",
+      HOME: dir,
+      DL_ANON_HOME: join(dir, "empty-home"),
+      DL_RAWGATE_KEY: Buffer.from(key).toString("hex"),
+    });
+    expect(run.status).toBe(1);
+    expect(run.stderr).toContain("allow");
+    expect(run.stderr).not.toContain(c.word);
+  });
+
+  it("GLM 4b: unsorted digests or a non-32-hex allow digest make the CLI refuse the digests file (exit 1)", () => {
+    const key = rawgate.newKey();
+    const c = canaries();
+    const built = buildFile(key, c);
+    const dir = tempDir();
+    const repo = makeRepo({ "plain.txt": "ordinary\n" }, ["clean message"]);
+    const env: Record<string, string> = {
+      PATH: process.env.PATH ?? "",
+      HOME: dir,
+      DL_ANON_HOME: join(dir, "empty-home"),
+      DL_RAWGATE_KEY: Buffer.from(key).toString("hex"),
+    };
+
+    const unsorted: rawgate.RawgateDigestFile = {
+      ...built.file,
+      digests: [...built.file.digests].reverse(),
+    };
+    const p1 = writeDigests(dir, unsorted);
+    const r1 = scanCli(["scan", "--tree", "--repo", repo.dir, "--digests", p1], env);
+    expect(r1.status).toBe(1);
+    expect(r1.stderr).toContain("invalid digests file");
+
+    const badAllow: rawgate.RawgateDigestFile = {
+      ...built.file,
+      allow: [{ digest: "not-hex", reason: "x" }],
+    };
+    const p2 = writeDigests(dir, badAllow);
+    const r2 = scanCli(["scan", "--tree", "--repo", repo.dir, "--digests", p2], env);
+    expect(r2.status).toBe(1);
+    expect(r2.stderr).toContain("invalid digests file");
+  });
+});

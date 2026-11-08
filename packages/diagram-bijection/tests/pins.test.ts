@@ -14,7 +14,7 @@ import { readFixturePins, verifyFixturePin, type FixturePin } from "../src/pins/
 
 const pkgRoot = fileURLToPath(new URL("..", import.meta.url));
 const repoRoot = execFileSync("git", ["-C", pkgRoot, "rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-const pins = readFixturePins(join(pkgRoot, "fixtures", "pins.json"));
+const pins = readFixturePins();
 
 const tmpDirs: string[] = [];
 afterEach(() => {
@@ -38,7 +38,7 @@ describe("W-DL0.7 fixture pins", () => {
 
   it("a one-byte change of a temporary copy is caught with the actual digest", async () => {
     const dir = tempDir();
-    const src = join(repoRoot, "packages/diagram-bijection/fixtures/structures/tiny.structure.json");
+    const src = join(repoRoot, "packages/diagram-bijection/fixtures/synthetic/tiny.structure.json");
     const copy = join(dir, "fixture.json");
     copyFileSync(src, copy);
     const pin: FixturePin = {
@@ -95,6 +95,22 @@ describe("W-DL0.7 fixture pins", () => {
     expect(text).not.toContain("/home/");
     for (const pin of pins.pins) {
       expect(pin.path.split("/").some((seg) => seg === "." || seg === "..")).toBe(false);
+    }
+  });
+
+  it("the tiny pin lives under fixtures/synthetic/ per the §1 tree", () => {
+    const tiny = pins.pins.find((p) => p.id === "tiny");
+    expect(tiny).toBeDefined();
+    expect(tiny?.path).toBe("packages/diagram-bijection/fixtures/synthetic/tiny.structure.json");
+  });
+
+  it("a pin path that is absolute or holds a backslash is rejected (§2.4 POSIX relative)", () => {
+    const dir = tempDir();
+    const base = JSON.parse(readFileSync(join(pkgRoot, "fixtures/pins.json"), "utf8")) as { pins: Record<string, unknown>[] };
+    for (const badPath of ["/etc/passwd", "fixtures\\pins.json"]) {
+      const file = join(dir, "pins.json");
+      writeFileSync(file, JSON.stringify({ schema: "ds.fixture-pins/1", pins: [{ ...base.pins[0], path: badPath }] }));
+      expect(() => readFixturePins(file)).toThrow(/POSIX relative/);
     }
   });
 });

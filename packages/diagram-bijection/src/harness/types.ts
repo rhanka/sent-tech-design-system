@@ -40,7 +40,8 @@ export interface LoadedFixture { readonly model: CanonicalModel; readonly folds:
 export interface ExportedFile { readonly bytes: Uint8Array; readonly mediaType: string }
 export interface ImportedFile { readonly model: CanonicalModel; readonly fold: FoldState }
 
-export interface JsonPatchOp { readonly op: "add" | "remove" | "replace"; readonly path: string; readonly value?: unknown }export type ProbeExpectation =
+export interface JsonPatchOp { readonly op: "add" | "remove" | "replace"; readonly path: string; readonly value?: unknown }
+export type ProbeExpectation =
   | { readonly kind: "model"; readonly record: string; readonly patch: readonly JsonPatchOp[] }
   | { readonly kind: "refused"; readonly code: string };
 export interface EditProbe {
