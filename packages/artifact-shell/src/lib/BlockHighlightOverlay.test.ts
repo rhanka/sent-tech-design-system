@@ -172,6 +172,18 @@ describe("W-1.5 BlockHighlightOverlay (F-H1 / F-H2 / F-H3)", () => {
     expect(COMPILED_CSS).toMatch(/\.st-blockHighlightOverlay[^{]*\{[^}]*z-index:\s*1/);
   });
 
+  it("chip is positioned inside the block rect (scope §6.4 F2: leaving every stamped block clears the highlight, so the pointer path block → chip must never leave block.rect)", () => {
+    // Falsifiable: fails with `top: 100%` + margin (chip outside the rect,
+    // unmounted on approach before its click can land).
+    // [^{]* spans the svelte scoping hash; the chip rule is the first
+    // `.st-blockHighlightOverlay__chip…` selector in the compiled CSS
+    const chipRule = COMPILED_CSS.match(/\.st-blockHighlightOverlay__chip[^{]*\{[^}]*\}/)?.[0] ?? "";
+    expect(chipRule).toMatch(/top:\s*var\(--st-spacing-1,\s*0\.25rem\)/);
+    expect(chipRule).toMatch(/right:\s*var\(--st-spacing-1,\s*0\.25rem\)/);
+    expect(chipRule).not.toMatch(/top:\s*100%/);
+    expect(chipRule).not.toMatch(/margin-top/);
+  });
+
   it("F-R1 reduced motion: compiled component zeroes durations under the media query", () => {
     const media = COMPILED_CSS.slice(COMPILED_CSS.indexOf("@media (prefers-reduced-motion: reduce)"));
     expect(media).toContain("@media (prefers-reduced-motion: reduce)");

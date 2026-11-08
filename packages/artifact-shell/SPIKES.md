@@ -482,7 +482,7 @@ for the run and restored byte-identical, sha256 `eff518b2…` verified after
 restore) — exit 1 each:
 
 - W-1.1 `CommentModeToggle.test.ts` — `Failed to resolve import "./CommentModeToggle.svelte"`, `Test Files 1 failed (1)`
-- W-1.2/1.3/1.4/1.8/1.10 `CommentModeStatus.test.ts` — `Failed to resolve import "./BlockCandidateList.svelte"` (harness import), `Test Files 1 failed (1)`
+- W-1.2/1.3/1.4/1.8/1.10 `CommentModeStatus.test.ts` — `Failed to resolve import "./CommentModeStatus.svelte"`, `Test Files 1 failed (1)` (re-observed at the reconciliation head, §16 Opus N-11 below)
 - W-1.5 `BlockHighlightOverlay.test.ts` — `Failed to resolve import "./BlockHighlightOverlay.svelte"`, `Test Files 1 failed (1)`
 - W-1.6 `LassoLayer.test.ts` — `Failed to resolve import "./LassoLayer.svelte"`, `Test Files 1 failed (1)`
 - W-1.7/1.9 `BlockCandidateList.test.ts` — `Failed to resolve import "./BlockCandidateList.svelte"`, `Test Files 1 failed (1)`
@@ -602,8 +602,11 @@ Two independent reviews (Argon `scratchpad/rev/as1-rev-argon.out`, Opus
 — no rebase, no merge of main, no force-push, no stash (conductor
 instruction). The frozen spec `scratchpad/artifact-shell/as01-spec-frozen.md`
 wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
-`bfa032e9`, `d3f0d57c`, `e2f54ad9`, `d89f9b0f` (head at reconciliation:
-`d89f9b0f`; this SPIKES commit is the final one on top).
+`bfa032e9`, `d3f0d57c`, `e2f54ad9`, `d89f9b0f` (first-pass reconciliation head:
+`d89f9b0f`), `b2bbccf1` (the §16 record itself), then the CI-driven
+browser-witness fixes fix4..fix7 `a26ce4be`, `ea40c9cd`, `aca1a61e`,
+`ab17f6f6` (second-pass head: `ab17f6f6`), and fix8 — this commit, the final
+one on top.
 
 ### Accepted items R1–R6 (applied)
 
@@ -614,9 +617,9 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
   same in the other two), cover all five components through real hooks on
   `window.__shell` (`setHovered`/`setSelected`/`setLasso`/`openList`/
   `closeList`/`setChangeOpensList`/`setCancelOpensList`,
-  `comment-mode.browser.test.mjs:140-150`), query the nodes that carry the
+  `comment-mode.browser.test.mjs:134-152`), query the nodes that carry the
   styles (`.st-lassoLayer__band`/`__fill`, the active row's inset bar —
-  `BlockCandidateList.browser.test.mjs:262-270`), and contain no
+  `BlockCandidateList.browser.test.mjs:300-316`), and contain no
   `|| true` tautology. CI: `.github/workflows/verify.yml:187-211` adds
   "Set up Chrome for browser witnesses" + "Browser witnesses B-1..B-3
   (artifact-shell)" to the `verify` job, gated on
@@ -630,7 +633,7 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
   `border-width: var(--st-border-width-thick, 2px)`, selected light stroke
   `inset: var(--st-border-width-thick, 2px)` so the inner stroke cannot
   occlude the weight increase (hover 1+1px, selected 2+1px). B-1 exercises
-  `selected` in all 4 cells (`BlockHighlightOverlay.browser.test.mjs:288-323`:
+  `selected` in all 4 cells (`BlockHighlightOverlay.browser.test.mjs:368-434`:
   2px outer, 2px inset, combined selected > combined hover, selected outline
   still >= 3:1, selected chip anchors); the jsdom half asserts the same
   rules in `BlockHighlightOverlay.test.ts`.
@@ -665,7 +668,7 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
   (row when open; status root when `via === "change"`; toggle button
   otherwise), and a dedicated test at line 605 drives both closed-list
   fallbacks. B-3 drives the same branches in real Chromium
-  (`comment-mode.browser.test.mjs:417-448`).
+  (`comment-mode.browser.test.mjs:418-520`).
 - **R6** — this record: §10 CA-L1 corrected (the fold-in is `0893e2ac` on
   this branch; registration is `parity-baseline.json` `expectedParity` +
   `gaps` row + `contract-baseline.json` + `generated/contracts/labelled-icon-button.json`
@@ -734,6 +737,50 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
   adds `testTimeout: 20000` to the existing `test` block (Opus extra check 7:
   `tests/m1e-migrations.test.ts` timeouts under a full CI scan).
 
+### Second-pass review record (Argon `scratchpad/rev/as1-rev2-argon.out`, NOT MERGEABLE) — fix4..fix8
+
+The second-pass review found one blocking COMPONENT defect (finding 1) plus
+two non-blocking items (findings 2–3), all fixed in fix8 (this commit):
+
+- **fix4** `a26ce4be` — B-1 hover aim is computed from the block rect measured
+  in the live page, not a hardcoded viewport point (assertion integrity:
+  removing hover rendering still fails B-1).
+- **fix5** `ea40c9cd` — B-1 selected-outline contrast reads the dual pair per
+  page (the page-appropriate stroke holds >= 3:1). Its harness half kept
+  `hovered` alive over the overlay chip (`overOverlay`) — **reverted by
+  fix8**: the spec assigns no overlay-target inspection to the host (scope
+  §6.4 F2, §9.2, AC-9b); the defect was in the component, not the witness.
+- **fix6** `aca1a61e` — B-3 step 5 expects focus on the selected row
+  (`aria-selected` + `data-block-key === window.__shell.selectedKey`), not a
+  hardcoded key (spec §5.6).
+- **fix7** `ab17f6f6` — B-3 harness `setSelected` stores the key string
+  (`OpaqueKey | null`), never the block object.
+- **fix8** (this commit) — finding 1 (blocking): the action chip is positioned
+  INSIDE `block.rect` (`top`/`right: var(--st-spacing-1, 0.25rem)`,
+  `BlockHighlightOverlay.svelte`), so the pointer stays inside the stamped
+  block during approach and activation and the chip no longer unmounts before
+  its click. The spec fixes no exact chip placement — its only placement
+  clauses are that the overlay root never captures pointer events and never
+  covers the chip's own rect with a capturing layer (§5.3a), both satisfied
+  by an in-rect chip. The B-1 harness hit layer is pure rect hit-testing again
+  (`overOverlay`/`hoveredKey` removed), both chip clicks approach the chip
+  centre in 5 `mousemove` steps before `down`/`up`
+  (`BlockHighlightOverlay.browser.test.mjs:355-366` hover, `:424-433`
+  selected), with a new assertion that the chip is still mounted on approach,
+  and a new jsdom witness asserts the compiled chip rule is inset by
+  `--st-spacing-1` and fails with `top: 100%` (`BlockHighlightOverlay.test.ts:175-185`).
+  Findings 2–3: the B-3 status `onAnchor` sets `selectedKey = activeKey`
+  (`comment-mode.browser.test.mjs:176`) and the step 7 open-list predicate is
+  tightened to the selected row (`aria-selected === 'true'`,
+  `data-block-key === 'sentinel-block-key-1'`, `comment-mode.browser.test.mjs:481-486`);
+  §11's stale RED message (line 485) is corrected to
+  `./CommentModeStatus.svelte` (as re-observed under Opus N-11 above), and
+  this §16 now records fix4..fix8 with current line numbers (R1
+  `comment-mode.browser.test.mjs:134-152`,
+  `BlockCandidateList.browser.test.mjs:300-316`; R2
+  `BlockHighlightOverlay.browser.test.mjs:368-434`; R5
+  `comment-mode.browser.test.mjs:418-520`).
+
 ### Scoped verification at the reconciliation head (all exit 0)
 
 - `npm test -w @sentropic/design-system-artifact-shell` — `Test Files 7
@@ -753,3 +800,12 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
   `verify` job runs them on CI; the harness build itself (path resolution,
   vite + svelte compile of the embedded apps) was exercised locally without
   launching a browser.
+
+Re-run at fix8 (this commit, all exit 0): `npm test -w
+@sentropic/design-system-artifact-shell` — `Test Files 7 passed (7)`,
+`Tests 77 passed (77)` (76 + the new chip-position witness), gate
+`examined 8 source files (floor 8)`; `node --check` green on all three
+`*.browser.test.mjs` witnesses. Browser rows B-1..B-3 remain **not run
+(host GPU)** locally and CI-wired (§12) — the stepped-approach chip clicks
+and the tightened step 7 predicate are exercised by CI's verbatim
+`node <file>` runs.
