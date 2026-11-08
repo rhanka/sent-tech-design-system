@@ -148,7 +148,29 @@ const HARNESS_APP = `
     closeList() { listOpen = false; },
     focusStatus() { statusRootEl()?.focus(); },
     setChangeOpensList(value) { changeOpensList = value; },
-    setCancelOpensList(value) { cancelOpensList = value; }
+    setCancelOpensList(value) { cancelOpensList = value; },
+    // Every B-3 section starts from this explicitly established state so no
+    // earlier step can leak into a later one. In particular a leftover
+    // selectedKey renders the overlay chip inside that block's rect — block 1
+    // sits under the toggle button — and the chip is the overlay's only
+    // pointer target (§5.3a: root pointer-events none, chip auto), so it
+    // would swallow the next toggle click and anchor (mode composing)
+    // instead of toggling the mode Off.
+    reset() {
+      mode = "off";
+      activeKey = null;
+      selectedKey = null;
+      listOpen = false;
+      hovered = null;
+      lassoActive = false;
+      lassoRect = null;
+      announcement = "";
+      cycleStep = 0;
+      via = null;
+      changeOpensList = true;
+      cancelOpensList = true;
+      syncFocus();
+    }
   };
 </script>
 
@@ -387,7 +409,20 @@ async function main() {
     await page.goto(`${base}/`, { waitUntil: "load", timeout: 30000 });
     await waitFor("shell ready", "window.__shellReady === true", modeInputs, { timeout: 30000 });
 
+    // Reset helper: each B-3 section below starts from this explicitly
+    // established state (mode Off, no active/selected key, list closed, no
+    // overlay/lasso) so earlier steps cannot leak state into later ones.
+    const resetShell = async () => {
+      await page.evaluate(() => window.__shell.reset());
+      await waitFor(
+        "reset: shell established at Off with nothing selected or open",
+        "window.__shell.mode === 'off' && window.__shell.activeKey === null && window.__shell.selectedKey === null && window.__shell.listOpen === false && document.querySelector('[data-st-shell=\"block-highlight-overlay\"]') === null",
+        modeInputs
+      );
+    };
+
     // --- real :hover tooltip visibility on the toggle (fold-in proof) ---
+    await resetShell();
     const toggleBox = await (await page.$('[data-st-shell="comment-mode-toggle"] button')).boundingBox();
     await page.mouse.move(toggleBox.x + toggleBox.width / 2, toggleBox.y + toggleBox.height / 2);
     await waitFor(
@@ -407,6 +442,7 @@ async function main() {
     assert(true, "B-3 tooltip hides when the pointer leaves", "");
 
     // --- real :focus tooltip visibility ---
+    await resetShell();
     await page.focus('[data-st-shell="comment-mode-toggle"] button');
     await waitFor(
       "focus shows the tooltip",
@@ -416,6 +452,7 @@ async function main() {
     assert(true, "B-3 real :focus shows the tooltip (focus-within)", "");
 
     // --- real focus trail (§5.6 steps 1–7, both branches of steps 5 and 7) ---
+    await resetShell();
     // step 1: toggle activated -> Armed, focus on the status root
     await page.click('[data-st-shell="comment-mode-toggle"] button');
     await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
@@ -522,10 +559,13 @@ async function main() {
     // --- reduced-motion emulation: zero animation on all five components ---
     await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
     // mount every component in its visible state: toggle pressed (armed),
-    // status visible, overlay selected, lasso active, list open. The trail
-    // above left mode=selected, so the first click exits to Off, the second
-    // re-enters Armed.
-    await page.click('[data-st-shell="comment-mode-toggle"] button');
+    // status visible, overlay selected, lasso active, list open. Start from
+    // the explicitly established Off state: the §5.6 trail above leaves
+    // selectedKey set, and the overlay chip rendered inside that block's rect
+    // covers the toggle button — the chip is the overlay's only pointer
+    // target (§5.3a) and would swallow the click and anchor (mode composing)
+    // instead of toggling — so reset first, then a single click enters Armed.
+    await resetShell();
     await waitFor("mode back to off", "window.__shell.mode === 'off'", modeInputs);
     await page.click('[data-st-shell="comment-mode-toggle"] button');
     await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
