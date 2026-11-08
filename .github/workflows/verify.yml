@@ -184,6 +184,33 @@ jobs:
         if: matrix.task == 'test'
         run: node scripts/run-workspaces.mjs test --workspaces="${{ matrix.workspaces }}"
 
+      # Browser witnesses B-1..B-3 (artifact-shell lot AS-1, spec §8.2): the
+      # workspace `npm test` runs vitest only, which excludes
+      # *.browser.test.mjs, so the three `node <file>` rows run here verbatim
+      # on a real Chromium — this step is the CI evidence §8.2 requires before
+      # merge (local runs stay `not run (host GPU)`). Guarded on the `test`
+      # task so the browser runs once per shard, and on the artifact-shell
+      # workspace so only the shard that owns the witnesses pays for Chrome.
+      # `contains()` on the comma-separated workspace list is unambiguous —
+      # `@sentropic/design-system-artifact-shell` is the only workspace name
+      # holding that substring (measured).
+      - name: Set up Chrome for browser witnesses
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-artifact-shell')
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Browser witnesses B-1..B-3 (artifact-shell)
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-artifact-shell')
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: |
+          node packages/artifact-shell/src/lib/BlockHighlightOverlay.browser.test.mjs
+          node packages/artifact-shell/src/lib/BlockCandidateList.browser.test.mjs
+          node packages/artifact-shell/src/lib/comment-mode.browser.test.mjs
+
       - name: pack-smoke
         if: matrix.task == 'pack-smoke'
         run: node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"
