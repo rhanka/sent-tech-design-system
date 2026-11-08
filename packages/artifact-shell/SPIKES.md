@@ -605,8 +605,8 @@ wins over any review text. Commits: `35e81d0c`, `d82d5497`, `12c97b6f`,
 `bfa032e9`, `d3f0d57c`, `e2f54ad9`, `d89f9b0f` (first-pass reconciliation head:
 `d89f9b0f`), `b2bbccf1` (the §16 record itself), then the CI-driven
 browser-witness fixes fix4..fix7 `a26ce4be`, `ea40c9cd`, `aca1a61e`,
-`ab17f6f6` (second-pass head: `ab17f6f6`), and fix8 — this commit, the final
-one on top.
+`ab17f6f6` (second-pass head: `ab17f6f6`), fix8 `76a9e7f8`, fix9 `1a0e9df8`,
+and fix10 — this commit, the final one on top.
 
 ### Accepted items R1–R6 (applied)
 
@@ -617,7 +617,7 @@ one on top.
   same in the other two), cover all five components through real hooks on
   `window.__shell` (`setHovered`/`setSelected`/`setLasso`/`openList`/
   `closeList`/`setChangeOpensList`/`setCancelOpensList`,
-  `comment-mode.browser.test.mjs:134-152`), query the nodes that carry the
+  `comment-mode.browser.test.mjs:134-178`), query the nodes that carry the
   styles (`.st-lassoLayer__band`/`__fill`, the active row's inset bar —
   `BlockCandidateList.browser.test.mjs:300-316`), and contain no
   `|| true` tautology. CI: `.github/workflows/verify.yml:187-211` adds
@@ -668,7 +668,7 @@ one on top.
   (row when open; status root when `via === "change"`; toggle button
   otherwise), and a dedicated test at line 605 drives both closed-list
   fallbacks. B-3 drives the same branches in real Chromium
-  (`comment-mode.browser.test.mjs:418-520`).
+  (`comment-mode.browser.test.mjs:459-561`).
 - **R6** — this record: §10 CA-L1 corrected (the fold-in is `0893e2ac` on
   this branch; registration is `parity-baseline.json` `expectedParity` +
   `gaps` row + `contract-baseline.json` + `generated/contracts/labelled-icon-button.json`
@@ -770,16 +770,69 @@ two non-blocking items (findings 2–3), all fixed in fix8 (this commit):
   and a new jsdom witness asserts the compiled chip rule is inset by
   `--st-spacing-1` and fails with `top: 100%` (`BlockHighlightOverlay.test.ts:175-185`).
   Findings 2–3: the B-3 status `onAnchor` sets `selectedKey = activeKey`
-  (`comment-mode.browser.test.mjs:176`) and the step 7 open-list predicate is
+  (`comment-mode.browser.test.mjs:202`) and the step 7 open-list predicate is
   tightened to the selected row (`aria-selected === 'true'`,
-  `data-block-key === 'sentinel-block-key-1'`, `comment-mode.browser.test.mjs:481-486`);
+  `data-block-key === 'sentinel-block-key-1'`, `comment-mode.browser.test.mjs:522-526`);
   §11's stale RED message (line 485) is corrected to
   `./CommentModeStatus.svelte` (as re-observed under Opus N-11 above), and
   this §16 now records fix4..fix8 with current line numbers (R1
-  `comment-mode.browser.test.mjs:134-152`,
+  `comment-mode.browser.test.mjs:134-178`,
   `BlockCandidateList.browser.test.mjs:300-316`; R2
   `BlockHighlightOverlay.browser.test.mjs:368-434`; R5
-  `comment-mode.browser.test.mjs:418-520`).
+  `comment-mode.browser.test.mjs:459-561`).
+
+### Third-pass review record (GLM `scratchpad/rev/as1-rev3-glm.md`, NOT MERGEABLE) — fix9, fix10
+
+The third-pass review found one blocking witness defect (finding 1) plus
+three non-blocking items (findings 3–5), fixed in fix9 + fix10:
+
+- **fix9** `1a0e9df8` — witness-only: every B-3 section now starts from an
+  explicitly established Off state via `window.__shell.reset()`
+  (`comment-mode.browser.test.mjs:163-177`, helper `resetShell` at
+  `:419-427`), so no earlier step can leak into a later one — in particular
+  a trail-leaked `selectedKey` renders the in-rect chip over the toggle and
+  swallows the next toggle click.
+- **CI run 6 RED** (`Verify` 42437426089 at the fix8 head `76a9e7f8`, log
+  `scratchpad/artifact-shell/as1-ci-run6.log`): B-1 and B-2 green, B-3 green
+  through the whole §5.6 trail, then RED in the reduced-motion section —
+  exactly the leak fix9 removes: the leaked `selectedKey` = block 1 rendered
+  the in-rect chip over the toggle, the click anchored (mode `composing`,
+  focus on `composer-stub-field`) instead of toggling Off.
+- **CI run 7 RED** (`Verify` 42439469203 at the fix9 head `1a0e9df8`):
+  B-1 green in all 4 cells and B-2 green (fix8's component fix CI-proven at
+  that head), but B-3 RED in its first hover section — finding 1 below.
+- **fix10** (this commit) — **finding 1 (blocking, witness only)**: fix9's
+  `reset()` called `syncFocus()`, which focuses the toggle in Off mode; the
+  fold-in tooltip shows on `:hover` OR `:focus-within`, so the hover section
+  started with the tooltip already visible from focus — the "pointer leave
+  hides the tooltip" wait was unsatisfiable and the "hover shows" wait was
+  confounded (a real `:hover` regression would have passed). `reset()` is now
+  focus-neutral: `syncFocus()` removed, any retained focus blurred
+  (`comment-mode.browser.test.mjs:163-177`). No later section relied on the
+  reset's focus — each section's own first action establishes it (hover
+  section needs none `:428-446`; focus section `page.focus` at `:450`; trail
+  and reduced-motion start with a toggle click `:461`/`:581`), so both hover
+  assertions isolate the real `:hover` cue again. **Finding 5**: the vacuous
+  "mode back to off" wait in the reduced-motion section (already implied by
+  `resetShell`'s own wait) is replaced by a falsifiable focus-neutrality wait
+  (`comment-mode.browser.test.mjs:576-580`) that fails if `reset()` ever
+  focuses again. **Findings 3–4** are recorded in this §16 update and the
+  AC-9/AC-9b note below. Next CI run: **placeholder** — link the green
+  `Verify` run at this head here before merging (§8.2: the CI run is the
+  evidence; runs 6 and 7 are RED as recorded above).
+- **Finding 4 — AC-9/AC-9b integration note (SD-side observation)**: the
+  chip sits inside `block.rect` (`BlockHighlightOverlay.svelte:148-151`,
+  `pointer-events: auto` at `:162`), so its hit area covers a top-right slice
+  of the block's content and of any host control intersecting the rect
+  interior — proven in this lot's own fixture, where block 1's rect sits
+  under the comment-mode toggle and a selected block-1 chip swallowed the
+  toggle's click (CI run 6). The frozen spec does not forbid this (§5.3a
+  constrains only the overlay root and the chip's own rect), and §6.4 F2 +
+  AC-9b's pure block-rect hit-testing in fact require an in-rect chip for the
+  approach path to survive. AC-9/AC-9b integration (runtime lots owned by
+  Sentropic/immo, spec §9) owns real-page layout and retains the last say:
+  hosts must not place controls under a stamped block's top-right corner (or
+  host CSS re-positions the chip); otherwise AS-2 revisits the placement.
 
 ### Scoped verification at the reconciliation head (all exit 0)
 
@@ -801,11 +854,13 @@ two non-blocking items (findings 2–3), all fixed in fix8 (this commit):
   vite + svelte compile of the embedded apps) was exercised locally without
   launching a browser.
 
-Re-run at fix8 (this commit, all exit 0): `npm test -w
+Re-run at fix10 (this commit, all exit 0): `npm test -w
 @sentropic/design-system-artifact-shell` — `Test Files 7 passed (7)`,
-`Tests 77 passed (77)` (76 + the new chip-position witness), gate
+`Tests 77 passed (77)` (76 + the chip-position witness), gate
 `examined 8 source files (floor 8)`; `node --check` green on all three
 `*.browser.test.mjs` witnesses. Browser rows B-1..B-3 remain **not run
-(host GPU)** locally and CI-wired (§12) — the stepped-approach chip clicks
-and the tightened step 7 predicate are exercised by CI's verbatim
-`node <file>` runs.
+(host GPU)** locally and CI-wired (§12) — the focus-neutral section reset,
+the stepped-approach chip clicks and the tightened step 7 predicate are
+exercised by CI's verbatim `node <file>` runs (runs 6 and 7 RED as recorded
+in the third-pass record above; the `Verify` run at this head is the §8.2
+evidence — link it there before merging).
