@@ -155,7 +155,11 @@ const HARNESS_APP = `
     // sits under the toggle button — and the chip is the overlay's only
     // pointer target (§5.3a: root pointer-events none, chip auto), so it
     // would swallow the next toggle click and anchor (mode composing)
-    // instead of toggling the mode Off.
+    // instead of toggling the mode Off. The reset is also focus-neutral: no
+    // syncFocus() here, and any retained focus is blurred — the fold-in
+    // tooltip shows on :hover OR :focus-within, so a focused toggle would
+    // keep it visible through the hover section's pointer-leave wait. Each
+    // section's own first action (click or page.focus) establishes its focus.
     reset() {
       mode = "off";
       activeKey = null;
@@ -169,7 +173,7 @@ const HARNESS_APP = `
       via = null;
       changeOpensList = true;
       cancelOpensList = true;
-      syncFocus();
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     }
   };
 </script>
@@ -566,7 +570,14 @@ async function main() {
     // target (§5.3a) and would swallow the click and anchor (mode composing)
     // instead of toggling — so reset first, then a single click enters Armed.
     await resetShell();
-    await waitFor("mode back to off", "window.__shell.mode === 'off'", modeInputs);
+    // the reset is focus-neutral: nothing inside the shell holds focus, so
+    // the click below is a real toggle (this wait fails if reset() ever
+    // focuses the toggle again)
+    await waitFor(
+      "reset leaves focus outside the shell",
+      "!document.activeElement || document.activeElement.closest('[data-st-shell]') === null",
+      modeInputs
+    );
     await page.click('[data-st-shell="comment-mode-toggle"] button');
     await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     await page.evaluate(() => {
