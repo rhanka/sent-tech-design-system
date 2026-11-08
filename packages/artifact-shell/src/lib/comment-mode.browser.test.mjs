@@ -362,6 +362,8 @@ async function main() {
       shellReady: window.__shellReady === true,
       mode: window.__shell?.mode ?? null,
       listOpen: window.__shell?.listOpen ?? null,
+      selectedKey: window.__shell?.selectedKey ?? null,
+      activeKey: window.__shell?.activeKey ?? null,
       activeElement: document.activeElement
         ? (document.activeElement.getAttribute("data-st-shell") || document.activeElement.id || document.activeElement.tagName)
         : null,
@@ -430,14 +432,19 @@ async function main() {
     await waitFor("focus on the status root", `${activeElementShell} === 'comment-mode-status'`, modeInputs);
     assert(true, "B-3 step 4: publish returns to Armed with focus on the status root", "");
     // step 5 (list open): re-enter composing, then "Change block" -> Selected
-    // with the list open, focus on the selected block's candidate row
+    // with the list open, focus on the selected block's candidate row.
+    // §5.6 step 5 defines the focus holder as the row of the SELECTED block
+    // (the list's selectedKey / aria-selected row), not a fixed key: the
+    // re-entry ArrowDown above legitimately cycles the active row, and the
+    // harness's "Change block" handler selects that active block — so the
+    // expectation reads the shell's selectedKey instead of a hardcoded key.
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
     await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.click("#composer-stub-change");
     await waitFor(
       "step 5: focus on the selected row",
-      "document.activeElement && document.activeElement.getAttribute('role') === 'option' && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
+      "document.activeElement && document.activeElement.getAttribute('role') === 'option' && document.activeElement.getAttribute('aria-selected') === 'true' && document.activeElement.getAttribute('data-block-key') === window.__shell.selectedKey",
       modeInputs
     );
     assert(true, "B-3 step 5 (list open): focus on the selected block's candidate row", "");
