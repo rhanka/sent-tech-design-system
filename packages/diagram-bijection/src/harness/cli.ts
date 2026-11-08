@@ -11,6 +11,7 @@ import { enumerateFoldStates } from "./fold-states.js";
 import { fixtureGoldenStore, goldensFilePath, type GoldensFile } from "./goldens.js";
 import { loadStructureFixture, stubCardsRenderer, stubJsonCodec } from "../formats/stub-json.js";
 import { readFixturePins, readPinBytes, type FixturePin } from "../pins/fixture-pins.js";
+import { writeReport } from "../report/write.js";
 import type { CheckResult, LossEntry, ReportPins } from "../report/schema.js";
 import type { HarnessIo, HarnessRun, LoadedFixture } from "./types.js";
 
@@ -153,10 +154,9 @@ async function cmdRun(args: string[], env: NodeJS.ProcessEnv): Promise<number> {
       readFixture: async () => fixture.bytes,
     };
     const report = await runHarness(run, io);
-    const jsonPath = join(outDir, `${fixture.pin.id}.report.json`);
-    writeFileSync(jsonPath, `${canonicalBytes(report)}\n`);
+    const written = writeReport(outDir, report);
     process.stdout.write(
-      `${fixture.pin.id}: verdict=${report.verdict} foldStates=${report.foldStates} x1=${report.x1.pass}/${report.x1.fail} x2=${report.x2.pass}/${report.x2.fail} S5=${report.steps.S5.status}${report.steps.S5.status === "not-run" ? ` (${report.steps.S5.reason ?? ""})` : ""} S6=${report.steps.S6.status} -> ${jsonPath}\n`,
+      `${fixture.pin.id}: verdict=${report.verdict} foldStates=${report.foldStates} x1=${report.x1.pass}/${report.x1.fail} x2=${report.x2.pass}/${report.x2.fail} S5=${report.steps.S5.status}${report.steps.S5.status === "not-run" ? ` (${report.steps.S5.reason ?? ""})` : ""} S6=${report.steps.S6.status} -> ${written.jsonPath} + ${written.mdPath}\n`,
     );
     if (report.verdict !== "demonstrated") failures += 1;
   }
