@@ -170,7 +170,10 @@ const HARNESS_APP = `
     {activeKey}
     onExitRequest={() => { mode = "off"; via = null; syncFocus(); }}
     onCycleBlock={(key) => { activeKey = key; cycleStep += 1; announcement = labels.announcementText + " " + cycleStep; }}
-    onAnchor={() => { mode = "composing"; syncFocus(); }}
+    // anchoring from the status anchors the active block: selectedKey follows
+    // activeKey (same as the jsdom harness, CommentModeStatus.test.ts), so a
+    // later Cancel focuses that block's row (§5.6 step 7)
+    onAnchor={() => { selectedKey = activeKey; mode = "composing"; syncFocus(); }}
   />
   <BlockHighlightOverlay
     {hovered}
@@ -472,12 +475,15 @@ async function main() {
     await page.keyboard.press("Enter");
     await waitFor("focus on the composer field", `${activeElementShell} === 'composer-stub-field'`, modeInputs);
     await page.click("#composer-stub-cancel");
+    // like step 5: the row of the SELECTED block — aria-selected true and the
+    // expected key (the status onAnchor set selectedKey = activeKey = the
+    // first candidate after one ArrowDown from null)
     await waitFor(
-      "step 7: cancel focuses a candidate row",
-      "document.activeElement && document.activeElement.getAttribute('role') === 'option'",
+      "step 7: cancel focuses the selected row",
+      "document.activeElement && document.activeElement.getAttribute('role') === 'option' && document.activeElement.getAttribute('aria-selected') === 'true' && document.activeElement.getAttribute('data-block-key') === 'sentinel-block-key-1'",
       modeInputs
     );
-    assert(true, "B-3 step 7 (list open): cancel focuses the candidate row", "");
+    assert(true, "B-3 step 7 (list open): cancel focuses the selected block's candidate row", "");
     // step 5 fallback (list closed): "Change block" with the list closed ->
     // focus on the status root
     await page.keyboard.press("Escape");

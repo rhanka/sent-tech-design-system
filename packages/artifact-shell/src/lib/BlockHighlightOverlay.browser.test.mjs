@@ -75,7 +75,6 @@ const HARNESS_APP = `
   ];
 
   let hovered = $state(null);
-  let hoveredKey = null;
   let selected = $state(null);
 
   // page background value comes from the foundation token table at runtime —
@@ -88,7 +87,7 @@ const HARNESS_APP = `
     anchored: 0,
     blocks,
     lastPointer: null,
-    setHovered(key) { hoveredKey = key; hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
+    setHovered(key) { hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
     setSelected(key) { selected = key === null ? null : (blocks.find((b) => b.key === key) ?? null); }
   };
 </script>
@@ -107,12 +106,13 @@ const HARNESS_APP = `
       const y = event.clientY - box.top;
       const hit = blocks.find((b) => x >= b.rect.x && x <= b.rect.x + b.rect.width && y >= b.rect.y && y <= b.rect.y + b.rect.height);
       window.__shell.lastPointer = { x, y, hit: hit ? hit.key : null };
-      // The chip renders just outside the block rect (top: 100%) and is the
-      // overlay's only pointer target: while the pointer is over it the block
-      // stays hovered — the AC-9 host hit layer owns this in the real viewer.
-      // Without it the chip unmounts on approach and its click never lands.
-      const overOverlay = event.target instanceof Element && event.target.closest('[data-st-shell="block-highlight-overlay"]') !== null;
-      window.__shell.setHovered(hit ? hit.key : overOverlay ? hoveredKey : null);
+      // Pure rect hit-testing over the stamped blocks, exactly what AC-9b
+      // owns in the real viewer (scope §6.4 F2): leaving every block clears
+      // hover, which unmounts the highlight and the chip. The component
+      // keeps the chip inside block.rect, so the approach path below never
+      // leaves the rect — no overlay-target inspection is assigned to the
+      // host, and none is needed here.
+      window.__shell.setHovered(hit ? hit.key : null);
     }}
   >
     <BlockHighlightOverlay
@@ -347,7 +347,21 @@ async function runCell(browser, base, theme, pageKind) {
   // chip activation emits onAnchor. The counter is cumulative within a cell,
   // so each click is compared as a delta against the value read just before it.
   const anchoredBefore = await page.evaluate(() => window.__shell.anchored);
-  await page.click(".st-blockHighlightOverlay__chip");
+  // Approach the chip centre in several steps from the current pointer
+  // position (the block centre): with the chip inside block.rect every
+  // intermediate point stays inside the rect and hover survives; with a chip
+  // outside the rect (top: 100%) the path crosses unstamped space, hover
+  // clears and the chip unmounts before the click lands.
+  const chipPoint = await page.evaluate(() => {
+    const chip = document.querySelector(".st-blockHighlightOverlay__rect--hover .st-blockHighlightOverlay__chip");
+    const box = chip.getBoundingClientRect();
+    return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+  });
+  await page.mouse.move(chipPoint.x, chipPoint.y, { steps: 5 });
+  const chipMountedOnApproach = await page.evaluate(() => document.querySelector(".st-blockHighlightOverlay__chip") !== null);
+  assert(chipMountedOnApproach, `${label} chip stays mounted on approach`, "chip unmounted while the pointer moved block -> chip (chip outside block.rect)");
+  await page.mouse.down();
+  await page.mouse.up();
   const anchored = await page.evaluate(() => window.__shell.anchored);
   assert(anchored === anchoredBefore + 1, `${label} chip click -> onAnchor`, `anchored=${anchored} (was ${anchoredBefore})`);
 
@@ -406,7 +420,15 @@ async function runCell(browser, base, theme, pageKind) {
   assert(sel.chipVisible, `${label} selected chip visible`, "chip has no layout box");
   assert(sel.chipText.includes("SENTINEL-CHIP-LABEL") && sel.chipText.includes("2"), `${label} selected chip label+count`, sel.chipText);
   const anchoredBeforeSelected = await page.evaluate(() => window.__shell.anchored);
-  await page.click(".st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__chip");
+  // same stepped approach for the selected chip (inside the selected rect)
+  const selChipPoint = await page.evaluate(() => {
+    const chip = document.querySelector(".st-blockHighlightOverlay__rect--selected .st-blockHighlightOverlay__chip");
+    const box = chip.getBoundingClientRect();
+    return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+  });
+  await page.mouse.move(selChipPoint.x, selChipPoint.y, { steps: 5 });
+  await page.mouse.down();
+  await page.mouse.up();
   const anchoredSelected = await page.evaluate(() => window.__shell.anchored);
   assert(anchoredSelected === anchoredBeforeSelected + 1, `${label} selected chip click -> onAnchor`, `anchored=${anchoredSelected} (was ${anchoredBeforeSelected})`);
   assert(pageErrors.length === 0, `${label} page errors`, pageErrors.slice(0, 3).join(" | "));
