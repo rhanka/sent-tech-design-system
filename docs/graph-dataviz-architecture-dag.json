@@ -9,6 +9,7 @@
     "diagram-core",
     "diagram-codecs",
     "diagram-canvas",
+    "diagram-bijection",
     "design-system-tokens",
     "design-system-themes",
     "dataviz-svelte",
@@ -44,6 +45,18 @@
     [
       "diagram-canvas",
       "graph"
+    ],
+    [
+      "diagram-bijection",
+      "diagram-core"
+    ],
+    [
+      "diagram-bijection",
+      "diagram-canvas"
+    ],
+    [
+      "diagram-bijection",
+      "design-system-svelte"
     ],
     [
       "design-system-themes",

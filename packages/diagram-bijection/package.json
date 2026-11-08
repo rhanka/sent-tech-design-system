@@ -1,0 +1,14 @@
+{
+  "name": "@sentropic/diagram-bijection",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": { "build": "tsc -p tsconfig.json", "check": "tsc -p tsconfig.json --noEmit", "test": "vitest run" },
+  "dependencies": {
+    "@sentropic/design-system-svelte": "0.37.0",
+    "@sentropic/diagram-canvas": "0.1.0",
+    "@sentropic/diagram-core": "0.1.0"
+  },
+  "devDependencies": { "ajv": "8.20.0", "typescript": "^5.9.3", "vitest": "^4.1.11" }
+}

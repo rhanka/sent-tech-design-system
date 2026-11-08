@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    // `src` and `tests` only: `preview/`, `rawgate/` and `vendor/` are plain
+    // ESM / vendored files that never type-check or run in the verify shards.
+    // Tests and the CLI launchers read the file system, so node types are in
+    // scope here (unlike the DOM-free packages, which set `types: []`).
+    "types": ["node"],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src", "tests"],
+  "exclude": ["dist", "node_modules"]
+}
