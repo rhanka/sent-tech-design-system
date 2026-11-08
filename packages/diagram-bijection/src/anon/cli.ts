@@ -55,7 +55,10 @@ function collectStrings(value: unknown, out: string[]): void {
 function gitTextsAt(repoRootDir: string, commit: string): string[] {
   const ls = execFileSync("git", ["-C", repoRootDir, "ls-tree", "-r", "-z", commit], { maxBuffer: 1 << 28 });
   const entries = ls.toString("utf8").split("\0").filter((e) => e.length > 0);
-  const batchInput = `${entries.map((e) => e.split("\t")[0]).join("\n")}\n`;
+  const batchInput = `${entries
+    .map((e) => e.split("\t")[0]?.split(" ")[2])
+    .filter((sha): sha is string => sha !== undefined)
+    .join("\n")}\n`;
   const buf = execFileSync("git", ["-C", repoRootDir, "cat-file", "--batch"], { input: batchInput, maxBuffer: 1 << 30 });
   const texts: string[] = [];
   let offset = 0;
@@ -175,18 +178,15 @@ async function cmdGenerate(args: string[], env: NodeJS.ProcessEnv): Promise<numb
     process.stderr.write("rawgate key absent: run `dl-anon.mjs rawgate-key --new` first\n");
     return 1;
   }
+  // §2.7 item 2: R_text comes from every string of the pinned raw inputs. The
+  // fixture and the fold source contribute their string values and the fold
+  // text (out.rawStrings, §2.5); the three extra raw files are token sources of
+  // the gate only, so their whole text is read.
   const rawStrings = [...out.rawStrings];
-  rawStrings.push(new TextDecoder().decode(fixtureBytes as Uint8Array));
   for (const pin of extraPins) {
     const bytes = await readPinBytes(pin, root, env);
     if ("unavailable" in bytes) continue;
-    const text = new TextDecoder().decode(bytes as Uint8Array);
-    rawStrings.push(text);
-    try {
-      collectStrings(JSON.parse(text), rawStrings);
-    } catch {
-      /* not JSON: the whole text is already included */
-    }
+    rawStrings.push(new TextDecoder().decode(bytes as Uint8Array));
   }
   const baselineCommit =
     baselineOpt ?? execFileSync("git", ["-C", root, "merge-base", "HEAD", "origin/main"], { encoding: "utf8" }).trim();

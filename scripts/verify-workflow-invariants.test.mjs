@@ -860,3 +860,54 @@ test("guard fixture (item 5): missing, empty, write-all and write scopes fail", 
     assert.ok(!hasAcceptableTopLevelPermissions(strippedText), `expected rejected permissions, got:\n${snippet}`);
   }
 });
+
+// --- W-DL0.11 (§2.9 of SPEC_EVOL_DL01_BIJECTION_HARNESS): raw-label-gate.yml -
+// The CI raw-label gate must run on every pull request and every push to main
+// with no path filter (a raw label can land in any file), must install no npm
+// package (the only code that sees the secret is the dependency-free gate), and
+// must expose DL_RAWGATE_KEY to the gate step only.
+test("raw-label-gate.yml has no paths/paths-ignore filter and triggers on pull_request and push to main", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  assert.ok(
+    !/^\s*paths(-ignore)?\s*:/m.test(strippedText),
+    "raw-label-gate.yml must not carry a paths or paths-ignore filter: a raw label can land in any file",
+  );
+  assert.ok(/^ {2}pull_request:\s*$/m.test(strippedText), "raw-label-gate.yml must trigger on pull_request");
+  assert.ok(/^ {2}push:\s*$/m.test(strippedText), "raw-label-gate.yml must trigger on push");
+  assert.ok(
+    /branches\s*:\s*\[\s*"main"\s*\]/.test(strippedText),
+    "raw-label-gate.yml must scope its push trigger to main",
+  );
+});
+
+test("raw-label-gate.yml installs no npm package and checks out with full history", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  assert.ok(
+    !/\bnpm\s+(ci|install|i)\b/.test(strippedText),
+    "raw-label-gate.yml must not run npm ci/install: the gate is dependency-free",
+  );
+  assert.ok(
+    !/cache\s*:\s*["']?npm/.test(strippedText),
+    "raw-label-gate.yml must not cache npm: no npm install happens in this workflow",
+  );
+  assert.ok(/fetch-depth:\s*0/.test(strippedText), "raw-label-gate.yml must fetch full history for the commit ranges");
+});
+
+test("raw-label-gate.yml exposes DL_RAWGATE_KEY to the gate step only and fails closed", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  const occurrences = strippedText.match(/DL_RAWGATE_KEY\s*:/g) ?? [];
+  assert.equal(
+    occurrences.length,
+    1,
+    `DL_RAWGATE_KEY must be set exactly once (the gate step env), saw ${occurrences.length}`,
+  );
+  assert.ok(
+    /DL_RAWGATE_KEY:\s*\$\{\{\s*secrets\.DL_RAWGATE_KEY\s*\}\}/.test(strippedText),
+    "the gate step must read the secret from secrets.DL_RAWGATE_KEY",
+  );
+  assert.ok(/DL_RAWGATE_REQUIRED:\s*"1"/.test(strippedText), "the gate must fail closed when the secret is absent");
+  assert.ok(
+    /dl-rawgate\.mjs\s+scan\s+--tree\s+--commits=/.test(strippedText),
+    "the gate step must run the tree scan and the commit-message scan",
+  );
+});

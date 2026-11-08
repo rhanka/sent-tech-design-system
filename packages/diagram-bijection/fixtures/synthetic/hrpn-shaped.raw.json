@@ -1,5 +1,5 @@
 {
-  "schema": "hrpn-ds-fixture/v1",
+  "schema": "dl-synthetic-fixture/v1",
   "profile": { "name": "synthetic", "version": "1" },
   "profileMapping": {},
   "coordinates": {},

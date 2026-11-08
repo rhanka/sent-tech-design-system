@@ -110,7 +110,10 @@ export function anonymiseHrpnFixture(input: AnonymiseInput): AnonResult {
   }
   if (!isRecord(raw)) return refuse("anon-value-invalid", "fixture is not an object");
   for (const key of Object.keys(raw)) if (!TOP_KEYS.has(key)) return refuse("anon-field-unknown", `unknown top-level key (${key.length} chars)`);
-  if (raw.schema !== "hrpn-ds-fixture/v1") return refuse("anon-value-invalid", "unexpected schema value");
+  // `schema` is a dropped field (§2.5): only its type is checked, never its
+  // value, so no raw schema token can leak into this file.
+  if (typeof raw.schema !== "string" || raw.schema.length === 0)
+    return refuse("anon-value-invalid", "schema is not a non-empty string");
   const scene = raw.scene;
   if (!isRecord(scene)) return refuse("anon-value-invalid", "scene missing");
   for (const key of Object.keys(scene)) if (!SCENE_KEYS.has(key)) return refuse("anon-field-unknown", "unknown scene key");
