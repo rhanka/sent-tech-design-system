@@ -1,29 +1,29 @@
 {
-  "contractsRevision": "sha256:97ff65d08eeccf284a53bed1737ecd0f40b360036606d1d45151cad89462d39b",
+  "contractsRevision": "sha256:b4f6e7776eaf867284f924f319009299b261e7c646959fadd89f06b2735fab9f",
   "counts": {
     "byFramework": {
       "angular": {
         "complete": 110,
-        "none": 5,
+        "none": 6,
         "partial": 96
       },
       "react": {
         "complete": 116,
-        "none": 3,
+        "none": 4,
         "partial": 92
       },
       "svelte": {
         "complete": 162,
         "none": 1,
-        "partial": 48
+        "partial": 49
       },
       "vue": {
         "complete": 100,
-        "none": 4,
+        "none": 5,
         "partial": 107
       }
     },
-    "contracts": 211
+    "contracts": 212
   },
   "entries": [
     {
@@ -1243,7 +1243,7 @@
         "vue": "complete"
       },
       "componentId": "icon",
-      "contractDigest": "sha256:b42596fa62418c0213f3639b200bc29a88dee92eaaabca0f9db9784c15a7eec1",
+      "contractDigest": "sha256:97b8158fff1320e5da4a212d64784d26a674001df2cc90c7da325636baf7e9c3",
       "entryDigest": "sha256:76c5674ec72faff7c78ce795f8bd8add1fba4d93399c1742e54be9f3c49138ad",
       "path": "contracts/icon.json",
       "producerId": "sentropic-ds"
@@ -1324,6 +1324,19 @@
       "contractDigest": "sha256:cdfa7f97b5e947d09194811b43ad5828b5e0478fe74643e024180f331cdb0025",
       "entryDigest": "sha256:866b3dea9e4d54074141f8c6f4395978238c69ab2e101352fe72b74090e94977",
       "path": "contracts/kpi-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "none",
+        "react": "none",
+        "svelte": "partial",
+        "vue": "none"
+      },
+      "componentId": "labelled-icon-button",
+      "contractDigest": "sha256:e18528589013085c1378b6bc7bcc02bb362eb1555b7c17d2070d8f5e082b6994",
+      "entryDigest": "sha256:bd44c38b2580d78a2ae7de7c8b53c07bac13206fc8b09fc50553e16d45f938fe",
+      "path": "contracts/labelled-icon-button.json",
       "producerId": "sentropic-ds"
     },
     {
@@ -2465,7 +2478,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:3a04ac1fc037c576943a55825d39b9cf79ad62260dcd1c6f4c3e70841d23fd54",
+      "contractDigest": "sha256:fa112305be96a1b6752b5afa2fcae81d316dcc4fdf1a144d66d762d140ecbbc7",
       "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2798,5 +2811,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "a5507f520d7d7c26e43a02ff1105bd557d9af152"
+  "sourceCommit": "2cc7fcc4116e234589183db1bb599aaf20fce331"
 }

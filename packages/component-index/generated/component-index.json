@@ -1,11 +1,11 @@
 {
   "counts": {
     "byRenderable": {
-      "doc-only": 213,
+      "doc-only": 214,
       "https": 0,
       "mcp": 0
     },
-    "entries": 213
+    "entries": 214
   },
   "entries": [
     {
@@ -2744,6 +2744,30 @@
         "vue": "match"
       },
       "path": "entries/kpi-card.json",
+      "producerId": "sentropic-ds",
+      "renderable": "doc-only",
+      "scope": "generic",
+      "status": "documented",
+      "visibility": "public"
+    },
+    {
+      "category": "action",
+      "componentId": "labelled-icon-button",
+      "dataClass": "public-safe",
+      "deliveryChannels": [
+        "source"
+      ],
+      "digest": "sha256:bd44c38b2580d78a2ae7de7c8b53c07bac13206fc8b09fc50553e16d45f938fe",
+      "frameworks": [
+        "svelte"
+      ],
+      "parity": {
+        "angular": "missing",
+        "react": "missing",
+        "svelte": "source-of-truth",
+        "vue": "missing"
+      },
+      "path": "entries/labelled-icon-button.json",
       "producerId": "sentropic-ds",
       "renderable": "doc-only",
       "scope": "generic",
@@ -5739,6 +5763,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:26afd114b571c0a443d932d3ec5c51a44145328b79c54b650919df36fb51c10b",
-  "sourceCommit": "a5507f520d7d7c26e43a02ff1105bd557d9af152"
+  "registryRevision": "sha256:430f23c9099a92c1c731a34b76090302fdc60fb07f75457f2931090f4f0870cb",
+  "sourceCommit": "2cc7fcc4116e234589183db1bb599aaf20fce331"
 }
