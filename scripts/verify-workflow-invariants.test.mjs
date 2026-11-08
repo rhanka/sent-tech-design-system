@@ -911,3 +911,52 @@ test("raw-label-gate.yml exposes DL_RAWGATE_KEY to the gate step only and fails 
     "the gate step must run the tree scan and the commit-message scan",
   );
 });
+
+// --- DL-0 (§4 of SPEC_EVOL_DL01_BIJECTION_HARNESS): diagram-bijection.yml ---
+// The DL-0 job runs the harness reports only: no Chrome setup, no pinned
+// Mermaid preview install, no G-T5 step and no --checks (those three steps are
+// added by DL-1). It still triggers on every PR and every push to main that
+// touches the diagram surface, and uploads the reports.
+test("diagram-bijection.yml triggers on push to main and pull_request with the diagram paths", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("diagram-bijection.yml"));
+  assert.ok(!/^\s*paths-ignore\s*:/m.test(strippedText), "diagram-bijection.yml must not carry paths-ignore");
+  assert.ok(/^ {2}push:\s*$/m.test(strippedText), "must trigger on push");
+  assert.ok(/branches\s*:\s*\[\s*"main"\s*\]/.test(strippedText), "push must be scoped to main");
+  assert.ok(/^ {2}pull_request:\s*$/m.test(strippedText), "must trigger on pull_request");
+  assert.ok(/^ {2}workflow_dispatch:\s*$/m.test(strippedText), "must be dispatchable");
+  for (const p of [
+    "packages/diagram-bijection/**",
+    "packages/diagram-core/**",
+    "packages/diagram-canvas/**",
+    "packages/components-svelte/src/lib/diagramCardModel.ts",
+    "packages/components-svelte/src/lib/diagram-render/**",
+    "packages/components-svelte/src/lib/diagram-icons/**",
+    ".github/workflows/diagram-bijection.yml",
+    "package-lock.json",
+  ]) {
+    assert.ok(strippedText.includes(`"${p}"`), `paths must include ${p}`);
+  }
+});
+
+test("diagram-bijection.yml DL-0 job runs the harness reports without the DL-1 Chrome/preview steps", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("diagram-bijection.yml"));
+  assert.ok(/npm ci/.test(strippedText), "the job must install the lockfile");
+  assert.ok(
+    /ensure-theme-dists\.mjs\s+--workspaces=@sentropic\/diagram-bijection/.test(strippedText),
+    "the job must build the harness workspace via the shared entry point",
+  );
+  assert.ok(
+    /dl-harness\.mjs\s+run\s+--all\s+--out=/.test(strippedText),
+    "the job must run the harness for every format and fixture",
+  );
+  assert.ok(!/--checks/.test(strippedText), "DL-0 runs the harness without --checks (no G-T5 yet)");
+  assert.ok(!/setup-chrome/.test(strippedText), "DL-0 has no Chrome setup step");
+  assert.ok(!/CHROME_BIN/.test(strippedText), "DL-0 sets no CHROME_BIN");
+  assert.ok(!/g-t5\.browser\.mjs/.test(strippedText), "DL-0 has no G-T5 preview step");
+  assert.ok(!/diagram-bijection\/preview/.test(strippedText), "DL-0 installs no pinned Mermaid preview");
+  assert.ok(/upload-artifact@/.test(strippedText), "the job must upload the reports");
+  assert.ok(
+    /group:\s*diagram-bijection-\$\{\{\s*github\.ref\s*\}\}/.test(strippedText),
+    "the job must carry the diagram-bijection concurrency group",
+  );
+});

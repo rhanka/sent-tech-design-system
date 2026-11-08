@@ -1,0 +1,56 @@
+name: Diagram bijection (harness reports, G-T5 preview)
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "packages/diagram-bijection/**"
+      - "packages/diagram-core/**"
+      - "packages/diagram-canvas/**"
+      - "packages/components-svelte/src/lib/diagramCardModel.ts"
+      - "packages/components-svelte/src/lib/diagram-render/**"
+      - "packages/components-svelte/src/lib/diagram-icons/**"
+      - ".github/workflows/diagram-bijection.yml"
+      - "package-lock.json"
+  pull_request:
+    paths:
+      - "packages/diagram-bijection/**"
+      - "packages/diagram-core/**"
+      - "packages/diagram-canvas/**"
+      - "packages/components-svelte/src/lib/diagramCardModel.ts"
+      - "packages/components-svelte/src/lib/diagram-render/**"
+      - "packages/components-svelte/src/lib/diagram-icons/**"
+      - ".github/workflows/diagram-bijection.yml"
+      - "package-lock.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: diagram-bijection-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  bijection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      # Same build entry point verify.yml uses; DL-0 confirms it builds the new
+      # workspace with its dependencies.
+      - name: Build the harness and its workspace dependencies
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/diagram-bijection
+      # DL-0: no Chrome, no pinned Mermaid preview, no --checks (those are the
+      # three DL-1 steps; the host-GPU browser witness stays « not run »).
+      - name: Harness reports (S0–S6) for every format and fixture
+        run: node packages/diagram-bijection/bin/dl-harness.mjs run --all --out="$RUNNER_TEMP/dl-reports"
+      - name: Upload reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: diagram-bijection-reports
+          path: ${{ runner.temp }}/dl-reports
