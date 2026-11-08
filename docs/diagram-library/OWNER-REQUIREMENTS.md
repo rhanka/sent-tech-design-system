@@ -6,7 +6,7 @@
 | Accountable | Design system (owner Decision A = A1, DLR-004). |
 | Scope | Every owner requirement on the diagram library: model, text form, layout, routing, folds, zoom, cards and zones, rendering, editing, exports and their bijections. |
 | Seeded from | h2a handoff `VERBATIM-REGISTER.md` (entry request + groups E01–E15) and its `source-excerpts.txt`, cross-checked with the h2a dossier kit (`content.json`, `quote-fidelity.json` = PASS on 58 quotes). |
-| Merged from | sentropic `DS-DIAGRAM-MODULES-REQUIREMENTS.md` (frozen #711 values) and its raw feedback file; DS spec `SPEC_EVOL_DS_DIAGRAM_CARDS.md` §2.1 and §17; `scratchpad/diagram-cards/dc1-review-criteria.md`; DS spec `SPEC_EVOL_LOT_BE_BPMN_EDITING.md`; owner Decisions A and B of 2026-11-07 and the owner's Decision C answer (DEC:932); the BE answers of 2026-11-05 and the card-semantics decision of 2026-11-06 as recorded in the DS conductor journal (CHK); the owner answers of 2026-11-07 to open questions Q4–Q7 (AskUserQuestion, recorded in `scratchpad/diag-lib/owner-questions.md`, OQ). |
+| Merged from | sentropic `DS-DIAGRAM-MODULES-REQUIREMENTS.md` (frozen #711 values) and its raw feedback file; DS spec `SPEC_EVOL_DS_DIAGRAM_CARDS.md` §2.1 and §17; `scratchpad/diagram-cards/dc1-review-criteria.md`; DS spec `SPEC_EVOL_LOT_BE_BPMN_EDITING.md`; owner Decisions A and B of 2026-11-07 and the owner's Decision C answer (DEC:932); the BE answers of 2026-11-05 and the card-semantics decision of 2026-11-06 as recorded in the DS conductor journal (CHK); the owner answers of 2026-11-07 to open questions Q4–Q7 (AskUserQuestion, recorded in `scratchpad/diag-lib/owner-questions.md`, OQ); the owner requirements of 2026-11-08 relayed by peer conductors (`h-cond`, `i-cond`, `gr-conductor`, §2.22). |
 | Language | Surrounding text in English. Owner words in French, exactly as recorded, typos kept. |
 
 ## 0. Owner entry request (verbatim)
@@ -307,15 +307,31 @@ Notes.
 - Q8 (bpmn.io logo, DLR-162, C-5) was not put to the owner on 2026-11-07. It is deferred to the start of the BPMN editing lot (lot BE), as the question dossier recommends (option B, OQ:104-108; OQ:115). Until then the logo exclusion zone stays as it is (BE §5.4, W7).
 - DLR-383: the DS conditions are those of DSS:64-67 and OWN:43-50; the D3 condition also names both BPMN owners, payload-based bijectivity for Mermaid and PlantUML, and new DS work after DC-2/DC-3 and AS-0/AS-1 (DSS:64 (b)–(d)).
 
+### 2.22 Owner requirements of 2026-11-08 (relayed by peer conductors)
+
+| ID | Owner verbatim (FR, as recorded) | Date | Kind | Source | Status | DS artefact |
+| --- | --- | --- | --- | --- | --- | --- |
+| DLR-384 | « Pour les fleches le rendering de la lib diagramme doit faire ca automatiquement avec libavoid ou autre ca doit pas etre a une ia de faire ca... » | 2026-11-08 | citation relayée | relayed by h-cond (memory dossier R14, a hand-written router failed) | pending | measured routing study (scratchpad, in review) then the owner engine choice, then DC-2 |
+| DLR-385 | « d ou vient cette horreur de verticalisation infinie sans respect de l'occupation de l'espace 16:9, avec en plus des espaces enormes ? diagram de design system ? … je viens de faier un retour etoffé la dessus côté icond » | 2026-11-08 | citation relayée | relayed by h-cond | pending | DC-2a row-pack 16:9 autolayout |
+| DLR-386 | « demande au design system quoi faire, car j'aime bien le repliement, le pb est surtout l'autolayout qui va pas » | 2026-11-08 | citation relayée | relayed by h-cond | pending | DC-2a |
+| DLR-387 | « dis moi qui gere ca imméeiatement » | 2026-11-08 | citation relayée | relayed by h-cond | implemented as a decision record: the DS owns autolayout and routing for every dossier (Decision A1) | this register and DC-2a |
+| DLR-388 | « faut que tu résolves cette merde avec le design system (vertical / cherche le 16:9 de base dans les affichages d'autolayout et évite les espaces vides verticaux gigantesques) » | 2026-11-08 | citation relayée | relayed by i-cond (radar-immobilier); witnesses by path + sha256 in `/home/antoinefa/src/radar-immobilier/tmp/conductor/ds-dc2a-witnesses/` (`owner-feedback-30.png` … `-39.png` and `-42.png`) | pending | DC-2a acceptance criteria AC-1 (16:9 default target for every autolayout display), AC-2 (never vertical stacking when width is available; 2 children side by side), AC-3 (vertical sibling gap bounded by a token, never grown by edge routing), plus declaration order kept as reading order (Front → Backend → DB). Witnesses by path + sha256: `/home/antoinefa/src/radar-immobilier/tmp/conductor/ds-dc2a-witnesses/` (`owner-feedback-30.png` … `-39.png` and `-42.png`) |
+| DLR-389 | « …une ontologie gérant la modélisation d'architecture de process à infra et application en gérant bien les relations complètes entre services (modèles cloud iaas caas et dépendances logicielles)… chercher la meilleure métamodélisation dispo pour compléter le travail initié côté design system mais je pense que les entités sont mal modélisées vu la merde qu'on a dans chaque nouveau diagramme… Le modèle de diagramme est un élément d'archi clé cognitivement donc je pense qu'il faut le migrer côté engram car on aura des modèles de contrôle associés (migrations, vm backup etc) » | 2026-11-08 | citation relayée | relayed by gr-conductor | pending | engram study (domain metamodel owned by engram per A1; DS keeps `diagram-presentation@1`, renderer, projection hooks) |
+| DLR-390 | « BPMN je pense est bien modélisé, mais pas le reste » | 2026-11-08 | citation relayée | relayed by gr-conductor | frozen (BPMN chain unchanged) | lot BE and DL-3 unchanged |
+| DLR-391 | (no verbatim relayed) | 2026-11-08 | relayed — editor note (not a requirement) | relayed by gr-conductor — EDITOR NOTE (not a requirement): « gr-conductor relays that the owner wants an ontology registry discoverable through cluster-mesh, with ERP, CRM and aerospace domain ontologies » | pending, owner verbatim to obtain | — (owner verbatim to obtain) |
+
+Editor notes (not owner words).
+- 2026-11-08 (DLR-391) — EDITOR NOTE (not a requirement): « gr-conductor relays that the owner wants an ontology registry discoverable through cluster-mesh, with ERP, CRM and aerospace domain ontologies » — status pending, owner verbatim to obtain.
+
 ## 3. Status summary
 
 | Status | Rows |
 | --- | ---: |
-| implemented (in a named PR or version) | 44 |
-| frozen (decided, not yet or not applicable to build) | 16 |
-| pending (including rows in conflict) | 47 |
+| implemented (in a named PR or version) | 45 |
+| frozen (decided, not yet or not applicable to build) | 17 |
+| pending (including rows in conflict) | 53 |
 | superseded | 5 |
-| **Total** | **112** |
+| **Total** | **120** |
 
 ## 4. Conflicts between sources
 
@@ -386,3 +402,4 @@ These owner words exist at the source but their binding force on the library is 
 | 2026-11-07 | Argon review applied: 108 rows (DLR-007 two dossiers; DLR-358, DLR-359 card semantics). Raw words restored in DLR-014, DLR-023, DLR-024, DLR-027, DLR-041. Leading screenshot and date labels moved from the owner column to Source in §2.17. §2.18 and §2.20 separate recorded answers from owner words. BE answers of 05/11 recorded (DLR-370, DLR-374). C-2 settled (DLR-070, DLR-315 superseded). Conflicts split into open (C-5, C-8) and resolved (C-1, C-2, C-3, C-4, C-6, C-7). |
 | 2026-11-07 | Argon review, resume pass: README cross-references DLR-007 (two dossiers); §2.20 note cites CHK:388. Not applied, source checked: the RAW:189 « marges hautes » quote for DLR-318 (absent from RAW), the 20/10 re-dating of §2.17 (RAW headings RAW:173 and RAW:185 date those quotes 21/10), the « 05–06/11 » dates (rows already match VR and TRK:2533 is 2026-11-07), and the « Et toi » wording of DLR-007 (DEC:934 reads « Mais toi »). DLR-014 keeps the INV:26692 words (trailing « + dossier est ko (boucle infinie d'UI js) » included); the review's replacement text merged it with DLR-013 (INV:27428). |
 | 2026-11-07 | Owner answers of 2026-11-07 folded in: 112 rows (44 implemented, 16 frozen, 47 pending, 5 superseded). Added §2.21: DLR-380 (Q4, default fold rule with per-diagram exceptions), DLR-381 (Q5, demo corpus), DLR-382 (Q6, archify, TOGAF and UML exchange deferred out of B2), DLR-383 (Q7, Decision C D2–D6 ratified with DS conditions on D3 and D6). DLR-022 superseded by DLR-380. Statuses updated: DLR-006, DLR-121, DLR-122, DLR-130, DLR-131, DLR-161, DLR-162; §2.0 Decision C note; C-3 (Q7 closed). C-8 resolved; C-5 stays open, Q8 deferred to the start of lot BE. Second Argon review, non-blocking note applied: BE spec revision 2 cross-referenced in the §2.20 note, C-6 and §6 key BE; BE line citations moved to revision 2 (DLR-371 BE:68, DLR-372 BE:58, DLR-373 BE:61; DLR-370 and DLR-374 also cite revision 2). `scratchpad/diag-lib/b2-demo-plan.md:98` (main checkout, outside this worktree) not touched. Source key OQ added. |
+| 2026-11-08 | Owner requirements of 2026-11-08 relayed by peer conductors (`h-cond`, `i-cond`, `gr-conductor`) added in §2.22: 120 rows (45 implemented, 17 frozen, 53 pending, 5 superseded). Added DLR-384 (routing engine in the diagram library, pending), DLR-385 (DC-2a row-pack 16:9 autolayout, pending), DLR-386 (folding kept, autolayout fixed in DC-2a, pending), DLR-387 (DS ownership of autolayout and routing for every dossier under Decision A1, implemented as decision record), DLR-388 (16:9 default target and DC-2a acceptance criteria AC-1..AC-3 with declaration reading order and radar-immobilier witnesses, pending), DLR-389 (architecture ontology and domain metamodel migration to engram, pending), DLR-390 (BPMN modelling confirmed unchanged, frozen), and DLR-391 (editor note on ontology registry discoverable through cluster-mesh with ERP, CRM and aerospace domain ontologies, no verbatim relayed, pending owner verbatim to obtain). |
