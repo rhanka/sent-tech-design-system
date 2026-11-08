@@ -3,6 +3,7 @@ import {
   Eye,
   EyeOff,
   Layers,
+  MessageSquare,
   Target,
   X,
   ChevronDown,
@@ -41,6 +42,9 @@ const GLYPHS = {
   close: X,
   "chevron-down": ChevronDown,
   "chevron-right": ChevronRight,
+  // CA-L1 fold-in (AS-1): the one CA table row AS-1 needs on day one. The
+  // other seven CA names land with their own CA lots.
+  comment: MessageSquare,
 };
 
 /** A canonical DS icon name accepted by {@link Icon}. */

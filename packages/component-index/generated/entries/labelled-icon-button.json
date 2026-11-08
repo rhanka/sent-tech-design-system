@@ -1,0 +1,37 @@
+{
+  "category": "action",
+  "componentId": "labelled-icon-button",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:4b2062acba35473b38b1583fbcfcb45676de38866b042438b98bdb1eff8173b6",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/LabelledIconButton.svelte",
+      "version": "0.37.0"
+    }
+  ],
+  "description": {
+    "en": "Labelled icon button: the hover tooltip and the aria-label share the same label.",
+    "fr": "Bouton icône étiqueté : infobulle au survol et aria-label partagent le même libellé."
+  },
+  "digest": "sha256:bd44c38b2580d78a2ae7de7c8b53c07bac13206fc8b09fc50553e16d45f938fe",
+  "displayName": "LabelledIconButton",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte"
+  ],
+  "groupSlug": "icon-button",
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "source-of-truth",
+    "vue": "missing"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}
