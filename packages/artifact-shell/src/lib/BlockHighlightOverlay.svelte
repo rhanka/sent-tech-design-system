@@ -138,12 +138,17 @@
 
   /* the action chip: the only pointer target of the overlay, and a pointer
      affordance only — not in the Tab order (the keyboard route is the status
-     cycle + Enter) */
+     cycle + Enter). It sits INSIDE the block rect (top/right inset): scope
+     §6.4 F2 returns Hover → Armed and clears the highlight when the pointer
+     leaves every stamped block, so a chip outside block.rect unmounts on
+     approach before it can be clicked. The spec fixes no exact placement;
+     its only placement clauses are that the overlay root never captures
+     pointer events and never covers the chip's own rect with a capturing
+     layer (§5.3a) — an in-rect chip satisfies both. */
   .st-blockHighlightOverlay__chip {
     position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: calc(var(--st-spacing-1, 0.25rem) / 2);
+    top: var(--st-spacing-1, 0.25rem);
+    right: var(--st-spacing-1, 0.25rem);
     display: inline-flex;
     align-items: center;
     gap: var(--st-spacing-1, 0.25rem);
