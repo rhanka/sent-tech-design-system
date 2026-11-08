@@ -139,7 +139,10 @@ const HARNESS_APP = `
     get selectedKey() { return selectedKey; },
     get listOpen() { return listOpen; },
     setHovered(key) { hovered = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
-    setSelected(key) { selectedKey = key === null ? null : (blocks.find((b) => b.key === key) ?? null); },
+    // selectedKey stays a key string or null (OpaqueKey | null, types.ts) —
+    // never the block object: the overlay's selected prop and the row
+    // lookup in syncFocus both resolve the block from the key.
+    setSelected(key) { selectedKey = key === null ? null : (blocks.some((b) => b.key === key) ? key : null); },
     setLasso(active, rect) { lassoActive = active; lassoRect = rect; },
     openList() { listOpen = true; },
     closeList() { listOpen = false; },
