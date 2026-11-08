@@ -1,10 +1,21 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render } from "@testing-library/svelte";
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Layers,
+  MessageSquare,
+  Settings,
+  Target,
+  X
+} from "@lucide/svelte";
 import { compile } from "svelte/compiler";
 import { describe, expect, it } from "vitest";
 import Icon from "./Icon.svelte";
-import { ICON_NAMES } from "./icons.js";
+import { ICONS, ICON_NAMES } from "./icons.js";
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
 // as [{ selector, declarations }]. Empty when the block is absent.
@@ -123,5 +134,42 @@ describe("Icon — canonical DS icon set", () => {
     for (const declaration of [STROKE_WIDTH_TOKEN, STROKE_TOKEN]) {
       expect(svelteCss.split(declaration).length - 1).toBe(1);
     }
+  });
+});
+
+// W-1.0 (A1-3b) — catalogue witness extension for the CA-L1 fold-in performed
+// by AS-1: the eight pre-existing names keep their glyphs and `comment` is
+// added, mapping to lucide MessageSquare (nine names total). The other seven
+// CA names land with their own CA lots, not here.
+describe("W-1.0 icon catalogue — CA-L1 fold-in (comment)", () => {
+  it("ICON_NAMES carries exactly the eight pre-existing names plus comment", () => {
+    expect(ICON_NAMES).toEqual([
+      "settings",
+      "eye",
+      "eye-off",
+      "layers",
+      "target",
+      "close",
+      "chevron-down",
+      "chevron-right",
+      "comment"
+    ]);
+  });
+
+  it("the eight pre-existing mappings are unchanged and comment -> MessageSquare", () => {
+    expect(ICONS.settings).toBe(Settings);
+    expect(ICONS.eye).toBe(Eye);
+    expect(ICONS["eye-off"]).toBe(EyeOff);
+    expect(ICONS.layers).toBe(Layers);
+    expect(ICONS.target).toBe(Target);
+    expect(ICONS.close).toBe(X);
+    expect(ICONS["chevron-down"]).toBe(ChevronDown);
+    expect(ICONS["chevron-right"]).toBe(ChevronRight);
+    expect(ICONS.comment).toBe(MessageSquare);
+  });
+
+  it("renders an svg for the comment name", () => {
+    const { container } = render(Icon, { props: { name: "comment" } });
+    expect(container.querySelector("svg")).toBeTruthy();
   });
 });

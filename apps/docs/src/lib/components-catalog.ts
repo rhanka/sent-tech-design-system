@@ -99,6 +99,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "LabelledIconButton",
+    slug: "labelled-icon-button",
+    status: "documented",
+    category: "action",
+    groupSlug: "icon-button",
+    description: {
+      fr: "Bouton icône étiqueté : infobulle au survol et aria-label partagent le même libellé.",
+      en: "Labelled icon button: the hover tooltip and the aria-label share the same label."
+    }
+  },
+  {
     name: "Link",
     slug: "link",
     status: "documented",

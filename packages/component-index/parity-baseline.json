@@ -22,6 +22,12 @@
       "vue": "match",
       "angular": "match"
     },
+    "labelled-icon-button": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
     "link": {
       "svelte": "source-of-truth",
       "react": "match",
@@ -1327,6 +1333,16 @@
         "angular": "missing"
       },
       "reason": "DC-2 static half, folded wrapping card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+    },
+    {
+      "componentId": "labelled-icon-button",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "CA-L1 labelled icon button (lot feat/as1-comment-mode): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
     }
   ],
   "barrelOnly": {

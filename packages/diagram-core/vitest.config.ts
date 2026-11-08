@@ -10,5 +10,9 @@ export default defineConfig({
     // silently hiding a DOM dependency.
     environment: "node",
     include: ["tests/**/*.test.ts"],
+    // Migration tests replay long graph histories; under a full CI scan
+    // (all workspaces sharded onto shared runners) the default 5s hook/test
+    // budget flakes, so the budget is stated explicitly.
+    testTimeout: 20000,
   },
 });

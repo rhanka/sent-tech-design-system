@@ -1,0 +1,181 @@
+{
+  "componentId": "labelled-icon-button",
+  "contractSource": "derived",
+  "digest": "sha256:e18528589013085c1378b6bc7bcc02bb362eb1555b7c17d2070d8f5e082b6994",
+  "entryDigest": "sha256:bd44c38b2580d78a2ae7de7c8b53c07bac13206fc8b09fc50553e16d45f938fe",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationPath": "packages/components-angular/dist/LabelledIconButton.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LabelledIconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationPath": "packages/components-react/dist/LabelledIconButton.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LabelledIconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-react/src/index.ts), not a declaration"
+      ]
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onclick",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "ariaKeyshortcuts": {
+            "description": "WAI-ARIA key-shortcut grammar, rendered as aria-keyshortcuts verbatim.",
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "description": "Forwarded to IconButton.",
+            "type": "boolean"
+          },
+          "icon": {
+            "description": "DS icon rendered inside the button.",
+            "enum": [
+              "target",
+              "settings",
+              "eye",
+              "eye-off",
+              "layers",
+              "close",
+              "chevron-down",
+              "chevron-right",
+              "comment"
+            ]
+          },
+          "label": {
+            "description": "Hover/focus label AND accessible name. The two are the same string by contract.",
+            "type": "string"
+          },
+          "pressed": {
+            "description": "Toggle state, rendered as aria-pressed on the button.",
+            "type": "boolean"
+          },
+          "size": {
+            "description": "Forwarded to IconButton.",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tooltipContent": {
+            "description": "Overrides the Tooltip content; the accessible name stays `label`.",
+            "type": "string"
+          },
+          "tooltipPlacement": {
+            "description": "Forwarded to Tooltip.",
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          },
+          "variant": {
+            "description": "Forwarded to IconButton.",
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "required": [
+          "icon",
+          "label"
+        ],
+        "type": "object"
+      },
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:4edda3fcf7f917c1e04937a5febdf8b65013f77a1e2416c1020e19a56f2b1b68",
+        "declarationPath": "packages/components-svelte/dist/LabelledIconButton.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LabelledIconButtonProps",
+        "version": "0.37.0"
+      },
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onclick.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationPath": "packages/components-vue/dist/LabelledIconButton.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LabelledIconButtonProps",
+        "version": "0.38.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}

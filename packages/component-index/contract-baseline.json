@@ -1577,6 +1577,23 @@
     "status": "complete"
    }
   },
+  "labelled-icon-button": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "none",
+    "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
   "language-selector": {
    "svelte": {
     "status": "complete"
