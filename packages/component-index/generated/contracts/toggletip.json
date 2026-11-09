@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:e1aaf2def16a4d973fd0ca3185e964bf8f0e40ac30565a68fe7ba3bd654a1835",
-  "entryDigest": "sha256:a9a44fc7cf86c0ade3f9520cb4b83e49afa4e5c72d8f422718f14435fb6a7f34",
+  "digest": "sha256:6934e76117539934234bd03a498103beae90c15dc0cb74f8aef0f39326dc31ca",
+  "entryDigest": "sha256:6a189741b7c3ffc895503d6bc9e6e9bb4332d08615e194566401397590e13267",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -116,7 +116,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggletipProps",
@@ -178,7 +178,7 @@
         "declarationPath": "packages/components-svelte/dist/Toggletip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToggletipProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],
