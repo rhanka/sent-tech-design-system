@@ -8,6 +8,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  CircleDashed,
 } from "@lucide/svelte";
 import type { Component } from "svelte";
 
@@ -45,6 +46,7 @@ const GLYPHS = {
   // CA-L1 fold-in (AS-1): the one CA table row AS-1 needs on day one. The
   // other seven CA names land with their own CA lots.
   comment: MessageSquare,
+  "circle-dashed": CircleDashed,
 };
 
 /** A canonical DS icon name accepted by {@link Icon}. */

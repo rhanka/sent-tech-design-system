@@ -17,7 +17,8 @@
     close: { fr: "Fermer, retirer.", en: "Close, dismiss." },
     "chevron-down": { fr: "Déplier vers le bas.", en: "Expand downwards." },
     "chevron-right": { fr: "Déplier / naviguer vers la droite.", en: "Expand / navigate rightwards." },
-    comment: { fr: "Commenter, ajouter une remarque.", en: "Comment, add a remark." }
+    comment: { fr: "Commenter, ajouter une remarque.", en: "Comment, add a remark." },
+    "circle-dashed": { fr: "Non classé, état indéterminé ou en attente.", en: "Unclassified, indeterminate or pending state." }
   };
 
   const cell = (name: IconName): NodeSpec => ({
