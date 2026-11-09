@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:61331e163b9405f553f204d6875dbdac11a8a2705f6c11bdcb80ef4750c9766d",
-  "entryDigest": "sha256:de11a0fab7e6ead73f28d4ede764ecc35eb9d3af639e608ccc7e948de042c15f",
+  "digest": "sha256:119c35e3069230c81782efc0129c72c65144e7b5d2a24f73604ba9c71180d503",
+  "entryDigest": "sha256:e0a6fb88b3bb2da384cc383b21b42362241005df3ba03fba59289563f0b63d1d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -145,7 +145,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileProps",
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/Tile.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [

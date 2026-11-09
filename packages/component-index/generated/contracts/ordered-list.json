@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:5add84db28eab14a82c992b588117a7924d7c0abd4eeda9c1f0d100722361e65",
-  "entryDigest": "sha256:9e5e5e59b9b0f3655809b42007e5a3f94fc630979b58132f6f1e1a2c53689191",
+  "digest": "sha256:3f9ffc6bb6d795a621f31cd5a6c8b82f824923fea6c3ee2cdeec1c72c4bfa2f0",
+  "entryDigest": "sha256:007e084dbd63e8d68ba750bf701bc4b6cab456a34118bc90989d644c85e73a64",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,7 +117,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OrderedListProps",
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/OrderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OrderedListProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

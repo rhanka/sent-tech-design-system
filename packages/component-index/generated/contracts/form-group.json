@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:28db467ae5f6aedb1544b5142440b93a19981d63f755f0f70fa930feea0b6967",
-  "entryDigest": "sha256:660566da0a05a7201331523351edc24f3d2fdf8ac45f87b1238a7a89b8fb2101",
+  "digest": "sha256:e8665fdc7bbd76156731518af143083f244322933e22f5d009b7eea2e4434cb5",
+  "entryDigest": "sha256:6093105589d7401cdaba0082e7156d3d651daac2364b4790c39b03d3bffb15d4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -88,7 +88,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormGroupProps",
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FormGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormGroupProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

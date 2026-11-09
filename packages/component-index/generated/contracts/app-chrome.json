@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:1abbc64ce7319a3f5343dd9efe769de7bff066c216a71c9057f6216dc3719d52",
-  "entryDigest": "sha256:9f9750f44b9f0a3567c595c52b6c705a91283c0ce7b979006e3248d7fa6b8fbe",
+  "digest": "sha256:f0bbb1876958df59024ee77caf94c3ec427a38941da20b199eefa29c3f90fecf",
+  "entryDigest": "sha256:ad75efd9b5f28022cefd6fd700b2ab340dd2428acb015a95f2d2c7584c9cec50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -717,7 +717,7 @@
         "declarationPath": "packages/components-svelte/dist/AppChrome.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppChromeProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

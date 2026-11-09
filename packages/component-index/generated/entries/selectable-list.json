@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectableList.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Accessible listbox driving its rows: single or multiple selection, keyboard navigation.",
     "fr": "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier."
   },
-  "digest": "sha256:24d19696811b9c85999de94346191bd2764ccffadd64799553fc8199ba39aa11",
+  "digest": "sha256:f83da216dc5f93efde981109630a7f62d0dafe2ff0292f29375d29a91b5eea79",
   "displayName": "SelectableList",
   "format": "component-entry/v1",
   "frameworks": [

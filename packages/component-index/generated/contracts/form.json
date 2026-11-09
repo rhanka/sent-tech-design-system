@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:7b503e2e1cd7c009ce3e0a4b2839ec4f3dbe9061534a1f8f84f20f3a510e7063",
-  "entryDigest": "sha256:7f25cb5f229c7c46462b7aaf92dab27687072830d3aa191c2a105431d6dab6c0",
+  "digest": "sha256:7f44cd67e2dbe4e3f5d85e01efc80164edd584cfdd0f74b147fcf8cdc0c61457",
+  "entryDigest": "sha256:c58afeb8353386a843924516155416bbed25e2a39503aa6d4d4456eb42f99932",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -107,7 +107,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/Form.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [

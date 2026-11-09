@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkipLink.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:5af7b76577b0482a7def7cfa6da540387fd1fb2e0409199a471d00ba7cbd7999",
+  "digest": "sha256:17f4cadb907c8fc929bba4d594c51968035a52cf77bdef31384ce73dff0d2abe",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [

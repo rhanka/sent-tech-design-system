@@ -8,6 +8,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  CircleDashed,
 } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
@@ -28,6 +29,7 @@ export const ICONS = {
   close: X,
   "chevron-down": ChevronDown,
   "chevron-right": ChevronRight,
+  "circle-dashed": CircleDashed,
 } as const;
 
 export type IconName = keyof typeof ICONS;

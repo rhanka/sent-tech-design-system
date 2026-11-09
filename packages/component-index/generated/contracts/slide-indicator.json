@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:9e4693ed9c77e2cf25e2c6d5654cc64fdef59b8ae9c1412f362c0bf0341534ec",
-  "entryDigest": "sha256:11931eeb77988263d2e398532a2314a0b6475621c15d9f64e1f8d62d331ab8aa",
+  "digest": "sha256:3a933cab73bbefedb612a37989087dbccb13383619f299c3f4c187941d012ed7",
+  "entryDigest": "sha256:90968b72b00ad2e762898f785e428b4d8fa37000ea764833642d3f61c97025e7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -131,7 +131,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SlideIndicatorProps",
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SlideIndicatorProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:49c0efdce9a8b4b2db51442f0b1190cf02e7f047d6c0721e331ca1ad7f840d81",
-  "entryDigest": "sha256:6592e1362b7206f6820d51287b7e1bc12dde2bac30d6c857bcdb378dcfec78e3",
+  "digest": "sha256:d90a89fb5e48596186fdd2e45e45ffb16f783dad9f1ca1d939e8275d5c86db90",
+  "entryDigest": "sha256:1bb2bf52ad5cf741df2b695e7c0d46b6345faadcd476c9a5192086bd587417f2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -176,7 +176,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ProgressIndicatorProps",
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

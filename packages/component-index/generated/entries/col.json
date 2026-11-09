@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Col.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:31727361666824852b39fd4a32750cbd4ab629436b58d72e1f4f8b5b6a8e17f9",
+  "digest": "sha256:ff03233c589c89bfd3b9a876d2788b19e2792cd0d100ce27f48f6d61526a45a1",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

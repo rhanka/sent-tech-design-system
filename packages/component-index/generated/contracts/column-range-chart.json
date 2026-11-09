@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:d519565fb5c8e90604d3cec3d270e66b5fa4782a929631361dab0d8182c0e589",
-  "entryDigest": "sha256:c4bce1c4b877bca597f468cb1410f366f0300a38a1a0ab61d68f0e0de6c70b0e",
+  "digest": "sha256:d0e27cb9273d0c60a51c69d277dd8f170b28ddd0811e15bf566c22da9b1b6865",
+  "entryDigest": "sha256:76d638f2e6dae831e5e7bba302a9397a3116ae6be99416f5d21864e38a069a22",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

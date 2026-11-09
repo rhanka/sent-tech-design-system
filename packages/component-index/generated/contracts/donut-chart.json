@@ -1,8 +1,8 @@
 {
   "componentId": "donut-chart",
   "contractSource": "derived",
-  "digest": "sha256:c50df0dedf36849266c93ff4d23d8618e35b9aa5ffbcc5dd59bfdc7ca3c07e6e",
-  "entryDigest": "sha256:fc3df2bd058b2acf2e4b28906a8d2e1ce127681315e87b62f5305d0471699c71",
+  "digest": "sha256:0802ba0838000151bc5a85e4d65676849dc45839827ad04bcd672c4e8efe5896",
+  "entryDigest": "sha256:c219d9fcbb22ba48de6466df7e290b46046043b7d103d342167eabf9315d71ad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-svelte/dist/DonutChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DonutChartProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

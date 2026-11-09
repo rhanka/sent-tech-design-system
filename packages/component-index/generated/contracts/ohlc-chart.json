@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:0c476ba80fdef7abd0af94dd9fb00ba357cab52298c73f0ff18200bfbf28cc2b",
-  "entryDigest": "sha256:7461fafb91b0ca0fa1abf8ecc134a6877c3d91d1d1465f848e57ad8ecc9d7db8",
+  "digest": "sha256:3e002d117e95bd5c779dedfb8242dc78556e632920c5c5aa72df2979b4a18b1d",
+  "entryDigest": "sha256:33032ec0083b0ce425f3fb4990874d4632d6916033fc670e18a3c3db2e88feb0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/OHLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OHLCChartProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:ad8ac9fcae2a9df0ad82170c37fcd2e7617f3917a55aab86de816a181a826f79",
-  "entryDigest": "sha256:33f752512ad58b11e2184ec08f5f6a39e44cef7426b0ecfff956dbcceb6d8e88",
+  "digest": "sha256:53971ce7f382887e545065435a33eddf0eff095b5dc4069ddc7535be213e952c",
+  "entryDigest": "sha256:5a75b0ded75a066aeafd942f07767d626f858b83dda56fd042bba160fbc5f0d1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -137,7 +137,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggleProps",
@@ -205,7 +205,7 @@
         "declarationPath": "packages/components-svelte/dist/Toggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToggleProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "config-item-card",
   "contractSource": "derived",
-  "digest": "sha256:4122dcd207c16733cb725de95c3dfc9544f043cfa3297a158dad59f8c3743743",
-  "entryDigest": "sha256:4a339cada7e06846e58bd1e16a13e9dd5834d75455f5b566dd5a93e5d03c4e35",
+  "digest": "sha256:dcb569f9ba343ac0e415344b78002b5c1d2a27d6077cacfb7c1d3f3e8cfc6078",
+  "entryDigest": "sha256:e32a628d4858571b267259545ce6c5f64a9c2eda0668cb3e31bd4958271596f0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -358,7 +358,7 @@
         "declarationPath": "packages/components-svelte/dist/ConfigItemCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ConfigItemCardProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

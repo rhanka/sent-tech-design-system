@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:0e87051727b7213ea5beba35b26af91dd4b3d641286608a9accf59c4af4361a9",
-  "entryDigest": "sha256:680381f864ae960f909a4d009a480fb71d47dc2ed04c4082fbce8ec863c8786c",
+  "digest": "sha256:a867a7f5051f73a5287989b6ecd049eed380f1c820dfa0e40419f0970f0fc357",
+  "entryDigest": "sha256:2d858d2d333797b0564c4edd3b3d87e3ee8f9f8ed4eddfa114a45dd1b26e8903",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FileUploaderProps",
@@ -418,7 +418,7 @@
         "declarationPath": "packages/components-svelte/dist/FileUploader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FileUploaderProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [
