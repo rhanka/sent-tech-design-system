@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:647cc021a5844c95d546d4dc0e1eb0f790c2a3e21fa05ddf833c4b8991be90c5",
-  "entryDigest": "sha256:b48952f3eafda477f0f452dcc5f775c852011bcaaf724fe6d6a3995253c28b34",
+  "digest": "sha256:a48ab23031b2d589afb6489ba6840324b922438762bb59ede758344d149f9d85",
+  "entryDigest": "sha256:a6e4805c0f404726ea0f80ba16a01dee35242d23d1f43ea3de16368a4f286e04",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,7 +117,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UnorderedListProps",
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/UnorderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "UnorderedListProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

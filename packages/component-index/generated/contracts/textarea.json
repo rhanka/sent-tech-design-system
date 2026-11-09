@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:9c8e1069cd341ac99188f6420b2bd54f4e54852aec9174865c8d96eb009d3324",
-  "entryDigest": "sha256:576b8547a323093541944516807c42534841c79e6b26755e5333802ff3ab1533",
+  "digest": "sha256:292126c8ef901e3d1f598b6cf16b81faa60ca8ae57b23311cd59e76dd8572f1d",
+  "entryDigest": "sha256:a9c96a467e3393cbbf1bfbf85bf9f3d7367b02b6c7755db54ded33c470cb9019",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -156,7 +156,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TextareaProps",
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TextareaProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

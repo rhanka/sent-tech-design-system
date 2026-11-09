@@ -1,8 +1,8 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:243c1929d6af87e4d7d25522c838a14afe8ba3e8d7f79266793136dd929fe70a",
-  "entryDigest": "sha256:f18d81f615f53e6f7472a1220fbf637a579fa85a3ffcd60fb4513daf3ec17521",
+  "digest": "sha256:a7c8ec17f47d0e810b4109a057c140f3608b5eac75aa541e0916b2a5d27ac46f",
+  "entryDigest": "sha256:aeb0edc37b8b64ca055c236fd4193299c33b3df0e4e5b9f3a0a22853d2e34261",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -107,7 +107,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LinkProps",
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Link.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LinkProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [

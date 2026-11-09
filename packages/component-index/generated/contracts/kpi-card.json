@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:cdfa7f97b5e947d09194811b43ad5828b5e0478fe74643e024180f331cdb0025",
-  "entryDigest": "sha256:866b3dea9e4d54074141f8c6f4395978238c69ab2e101352fe72b74090e94977",
+  "digest": "sha256:06245451686e80ba769f71eb862ad3559783bfd23b2b4c8725403d8835d536f1",
+  "entryDigest": "sha256:0034623421cce78fe2add31a88ecdcc6ad66ca9f9362f7c5d74dfc38011c0342",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -422,7 +422,7 @@
         "declarationPath": "packages/components-svelte/dist/KpiCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "KpiCardProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

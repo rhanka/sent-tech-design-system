@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:97b8158fff1320e5da4a212d64784d26a674001df2cc90c7da325636baf7e9c3",
-  "entryDigest": "sha256:76c5674ec72faff7c78ce795f8bd8add1fba4d93399c1742e54be9f3c49138ad",
+  "digest": "sha256:9781de4dd328ce5f9896d6c0ca274a4baae5d143c8a508fff0988c0e69ca435c",
+  "entryDigest": "sha256:deec0a404ff20a13b97b328512598944351b103b5108bc621e43e008c87f8da1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -28,7 +28,8 @@
               "eye-off",
               "target",
               "chevron-down",
-              "chevron-right"
+              "chevron-right",
+              "circle-dashed"
             ]
           },
           "size": {
@@ -49,7 +50,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9d5ea834a8082083be1f587a7a752c4c10f6e111baabb329a4f38b9651e7a331",
+        "declarationDigest": "sha256:d00062cd464453ef388418045113dd97e24a247112bf36769c0f30b99b8b3dca",
         "declarationPath": "packages/components-angular/dist/Icon.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconProps",
@@ -85,7 +86,8 @@
               "layers",
               "close",
               "chevron-down",
-              "chevron-right"
+              "chevron-right",
+              "circle-dashed"
             ]
           },
           "size": {
@@ -109,7 +111,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconProps",
@@ -149,7 +151,8 @@
               "close",
               "chevron-down",
               "chevron-right",
-              "comment"
+              "comment",
+              "circle-dashed"
             ]
           },
           "size": {
@@ -177,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -206,7 +209,8 @@
               "eye-off",
               "target",
               "chevron-down",
-              "chevron-right"
+              "chevron-right",
+              "circle-dashed"
             ]
           },
           "size": {
@@ -227,7 +231,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:70ebfabb5bda0a50528a0cd9344fe74c640796f2056b99ab5e2740891eeff1f0",
+        "declarationDigest": "sha256:782625d9b1517516deed875be310872c4856626e41660a6ea3e5d060142cc591",
         "declarationPath": "packages/components-vue/dist/Icon.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",

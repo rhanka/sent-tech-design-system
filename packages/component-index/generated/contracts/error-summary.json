@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:52214b1da43b5503743cefcda1b2ebc8529db6262160861077a96dce2c84bbb7",
-  "entryDigest": "sha256:f532702356ebac8bb23b25dc4549cd9c2cc05de11c14449fb85c7e604f7c26c5",
+  "digest": "sha256:51dd01e23d530a8b96b05b887b4b0c856658cfba8729bd50e88981f03c4be1bc",
+  "entryDigest": "sha256:3e941166ca6997e48d0270951eb83c1902412214f98734707be7f4e6332dc105",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -112,7 +112,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorSummaryProps",
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorSummary.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorSummaryProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

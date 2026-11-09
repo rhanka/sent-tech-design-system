@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:22a88c99f3ebe2bd235aee57c0793d697ca7687d4d7e1619ef7c48ec63f6935e",
-  "entryDigest": "sha256:656b90d344dfb28f635684027c8ba1c8bc14f31c7778eaa612f871faedf58664",
+  "digest": "sha256:c13566a9d52d19afa2d78130b31e56f9cfb753ce753bad1fc785600b4fbf91d8",
+  "entryDigest": "sha256:32126ea9e517373533a00b31350815575f17c8360b7224aed8360dba859a03c8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AutosaveProps",
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],
