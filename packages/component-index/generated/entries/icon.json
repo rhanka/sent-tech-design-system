@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Icon.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:8a2c10a61076d775e7021fc4407dfd97d4ac0b4f0772ec6b18df9203c9456a44",
+      "digest": "sha256:fe4c3ca8586c8218c237458d552b4ffda585a8eeb8bfd82beac69680a942e0b8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Icon.ts",
@@ -29,7 +29,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:9550adc4b7f73d4512c52a61433f9c3e2c6bc5fc9a1066e54d0117954eca1884",
+      "digest": "sha256:98dc9f5856a8728059d3d021299185ff2f2ade2d1e1caaea2552189d67e3ad0e",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Icon.ts",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:76c5674ec72faff7c78ce795f8bd8add1fba4d93399c1742e54be9f3c49138ad",
+  "digest": "sha256:deec0a404ff20a13b97b328512598944351b103b5108bc621e43e008c87f8da1",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [
