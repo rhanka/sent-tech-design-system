@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import {
   ChevronDown,
   ChevronRight,
+  CircleDashed,
   Eye,
   EyeOff,
   Layers,
@@ -15,10 +16,10 @@ import LabelledIconButton from "./LabelledIconButton.svelte";
 import { ICONS, ICON_NAMES, type IconName } from "./icons.js";
 
 // W-1.0 — CA-L1 fold-in witnesses (AS-1 performs the fold-in: the eight
-// pre-existing icon mappings are unchanged and `comment` is added, nine names
-// total). Sentinel strings are non-real so nothing is hard-coded in the
-// component. The three additive props (pressed / ariaKeyshortcuts /
-// tooltipContent) are recorded as a CA-L1 amendment.
+// pre-existing icon mappings are unchanged and `comment` is added, plus
+// `circle-dashed`, ten names total). Sentinel strings are non-real so nothing is
+// hard-coded in the component. The three additive props (pressed /
+// ariaKeyshortcuts / tooltipContent) are recorded as a CA-L1 amendment.
 
 const SENTINEL = "SENTINEL";
 const LABEL = `${SENTINEL}-LABEL`;
@@ -34,17 +35,21 @@ const PRE_EXISTING: Array<[IconName, unknown]> = [
   ["target", Target],
   ["close", X],
   ["chevron-down", ChevronDown],
-  ["chevron-right", ChevronRight]
+  ["chevron-right", ChevronRight],
+  ["comment", MessageSquare],
+  ["circle-dashed", CircleDashed]
 ];
 
 describe("W-1.0 LabelledIconButton (CA-L1 fold-in)", () => {
-  it("the icon catalogue keeps the eight pre-existing mappings and adds comment -> MessageSquare", () => {
-    expect(ICON_NAMES).toHaveLength(9);
+  it("the icon catalogue keeps the eight pre-existing mappings and adds comment -> MessageSquare and circle-dashed -> CircleDashed", () => {
+    expect(ICON_NAMES).toHaveLength(10);
     for (const [name, glyph] of PRE_EXISTING) {
       expect(ICONS[name], `mapping for "${name}" changed`).toBe(glyph);
     }
     expect(ICON_NAMES).toContain("comment");
     expect(ICONS.comment).toBe(MessageSquare);
+    expect(ICON_NAMES).toContain("circle-dashed");
+    expect(ICONS["circle-dashed"]).toBe(CircleDashed);
   });
 
   it("renders exactly one button whose accessible name is exactly the label", () => {

@@ -7,6 +7,7 @@ import {
   ChevronRight,
   CircleAlert,
   CircleCheck,
+  CircleDashed,
   Clock,
   Copy,
   Ellipsis,
@@ -3347,6 +3348,7 @@ export const ICONS = {
   close: X,
   "chevron-down": ChevronDown,
   "chevron-right": ChevronRight,
+  "circle-dashed": CircleDashed,
 } as const;
 
 export type IconName = keyof typeof ICONS;
