@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Container.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:333f3ca669f41113110b271431f8afd2623f9e3440c08d31754201c7744b0714",
+  "digest": "sha256:aafc1dd6775e53d89ed8be9598a1f8e2f84f562e147ff3900476062a396e2dde",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [

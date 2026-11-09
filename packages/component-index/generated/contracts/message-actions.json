@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:736d0fc077cec12668c9d3eec0221d05bcfcb00ee19d19124fd18734713df3ec",
-  "entryDigest": "sha256:c9e29ba71dbebf8e4aa029aab7167659a9246da2fe69a72749029e37888efa34",
+  "digest": "sha256:5e88ae5e5a7d9e8b6121f0915fafa9253c57d3f0ae42d6040a6cced0c6d3001c",
+  "entryDigest": "sha256:b0c9913225070d281026964e79f407a089c7299a1267c9923f9ec5d95b5b1e4a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -165,7 +165,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageActions.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageActionsProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

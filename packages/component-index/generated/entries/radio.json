@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Radio.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:65e408de928eb3f29cee34ee3e0d41b8d0ef4090f528ed6b32ed88f14e377e72",
+  "digest": "sha256:0b294e1b76658487547f46898fa6114ba34ff6cf54e268b570644ec8fd641b52",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

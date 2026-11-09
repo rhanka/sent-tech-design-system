@@ -1,8 +1,8 @@
 {
   "componentId": "selection-chip",
   "contractSource": "derived",
-  "digest": "sha256:24140d8028c788e6239e50f1844cccc39d165d54f3f1dc9196dbd72ff8976d32",
-  "entryDigest": "sha256:742394f5c0acfa0b4c251636ea2820f7408a3891a4adae53c6fe836c5b3b227e",
+  "digest": "sha256:460bc8340a93431ed50df81757052642b1e7510b6de4c6acf9db8eba05601640",
+  "entryDigest": "sha256:29480be0d8105767b59a770d0ca91428827c58503b00fe5b580fc23a2c3c5ba5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -109,7 +109,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectionChipProps",
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectionChip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectionChipProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

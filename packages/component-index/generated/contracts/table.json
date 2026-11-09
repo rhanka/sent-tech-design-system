@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:35a81a4d631d904ffe662e1dda0e4f4ed6660b99f500f7574387416feecc12c4",
-  "entryDigest": "sha256:29f10839e41a0fad031aadd82d7a842a969b22574ad2185c9245fd4f5374c8ef",
+  "digest": "sha256:5fdf34436fa3d0923ea0c1deff075ebc256ac191a72d576fc7c675ab8a44ac1c",
+  "entryDigest": "sha256:566413db4722bd370450283486ecabeaf782e1519d768689e7047333c86f71de",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -178,7 +178,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TableProps",
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],
