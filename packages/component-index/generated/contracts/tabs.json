@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:39e9f52cf0d43a87999f28fe869e5c4053fed5ab2036a7e0f16ca8ad9d69e0cf",
-  "entryDigest": "sha256:812c0cbf3ae4e6adfeb302181ef010ce17f903dec8981e6a9b1903b64c877e8a",
+  "digest": "sha256:911e12624908e72ca7e95aee962245752e0c501e7d2b3f3c195c66f06fd61884",
+  "entryDigest": "sha256:4f8f4cec0fc3e4f9ded91768c3066c1802278f9d52213193850b92baca6184ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TabsProps",
@@ -272,7 +272,7 @@
         "declarationPath": "packages/components-svelte/dist/Tabs.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TabsProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

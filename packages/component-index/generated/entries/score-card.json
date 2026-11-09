@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ScoreCard.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:e41bb9e071d70ba950df747ce15cbc3d8a1649f148f27274c6838afb8d4da933",
+  "digest": "sha256:1a8db02144e4b8d44fed4978fe06e5fd8dfd0d9e3d4451e0c4fc484f91be9a7c",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [
