@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:7e2ddc23068d9663e1ad4910391ac756d23ccc1e05eec592079c7800398fb0c3",
-  "entryDigest": "sha256:cb9f4246b0c16032e45a4c006cb2d15c3904df03214a002534515c16da11a93b",
+  "digest": "sha256:6571e9d5bca56bf875ca5f7a033e7040ce9ab526b1c99242d16a825bf69c9f0a",
+  "entryDigest": "sha256:dcc153996bf8f85adc13367a6e49fe54a9259f418d2557ebb47eedef5473bd8b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -234,7 +234,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FooterProps",
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [],

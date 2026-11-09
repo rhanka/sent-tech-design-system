@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:938f638e1da10ba16be28f61ab1cb04337a2bdeaac8c40ce0df3db15060c040c",
-  "entryDigest": "sha256:cba3af6fa1f7bc0e0e34d6b07698af0fba5d5ba7237371cb3eeea7459c303c2d",
+  "digest": "sha256:7b4b818d49b89fdd134b7dc8088fc4fc0fa6f4e21cf61337531b8b4e3941b1db",
+  "entryDigest": "sha256:8b84ca2f1a4fa8356a3d0e7c8b84422c2979d4ac167bc9825639a2784e478bab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmptyStateProps",
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

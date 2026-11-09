@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Autosave.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Autosave indicator: saving, saved, or failed states.",
     "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
   },
-  "digest": "sha256:656b90d344dfb28f635684027c8ba1c8bc14f31c7778eaa612f871faedf58664",
+  "digest": "sha256:32126ea9e517373533a00b31350815575f17c8360b7224aed8360dba859a03c8",
   "displayName": "Autosave",
   "format": "component-entry/v1",
   "frameworks": [

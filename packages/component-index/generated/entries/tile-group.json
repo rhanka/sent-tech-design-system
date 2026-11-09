@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TileGroup.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Selectable tile group (radio), with legend.",
     "fr": "Groupe de tuiles sélectionnables (radio), avec légende."
   },
-  "digest": "sha256:2fedb2ced207b059f3cb6af66a78c6fcf9e19af193c55f00a867034bc0e7abe7",
+  "digest": "sha256:0440e057d32ff2446ca3d3830f0fd23262e63a0ed7d555ada3dc02ba6cb9a021",
   "displayName": "TileGroup",
   "format": "component-entry/v1",
   "frameworks": [

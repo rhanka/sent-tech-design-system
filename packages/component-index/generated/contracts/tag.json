@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:89107ec1798903cd78b9ee940638da1eebeac96798196d9e87c5f50152ae2120",
-  "entryDigest": "sha256:d38ef9bb80ce6ead624370bae087936ddca66ad8cc0b3ce7af5d467c9d80961e",
+  "digest": "sha256:0d1c61db0678607e7d32b949205f8d1d3b9e3ac4c24fb3b28aa7f7710cc46dba",
+  "entryDigest": "sha256:86224fe3812bb7972bdbdb4eecfef1108d14a3e15b3067b27a120daa8d205ca9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -130,7 +130,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TagProps",
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/Tag.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TagProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "partial",
       "unresolved": [

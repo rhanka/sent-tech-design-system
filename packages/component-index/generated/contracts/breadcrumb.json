@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:e24d822b7fd20f1e6b0cc75d92de4dd39fba934d686df2ca3936ba1dbd1c799d",
-  "entryDigest": "sha256:96a6ddd52073da46ebeb895de4cfabfd9bc96661ecb5c9cfd9bb010b8227847b",
+  "digest": "sha256:d350ec13ec53d90c514a39dc3199a3f92d329fb3a83aff3a608378afa633a59e",
+  "entryDigest": "sha256:587d45dde9ef22b7e25be06a58bb729698e3821fdbd569834531e296e572a852",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -125,7 +125,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BreadcrumbProps",
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-svelte/dist/Breadcrumb.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BreadcrumbProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

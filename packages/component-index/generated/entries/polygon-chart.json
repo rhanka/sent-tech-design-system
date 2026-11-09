@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PolygonChart.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:1faf9b4842df1ccef61a9cdc978b772d3f79f3b9d98646b4c09c0505e648c955",
+  "digest": "sha256:5d011c5067194a14958899ce01fda92cefacea47b1347c935459d7256cd7f5af",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

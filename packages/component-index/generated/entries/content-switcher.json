@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ContentSwitcher.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Segmented switcher between multiple views.",
     "fr": "Bascule segmentée entre plusieurs vues."
   },
-  "digest": "sha256:19c1f272a5fdf40b1c33022ca294de577d9e2e9c117bfccbe4742a9db8dfb64c",
+  "digest": "sha256:bcfb839a4601ed325bc3793c622a3df79d5a6cb61163953dc07ea208ebfa57fc",
   "displayName": "ContentSwitcher",
   "format": "component-entry/v1",
   "frameworks": [

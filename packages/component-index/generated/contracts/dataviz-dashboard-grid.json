@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:8c5815fba82247e601cc61fa9a6f2f436c0149e0bcd04eac8d36ef4480aeb4de",
-  "entryDigest": "sha256:ea282d10321509e6fe461b671f70e651f8e313ec4f4f1ece252f7f5cba51d1b5",
+  "digest": "sha256:03c441ad1c9ac6aa490fe6e2ea21103ebe101aa5417f1094d7a522e141ad3a44",
+  "entryDigest": "sha256:81d8dd5fe69a2459bacafcb84bbe55a74c53fd85324c9b83577c14dabfa0701b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],
