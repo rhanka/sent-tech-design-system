@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Quote.svelte",
-      "version": "0.37.0"
+      "version": "0.37.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Editorial blockquote with author and source.",
     "fr": "Citation éditoriale (blockquote) avec auteur et source."
   },
-  "digest": "sha256:f3e09df1dc8f93c59109ec8e69d4b50e61d3286b864ffc9a09894102b59b4220",
+  "digest": "sha256:2549be45ff971b0fdfdb23819573f85f6c9948ac320427690f0a650fbf7594bc",
   "displayName": "Quote",
   "format": "component-entry/v1",
   "frameworks": [

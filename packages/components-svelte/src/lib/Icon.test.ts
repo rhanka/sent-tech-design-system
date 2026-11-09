@@ -4,6 +4,7 @@ import { render } from "@testing-library/svelte";
 import {
   ChevronDown,
   ChevronRight,
+  CircleDashed,
   Eye,
   EyeOff,
   Layers,
@@ -141,8 +142,8 @@ describe("Icon — canonical DS icon set", () => {
 // by AS-1: the eight pre-existing names keep their glyphs and `comment` is
 // added, mapping to lucide MessageSquare (nine names total). The other seven
 // CA names land with their own CA lots, not here.
-describe("W-1.0 icon catalogue — CA-L1 fold-in (comment)", () => {
-  it("ICON_NAMES carries exactly the eight pre-existing names plus comment", () => {
+describe("W-1.0 icon catalogue — CA-L1 fold-in (comment) and circle-dashed", () => {
+  it("ICON_NAMES carries exactly the eight pre-existing names plus comment and circle-dashed", () => {
     expect(ICON_NAMES).toEqual([
       "settings",
       "eye",
@@ -152,11 +153,12 @@ describe("W-1.0 icon catalogue — CA-L1 fold-in (comment)", () => {
       "close",
       "chevron-down",
       "chevron-right",
-      "comment"
+      "comment",
+      "circle-dashed"
     ]);
   });
 
-  it("the eight pre-existing mappings are unchanged and comment -> MessageSquare", () => {
+  it("the eight pre-existing mappings are unchanged, comment -> MessageSquare, and circle-dashed -> CircleDashed", () => {
     expect(ICONS.settings).toBe(Settings);
     expect(ICONS.eye).toBe(Eye);
     expect(ICONS["eye-off"]).toBe(EyeOff);
@@ -166,6 +168,7 @@ describe("W-1.0 icon catalogue — CA-L1 fold-in (comment)", () => {
     expect(ICONS["chevron-down"]).toBe(ChevronDown);
     expect(ICONS["chevron-right"]).toBe(ChevronRight);
     expect(ICONS.comment).toBe(MessageSquare);
+    expect(ICONS["circle-dashed"]).toBe(CircleDashed);
   });
 
   it("renders an svg for the comment name", () => {

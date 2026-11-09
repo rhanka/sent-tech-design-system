@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:d44f659cb71eb30359dbf783f274e6f16aabcffbac1b58df5bbdeb41980c5c7d",
-  "entryDigest": "sha256:1ed4abd04b59fd8348a0724b4711b11632e1cfebd6bcfdf1262ca99993d43126",
+  "digest": "sha256:0f1dc21a79c5bf55578957be594a8dbebf503597f21b7a7fbfcef2bd9a835ae3",
+  "entryDigest": "sha256:30f096fc015d3d03a2a1e3c3b274547f275de396f9b1011a1a615a30ff485b6c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LanguageSelectorProps",
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageSelector.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageSelectorProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

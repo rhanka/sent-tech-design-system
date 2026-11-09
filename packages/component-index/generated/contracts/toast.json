@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:8929daed6ddac7b2ed63ddf38e1ae25db527d82a8a7d073fe09925628a3e30d9",
-  "entryDigest": "sha256:8d0c84ae8c0724b688a6799b19876d62c6f8256b17f6e4687e8dee8c1cbec82e",
+  "digest": "sha256:a51ecbfc1d286dcdde0ca202459d2eab7ca6604a9fbaad1b98403e17db1835f1",
+  "entryDigest": "sha256:e0ed9972311afb7e8c0bb99f0936b86ea25c04e1960f2e41baa5ad67b029ea79",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToastProps",
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.37.0"
+        "version": "0.37.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -2,8 +2,9 @@
  * @license
  * This file REDISTRIBUTES third-party work.
  *
- * The SVG path data of the eight glyphs in ICON_NODES below — settings, eye,
- * eye-off, layers, target, close (`x` upstream), chevron-down, chevron-right —
+ * The SVG path data of the nine glyphs in ICON_NODES below — settings, eye,
+ * eye-off, layers, target, close (`x` upstream), chevron-down, chevron-right,
+ * circle-dashed —
  * is copied verbatim from lucide (lucide-react 0.562.0). The other framework
  * ports depend on a lucide package; this one inlines the data instead, so the
  * copy ships inside dist/Icon.js and inside the published tarball. That makes
@@ -46,7 +47,8 @@ export type IconName =
   | "target"
   | "close"
   | "chevron-down"
-  | "chevron-right";
+  | "chevron-right"
+  | "circle-dashed";
 
 export type IconProps = {
   name: IconName;
@@ -97,6 +99,16 @@ const ICON_NODES: Record<IconName, IconNode> = {
   ],
   "chevron-down": [["path", { d: "m6 9 6 6 6-6" }]],
   "chevron-right": [["path", { d: "m9 18 6-6-6-6" }]],
+  "circle-dashed": [
+    ["path", { d: "M10.1 2.182a10 10 0 0 1 3.8 0" }],
+    ["path", { d: "M13.9 21.818a10 10 0 0 1-3.8 0" }],
+    ["path", { d: "M17.609 3.721a10 10 0 0 1 2.69 2.7" }],
+    ["path", { d: "M2.182 13.9a10 10 0 0 1 0-3.8" }],
+    ["path", { d: "M20.279 17.609a10 10 0 0 1-2.7 2.69" }],
+    ["path", { d: "M21.818 10.1a10 10 0 0 1 0 3.8" }],
+    ["path", { d: "M3.721 6.391a10 10 0 0 1 2.7-2.69" }],
+    ["path", { d: "M6.391 20.279a10 10 0 0 1-2.69-2.7" }],
+  ],
 };
 
 /** All canonical icon names, ordered — useful for docs/catalogs. */
