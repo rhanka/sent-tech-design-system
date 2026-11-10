@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Combobox.svelte",
-      "version": "0.37.1"
+      "version": "0.37.2"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Combobox.tsx",
-      "version": "0.38.0"
+      "version": "0.38.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Combobox.ts",
-      "version": "0.38.0"
+      "version": "0.38.1"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Combobox.ts",
-      "version": "0.38.0"
+      "version": "0.38.1"
     }
   ],
   "description": {
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:e756be86b9f3730f6a5427b0f31024a333a874884652344fb3618f29bcf40daa",
+  "digest": "sha256:5a4e2416cf2821b5498c83aafccc904eda09a540097cb1e0d68784b9699d7b4c",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:3967f6ff3fa407eb60fe9b44bafb6faf515bbbaf0520a20b6e44b1a3df5163fa",
-  "entryDigest": "sha256:4fc3d11f9316dbd9a85f3859485f6e57b476415d72722ba5e4dde419f08d3b0c",
+  "digest": "sha256:61f983192ee216e5898bc274beb01eac42818421b2497a4791e6ef9fbce10b05",
+  "entryDigest": "sha256:02384ced2a9d396a4a28b6e62dcf5f4ffa279e848ecc3576764085d46c711241",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/Badge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -112,7 +112,7 @@
         "declarationPath": "packages/components-react/dist/Badge.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -174,7 +174,7 @@
         "declarationPath": "packages/components-svelte/dist/Badge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BadgeProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -225,7 +225,7 @@
         "declarationPath": "packages/components-vue/dist/Badge.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],

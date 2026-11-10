@@ -1,8 +1,8 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:4d02d003f22319eb225d34883d3f118821a3f6f14e3d83e342e61688c3291a05",
-  "entryDigest": "sha256:921b80909ae059431a13a918751d3b4680094cf7cdd41a1f147b4410bc79b71b",
+  "digest": "sha256:d575ef0e9a958a52834c0983ca675354c4482751deb410448679fcf737db43bd",
+  "entryDigest": "sha256:a5fe57aa38bdca427f5add62fcdc5cfd35ffdcf5aa2d8bfe83c16712169de571",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/AreaSplineRangeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -179,7 +179,7 @@
         "declarationPath": "packages/components-react/dist/AreaSplineRangeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaSplineRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -358,7 +358,7 @@
         "declarationPath": "packages/components-vue/dist/AreaSplineRangeChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
