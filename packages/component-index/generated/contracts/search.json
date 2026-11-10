@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:5a0ecad8fb41ede0716f09e042c1550b095f242bfaaeb1d04e809ed2f32c9c86",
-  "entryDigest": "sha256:953d7d78c6de26063f22670231b498c5e1c89ce205f79a497f6b37fce6c579a9",
+  "digest": "sha256:372f6708c306d2bb18d6097789de5704c306c839510eef5c4e87aeff0ddefdbf",
+  "entryDigest": "sha256:43ea1066870f028ea59aadadaef20bac60ac304bf0b66c75217a85763c80e8eb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -126,7 +126,7 @@
         "declarationPath": "packages/components-angular/dist/Search.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SearchProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SearchProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -269,7 +269,7 @@
         "declarationPath": "packages/components-svelte/dist/Search.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SearchProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -404,7 +404,7 @@
         "declarationPath": "packages/components-vue/dist/Search.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SearchProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
