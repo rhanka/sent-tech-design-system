@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:ec17ca31201344491d0ef896a0c229a1bd8bf51456e956ea2e4dfe3b52965e4d",
-  "entryDigest": "sha256:78a9454450c7b78a4c7cbbc1081d77e6f0a892045153baeb89bd7d9965b83fb8",
+  "digest": "sha256:374eeb898259759cdbb2dd1f2c097d8d37ddc0c7422bb63d6d870438809e3d16",
+  "entryDigest": "sha256:5bc8f95ecb277dfd43293eb463abb5ec4639ac5bc28e5f3d0e73d0a16d578f89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/Accordion.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AccordionProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AccordionProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/Accordion.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AccordionProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -450,7 +450,7 @@
         "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
