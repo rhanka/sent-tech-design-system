@@ -53,7 +53,7 @@ export type { HeaderProps, HeaderNavItem, HeaderAccount } from "./Header.js";
 export { Highlight } from "./Highlight.js";
 export type { HighlightProps, HighlightTone } from "./Highlight.js";
 export { Icon, ICONS, ICON_NAMES } from "./Icon.js";
-export type { IconName, IconProps } from "./Icon.js";
+export type { IconGlyph, IconName, IconProps } from "./Icon.js";
 export { IconButton } from "./IconButton.js";
 export type {
   IconButtonProps,
