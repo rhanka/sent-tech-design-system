@@ -1,8 +1,8 @@
 {
   "componentId": "area-chart",
   "contractSource": "derived",
-  "digest": "sha256:3950d4fae05e9ae71b7b245b12c9785cd99721690b46beb564918ea01095bf96",
-  "entryDigest": "sha256:98379b6e67af3898055e5ce7e74c02aa6d93c3dd8b13f254eb449b0f51701b44",
+  "digest": "sha256:e2771c905f345ba5c0d4bd19065e1dd99ba3ff896f80023284a6f43998331790",
+  "entryDigest": "sha256:e8bbe9bf38d55b50e33d221ba4f6e3601680533253f401d8e58ffc431dde4959",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -324,7 +324,7 @@
         "declarationPath": "packages/components-angular/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -670,7 +670,7 @@
         "declarationPath": "packages/components-react/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -1010,7 +1010,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaChartProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -1363,7 +1363,7 @@
         "declarationPath": "packages/components-vue/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],

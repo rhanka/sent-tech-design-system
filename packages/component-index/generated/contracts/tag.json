@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:0d1c61db0678607e7d32b949205f8d1d3b9e3ac4c24fb3b28aa7f7710cc46dba",
-  "entryDigest": "sha256:86224fe3812bb7972bdbdb4eecfef1108d14a3e15b3067b27a120daa8d205ca9",
+  "digest": "sha256:098b2e8458778e2699c253d484d6c6dd54e48de42271905204c0233b356ddc49",
+  "entryDigest": "sha256:a83ec7d94288ca0d7c26b50d8f1db121b2055f4002ca02f2ed4b48bb1ca07c83",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/Tag.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TagProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [
@@ -134,7 +134,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TagProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/Tag.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TagProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "partial",
       "unresolved": [
@@ -285,7 +285,7 @@
         "declarationPath": "packages/components-vue/dist/Tag.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TagProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [

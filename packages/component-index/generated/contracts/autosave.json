@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:c13566a9d52d19afa2d78130b31e56f9cfb753ce753bad1fc785600b4fbf91d8",
-  "entryDigest": "sha256:32126ea9e517373533a00b31350815575f17c8360b7224aed8360dba859a03c8",
+  "digest": "sha256:8ca28a058dd0e3ec2e0aaac2971995f56a4d54f817bc1fa2ad5fd651e17c8924",
+  "entryDigest": "sha256:e32685deb984c21e14fd0664d22fef8b8643f438a9a86d1f572ed23122c84c40",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/Autosave.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -191,7 +191,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -390,7 +390,7 @@
         "declarationPath": "packages/components-vue/dist/Autosave.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
