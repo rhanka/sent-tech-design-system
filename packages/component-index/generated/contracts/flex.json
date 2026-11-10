@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:c08817c806a201c596d586daf2cbed31c8faf086272f44743958aa2779e996d3",
-  "entryDigest": "sha256:ad4a1c36e3dc3ff06df678b20daef54928c52a26927e4a187e1d1e0bbbf9c979",
+  "digest": "sha256:d59e1a1dee07d984044dadb584a97576bfac30bbaa0633628e9771e49ca43e06",
+  "entryDigest": "sha256:2ed9f4cb4fb257f0c7a114a5c9b773cba17c491814c51abde7f6be74b5130406",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -71,7 +71,7 @@
         "declarationPath": "packages/components-angular/dist/Flex.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FlexProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -146,7 +146,7 @@
         "declarationPath": "packages/components-react/dist/Flex.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FlexProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -225,7 +225,7 @@
         "declarationPath": "packages/components-svelte/dist/Flex.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlexProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -295,7 +295,7 @@
         "declarationPath": "packages/components-vue/dist/Flex.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlexProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],

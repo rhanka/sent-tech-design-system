@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:3a054b25cae217f3f53f57b6be5fc494af8bbf326ee017727e741f47a581e95e",
-  "entryDigest": "sha256:c7d4227c245dabe49e7e8512763993e7d2ff197c3e42541abaa6e6d24866e1f0",
+  "digest": "sha256:e899babe2a434b999f40f207a0a0bd5d45fe3100dd8ecd982ba918159ae66f5b",
+  "entryDigest": "sha256:7d126d6d7fe586aa4002672e1bf0e1ed353662159a266c7f178b4ce6f22b267c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -177,7 +177,7 @@
         "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -333,7 +333,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -485,7 +485,7 @@
         "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverflowMenuProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -672,7 +672,7 @@
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
