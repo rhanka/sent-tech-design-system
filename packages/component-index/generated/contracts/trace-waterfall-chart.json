@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:b23bfb8eb6bd8ca43ea204f7104ac7fd5a5d483bc783a82e5e4e908396984c8d",
-  "entryDigest": "sha256:c104026ed1b51e4e194d77a7dc879b87f8ff330900c9ed1930e669b7a56aa2b1",
+  "digest": "sha256:a38040ef9f1f08c7685e9457187859b2d655aefb52a3e2778f4c35d3ba368692",
+  "entryDigest": "sha256:101bf7eb95463d9a0bdbf99ce95ff10a434be0e35cb7edd4d512364f3b66e20f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -87,7 +87,7 @@
         "declarationPath": "packages/components-angular/dist/TraceWaterfallChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-react/dist/TraceWaterfallChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/TraceWaterfallChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-vue/dist/TraceWaterfallChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],

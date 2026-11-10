@@ -1,8 +1,8 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:85e47d08b2f97fa1bbc299abc87368d3f81bea9b9e938b6772357705a308a377",
-  "entryDigest": "sha256:147a6e87a673e69e1270a7f65e294ee9861704ac0acf6c3388beb6d2b4762553",
+  "digest": "sha256:cc0d9effce083ccb0caf2ac5a548c091ba8792850f3013ac55bb51216f4fdbd9",
+  "entryDigest": "sha256:1a3b8c63d7e4403570c8994b51edf8c34b5bf2359f79eecdffc015faf350ad7b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NavItemProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-react/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NavItemProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -368,7 +368,7 @@
         "declarationPath": "packages/components-svelte/dist/NavItem.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavItemProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -500,7 +500,7 @@
         "declarationPath": "packages/components-vue/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavItemProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],

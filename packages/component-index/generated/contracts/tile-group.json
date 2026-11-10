@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:51eeff10c4136b85c46a10c68960ee67ad23d79466cd8b6a062267f189e5d64c",
-  "entryDigest": "sha256:0440e057d32ff2446ca3d3830f0fd23262e63a0ed7d555ada3dc02ba6cb9a021",
+  "digest": "sha256:0ce8d69714268792860287d7b52a37dad575c2ad89e49d8ded000beca85c310b",
+  "entryDigest": "sha256:a74da91509a0bd27ee4fdeeaccfd20fa87cf387f40c905e09fdc1a1e999b1d7a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-angular/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileGroupProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -203,7 +203,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileGroupProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -296,7 +296,7 @@
         "declarationPath": "packages/components-svelte/dist/TileGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileGroupProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -428,7 +428,7 @@
         "declarationPath": "packages/components-vue/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
