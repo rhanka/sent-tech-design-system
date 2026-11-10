@@ -57,3 +57,9 @@ export const ICONS = GLYPHS as Record<IconName, Component<IconGlyphProps>>;
 
 /** All canonical icon names, ordered — useful for docs/catalogs. */
 export const ICON_NAMES = Object.keys(ICONS) as IconName[];
+
+/**
+ * An arbitrary lucide glyph component accepted by {@link Icon} via `glyph`.
+ * The app imports the icon itself, so only icons actually used are bundled.
+ */
+export type IconGlyph = Component<IconGlyphProps>;

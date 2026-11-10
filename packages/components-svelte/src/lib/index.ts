@@ -166,7 +166,7 @@ export type {
 } from "./timeRange.js";
 export { default as Icon } from "./Icon.svelte";
 export { ICONS, ICON_NAMES } from "./icons.js";
-export type { IconName } from "./icons.js";
+export type { IconGlyph, IconName } from "./icons.js";
 export { default as IconButton } from "./IconButton.svelte";
 export { default as LabelledIconButton } from "./LabelledIconButton.svelte";
 export type { LabelledIconButtonProps } from "./LabelledIconButton.svelte";

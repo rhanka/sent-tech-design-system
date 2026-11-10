@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:5bb53f7c1c1323c2ec39f322be66d01e57007b8f15a33334ae7fcae58338f89a",
-  "entryDigest": "sha256:3a7cb614b2731bf6c9dd7cfc497574deb6c5b23f83b5ed35aaff4d949fb42048",
+  "digest": "sha256:5395933db941adff6e4950d968d90fb5ad840bdda793084c399475bf785773a8",
+  "entryDigest": "sha256:0876b4f0bf5e721b7c14e13a50160ff831f363efc0fec7d9ea076adec3d0dfc4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -127,7 +127,7 @@
         "declarationPath": "packages/components-angular/dist/RangeSlider.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RangeSliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-react/dist/RangeSlider.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RangeSliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -376,7 +376,7 @@
         "declarationPath": "packages/components-svelte/dist/RangeSlider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RangeSliderProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -528,7 +528,7 @@
         "declarationPath": "packages/components-vue/dist/RangeSlider.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RangeSliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

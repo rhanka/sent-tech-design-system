@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:7febf6a2731e8b967ea14d95d514c2a1496c33ac42d08f6496836993b6c40728",
-  "entryDigest": "sha256:5f2ab478a70bbc08bcb6144a7698811263ad6deb51d67e46f3d07233bddf7672",
+  "digest": "sha256:c01799ad56101b253f13e0593c22e61853165fbda62d1778aa89814767aa84b7",
+  "entryDigest": "sha256:053017ff2c2821d7074bfebb1eebfe9f8e9af09113c5802ca94e0b0b0742e1ee",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StatusDotProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StatusDotProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -173,7 +173,7 @@
         "declarationPath": "packages/components-svelte/dist/StatusDot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StatusDotProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -229,7 +229,7 @@
         "declarationPath": "packages/components-vue/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StatusDotProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

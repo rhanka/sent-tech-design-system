@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:efa57e518d57b9290527176f6b9ee7d4e7d6610c78127010b4ed4895da5ef8cc",
+  "digest": "sha256:07c802ae6b6192b533b7f4f5890561da59b69b872fdd54e348925f65d24f934c",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
         "declarationPath": "packages/components-angular/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UrlSyncProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
         "declarationPath": "packages/components-react/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UrlSyncProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],
@@ -391,11 +391,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationDigest": "sha256:0deb5b75ad8366a1ca6df1031e98c843addf589a80c9cb4c98929fe4951681f0",
         "declarationPath": "packages/components-vue/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UrlSyncProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],

@@ -262,7 +262,7 @@ export type { MediaKind, MediaContentProps } from "./MediaContent.js";
 export { Transcription } from "./Transcription.js";
 export type { TranscriptionSegment, TranscriptionProps } from "./Transcription.js";
 export { Icon, ICON_NAMES } from "./Icon.js";
-export type { IconName, IconProps } from "./Icon.js";
+export type { IconGlyph, IconName, IconProps } from "./Icon.js";
 export { IconButton } from "./IconButton.js";
 export type { IconButtonSize, IconButtonVariant, IconButtonProps } from "./IconButton.js";
 export { Inline } from "./Inline.js";
