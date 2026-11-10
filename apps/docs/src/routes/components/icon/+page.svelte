@@ -65,6 +65,56 @@
       }
     ]
   }));
+
+  // Sample "Any lucide icon": built here so the file carries no literal
+  // script tag sequence outside this real block (same split pattern
+  // as getting-started). Only the Angular comment differs per locale.
+  const glyphScriptOpen = "<" + "script>";
+  const glyphScriptSetupOpen = "<" + "script setup>";
+  const glyphScriptClose = "</" + "script>";
+
+  const glyphSampleHead =
+    "<!-- Svelte -->\n" +
+    `${glyphScriptOpen}\n` +
+    `  import { Icon } from "@sentropic/design-system-svelte";\n` +
+    `  import { Rocket } from "@lucide/svelte";\n` +
+    `${glyphScriptClose}\n` +
+    "<Icon glyph={Rocket} size={24} />\n" +
+    "\n" +
+    "{/* React */}\n" +
+    `import { Icon } from "@sentropic/design-system-react";\n` +
+    `import { Rocket } from "lucide-react";\n` +
+    "<Icon glyph={Rocket} size={24} />\n" +
+    "\n" +
+    "<!-- Vue -->\n" +
+    `${glyphScriptSetupOpen}\n` +
+    `  import { Icon } from "@sentropic/design-system-vue";\n` +
+    `  import { Rocket } from "lucide-vue-next";\n` +
+    `${glyphScriptClose}\n` +
+    "<template>\n" +
+    `  <Icon :glyph="Rocket" :size="24" />\n` +
+    "</template>\n" +
+    "\n";
+
+  const glyphSampleTail =
+    `import { Icon } from "@sentropic/design-system-angular";\n` +
+    `import { Rocket } from "lucide";\n` +
+    "\n" +
+    "@Component({ imports: [Icon] /* … */ })\n" +
+    "export class Example {\n" +
+    "  protected readonly rocket = Rocket;\n" +
+    "}\n" +
+    `<!-- template : --> <st-icon [glyph]="rocket" [size]="24" />`;
+
+  const glyphSampleFr =
+    glyphSampleHead +
+    `<!-- Angular (les données IconNode qu'exporte le paquet "lucide") -->\n` +
+    glyphSampleTail;
+
+  const glyphSampleEn =
+    glyphSampleHead +
+    `<!-- Angular (the IconNode data the "lucide" package exports) -->\n` +
+    glyphSampleTail;
 </script>
 
 <div class="docs-page">
@@ -83,12 +133,14 @@
         (<code>IconName</code>) — jamais par le nom d'un composant de la bibliothèque source — pour
         que la source visuelle puisse évoluer sans rupture d'API. Les noms sont
         <strong>additifs</strong> : le jeu s'étend, un nom existant ne change jamais de sens.
+        Hors de ce jeu, <code>glyph</code> accepte directement une icône lucide (voir ci-dessous).
       {:else}
         The design system <strong>prescribes a single icon set</strong> and exposes it through
         <code>&lt;Icon&gt;</code>. Icons are addressed by <strong>DS-owned names</strong>
         (<code>IconName</code>) — never by the underlying library's component name — so the visual
         source can evolve without breaking the public API. Names are <strong>additive</strong>: the
-        set grows, an existing name never changes meaning.
+        set grows, an existing name never changes meaning. Beyond this set,
+        <code>glyph</code> takes a lucide icon directly (see below).
       {/if}
     </p>
   </section>
@@ -126,6 +178,30 @@
         {/each}
       </tbody>
     </table>
+  </section>
+
+  <section class="docs-section">
+    <h2>
+      {locale.value === "fr" ? "N'importe quelle icône lucide" : "Any lucide icon"}
+    </h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        <code>name</code> garde le jeu canonique ci-dessus. Pour toute autre icône lucide, passez
+        <code>glyph</code> : l'icône elle-même, importée par votre application — pas un nom en texte
+        libre — si bien que seule l'icône utilisée est empaquetée et qu'ajouter une icône ne demande
+        jamais une nouvelle version du DS. <code>glyph</code> l'emporte sur <code>name</code> quand
+        les deux sont passés ; sans aucun des deux, rien n'est rendu. Le rendu — taille, graisse,
+        titre, classe et tokens de thème — est identique au chemin <code>name</code>.
+      {:else}
+        <code>name</code> keeps the canonical set above. For any other lucide icon, pass
+        <code>glyph</code>: the icon itself, imported by your application — not a free-text
+        name — so only the icon you use is bundled and adding an icon never needs a new DS
+        release. <code>glyph</code> wins over <code>name</code> when both are passed; with
+        neither, nothing renders. Rendering — size, stroke, title, class and theme tokens — is
+        identical to the <code>name</code> path.
+      {/if}
+    </p>
+    <pre class="icon-code"><code>{locale.value === "fr" ? glyphSampleFr : glyphSampleEn}</code></pre>
   </section>
 
   <section class="docs-section">
@@ -232,11 +308,21 @@
         <tr>
           <td><code>name</code></td>
           <td><code>IconName</code></td>
-          <td><em>{locale.value === "fr" ? "requis" : "required"}</em></td>
+          <td>—</td>
           <td>
             {locale.value === "fr"
-              ? "Nom DS canonique de l'icône (voir le jeu ci-dessus)."
-              : "Canonical DS icon name (see the set above)."}
+              ? "Nom DS canonique de l'icône (voir le jeu ci-dessus). Exactement un de name, glyph."
+              : "Canonical DS icon name (see the set above). Exactly one of name, glyph."}
+          </td>
+        </tr>
+        <tr>
+          <td><code>glyph</code></td>
+          <td><code>IconGlyph</code></td>
+          <td>—</td>
+          <td>
+            {locale.value === "fr"
+              ? "Icône lucide quelconque importée par l'app ; l'emporte sur name. Exactement un de name, glyph."
+              : "Any lucide icon imported by the app; wins over name. Exactly one of name, glyph."}
           </td>
         </tr>
         <tr>
@@ -312,6 +398,15 @@
             {locale.value === "fr"
               ? "Nom → glyphe. Échappatoire bas niveau ; préférez <Icon>."
               : "Name → glyph. Low-level escape hatch; prefer <Icon>."}
+          </td>
+        </tr>
+        <tr>
+          <td><code>IconGlyph</code></td>
+          <td><code>type</code></td>
+          <td>
+            {locale.value === "fr"
+              ? "Icône lucide quelconque acceptée par glyph (composant lucide ; données IconNode en Angular)."
+              : "Any lucide icon accepted by glyph (lucide component; IconNode data in Angular)."}
           </td>
         </tr>
       </tbody>
