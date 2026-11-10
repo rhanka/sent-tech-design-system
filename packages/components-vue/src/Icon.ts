@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from "vue";
+import { defineComponent, h, type Component, type PropType } from "vue";
 import {
   Settings,
   Eye,
@@ -36,19 +36,41 @@ export type IconName = keyof typeof ICONS;
 
 export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 
-export type IconProps = {
-  name: IconName;
+/** An arbitrary lucide-vue-next component accepted by {@link Icon} via `glyph`. */
+export type IconGlyph = Component;
+
+type IconBaseProps = {
   size?: number;
   strokeWidth?: number;
   title?: string;
   class?: string;
 };
 
+export type IconProps = IconBaseProps &
+  (
+    | {
+        /** Canonical DS icon name. */
+        name: IconName;
+        glyph?: never;
+      }
+    | {
+        /** Arbitrary lucide glyph; wins over `name` when both are set. */
+        glyph: IconGlyph;
+        name?: never;
+      }
+  );
+
+// `process` is bundler-replaced in apps and real in Node; declared locally so
+// this file typechecks with or without @types/node.
+declare const process: { env?: Record<string, string | undefined> } | undefined;
+
 export const Icon = defineComponent({
   name: "Icon",
   props: {
     /** Canonical DS icon name. */
-    name: { type: String as () => IconName, required: true },
+    name: { type: String as PropType<IconName>, required: false, default: undefined },
+    /** Arbitrary lucide glyph; wins over `name` when both are set. */
+    glyph: { type: Object as PropType<IconGlyph>, required: false, default: undefined },
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size: { type: Number, default: 18 },
     /**
@@ -62,8 +84,17 @@ export const Icon = defineComponent({
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
+    // Exactly one of `name`/`glyph` is expected; warn in dev, never throw.
+    if (typeof process === "undefined" || process.env?.NODE_ENV !== "production") {
+      const hasName = props.name != null;
+      const hasGlyph = props.glyph != null;
+      if (hasName === hasGlyph) {
+        console.warn("[st-icon] Icon requires exactly one of `name` or `glyph`.");
+      }
+    }
     return () => {
-      const Glyph = ICONS[props.name];
+      // `glyph` wins when both are set; neither renders nothing (null).
+      const Glyph = props.glyph ?? (props.name != null ? ICONS[props.name] : undefined);
       if (!Glyph) return null;
       return h(Glyph, {
         size: props.size,
