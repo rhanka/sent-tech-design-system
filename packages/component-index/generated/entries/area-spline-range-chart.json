@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AreaSplineRangeChart.svelte",
-      "version": "0.37.1"
+      "version": "0.37.2"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AreaSplineRangeChart.tsx",
-      "version": "0.38.0"
+      "version": "0.38.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AreaSplineRangeChart.ts",
-      "version": "0.38.0"
+      "version": "0.38.1"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AreaSplineRangeChart.ts",
-      "version": "0.38.0"
+      "version": "0.38.1"
     }
   ],
   "description": {
     "en": "Spline variant of AreaRange: filled band between a low and a high series along an X axis, always-smoothed contours (e.g. temperature range, confidence interval).",
     "fr": "Variante spline d'AreaRange : bande remplie entre une série basse et une série haute le long d'un axe X, contours toujours lissés (ex. fourchette de température, intervalle de confiance)."
   },
-  "digest": "sha256:921b80909ae059431a13a918751d3b4680094cf7cdd41a1f147b4410bc79b71b",
+  "digest": "sha256:a5fe57aa38bdca427f5add62fcdc5cfd35ffdcf5aa2d8bfe83c16712169de571",
   "displayName": "AreaSplineRangeChart",
   "format": "component-entry/v1",
   "frameworks": [
