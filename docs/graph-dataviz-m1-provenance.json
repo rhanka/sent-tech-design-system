@@ -2045,7 +2045,7 @@
       "sha256": "a44c704dbcacbcf93081f4f488c5b285de14f469cdc9459768fb246a29553800",
       "status": "adapted-packaging-only",
       "destinationSha256": "abf3ac3b874f60f2cc2152b9c2de21f09c56523a4d44a2dc4a4b2bde01e3def1",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only)"
+      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
@@ -3594,7 +3594,7 @@
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
       "destinationSha256": "61994c7bc4bc66b5b0542a26e33dcee5e4b2b836a6a7b29a54a49df513b1b5ff",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only)"
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
@@ -5161,7 +5161,7 @@
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
       "destinationSha256": "6587418b48baf0388f1e7394d9a3550ccf585d9e40da39461577ad7adecc998c",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only)"
+      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
     },
     {
       "repository": "dataviz",
