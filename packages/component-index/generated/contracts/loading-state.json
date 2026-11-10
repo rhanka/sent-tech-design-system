@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:cc842b4b3f6bb2af4bddbcb7cfa52e33189ea7e408d6619835de271316baf241",
-  "entryDigest": "sha256:c3459a0fce2d9f8696267b0a97f4270c78f4005161c0f5e7e7e68342cb1d5737",
+  "digest": "sha256:a5da97e68306b0f7c47f12d1f2193f784a14a430c8ed5a9df11b886bcf0b8062",
+  "entryDigest": "sha256:5f64ff157648bd506475225c67febb3c5c8d07758336d9b52abee57a123536d5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -37,7 +37,7 @@
         "declarationPath": "packages/components-angular/dist/LoadingState.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LoadingStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -82,11 +82,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LoadingStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -130,7 +130,7 @@
         "declarationPath": "packages/components-svelte/dist/LoadingState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LoadingStateProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-vue/dist/LoadingState.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LoadingStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
