@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:699e2eb3ea72680cc2e5f58f6b3b1e2ed071dab2c4c7b0c286f3110da45a54b8",
-  "entryDigest": "sha256:32735657fb6258c475341ad6c66d1a4ec3c696d3850843ef7fe469e30b96e844",
+  "digest": "sha256:66f213c9854301b10aca27c42a865c219e72258b4e4677e27547f17417512f28",
+  "entryDigest": "sha256:db17de43151176aa1aaabe1a28e3f8fb08f12bb3664d91d6e69255b5736407d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatMessageProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -168,7 +168,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatMessageProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -331,7 +331,7 @@
         "declarationPath": "packages/components-vue/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],

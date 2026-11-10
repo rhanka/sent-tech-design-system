@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:881de33d8249cdfc4eab7447a005dfb2d59a2c53e29281e2049d8453e77ec119",
-  "entryDigest": "sha256:6ce94181a2bc3cda9fcd62962fc8a077c6089e50aa1b35a32bc7e68898605435",
+  "digest": "sha256:a8d550f22d12ec5b0584b2dfd376cd14ec7163d37c4bb3baec41d35798affae3",
+  "entryDigest": "sha256:1237858aa15c4469a478d9764742a780dd7de9641dfc536612858277ad0b74f5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Modal.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ModalProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ModalProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Modal.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ModalProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -253,7 +253,7 @@
         "declarationPath": "packages/components-vue/dist/Modal.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ModalProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],

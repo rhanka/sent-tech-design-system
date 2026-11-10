@@ -9,14 +9,14 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramCard.svelte",
-      "version": "0.37.1"
+      "version": "0.37.2"
     }
   ],
   "description": {
     "en": "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit.",
     "fr": "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn."
   },
-  "digest": "sha256:3730e81a5e9877136d08dca8cdb68b5e4409db5002a480eadae7603de35309c0",
+  "digest": "sha256:d23b0d898f2ad67f56db1fcd8c02c1b3f6b09d7f8a5cd25fb2ed4e4d2d6b12b7",
   "displayName": "DiagramCard",
   "format": "component-entry/v1",
   "frameworks": [

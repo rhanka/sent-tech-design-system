@@ -61,6 +61,10 @@
     display: inline-grid;
     gap: 0.625rem;
     grid-template-columns: auto 1fr;
+    /* The row carries the label typography so `1lh` is one label line: the
+       box and the trailing slot centre on that first line (see below). */
+    font-size: var(--st-component-selection-choiceLabelFontSize, 0.9375rem);
+    line-height: var(--st-component-selection-choiceLabelLineHeight, normal);
   }
 
   /* SIGNAL filter row: input + content + trailing count, content fills, trailing
@@ -78,6 +82,9 @@
     align-self: start;
     display: inline-flex;
     flex: 0 0 auto;
+    /* One label line high, content centred: a count Badge sits on the same
+       axis as the box and the label, even when it is taller than the line. */
+    height: 1lh;
     justify-content: flex-end;
   }
 
@@ -86,8 +93,15 @@
        d'anatomie + états. Aucun widget custom, a11y native préservée. */
     accent-color: var(--st-component-selection-checkedBackground, var(--st-semantic-action-primary));
     cursor: inherit;
+    font: inherit;
     height: 1rem;
+    /* Vertical centring on the first label line, whatever the theme's label
+       font size and line height: offset the 1rem box by half the difference
+       between one label line (1lh) and its own height. Top alignment is kept
+       so a wrapped description stays under the label. The first declaration
+       is the fallback for engines without the lh unit. */
     margin: 0.125rem 0 0;
+    margin: calc((1lh - 1rem) / 2) 0 0;
     width: 1rem;
   }
 
@@ -135,6 +149,7 @@
   .st-choice__help {
     color: var(--st-component-field-helpText, var(--st-semantic-text-secondary));
     font-size: 0.8125rem;
+    line-height: normal;
   }
 
   /* Secondary muted description under the label (SIGNAL filter hint). */
