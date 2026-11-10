@@ -1481,16 +1481,16 @@
   },
   "icon": {
    "svelte": {
-    "status": "complete"
+    "status": "partial"
    },
    "react": {
-    "status": "complete"
+    "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
-    "status": "complete"
+    "status": "partial"
    }
   },
   "icon-button": {

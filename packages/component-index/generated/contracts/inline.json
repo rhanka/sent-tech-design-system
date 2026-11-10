@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:4cd2fc16db37fa6e0a4772394d8488b514afe58c7a4e5caeac4cb85181521d58",
-  "entryDigest": "sha256:7bc96353a47631fbe6f130a675ca626f562c54344acc727e9accfc66852b8cb4",
+  "digest": "sha256:60fd1e2ada4d3387b095acdb396bef78238909a926b1849172d2365440970349",
+  "entryDigest": "sha256:96af63933ad1a8a6cdfffa94c33bb6179d6f5a8fb4c50df5a603a1f93c6ab1c9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/Inline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InlineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -136,7 +136,7 @@
         "declarationPath": "packages/components-react/dist/Inline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InlineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/Inline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/Inline.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

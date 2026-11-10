@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RoseChart.svelte",
-      "version": "0.37.2"
+      "version": "0.38.0"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/RoseChart.tsx",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RoseChart.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RoseChart.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     }
   ],
   "description": {
     "en": "Nightingale polar area chart: radius scales with value, equal-angle sectors.",
     "fr": "Diagramme polaire de Nightingale : rayon proportionnel à la valeur, secteurs d'angle égal."
   },
-  "digest": "sha256:b4db4b66d620fb0d9a9676c2227bea253039abf9a8319540f231ca99024225fe",
+  "digest": "sha256:18323ccabd11d3c9afdf7c9ad0bef8def2d22c77ec01f346a3d00925685dc570",
   "displayName": "RoseChart",
   "format": "component-entry/v1",
   "frameworks": [
