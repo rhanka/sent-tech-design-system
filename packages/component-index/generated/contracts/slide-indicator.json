@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:3a933cab73bbefedb612a37989087dbccb13383619f299c3f4c187941d012ed7",
-  "entryDigest": "sha256:90968b72b00ad2e762898f785e428b4d8fa37000ea764833642d3f61c97025e7",
+  "digest": "sha256:e10bc302017905208b9aa56f63e51eab1b3e98c9ff6015db75566d61812e094e",
+  "entryDigest": "sha256:7d2c743d0a46bf6f06807440e08b387f1b2655f05bdf3aec3ef098ea5c207059",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/SlideIndicator.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SlideIndicatorProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -135,7 +135,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SlideIndicatorProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SlideIndicatorProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -298,7 +298,7 @@
         "declarationPath": "packages/components-vue/dist/SlideIndicator.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SlideIndicatorProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
