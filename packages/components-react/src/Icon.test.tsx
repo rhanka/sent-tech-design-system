@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render } from "@testing-library/react";
+import { EyeOff, Rocket } from "lucide-react";
 import { describe, expect, it } from "vitest";
 import { Icon, ICON_NAMES } from "./Icon.js";
+import type { IconProps } from "./Icon.js";
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
 // as [{ selector, declarations }]. Empty when the block is absent.
@@ -94,5 +96,59 @@ describe("Icon — canonical DS icon set", () => {
     const svg = container.querySelector("svg") as SVGElement;
     expect(svg.getAttribute("stroke")).toBe("rgb(0, 128, 0)");
     expect(tokenDeclarationsFor(svg, rules)).toEqual([STROKE_WIDTH_TOKEN]);
+  });
+});
+
+describe("Icon — glyph prop (any lucide icon)", () => {
+  it("renders an svg for a glyph passed directly", () => {
+    const { container } = render(<Icon glyph={EyeOff} />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+
+  it("renders the same svg for glyph as for the name mapping to the same lucide icon", () => {
+    const byName = render(<Icon name="eye-off" />);
+    const byGlyph = render(<Icon glyph={EyeOff} />);
+    expect(byGlyph.container.querySelector("svg")?.outerHTML).toBe(
+      byName.container.querySelector("svg")?.outerHTML,
+    );
+    byName.unmount();
+    byGlyph.unmount();
+  });
+
+  it("applies size, strokeWidth, title and className to a glyph", () => {
+    const { container } = render(
+      <Icon glyph={EyeOff} size={24} strokeWidth={1.5} title="Masquer" className="app-gear" />,
+    );
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg.getAttribute("width")).toBe("24");
+    expect(svg.getAttribute("height")).toBe("24");
+    expect(svg.getAttribute("stroke-width")).toBe("1.5");
+    expect(svg.getAttribute("data-st-icon-stroke")).toBe("prop");
+    expect(svg.getAttribute("role")).toBe("img");
+    expect(svg.getAttribute("aria-label")).toBe("Masquer");
+    expect(svg.getAttribute("aria-hidden")).toBeNull();
+    expect(svg.getAttribute("class")).toContain("st-icon");
+    expect(svg.getAttribute("class")).toContain("app-gear");
+  });
+
+  it("lets glyph win when both name and glyph are passed", () => {
+    const both = { name: "eye", glyph: EyeOff } as unknown as IconProps;
+    const { container } = render(<Icon {...both} />);
+    const expected = render(<Icon name="eye-off" />);
+    expect(container.querySelector("svg")?.outerHTML).toBe(
+      expected.container.querySelector("svg")?.outerHTML,
+    );
+    expected.unmount();
+  });
+
+  it("renders a lucide icon outside the canonical set", () => {
+    const { container } = render(<Icon glyph={Rocket} />);
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+
+  it("renders nothing when neither name nor glyph is passed", () => {
+    const neither = {} as unknown as IconProps;
+    const { container } = render(<Icon {...neither} />);
+    expect(container.querySelector("svg")).toBeNull();
   });
 });
