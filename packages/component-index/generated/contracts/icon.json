@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:7b8ac19222ca5847990777bea840f260f4390434043b380f7d57a339022d4df1",
-  "entryDigest": "sha256:52e0bc35be2f9c233712bdea63f9827b1e6d8b6b9d8ee90bd2fa242c0c5a4f26",
+  "digest": "sha256:58b09fe35fd06b11cce227b5a18c0388651652ea6143609796ee0a7161de9d6f",
+  "entryDigest": "sha256:3722c88c32bdf9526856baf3932c75e1522e9b5a8d912b22b0947ba8ef3bf5a3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -17,6 +17,26 @@
         "properties": {
           "class": {
             "type": "string"
+          },
+          "glyph": {
+            "description": "Arbitrary lucide icon data; wins over `name` when both are set.",
+            "items": {
+              "items": false,
+              "prefixItems": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "properties": {},
+                  "type": "object"
+                }
+              ],
+              "type": "array"
+            },
+            "type": "array"
           },
           "name": {
             "description": "Canonical DS icon name.",
@@ -47,22 +67,1044 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "glyph[][1]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Record<string, string>"
+        }
+      ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d00062cd464453ef388418045113dd97e24a247112bf36769c0f30b99b8b3dca",
+        "declarationDigest": "sha256:ce1e28cf3523949b43e56f8edee995c4d3fba97ed24d99a6b3ba2180433a1676",
         "declarationPath": "packages/components-angular/dist/Icon.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": []
     },
     "react": {
       "bindable": [],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "node",
+          "name": "props.children",
+          "reason": "renderable-node surface has no JSON Schema form",
+          "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAbort",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAbortCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationIteration",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationIterationCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAnimationStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "AnimationEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAuxClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onAuxClickCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onBeforeInput",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "InputEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onBeforeInputCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "InputEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onBeforeToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ToggleEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onBlur",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FocusEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onBlurCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FocusEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCanPlay",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCanPlayCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCanPlayThrough",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCanPlayThroughCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ChangeEventHandler<SVGSVGElement, Element>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onChangeCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ChangeEventHandler<SVGSVGElement, Element>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onClickCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionUpdate",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCompositionUpdateCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CompositionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onContextMenu",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onContextMenuCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCopy",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCopyCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCut",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onCutCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDoubleClick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDoubleClickCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDrag",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragEnter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragEnterCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragExit",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragExitCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragLeave",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragLeaveCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragOver",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragOverCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDragStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDrop",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDropCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "DragEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDurationChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onDurationChangeCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEmptied",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEmptiedCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEncrypted",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEncryptedCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEnded",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onEndedCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onError",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onErrorCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onFocus",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FocusEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onFocusCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FocusEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onGotPointerCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onGotPointerCaptureCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onInput",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "InputEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onInputCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "InputEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onInvalid",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onInvalidCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyDown",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyDownCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyPress",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyPressCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyUp",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onKeyUpCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "KeyboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoad",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadedData",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadedDataCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadedMetadata",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLoadedMetadataCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLostPointerCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onLostPointerCaptureCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseDown",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseDownCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseEnter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseLeave",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseMove",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseMoveCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseOut",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseOutCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseOver",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseOverCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseUp",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onMouseUpCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "MouseEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPaste",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPasteCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ClipboardEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPause",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPauseCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPlay",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPlayCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPlaying",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPlayingCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerCancel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerCancelCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerDown",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerDownCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerEnter",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerLeave",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerMove",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerMoveCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerOut",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerOutCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerOver",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerOverCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerUp",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onPointerUpCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "PointerEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onProgress",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onProgressCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onRateChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onRateChangeCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onReset",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onResetCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onScroll",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "UIEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onScrollCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "UIEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onScrollEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "UIEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onScrollEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "UIEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSeeked",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSeekedCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSeeking",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSeekingCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSelectCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onStalled",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onStalledCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSubmit",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "SubmitEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSubmitCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "SubmitEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSuspend",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onSuspendCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTimeUpdate",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTimeUpdateCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ToggleEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchCancel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchCancelCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchMove",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchMoveCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTouchStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TouchEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionCancel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionCancelCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionEnd",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionEndCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionRun",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionRunCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionStart",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onTransitionStartCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "TransitionEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onVolumeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onVolumeChangeCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onWaiting",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onWaitingCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "ReactEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onWheel",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "WheelEventHandler<SVGSVGElement>"
+        },
+        {
+          "kind": "function",
+          "name": "props.onWheelCapture",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "WheelEventHandler<SVGSVGElement>"
+        }
+      ],
       "events": [],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
@@ -77,7 +1119,7 @@
         "additionalProperties": false,
         "properties": {
           "name": {
-            "description": "Canonical DS icon name.",
+            "description": "Canonical DS icon name.\n\nExactly one of `name` or `glyph` is expected: `glyph` wins when both\nare set, and neither renders nothing (returns null).",
             "enum": [
               "target",
               "settings",
@@ -103,27 +1145,2852 @@
             "type": "string"
           }
         },
-        "required": [
-          "name"
-        ],
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "glyph",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "absoluteStrokeWidth": {
+                "type": "boolean"
+              },
+              "accentHeight": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "accumulate": {
+                "enum": [
+                  "none",
+                  "sum"
+                ]
+              },
+              "additive": {
+                "enum": [
+                  "sum",
+                  "replace"
+                ]
+              },
+              "alignmentBaseline": {
+                "enum": [
+                  "auto",
+                  "middle",
+                  "baseline",
+                  "alphabetic",
+                  "hanging",
+                  "ideographic",
+                  "mathematical",
+                  "before-edge",
+                  "text-before-edge",
+                  "central",
+                  "after-edge",
+                  "text-after-edge",
+                  "inherit"
+                ]
+              },
+              "allowReorder": {
+                "enum": [
+                  "no",
+                  "yes"
+                ]
+              },
+              "alphabetic": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "amplitude": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "arabicForm": {
+                "enum": [
+                  "initial",
+                  "medial",
+                  "terminal",
+                  "isolated"
+                ]
+              },
+              "aria-activedescendant": {
+                "description": "Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application.",
+                "type": "string"
+              },
+              "aria-atomic": {
+                "description": "Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-autocomplete": {
+                "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made.",
+                "enum": [
+                  "list",
+                  "none",
+                  "inline",
+                  "both"
+                ]
+              },
+              "aria-braillelabel": {
+                "description": "Defines a string value that labels the current element, which is intended to be converted into Braille.",
+                "type": "string"
+              },
+              "aria-brailleroledescription": {
+                "description": "Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille.",
+                "type": "string"
+              },
+              "aria-busy": {
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-checked": {
+                "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false",
+                  "mixed"
+                ]
+              },
+              "aria-colcount": {
+                "description": "Defines the total number of columns in a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-colindex": {
+                "description": "Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-colindextext": {
+                "description": "Defines a human readable text alternative of aria-colindex.",
+                "type": "string"
+              },
+              "aria-colspan": {
+                "description": "Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-controls": {
+                "description": "Identifies the element (or elements) whose contents or presence are controlled by the current element.",
+                "type": "string"
+              },
+              "aria-current": {
+                "description": "Indicates the element that represents the current item within a container or set of related elements.",
+                "enum": [
+                  false,
+                  true,
+                  "step",
+                  "true",
+                  "false",
+                  "page",
+                  "location",
+                  "date",
+                  "time"
+                ]
+              },
+              "aria-describedby": {
+                "description": "Identifies the element (or elements) that describes the object.",
+                "type": "string"
+              },
+              "aria-description": {
+                "description": "Defines a string value that describes or annotates the current element.",
+                "type": "string"
+              },
+              "aria-details": {
+                "description": "Identifies the element that provides a detailed, extended description for the object.",
+                "type": "string"
+              },
+              "aria-disabled": {
+                "description": "Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-dropeffect": {
+                "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+                "enum": [
+                  "none",
+                  "copy",
+                  "execute",
+                  "link",
+                  "move",
+                  "popup"
+                ]
+              },
+              "aria-errormessage": {
+                "description": "Identifies the element that provides an error message for the object.",
+                "type": "string"
+              },
+              "aria-expanded": {
+                "description": "Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-flowto": {
+                "description": "Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,\nallows assistive technology to override the general default of reading in document source order.",
+                "type": "string"
+              },
+              "aria-grabbed": {
+                "description": "Indicates an element's \"grabbed\" state in a drag-and-drop operation.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-haspopup": {
+                "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false",
+                  "menu",
+                  "listbox",
+                  "tree",
+                  "grid",
+                  "dialog"
+                ]
+              },
+              "aria-hidden": {
+                "description": "Indicates whether the element is exposed to an accessibility API.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-invalid": {
+                "description": "Indicates the entered value does not conform to the format expected by the application.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false",
+                  "grammar",
+                  "spelling"
+                ]
+              },
+              "aria-keyshortcuts": {
+                "description": "Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.",
+                "type": "string"
+              },
+              "aria-label": {
+                "description": "Defines a string value that labels the current element.",
+                "type": "string"
+              },
+              "aria-labelledby": {
+                "description": "Identifies the element (or elements) that labels the current element.",
+                "type": "string"
+              },
+              "aria-level": {
+                "description": "Defines the hierarchical level of an element within a structure.",
+                "type": "number"
+              },
+              "aria-live": {
+                "description": "Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region.",
+                "enum": [
+                  "off",
+                  "assertive",
+                  "polite"
+                ]
+              },
+              "aria-modal": {
+                "description": "Indicates whether an element is modal when displayed.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-multiline": {
+                "description": "Indicates whether a text box accepts multiple lines of input or only a single line.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-multiselectable": {
+                "description": "Indicates that the user may select more than one item from the current selectable descendants.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-orientation": {
+                "description": "Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous.",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "aria-owns": {
+                "description": "Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship\nbetween DOM elements where the DOM hierarchy cannot be used to represent the relationship.",
+                "type": "string"
+              },
+              "aria-placeholder": {
+                "description": "Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.\nA hint could be a sample value or a brief description of the expected format.",
+                "type": "string"
+              },
+              "aria-posinset": {
+                "description": "Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.",
+                "type": "number"
+              },
+              "aria-pressed": {
+                "description": "Indicates the current \"pressed\" state of toggle buttons.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false",
+                  "mixed"
+                ]
+              },
+              "aria-readonly": {
+                "description": "Indicates that the element is not editable, but is otherwise operable.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-relevant": {
+                "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.",
+                "enum": [
+                  "additions",
+                  "additions removals",
+                  "additions text",
+                  "all",
+                  "removals",
+                  "removals additions",
+                  "removals text",
+                  "text",
+                  "text additions",
+                  "text removals"
+                ]
+              },
+              "aria-required": {
+                "description": "Indicates that user input is required on the element before a form may be submitted.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-roledescription": {
+                "description": "Defines a human-readable, author-localized description for the role of an element.",
+                "type": "string"
+              },
+              "aria-rowcount": {
+                "description": "Defines the total number of rows in a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-rowindex": {
+                "description": "Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-rowindextext": {
+                "description": "Defines a human readable text alternative of aria-rowindex.",
+                "type": "string"
+              },
+              "aria-rowspan": {
+                "description": "Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.",
+                "type": "number"
+              },
+              "aria-selected": {
+                "description": "Indicates the current \"selected\" state of various widgets.",
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "aria-setsize": {
+                "description": "Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.",
+                "type": "number"
+              },
+              "aria-sort": {
+                "description": "Indicates if items in a table or grid are sorted in ascending or descending order.",
+                "enum": [
+                  "none",
+                  "ascending",
+                  "descending",
+                  "other"
+                ]
+              },
+              "aria-valuemax": {
+                "description": "Defines the maximum allowed value for a range widget.",
+                "type": "number"
+              },
+              "aria-valuemin": {
+                "description": "Defines the minimum allowed value for a range widget.",
+                "type": "number"
+              },
+              "aria-valuenow": {
+                "description": "Defines the current value for a range widget.",
+                "type": "number"
+              },
+              "aria-valuetext": {
+                "description": "Defines the human readable text alternative of aria-valuenow for a range widget.",
+                "type": "string"
+              },
+              "ascent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "attributeName": {
+                "type": "string"
+              },
+              "attributeType": {
+                "type": "string"
+              },
+              "autoReverse": {
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "azimuth": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "baseFrequency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "baseProfile": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "baselineShift": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "bbox": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "begin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "bias": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "by": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "calcMode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "capHeight": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "className": {
+                "type": "string"
+              },
+              "clip": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "clipPath": {
+                "type": "string"
+              },
+              "clipPathUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "clipRule": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "color": {
+                "type": "string"
+              },
+              "colorInterpolation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "colorInterpolationFilters": {
+                "enum": [
+                  "auto",
+                  "inherit",
+                  "sRGB",
+                  "linearRGB"
+                ]
+              },
+              "colorProfile": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "colorRendering": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "contentScriptType": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "contentStyleType": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "crossOrigin": {
+                "enum": [
+                  "",
+                  "anonymous",
+                  "use-credentials"
+                ]
+              },
+              "cursor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "cx": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "cy": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "d": {
+                "type": "string"
+              },
+              "dangerouslySetInnerHTML": {
+                "additionalProperties": false,
+                "properties": {
+                  "__html": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {}
+                    ]
+                  }
+                },
+                "required": [
+                  "__html"
+                ],
+                "type": "object"
+              },
+              "decelerate": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "descent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "diffuseConstant": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "direction": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "display": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "divisor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "dominantBaseline": {
+                "enum": [
+                  "auto",
+                  "middle",
+                  "alphabetic",
+                  "hanging",
+                  "ideographic",
+                  "mathematical",
+                  "text-before-edge",
+                  "central",
+                  "text-after-edge",
+                  "inherit",
+                  "use-script",
+                  "no-change",
+                  "reset-size"
+                ]
+              },
+              "dur": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "dx": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "dy": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "edgeMode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "elevation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "enableBackground": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "end": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "exponent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "externalResourcesRequired": {
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "fill": {
+                "type": "string"
+              },
+              "fillOpacity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fillRule": {
+                "enum": [
+                  "inherit",
+                  "nonzero",
+                  "evenodd"
+                ]
+              },
+              "filter": {
+                "type": "string"
+              },
+              "filterRes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "filterUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "floodColor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "floodOpacity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "focusable": {
+                "enum": [
+                  false,
+                  true,
+                  "auto",
+                  "true",
+                  "false"
+                ]
+              },
+              "fontFamily": {
+                "type": "string"
+              },
+              "fontSize": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fontSizeAdjust": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fontStretch": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fontStyle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fontVariant": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fontWeight": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "format": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fr": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "from": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fx": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "fy": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "g1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "g2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "glyphName": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "glyphOrientationHorizontal": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "glyphOrientationVertical": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "glyphRef": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "gradientTransform": {
+                "type": "string"
+              },
+              "gradientUnits": {
+                "type": "string"
+              },
+              "hanging": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "horizAdvX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "horizOriginX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "href": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "ideographic": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "imageRendering": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "in": {
+                "type": "string"
+              },
+              "in2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "intercept": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "k": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "k1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "k2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "k3": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "k4": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "kernelMatrix": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "kernelUnitLength": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "kerning": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "key": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "keyPoints": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "keySplines": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "keyTimes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "lang": {
+                "type": "string"
+              },
+              "lengthAdjust": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "letterSpacing": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "lightingColor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "limitingConeAngle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "local": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "markerEnd": {
+                "type": "string"
+              },
+              "markerHeight": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "markerMid": {
+                "type": "string"
+              },
+              "markerStart": {
+                "type": "string"
+              },
+              "markerUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "markerWidth": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "mask": {
+                "type": "string"
+              },
+              "maskContentUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "maskUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "mathematical": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "max": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "media": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string"
+              },
+              "min": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "mode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "nonce": {
+                "type": "string"
+              },
+              "numOctaves": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "opacity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "operator": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "orient": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "orientation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "origin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "overflow": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "overlinePosition": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "overlineThickness": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "paintOrder": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "panose1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "part": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "pathLength": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "patternContentUnits": {
+                "type": "string"
+              },
+              "patternTransform": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "patternUnits": {
+                "type": "string"
+              },
+              "pointerEvents": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "points": {
+                "type": "string"
+              },
+              "pointsAtX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "pointsAtY": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "pointsAtZ": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "preserveAlpha": {
+                "enum": [
+                  false,
+                  true,
+                  "true",
+                  "false"
+                ]
+              },
+              "preserveAspectRatio": {
+                "type": "string"
+              },
+              "primitiveUnits": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "r": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "radius": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "refX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "refY": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "renderingIntent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "repeatCount": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "repeatDur": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "requiredExtensions": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "requiredFeatures": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "restart": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "result": {
+                "type": "string"
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "const": "region"
+                  },
+                  {
+                    "const": "form"
+                  },
+                  {
+                    "const": "button"
+                  },
+                  {
+                    "const": "list"
+                  },
+                  {
+                    "const": "none"
+                  },
+                  {
+                    "const": "row"
+                  },
+                  {
+                    "const": "link"
+                  },
+                  {
+                    "const": "menu"
+                  },
+                  {
+                    "const": "listbox"
+                  },
+                  {
+                    "const": "tree"
+                  },
+                  {
+                    "const": "grid"
+                  },
+                  {
+                    "const": "dialog"
+                  },
+                  {
+                    "const": "alert"
+                  },
+                  {
+                    "const": "alertdialog"
+                  },
+                  {
+                    "const": "application"
+                  },
+                  {
+                    "const": "article"
+                  },
+                  {
+                    "const": "banner"
+                  },
+                  {
+                    "const": "cell"
+                  },
+                  {
+                    "const": "checkbox"
+                  },
+                  {
+                    "const": "columnheader"
+                  },
+                  {
+                    "const": "combobox"
+                  },
+                  {
+                    "const": "complementary"
+                  },
+                  {
+                    "const": "contentinfo"
+                  },
+                  {
+                    "const": "definition"
+                  },
+                  {
+                    "const": "directory"
+                  },
+                  {
+                    "const": "document"
+                  },
+                  {
+                    "const": "feed"
+                  },
+                  {
+                    "const": "figure"
+                  },
+                  {
+                    "const": "gridcell"
+                  },
+                  {
+                    "const": "group"
+                  },
+                  {
+                    "const": "heading"
+                  },
+                  {
+                    "const": "img"
+                  },
+                  {
+                    "const": "listitem"
+                  },
+                  {
+                    "const": "log"
+                  },
+                  {
+                    "const": "main"
+                  },
+                  {
+                    "const": "marquee"
+                  },
+                  {
+                    "const": "math"
+                  },
+                  {
+                    "const": "menubar"
+                  },
+                  {
+                    "const": "menuitem"
+                  },
+                  {
+                    "const": "menuitemcheckbox"
+                  },
+                  {
+                    "const": "menuitemradio"
+                  },
+                  {
+                    "const": "navigation"
+                  },
+                  {
+                    "const": "note"
+                  },
+                  {
+                    "const": "option"
+                  },
+                  {
+                    "const": "presentation"
+                  },
+                  {
+                    "const": "progressbar"
+                  },
+                  {
+                    "const": "radio"
+                  },
+                  {
+                    "const": "radiogroup"
+                  },
+                  {
+                    "const": "rowgroup"
+                  },
+                  {
+                    "const": "rowheader"
+                  },
+                  {
+                    "const": "scrollbar"
+                  },
+                  {
+                    "const": "search"
+                  },
+                  {
+                    "const": "searchbox"
+                  },
+                  {
+                    "const": "separator"
+                  },
+                  {
+                    "const": "slider"
+                  },
+                  {
+                    "const": "spinbutton"
+                  },
+                  {
+                    "const": "status"
+                  },
+                  {
+                    "const": "switch"
+                  },
+                  {
+                    "const": "tab"
+                  },
+                  {
+                    "const": "table"
+                  },
+                  {
+                    "const": "tablist"
+                  },
+                  {
+                    "const": "tabpanel"
+                  },
+                  {
+                    "const": "term"
+                  },
+                  {
+                    "const": "textbox"
+                  },
+                  {
+                    "const": "timer"
+                  },
+                  {
+                    "const": "toolbar"
+                  },
+                  {
+                    "const": "tooltip"
+                  },
+                  {
+                    "const": "treegrid"
+                  },
+                  {
+                    "const": "treeitem"
+                  }
+                ]
+              },
+              "rotate": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "rx": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "ry": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "scale": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "seed": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "shapeRendering": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "size": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "slope": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "slot": {
+                "type": "string"
+              },
+              "spacing": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "specularConstant": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "specularExponent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "speed": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "spreadMethod": {
+                "type": "string"
+              },
+              "startOffset": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stdDeviation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stemh": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stemv": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stitchTiles": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stopColor": {
+                "type": "string"
+              },
+              "stopOpacity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strikethroughPosition": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strikethroughThickness": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "string": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "stroke": {
+                "type": "string"
+              },
+              "strokeDasharray": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strokeDashoffset": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strokeLinecap": {
+                "enum": [
+                  "square",
+                  "inherit",
+                  "butt",
+                  "round"
+                ]
+              },
+              "strokeLinejoin": {
+                "enum": [
+                  "inherit",
+                  "round",
+                  "miter",
+                  "bevel"
+                ]
+              },
+              "strokeMiterlimit": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strokeOpacity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "strokeWidth": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "style": {},
+              "suppressHydrationWarning": {
+                "type": "boolean"
+              },
+              "surfaceScale": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "systemLanguage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "tabIndex": {
+                "type": "number"
+              },
+              "tableValues": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "target": {
+                "type": "string"
+              },
+              "targetX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "targetY": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "textAnchor": {
+                "enum": [
+                  "start",
+                  "end",
+                  "middle",
+                  "inherit"
+                ]
+              },
+              "textDecoration": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "textLength": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "textRendering": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "transform": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "u1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "u2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "underlinePosition": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "underlineThickness": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "unicode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "unicodeBidi": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "unicodeRange": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "unitsPerEm": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vAlphabetic": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vHanging": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vIdeographic": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vMathematical": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "values": {
+                "type": "string"
+              },
+              "vectorEffect": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "version": {
+                "type": "string"
+              },
+              "vertAdvY": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vertOriginX": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "vertOriginY": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "viewBox": {
+                "type": "string"
+              },
+              "viewTarget": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "visibility": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "widths": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "wordSpacing": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "writingMode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "x": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "x1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "x2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "xChannelSelector": {
+                "type": "string"
+              },
+              "xHeight": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "xlinkActuate": {
+                "type": "string"
+              },
+              "xlinkArcrole": {
+                "type": "string"
+              },
+              "xlinkHref": {
+                "type": "string"
+              },
+              "xlinkRole": {
+                "type": "string"
+              },
+              "xlinkShow": {
+                "type": "string"
+              },
+              "xlinkTitle": {
+                "type": "string"
+              },
+              "xlinkType": {
+                "type": "string"
+              },
+              "xmlBase": {
+                "type": "string"
+              },
+              "xmlLang": {
+                "type": "string"
+              },
+              "xmlSpace": {
+                "type": "string"
+              },
+              "xmlns": {
+                "type": "string"
+              },
+              "xmlnsXlink": {
+                "type": "string"
+              },
+              "y": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "y2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "yChannelSelector": {
+                "type": "string"
+              },
+              "z": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "zoomAndPan": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
-      "status": "complete",
-      "unresolved": [],
-      "warnings": []
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "dangerouslySetInnerHTML.__html",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "TrustedHTML"
+        },
+        {
+          "kind": "other",
+          "name": "props.style",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "CSSProperties"
+        }
+      ],
+      "warnings": [
+        "nested DOM base not enumerated (RefAttributes<SVGSVGElement>)"
+      ]
     },
     "svelte": {
       "bindable": [],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "glyph",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "IconGlyph"
+        }
+      ],
       "events": [],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
@@ -141,7 +4008,7 @@
             "type": "string"
           },
           "name": {
-            "description": "Canonical DS icon name (see {@link IconName}).",
+            "description": "Canonical DS icon name (see {@link IconName}).\n\nExactly one of `name` or `glyph` is expected: `glyph` wins when both\nare set, and neither renders nothing.",
             "enum": [
               "target",
               "settings",
@@ -168,27 +4035,31 @@
             "type": "string"
           }
         },
-        "required": [
-          "name"
-        ],
         "type": "object"
       },
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a0f8381da4ba32add05e583a8e26427a019668724a05ed91e1048c88762831ca",
+        "declarationDigest": "sha256:7d232699c0dccfc2998203d6a879922a42fda52650f2c8442b3060413d0ee5af",
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": []
     },
     "vue": {
       "bindable": [],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "glyph",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "FunctionalComponent<any, {}, any, {}>"
+        }
+      ],
       "events": [],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
@@ -201,6 +4072,7 @@
             "type": "string"
           },
           "name": {
+            "description": "Canonical DS icon name.\n\nExactly one of `name` or `glyph` is expected: `glyph` wins when both\nare set, and neither renders nothing (null).",
             "enum": [
               "close",
               "layers",
@@ -223,21 +4095,25 @@
             "type": "string"
           }
         },
-        "required": [
-          "name"
-        ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "glyph",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+        }
+      ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:782625d9b1517516deed875be310872c4856626e41660a6ea3e5d060142cc591",
+        "declarationDigest": "sha256:6f49825e3c33c5f5f40e9f3f01655cbfbd8b733bb5122d796b375cfed8d88d14",
         "declarationPath": "packages/components-vue/dist/Icon.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
-      "status": "complete",
+      "status": "partial",
       "unresolved": [],
       "warnings": []
     }
