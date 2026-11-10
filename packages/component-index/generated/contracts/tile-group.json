@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:0ce8d69714268792860287d7b52a37dad575c2ad89e49d8ded000beca85c310b",
-  "entryDigest": "sha256:a74da91509a0bd27ee4fdeeaccfd20fa87cf387f40c905e09fdc1a1e999b1d7a",
+  "digest": "sha256:c542d36c2625849e77fd3d2266977b4f4c2651dcfc67c8d7ec00bb8f73b8fef9",
+  "entryDigest": "sha256:c1493035dbcf67d713abebadde1745e640b8d3102f3938c91c914a11559a5a5d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-angular/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileGroupProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -199,11 +199,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileGroupProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -296,7 +296,7 @@
         "declarationPath": "packages/components-svelte/dist/TileGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileGroupProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -428,7 +428,7 @@
         "declarationPath": "packages/components-vue/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:5f6acdae439094eb47b52bea0e8e6c69cc4d1ac106ede421b77e945bbbc97426",
-  "entryDigest": "sha256:843cf017214579a8430642a3321ad7ccdb18fc6ee0d422177e9cc84fdd5d6cf9",
+  "digest": "sha256:eb9e10fbcb6c94107ee2bfc9866cdf8df811f917a5f472a1a3578d5f8ac8eedc",
+  "entryDigest": "sha256:1342a3027f19f883d2c00c723f174f16d886f082b80ef2ac27aba702f1d87d58",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/Typography.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TypographyProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -122,8 +122,8 @@
             "enum": [
               "primary",
               "secondary",
-              "muted",
               "link",
+              "muted",
               "inverse"
             ]
           },
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/Typography.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TypographyProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -336,7 +336,7 @@
         "declarationPath": "packages/components-vue/dist/Typography.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:c55eb3066d23ce4f547efd34c174d30b73665731a85cafbfbc670184cf3f9265",
-  "entryDigest": "sha256:9437d4800c369ce703830a054ba1123379f935ddba7035a0530d13c878122c4f",
+  "digest": "sha256:c00387dc966a5c8c49a26dbed48f4f07329e090acb33b20cb92c9347c818c38f",
+  "entryDigest": "sha256:c0e018b8c4061ce7e652891b8f374748b60b480b4e76b67fc71ac8e9b384f0a6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
         "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
         "declarationPath": "packages/components-react/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],
@@ -244,7 +244,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -261,11 +261,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationDigest": "sha256:0deb5b75ad8366a1ca6df1031e98c843addf589a80c9cb4c98929fe4951681f0",
         "declarationPath": "packages/components-vue/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],

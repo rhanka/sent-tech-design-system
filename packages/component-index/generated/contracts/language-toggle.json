@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:f97eea5d768fea3a1328c9f78d9ff321b3d59c99bfd0fedbddf6d0c40c98bd1e",
-  "entryDigest": "sha256:1a9e4d385cbeb15dd7ee2b2b1d4cf3af978d0c0c59f66ca0f46ab3c19d414d37",
+  "digest": "sha256:9fd32c2ff7a2806d25c3fc01c2d57250a12656b6dbacdb561c155b1f6b116730",
+  "entryDigest": "sha256:72c44aadc9687150311e7f7d3b9d16021330f8b5b7f2dc2961100f8f0632a74e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/LanguageToggle.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LanguageToggleProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -139,11 +139,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LanguageToggleProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageToggleProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -293,7 +293,7 @@
         "declarationPath": "packages/components-vue/dist/LanguageToggle.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageToggleProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

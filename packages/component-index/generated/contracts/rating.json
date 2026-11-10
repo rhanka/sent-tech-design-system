@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:7fdf22d7272a2fee3d3908cbd55a2ba496c6de120d2393f1fc09e471349dfd05",
-  "entryDigest": "sha256:7abd3e4f741e2ece78155aadf169c84e059dc55c43c2d057bf930a89f1a0d16e",
+  "digest": "sha256:082a9d554926b906d5d1f4d1b2592d5ac177cbc30988e92bed39d8d647ab5642",
+  "entryDigest": "sha256:b9c0a1651f5ac611c6986617d3c333e37e9e7379157c3b9247f556269e3ca078",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/Rating.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RatingProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -137,11 +137,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RatingProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/Rating.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RatingProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,7 +310,7 @@
         "declarationPath": "packages/components-vue/dist/Rating.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RatingProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

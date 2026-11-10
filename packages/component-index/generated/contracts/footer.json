@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:1a1e91b692355d582ecfade2276219e968ae4bf0b9f5528a10f2476d67be21b6",
-  "entryDigest": "sha256:793999bfb3ccc05c7d891b7466e1df54d5d11e91fc1d716a443fc73e013f073d",
+  "digest": "sha256:ff53516cfa4f518e9b4c856fb8917a6ddc8e139ba0e781b4c003badc215e1c18",
+  "entryDigest": "sha256:eb5edc4b552dc7b24b159cbfa5f681a0af59002313900b63d8cd78da9907bf03",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/Footer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FooterProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -234,11 +234,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FooterProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -436,7 +436,7 @@
         "declarationPath": "packages/components-vue/dist/Footer.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

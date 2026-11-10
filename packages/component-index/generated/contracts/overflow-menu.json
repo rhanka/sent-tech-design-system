@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:e899babe2a434b999f40f207a0a0bd5d45fe3100dd8ecd982ba918159ae66f5b",
-  "entryDigest": "sha256:7d126d6d7fe586aa4002672e1bf0e1ed353662159a266c7f178b4ce6f22b267c",
+  "digest": "sha256:b5aaaff4f6c7de5d09c52b00f2aae37af317f0b15991f3916acc15d3b58d4b82",
+  "entryDigest": "sha256:26a83448ec69f5097bf96fce007e666d261717c81338a7934fe8c1a4b9bfbac6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -177,7 +177,7 @@
         "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -329,11 +329,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -485,7 +485,7 @@
         "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverflowMenuProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -672,7 +672,7 @@
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
