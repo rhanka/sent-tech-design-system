@@ -1,8 +1,8 @@
 {
   "componentId": "config-item-card",
   "contractSource": "derived",
-  "digest": "sha256:dcb569f9ba343ac0e415344b78002b5c1d2a27d6077cacfb7c1d3f3e8cfc6078",
-  "entryDigest": "sha256:e32a628d4858571b267259545ce6c5f64a9c2eda0668cb3e31bd4958271596f0",
+  "digest": "sha256:fc5a5032c22a479c15e5e50569396783108ebc7067825331f46553be0945d052",
+  "entryDigest": "sha256:8432fe4b9a171ac09b557505ea46b4cdf3182214122e847b76a6efc3dacb3d1f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/ConfigItemCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ConfigItemCardProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -233,7 +233,7 @@
         "declarationPath": "packages/components-react/dist/ConfigItemCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ConfigItemCardProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -358,7 +358,7 @@
         "declarationPath": "packages/components-svelte/dist/ConfigItemCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ConfigItemCardProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -496,7 +496,7 @@
         "declarationPath": "packages/components-vue/dist/ConfigItemCard.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ConfigItemCardProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],

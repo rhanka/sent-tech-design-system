@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:a752c958482ec0fab563dd3b10dc73a5568789c7d7d8751e2f1137f4ec8b2cc8",
-  "entryDigest": "sha256:3fb38e5377ac3c6a54da68d74716958cd9029bb48f903336e389e02cf208cc0b",
+  "digest": "sha256:a87aee04a285c053fe893b8b38d43bbc283ba45dfe4c8f752a6f29f2a0b9ee33",
+  "entryDigest": "sha256:ebf92464a2412903677ef9b472a1e46d95c828a7c7ae8ce437f6581aa2ee0640",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/MessageStatusBadge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -122,7 +122,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageStatusBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-vue/dist/MessageStatusBadge.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "partial",
       "unresolved": [],
