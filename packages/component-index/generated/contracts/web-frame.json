@@ -1,7 +1,7 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:bd5d333bbd6ae5a8253b7476c356c62a15d27c77d33ceaeef7d76acb0e4d94b4",
+  "digest": "sha256:16c351838a79ab73db3b9e107c838d8f40b9d731d410fef6b228c4ee7fd69ce6",
   "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/WebFrame.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WebFrameProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "none",
       "unresolved": [],

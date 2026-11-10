@@ -18413,3 +18413,32 @@
 .st-priorityMatrix__leader { stroke: var(--st-semantic-text-secondary); stroke-width: 1; opacity: 0.8; }
 .st-priorityMatrix__labelBox { fill: var(--st-semantic-surface-default); stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
 .st-priorityMatrix__labelText { fill: var(--st-semantic-text-primary); font-size: 0.6875rem; }
+
+/* --- Checkbox vertical centring (2026-11-09) ------------------------------ */
+/* The box and the trailing slot centre on the FIRST label line, whatever the
+   theme's label font size and line height. The row carries the label
+   typography so `1lh` is one label line; the 1rem box is offset by half the
+   difference between that line and its own height. Top alignment is kept so a
+   wrapped description stays under the label. The first margin declaration is
+   the fallback for engines without the lh unit. Same rules as
+   components-svelte/src/lib/Checkbox.svelte. */
+.st-choice--checkbox {
+  font-size: var(--st-component-selection-choiceLabelFontSize, 0.9375rem);
+  line-height: var(--st-component-selection-choiceLabelLineHeight, normal);
+}
+
+.st-choice--checkbox .st-choice__input {
+  font: inherit;
+  margin: 0.125rem 0 0;
+  margin: calc((1lh - 1rem) / 2) 0 0;
+}
+
+/* One label line high, content centred: a count Badge sits on the same axis
+   as the box and the label, even when it is taller than the line. */
+.st-choice--checkbox .st-choice__trailing {
+  height: 1lh;
+}
+
+.st-choice--checkbox .st-choice__help {
+  line-height: normal;
+}
