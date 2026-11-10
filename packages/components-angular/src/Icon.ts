@@ -55,18 +55,21 @@ export type IconProps = {
   strokeWidth?: number;
   title?: string;
   class?: string;
-} & (
-  | {
-      /** Canonical DS icon name. */
-      name: IconName;
-      glyph?: never;
-    }
-  | {
-      /** Arbitrary lucide icon data; wins over `name` when both are set. */
-      glyph: IconGlyph;
-      name?: never;
-    }
-);
+  /**
+   * Canonical DS icon name.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither resolves no nodes (null).
+   */
+  name?: IconName;
+  /**
+   * Arbitrary lucide icon data; wins over `name` when both are set.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither resolves no nodes (null).
+   */
+  glyph?: IconGlyph;
+};
 
 type IconNode = Array<[string, Record<string, string>]>;
 

@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:bdcf884ff97b235ce692cbfb69ed6df9d83dc4b20c373848028b5557fc7f31d7",
-  "entryDigest": "sha256:fb48bd540a921df224a5aa7d5711b6e2feb676bf41659be025294ad23719888d",
+  "digest": "sha256:2c72bdc977878d3ccdcb81cc6dfc8b8fdfc3a74556d8b1c3764bdc2bc22bb746",
+  "entryDigest": "sha256:72734740fc562b445fa456cf3c1f501f4a0368badce3f4bcfafa0ce0d7d5d97e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/ChatThread.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatThreadProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -171,11 +171,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatThreadProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatThreadProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -355,7 +355,7 @@
         "declarationPath": "packages/components-vue/dist/ChatThread.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

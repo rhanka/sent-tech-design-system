@@ -2,7 +2,7 @@
   import type { SVGAttributes } from "svelte/elements";
   import { ICONS, type IconGlyph, type IconName } from "./icons.js";
 
-  type IconBaseProps = Omit<SVGAttributes<SVGElement>, "class"> & {
+  type IconProps = Omit<SVGAttributes<SVGElement>, "class"> & {
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size?: number;
     /**
@@ -17,21 +17,21 @@
      */
     title?: string;
     class?: string;
+    /**
+     * Canonical DS icon name (see {@link IconName}).
+     *
+     * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+     * are set, and neither renders nothing.
+     */
+    name?: IconName;
+    /**
+     * Arbitrary lucide glyph; wins over `name` when both are set.
+     *
+     * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+     * are set, and neither renders nothing.
+     */
+    glyph?: IconGlyph;
   };
-
-  type IconProps = IconBaseProps &
-    (
-      | {
-          /** Canonical DS icon name (see {@link IconName}). */
-          name: IconName;
-          glyph?: never;
-        }
-      | {
-          /** Arbitrary lucide glyph; wins over `name` when both are set. */
-          glyph: IconGlyph;
-          name?: never;
-        }
-    );
 
   let {
     name,

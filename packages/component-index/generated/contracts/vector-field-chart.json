@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:57bc94a4558f546bdc45bd1772e43d529bcd295a4f586a13d03a63a75ffa1cef",
-  "entryDigest": "sha256:0793636fa6477297045af740e3a09684a90aca37b3143af77036081ccd5ca842",
+  "digest": "sha256:270d3e8447db2c53191943eb5ce1d509d377497144b8c1a43fc472ec30b75daa",
+  "entryDigest": "sha256:334956327b9038b7eb0718a575c519a41d604668821feee9dad44b7817618975",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/VectorFieldChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VectorFieldChartProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -313,7 +313,7 @@
         "declarationPath": "packages/components-vue/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
