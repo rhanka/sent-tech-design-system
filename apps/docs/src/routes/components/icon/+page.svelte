@@ -65,6 +65,56 @@
       }
     ]
   }));
+
+  // Sample "Any lucide icon": built here so the file carries no literal
+  // script tag sequence outside this real block (same split pattern
+  // as getting-started). Only the Angular comment differs per locale.
+  const glyphScriptOpen = "<" + "script>";
+  const glyphScriptSetupOpen = "<" + "script setup>";
+  const glyphScriptClose = "</" + "script>";
+
+  const glyphSampleHead =
+    "<!-- Svelte -->\n" +
+    `${glyphScriptOpen}\n` +
+    `  import { Icon } from "@sentropic/design-system-svelte";\n` +
+    `  import { Rocket } from "@lucide/svelte";\n` +
+    `${glyphScriptClose}\n` +
+    "<Icon glyph={Rocket} size={24} />\n" +
+    "\n" +
+    "{/* React */}\n" +
+    `import { Icon } from "@sentropic/design-system-react";\n` +
+    `import { Rocket } from "lucide-react";\n` +
+    "<Icon glyph={Rocket} size={24} />\n" +
+    "\n" +
+    "<!-- Vue -->\n" +
+    `${glyphScriptSetupOpen}\n` +
+    `  import { Icon } from "@sentropic/design-system-vue";\n` +
+    `  import { Rocket } from "lucide-vue-next";\n` +
+    `${glyphScriptClose}\n` +
+    "<template>\n" +
+    `  <Icon :glyph="Rocket" :size="24" />\n` +
+    "</template>\n" +
+    "\n";
+
+  const glyphSampleTail =
+    `import { Icon } from "@sentropic/design-system-angular";\n` +
+    `import { Rocket } from "lucide";\n` +
+    "\n" +
+    "@Component({ imports: [Icon] /* … */ })\n" +
+    "export class Example {\n" +
+    "  protected readonly rocket = Rocket;\n" +
+    "}\n" +
+    `<!-- template : --> <st-icon [glyph]="rocket" [size]="24" />`;
+
+  const glyphSampleFr =
+    glyphSampleHead +
+    `<!-- Angular (les données IconNode qu'exporte le paquet "lucide") -->\n` +
+    glyphSampleTail;
+
+  const glyphSampleEn =
+    glyphSampleHead +
+    `<!-- Angular (the IconNode data the "lucide" package exports) -->\n` +
+    glyphSampleTail;
 </script>
 
 <div class="docs-page">
@@ -151,37 +201,7 @@
         identical to the <code>name</code> path.
       {/if}
     </p>
-    <pre class="icon-code"><code>{`<!-- Svelte -->
-<script>
-  import { Icon } from "@sentropic/design-system-svelte";
-  import { Rocket } from "@lucide/svelte";
-</script>
-<Icon glyph={Rocket} size={24} />
-
-{/* React */}
-import { Icon } from "@sentropic/design-system-react";
-import { Rocket } from "lucide-react";
-<Icon glyph={Rocket} size={24} />
-
-<!-- Vue -->
-<script setup>
-  import { Icon } from "@sentropic/design-system-vue";
-  import { Rocket } from "lucide-vue-next";
-</script>
-<template>
-  <Icon :glyph="Rocket" :size="24" />
-</template>
-
-<!-- Angular (les données IconNode qu'exporte le paquet "lucide") -->
-<!-- Angular (the IconNode data the "lucide" package exports) -->
-import { Icon } from "@sentropic/design-system-angular";
-import { Rocket } from "lucide";
-
-@Component({ imports: [Icon] /* … */ })
-export class Example {
-  protected readonly rocket = Rocket;
-}
-<!-- template : --> <st-icon [glyph]="rocket" [size]="24" />`}</code></pre>
+    <pre class="icon-code"><code>{locale.value === "fr" ? glyphSampleFr : glyphSampleEn}</code></pre>
   </section>
 
   <section class="docs-section">
