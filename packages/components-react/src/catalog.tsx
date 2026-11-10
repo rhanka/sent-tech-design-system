@@ -3359,7 +3359,7 @@ export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 /** An arbitrary lucide glyph component accepted by {@link Icon} via `glyph`. */
 export type IconGlyph = LucideIcon;
 
-type IconBaseProps = Omit<React.SVGAttributes<SVGSVGElement>, "name"> & {
+export type IconProps = Omit<React.SVGAttributes<SVGSVGElement>, "name"> & {
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   size?: number;
   /**
@@ -3370,21 +3370,21 @@ type IconBaseProps = Omit<React.SVGAttributes<SVGSVGElement>, "name"> & {
   strokeWidth?: number;
   /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
   title?: string;
+  /**
+   * Canonical DS icon name.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither renders nothing (returns null).
+   */
+  name?: IconName;
+  /**
+   * Arbitrary lucide glyph; wins over `name` when both are set.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither renders nothing (returns null).
+   */
+  glyph?: IconGlyph;
 };
-
-export type IconProps = IconBaseProps &
-  (
-    | {
-        /** Canonical DS icon name. */
-        name: IconName;
-        glyph?: never;
-      }
-    | {
-        /** Arbitrary lucide glyph; wins over `name` when both are set. */
-        glyph: IconGlyph;
-        name?: never;
-      }
-  );
 
 export function Icon({ name, glyph, size = 18, strokeWidth, title, className, ...rest }: IconProps) {
   // `glyph` wins when both are set; neither renders nothing (returns null).

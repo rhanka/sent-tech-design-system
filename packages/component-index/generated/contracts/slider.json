@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:e0a5c5c0e11f46176489614bf3b38db46baaf059da931e264e5dbcbd6c60c09d",
-  "entryDigest": "sha256:f84cc2aefeb319faca054e86b055521eb26a4f1702446b9ce7c8f3922f6028f3",
+  "digest": "sha256:0425fb2f6d10085f7d4b3b069799ea96ed436fdad025ac2b5ec99bb9150c0e65",
+  "entryDigest": "sha256:6b93372bfff94ab34839b1a567ef283841ac15039a7768ec5f8b9047a4881326",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/Slider.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -166,11 +166,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/Slider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SliderProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -375,7 +375,7 @@
         "declarationPath": "packages/components-vue/dist/Slider.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SliderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:dc0ca9acb159e502f4f6f9079fb5e9f3bac7931159b49844d6f3eeb004b134ca",
-  "entryDigest": "sha256:1f4b65b83dcad902d1a64c1dffb51c571b27074ad66e5fcade01b9f2d520722d",
+  "digest": "sha256:e1fb26cb579ba57e5e1583d79c28c19a1d2dbf89469a4575456e09546e73f341",
+  "entryDigest": "sha256:f39c9e42872d2992b1971c168a0d49dc935e5f0b6aa7a4be1e82a6faf1693da5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -56,7 +56,7 @@
         "declarationPath": "packages/components-angular/dist/PaginationNav.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PaginationNavProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -120,11 +120,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PaginationNavProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/PaginationNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationNavProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-vue/dist/PaginationNav.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationNavProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:1b21153aada3c33da335b8cb8caf313a257cab320fe2b0a0d7913d316843ea4c",
-  "entryDigest": "sha256:cb9ac5efef4d7cb2aeac2f156e9e7ca3632ee8365745a05073e0cf08802e3efe",
+  "digest": "sha256:3ca8fc6fc5ec2a30cac5edecd850fe42643c9f826601876e4d4cfe087a416ddf",
+  "entryDigest": "sha256:26031dd68d664b95c8b2d88d53761ae046bc2ca76d67a9793e797d435c86df02",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -57,7 +57,7 @@
         "declarationPath": "packages/components-angular/dist/Sparkline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SparklineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Sparkline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SparklineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -185,7 +185,7 @@
         "declarationPath": "packages/components-svelte/dist/Sparkline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SparklineProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-vue/dist/Sparkline.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SparklineProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

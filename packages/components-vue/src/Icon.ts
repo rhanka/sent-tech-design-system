@@ -39,26 +39,26 @@ export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 /** An arbitrary lucide-vue-next component accepted by {@link Icon} via `glyph`. */
 export type IconGlyph = Component;
 
-type IconBaseProps = {
+export type IconProps = {
   size?: number;
   strokeWidth?: number;
   title?: string;
   class?: string;
+  /**
+   * Canonical DS icon name.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither renders nothing (null).
+   */
+  name?: IconName;
+  /**
+   * Arbitrary lucide glyph; wins over `name` when both are set.
+   *
+   * Exactly one of `name` or `glyph` is expected: `glyph` wins when both
+   * are set, and neither renders nothing (null).
+   */
+  glyph?: IconGlyph;
 };
-
-export type IconProps = IconBaseProps &
-  (
-    | {
-        /** Canonical DS icon name. */
-        name: IconName;
-        glyph?: never;
-      }
-    | {
-        /** Arbitrary lucide glyph; wins over `name` when both are set. */
-        glyph: IconGlyph;
-        name?: never;
-      }
-  );
 
 // `process` is bundler-replaced in apps and real in Node; declared locally so
 // this file typechecks with or without @types/node.
@@ -70,7 +70,7 @@ export const Icon = defineComponent({
     /** Canonical DS icon name. */
     name: { type: String as PropType<IconName>, required: false, default: undefined },
     /** Arbitrary lucide glyph; wins over `name` when both are set. */
-    glyph: { type: Object as PropType<IconGlyph>, required: false, default: undefined },
+    glyph: { type: [Object, Function] as PropType<IconGlyph>, required: false, default: undefined },
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size: { type: Number, default: 18 },
     /**

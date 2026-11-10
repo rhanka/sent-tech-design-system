@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:84cdb0c29c6213acfd73bcf8f707f860eb9b5bdf33135d99c36f60ede0c73895",
-  "entryDigest": "sha256:80668236a991f01c8bf170628962bc412ae0c19f4dd467282028a513a02a7839",
+  "digest": "sha256:1a16547461a286ca1a6edd5b3befd7075855d3fa7f3bea929e44e418017780d5",
+  "entryDigest": "sha256:cc46331f16c046866c86ee6d7bf52559b8a307c90ba0a9ac4f637c968cebe926",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/CopyButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CopyButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -104,11 +104,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CopyButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/CopyButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CopyButtonProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -257,7 +257,7 @@
         "declarationPath": "packages/components-vue/dist/CopyButton.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CopyButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
