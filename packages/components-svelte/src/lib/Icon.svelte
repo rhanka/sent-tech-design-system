@@ -1,10 +1,8 @@
 <script lang="ts">
   import type { SVGAttributes } from "svelte/elements";
-  import { ICONS, type IconName } from "./icons.js";
+  import { ICONS, type IconGlyph, type IconName } from "./icons.js";
 
-  type IconProps = Omit<SVGAttributes<SVGElement>, "class"> & {
-    /** Canonical DS icon name (see {@link IconName}). */
-    name: IconName;
+  type IconBaseProps = Omit<SVGAttributes<SVGElement>, "class"> & {
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size?: number;
     /**
@@ -21,8 +19,23 @@
     class?: string;
   };
 
+  type IconProps = IconBaseProps &
+    (
+      | {
+          /** Canonical DS icon name (see {@link IconName}). */
+          name: IconName;
+          glyph?: never;
+        }
+      | {
+          /** Arbitrary lucide glyph; wins over `name` when both are set. */
+          glyph: IconGlyph;
+          name?: never;
+        }
+    );
+
   let {
     name,
+    glyph,
     size = 18,
     strokeWidth,
     title,
@@ -30,7 +43,8 @@
     ...rest
   }: IconProps = $props();
 
-  const Glyph = $derived(ICONS[name]);
+  // `glyph` wins when both are set; neither renders nothing (no `{#if}` body).
+  const Glyph = $derived(glyph ?? (name === undefined ? undefined : ICONS[name]));
   const classes = $derived(["st-icon", className].filter(Boolean).join(" "));
   // An explicit prop is marked so the token rule below leaves it alone; the
   // presentation attribute keeps 2.25 when no stylesheet or theme is loaded.

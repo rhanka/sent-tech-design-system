@@ -51,14 +51,32 @@ export type IconName =
   | "circle-dashed";
 
 export type IconProps = {
-  name: IconName;
   size?: number;
   strokeWidth?: number;
   title?: string;
   class?: string;
-};
+} & (
+  | {
+      /** Canonical DS icon name. */
+      name: IconName;
+      glyph?: never;
+    }
+  | {
+      /** Arbitrary lucide icon data; wins over `name` when both are set. */
+      glyph: IconGlyph;
+      name?: never;
+    }
+);
 
 type IconNode = Array<[string, Record<string, string>]>;
+
+/**
+ * An arbitrary lucide icon accepted by {@link Icon} via `glyph`: the
+ * {@link IconNode} shape already used by `ICON_NODES`. This matches what the
+ * vanilla `lucide` package exports (e.g. `import { CircleDashed } from "lucide"`),
+ * so consumers pass that value — no lucide dependency in this package.
+ */
+export type IconGlyph = IconNode;
 
 /**
  * Canonical Sentropic icon set (day-one).
@@ -158,7 +176,9 @@ export class Icon {
   static readonly stComponentName = "Icon";
   readonly componentName = "Icon";
   /** Canonical DS icon name. */
-  @NgInput() name!: IconName;
+  @NgInput() name?: IconName;
+  /** Arbitrary lucide icon data; wins over `name` when both are set. */
+  @NgInput() glyph?: IconGlyph;
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   @NgInput() size?: number;
   /**
@@ -173,7 +193,8 @@ export class Icon {
   @NgInput("class") classInput?: string;
 
   get nodes(): IconNode | null {
-    return ICON_NODES[this.name] ?? null;
+    // `glyph` wins when both are set; neither resolves nothing (null).
+    return this.glyph ?? (this.name != null ? ICON_NODES[this.name] : undefined) ?? null;
   }
 
   get hostClass(): string {

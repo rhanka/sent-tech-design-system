@@ -9,14 +9,16 @@ import {
   EyeOff,
   Layers,
   MessageSquare,
+  Rocket,
   Settings,
   Target,
   X
 } from "@lucide/svelte";
 import { compile } from "svelte/compiler";
+import type { ComponentProps } from "svelte";
 import { describe, expect, it } from "vitest";
 import Icon from "./Icon.svelte";
-import { ICONS, ICON_NAMES } from "./icons.js";
+import { ICONS, ICON_NAMES, type IconGlyph } from "./icons.js";
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
 // as [{ selector, declarations }]. Empty when the block is absent.
@@ -174,5 +176,69 @@ describe("W-1.0 icon catalogue — CA-L1 fold-in (comment) and circle-dashed", (
   it("renders an svg for the comment name", () => {
     const { container } = render(Icon, { props: { name: "comment" } });
     expect(container.querySelector("svg")).toBeTruthy();
+  });
+});
+
+describe("Icon — glyph prop (any lucide icon)", () => {
+  it("renders an svg for a glyph passed directly", () => {
+    const { container } = render(Icon, { props: { glyph: EyeOff as unknown as IconGlyph } });
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+
+  it("renders the same svg for glyph as for the name mapping to the same lucide icon", () => {
+    // ICONS["eye-off"] IS EyeOff (see the catalogue test above): the glyph
+    // path must render exactly what the name path renders.
+    const byName = render(Icon, { props: { name: "eye-off" } });
+    const byGlyph = render(Icon, { props: { glyph: ICONS["eye-off"] } });
+    expect(byGlyph.container.querySelector("svg")?.outerHTML).toBe(
+      byName.container.querySelector("svg")?.outerHTML,
+    );
+    byName.unmount();
+    byGlyph.unmount();
+  });
+
+  it("applies size, strokeWidth, title and class to a glyph", () => {
+    const { container } = render(Icon, {
+      props: {
+        glyph: EyeOff as unknown as IconGlyph,
+        size: 24,
+        strokeWidth: 1.5,
+        title: "Masquer",
+        class: "app-gear",
+      },
+    });
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg.getAttribute("width")).toBe("24");
+    expect(svg.getAttribute("height")).toBe("24");
+    expect(svg.getAttribute("stroke-width")).toBe("1.5");
+    expect(svg.getAttribute("data-st-icon-stroke")).toBe("prop");
+    expect(svg.getAttribute("role")).toBe("img");
+    expect(svg.getAttribute("aria-label")).toBe("Masquer");
+    expect(svg.getAttribute("aria-hidden")).toBeNull();
+    expect(svg.getAttribute("class")).toContain("st-icon");
+    expect(svg.getAttribute("class")).toContain("app-gear");
+  });
+
+  it("lets glyph win when both name and glyph are passed", () => {
+    const { container } = render(Icon, {
+      props: { name: "eye", glyph: ICONS["eye-off"] } as unknown as ComponentProps<typeof Icon>,
+    });
+    const expected = render(Icon, { props: { name: "eye-off" } });
+    expect(container.querySelector("svg")?.outerHTML).toBe(
+      expected.container.querySelector("svg")?.outerHTML,
+    );
+    expected.unmount();
+  });
+
+  it("renders a lucide icon outside the canonical set", () => {
+    const { container } = render(Icon, { props: { glyph: Rocket as unknown as IconGlyph } });
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+
+  it("renders nothing when neither name nor glyph is passed", () => {
+    const { container } = render(Icon, {
+      props: {} as unknown as ComponentProps<typeof Icon>,
+    });
+    expect(container.querySelector("svg")).toBeNull();
   });
 });
