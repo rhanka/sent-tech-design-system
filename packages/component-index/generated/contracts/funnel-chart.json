@@ -1,8 +1,8 @@
 {
   "componentId": "funnel-chart",
   "contractSource": "derived",
-  "digest": "sha256:ee260e58d6c5107e42dd198a16573ed6777651f5e5374c82065138eff58ffc3a",
-  "entryDigest": "sha256:df964ff10d2027c4ef3126d49b570c877520f054224301384911c91b86809631",
+  "digest": "sha256:064b8e6791965a6f9703c2402aeb5940464d0e6bde48cd5b630f5e46f4515f6e",
+  "entryDigest": "sha256:0eef9a5098a5e52d22410782c15bd419f6bb3c6420d8616b148e5678afc6c00a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-react/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-svelte/dist/FunnelChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FunnelChartProps",
-        "version": "0.37.1"
+        "version": "0.37.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -386,7 +386,7 @@
         "declarationPath": "packages/components-vue/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.38.1"
       },
       "status": "complete",
       "unresolved": [],
