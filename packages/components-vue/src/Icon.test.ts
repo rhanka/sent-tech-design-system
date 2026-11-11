@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { EyeOff, Rocket } from "lucide-vue-next";
+import { describe, expect, it, vi } from "vitest";
 import { Icon, ICON_NAMES } from "./Icon.js";
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
@@ -97,6 +98,68 @@ describe("Icon — canonical DS icon set", () => {
     // Declared once: no unlayered copy that would beat layered consumer CSS.
     for (const declaration of [STROKE_WIDTH_TOKEN, STROKE_TOKEN]) {
       expect(styles.split(declaration).length - 1).toBe(1);
+    }
+  });
+});
+
+describe("Icon — glyph prop (any lucide icon)", () => {
+  it("renders an svg for a glyph passed directly", () => {
+    const svg = mount(Icon, { props: { glyph: EyeOff } }).find("svg");
+    expect(svg.exists()).toBe(true);
+  });
+
+  it("renders the same svg for glyph as for the name mapping to the same lucide icon", () => {
+    const byName = mount(Icon, { props: { name: "eye-off" } }).find("svg").element.outerHTML;
+    const byGlyph = mount(Icon, { props: { glyph: EyeOff } }).find("svg").element.outerHTML;
+    expect(byGlyph).toBe(byName);
+  });
+
+  it("applies size, strokeWidth, title and class to a glyph", () => {
+    const svg = mount(Icon, {
+      props: { glyph: EyeOff, size: 24, strokeWidth: 1.5, title: "Masquer", class: "app-gear" },
+    }).find("svg");
+    expect(svg.attributes("width")).toBe("24");
+    expect(svg.attributes("height")).toBe("24");
+    expect(svg.attributes("stroke-width")).toBe("1.5");
+    expect(svg.attributes("data-st-icon-stroke")).toBe("prop");
+    expect(svg.attributes("role")).toBe("img");
+    expect(svg.attributes("aria-label")).toBe("Masquer");
+    expect(svg.attributes("aria-hidden")).toBeUndefined();
+    expect(svg.attributes("class")).toContain("st-icon");
+    expect(svg.attributes("class")).toContain("app-gear");
+  });
+
+  it("lets glyph win when both name and glyph are passed", () => {
+    const both = mount(Icon, { props: { name: "eye", glyph: EyeOff } }).find("svg").element
+      .outerHTML;
+    const expected = mount(Icon, { props: { name: "eye-off" } }).find("svg").element.outerHTML;
+    expect(both).toBe(expected);
+  });
+
+  it("renders a lucide icon outside the canonical set", () => {
+    const svg = mount(Icon, { props: { glyph: Rocket } }).find("svg");
+    expect(svg.exists()).toBe(true);
+  });
+
+  it("renders nothing when neither name nor glyph is passed", () => {
+    const wrapper = mount(Icon, { props: {} });
+    expect(wrapper.find("svg").exists()).toBe(false);
+  });
+
+  it("warns in dev (without throwing) when both or neither are set", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(() => mount(Icon, { props: { name: "eye", glyph: EyeOff } })).not.toThrow();
+      expect(() => mount(Icon, { props: {} })).not.toThrow();
+      expect(warn).toHaveBeenCalledTimes(2);
+      expect(warn).toHaveBeenCalledWith("[st-icon] Icon requires exactly one of `name` or `glyph`.");
+      // Exactly one of the two stays silent.
+      warn.mockClear();
+      mount(Icon, { props: { name: "eye" } });
+      mount(Icon, { props: { glyph: EyeOff } });
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
     }
   });
 });

@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:04828fcb3be01f12c991f799af831ce52c5b0f2a357db14ee4323571e4c43755",
-  "entryDigest": "sha256:c21a16441fa1fc24ca2455e185b81e53fbca7d23e05c41b2f9a938b41512f2be",
+  "digest": "sha256:157f43c2d51f1844516cd7ca06861eb509f92e88f471b4e8eeb60c3c67631209",
+  "entryDigest": "sha256:1eeb3799c1cd0783b8dd5e16f809231168139c49029a1f0bfcdc916be5caf745",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/OrderedList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OrderedListProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -117,11 +117,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OrderedListProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/OrderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OrderedListProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -251,7 +251,7 @@
         "declarationPath": "packages/components-vue/dist/OrderedList.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrderedListProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

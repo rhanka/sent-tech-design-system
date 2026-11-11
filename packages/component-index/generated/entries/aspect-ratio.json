@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AspectRatio.svelte",
-      "version": "0.37.2"
+      "version": "0.38.0"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AspectRatio.tsx",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AspectRatio.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AspectRatio.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     }
   ],
   "description": {
     "en": "Fixed aspect-ratio container (media, embeds).",
     "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
   },
-  "digest": "sha256:c1aee547349284a7fe3e6248443486359cadb1e3c08182221fbede9ffff4fa14",
+  "digest": "sha256:3f6ea9e899c354a0654c3897efd6591124974a1a9a8fd7b4c1859a32fd9a21b4",
   "displayName": "AspectRatio",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:823d82acd7cd2cc3177189e9c7c76b7d0153853a2cf6a784e449cf8730d75302",
-  "entryDigest": "sha256:b33e73e5376a3376fb1aea842a26ba68d6252f2dc41dff1efac108e91996f2ef",
+  "digest": "sha256:da1e46f5c71b667d6844cf806ce0eb0e9f8c7b10c1c14135697087ea17898e45",
+  "entryDigest": "sha256:2a38eff536578dca3baf227c66d4f100a29482587cfcc83814b02461bcd39a19",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Popover.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PopoverProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -120,11 +120,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PopoverProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -190,7 +190,7 @@
         "declarationPath": "packages/components-svelte/dist/Popover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopoverProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -257,7 +257,7 @@
         "declarationPath": "packages/components-vue/dist/Popover.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopoverProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

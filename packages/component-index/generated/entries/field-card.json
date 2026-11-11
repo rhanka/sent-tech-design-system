@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FieldCard.svelte",
-      "version": "0.37.2"
+      "version": "0.38.0"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FieldCard.tsx",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FieldCard.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FieldCard.ts",
-      "version": "0.38.1"
+      "version": "0.39.0"
     }
   ],
   "description": {
     "en": "Field group card: titled header, optional comment pill, bordered / plain / accent variants.",
     "fr": "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent."
   },
-  "digest": "sha256:3bee7fd47ed818868c1803583b1e2c735a8a408a9aff0151e2d1459da64f2eef",
+  "digest": "sha256:08fb272247641582ccfd15c48e906ece7f7fb63c7c8efcbe08ee0fbf11f65229",
   "displayName": "FieldCard",
   "format": "component-entry/v1",
   "frameworks": [
