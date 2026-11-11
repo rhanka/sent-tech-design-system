@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:40547b5d3ab67e9baf3a3db8029424a4ca85905c22361714ad70dcfe3ce5fd6a",
-  "entryDigest": "sha256:2355ae79bbe52d1ae2de82907e892af4d47b9c2b29d68b9e3c319c646c944c92",
+  "digest": "sha256:8edf4e163b8a9132d0b6c34e81be12624b36c89420c5f0c5e539942ec90a2532",
+  "entryDigest": "sha256:53e0ab217aabe2f497faf03bdcce4259db8610e6326e9ef63bab043b22576085",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -71,7 +71,7 @@
         "declarationPath": "packages/components-angular/dist/ChatComposer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatComposerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -128,11 +128,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatComposerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatComposer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatComposerProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [
@@ -323,7 +323,7 @@
         "declarationPath": "packages/components-vue/dist/ChatComposer.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:a6484adc3301bef8c3eef013a08c7b4fbc8a849e8b548bba243d97808622f437",
-  "entryDigest": "sha256:ae2c17c5ba2584c075348431f6422679d2c35d7cfbfc494748c0ce34eb1248d8",
+  "digest": "sha256:7107b4074aa02396a3d2e538b88ee59cb23f86f21b335a5da9a278ded4d88ab6",
+  "entryDigest": "sha256:a1e6be76767624ec43f1032c22588f6169d6b8f961052354556a9e280c851457",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -439,7 +439,7 @@
         "declarationPath": "packages/components-angular/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LineChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -864,8 +864,8 @@
           "scale": {
             "description": "Value-axis scale. `\"linear\"` (default) is unchanged. `\"log\"` switches the\ny axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks\nand clamped to the lowest tick when positioned.",
             "enum": [
-              "linear",
-              "log"
+              "log",
+              "linear"
             ]
           },
           "showLegend": {
@@ -908,7 +908,7 @@
         "declarationPath": "packages/components-react/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LineChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1371,7 +1371,7 @@
         "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LineChartProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1847,7 +1847,7 @@
         "declarationPath": "packages/components-vue/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LineChartProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
