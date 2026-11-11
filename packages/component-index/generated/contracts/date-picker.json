@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:ee264948835cb5148bbd8917bee4ad44f940ef661575ca71f75311a48361c6c3",
-  "entryDigest": "sha256:f99b5b97d37069b0d5571b81689a2a5acdcb9222da0cb894aa8fe639ca79444f",
+  "digest": "sha256:63cc43b08b90c9893486293a43334bb479061b73da79cac6e2d41ad7226b21c3",
+  "entryDigest": "sha256:cadded9ed74a1f3ee9f8a691321ce01648dfcc065b99fefd9995d48689fc67a1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-angular/dist/DatePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DatePickerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -393,11 +393,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DatePickerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -563,7 +563,7 @@
         "declarationPath": "packages/components-svelte/dist/DatePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DatePickerProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -769,7 +769,7 @@
         "declarationPath": "packages/components-vue/dist/DatePicker.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DatePickerProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

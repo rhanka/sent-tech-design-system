@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:5df40041469abff47d445d743bda4205f6b53e0d035df019535f5266b3ce1cad",
-  "entryDigest": "sha256:76d77fd4584416e85df8a94453ebbef85163a871bcddd6b9387019521f9c5970",
+  "digest": "sha256:a3e5a6ef2b7f1b0dbe25e6aee9c7982c5d31ea30539baa04256c56a0c6f2f1e3",
+  "entryDigest": "sha256:4a4bf0dda18a45739a9ca276d68b7a6c218ee34551772e934cfec8050df1182d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/ProgressBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ProgressBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -140,11 +140,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ProgressBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressBarProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -287,7 +287,7 @@
         "declarationPath": "packages/components-vue/dist/ProgressBar.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

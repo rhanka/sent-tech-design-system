@@ -212,7 +212,7 @@ export type { HighlightProps, HighlightTone } from "./Highlight.js";
 export { HistogramChart } from "./HistogramChart.js";
 export type { HistogramChartProps, HistogramChartDatum, HistogramChartTone } from "./HistogramChart.js";
 export { Icon, ICONS, ICON_NAMES } from "./Icon.js";
-export type { IconName, IconProps } from "./Icon.js";
+export type { IconGlyph, IconName, IconProps } from "./Icon.js";
 export { IconButton } from "./IconButton.js";
 export type { IconButtonProps } from "./IconButton.js";
 export { InlineLoading } from "./InlineLoading.js";

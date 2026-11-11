@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:b558b2d695d9b83705523b4ed014d998dca3d7c5d81e588049ede423637af7b6",
-  "entryDigest": "sha256:be5e604959238773c114bf83f18ba5bfe96d9c83bb06ca47bcfa04dc06461a94",
+  "digest": "sha256:8c28d0cc51db5edf61a9d85acd019e78e70ad44fc4f71fd8d8bd800e21808145",
+  "entryDigest": "sha256:74713b878a20608e7653e5b27e0a04e4886ce066e0c2f2fea34168c301b3b75c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -45,7 +45,7 @@
         "declarationPath": "packages/components-angular/dist/FilterBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FilterBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -89,11 +89,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterBarProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-vue/dist/FilterBar.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterBarProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

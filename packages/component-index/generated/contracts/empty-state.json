@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:7d8a70d398b9f86ab7c7a4f8f183021dc56c48c5ee2c03db3a23871f6e6fc88e",
-  "entryDigest": "sha256:ddfb5be22383936c7a5ab948dcf8c439b0fdd6f4275f2894c9c5aa20caf28931",
+  "digest": "sha256:ca18b9d875e60f0dd924d8ae9fe537a199222946573b335bb14119faa983fa3d",
+  "entryDigest": "sha256:7a7aa730cec463d7ddf72b9bb594058eb8203f30d839e5cff4ea168341661bbb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -54,7 +54,7 @@
         "declarationPath": "packages/components-angular/dist/EmptyState.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EmptyStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -98,11 +98,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmptyStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -208,7 +208,7 @@
         "declarationPath": "packages/components-vue/dist/EmptyState.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

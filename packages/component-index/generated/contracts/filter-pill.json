@@ -1,8 +1,8 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:e8fb34beabf925e72c0dd64ede8c6f8a50edee79294006e40357d7bdb7bc3544",
-  "entryDigest": "sha256:8a79ecc8f11f9264910909cf7950b9c2ad3aa73c2749d63eae98829a1c060d98",
+  "digest": "sha256:9d1e8cb9927eb6ef164ff0acaa6b86d7fad96a7e0c73684c7d5b94026c4b3387",
+  "entryDigest": "sha256:81387682494af55d35f84a20b592e7109c40e8591c467d7bf6c63d1fdb2ee1ea",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/FilterPill.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FilterPillProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -140,11 +140,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterPillProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterPill.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterPillProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -302,7 +302,7 @@
         "declarationPath": "packages/components-vue/dist/FilterPill.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterPillProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

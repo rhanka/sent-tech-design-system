@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:17eea35c30a53876e04ed98b6ababf9ca954b9e338aed247268cf9464efd4675",
-  "entryDigest": "sha256:185dc0aef39dd994a51dd0ed51020e854abcd6233f7002e3fa33205034977f39",
+  "digest": "sha256:4db91915ea6f3e3924855df63c2ba31d80909755cbbb772125fd9e2194799784",
+  "entryDigest": "sha256:35da549da6197568a004b32869898566635f52af4899a966315938f4d2e5d997",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -54,7 +54,7 @@
         "declarationPath": "packages/components-angular/dist/MenuTriggerButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -99,11 +99,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuTriggerButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -227,7 +227,7 @@
         "declarationPath": "packages/components-vue/dist/MenuTriggerButton.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

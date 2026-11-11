@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:af5009e54b3b01b7a5e8cdb12e4ad5cd6c25bb80987f4884650ee20139517e8e",
-  "entryDigest": "sha256:f4f4260f57ed9f0c74a641e46030dffbab991c755dd49997b8c198dccb76b2a5",
+  "digest": "sha256:48a447442459ec868289fcd53f5c9e5ee45b5ae00883c62a275ad4ca0228f5bc",
+  "entryDigest": "sha256:c6f6873f397edc7bbd87263fd119bcb5afde84c9afb90e1b0dc0d0c2d3ca849c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/MessageActions.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageActionsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -165,11 +165,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageActions.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageActionsProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -351,7 +351,7 @@
         "declarationPath": "packages/components-vue/dist/MessageActions.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

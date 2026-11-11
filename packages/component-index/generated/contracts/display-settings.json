@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:eb0a8fe0ae31d5822ee859b7f253ff6b08fdb0616e568f5ad6b3d29b374bdb97",
-  "entryDigest": "sha256:bca0393b81640109fbf8a081330c897e0d9d0c903502460c799f4742c1691bdb",
+  "digest": "sha256:9e643dbdf0ae9cb75b3763039634fcf9798187a64dd06d15bdaf4d6ab3483116",
+  "entryDigest": "sha256:868a394f3cc7e42d9b7f2972fedaa3a0c1a983fbc110609f804c0e1c5554937e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-react/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DisplaySettingsProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -369,7 +369,7 @@
         "declarationPath": "packages/components-vue/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
