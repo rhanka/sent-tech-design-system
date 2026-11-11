@@ -17,6 +17,20 @@ export {
 } from "./engine.js";
 export { layoutFolded, layoutMeasured } from "./measured.js";
 export {
+  chooseOrientation,
+  packColumns,
+  packRows,
+  packScore,
+  PACK_FILL_TOLERANCE,
+  PACK_SCORE_EPSILON,
+  type OrientationChoice,
+  type PackBox,
+  type PackOptions,
+  type PackOrientation,
+  type PackPosition,
+  type PackResult,
+} from "./pack.js";
+export {
   effectiveStretch,
   groupLeaves,
   isLayoutGroup,
