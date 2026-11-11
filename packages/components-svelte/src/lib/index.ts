@@ -492,9 +492,49 @@ export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
-export type { MenuItem } from "./Menu.svelte";
+export type {
+  MenuItem,
+  MenuActionItem,
+  MenuDividerItem,
+  MenuGroupItem,
+  MenuSubmenuSide,
+  MenuSelectDetail
+} from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
-export type { OverflowMenuItem } from "./OverflowMenu.svelte";
+export type {
+  OverflowMenuItem,
+  OverflowMenuActionItem,
+  OverflowMenuDividerItem,
+  OverflowMenuGroupItem,
+  OverflowMenuSubmenuSide
+} from "./OverflowMenu.svelte";
+export {
+  CLOSE_DELAY,
+  MENU_HOST_CONTEXT,
+  OPEN_DELAY,
+  SUBMENU_DEFAULT_WIDTH,
+  SUBMENU_PANEL_PADDING_TOP,
+  VIEWPORT_MARGIN,
+  computeSubMenuPosition,
+  isCappedSubMenuWidth,
+  pointInSafeTriangle,
+  resolvePreferredSide,
+  toContainingBlockPosition
+} from "./menu-cascade.js";
+export type {
+  CascadePoint,
+  CascadeRect,
+  ComputeSubMenuPositionInput,
+  ContainingBlockPosition,
+  ContainingBlockRect,
+  MenuHostCloseOptions,
+  MenuHostContext,
+  ResolvedSubMenuSide,
+  SubMenuPanelSize,
+  SubMenuPosition,
+  SubMenuSide,
+  SubMenuViewport
+} from "./menu-cascade.js";
 export type {
   ProgressIndicatorItem,
   ProgressIndicatorStatus

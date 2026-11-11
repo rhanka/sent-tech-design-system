@@ -1,6 +1,12 @@
+<script lang="ts" module>
+  let menuPopoverInstanceCounter = 0;
+</script>
+
 <script lang="ts">
+  import { setContext } from "svelte";
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import { MENU_HOST_CONTEXT, type MenuHostContext } from "./menu-cascade.js";
 
   type MenuPopoverProps = Omit<HTMLAttributes<HTMLDivElement>, "class"> & {
     open?: boolean;
@@ -26,6 +32,18 @@
     children,
     ...rest
   }: MenuPopoverProps = $props();
+
+  const rootMenuId = `st-menupopover-${++menuPopoverInstanceCounter}`;
+
+  function requestClose(options: { focusTrigger: boolean }) {
+    open = false;
+    if (options.focusTrigger) {
+      trigger?.focus();
+    }
+  }
+
+  const hostContext: MenuHostContext = { rootMenuId, requestClose };
+  setContext(MENU_HOST_CONTEXT, hostContext);
 
   let panel: HTMLDivElement | undefined = $state();
   let top = $state(0);
@@ -183,7 +201,20 @@
     return Boolean(target && node.contains(target));
   }
 
+  // The host generates the root menu id and sets `aria-controls` on its
+  // trigger, including an external trigger element passed as prop (§2.2, D10).
+  $effect(() => {
+    if (!open || !trigger) return;
+    trigger.setAttribute("aria-controls", rootMenuId);
+    const owned = trigger;
+    return () => {
+      owned.removeAttribute("aria-controls");
+    };
+  });
+
   function onWindowPointerDown(event: PointerEvent) {
+    // A nested menu level already consumed this event (D4).
+    if (event.defaultPrevented) return;
     if (!open || !closeOnOutside) return;
     if (isWithin(event, panel)) return;
     if (isWithin(event, trigger)) return;
@@ -191,10 +222,13 @@
   }
 
   function onWindowKeyDown(event: KeyboardEvent) {
+    // A nested menu level already consumed this key (D4).
+    if (event.defaultPrevented) return;
     if (!open || !closeOnEscape) return;
     if (event.key === "Escape") {
       event.preventDefault();
-      open = false;
+      // Keyboard closes return focus to the trigger (§3.6).
+      requestClose({ focusTrigger: true });
     }
   }
 
