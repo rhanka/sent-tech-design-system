@@ -42,7 +42,17 @@
     }
   }
 
-  const hostContext: MenuHostContext = { rootMenuId, requestClose };
+  // Reported by the inner Menu via setHasCascade (and reset when items lose
+  // their cascade): Esc returns focus to the trigger for cascade menus
+  // only, flat menus keep their previous behaviour (§3.6, AC-01).
+  let hasCascade = $state(false);
+  const hostContext: MenuHostContext = {
+    rootMenuId,
+    requestClose,
+    setHasCascade: (value: boolean) => {
+      hasCascade = value;
+    }
+  };
   setContext(MENU_HOST_CONTEXT, hostContext);
 
   let panel: HTMLDivElement | undefined = $state();
@@ -175,8 +185,9 @@
     computePosition();
     showTopLayer();
     // Re-measure once the panel is laid out (size known for flip/clamp).
+    let raf = 0;
     if (typeof requestAnimationFrame === "function") {
-      requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => {
         if (open) computePosition();
       });
     }
@@ -187,6 +198,9 @@
     return () => {
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
+      if (raf !== 0 && typeof cancelAnimationFrame === "function") {
+        cancelAnimationFrame(raf);
+      }
       hideTopLayer();
     };
   });
@@ -227,8 +241,9 @@
     if (!open || !closeOnEscape) return;
     if (event.key === "Escape") {
       event.preventDefault();
-      // Keyboard closes return focus to the trigger (§3.6).
-      requestClose({ focusTrigger: true });
+      // Keyboard closes return focus to the trigger for cascade menus only
+      // (the inner Menu reports and resets `hasCascade`, §3.6).
+      requestClose({ focusTrigger: hasCascade });
     }
   }
 

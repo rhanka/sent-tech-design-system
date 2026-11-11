@@ -147,7 +147,13 @@
     }
   }
 
-  const hostContext: MenuHostContext = { rootMenuId, requestClose };
+  // The inner Menu reads `overflowClasses` instead of a public prop (AC-37,
+  // B1). Esc focus return is gated on `treeHasCascade(items)` below (§3.6).
+  const hostContext: MenuHostContext = {
+    rootMenuId,
+    requestClose,
+    overflowClasses: true
+  };
   setContext(MENU_HOST_CONTEXT, hostContext);
 
   function focusFirstMenuItem() {
@@ -226,8 +232,9 @@
     if (event.defaultPrevented) return;
     if (event.key === "Escape" && open) {
       event.preventDefault();
-      // Keyboard closes return focus to the trigger (§3.6).
-      requestClose({ focusTrigger: true });
+      // Keyboard closes return focus to the trigger for cascade menus only;
+      // flat menus keep their previous behaviour (§3.6, AC-01).
+      requestClose({ focusTrigger: treeHasCascade(items) });
     }
   }
 
@@ -278,7 +285,6 @@
       dense={dense}
       id={rootMenuId}
       style={panelPositionStyle()}
-      internalOverflowClasses
       onselect={handleMenuSelect}
     />
   {/if}
@@ -401,6 +407,32 @@
   :global(.st-overflowMenu__item:disabled) {
     color: var(--st-component-menu-disabledText, var(--st-semantic-text-muted));
     cursor: not-allowed;
+  }
+
+  /* Selected flat row: existing selectableRow tokens, same no-color-mix
+     fallback strategy as Menu (M6). */
+  :global(.st-overflowMenu__item--selected) {
+    background: var(
+      --st-component-selectableRow-selectedBackground,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
+    );
+    color: var(
+      --st-component-selectableRow-selectedText,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 78%, black)
+    );
+  }
+
+  @supports not (color: color-mix(in oklch, red, blue)) {
+    :global(.st-overflowMenu__item--selected) {
+      background: var(
+        --st-component-selectableRow-selectedBackground,
+        var(--st-semantic-surface-subtle, #eef2ff)
+      );
+      color: var(
+        --st-component-selectableRow-selectedText,
+        var(--st-semantic-text-primary, #0f172a)
+      );
+    }
   }
 
   :global(.st-overflowMenu__item--danger) {

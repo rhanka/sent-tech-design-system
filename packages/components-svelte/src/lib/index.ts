@@ -509,31 +509,9 @@ export type {
   OverflowMenuSubmenuSide
 } from "./OverflowMenu.svelte";
 export {
-  CLOSE_DELAY,
-  MENU_HOST_CONTEXT,
-  OPEN_DELAY,
-  SUBMENU_DEFAULT_WIDTH,
-  SUBMENU_PANEL_PADDING_TOP,
-  VIEWPORT_MARGIN,
   computeSubMenuPosition,
-  isCappedSubMenuWidth,
   pointInSafeTriangle,
-  resolvePreferredSide,
   toContainingBlockPosition
-} from "./menu-cascade.js";
-export type {
-  CascadePoint,
-  CascadeRect,
-  ComputeSubMenuPositionInput,
-  ContainingBlockPosition,
-  ContainingBlockRect,
-  MenuHostCloseOptions,
-  MenuHostContext,
-  ResolvedSubMenuSide,
-  SubMenuPanelSize,
-  SubMenuPosition,
-  SubMenuSide,
-  SubMenuViewport
 } from "./menu-cascade.js";
 export type {
   ProgressIndicatorItem,

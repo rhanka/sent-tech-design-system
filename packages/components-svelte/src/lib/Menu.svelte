@@ -40,12 +40,6 @@
 
   export type MenuItem = MenuActionItem | MenuDividerItem | MenuGroupItem;
 
-  let groupIdCounter = 0;
-  function nextGroupId(): string {
-    groupIdCounter += 1;
-    return `st-menu-group-${groupIdCounter}`;
-  }
-
   let menuInstanceCounter = 0;
 </script>
 
@@ -57,8 +51,9 @@
     CLOSE_DELAY,
     MENU_HOST_CONTEXT,
     OPEN_DELAY,
+    SUBMENU_DEFAULT_WIDTH,
+    VIEWPORT_MARGIN,
     computeSubMenuPosition,
-    isCappedSubMenuWidth,
     pointInSafeTriangle,
     resolvePreferredSide,
     toContainingBlockPosition,
@@ -76,13 +71,6 @@
     dense?: boolean;
     submenuSide?: MenuSubmenuSide;
     onselect?: (value: string, detail?: MenuSelectDetail) => void;
-    /**
-     * Internal class hook for OverflowMenu parity (AC-37). NOT public API and
-     * NOT documented: only OverflowMenu sets it. A flat menu then renders the
-     * origin/main `st-overflowMenu__*` DOM on the same elements instead of
-     * `st-menu*` rows. Cascade branches are unaffected.
-     */
-    internalOverflowClasses?: boolean;
   };
 
   let {
@@ -94,7 +82,6 @@
     dense = false,
     submenuSide = "auto",
     onselect,
-    internalOverflowClasses = false,
     ...rest
   }: MenuProps = $props();
 
@@ -102,6 +89,10 @@
   const fallbackRootId = `st-menu-${instanceId}`;
   const hostContext = getContext<MenuHostContext | undefined>(MENU_HOST_CONTEXT);
   const isNested = hostContext !== undefined && hostContext !== null;
+  // Internal host flag (set by OverflowMenu via context, never a public
+  // prop): a flat menu renders the origin/main `st-overflowMenu__*` DOM
+  // (AC-37). Cascade branches are unaffected.
+  const useOverflowClasses = hostContext?.overflowClasses === true;
   const rootId = $derived(
     (rest as { id?: string }).id ?? hostContext?.rootMenuId ?? fallbackRootId
   );
@@ -209,7 +200,23 @@
     safeLevel = -1;
   }
 
-  onDestroy(cancelAllTimers);
+  // Guards deferred positioning work so a pending tick/RAF never runs after
+  // unmount (§3.4 recompute, AC-38).
+  let destroyed = false;
+  let rafId: number | undefined = undefined;
+
+  function cancelDeferredPositions() {
+    if (rafId !== undefined && typeof cancelAnimationFrame === "function") {
+      cancelAnimationFrame(rafId);
+      rafId = undefined;
+    }
+  }
+
+  onDestroy(() => {
+    destroyed = true;
+    cancelAllTimers();
+    cancelDeferredPositions();
+  });
 
   function levelRootEl(level: number): Element | null {
     if (!host) return null;
@@ -278,11 +285,15 @@
   }
 
   function schedulePositions() {
+    if (destroyed) return;
     tick().then(() => {
+      if (destroyed) return;
       computeAllPositions();
       if (typeof requestAnimationFrame === "function") {
-        requestAnimationFrame(() => {
-          computeAllPositions();
+        cancelDeferredPositions();
+        rafId = requestAnimationFrame(() => {
+          rafId = undefined;
+          if (!destroyed) computeAllPositions();
         });
       }
     });
@@ -343,7 +354,10 @@
       top: converted.top,
       left: converted.left,
       maxHeight: solved.maxHeight,
-      capped: isCappedSubMenuWidth(panelRect.width, vw)
+      // Viewport-alone derivation: the measured width is the capped width
+      // once the cap style applies, so re-deriving from it would drop the
+      // cap on the next scroll/resize recompute (§3.4 step 3).
+      capped: vw < SUBMENU_DEFAULT_WIDTH + 2 * VIEWPORT_MARGIN
     };
   }
 
@@ -381,7 +395,10 @@
   function selectItem(item: MenuActionItem, fullPath: number[], modality: "pointer" | "keyboard") {
     if (item.disabled) return;
     const cascade = treeHasCascade(items);
-    if (cascade) {
+    if (cascade || isNested) {
+      // Nested menus always pass the item reference through the internal
+      // host channel, so duplicate sibling values relay the clicked row (the
+      // host strips it back to a single argument for flat menus, AC-01).
       onselect?.(item.value, { path: pathKeys(fullPath), item });
     } else {
       // Flat menus keep the legacy single-argument call (AC-01).
@@ -402,6 +419,7 @@
     schedulePositions();
     if (focusFirst) {
       tick().then(() => {
+        if (destroyed) return;
         // No enabled item: focus stays on the parent line (§3.2).
         focusFirstEnabled(depth + 1);
       });
@@ -449,6 +467,9 @@
   function armClose(level: number) {
     cancelCloseTimer();
     closeLevel = level;
+    // Capture before the slice: the parent line of the closing level lives
+    // at openPath[level] while the timer is pending (§3.3 step 5).
+    const parentIndex = openPath[level];
     closeTimer = setTimeout(() => {
       const active = document.activeElement;
       const closingRoots = host?.querySelectorAll(`[data-menu-level="${level + 1}"]`);
@@ -459,8 +480,7 @@
       if (active && closingRoots) {
         for (const root of closingRoots) {
           if (root.contains(active)) {
-            const parentIndex = openPath[level - 1];
-            if (parentIndex !== undefined) focusButton(level - 1, parentIndex);
+            if (parentIndex !== undefined) focusButton(level, parentIndex);
             break;
           }
         }
@@ -497,6 +517,9 @@
 
   function onParentPointerLeave(depth: number, index: number, event: Event) {
     if (!isMouseEvent(event) || !hasCascade) return;
+    // Leaving before the hover delay must drop the pending open: the pointer
+    // is already gone, so the panel shall never appear (§3.3 step 2).
+    cancelOpenTimer();
     if (openPath[depth] !== index) return;
     const pointer = event as PointerEvent;
     // Record the exit point as the triangle apex (§3.3 step 3, D9).
@@ -515,6 +538,24 @@
     if (pointInSafeTriangle(point, triangle[0], triangle[1], triangle[2])) {
       cancelCloseTimer();
       safeApex = point;
+      return;
+    }
+    // Outside the triangle and over no open panel: exit away from the panel
+    // re-arms the 250 ms close (§3.3 step 4). The armed-level guard keeps a
+    // move stream from resetting the timer on every event.
+    const target = event.target as Element | null;
+    const inOpenPanel =
+      target?.closest?.('[data-menu-level]:not([data-menu-level="0"])') ?? null;
+    const parentButton = levelRootEl(safeLevel)?.querySelector(
+      `[data-item-index="${openPath[safeLevel] ?? -1}"]`
+    );
+    const inArmedParent =
+      parentButton?.closest(".st-menu__itemWrap")?.contains(target ?? null) ??
+      false;
+    if (!inOpenPanel && !inArmedParent) {
+      if (closeTimer === undefined || closeLevel !== safeLevel) {
+        armClose(safeLevel);
+      }
     }
   }
 
@@ -538,6 +579,24 @@
       return levelSides[depth];
     }
     return resolvePreferredSide(submenuSide);
+  }
+
+  /**
+   * Opening side for keyboard handling: inside a sub-menu the whole level
+   * shares its containing level's resolved side, so a flipped panel keeps
+   * one opening arrow for parents and leaves alike (§3.4, AC-06/AC-19).
+   * Depth 0 keeps the per-item rule (open parents use their resolved side).
+   */
+  function openingSideFor(
+    depth: number,
+    index: number,
+    item: MenuActionItem
+  ): ResolvedSubMenuSide {
+    if (depth >= 1 && levelSides[depth - 1] !== undefined) {
+      return levelSides[depth - 1];
+    }
+    if (hasSubMenu(item)) return resolvedSideFor(depth, index);
+    return openingArrow() === "ArrowRight" ? "right" : "left";
   }
 
   function onItemKeyDown(
@@ -575,7 +634,7 @@
     }
     if (item.disabled) return;
     // The opening arrow follows the resolved (possibly flipped) side (§3.4).
-    const resolved = hasSubMenu(item) ? resolvedSideFor(depth, index) : openingArrow() === "ArrowRight" ? "right" : "left";
+    const resolved = openingSideFor(depth, index, item);
     const opening = resolved === "right" ? "ArrowRight" : "ArrowLeft";
     const opposite = opening === "ArrowRight" ? "ArrowLeft" : "ArrowRight";
     if (event.key === "Enter" || event.key === " ") {
@@ -601,14 +660,14 @@
       return;
     }
     if (event.key === opposite) {
+      // Opposite arrow closes the deepest open level only, one level per
+      // press, and refocuses that level's parent line (§3.6, D8).
       if (depth >= 1) {
-        // Opposite arrow in a sub-menu closes it and refocuses the parent.
         event.preventDefault();
-        closeDeepestFrom(depth, true);
+        if (openPath.length > 0) closeDeepestFrom(openPath.length, true);
       } else if (hasCascade && openPath[0] === index && openPath.length > 0) {
         event.preventDefault();
-        cancelAllTimers();
-        openPath = [];
+        closeDeepestFrom(openPath.length, true);
       }
     }
   }
@@ -617,10 +676,11 @@
     if (!hasCascade) return;
     if (event.key === "Escape") {
       if (depth >= 1) {
-        // Esc closes that level only, then stops the host close (D4).
+        // Esc closes the deepest open level only, one level per press,
+        // then stops the host close (D4, §3.6/D8).
         event.preventDefault();
         event.stopPropagation();
-        closeDeepestFrom(depth, true);
+        if (openPath.length > 0) closeDeepestFrom(openPath.length, true);
         return;
       }
       if (openPath.length > 0) {
@@ -712,7 +772,9 @@
     const kept: number[] = [];
     for (const index of previous) {
       const item = list[index];
-      if (!item || !hasSubMenu(item)) break;
+      // A disabled parent is no longer expandable: prune its panel so
+      // `aria-expanded` and the rendered levels agree (§3.2, AC-22).
+      if (!item || !hasSubMenu(item) || item.disabled) break;
       kept.push(index);
       list = item.children;
     }
@@ -722,10 +784,12 @@
     untrack(() => scanTreeWarnings(items, 0));
   });
 
-  // Let the host know a cascade is present (focus-return + shadow decisions).
+  // Let the host know whether a cascade is present (focus-return + shadow
+  // decisions). Always reported so the flag resets when items lose their
+  // cascade instead of going stale.
   $effect(() => {
-    if (isNested && treeHasCascade(items)) {
-      hostContext?.setHasCascade?.(true);
+    if (isNested) {
+      hostContext?.setHasCascade?.(treeHasCascade(items));
     }
   });
 
@@ -879,10 +943,9 @@
     {:else if item.kind === "divider"}
       <div class="st-menu__divider" role="separator" aria-hidden="true"></div>
     {:else}
-      {@const groupId = nextGroupId()}
       <div
         class="st-menu__group"
-        id={groupId}
+        id={`${rootId}--group-${depth}-${index}`}
         role="presentation"
       >
         {item.label}
@@ -900,6 +963,7 @@
         <button
           class="st-overflowMenu__item"
           class:st-overflowMenu__item--danger={item.danger}
+          class:st-overflowMenu__item--selected={item.selected}
           type="button"
           role="menuitem"
           data-item-index={index}
@@ -996,7 +1060,7 @@
         {/if}
       {/if}
     </div>
-  {:else if internalOverflowClasses}
+  {:else if useOverflowClasses}
     <!-- Overflow host parity (AC-37): origin/main `st-overflowMenu__*` flat DOM
          on the same elements (`ul > li` list, item buttons, icon/label spans,
          divider/group rows). Only reachable when the internal hook is set, so
