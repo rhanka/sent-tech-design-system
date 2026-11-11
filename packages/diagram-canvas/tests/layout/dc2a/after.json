@@ -1,0 +1,932 @@
+{
+  "vue-globale/before": {
+    "visible": 20,
+    "visibleLeaves": 11,
+    "bboxWidth": 3040,
+    "bboxHeight": 1148,
+    "aspectRatio": 2.648,
+    "logAspectError": 0.397,
+    "fillRatio": 0.29,
+    "frameFillRatio": 0.671,
+    "displayScale": 0.474,
+    "gapX": {
+      "count": 8,
+      "min": 24,
+      "max": 32,
+      "mean": 31
+    },
+    "gapY": {
+      "count": 3,
+      "min": 24,
+      "max": 28,
+      "mean": 26.667
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 1,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 8
+  },
+  "vue-globale/intermediate": {
+    "visible": 29,
+    "visibleLeaves": 18,
+    "bboxWidth": 3112,
+    "bboxHeight": 1701,
+    "aspectRatio": 1.83,
+    "logAspectError": 0.027,
+    "fillRatio": 0.313,
+    "frameFillRatio": 0.972,
+    "displayScale": 0.463,
+    "gapX": {
+      "count": 9,
+      "min": 24,
+      "max": 32,
+      "mean": 30.222
+    },
+    "gapY": {
+      "count": 11,
+      "min": 24,
+      "max": 28,
+      "mean": 26.182
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 2,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 15
+  },
+  "vue-globale/after": {
+    "visible": 32,
+    "visibleLeaves": 19,
+    "bboxWidth": 3516,
+    "bboxHeight": 1596,
+    "aspectRatio": 2.203,
+    "logAspectError": 0.213,
+    "fillRatio": 0.312,
+    "frameFillRatio": 0.807,
+    "displayScale": 0.41,
+    "gapX": {
+      "count": 12,
+      "min": 24,
+      "max": 32,
+      "mean": 28.667
+    },
+    "gapY": {
+      "count": 9,
+      "min": 24,
+      "max": 28,
+      "mean": 26.222
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 1,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 13
+  },
+  "vue-globale/folded": {
+    "visible": 7,
+    "visibleLeaves": 7,
+    "bboxWidth": 1436,
+    "bboxHeight": 656,
+    "aspectRatio": 2.189,
+    "logAspectError": 0.207,
+    "fillRatio": 0.684,
+    "frameFillRatio": 0.31,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 4,
+      "min": 24,
+      "max": 32,
+      "mean": 28
+    },
+    "gapY": {
+      "count": 2,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 10,
+    "edgesOutsideContainer": 1,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 11
+  },
+  "ajout-preprod/before": {
+    "visible": 10,
+    "visibleLeaves": 6,
+    "bboxWidth": 2032,
+    "bboxHeight": 698,
+    "aspectRatio": 2.911,
+    "logAspectError": 0.492,
+    "fillRatio": 0.389,
+    "frameFillRatio": 0.467,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 3,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 3,
+      "min": 24,
+      "max": 28,
+      "mean": 25.333
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 5
+  },
+  "ajout-preprod/intermediate": {
+    "visible": 22,
+    "visibleLeaves": 17,
+    "bboxWidth": 3008,
+    "bboxHeight": 1600,
+    "aspectRatio": 1.88,
+    "logAspectError": 0.055,
+    "fillRatio": 0.325,
+    "frameFillRatio": 0.946,
+    "displayScale": 0.479,
+    "gapX": {
+      "count": 9,
+      "min": 24,
+      "max": 32,
+      "mean": 28.444
+    },
+    "gapY": {
+      "count": 7,
+      "min": 24,
+      "max": 28,
+      "mean": 26.286
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 10,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 8
+  },
+  "ajout-preprod/after": {
+    "visible": 25,
+    "visibleLeaves": 19,
+    "bboxWidth": 3040,
+    "bboxHeight": 1604,
+    "aspectRatio": 1.895,
+    "logAspectError": 0.063,
+    "fillRatio": 0.358,
+    "frameFillRatio": 0.938,
+    "displayScale": 0.474,
+    "gapX": {
+      "count": 12,
+      "min": 24,
+      "max": 32,
+      "mean": 27.333
+    },
+    "gapY": {
+      "count": 6,
+      "min": 24,
+      "max": 28,
+      "mean": 27.333
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 10,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 10
+  },
+  "ajout-preprod/folded": {
+    "visible": 3,
+    "visibleLeaves": 3,
+    "bboxWidth": 952,
+    "bboxHeight": 428,
+    "aspectRatio": 2.224,
+    "logAspectError": 0.223,
+    "fillRatio": 0.677,
+    "frameFillRatio": 0.134,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 10,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 5
+  },
+  "migration-cluster-mesh/before": {
+    "visible": 10,
+    "visibleLeaves": 6,
+    "bboxWidth": 1500,
+    "bboxHeight": 1025,
+    "aspectRatio": 1.463,
+    "logAspectError": 0.196,
+    "fillRatio": 0.359,
+    "frameFillRatio": 0.507,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 4,
+      "min": 24,
+      "max": 32,
+      "mean": 28
+    },
+    "gapY": {
+      "count": 2,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 28,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 4
+  },
+  "migration-cluster-mesh/intermediate": {
+    "visible": 24,
+    "visibleLeaves": 17,
+    "bboxWidth": 2540,
+    "bboxHeight": 1481,
+    "aspectRatio": 1.715,
+    "logAspectError": 0.037,
+    "fillRatio": 0.416,
+    "frameFillRatio": 0.965,
+    "displayScale": 0.547,
+    "gapX": {
+      "count": 11,
+      "min": 24,
+      "max": 32,
+      "mean": 27.636
+    },
+    "gapY": {
+      "count": 6,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 18,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 12
+  },
+  "migration-cluster-mesh/after": {
+    "visible": 26,
+    "visibleLeaves": 17,
+    "bboxWidth": 3032,
+    "bboxHeight": 1600,
+    "aspectRatio": 1.895,
+    "logAspectError": 0.063,
+    "fillRatio": 0.322,
+    "frameFillRatio": 0.938,
+    "displayScale": 0.475,
+    "gapX": {
+      "count": 9,
+      "min": 24,
+      "max": 32,
+      "mean": 29.333
+    },
+    "gapY": {
+      "count": 8,
+      "min": 24,
+      "max": 28,
+      "mean": 26.5
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 9
+  },
+  "migration-cluster-mesh/folded": {
+    "visible": 4,
+    "visibleLeaves": 4,
+    "bboxWidth": 952,
+    "bboxHeight": 428,
+    "aspectRatio": 2.224,
+    "logAspectError": 0.223,
+    "fillRatio": 0.903,
+    "frameFillRatio": 0.134,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 2,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 11
+  },
+  "case-a/unfolded": {
+    "visible": 7,
+    "visibleLeaves": 4,
+    "bboxWidth": 1524,
+    "bboxHeight": 797,
+    "aspectRatio": 1.912,
+    "logAspectError": 0.072,
+    "fillRatio": 0.303,
+    "frameFillRatio": 0.4,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 2,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-a/pkg-folded": {
+    "visible": 5,
+    "visibleLeaves": 3,
+    "bboxWidth": 1016,
+    "bboxHeight": 674,
+    "aspectRatio": 1.507,
+    "logAspectError": 0.166,
+    "fillRatio": 0.403,
+    "frameFillRatio": 0.226,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 3
+  },
+  "case-a/track-folded": {
+    "visible": 3,
+    "visibleLeaves": 2,
+    "bboxWidth": 984,
+    "bboxHeight": 323,
+    "aspectRatio": 3.046,
+    "logAspectError": 0.537,
+    "fillRatio": 0.579,
+    "frameFillRatio": 0.105,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-b/unfolded": {
+    "visible": 6,
+    "visibleLeaves": 3,
+    "bboxWidth": 1016,
+    "bboxHeight": 670,
+    "aspectRatio": 1.516,
+    "logAspectError": 0.16,
+    "fillRatio": 0.405,
+    "frameFillRatio": 0.224,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 24,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-b/mesh-engram-folded": {
+    "visible": 4,
+    "visibleLeaves": 3,
+    "bboxWidth": 984,
+    "bboxHeight": 547,
+    "aspectRatio": 1.799,
+    "logAspectError": 0.011,
+    "fillRatio": 0.513,
+    "frameFillRatio": 0.177,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 24,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-b/folded": {
+    "visible": 3,
+    "visibleLeaves": 3,
+    "bboxWidth": 952,
+    "bboxHeight": 424,
+    "aspectRatio": 2.245,
+    "logAspectError": 0.232,
+    "fillRatio": 0.684,
+    "frameFillRatio": 0.133,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 24,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-c/unfolded": {
+    "visible": 5,
+    "visibleLeaves": 3,
+    "bboxWidth": 976,
+    "bboxHeight": 674,
+    "aspectRatio": 1.448,
+    "logAspectError": 0.206,
+    "fillRatio": 0.42,
+    "frameFillRatio": 0.217,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 28,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-c/lib-folded": {
+    "visible": 3,
+    "visibleLeaves": 2,
+    "bboxWidth": 984,
+    "bboxHeight": 323,
+    "aspectRatio": 3.046,
+    "logAspectError": 0.537,
+    "fillRatio": 0.579,
+    "frameFillRatio": 0.105,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 1
+  },
+  "case-c/folded": {
+    "visible": 2,
+    "visibleLeaves": 2,
+    "bboxWidth": 460,
+    "bboxHeight": 428,
+    "aspectRatio": 1.075,
+    "logAspectError": 0.505,
+    "fillRatio": 0.935,
+    "frameFillRatio": 0.065,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 0
+  },
+  "case-d/unfolded": {
+    "visible": 4,
+    "visibleLeaves": 3,
+    "bboxWidth": 976,
+    "bboxHeight": 551,
+    "aspectRatio": 1.771,
+    "logAspectError": 0.005,
+    "fillRatio": 0.513,
+    "frameFillRatio": 0.177,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 28,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-d/folded": {
+    "visible": 2,
+    "visibleLeaves": 2,
+    "bboxWidth": 460,
+    "bboxHeight": 428,
+    "aspectRatio": 1.075,
+    "logAspectError": 0.505,
+    "fillRatio": 0.935,
+    "frameFillRatio": 0.065,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 0
+  },
+  "case-skills-r9/unfolded": {
+    "visible": 16,
+    "visibleLeaves": 14,
+    "bboxWidth": 2476,
+    "bboxHeight": 995,
+    "aspectRatio": 2.488,
+    "logAspectError": 0.335,
+    "fillRatio": 0.523,
+    "frameFillRatio": 0.714,
+    "displayScale": 0.582,
+    "gapX": {
+      "count": 9,
+      "min": 24,
+      "max": 32,
+      "mean": 25.778
+    },
+    "gapY": {
+      "count": 4,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-skills-r9/skills-unfolded": {
+    "visible": 12,
+    "visibleLeaves": 11,
+    "bboxWidth": 1960,
+    "bboxHeight": 995,
+    "aspectRatio": 1.97,
+    "logAspectError": 0.101,
+    "fillRatio": 0.519,
+    "frameFillRatio": 0.643,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 7,
+      "min": 24,
+      "max": 32,
+      "mean": 26.286
+    },
+    "gapY": {
+      "count": 3,
+      "min": 24,
+      "max": 24,
+      "mean": 24
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 32,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-skills-r9/folded": {
+    "visible": 2,
+    "visibleLeaves": 2,
+    "bboxWidth": 460,
+    "bboxHeight": 428,
+    "aspectRatio": 1.075,
+    "logAspectError": 0.505,
+    "fillRatio": 0.935,
+    "frameFillRatio": 0.065,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 1,
+    "sceneBandX": 0,
+    "sceneBandY": 4,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 0
+  },
+  "case-integration-r9/unfolded": {
+    "visible": 15,
+    "visibleLeaves": 11,
+    "bboxWidth": 2476,
+    "bboxHeight": 1126,
+    "aspectRatio": 2.199,
+    "logAspectError": 0.211,
+    "fillRatio": 0.363,
+    "frameFillRatio": 0.808,
+    "displayScale": 0.582,
+    "gapX": {
+      "count": 7,
+      "min": 24,
+      "max": 32,
+      "mean": 26.286
+    },
+    "gapY": {
+      "count": 3,
+      "min": 24,
+      "max": 28,
+      "mean": 26.667
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 16,
+    "sceneBandY": 28,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 4
+  },
+  "case-integration-r9/folded": {
+    "visible": 4,
+    "visibleLeaves": 4,
+    "bboxWidth": 952,
+    "bboxHeight": 428,
+    "aspectRatio": 2.224,
+    "logAspectError": 0.223,
+    "fillRatio": 0.903,
+    "frameFillRatio": 0.134,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 2,
+      "min": 24,
+      "max": 32,
+      "mean": 28
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 24,
+    "sceneBandY": 28,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-trackfocus-r9/unfolded": {
+    "visible": 15,
+    "visibleLeaves": 11,
+    "bboxWidth": 2500,
+    "bboxHeight": 1025,
+    "aspectRatio": 2.439,
+    "logAspectError": 0.315,
+    "fillRatio": 0.395,
+    "frameFillRatio": 0.729,
+    "displayScale": 0.576,
+    "gapX": {
+      "count": 7,
+      "min": 24,
+      "max": 32,
+      "mean": 25.143
+    },
+    "gapY": {
+      "count": 3,
+      "min": 24,
+      "max": 28,
+      "mean": 26.667
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-trackfocus-r9/inner-folded": {
+    "visible": 4,
+    "visibleLeaves": 3,
+    "bboxWidth": 984,
+    "bboxHeight": 551,
+    "aspectRatio": 1.786,
+    "logAspectError": 0.003,
+    "fillRatio": 0.509,
+    "frameFillRatio": 0.179,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 1,
+      "min": 32,
+      "max": 32,
+      "mean": 32
+    },
+    "gapY": {
+      "count": 1,
+      "min": 28,
+      "max": 28,
+      "mean": 28
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 2
+  },
+  "case-trackfocus-r9/folded": {
+    "visible": 1,
+    "visibleLeaves": 1,
+    "bboxWidth": 460,
+    "bboxHeight": 200,
+    "aspectRatio": 2.3,
+    "logAspectError": 0.256,
+    "fillRatio": 1,
+    "frameFillRatio": 0.03,
+    "displayScale": 0.62,
+    "gapX": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "gapY": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "emptyLanes": 0,
+    "singleColumnLevels": 0,
+    "sceneBandX": 0,
+    "sceneBandY": 0,
+    "edgesOutsideContainer": 0,
+    "labelCardOverlaps": 0,
+    "labelUnplaced": 0
+  }
+}
