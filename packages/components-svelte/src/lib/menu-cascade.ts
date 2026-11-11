@@ -137,6 +137,9 @@ export interface MenuHostContext {
   rootMenuId: string;
   requestClose: (options: MenuHostCloseOptions) => void;
   setHasCascade?: (hasCascade: boolean) => void;
+  /** Set by OverflowMenu: the inner Menu renders the flat `st-overflowMenu__*`
+   * DOM instead of `st-menu*` rows (internal only, never a public prop). */
+  overflowClasses?: boolean;
 }
 
 /** True when the viewport is too narrow for the panel: the caller must apply

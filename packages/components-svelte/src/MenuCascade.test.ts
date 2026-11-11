@@ -1125,6 +1125,7 @@ describe("Menu cascade — OverflowMenu flat regression (AC-37)", () => {
       ".st-overflowMenu__list",
       ".st-overflowMenu__listItem",
       ".st-overflowMenu__item",
+      ".st-overflowMenu__item--selected",
       ".st-overflowMenu__item--danger",
       ".st-overflowMenu__itemIcon",
       ".st-overflowMenu__itemLabel",
@@ -1156,5 +1157,367 @@ describe("Menu cascade — OverflowMenu flat regression (AC-37)", () => {
     expect(document.activeElement).toBe(deleteItem);
     await fireEvent.keyDown(deleteItem, { key: "ArrowUp" });
     expect(document.activeElement).toBe(edit);
+  });
+});
+
+describe("Menu cascade — review fixes (B2, M1–M6)", () => {
+  async function openFlippedLeft() {
+    render(Menu, {
+      props: { label: "Actions", items: cascadeItems, submenuSide: "auto" }
+    });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const root = levelEl(document.body, 0) as Element;
+    const button = within(root as HTMLElement).getByRole("menuitem", {
+      name: "Class A"
+    });
+    const panel = levelEl(document.body, 1) as Element;
+    stubRect(root, { left: 700, right: 892 });
+    stubRect(button, { top: 200, left: 700 });
+    stubRect(panel, { width: 192, height: 100 });
+    window.dispatchEvent(new Event("resize"));
+    await tick();
+  }
+
+  it("B2: flipped-panel leaf treats the resolved side as opening", async () => {
+    await openFlippedLeft();
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    expect(panel.style.left).toBe("508px");
+    const leaf = levelItem(panel, "Reason 1");
+    leaf.focus();
+    // Resolved opening arrow (ArrowLeft) is a no-op on a leaf.
+    await fireEvent.keyDown(leaf, { key: "ArrowLeft" });
+    await tick();
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    // Opposite arrow (ArrowRight) closes and refocuses the parent line.
+    await fireEvent.keyDown(leaf, { key: "ArrowRight" });
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(document.activeElement).toBe(
+      screen.getByRole("menuitem", { name: "Class A" })
+    );
+  });
+
+  it("M1: pointer close moves focus from the closed panel to its parent line", async () => {
+    render(Menu, { props: { label: "Actions", items: cascadeItems } });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    levelItem(panel, "Reason 1").focus();
+    await fireEvent.pointerLeave(panel, mouseProps(500, 500));
+    await vi.advanceTimersByTimeAsync(249);
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(1);
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(document.activeElement).toBe(
+      screen.getByRole("menuitem", { name: "Class A" })
+    );
+  });
+
+  it("M2a: leaving the parent before the hover delay cancels the pending open", async () => {
+    render(Menu, { props: { label: "Actions", items: cascadeItems } });
+    const wrap = screen
+      .getByRole("menuitem", { name: "Class A" })
+      .closest(".st-menu__itemWrap") as HTMLElement;
+    await fireEvent.pointerEnter(wrap, mouseProps());
+    await vi.advanceTimersByTimeAsync(100);
+    await fireEvent.pointerLeave(wrap, mouseProps());
+    await vi.advanceTimersByTimeAsync(200);
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+  });
+
+  it("M2b: leaving the triangle away from the panel re-arms the close", async () => {
+    const { container } = render(Menu, {
+      props: { label: "Actions", items: cascadeItems }
+    });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    stubRect(panel, {
+      left: 200,
+      right: 392,
+      top: 90,
+      bottom: 210,
+      width: 192,
+      height: 120
+    });
+    const wrap = levelItem(levelEl(document.body, 0), "Class A").closest(
+      ".st-menu__itemWrap"
+    ) as HTMLElement;
+    await fireEvent.pointerLeave(wrap, mouseProps(100, 100));
+    const host = container.querySelector(".st-menu") as HTMLElement;
+    // Drift inside the triangle first: the armed close is cancelled.
+    await fireEvent.pointerMove(host, mouseProps(150, 100));
+    await vi.advanceTimersByTimeAsync(100);
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    // Drift outside the triangle over root chrome: the close re-arms once.
+    await fireEvent.pointerMove(host, mouseProps(500, 500));
+    await vi.advanceTimersByTimeAsync(249);
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    await vi.advanceTimersByTimeAsync(1);
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+  });
+
+  it("M3: narrow-viewport cap survives a second recompute", async () => {
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      writable: true,
+      value: 160
+    });
+    render(Menu, { props: { label: "Actions", items: cascadeItems } });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const first =
+      (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
+    expect(first).toContain("left: 8px");
+    expect(first).toContain("min-width: 0");
+    // The capped panel now measures its capped width: a scroll/resize
+    // recompute must keep the cap instead of dropping it.
+    stubRect(levelEl(document.body, 1) as Element, { width: 144, height: 100 });
+    window.dispatchEvent(new Event("resize"));
+    await tick();
+    const second =
+      (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
+    expect(second).toContain("min-width: 0");
+  });
+
+  const threeLevel: MenuItem[] = [
+    {
+      label: "Class",
+      value: "class",
+      children: [
+        {
+          label: "Mid",
+          value: "mid",
+          children: [{ label: "Deep", value: "deep" }]
+        },
+        { label: "Other", value: "other" }
+      ]
+    }
+  ];
+
+  async function openTwoLevels() {
+    render(Menu, { props: { label: "Actions", items: threeLevel } });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class" }));
+    await tick();
+    await fireEvent.click(levelItem(levelEl(document.body, 1), "Mid"));
+    await tick();
+    expect(levelEl(document.body, 2)).toBeTruthy();
+  }
+
+  it("M4: Esc from a middle level closes only the deepest level per press", async () => {
+    await openTwoLevels();
+    // Focus sits in level 1 while level 2 is open: one Esc closes level 2 only.
+    const mid = levelItem(levelEl(document.body, 1), "Mid");
+    mid.focus();
+    await fireEvent.keyDown(mid, { key: "Escape" });
+    await tick();
+    expect(levelEl(document.body, 2)).toBeNull();
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    expect(document.activeElement).toBe(
+      levelItem(levelEl(document.body, 1), "Mid")
+    );
+    // A second Esc closes level 1 and refocuses the root parent.
+    await fireEvent.keyDown(levelItem(levelEl(document.body, 1), "Mid"), {
+      key: "Escape"
+    });
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(document.activeElement).toBe(
+      screen.getByRole("menuitem", { name: "Class" })
+    );
+  });
+
+  it("M4: opposite arrow from a middle level closes only the deepest level", async () => {
+    await openTwoLevels();
+    // Zero-rect geometry resolves right, so ArrowLeft is the opposite arrow.
+    const mid = levelItem(levelEl(document.body, 1), "Mid");
+    mid.focus();
+    await fireEvent.keyDown(mid, { key: "ArrowLeft" });
+    await tick();
+    expect(levelEl(document.body, 2)).toBeNull();
+    expect(levelEl(document.body, 1)).toBeTruthy();
+  });
+
+  it("M5: flat OverflowMenu Esc closes without returning focus to the trigger", async () => {
+    render(OverflowMenu, {
+      props: {
+        triggerLabel: "Row actions",
+        items: [{ label: "Edit", value: "edit" }]
+      }
+    });
+    const trigger = screen.getByRole("button", { name: "Row actions" });
+    await fireEvent.click(trigger);
+    await tick();
+    const item = screen.getByRole("menuitem", { name: "Edit" });
+    expect(document.activeElement).toBe(item);
+    await fireEvent.keyDown(item, { key: "Escape" });
+    await tick();
+    expect(screen.queryByRole("menu")).toBeNull();
+    expect(document.activeElement).not.toBe(trigger);
+  });
+
+  it("M5: flat MenuPopover Esc closes without returning focus to the trigger", async () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "Open";
+    document.body.appendChild(trigger);
+    render(MenuPopoverCascadeFixture, {
+      props: {
+        open: true,
+        trigger,
+        items: [{ label: "Edit", value: "edit" }]
+      }
+    });
+    await tick();
+    await fireEvent.keyDown(screen.getByRole("menuitem", { name: "Edit" }), {
+      key: "Escape"
+    });
+    await tick();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).not.toBe(trigger);
+    trigger.remove();
+  });
+
+  it("M5: MenuPopover forgets cascade once items lose their children", async () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "Open";
+    document.body.appendChild(trigger);
+    const { rerender } = render(MenuPopoverCascadeFixture, {
+      props: { open: true, trigger, items: cascadeItems }
+    });
+    await tick();
+    await rerender({
+      open: true,
+      trigger,
+      items: [{ label: "Edit", value: "edit" }]
+    });
+    await tick();
+    await fireEvent.keyDown(screen.getByRole("menuitem", { name: "Edit" }), {
+      key: "Escape"
+    });
+    await tick();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).not.toBe(trigger);
+    trigger.remove();
+  });
+
+  it("M6: flat OverflowMenu renders the selected row state", async () => {
+    render(OverflowMenu, {
+      props: {
+        triggerLabel: "Row actions",
+        items: [
+          { label: "Edit", value: "edit", selected: true },
+          { label: "Delete", value: "delete" }
+        ]
+      }
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Row actions" }));
+    await tick();
+    expect(
+      screen
+        .getByRole("menuitem", { name: "Edit" })
+        .classList.contains("st-overflowMenu__item--selected")
+    ).toBe(true);
+    expect(
+      screen
+        .getByRole("menuitem", { name: "Delete" })
+        .classList.contains("st-overflowMenu__item--selected")
+    ).toBe(false);
+  });
+
+  it("M6: flat duplicate values relay the clicked row's onclick", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onselect = vi.fn();
+    const firstClick = vi.fn();
+    const secondClick = vi.fn();
+    render(OverflowMenu, {
+      props: {
+        triggerLabel: "Row actions",
+        items: [
+          { label: "Same A", value: "dup", onclick: firstClick },
+          { label: "Same B", value: "dup", onclick: secondClick }
+        ],
+        onselect
+      }
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Row actions" }));
+    await tick();
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Same B" }));
+    expect(secondClick).toHaveBeenCalledTimes(1);
+    expect(firstClick).not.toHaveBeenCalled();
+    expect(onselect).toHaveBeenCalledTimes(1);
+    expect(onselect.mock.calls[0]).toEqual(["dup"]);
+  });
+
+  it("AC-32: Shift+Tab closes everything without trapping focus", async () => {
+    render(Menu, {
+      props: { label: "Actions", items: cascadeItems, dismissOnSelect: true }
+    });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const sub = levelItem(levelEl(document.body, 1), "Reason 1");
+    const notPrevented = await fireEvent.keyDown(sub, {
+      key: "Tab",
+      shiftKey: true
+    });
+    await tick();
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(screen.queryByRole("menu")).toBeNull();
+    // Not prevented, so the browser moves focus out of the menu: no menu
+    // remains in the document for focus to be trapped in.
+    expect(notPrevented).toBe(true);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
+  });
+
+  it("post-mount recompute positions panels without a synthetic resize", async () => {
+    render(Menu, { props: { label: "Actions", items: cascadeItems } });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    await tick();
+    const style =
+      (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
+    // §3.4 step 6: one recompute after mount once the real size is known.
+    expect(style).toContain("top:");
+    expect(style).toContain("left:");
+  });
+
+  it("AC-36: nearest transformed ancestor wins the containing-block walk", async () => {
+    render(Menu, { props: { label: "Actions", items: cascadeItems } });
+    await fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    await tick();
+    const host = document.body.querySelector(".st-menu--hasCascade") as Element;
+    stubRect(host, {
+      top: 40,
+      left: 60,
+      right: 260,
+      bottom: 200,
+      width: 200,
+      height: 160
+    });
+    const plain = {
+      transform: "none",
+      filter: "none",
+      perspective: "none",
+      contain: "none",
+      willChange: "auto"
+    };
+    vi.spyOn(window, "getComputedStyle").mockImplementation(
+      (el: Element) =>
+        (el === host
+          ? { ...plain, transform: "translateX(-10%)" }
+          : { ...plain }) as unknown as CSSStyleDeclaration
+    );
+    window.dispatchEvent(new Event("resize"));
+    await tick();
+    // Only the host carries a transform: the walk must stop there, even
+    // though every other ancestor reports `none`. Solver output on zero
+    // rects is top 8 / left 8 (left 0 clamped to the viewport margin).
+    const style =
+      (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
+    expect(style).toContain("top: -32px");
+    expect(style).toContain("left: -52px");
   });
 });
