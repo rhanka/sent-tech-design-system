@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:b7982c875a22c2e269a2836cd8a647e3c8c5aaed658d8c304a39a386fbc67ba1",
-  "entryDigest": "sha256:002ed8dceccadffd886e50bb4f487422d6d8efbe71b8a401f61d8903e43201f3",
+  "digest": "sha256:1c67d1e1b956f9a8e497269bf79c63fa2ae693794d2fb0811f02dfcbdef9b708",
+  "entryDigest": "sha256:eeb8f2351c61e454a388aa37ea5df9c1589a82d724252c0aae903a32fa132eb7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -71,7 +71,7 @@
         "declarationPath": "packages/components-angular/dist/AppHeader.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AppHeaderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -170,11 +170,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7b2a649b9819ff0eb638b14b3c867b26cf34d8aae7285b8ba77a212053acc64",
+        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppHeaderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -274,7 +274,7 @@
         "declarationPath": "packages/components-svelte/dist/AppHeader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppHeaderProps",
-        "version": "0.37.2"
+        "version": "0.38.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -359,7 +359,7 @@
         "declarationPath": "packages/components-vue/dist/AppHeader.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppHeaderProps",
-        "version": "0.38.1"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
