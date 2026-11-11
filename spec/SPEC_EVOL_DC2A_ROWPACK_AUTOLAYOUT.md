@@ -489,3 +489,24 @@ At chrome 0 with two equal cards, gap 24, target 1.78, `tallBias` 1.6: the 1×2 
 
 
 
+
+## Appendix C. Build findings recorded by lots L0/L1 (2026-11-11)
+
+Findings measured while building L0/L1 on branch `feat/dc2a-l0-l1`. Each one
+amends the text above where it names a section; none changes an owner
+requirement.
+
+| ID | Section | Finding | Ruling |
+| --- | --- | --- | --- |
+| C-1 | §1.3, §9.2, Appendix A | The cleared fixture set is ten cases, not eight: the seven lettered/transition cases, `case-skills-r9`, plus `case-integration-r9` (`unfolded`, `folded`) and `case-trackfocus-r9` (`unfolded`, `inner-folded`, `folded`). `case-skills-r9` has three views (`unfolded`, `skills-unfolded`, `folded`). Total acceptance views: 31. | Conductor instruction of 11/11 names the ten cases; `tests/layout/dc2a/fixtures/README.md` records the clearance line. |
+| C-2 | §7.2 | The harness frame is 1440 × 810 (16:9), not 1920 × 1080. `displayScale = min(1440/bboxW, 810/bboxH, 0.62)`. | Conductor instruction of 11/11. Thresholds are relative to the L0 baseline, so the frame size does not move a gate. |
+| C-3 | §3.6, AC-2 | « 6 → 3×2 at chrome 0 and at zone chrome alike » does not hold under the P-3 score: six equal cards score best as 3 rows of 2 at chrome 0 (944 × 648) and as 2 rows of 3 inside a zone (outer 1460 × 543). 2, 3, 4 and 9 hold at both chromes. | The score stands; the unit test pins both optima. |
+| C-4 | §3.2 P-3, §3.6, Appendix B | With the all-singleton candidate removed per form, two equal cards at chrome 0 pack as one row in rows form and one column in columns form; O-2 then picks the column (0.79 < 0.98). « 2 → 1×2 » is therefore the rows-form statement only. | As specified (O-2 decides); recorded because Appendix B reads as if the row always wins. |
+| C-5 | §3.5 | « A gutter widens only where a routed edge or label box actually crosses it » needs the routes, which need the placement. L1 predicts the crossing from labelled links between adjacent siblings (or adjacent shelves), routes, then denies every widened gutter the final routes and label boxes do not cross and recomputes; the denied set only grows. | Implemented; AC-24 measured 0 empty lanes on the 31 views. |
+| C-6 | §7.1 | Sibling gaps are read shelf by shelf: along a shelf between two neighbours, across between two successive shelves from the far edge of the thickest box. Shelf slack (a short box beside a tall one) is not a sibling gap. | Definition used by `rowpack-metrics.ts`. |
+| C-7 | §7.3 | `vue-globale/before` (11 visible leaves) lands at log-aspect error 0.397 (aspect 2.65), above the 0.35 gate, for every pair of the §7.5 grid; the column baseline is 2.54. | Named exception pinned in the gate test; open for the owner/DS session (the root holds two cards followed by four zones in declaration order). |
+| C-8 | §7.5 | Tuning grid over the 31 views (rank = Σ logAspectError + (1 − fillRatio), views with ≥ 4 visible leaves): (1.0, 0) 12.505; (1.0, 0.4) 11.925; (1.0, 0.8) 11.925; (1.6, 0) 12.894; (1.6, 0.4) 12.563; (1.6, 0.8) 12.630; (2.2, 0) 12.536; (2.2, 0.4) 12.547; (2.2, 0.8) 12.132. | Defaults kept (1.6, 0.4). (1.0, 0.4) ranks better; changing the default is left to a decision with re-pins. |
+| C-9 | §5.1, §5.3 | A readability floor is added to the fit: `minReadableScale` (token `diagramScene.minReadableScale`, proxy 0.42). A fit holds at the floor when the drawing is larger and the host pans; zoom-out still reaches `zoomFit`. Calibration: 0.62 satisfies the 100 % criterion (title 19.8 px ≥ 18, body 14.9 px ≥ 13), so 0.62 is kept. | Conductor instruction of 11/11; pure functions in `diagram-canvas/src/camera.ts`, host wiring stays L4. |
+| C-10 | §6.1, AC-1 | L1 ships row-pack behind the `rowPack` option: without it measured views keep the column placement byte for byte. | Deviation from AC-1 (« no option ⇒ 1.78 »), kept until L2 re-pins the existing measured fixtures; then row-pack becomes the default. |
+| C-11 | §3.3 | Authored `grouping` sub-levels are not packed separately yet: the row-pack path packs each level as one run in reading order. | L2. |
+| C-12 | §7.1, AC-21 | In the row-pack path an expanded zone is not a label blocker (a label may sit inside its own zone); cards, collapsed boxes and title bands are. Unplaced labels: 167 → 137 summed over the 31 views; the zero-unplaced gate stays L3. | Implemented for row-pack only. |
