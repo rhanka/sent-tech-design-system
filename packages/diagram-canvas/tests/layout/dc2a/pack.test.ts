@@ -1,0 +1,200 @@
+/**
+ * DC-2a L1 — packer, orientation and camera unit tests (SPEC_EVOL_DC2A §9.1, §5).
+ */
+import { describe, expect, it } from "vitest";
+
+import {
+  cameraFit,
+  chooseOrientation,
+  clampZoom,
+  DEFAULT_MAX_DISPLAY_SCALE,
+  DEFAULT_MIN_READABLE_SCALE,
+  DEFAULT_ROW_PACK,
+  fitBox,
+  packColumns,
+  packRows,
+  resolveRowPack,
+  validateRowPack,
+  zoomReadout,
+  type PackBox,
+  type PackOptions,
+} from "../../../src/index.js";
+
+const CARD: PackBox = { width: 460, height: 200 };
+const cards = (count: number): PackBox[] => Array.from({ length: count }, () => CARD);
+const options = (chrome: "root" | "zone", extra: Partial<PackOptions> = {}): PackOptions => ({
+  targetAspect: DEFAULT_ROW_PACK.targetAspect,
+  gapX: 24,
+  gapY: 24,
+  // Zone chrome: 2 × 16 inline; 16 + header (71) + 16 + 16 block.
+  chromeWidth: chrome === "zone" ? 32 : 0,
+  chromeHeight: chrome === "zone" ? 119 : 0,
+  tallBias: DEFAULT_ROW_PACK.tallBias,
+  emptyPenaltyWeight: DEFAULT_ROW_PACK.emptyPenaltyWeight,
+  ...extra,
+});
+const shape = (rows: readonly (readonly number[])[]): number[] => rows.map((row) => row.length);
+
+describe("packRows / packColumns", () => {
+  it.each(["root", "zone"] as const)("AC-2: canonical equal-card grids at %s chrome", (chrome) => {
+    // §3.6: 2 → 1×2, 3 → 2+1, 4 → 2×2, 9 → 3×3 at both chromes. Six cards are
+    // the one grid the chrome decides: the P-3 optimum is 3 rows of 2 at chrome
+    // 0 (944 × 648, aspect 1.46) and 2 rows of 3 inside a zone, whose header
+    // and insets add height (outer 1460 × 543, aspect 2.69 against 1.27).
+    const six = chrome === "zone" ? [3, 3] : [2, 2, 2];
+    const grids: Record<number, number[]> = { 2: [2], 3: [2, 1], 4: [2, 2], 6: six, 9: [3, 3, 3] };
+    for (const [count, expected] of Object.entries(grids)) {
+      expect(shape(packRows(cards(Number(count)), options(chrome)).rows), `rows n=${count}`).toEqual(expected);
+    }
+  });
+
+  it("P-8: the columns form is the transpose of the rows form", () => {
+    const boxes: PackBox[] = [
+      { width: 460, height: 200 },
+      { width: 300, height: 120 },
+      { width: 460, height: 260 },
+      { width: 200, height: 200 },
+      { width: 460, height: 200 },
+    ];
+    const transposed = boxes.map((box) => ({ width: box.height, height: box.width }));
+    const base = options("root");
+    const columns = packColumns(boxes, base);
+    const rows = packRows(transposed, { ...base, targetAspect: 1 / base.targetAspect, tallBias: 1 });
+    const flipped = packColumns(boxes, { ...base, tallBias: 1 });
+    expect(shape(flipped.rows)).toEqual(shape(rows.rows));
+    expect(flipped.positions.map((position) => [position.y, position.x])).toEqual(rows.positions.map((position) => [position.x, position.y]));
+    expect(columns.rows.flat()).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  it("P-2: reading order is never permuted, even when reordering would score better", () => {
+    const boxes: PackBox[] = [
+      { width: 900, height: 200 },
+      { width: 100, height: 200 },
+      { width: 900, height: 200 },
+      { width: 100, height: 200 },
+    ];
+    for (const result of [packRows(boxes, options("root")), packColumns(boxes, options("root"))]) {
+      expect(result.rows.flat()).toEqual([0, 1, 2, 3]);
+    }
+  });
+
+  it("P-3: the all-singleton candidate is inadmissible for two boxes or more", () => {
+    // At chrome 0 the 2 × 1 column scores lower than the 1 × 2 row; admissibility, not the score, excludes it.
+    expect(shape(packRows(cards(2), options("root")).rows)).toEqual([2]);
+    expect(shape(packColumns(cards(2), options("root")).rows)).toEqual([2]);
+    for (const count of [2, 3, 5, 12]) {
+      expect(packRows(cards(count), options("root")).rows.length).toBeLessThan(count);
+      expect(packColumns(cards(count), options("root")).rows.length).toBeLessThan(count);
+    }
+  });
+
+  it("P-6/P-7: degenerate inputs and top-aligned rows", () => {
+    expect(packRows([], options("root"))).toEqual({ width: 0, height: 0, rows: [], positions: [], score: 0 });
+    const one = packRows([CARD], options("root"));
+    expect([one.width, one.height, shape(one.rows)]).toEqual([460, 200, [1]]);
+    const mixed = packRows(
+      [
+        { width: 460, height: 200 },
+        { width: 460, height: 320 },
+      ],
+      options("root"),
+    );
+    expect(mixed.positions.map((position) => position.y)).toEqual([0, 0]);
+    expect(mixed.height).toBe(320);
+  });
+
+  it("P-1/P-5: emitted gaps are exactly the given gaps", () => {
+    const result = packRows(cards(6), options("zone", { gapX: 24, gapY: 28 }));
+    expect(result.positions.map((position) => position.x)).toEqual([0, 484, 968, 0, 484, 968]);
+    expect(result.positions.map((position) => position.y)).toEqual([0, 0, 0, 228, 228, 228]);
+    expect([result.width, result.height]).toEqual([1428, 428]);
+  });
+
+  it("the tall bias and the empty penalty steer the choice", () => {
+    // Five cards: 2 + 2 + 1 is closer to 16:9 than the wider 3 + 2.
+    expect(shape(packRows(cards(5), options("root")).rows)).toEqual([2, 2, 1]);
+    expect(shape(packRows(cards(5), options("root", { tallBias: 6 })).rows)).toEqual([3, 2]);
+    expect(packRows(cards(3), options("root", { emptyPenaltyWeight: 0 })).score).toBeLessThan(
+      packRows(cards(3), options("root", { emptyPenaltyWeight: 0.8 })).score,
+    );
+    const tall = packRows(cards(12), options("root", { tallBias: 4 }));
+    const flat = packRows(cards(12), options("root", { tallBias: 1 }));
+    expect(tall.rows.length).toBeLessThanOrEqual(flat.rows.length);
+  });
+});
+
+describe("chooseOrientation", () => {
+  it("O-2/O-3: the lower total score wins; an empty or single-box level is rows", () => {
+    expect(chooseOrientation([], options("root"), 0.08).orientation).toBe("rows");
+    expect(chooseOrientation([CARD], options("root"), 0.08).orientation).toBe("rows");
+    const choice = chooseOrientation(cards(2), options("root"), 0.08);
+    expect(choice.orientation).toBe(choice.scoreRows <= choice.scoreColumns ? "rows" : "columns");
+    // Ten equal cards in a zone read as rows.
+    expect(chooseOrientation(cards(10), options("zone"), 0.08).orientation).toBe("rows");
+  });
+
+  it("O-4/AC-17: inside the band the previous orientation is kept; outside it the lower score wins", () => {
+    const boxes = cards(2);
+    const free = chooseOrientation(boxes, options("root"), 0);
+    const gap = Math.abs(free.scoreRows - free.scoreColumns);
+    const loser = free.orientation === "rows" ? "columns" : "rows";
+    expect(chooseOrientation(boxes, options("root"), gap + 0.01, loser).orientation).toBe(loser);
+    expect(chooseOrientation(boxes, options("root"), gap - 0.01, loser).orientation).toBe(free.orientation);
+    // Fixed point (O-5): feeding the emitted orientation back changes nothing.
+    expect(chooseOrientation(boxes, options("root"), 0.08, free.orientation).orientation).toBe(free.orientation);
+  });
+});
+
+describe("row-pack options", () => {
+  it("resolves the DS defaults in one place and refuses invalid numbers", () => {
+    expect(resolveRowPack({})).toEqual({ targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 });
+    expect(validateRowPack(resolveRowPack({}))).toEqual([]);
+    for (const bad of [{ targetAspect: 0 }, { targetAspect: Number.NaN }, { tallBias: -1 }, { emptyPenaltyWeight: -0.1 }, { orientationHysteresis: -1 }]) {
+      const refusals = validateRowPack(resolveRowPack(bad));
+      expect(refusals.map((refusal) => [refusal.code, refusal.path])).toEqual([["row-pack-invalid", "rowPack"]]);
+    }
+  });
+});
+
+describe("camera fit (§5)", () => {
+  it("AC-22: readout 100 % is the maximum display scale, well below the natural card size", () => {
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);
+    expect(zoomReadout(DEFAULT_MAX_DISPLAY_SCALE)).toBe(100);
+    expect(zoomReadout(0.31)).toBe(50);
+    // §5.3 calibration at 100 %: title 32 px and body 24 px render at ≥ 18 and ≥ 13 CSS px.
+    expect(32 * DEFAULT_MAX_DISPLAY_SCALE).toBeGreaterThanOrEqual(18);
+    expect(24 * DEFAULT_MAX_DISPLAY_SCALE).toBeGreaterThanOrEqual(13);
+    expect([Math.round(460 * DEFAULT_MAX_DISPLAY_SCALE), Math.round(200 * DEFAULT_MAX_DISPLAY_SCALE)]).toEqual([285, 124]);
+  });
+
+  it("AC-23: the fit box is 16:9 bounded by the window; the tighter axis decides", () => {
+    expect(fitBox(1440, 2000)).toEqual({ width: 1440, height: 810 });
+    expect(fitBox(1440, 800)).toEqual({ width: 1440, height: 680 });
+    const wide = cameraFit({ bounds: { width: 2880, height: 810 }, viewWidth: 1440, windowHeight: 2000 });
+    expect(wide.zoomFit).toBe(0.5);
+    const tall = cameraFit({ bounds: { width: 1440, height: 1620 }, viewWidth: 1440, windowHeight: 2000 });
+    expect(tall.zoomFit).toBe(0.5);
+    expect(tall.pans).toBe(false);
+  });
+
+  it("AC-13/AC-14: fit never exceeds the cap, an empty scene fits at 100 %, zoom clamps into the range", () => {
+    const small = cameraFit({ bounds: { width: 460, height: 200 }, viewWidth: 1440, windowHeight: 2000 });
+    expect([small.zoomFit, small.zoom, small.maxZoom]).toEqual([0.62, 0.62, 0.62]);
+    const empty = cameraFit({ viewWidth: 1440, windowHeight: 2000 });
+    expect([empty.zoom, zoomReadout(empty.zoom)]).toEqual([0.62, 100]);
+    const fit = cameraFit({ bounds: { width: 2880, height: 810 }, viewWidth: 1440, windowHeight: 2000 });
+    expect(clampZoom(5, fit)).toBe(0.62);
+    expect(clampZoom(0.01, fit)).toBe(0.5);
+    expect(clampZoom(0.55, fit)).toBe(0.55);
+  });
+
+  it("readability floor: a drawing larger than the floor allows is held at the floor and pans", () => {
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.42);
+    const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
+    expect(huge.zoomFit).toBeCloseTo(810 / 8000, 6);
+    expect(huge.zoom).toBe(0.42);
+    expect(huge.pans).toBe(true);
+    // Zoom-out still reaches the whole drawing (Z-2).
+    expect(clampZoom(0, huge)).toBeCloseTo(810 / 8000, 6);
+  });
+});
