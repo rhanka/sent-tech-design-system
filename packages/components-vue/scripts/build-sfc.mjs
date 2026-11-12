@@ -58,9 +58,10 @@ writeFileSync('dist/vapor/index.d.ts', components.map(name =>
   `export { default as ${name} } from './${name}.vue.js';`).join('\n')
   + "\nexport { useGraphEngine } from '../useGraphEngine.js';\n"
   + "export { nodeShapePath, edgeDashArray } from '../index.js';\n"
+  + "export type { DiagramIconProps } from '../diagram-icons/index.js';\n"
   + "export type { DiagramCardProps, DiagramZoneProps, DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, ForceGraphProps, ForceGraphNode, ForceGraphEdge, ForceGraphNodeShape, ForceGraphLegendEntry, ForceGraphTone, ForceGraphEdgeDash, GraphLegendProps, GraphCanvasProps, CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from '../index.js';\n");
 writeFileSync('dist/vapor/diagram-icons/index.js', "export { default, default as DiagramIcon } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
-writeFileSync('dist/vapor/diagram-icons/index.d.ts', "export { default, default as DiagramIcon } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
+writeFileSync('dist/vapor/diagram-icons/index.d.ts', "export { default, default as DiagramIcon, type DiagramIconProps } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
 mkdirSync('dist/vapor/bpmn', { recursive: true });
 writeFileSync('dist/vapor/bpmn/index.js', "export { default, default as BpmnCanvas } from '../BpmnCanvas.vue.js';\n");
 writeFileSync('dist/vapor/bpmn/index.d.ts', "export { default, default as BpmnCanvas, type BpmnCanvasProps } from '../BpmnCanvas.vue.js';\n");
