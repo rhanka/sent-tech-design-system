@@ -55,7 +55,7 @@ export interface TextSize {
  * Kept only as the compatibility path for views with no
  * `presentation.diagram` (§4.8). Measured diagram views use `LineMeasurer`.
  */
-export type TextMeasurer = (text: string, role: TextRole | LegacyTextRole) => TextSize;
+export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => TextSize) & { readonly version?: string };
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
